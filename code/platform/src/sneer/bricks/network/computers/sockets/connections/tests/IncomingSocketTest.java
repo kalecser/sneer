@@ -56,8 +56,8 @@ public class IncomingSocketTest extends BrickTest {
 			oneOf(_seals).unmarshall(new byte[]{3, 3, 3}); will(returnValue(_greaterSeal)); inSequence(sequence);
 			oneOf(_socketB).read(); will(returnValue(ProtocolTokens.CONFIRMED)); inSequence(sequence);
 
-			oneOf(_socketA).close(); inSequence(sequence);
-			oneOf(_socketB).close(); inSequence(sequence);
+			oneOf(_socketA).close();
+			oneOf(_socketB).close();
 			
 		}});
 
