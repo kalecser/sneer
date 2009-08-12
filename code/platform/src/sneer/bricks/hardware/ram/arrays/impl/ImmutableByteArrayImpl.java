@@ -11,7 +11,7 @@ class ImmutableByteArrayImpl implements ImmutableByteArray {
 	private transient int _hashCode = -1;
 
 	ImmutableByteArrayImpl(byte[] bufferToCopy) {
-		this(bufferToCopy, bufferToCopy.length);
+		_payload = bufferToCopy.clone();
 	}
 
 	ImmutableByteArrayImpl(byte[] bufferToCopy, int bytesToCopy) {
@@ -32,7 +32,7 @@ class ImmutableByteArrayImpl implements ImmutableByteArray {
 
 	@Override
 	public byte[] copy() {
-		return Arrays.copyOf(_payload, _payload.length);
+		return _payload.clone();
 	}
 	
 	@Override
