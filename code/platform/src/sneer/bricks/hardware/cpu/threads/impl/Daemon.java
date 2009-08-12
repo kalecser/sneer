@@ -31,15 +31,15 @@ abstract class Daemon extends Thread {
 		setUncaughtExceptionHandler(new UncaughtExceptionHandler() { @Override public void uncaughtException(Thread t, Throwable ignored) {
 			//Do nothing.
 		}});
-			
+		
+		interrupt();
 		stop();
+		try {
+			join();
+		} catch (InterruptedException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
-	@Override
-	public void interrupt() {
-		throw new UnsupportedOperationException("Daemons are not interruptible.");
-	}
-	
-	
 	
 }
