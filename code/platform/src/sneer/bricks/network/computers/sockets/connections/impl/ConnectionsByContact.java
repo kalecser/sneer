@@ -1,17 +1,15 @@
 package sneer.bricks.network.computers.sockets.connections.impl;
 
-import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.hardware.ram.maps.cachemaps.CacheMap;
-import sneer.bricks.hardware.ram.maps.cachemaps.CacheMaps;
 import sneer.bricks.network.social.Contact;
+import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
 
 class ConnectionsByContact {
 
-	static private final CacheMap<Contact, ByteConnectionImpl> _cache = my(CacheMaps.class).newInstance();
+	static private final CacheMap<Contact, ByteConnectionImpl> _cache = CacheMap.newInstance();
 
 
-	static ByteConnectionImpl get(final Contact contact) {
+	static ByteConnectionImpl get(Contact contact) {
 		return _cache.get(contact, new Producer<ByteConnectionImpl>() { @Override public ByteConnectionImpl produce() {
 			return new ByteConnectionImpl();
 		}});

@@ -10,8 +10,6 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray2D;
-import sneer.bricks.hardware.ram.maps.cachemaps.CacheMap;
-import sneer.bricks.hardware.ram.maps.cachemaps.CacheMaps;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.streams.sequencer.Sequencer;
@@ -21,6 +19,7 @@ import sneer.bricks.skin.rooms.ActiveRoomKeeper;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.ByRef;
+import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Producer;
 import spikes.sneer.bricks.skin.audio.mic.Mic;
@@ -48,7 +47,7 @@ class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the en
 	private final AtomicInteger _ids = new AtomicInteger();
 	@SuppressWarnings("unused")	private WeakContract _micSoundContract;
 	
-	private final CacheMap<Seal, Sequencer<SpeexPacket>> _sequencersByPublisher = my(CacheMaps.class).newInstance();
+	private final CacheMap<Seal, Sequencer<SpeexPacket>> _sequencersByPublisher = CacheMap.newInstance();
 	private Producer<Sequencer<SpeexPacket>> _sequencerProducer = sequencerProducer();
 	@SuppressWarnings("unused")	private final WeakContract _tupleSpaceContract;
 	

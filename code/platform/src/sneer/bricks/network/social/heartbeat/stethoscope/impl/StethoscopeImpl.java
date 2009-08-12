@@ -6,8 +6,6 @@ import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardware.ram.maps.cachemaps.CacheMap;
-import sneer.bricks.hardware.ram.maps.cachemaps.CacheMaps;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.heartbeat.Heartbeat;
 import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
@@ -18,6 +16,7 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Producer;
 
@@ -27,8 +26,8 @@ class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Steppable {
 	private static final int MAX_BEAT_AGE = 10 * 60 * 1000;
 	private static final Contact[] CONTACT_ARRAY_TYPE = new Contact[0];
 	
-	private CacheMap<Contact, Long> _lastBeatTimesByContact = my(CacheMaps.class).newInstance();
-	private CacheMap<Contact, Register<Boolean>> _registersByContact = my(CacheMaps.class).newInstance();
+	private CacheMap<Contact, Long> _lastBeatTimesByContact = CacheMap.newInstance();
+	private CacheMap<Contact, Register<Boolean>> _registersByContact = CacheMap.newInstance();
 
 	@SuppressWarnings("unused")	private final WeakContract _timerContract;
 	@SuppressWarnings("unused")	private final WeakContract _tupleSpaceContract;

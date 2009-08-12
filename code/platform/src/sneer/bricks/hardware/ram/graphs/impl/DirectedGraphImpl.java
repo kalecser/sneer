@@ -1,7 +1,5 @@
 package sneer.bricks.hardware.ram.graphs.impl;
 
-import static sneer.foundation.environments.Environments.my;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -10,13 +8,12 @@ import java.util.List;
 import java.util.Set;
 
 import sneer.bricks.hardware.ram.graphs.DirectedGraph;
-import sneer.bricks.hardware.ram.maps.cachemaps.CacheMap;
-import sneer.bricks.hardware.ram.maps.cachemaps.CacheMaps;
+import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
 
 class DirectedGraphImpl<T> implements DirectedGraph<T> {
 
-	private CacheMap<T, Set<T>> _successorsByVertex = my(CacheMaps.class).newInstance();
+	private CacheMap<T, Set<T>> _successorsByVertex = CacheMap.newInstance();
 
 	@Override
 	public void addEdge(T vertex, T successor) {
