@@ -8,7 +8,7 @@ import java.io.IOException;
 import sneer.bricks.hardwaresharing.files.writer.FileWriter;
 import sneer.bricks.pulp.crypto.Sneer1024;
 
-public class LocalCopyTest extends FileCopyTest {
+public class LocalCopyTest extends FileCopyTestBase {
 
 	@Override
 	protected void copyFromFileCache(Sneer1024 hashOfContents, File destination) throws IOException {

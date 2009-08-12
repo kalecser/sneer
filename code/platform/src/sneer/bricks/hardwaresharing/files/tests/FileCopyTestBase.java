@@ -13,28 +13,21 @@ import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.foundation.brickness.testsupport.BrickTest;
 
-//public abstract class FileCopyTest extends BrickTest {
-public class FileCopyTest extends BrickTest {
+/** Abstract test class names must not end in "Test" or else Hudson will try to instantiate them and fail. :P */
+public abstract class FileCopyTestBase extends BrickTest {
 
 	private final FilePublisher _publisher = my(FilePublisher.class);
 
 	
 	@Test (timeout = 3000)
 	public void testWithSmallFile() throws IOException {
-		if (mustWorkaroundHudson()) return;
 		testWith(anySmallFile());
 	}
 
 	
 	@Test (timeout = 3000)
 	public void testWithAFewFiles() throws IOException {
-		if (mustWorkaroundHudson()) return;
 		testWith(folderWithAFewFiles());
-	}
-
-
-	private boolean mustWorkaroundHudson() { //This should be an abstract class, but Hudson tries to execute it and gets an Exception. :(
-		return getClass() == FileCopyTest.class;
 	}
 
 
@@ -49,11 +42,7 @@ public class FileCopyTest extends BrickTest {
 	}
 
 
-	//abstract protected void copyFromFileCache(Sneer1024 hashOfContents, File destination) throws IOException;
-	@SuppressWarnings("unused")
-	protected void copyFromFileCache(Sneer1024 hashOfContents, File destination) throws IOException {
-		throw new IllegalStateException("This method should have been overriden in the subclass.");
-	}
+	abstract protected void copyFromFileCache(Sneer1024 hashOfContents, File destination) throws IOException;
 
 
 	private File anySmallFile() {
