@@ -14,8 +14,11 @@ public interface FolderConfig {
 	Immutable<File> ownSrcFolder();
 	Immutable<File> platformSrcFolder();
 
-	Immutable<File> dataFolder();
-	File getStorageFolderFor(Class<?> brick);
+	Immutable<File> storageFolder();
+	File storageFolderFor(Class<?> brick);
+
+	Immutable<File> tmpFolder();
+	File tmpFolderFor(Class<?> brick);
 
 	Immutable<File> logFile();
 

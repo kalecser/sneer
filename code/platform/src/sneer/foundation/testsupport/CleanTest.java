@@ -31,7 +31,17 @@ public abstract class CleanTest extends AssertUtils {
 		return _tmpFolder;
 	}
 
-	
+	protected void assertTmpFilesExist(String... fileNames) {
+		for (String fileName : fileNames)
+			assertTmpFileExists(fileName);
+	}
+
+
+	private void assertTmpFileExists(String fileName) {
+		File file = new File(tmpFolder(), fileName);
+		assertExists(file);
+	}
+
 	@Before
 	public void beforeCleanTest() {
 		_activeThreadsBeforeTest = Thread.getAllStackTraces().keySet();
@@ -159,6 +169,7 @@ public abstract class CleanTest extends AssertUtils {
 			deleteFolder(file);
 		}
 	}
+
 
 }
 

@@ -12,7 +12,6 @@ import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.software.code.compilers.classpath.Classpath;
 import sneer.bricks.software.code.compilers.classpath.ClasspathFactory;
-import sneer.bricks.software.code.compilers.java.CompilerException;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.compilers.java.Result;
 
@@ -23,12 +22,12 @@ class JavaCompilerImpl implements JavaCompiler {
 	private final ClasspathFactory _classpathFactory = my(ClasspathFactory.class);
 
 	@Override
-	public Result compile(List<File> sourceFiles, File destination) throws CompilerException {
+	public Result compile(List<File> sourceFiles, File destination) throws IOException {
 		return compile(sourceFiles, destination, _classpathFactory.newClasspath());
 	}
 
 	@Override
-	public Result compile(List<File> sourceFiles, File destination, Classpath classpath) throws CompilerException {
+	public Result compile(List<File> sourceFiles, File destination, Classpath classpath) throws IOException {
 		
 		File tmpFile = createArgsFileForJavac(sourceFiles);
 //		my(Logger.class).log("Compiling {} files to {}", sourceFiles.size(), destination);
@@ -52,15 +51,11 @@ class JavaCompilerImpl implements JavaCompiler {
 		return result;
 	}
 
-	private File createArgsFileForJavac(List<File> files) {
-		try {
-			File args = File.createTempFile("javac-", ".args");
+	private File createArgsFileForJavac(List<File> files) throws IOException {
+		File args = File.createTempFile("javac-", ".args");
 			
-			my(IO.class).files().writeString(args, my(Lang.class).strings().join(files, "\n"));
-			return args;
-		} catch(IOException e) {
-			throw new CompilerException("Can't create temp file", e);
-		}
+		my(IO.class).files().writeString(args, my(Lang.class).strings().join(files, "\n"));
+		return args;
 	}
 
 //	private List<File> buildSourceList(File source) {

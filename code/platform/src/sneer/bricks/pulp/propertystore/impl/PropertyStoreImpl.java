@@ -75,7 +75,7 @@ class PropertyStoreImpl implements PropertyStore {
 	}
 
 	private File file() {
-		File folder = my(FolderConfig.class).getStorageFolderFor(PropertyStore.class);
+		File folder = my(FolderConfig.class).storageFolderFor(PropertyStore.class);
 		return new File(folder, FILE_NAME);
 	}
 

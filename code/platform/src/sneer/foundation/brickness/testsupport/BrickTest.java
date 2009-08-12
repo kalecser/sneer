@@ -3,6 +3,8 @@ package sneer.foundation.brickness.testsupport;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.File;
+
 import org.jmock.Mockery;
 import org.jmock.Sequence;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -22,7 +24,8 @@ public abstract class BrickTest extends CleanTest {
     
 	{
 		my(BrickTestRunner.class).instanceBeingInitialized(this);
-		my(FolderConfig.class).dataFolder().set(tmpFolder());
+		my(FolderConfig.class).storageFolder().set(new File(tmpFolder(), "data"));
+		my(FolderConfig.class).tmpFolder().set(new File(tmpFolder(), "tmp"));
 	}
 	
 	@After

@@ -37,15 +37,23 @@ class LangImpl implements Lang {
 
 		@Override public String deleteWhitespace(String str) {return StringUtils.deleteWhitespace(str);}
 		
-		@Override public List<String> readLines(String input) throws IOException {
+		@Override public List<String> readLines(String input) {
 	        BufferedReader reader = new BufferedReader(new StringReader(input));
 			List<String> list = new ArrayList<String>();
-			String line = reader.readLine();
+			String line = readLine(reader);
 			while (line != null) {
 				list.add(line);
-				line = reader.readLine();
+				line = readLine(reader);
 			}
 			return list;		
+		}
+
+		private String readLine(BufferedReader reader) {
+			try {
+				return reader.readLine();
+			} catch (IOException e) {
+				throw new IllegalStateException(e);
+			}
 		}
 		
 		@Override	public byte[] toByteArray(String string) { 

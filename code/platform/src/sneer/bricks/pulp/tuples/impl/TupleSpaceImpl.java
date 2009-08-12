@@ -179,7 +179,7 @@ class TupleSpaceImpl implements TupleSpace {
 
 
 	private File folder() {
-		return my(FolderConfig.class).getStorageFolderFor(TupleSpace.class);
+		return my(FolderConfig.class).storageFolderFor(TupleSpace.class);
 	}
 
 	

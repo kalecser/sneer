@@ -37,6 +37,7 @@ import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
+import sneer.bricks.softwaresharing.installer.BrickCompilationException;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.Predicate;
@@ -176,7 +177,7 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 
 	@Override
 	public void configDirectories(File dataFolder, File platformSrcFolder, File platformBinFolder) {
-		my(FolderConfig.class).dataFolder().set(dataFolder);
+		my(FolderConfig.class).storageFolder().set(dataFolder);
 		my(FolderConfig.class).platformSrcFolder().set(platformSrcFolder);
 		my(FolderConfig.class).platformBinFolder().set(platformBinFolder);
 	}
@@ -223,7 +224,7 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 	}
 	
 	@Override
-	public void stageBricksForExecution(String... brickNames) {
+	public void stageBricksForExecution(String... brickNames) throws IOException, BrickCompilationException {
 		for (String brickName : brickNames) stageBrickForExecution(brickName);
 		my(BrickInstaller.class).prepareStagedBricksInstallation();
 	}

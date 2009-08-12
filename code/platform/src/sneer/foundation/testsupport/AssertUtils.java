@@ -1,5 +1,7 @@
 package sneer.foundation.testsupport;
 
+import java.io.File;
+
 import org.junit.Assert;
 
 import sneer.foundation.lang.Closure;
@@ -33,6 +35,10 @@ public abstract class AssertUtils extends Assert {
 		}
 		
 		fail("Expecting '" + throwable + "'.");
+	}
+
+	protected void assertExists(File file) {
+		assertTrue("File does not exist: " + file, file.exists());
 	}
 
 }

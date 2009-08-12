@@ -2,6 +2,7 @@ package sneer.bricks.softwaresharing.installer.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.File;
 import java.util.Arrays;
 
 import org.jmock.Expectations;
@@ -10,11 +11,15 @@ import org.junit.Test;
 
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.impl.SetRegisterImpl;
+import sneer.bricks.software.bricks.snappstarter.Snapp;
+import sneer.bricks.software.code.classutils.ClassUtils;
+import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
+import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.brickness.testsupport.BrickTest;
 
@@ -26,13 +31,15 @@ public class BrickInstallerTest extends BrickTest {
 	
 	@Ignore
 	@Test
-	public void test() {
+	public void test() throws Exception  {
 		
 		checking(new Expectations() {{
 			
 			final BrickInfo brick = mock(BrickInfo.class);
 			allowing(_brickSpace).availableBricks();
 				will(returnValue(newSetRegister(brick).output()));
+			
+			allowing(brick).name(); will(returnValue("bricks.y.Y"));
 				
 			final BrickVersion version1 = mock("version1", BrickVersion.class);
 			final BrickVersion version2 = mock("version2", BrickVersion.class);
@@ -42,25 +49,69 @@ public class BrickInstallerTest extends BrickTest {
 			allowing(version1).isStagedForExecution();
 				will(returnValue(true));
 				
-			FileVersion interfaceFile = mock("Interface.java", FileVersion.class);
-			FileVersion implFile = mock("Impl.java", FileVersion.class);
+			allowing(version2).isStagedForExecution();
+				will(returnValue(false));
+
+			FileVersion interfaceFile = mock("Y.java", FileVersion.class);
+			FileVersion implFile = mock("YImpl.java", FileVersion.class);
 			
 			allowing(version1).files();
 				will(returnValue(Arrays.asList(
 						interfaceFile,
 						implFile)));
 				
-			allowing(interfaceFile).contents();
-				will(returnValue("".getBytes()));
+			allowing(interfaceFile).name();	will(returnValue("Y.java"));
+			allowing(implFile).name(); will(returnValue("impl/YImpl.java"));
+
+			allowing(interfaceFile).contents();	will(returnValue(interfaceDefinition().getBytes("UTF-8")));
+			allowing(implFile).contents(); will(returnValue(implDefinition().getBytes("UTF-8")));
 				
-			allowing(implFile).contents();
-				will(returnValue("".getBytes()));
-				
-			allowing(version2).isStagedForExecution();
-				will(returnValue(false));
 		}});
 		
+		my(FolderConfig.class).platformBinFolder().set(binFolder());
+		
 		_subject.prepareStagedBricksInstallation();
+		
+		assertStagedFilesExist(
+			"src/bricks/y/Y.java",
+			"src/bricks/y/impl/YImpl.java",
+			"bin/bricks/y/Y.class",
+			"bin/bricks/y/impl/YImpl.class"
+		);
+		
+	}
+
+
+	private File binFolder() {
+		return my(ClassUtils.class).classpathRootFor(BrickInstaller.class);
+	}
+
+
+	private void assertStagedFilesExist(String... fileNames) {
+		for (String fileName : fileNames) assertStagedFileExists(fileName);
+	}
+
+
+	private void assertStagedFileExists(String fileName) {
+		assertExists(new File(installerFolder(), fileName));
+	}
+
+
+	private File installerFolder() {
+		return my(FolderConfig.class).tmpFolderFor(BrickInstaller.class);
+	}
+
+
+	private String interfaceDefinition() {
+		return "package bricks.y;\n" +
+		"@" + Brick.class.getName() + " " +
+		"@" + Snapp.class.getName() + " " +
+		"public interface Y {}";
+	}
+
+	private String implDefinition() {
+		return "package bricks.y.impl;\n" +
+		"class YImpl implements bricks.y.Y {}";
 	}
 
 

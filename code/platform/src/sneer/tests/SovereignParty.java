@@ -3,6 +3,8 @@ package sneer.tests;
 import java.io.File;
 import java.io.IOException;
 
+import sneer.bricks.softwaresharing.installer.BrickCompilationException;
+
 public interface SovereignParty {
 
 	//Freedom1
@@ -22,6 +24,6 @@ public interface SovereignParty {
 
 	//Freedom7
 	void waitForAvailableBrick(String brickName);
-	void stageBricksForExecution(String... brickNames);
+	void stageBricksForExecution(String... brickNames) throws IOException, BrickCompilationException;
 	void copyToSourceFolder(File folderWithBricks) throws IOException;
 }

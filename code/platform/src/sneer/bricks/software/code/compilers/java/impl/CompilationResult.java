@@ -3,13 +3,11 @@ package sneer.bricks.software.code.compilers.java.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.software.code.compilers.java.CompilationError;
-import sneer.bricks.software.code.compilers.java.CompilerException;
 import sneer.bricks.software.code.compilers.java.Result;
 import sneer.bricks.software.code.filefilters.java.JavaFilter;
 import sneer.bricks.software.code.filefilters.java.JavaFilters;
@@ -42,18 +40,13 @@ class CompilationResult implements Result {
 
 	@Override
 	public List<CompilationError> getErrors() {
-		if(_errorString != null && _errors == null) {
-			try {
-				_errors = parseErrorString(_errorString);
-			} catch (IOException e) {
-				throw new CompilerException("Can't parse error information", e);
-			}
-		}
+		if(_errorString != null && _errors == null)
+			_errors = parseErrorString(_errorString);
+
 		return _errors;
-		
 	}
 
-	private List<CompilationError> parseErrorString(String string) throws IOException {
+	private List<CompilationError> parseErrorString(String string) {
 		List<CompilationError> result = new ArrayList<CompilationError>();
 		List<String> lines = my(Lang.class).strings().readLines(string);
 		for (String line : lines) {

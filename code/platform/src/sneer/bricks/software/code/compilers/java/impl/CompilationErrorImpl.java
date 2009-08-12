@@ -1,7 +1,6 @@
 package sneer.bricks.software.code.compilers.java.impl;
 
 import static sneer.foundation.environments.Environments.my;
-
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.software.code.compilers.java.CompilationError;
 
@@ -13,29 +12,23 @@ class CompilationErrorImpl implements CompilationError {
 	
 	private String _message;
 	
-	public CompilationErrorImpl(String fileName, int lineNumber, String errorMessage) {
+	CompilationErrorImpl(String fileName, int lineNumber, String errorMessage) {
 		_fileName = fileName;
 		_lineNumber = lineNumber;
 		_message = my(Lang.class).strings().trimToNull(errorMessage);
 	}
 
-	/* (non-Javadoc)
-	 * @see sneer.bricks.compiler.impl.ICompilationError#getLineNumber()
-	 */
+	@Override
 	public int getLineNumber() {
 		return _lineNumber;
 	}
 
-	/* (non-Javadoc)
-	 * @see sneer.bricks.compiler.impl.ICompilationError#getMessage()
-	 */
+	@Override
 	public String getMessage() {
 		return _message;
 	}
 
-	/* (non-Javadoc)
-	 * @see sneer.bricks.compiler.impl.ICompilationError#getFileName()
-	 */
+	@Override
 	public String getFileName() {
 		return _fileName;
 	}

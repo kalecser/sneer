@@ -1,6 +1,5 @@
 package sneer.bricks.hardware.cpu.lang;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -30,7 +29,7 @@ public interface Lang {
 		String chomp(String str, String suffix);
 		String substringBeforeLast(String str, String separator);
 		String deleteWhitespace(String str);
-		List<String> readLines(String input) throws IOException;
+		List<String> readLines(String input);
 		byte[] toByteArray(String string);
 		String[] splitRight(String line, char separator, int maxParts);
 	}

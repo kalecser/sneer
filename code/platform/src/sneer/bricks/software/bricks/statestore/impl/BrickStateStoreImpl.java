@@ -26,7 +26,7 @@ public class BrickStateStoreImpl implements BrickStateStore {
 
 	@Override
 	public Object readObjectFor(Class<?> brick, ClassLoader classloader) throws BrickStateStoreException {
-		File file = my(FolderConfig.class).getStorageFolderFor(brick);
+		File file = my(FolderConfig.class).storageFolderFor(brick);
 		if(!file.exists()) file.mkdirs();
 		
 		FileInputStream stream = null;
@@ -51,7 +51,7 @@ public class BrickStateStoreImpl implements BrickStateStore {
 
 	@Override
 	public void writeObjectFor(Class<?> brick, Object object) {
-		File file = my(FolderConfig.class).getStorageFolderFor(brick);
+		File file = my(FolderConfig.class).storageFolderFor(brick);
 		if(!file.exists()) file.mkdirs();
 		
 		FileOutputStream stream = null;

@@ -52,7 +52,7 @@ public class BricksImpl implements Bricks {
 		return null;
 	}
 
-	private Result compile(File sourceFolder, final File tempOutputDir) {
+	private Result compile(File sourceFolder, final File tempOutputDir) throws IOException {
 		final List<File> sourceFiles = sourceFilesIn(sourceFolder);
 		final Classpath classPath = my(ClasspathFactory.class).sneerApi();
 		return my(JavaCompiler.class).compile(sourceFiles, tempOutputDir, classPath);

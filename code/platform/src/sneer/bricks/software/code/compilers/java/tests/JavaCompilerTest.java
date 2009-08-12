@@ -69,7 +69,7 @@ public class JavaCompilerTest extends BrickTest {
 		return dir;
 	}
 
-	private Result compile(String code, File libDir) {
+	private Result compile(String code, File libDir) throws IOException {
 		File java = writeSourceFile(code);
 		Classpath classpath = classPathForLibs(libDir);
 		return _compiler.compile(Collections.singletonList(java), tmpFolder(), classpath);

@@ -46,7 +46,7 @@ public class SneerSession implements Runnable {
 	private static void configure(FolderConfig dirs) {
 		set(dirs.ownBinFolder(), OWN_BIN);
 		set(dirs.platformBinFolder(), PLATFORM_BIN);
-		set(dirs.dataFolder(), DATA);
+		set(dirs.storageFolder(), DATA);
 		
 		dirs.logFile().set(LOG_FILE);
 	}
