@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.util.Arrays;
 
 import org.jmock.Expectations;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.pulp.reactive.collections.SetRegister;
@@ -23,6 +24,7 @@ public class BrickInstallerTest extends BrickTest {
 	
 	final BrickInstaller _subject = my(BrickInstaller.class);
 	
+	@Ignore
 	@Test
 	public void test() {
 		
