@@ -15,6 +15,7 @@ class ThreadsImpl implements Threads {
 
 	private final Latch _crash = newLatch();
 	private final Pulser _crashingPulser = my(Pulsers.class).newInstance();
+	static private boolean _isCrashing = false;
 
 	@Override
 	public void waitWithoutInterruptions(Object object) {
@@ -48,6 +49,8 @@ class ThreadsImpl implements Threads {
 
 	@Override
 	public void startDaemon(final String threadName, final Runnable runnable) {
+		if (_isCrashing) return;
+		
 		final Environment environment = my(Environment.class);
 		final Latch hasStarted = newLatch();
 
@@ -91,6 +94,8 @@ class ThreadsImpl implements Threads {
 
 	@Override
 	public void crashAllThreads() {
+		_isCrashing = true;
+
 		_crashingPulser.sendPulse();
 		Daemon.killAllInstances();
 		_crash.open();
