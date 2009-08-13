@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.IO.FileFilters;
@@ -25,12 +26,12 @@ public class BrickFinderImpl implements BrickFinder {
 
 	@Override
 	public Collection<String> findBricks() {
-		Collection<String> unique = new HashSet<String>();
+		Set<String> result = new HashSet<String>();
 		
-		collectBricks(unique, my(FolderConfig.class).ownBinFolder().get());
-		collectBricks(unique, my(FolderConfig.class).platformBinFolder().get());
+		collectBricks(result, my(FolderConfig.class).ownBinFolder().get());
+		collectBricks(result, my(FolderConfig.class).platformBinFolder().get());
 
-		return sorted(unique);
+		return sorted(result);
 	}
 
 	private Collection<String> sorted(Collection<String> unique) {

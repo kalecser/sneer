@@ -47,7 +47,7 @@ class TieBreaker {
 			return bytes1[i] > bytes2[i];
 		}
 		
-		throw new IllegalStateException("Both seals are the same.");
+		throw new IllegalStateException("Both seals are the same: " + new String(bytes1));
 	}
 
 	

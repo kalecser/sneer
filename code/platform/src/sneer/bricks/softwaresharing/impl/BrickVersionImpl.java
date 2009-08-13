@@ -3,6 +3,8 @@ package sneer.bricks.softwaresharing.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheGuide;
@@ -71,32 +73,35 @@ class BrickVersionImpl implements BrickVersion {
 	private List<FileVersion> findFiles() {
 		Visitor visitor = new Visitor();
 		my(FileCacheGuide.class).guide(visitor, _hash);
-		return visitor._result;
+		return visitor._files;
 	}
 
 	
 	private static class Visitor implements FileCacheVisitor {
 
-		List<FileVersion> _result = new ArrayList<FileVersion>();
+		List<FileVersion> _files = new ArrayList<FileVersion>();
+		
+		private Deque<String> _path = new LinkedList<String>();
 
+		
 		@Override
-		public void enterFolder() {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		public void visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
+			_path.add(name);
 		}
+		
+		@Override
+		public void enterFolder() {}
 
 		@Override
 		public void leaveFolder() {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+			if (_path.isEmpty()) return;
+			_path.removeLast();
 		}
 
 		@Override
 		public void visitFileContents(byte[] fileContents) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
-		}
-
-		@Override
-		public void visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+			_files.add(new FileVersionImpl((List<String>)_path, fileContents));
+			_path.removeLast();
 		}
 
 	}

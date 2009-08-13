@@ -9,16 +9,14 @@ import org.junit.Test;
 import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.foundation.brickness.Brick;
 import sneer.tests.SovereignFunctionalTestBase;
-import sneer.tests.adapters.LoggerForTests;
 
 public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 	
 //	private final JavaCompiler _compiler = my(JavaCompiler.class);
 
-	@Ignore
 	@Test (timeout = 12000)
 	public void meToo() throws Exception {
-		LoggerForTests.isOn = true;
+		//LoggerForTests.isOn = true;
 		
 		a().copyToSourceFolder(generateY());
 		

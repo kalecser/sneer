@@ -19,7 +19,6 @@ class SnappStarterImpl implements SnappStarter {
 
 	@Override
 	public void startSnapps() {
-		
 		try {
 			tryToStartSnapps();
 		} catch (Exception e) {

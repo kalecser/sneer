@@ -48,17 +48,18 @@ public class SneerCommunity implements SovereignCommunity {
 		File sneerHome = rootFolder(name);
 		File dataFolder = makeFolder(sneerHome, "data");
 		File tmpFolder = makeFolder(sneerHome, "tmp");
-		File privateBinFolder = makeFolder(sneerHome, "platform/bin");
-		File privateSrcFolder = makeFolder(sneerHome, "platform/src");
-		File sharedBinFolder = my(ClassUtils.class).classpathRootFor(SneerCommunity.class);
+		File ownBin = makeFolder(sneerHome, "platform/own");
+		File privatePlatformBin = makeFolder(sneerHome, "platform/bin");
+		File privatePlatformSrc = makeFolder(sneerHome, "platform/src");
+		File sharedPlatfromBin = my(ClassUtils.class).classpathRootFor(SneerCommunity.class);
 		
 		Environment container = Brickness.newBrickContainer(_network, new LoggerForTests(name));
-		URLClassLoader apiClassLoader = apiClassLoader(privateBinFolder, sharedBinFolder, name);
+		URLClassLoader apiClassLoader = apiClassLoader(privatePlatformBin, sharedPlatfromBin, name);
 		
 		Object partyImpl = EnvironmentUtils.retrieveFrom(container, loadProbeClassUsing(apiClassLoader));
 		final SneerParty party = (SneerParty)ProxyInEnvironment.newInstance(container, partyImpl);
 		
-		party.configDirectories(dataFolder, tmpFolder, privateSrcFolder, privateBinFolder);
+		party.configDirectories(dataFolder, tmpFolder, ownBin, privatePlatformSrc, privatePlatformBin);
 		party.setOwnName(name);
 		party.setSneerPort(port);
 
@@ -110,10 +111,10 @@ public class SneerCommunity implements SovereignCommunity {
 				if (className.equals(Logger.class.getName())) return true;
 				if (className.equals(SneerPartyProbe.class.getName())) return false;
 				if (isPublishedByUser(className)) return false;
-				return !isBrick(className); //Foundation classes such as Environments and functional tests classes such as SovereignParty must be shared by all SneerParties.
+				return !isSneerBrick(className); //Foundation classes such as Environments and functional tests classes such as SovereignParty must be shared by all SneerParties.
 			}
 
-			private boolean isBrick(String className) {
+			private boolean isSneerBrick(String className) {
 				return className.startsWith("sneer.bricks");
 			}
 

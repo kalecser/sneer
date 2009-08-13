@@ -2,9 +2,9 @@ package sneer.installer;
 
 import java.io.File;
 
-import sneer.main.SneerDirectories;
+import sneer.main.SneerFolders;
 
-public class Folders extends SneerDirectories {
+public class Folders extends SneerFolders {
 
 	static File SNEER_HOME() { return SNEER_HOME; }
 	static File DATA() { return DATA; }

@@ -34,17 +34,17 @@ class BrickFetcher implements FileCacheVisitor {
 	
 	@Override
 	public void visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
-		_namePath.push(name);
-		_hashPath.push(hashOfContents);
+		_namePath.add(name);
+		_hashPath.add(hashOfContents);
 	}
 
 	
 	@Override
 	public void visitFileContents(byte[] fileContents) {
-		String fileName = _namePath.peek();
+		String fileName = _namePath.peekLast();
 
-		_namePath.pop();
-		_hashPath.pop();
+		_namePath.removeLast();
+		_hashPath.removeLast();
 
 		if (!fileName.endsWith(".java")) return;
 
@@ -55,7 +55,7 @@ class BrickFetcher implements FileCacheVisitor {
 
 	private BrickInfo brickFound(String fileName) {
 		String packageName = _strings.join(_namePath, ".");
-		String brickName = _strings.chomp(packageName + fileName, ".java");
+		String brickName = _strings.chomp(packageName + "." + fileName, ".java");
 		return new BrickInfoImpl(brickName, _hashPath.peek());
 	}
 	
@@ -73,8 +73,8 @@ class BrickFetcher implements FileCacheVisitor {
 	@Override public void leaveFolder() {
 		if (_namePath.isEmpty()) return;
 		
-		_namePath.pop();
-		_hashPath.pop();
+		_namePath.removeLast();
+		_hashPath.removeLast();
 	}
 	
 	private String asString(byte[] fileContents) {

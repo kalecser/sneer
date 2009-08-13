@@ -2,7 +2,7 @@ package sneer.main;
 
 import java.io.File;
 
-public class SneerDirectories {
+public class SneerFolders {
 
 	protected static final File SNEER_HOME 	= sneerHome();
 	protected static final File DATA 			= new File(SNEER_HOME, dummyPrefix() + "data");

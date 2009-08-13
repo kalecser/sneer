@@ -107,6 +107,10 @@ class IOImpl implements IO {
 				exception.consume(e);
 			}
 		}
+		@Override
+		public void copyFile(File from, File to) throws IOException {
+			FileUtils.copyFile(from, to);
+		}
 	};
 	
 	private Streams _streams = new Streams(){

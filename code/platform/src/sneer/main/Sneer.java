@@ -23,8 +23,8 @@ public class Sneer {
 
 	private URL[] classpath() {
 		return new URL[] {
-			toURL(SneerDirectories.OWN_BIN),
-			toURL(SneerDirectories.PLATFORM_BIN)
+			toURL(SneerFolders.OWN_BIN),
+			toURL(SneerFolders.PLATFORM_BIN)
 		};
 	}
 

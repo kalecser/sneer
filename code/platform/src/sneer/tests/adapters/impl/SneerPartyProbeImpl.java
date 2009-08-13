@@ -33,12 +33,16 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.snapps.wind.Shout;
 import sneer.bricks.snapps.wind.Wind;
+import sneer.bricks.software.bricks.snappstarter.Snapp;
+import sneer.bricks.software.bricks.snappstarter.SnappStarter;
+import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.code.compilers.java.JavaCompilerException;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
+import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.Predicate;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
@@ -176,15 +180,18 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 	}
 
 	@Override
-	public void configDirectories(File dataFolder, File tmpFolder, File platformSrcFolder, File platformBinFolder) {
+	public void configDirectories(File dataFolder, File tmpFolder, File ownBin, File platformSrcFolder, File platformBinFolder) {
 		my(FolderConfig.class).storageFolder().set(dataFolder);
 		my(FolderConfig.class).tmpFolder().set(tmpFolder);
+		my(FolderConfig.class).ownBinFolder().set(ownBin);
 		my(FolderConfig.class).platformSrcFolder().set(platformSrcFolder);
 		my(FolderConfig.class).platformBinFolder().set(platformBinFolder);
 	}
 
 
 	private void startSnapps() {
+		my(SnappStarter.class).startSnapps(); //Will find only the Snapps installed (Freedom7) in the local test ownBin and platformBin folders, not the ones in the classpath. 
+		
 		startAndKeep(SocketOriginator.class);
 		startAndKeep(SocketReceiver.class);
 		startAndKeep(ProbeManager.class);
@@ -226,8 +233,24 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 	
 	@Override
 	public void stageBricksForExecution(String... brickNames) throws IOException, JavaCompilerException {
+		copyNecessaryClassFilesToTestPlatformBin();
 		for (String brickName : brickNames) stageBrickForExecution(brickName);
 		my(BrickInstaller.class).prepareStagedBricksInstallation();
+	}
+
+	private void copyNecessaryClassFilesToTestPlatformBin() throws IOException {
+		copyNecessaryClassToTestPlatformBin(Brick.class);
+		copyNecessaryClassToTestPlatformBin(Snapp.class);
+	}
+
+	private void copyNecessaryClassToTestPlatformBin(Class<?> clazz) throws IOException {
+		File from = my(ClassUtils.class).toFile(clazz);
+		File to = new File(platformBin(), clazz.getName().replace(".", "/") + ".class");
+		my(IO.class).files().copyFile(from, to);
+	}
+
+	private File platformBin() {
+		return my(FolderConfig.class).platformBinFolder().get();
 	}
 
 	private void stageBrickForExecution(String brickName) {
@@ -263,7 +286,11 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 	}
 
 	private void commitStagedBricksInstallation() {
-//		my(BrickInstaller.class).commitStagedBricksInstallation();
+		try {
+			my(BrickInstaller.class).commitStagedBricksInstallation();
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 	
 

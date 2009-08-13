@@ -10,6 +10,6 @@ public interface BrickInstaller {
 
 	void prepareStagedBricksInstallation() throws IOException, JavaCompilerException;
 
-	void commitStagedBricksInstallation();
+	void commitStagedBricksInstallation() throws IOException;
 
 }

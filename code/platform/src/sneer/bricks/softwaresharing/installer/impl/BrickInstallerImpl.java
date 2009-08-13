@@ -5,8 +5,10 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 
+import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.compilers.java.JavaCompilerException;
 import sneer.bricks.software.folderconfig.FolderConfig;
@@ -22,26 +24,50 @@ public class BrickInstallerImpl implements BrickInstaller {
 	private final File _binStage  = new File(my(FolderConfig.class).tmpFolderFor(BrickInstaller.class), "bin");
 
 	@Override
-	public void commitStagedBricksInstallation() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	public void commitStagedBricksInstallation() throws IOException {
+		if (!_srcStage.exists()) return;
+
+		File backupFolder = createBackupFolder();
+		backup(platformSrc(), backupFolder, "src");
+		backup(platformBin(), backupFolder, "bin");
+		
+		my(Logger.class).log("Implement: Delete old contents of bricks before copying the new ones over: any directory with a file inside is a brick, plus its /impl and /tests folders."); //Implement
+		my(IO.class).files().copyFolder(_srcStage, platformSrc());
+		my(IO.class).files().copyFolder(_binStage, platformBin());
+
+		clean(_srcStage);
+		clean(_binStage);
+	}
+
+	private void backup(File folder, File backupFolder, String backupName) throws IOException {
+		File destFolder = new File(backupFolder, backupName);
+		my(IO.class).files().copyFolder(folder, destFolder);
+	}
+
+	private File createBackupFolder() {
+		File tmpFolder = my(FolderConfig.class).tmpFolderFor(BrickInstaller.class);
+		return new File(tmpFolder, "backup/" + my(Clock.class).time());
 	}
 
 	@Override
 	public void prepareStagedBricksInstallation() throws IOException, JavaCompilerException {
-		clean(_srcStage);
-		clean(_binStage);
+		prepareFolder(_srcStage);
+		prepareFolder(_binStage);
 
 		prepareStagedSrc();
 		prepareStagedBin();
 	}
 
 	private void prepareStagedBin() throws JavaCompilerException, IOException {
-		my(JavaCompiler.class).compile(_srcStage, _binStage, sneerApi());
+		my(JavaCompiler.class).compile(_srcStage, _binStage, platformBin());
 	}
 
 	
-	private File sneerApi() {
+	private File platformBin() {
 		return my(FolderConfig.class).platformBinFolder().get();
+	}
+	private File platformSrc() {
+		return my(FolderConfig.class).platformSrcFolder().get();
 	}
 
 	
@@ -80,10 +106,14 @@ public class BrickInstallerImpl implements BrickInstaller {
 		my(IO.class).files().writeByteArrayToFile(file, bytes);
 	}
 
-	private void clean(File folder) throws IOException {
-		my(IO.class).files().forceDelete(folder);
+	private void prepareFolder(File folder) throws IOException {
+		clean(folder);
 		if (!folder.mkdirs())
 			throw new IOException("Unable to create folder: " + folder);
+	}
+
+	private void clean(File folder) throws IOException {
+		my(IO.class).files().forceDelete(folder);
 	}
 
 	

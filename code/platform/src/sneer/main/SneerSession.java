@@ -1,12 +1,12 @@
 package sneer.main;
 
 import static sneer.foundation.environments.Environments.my;
-import static sneer.main.SneerDirectories.DATA;
-import static sneer.main.SneerDirectories.LOG_FILE;
-import static sneer.main.SneerDirectories.OWN_BIN;
-import static sneer.main.SneerDirectories.PLATFORM_BIN;
-import static sneer.main.SneerDirectories.PLATFORM_SRC;
-import static sneer.main.SneerDirectories.TMP;
+import static sneer.main.SneerFolders.DATA;
+import static sneer.main.SneerFolders.LOG_FILE;
+import static sneer.main.SneerFolders.OWN_BIN;
+import static sneer.main.SneerFolders.PLATFORM_BIN;
+import static sneer.main.SneerFolders.PLATFORM_SRC;
+import static sneer.main.SneerFolders.TMP;
 
 import java.io.File;
 
