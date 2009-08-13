@@ -6,39 +6,54 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.software.code.compilers.classpath.Classpath;
-import sneer.bricks.software.code.compilers.classpath.ClasspathFactory;
+import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.compilers.java.Result;
+import sneer.foundation.lang.Functor;
 
 import com.sun.tools.javac.Main;
 
 class JavaCompilerImpl implements JavaCompiler {
 
-	private final ClasspathFactory _classpathFactory = my(ClasspathFactory.class);
-
 	@Override
-	public Result compile(List<File> sourceFiles, File destination) throws IOException {
-		return compile(sourceFiles, destination, _classpathFactory.newClasspath());
+	public void compile(File srcFolder, File destinationFolder,	File... classpath) throws IOException {
+		List<File> srcFiles = new ArrayList<File>(my(IO.class).files().listFiles(srcFolder, new String[]{"java"}, true));
+
+		compile(srcFiles, destinationFolder, classpath);
+		
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
+
+	
+	@SuppressWarnings("deprecation")
 	@Override
-	public Result compile(List<File> sourceFiles, File destination, Classpath classpath) throws IOException {
+	public Result compile(List<File> sourceFiles, File destination) throws IOException {
+		return compile(sourceFiles, destination, new File[0]);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public Result compile(List<File> sourceFiles, File destination, File... classpath) throws IOException {
 		
 		File tmpFile = createArgsFileForJavac(sourceFiles);
-//		my(Logger.class).log("Compiling {} files to {}", sourceFiles.size(), destination);
+		my(Logger.class).log("Compiling {} files to {}", sourceFiles.size(), destination);
 
 		String[] parameters = {
-				"-classpath", classpath.asJavacArgument(),
+				"-classpath", asJavacArgument(classpath),
 				"-d", destination.getAbsolutePath(),
 				"-encoding","UTF-8",
 				"@"+tmpFile.getAbsolutePath()
 		};
-//		my(Logger.class).log("compiler cli: {}",StringUtils.join(parameters, " "));
+		my(Logger.class).log("Compiler command line: ", my(Lang.class).strings().join(Arrays.asList(parameters), " "));
 
 		StringWriter writer = new StringWriter();
 		int code = Main.compile(parameters, new PrintWriter(writer));
@@ -50,6 +65,19 @@ class JavaCompilerImpl implements JavaCompiler {
 		}
 		return result;
 	}
+
+	
+	private String asJavacArgument(File[] classpath) {
+		Collection<String> result = my(CollectionUtils.class).map(Arrays.asList(classpath), new Functor<File, String>() { @Override public String evaluate(File entry) {
+			return entry.isDirectory()
+				? entry.getAbsolutePath() + "/"    //Refactor: Is adding this slash really necessary?
+				: entry.getAbsolutePath();
+		}});
+	
+		return my(Lang.class).strings().join(result, File.pathSeparator);
+	}
+
+
 
 	private File createArgsFileForJavac(List<File> files) throws IOException {
 		File args = File.createTempFile("javac-", ".args");

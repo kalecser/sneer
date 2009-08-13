@@ -2,23 +2,22 @@ package sneer.bricks.hardware.ram.collections.impl;
 
 import java.util.Collection;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 
-import sneer.bricks.hardware.ram.collections.Collections;
+import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.Predicate;
 
-public class CollectionsImpl implements Collections{
+class CollectionUtilsImpl implements CollectionUtils{
 
 	@Override
 	public <I, O> Collection<O> map(Collection<I> inputCollection, Functor<? super I, ? extends O> functor) {
-		return CollectionUtils.collect(inputCollection, adapt(functor));
+		return org.apache.commons.collections.CollectionUtils.collect(inputCollection, adapt(functor));
 	}
 
 	@Override
 	public <T> Collection<T> filter(Collection<T> inputCollection, Predicate<T> predicate) {
-		return CollectionUtils.select(inputCollection, adapt(predicate));
+		return org.apache.commons.collections.CollectionUtils.select(inputCollection, adapt(predicate));
 	}
 
 	private <I, O> Transformer adapt( final Functor<? super I, ? extends O> delegate) {

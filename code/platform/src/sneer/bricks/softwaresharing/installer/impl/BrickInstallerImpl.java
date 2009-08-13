@@ -4,27 +4,22 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.software.code.compilers.classpath.Classpath;
-import sneer.bricks.software.code.compilers.classpath.ClasspathFactory;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
-import sneer.bricks.software.code.compilers.java.Result;
+import sneer.bricks.software.code.compilers.java.JavaCompilerException;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
-import sneer.bricks.softwaresharing.installer.BrickCompilationException;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
 
 public class BrickInstallerImpl implements BrickInstaller {
 
-	private final File _srcFolder  = new File(my(FolderConfig.class).tmpFolderFor(BrickInstaller.class), "src");
-	private final File _binFolder  = new File(my(FolderConfig.class).tmpFolderFor(BrickInstaller.class), "bin");
+	private final File _srcStage  = new File(my(FolderConfig.class).tmpFolderFor(BrickInstaller.class), "src");
+	private final File _binStage  = new File(my(FolderConfig.class).tmpFolderFor(BrickInstaller.class), "bin");
 
 	@Override
 	public void commitStagedBricksInstallation() {
@@ -32,17 +27,19 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 
 	@Override
-	public void prepareStagedBricksInstallation() throws IOException, BrickCompilationException {
+	public void prepareStagedBricksInstallation() throws IOException, JavaCompilerException {
 		prepareStagedSrc();
 		prepareStagedBin();
 	}
 
 	
-	private void prepareStagedBin() throws BrickCompilationException, IOException {
-		Classpath classpath = my(ClasspathFactory.class).sneerApi();
-		List<File> srcFiles = new ArrayList<File>(my(IO.class).files().listFiles(_srcFolder, new String[]{"java"}, true));
-		Result result = my(JavaCompiler.class).compile(srcFiles, _binFolder, classpath);
-		if (!result.success()) throw new BrickCompilationException(result.getErrorString());
+	private void prepareStagedBin() throws JavaCompilerException, IOException {
+		my(JavaCompiler.class).compile(_srcStage, _binStage, sneerApi());
+	}
+
+	
+	private File sneerApi() {
+		return my(FolderConfig.class).platformBinFolder().get();
 	}
 
 	
@@ -56,7 +53,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 
 	private File brickSrcFolder(BrickInfo brickInfo) {
-		return new File(_srcFolder, packageFolder(brickInfo));
+		return new File(_srcStage, packageFolder(brickInfo));
 	}
 
 	private String packageFolder(BrickInfo brickInfo) {

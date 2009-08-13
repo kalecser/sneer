@@ -4,14 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import sneer.bricks.software.code.compilers.classpath.Classpath;
 import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface JavaCompiler {
 	
-	Result compile(List<File> sourceFiles, File destination) throws IOException;
-	
-	Result compile(List<File> sourceFiles, File destination, Classpath classpath) throws IOException;
-	
+	void compile(File srcFolder, File destinationFolder, File... classpath) throws JavaCompilerException, IOException;
+
+	//These deprecated methods are used only by tests.
+	@Deprecated	Result compile(List<File> sourceFiles, File destination) throws IOException;
+	@Deprecated	Result compile(List<File> sourceFiles, File destination, File...  classpath) throws IOException;
+
 }

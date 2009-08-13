@@ -33,11 +33,11 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.snapps.wind.Shout;
 import sneer.bricks.snapps.wind.Wind;
+import sneer.bricks.software.code.compilers.java.JavaCompilerException;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
-import sneer.bricks.softwaresharing.installer.BrickCompilationException;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.Predicate;
@@ -224,7 +224,7 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 	}
 	
 	@Override
-	public void stageBricksForExecution(String... brickNames) throws IOException, BrickCompilationException {
+	public void stageBricksForExecution(String... brickNames) throws IOException, JavaCompilerException {
 		for (String brickName : brickNames) stageBrickForExecution(brickName);
 		my(BrickInstaller.class).prepareStagedBricksInstallation();
 	}

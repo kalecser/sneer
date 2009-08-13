@@ -15,7 +15,7 @@ import javassist.CtNewConstructor;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
 import sneer.bricks.hardware.cpu.lang.Lang;
-import sneer.bricks.hardware.ram.collections.Collections;
+import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.pulp.natures.gui.GUINatureRuntime;
 import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.lang.Functor;
@@ -124,13 +124,13 @@ public class GUIMethodEnhancer {
 
 	private String targetInvocationList(ArrayList<Pair<String, String>> thunkFields) {
 		return my(Lang.class).strings().join(
-			my(Collections.class).map(
+			my(CollectionUtils.class).map(
 					thunkFields.subList(1, thunkFields.size()),	Pair.<String, String>second()),	", ");
 	}	
 	
 	private String thunkFieldAssignments(ArrayList<Pair<String, String>> thunkFields) {
 		return my(Lang.class).strings().join(
-			my(Collections.class).map(
+			my(CollectionUtils.class).map(
 			thunkFields, new Functor<Pair<String, String>, String>() { @Override public String evaluate(Pair<String, String> input) {
 				return "this." + input.b + " = " + input.b + ";";
 			}}), "\n");
@@ -138,7 +138,7 @@ public class GUIMethodEnhancer {
 
 	private String thunkParameterList(ArrayList<Pair<String, String>> thunkFields) {
 		return my(Lang.class).strings().join(
-			my(Collections.class).map(
+			my(CollectionUtils.class).map(
 			thunkFields, new Functor<Pair<String, String>, String>() { @Override public String evaluate(Pair<String, String> input) {
 					return input.a + " " + input.b;
 			}}), ", ");

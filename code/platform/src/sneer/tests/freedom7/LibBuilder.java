@@ -26,6 +26,7 @@ public class LibBuilder {
 		_tmpFolder = tmpFolder;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void build(File targetJar) throws IOException {
 		_tmpFolder.mkdirs();
 		

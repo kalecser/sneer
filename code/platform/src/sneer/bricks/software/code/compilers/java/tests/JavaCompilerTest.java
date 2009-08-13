@@ -10,8 +10,6 @@ import java.util.Collections;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.software.code.compilers.classpath.Classpath;
-import sneer.bricks.software.code.compilers.classpath.ClasspathFactory;
 import sneer.bricks.software.code.compilers.java.CompilationError;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.compilers.java.Result;
@@ -22,8 +20,6 @@ public class JavaCompilerTest extends BrickTest {
 	private static final String TEST_FILE_PREFIX = "sneer-test-";
 
 	private JavaCompiler _compiler = my(JavaCompiler.class);
-	
-	private final ClasspathFactory _factory = my(ClasspathFactory.class);
 	
 	@Test
 	public void testCompile() throws Exception {
@@ -69,9 +65,10 @@ public class JavaCompilerTest extends BrickTest {
 		return dir;
 	}
 
+	@SuppressWarnings("deprecation")
 	private Result compile(String code, File libDir) throws IOException {
 		File java = writeSourceFile(code);
-		Classpath classpath = classPathForLibs(libDir);
+		File[] classpath = classPathForLibs(libDir);
 		return _compiler.compile(Collections.singletonList(java), tmpFolder(), classpath);
 	}
 
@@ -90,11 +87,10 @@ public class JavaCompilerTest extends BrickTest {
 		return File.createTempFile(TEST_FILE_PREFIX, ".java", tmpFolder());
 	}
 
-	private Classpath classPathForLibs(File libDir) {
-		if (libDir == null)
-			return _factory.newClasspath();
-		
-		return _factory.fromJarFiles(listJarFiles(libDir));
+	private File[] classPathForLibs(File libDir) {
+		return libDir == null
+			? new File[0]
+			: listJarFiles(libDir);
 	}
 
 	private File[] listJarFiles(File libDir) {
