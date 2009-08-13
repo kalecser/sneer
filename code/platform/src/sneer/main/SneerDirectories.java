@@ -14,6 +14,7 @@ public class SneerDirectories {
 	protected static final File PLATFORM_SRC 	= new File(SNEER_HOME, "code/platform/src");
 	protected static final File PLATFORM_BIN 	= new File(SNEER_HOME, "code/platform/bin");
 
+	
 	private static File sneerHome() {
 		String override = System.getProperty("sneer.home");
 		if (override != null) return new File(override);
@@ -21,6 +22,7 @@ public class SneerDirectories {
 		return new File(System.getProperty("user.home"), "sneer");
 	}
 
+	
 	private static String dummyPrefix() {
 		return "true".equals(System.getProperty("sneer.dummy"))
 			? "dummy"
