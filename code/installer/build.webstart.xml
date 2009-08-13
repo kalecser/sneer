@@ -95,7 +95,7 @@
 			<fileset dir="${bin.dir}">
 				<include name='sneer/installer/*.*' />
 				<include name='sneer/main/Sneer.*' />
-				<include name='sneer/main/SneerDirectories.*' />
+				<include name='sneer/main/SneerFolders.*' />
 			</fileset>
 			<fileset dir="src">
 				<include name='**/*.*' />
