@@ -46,10 +46,11 @@ public class SneerCommunity implements SovereignCommunity {
 
 	private SovereignParty createParty(final String name, int port) {
 		File sneerHome = rootFolder(name);
+		File dataFolder = makeFolder(sneerHome, "data");
+		File tmpFolder = makeFolder(sneerHome, "tmp");
 		File privateBinFolder = makeFolder(sneerHome, "platform/bin");
 		File privateSrcFolder = makeFolder(sneerHome, "platform/src");
 		File sharedBinFolder = my(ClassUtils.class).classpathRootFor(SneerCommunity.class);
-		File dataFolder = makeFolder(sneerHome, "data");
 		
 		Environment container = Brickness.newBrickContainer(_network, new LoggerForTests(name));
 		URLClassLoader apiClassLoader = apiClassLoader(privateBinFolder, sharedBinFolder, name);
@@ -57,7 +58,7 @@ public class SneerCommunity implements SovereignCommunity {
 		Object partyImpl = EnvironmentUtils.retrieveFrom(container, loadProbeClassUsing(apiClassLoader));
 		final SneerParty party = (SneerParty)ProxyInEnvironment.newInstance(container, partyImpl);
 		
-		party.configDirectories(dataFolder, privateSrcFolder, privateBinFolder);
+		party.configDirectories(dataFolder, tmpFolder, privateSrcFolder, privateBinFolder);
 		party.setOwnName(name);
 		party.setSneerPort(port);
 

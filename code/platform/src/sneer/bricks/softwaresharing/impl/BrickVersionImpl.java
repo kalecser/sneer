@@ -1,17 +1,23 @@
 package sneer.bricks.softwaresharing.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
+import java.util.ArrayList;
 import java.util.List;
 
+import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheGuide;
+import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheVisitor;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 class BrickVersionImpl implements BrickVersion {
 
 
 	private final Sneer1024 _hash;
 	private boolean _stagedForExecution;
+	private List<FileVersion> _files;
+
 	
 	BrickVersionImpl(Sneer1024 hash) {
 		_hash = hash;
@@ -19,7 +25,8 @@ class BrickVersionImpl implements BrickVersion {
 
 	@Override
 	public List<FileVersion> files() {
-		throw new NotImplementedYet();
+		if (_files == null) _files = findFiles();
+		return _files;
 	}
 
 	@Override
@@ -57,8 +64,42 @@ class BrickVersionImpl implements BrickVersion {
 		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
-	public void setStagedForExecution(boolean value) {
+	void setStagedForExecution(boolean value) {
 		_stagedForExecution = value;
 	}
+
+	private List<FileVersion> findFiles() {
+		Visitor visitor = new Visitor();
+		my(FileCacheGuide.class).guide(visitor, _hash);
+		return visitor._result;
+	}
+
+	
+	private static class Visitor implements FileCacheVisitor {
+
+		List<FileVersion> _result = new ArrayList<FileVersion>();
+
+		@Override
+		public void enterFolder() {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		}
+
+		@Override
+		public void leaveFolder() {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		}
+
+		@Override
+		public void visitFileContents(byte[] fileContents) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		}
+
+		@Override
+		public void visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		}
+
+	}
+
 
 }

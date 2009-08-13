@@ -176,8 +176,9 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 	}
 
 	@Override
-	public void configDirectories(File dataFolder, File platformSrcFolder, File platformBinFolder) {
+	public void configDirectories(File dataFolder, File tmpFolder, File platformSrcFolder, File platformBinFolder) {
 		my(FolderConfig.class).storageFolder().set(dataFolder);
+		my(FolderConfig.class).tmpFolder().set(tmpFolder);
 		my(FolderConfig.class).platformSrcFolder().set(platformSrcFolder);
 		my(FolderConfig.class).platformBinFolder().set(platformBinFolder);
 	}

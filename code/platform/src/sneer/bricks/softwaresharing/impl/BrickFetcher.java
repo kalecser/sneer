@@ -25,11 +25,8 @@ class BrickFetcher implements FileCacheVisitor {
 	private final Deque<String> _namePath = new LinkedList<String>();
 	private final Deque<Sneer1024> _hashPath = new LinkedList<Sneer1024>();
 	
+
 	BrickFetcher(Sneer1024 hashOfAllBricks) {
-		
-		_namePath.add(null); // placeholder for the root
-		_hashPath.add(null);
-		
 		my(FileClient.class).fetchToCache(hashOfAllBricks);
 		my(FileCacheGuide.class).guide(this, hashOfAllBricks);
 	}
@@ -37,25 +34,31 @@ class BrickFetcher implements FileCacheVisitor {
 	
 	@Override
 	public void visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
-		_namePath.add(name);
-		_hashPath.add(hashOfContents);
+		_namePath.push(name);
+		_hashPath.push(hashOfContents);
 	}
 
 	
 	@Override
 	public void visitFileContents(byte[] fileContents) {
-		String fileName = _namePath.peekLast();
-		
+		String fileName = _namePath.peek();
+
 		_namePath.pop();
 		_hashPath.pop();
-		
+
 		if (!fileName.endsWith(".java")) return;
 
 		if (!isBrickDefinition(fileContents)) return;
 		
-		_bricks.add(brickFound());
+		_bricks.add(brickFound(fileName));
 	}
 
+	private BrickInfo brickFound(String fileName) {
+		String packageName = _strings.join(_namePath, ".");
+		String brickName = _strings.chomp(packageName + fileName, ".java");
+		return new BrickInfoImpl(brickName, _hashPath.peek());
+	}
+	
 
 	private boolean isBrickDefinition(byte[] fileContents) {
 		String contents = asString(fileContents);
@@ -68,14 +71,10 @@ class BrickFetcher implements FileCacheVisitor {
 	
 	
 	@Override public void leaveFolder() {
+		if (_namePath.isEmpty()) return;
+		
 		_namePath.pop();
 		_hashPath.pop();
-	}
-	
-	private BrickInfo brickFound() {
-		String fileName = _strings.join(_namePath, ".");
-		String brickName = _strings.chomp(fileName, ".java");
-		return new BrickInfoImpl(brickName, _hashPath.peekLast());
 	}
 	
 	private String asString(byte[] fileContents) {
