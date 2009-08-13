@@ -5,6 +5,8 @@ import static sneer.main.SneerDirectories.DATA;
 import static sneer.main.SneerDirectories.LOG_FILE;
 import static sneer.main.SneerDirectories.OWN_BIN;
 import static sneer.main.SneerDirectories.PLATFORM_BIN;
+import static sneer.main.SneerDirectories.PLATFORM_SRC;
+import static sneer.main.SneerDirectories.TMP;
 
 import java.io.File;
 
@@ -24,6 +26,7 @@ public class SneerSession implements Runnable {
 		Environments.runWith(container(), this);
 	}
 
+	
 	public void run() {
 		configure(my(FolderConfig.class));
 
@@ -33,24 +36,30 @@ public class SneerSession implements Runnable {
 		my(Threads.class).waitUntilCrash();
 	}
 
+	
 	private void startLogging() {
 		my(RobustExceptionLogging.class).turnOn();
 		my(LogToSysout.class);
 	}
 
+	
 	private static Environment container() {
 		return Brickness.newBrickContainer();
 	}
 	
 	
 	private static void configure(FolderConfig dirs) {
-		set(dirs.ownBinFolder(), OWN_BIN);
-		set(dirs.platformBinFolder(), PLATFORM_BIN);
-		set(dirs.storageFolder(), DATA);
-		
 		dirs.logFile().set(LOG_FILE);
+
+		set(dirs.storageFolder(), DATA);
+		set(dirs.tmpFolder(), TMP);
+		set(dirs.ownBinFolder(), OWN_BIN);
+		set(dirs.platformSrcFolder(), PLATFORM_SRC);
+		set(dirs.platformBinFolder(), PLATFORM_BIN);
+		
 	}
 
+	
 	private static void set(Immutable<File> property, File folder) {
 		if (!folder.exists() && !folder.mkdirs()) throw new IllegalStateException("Unable to create folder " + property);
 		property.set(folder);
