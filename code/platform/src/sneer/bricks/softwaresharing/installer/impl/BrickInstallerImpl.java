@@ -28,11 +28,13 @@ public class BrickInstallerImpl implements BrickInstaller {
 
 	@Override
 	public void prepareStagedBricksInstallation() throws IOException, JavaCompilerException {
+		clean(_srcStage);
+		clean(_binStage);
+
 		prepareStagedSrc();
 		prepareStagedBin();
 	}
 
-	
 	private void prepareStagedBin() throws JavaCompilerException, IOException {
 		my(JavaCompiler.class).compile(_srcStage, _binStage, sneerApi());
 	}
@@ -77,5 +79,13 @@ public class BrickInstallerImpl implements BrickInstaller {
 	private void write(File file, byte[] bytes) throws IOException {
 		my(IO.class).files().writeByteArrayToFile(file, bytes);
 	}
+
+	private void clean(File folder) throws IOException {
+		my(IO.class).files().forceDelete(folder);
+		if (!folder.mkdirs())
+			throw new IOException("Unable to create folder: " + folder);
+	}
+
+	
 
 }

@@ -16,6 +16,7 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
+import sneer.bricks.software.code.compilers.java.JavaCompilerException;
 import sneer.bricks.software.code.compilers.java.Result;
 import sneer.foundation.lang.Functor;
 
@@ -24,12 +25,13 @@ import com.sun.tools.javac.Main;
 class JavaCompilerImpl implements JavaCompiler {
 
 	@Override
-	public void compile(File srcFolder, File destinationFolder,	File... classpath) throws IOException {
+	public void compile(File srcFolder, File destinationFolder,	File... classpath) throws JavaCompilerException, IOException {
 		List<File> srcFiles = new ArrayList<File>(my(IO.class).files().listFiles(srcFolder, new String[]{"java"}, true));
 
-		compile(srcFiles, destinationFolder, classpath);
+		Result result = compile(srcFiles, destinationFolder, classpath);
 		
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		if (!result.success())
+			throw new JavaCompilerException(result.getErrorString());
 	}
 
 
