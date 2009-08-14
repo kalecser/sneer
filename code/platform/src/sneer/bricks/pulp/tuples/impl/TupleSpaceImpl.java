@@ -131,13 +131,17 @@ class TupleSpaceImpl implements TupleSpace {
 	private final ListRegister<Tuple> _keptTuples;
 
 	private final Object _publicationMonitor = new Object();
+
+	final Prevayler _prevayler = prevayler(my(CollectionSignals.class).newListRegister());
+	volatile boolean _isPrevaylerClosed = false;
+
 	
 	@SuppressWarnings("unused")
 	private final WeakContract _crashingContract = my(Threads.class).crashing().addPulseReceiver(new Runnable() { @Override public void run() {
+		_isPrevaylerClosed = true;
 		closePrevayler();
 	}});
 	
-	final Prevayler _prevayler = prevayler(my(CollectionSignals.class).newListRegister());
 	
 	TupleSpaceImpl() {
 		_keptTuples = Bubble.wrapStateMachine(_prevayler);
@@ -247,6 +251,7 @@ class TupleSpaceImpl implements TupleSpace {
 
 
 	private void keep(Tuple tuple) {
+		if (_isPrevaylerClosed) return;
 		_keptTuples.adder().consume(tuple);
 	}
 
