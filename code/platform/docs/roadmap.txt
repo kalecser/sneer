@@ -13,9 +13,12 @@
 		- [Klaus and Bamboo] Business
 			- Brick States: CURRENT and DIFFERENT to start with.
 			- File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.
-			- Make staging atomic using directory rename only after compilation is successful.
-			- Test that backup of platform src and bin is being done before install.
+			- Brick with Libs
+				- Compile brick interfaces only first. Then, compile each impl individually adding it libs to the class path.
+				- Check for public types in impl packages and voilà: the world is free of static binding problems.
 			- Delete old contents of bricks before copying the new ones over: delete all files (not folders because there can be other bricks starting with the same namespace) in the main brick folder plus its impl/ and tests/ folders.
+			- Test that backup of platform src and bin is being done before install.
+			- Make staging atomic by using directory rename only after compilation is successful.
 			- Brick States - All
 	
 	- [Klaus and Sandro] Sneer Responsiveness - Find a way to avoid snapp starter thread from waiting for gui thread.
