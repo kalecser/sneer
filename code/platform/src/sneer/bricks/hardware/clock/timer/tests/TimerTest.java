@@ -59,7 +59,7 @@ public class TimerTest extends BrickTest {
 		assertEquals(2, _order.size());
 	}
 
-	@Test (timeout = 4000)
+	@Test (timeout = 6000)
 	public void testContractWeakness() throws Exception {
 		final ByRef<Boolean> finalized = ByRef.newInstance(false);
 		
@@ -77,7 +77,7 @@ public class TimerTest extends BrickTest {
 
 		while (!finalized.value) {
 			System.gc();
-			Thread.yield();
+			Thread.sleep(20);
 			_clock.advanceTime(42);
 		}
 	}
