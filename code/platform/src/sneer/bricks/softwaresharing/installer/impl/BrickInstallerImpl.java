@@ -8,7 +8,6 @@ import java.io.IOException;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.compilers.java.JavaCompilerException;
 import sneer.bricks.software.folderconfig.FolderConfig;
@@ -31,7 +30,6 @@ public class BrickInstallerImpl implements BrickInstaller {
 		backup(platformSrc(), backupFolder, "src");
 		backup(platformBin(), backupFolder, "bin");
 		
-		my(Logger.class).log("Implement: Delete old contents of bricks before copying the new ones over: any directory with a file inside is a brick, plus its /impl and /tests folders."); //Implement
 		my(IO.class).files().copyFolder(_srcStage, platformSrc());
 		my(IO.class).files().copyFolder(_binStage, platformBin());
 
