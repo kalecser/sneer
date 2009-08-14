@@ -1,21 +1,6 @@
 ﻿TASKS
 =========
 
-	- [Klaus] Solve intermittent console pollution:
-		Exception in thread "ByteConnectionImpl.startSending(Ana Almeida)" java.lang.IndexOutOfBoundsException: Index: -1, Size: 0
-		at java.util.LinkedList.entry(LinkedList.java:365)
-		at java.util.LinkedList.get(LinkedList.java:315)
-		at sneer.bricks.pulp.probe.impl.SchedulerImpl.highestPriorityTupleToSend(SchedulerImpl.java:32)
-		at sneer.bricks.pulp.probe.impl.SchedulerImpl.highestPriorityPacketToSend(SchedulerImpl.java:23)
-		at sneer.bricks.network.computers.sockets.connections.impl.ByteConnectionImpl.send(ByteConnectionImpl.java:62)
-		at sneer.bricks.network.computers.sockets.connections.impl.ByteConnectionImpl.access$1(ByteConnectionImpl.java:61)
-		at sneer.bricks.network.computers.sockets.connections.impl.ByteConnectionImpl$1.step(ByteConnectionImpl.java:49)
-		at sneer.bricks.hardware.cpu.threads.impl.Stepper.run(Stepper.java:17)
-		at sneer.foundation.environments.Environments.runWith(Environments.java:13)
-		at sneer.bricks.hardware.cpu.threads.impl.ThreadsImpl$1.run(ThreadsImpl.java:59)
-
-	- [Klaus] Test if RT is necessary in compiler classpath.
-
 	- [Klaus] BrickTest is causing tmpFolder to be created every time.
 
 	- [Klaus] Get Sandro to cover functional tests with clover. 
@@ -29,7 +14,7 @@
 
 	- Metoo
 		- [Sandro] Gui
-		- [Klaus] Business
+		- [Klaus and Bamboo] Business
 	
 	- [Sandro] RapidShare Killer
 		- Focus. Keep it simple. Zero sofistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
