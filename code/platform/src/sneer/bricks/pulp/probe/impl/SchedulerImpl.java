@@ -25,7 +25,7 @@ class SchedulerImpl implements PacketScheduler {
 	}
 
 	synchronized private Tuple highestPriorityTupleToSend() {
-		if (_toSend.isEmpty())
+		while (_toSend.isEmpty())
 			my(Threads.class).waitWithoutInterruptions(this);
 
 		_lastTupleSent = _toSend.size() - 1;
