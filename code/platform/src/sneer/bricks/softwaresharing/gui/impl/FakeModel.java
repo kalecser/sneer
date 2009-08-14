@@ -19,7 +19,7 @@ class FakeModel {
 		List<BrickInfo> infos = new ArrayList<BrickInfo>();
 
 		files.add(newFileVersion(FakeContent.first(), FakeContent.second(), 
-				"Clockjava", sneer.bricks.softwaresharing.FileVersion.Status.MODIFIED));
+				"Clockjava", sneer.bricks.softwaresharing.FileVersion.Status.DIFFERENT));
 
 		files.add(newFileVersion("adsafimww\n222222\n3333333\n44444444\n555555", "adsafimww\n222222\n3333333\n44444444\n555555", 
 				"impl/ClockImpl.java", sneer.bricks.softwaresharing.FileVersion.Status.CURRENT));

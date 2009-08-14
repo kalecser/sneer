@@ -41,7 +41,16 @@ class BrickInfoImpl implements BrickInfo {
 	
 	@Override
 	public Status status() {
-		throw new NotImplementedYet(); // Implement
+		boolean hasCurrent = false, hasDifferent = false;
+		for (BrickVersion version : versions()) {
+			if (version.status().equals(BrickVersion.Status.DIFFERENT)) hasDifferent = true;
+			if (version.status().equals(BrickVersion.Status.CURRENT)) hasCurrent = true;
+		}
+
+		if ( hasDifferent &&  hasCurrent) return Status.DIFFERENT;
+		if ( hasDifferent && !hasCurrent) return Status.NEW;
+		if (!hasDifferent &&  hasCurrent) return Status.CURRENT;
+		throw new IllegalStateException();
 	}
 
 

@@ -2,7 +2,19 @@ package sneer.bricks.softwaresharing;
 
 public interface FileVersion {
 
-	public enum Status { EXTRA, CURRENT, MODIFIED, MISSING }
+	public enum Status {
+		/**File that exists in this version but does not exist in the current version.*/
+		EXTRA,
+		
+		/**File that has the same contents as the current version.*/
+		CURRENT,
+		
+		/**File that has different contents in the current version.*/
+		DIFFERENT,
+		
+		/**File that exists in the current version but does not exist in this version.*/
+		MISSING
+	}
 
 	String name();
 	Status status();

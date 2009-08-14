@@ -22,8 +22,8 @@ public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 		
 		newSession(a());
 		
-		a().waitForAvailableBrick("freedom7.y.Y");
-		b().waitForAvailableBrick("freedom7.y.Y");
+		a().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
+		b().waitForAvailableBrick("freedom7.y.Y", "NEW");
 		
 		b().stageBricksForExecution("freedom7.y.Y");
 

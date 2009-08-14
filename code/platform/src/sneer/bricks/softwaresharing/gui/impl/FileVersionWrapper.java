@@ -39,7 +39,7 @@ public class FileVersionWrapper {
 			return;
 		}
 		
-		if(_fileVersion.status() == FileVersion.Status.MODIFIED ) {
+		if(_fileVersion.status() == FileVersion.Status.DIFFERENT ) {
 			_icon = _modified;
 			return;
 		}

@@ -225,9 +225,10 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 	}
 
 	@Override
-	public void waitForAvailableBrick(final String brickName) {
+	public void waitForAvailableBrick(final String brickName, final String brickStatus) {
 		my(SignalUtils.class).waitForElement(my(BrickSpace.class).availableBricks(), new Predicate<BrickInfo>() { @Override public boolean evaluate(BrickInfo brickInfo) {
 			return brickInfo.name().equals(brickName);
+				//&& brickInfo.status().name().equals(brickStatus);
 		}});
 	}
 	
