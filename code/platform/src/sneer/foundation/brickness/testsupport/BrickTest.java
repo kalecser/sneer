@@ -24,8 +24,8 @@ public abstract class BrickTest extends CleanTest {
     
 	{
 		my(BrickTestRunner.class).instanceBeingInitialized(this);
-		my(FolderConfig.class).storageFolder().set(new File(tmpFolder(), "data"));
-		my(FolderConfig.class).tmpFolder().set(new File(tmpFolder(), "tmp"));
+		my(FolderConfig.class).storageFolder().set(new File(tmpFolderName(), "data"));
+		my(FolderConfig.class).tmpFolder().set(new File(tmpFolderName(), "tmp"));
 	}
 	
 	@After

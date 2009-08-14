@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 public abstract class CleanTest extends AssertUtils {
 
 	private File _tmpFolder;
+	private String _tmpFolderName;
 	
 	private Set<Thread> _activeThreadsBeforeTest;
 
@@ -26,9 +27,23 @@ public abstract class CleanTest extends AssertUtils {
 	
 	protected File tmpFolder() {
 		if (_tmpFolder == null)
-			_tmpFolder = createTmpFolder();
+			_tmpFolder = createFolder(tmpFolderName());
 
 		return _tmpFolder;
+	}
+
+	private File createFolder(String folderName) {
+		File result = new File(folderName);
+		if (!result.exists())
+			assertTrue("Unable to create tmp folder: " + result, result.mkdirs());
+		return result;
+	}
+
+	protected String tmpFolderName() {
+		if (_tmpFolderName == null)
+			_tmpFolderName = System.getProperty("java.io.tmpdir") + "/" + System.nanoTime();
+
+		return _tmpFolderName;
 	}
 
 	protected void assertTmpFilesExist(String... fileNames) {
@@ -109,8 +124,12 @@ public abstract class CleanTest extends AssertUtils {
 	}
 
 	private void deleteFiles() {
+		_tmpFolderName = null;
+		
 		if (_tmpFolder == null) return;
 		tryToClean(_tmpFolder);
+		_tmpFolder = null;
+
 	}
 	
 	private void tryToClean(File tmp) {
@@ -128,12 +147,6 @@ public abstract class CleanTest extends AssertUtils {
 		}
 	}
 	
-	private File createTmpFolder() {
-		File result = new File(System.getProperty("java.io.tmpdir"), "" + System.nanoTime());
-		assertTrue(result.mkdirs());
-		return result;
-	}
-
 	class LeakingThreadStopped extends Throwable {
 
 		public LeakingThreadStopped(Thread leakingThread, String message) {

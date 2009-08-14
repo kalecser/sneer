@@ -1,8 +1,6 @@
 ﻿TASKS
 =========
 
-	- [Klaus] BrickTest is causing tmpFolder to be created every time.
-
 	- [Klaus] Get Sandro to cover functional tests with clover. 
 
 	- [Klaus] Hudson Linux Reboot with Sandro.
@@ -15,6 +13,7 @@
 	- Metoo
 		- [Sandro] Gui
 		- [Klaus and Bamboo] Business
+			- Blocks - Break large files into smaller blocks.
 	
 	- [Sandro] RapidShare Killer
 		- Focus. Keep it simple. Zero sofistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
