@@ -8,13 +8,18 @@
 	- [Klaus] Revise entire package structure.
 		- Remove all calls to sleep() including indirect.  
 
-	- [Klaus and Sandro] Sneer Responsiveness - Find a way to avoid snapp starter thread from waiting for gui thread.
-
 	- Metoo
 		- [Sandro] Gui
 		- [Klaus and Bamboo] Business
-			- Blocks - Break large files into smaller blocks.
+			- Brick States: CURRENT and DIFFERENT to start with.
+			- File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.
+			- Make staging atomic using directory rename only after compilation is successful.
+			- Test that backup of platform src and bin is being done before install.
+			- Delete old contents of bricks before copying the new ones over: delete all files (not folders because there can be other bricks starting with the same namespace) in the main brick folder plus its impl/ and tests/ folders.
+			- Brick States - All
 	
+	- [Klaus and Sandro] Sneer Responsiveness - Find a way to avoid snapp starter thread from waiting for gui thread.
+
 	- [Sandro] RapidShare Killer
 		- Focus. Keep it simple. Zero sofistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
 
