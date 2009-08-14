@@ -5,6 +5,7 @@ build
 #User stuff
 code/own
 data
+tmp
 logs
 dummy*
 
