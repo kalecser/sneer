@@ -1,4 +1,4 @@
-package sneer.bricks.softwaresharing.impl;
+package sneer.bricks.softwaresharing.filetobrick.impl;
 
 import static sneer.foundation.environments.Environments.my;
 

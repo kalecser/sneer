@@ -1,6 +1,9 @@
 package sneer.bricks.softwaresharing;
 
-import sneer.bricks.pulp.reactive.collections.SetSignal;
+import java.util.Collection;
+
+import sneer.bricks.network.social.Contact;
+import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.foundation.brickness.Brick;
 
@@ -8,6 +11,8 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface BrickSpace {
 
-	SetSignal<BrickInfo> availableBricks();
+	EventSource<Contact> newBrickConfigurationFound();
+
+	Collection<BrickInfo> availableBricks();
 	
 }

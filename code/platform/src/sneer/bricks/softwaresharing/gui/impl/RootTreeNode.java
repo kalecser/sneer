@@ -30,7 +30,7 @@ class RootTreeNode extends AbstractTreeNodeWrapper<BrickInfo> {
 
 	void load() {
 		_infos = new ArrayList<BrickInfo>();
-		Collection<BrickInfo> currentElements = my(BrickSpace.class).availableBricks().currentElements();
+		Collection<BrickInfo> currentElements = my(BrickSpace.class).availableBricks();
 		_infos.addAll(currentElements);
 		System.out.println(currentElements.size());
 		sortBriks();

@@ -1,4 +1,4 @@
-package sneer.bricks.softwaresharing.impl;
+package sneer.bricks.softwaresharing.filetobrick.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -13,25 +13,24 @@ import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.Lang.Strings;
 import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheGuide;
 import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheVisitor;
-import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.softwaresharing.BrickInfo;
 
-class BrickFetcher implements FileCacheVisitor {
+class FileToBrickConversion implements FileCacheVisitor {
 
 	private final Strings _strings = my(Lang.class).strings();
 	
-	private final Set<BrickInfo> _bricks = new HashSet<BrickInfo>();
+	final Set<BrickInfo> _result = new HashSet<BrickInfo>();
 	private final Deque<String> _namePath = new LinkedList<String>();
 	private final Deque<Sneer1024> _hashPath = new LinkedList<Sneer1024>();
 	
 
-	BrickFetcher(Sneer1024 hashOfAllBricks) {
-		my(FileClient.class).fetchToCache(hashOfAllBricks);
-		my(FileCacheGuide.class).guide(this, hashOfAllBricks);
+	FileToBrickConversion(Collection<Sneer1024> srcFolderHashes) {
+		my(FileCacheGuide.class).guide(this, srcFolderHashes.iterator().next());
+		System.err.println("Only doing the first above");
 	}
 
-	
+
 	@Override
 	public void visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
 		_namePath.add(name);
@@ -50,7 +49,7 @@ class BrickFetcher implements FileCacheVisitor {
 
 		if (!isBrickDefinition(fileContents)) return;
 		
-		_bricks.add(brickFound(fileName));
+		_result.add(brickFound(fileName));
 	}
 
 	private BrickInfo brickFound(String fileName) {
@@ -83,9 +82,5 @@ class BrickFetcher implements FileCacheVisitor {
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalStateException(e);
 		}
-	}
-	
-	Collection<BrickInfo> bricks() {
-		return _bricks;
 	}
 }

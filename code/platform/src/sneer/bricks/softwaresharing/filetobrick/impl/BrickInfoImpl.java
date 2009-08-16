@@ -1,4 +1,4 @@
-package sneer.bricks.softwaresharing.impl;
+package sneer.bricks.softwaresharing.filetobrick.impl;
 
 import java.util.Arrays;
 import java.util.List;

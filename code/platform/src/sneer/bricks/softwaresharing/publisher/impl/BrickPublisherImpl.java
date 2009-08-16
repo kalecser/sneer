@@ -13,7 +13,7 @@ import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.publisher.BrickPublisher;
-import sneer.bricks.softwaresharing.publisher.Building;
+import sneer.bricks.softwaresharing.publisher.SrcFolderHash;
 
 class BrickPublisherImpl implements BrickPublisher {
 	
@@ -41,7 +41,7 @@ class BrickPublisherImpl implements BrickPublisher {
 			return;
 		}
 		
-		my(TupleSpace.class).publish(new Building(hash));
+		my(TupleSpace.class).publish(new SrcFolderHash(hash));
 	}
 
 	private static String helpMessage() {
