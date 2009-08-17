@@ -40,5 +40,9 @@ public abstract class AssertUtils extends Assert {
 	protected void assertExists(File file) {
 		assertTrue("File does not exist: " + file, file.exists());
 	}
+	
+	protected void assertDoesNotExist(File file) {
+		assertFalse("File should not exist: " + file, file.exists());
+	}
 
 }

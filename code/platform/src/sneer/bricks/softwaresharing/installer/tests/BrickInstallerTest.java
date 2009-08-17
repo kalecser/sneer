@@ -3,11 +3,15 @@ package sneer.bricks.softwaresharing.installer.tests;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.jmock.Expectations;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.IO;
 import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.FolderConfig;
@@ -25,6 +29,12 @@ public class BrickInstallerTest extends BrickTest {
 	@Bind final BrickSpace _brickSpace = mock(BrickSpace.class);
 	
 	final BrickInstaller _subject = my(BrickInstaller.class);
+	
+	@Before
+	public void setUpPlatformBin() throws IOException {
+		copyClassToBinFolder(Brick.class);
+		copyClassToBinFolder(Snapp.class);
+	}
 	
 	@Test
 	public void prepareStagedBricksInstallation() throws Exception  {
@@ -76,10 +86,43 @@ public class BrickInstallerTest extends BrickTest {
 		);
 		
 	}
+	
+	@Ignore
+	@Test
+	public void commitStagedFiles() throws Exception {
+		
+		prepareStagedBricksInstallation();
+		
+		final File garbageSrc = createFile(srcFolder(), "bricks/y/Garbage.java");
+		final File garbageBin = createFile(binFolder(), "bricks/y/Garbage.class");
+		
+		final File nestedBrickSrc = createFile(srcFolder(), "bricks/y/nested/NestedBrick.java");
+		final File nestedBrickBin = createFile(binFolder(), "bricks/y/nested/NestedBrick.class");
+		
+		my(FolderConfig.class).platformSrcFolder().set(srcFolder());
+		_subject.commitStagedBricksInstallation();
+		
+		assertExists(nestedBrickSrc);
+		assertExists(nestedBrickBin);
+		
+		assertDoesNotExist(garbageSrc);
+		assertDoesNotExist(garbageBin);
+	}
+
+	private File createFile(File parent, String filename) throws IOException {
+		final File file = new File(parent, filename);
+		file.getParentFile().mkdirs();
+		file.createNewFile();
+		return file;
+	}
+
+	private File srcFolder() {
+		return new File(tmpFolder(), "platform-src");
+	}
 
 
 	private File binFolder() {
-		return my(ClassUtils.class).classpathRootFor(BrickInstaller.class);
+		return new File(tmpFolder(), "platform-bin");
 	}
 
 
@@ -89,7 +132,12 @@ public class BrickInstallerTest extends BrickTest {
 
 
 	private void assertStagedFileExists(String fileName) {
-		assertExists(new File(installerFolder(), fileName));
+		assertExists(stagedFile(fileName));
+	}
+
+
+	private File stagedFile(String fileName) {
+		return new File(installerFolder(), fileName);
 	}
 
 
@@ -108,6 +156,12 @@ public class BrickInstallerTest extends BrickTest {
 	private String implDefinition() {
 		return "package bricks.y.impl;\n" +
 		"class YImpl implements bricks.y.Y {}";
+	}
+
+	private void copyClassToBinFolder(final Class<?> clazz) throws IOException {
+		my(IO.class).files().copyFile(
+			my(ClassUtils.class).toFile(clazz),
+			new File(binFolder(), clazz.getName().replace('.', File.separatorChar) + ".class"));
 	}
 
 }
