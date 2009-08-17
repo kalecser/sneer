@@ -35,7 +35,7 @@ abstract class Daemon extends Thread {
 		interrupt();
 		stop();
 		try {
-			join();
+			join(100);
 		} catch (InterruptedException e) {
 			throw new IllegalStateException(e);
 		}
