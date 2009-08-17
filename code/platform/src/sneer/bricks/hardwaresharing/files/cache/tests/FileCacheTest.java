@@ -9,12 +9,12 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Latch;
-import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardwaresharing.files.cache.FileCache;
-import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
+import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.pulp.crypto.Crypto;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.foundation.brickness.testsupport.BrickTest;
@@ -32,7 +32,7 @@ public class FileCacheTest extends BrickTest {
 
 	@Test
 	public void cacheFolderContents() {
-		final Latch latch = my(Threads.class).newLatch();
+		final Latch latch = my(Latches.class).newLatch();
 		
 		@SuppressWarnings("unused")	WeakContract contract =
 			_subject.contentsAdded().addReceiver(new Consumer<Object>() { @Override public void consume(Object contents) {

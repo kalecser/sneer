@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.threads.Latch;
-import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
@@ -38,7 +38,7 @@ public class SocketOriginatorTest extends BrickTest {
 
 	@Test (timeout = 2000)
 	public void openConnection() throws Exception {
-		final Latch _ready = my(Threads.class).newLatch();
+		final Latch _ready = my(Latches.class).newLatch();
 		final Contact neide = my(ContactManager.class).produceContact("Neide");
 
 		checking(new Expectations() {{

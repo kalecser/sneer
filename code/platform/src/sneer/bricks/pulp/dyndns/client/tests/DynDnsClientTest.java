@@ -5,9 +5,12 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.IOException;
 
 import org.jmock.Expectations;
+import org.jmock.api.Invocation;
+import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
+import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.threads.mocks.ThreadsMock;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -22,11 +25,13 @@ import sneer.bricks.pulp.dyndns.updater.Updater;
 import sneer.bricks.pulp.dyndns.updater.UpdaterException;
 import sneer.bricks.pulp.propertystore.mocks.TransientPropertyStore;
 import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.brickness.testsupport.BrickTest;
 import sneer.foundation.environments.EnvironmentUtils;
+import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.exceptions.FriendlyException;
 
 public class DynDnsClientTest extends BrickTest {
@@ -61,6 +66,7 @@ Unacceptable Client Behavior
 	@Bind final TransientPropertyStore _propertyStore = new TransientPropertyStore();
 	@Bind final ThreadsMock _threads = new ThreadsMock();
 	@Bind final Logger _logger = mock(Logger.class);
+	@Bind final Timer _timer = mock(Timer.class);
 	
 	@Test
 	public void updateOnIpChange() throws Exception {
@@ -76,10 +82,11 @@ Unacceptable Client Behavior
 		}});
 		
 		startDynDnsClientOnNewEnvironment();
-		_threads.runAllDaemonsNamed("DynDns Requesting");
+		_threads.runDaemonWithNameStartingWith("DynDns Requesting");
 		
-		startDynDnsClientOnNewEnvironment();
-		_threads.runAllDaemonsNamed("DynDns Requesting");
+		//Fix: Why were these two lines here?
+		//startDynDnsClientOnNewEnvironment();
+		//_threads.runAllDaemonsNamed("DynDns Requesting");
 	}
 
 	private void startDynDnsClientOnNewEnvironment() {
@@ -88,10 +95,18 @@ Unacceptable Client Behavior
 	
 	@Test (timeout = 4000)
 	public void retryAfterIOException() throws Exception {
-		
+	
 		final IOException error = new IOException();
 		
+		final ByRef<Runnable> _timerRunnable = ByRef.newInstance();
+		
 		checking(new Expectations() {{
+			allowing(_timer).wakeUpInAtLeast(with(any(Long.class)), with(any(Runnable.class)));
+				will(new CustomAction("Run timer runnables") { @Override public Object invoke(Invocation invocation) throws Throwable {
+					assertEquals(300000L, invocation.getParameter(0));
+					_timerRunnable.value = (Runnable)invocation.getParameter(1); return null;
+				}});
+			
 			allowing(_ownIpDiscoverer).ownIp();
 				will(returnValue(_ownIp.output()));
 				
@@ -108,14 +123,16 @@ Unacceptable Client Behavior
 		
 
 		startDynDnsClient();
-		_threads.runAllDaemonsNamed("DynDns Requesting");
+		_threads.runDaemonWithNameStartingWith("DynDns Requesting");
 		
 		final Light light = assertBlinkingLight(error);
 		
 		my(Clock.class).advanceTime(300001);
+		_timerRunnable.value.run();
 		
-		_threads.runAllDaemonsNamed("DynDns Requesting");
-		assertFalse(light.isOn());
+		_threads.runDaemonWithNameStartingWith("DynDns Requesting");
+		
+		my(SignalUtils.class).waitForValue(light.isOn(), false);
 	}
 	
 	@Test
@@ -140,7 +157,7 @@ Unacceptable Client Behavior
 		}});
 		
 		startDynDnsClient();
-		_threads.runAllDaemonsNamed("DynDns Requesting");
+		_threads.runDaemonWithNameStartingWith("DynDns Requesting");
 		
 		final Light light = assertBlinkingLight(error);
 		
@@ -150,8 +167,8 @@ Unacceptable Client Behavior
 		DynDnsAccount changed = new DynDnsAccount("test.dyndns.org", "test", "*test");
 		_ownAccount.setter().consume(changed);
 
-		_threads.runAllDaemonsNamed("DynDns Requesting");
-		assertFalse(light.isOn());
+		_threads.runDaemonWithNameStartingWith("DynDns Requesting");
+		assertFalse(light.isOn().currentValue());
 		
 	}
 
@@ -172,7 +189,7 @@ Unacceptable Client Behavior
 		}});
 		
 		startDynDnsClient();
-		_threads.runAllDaemonsNamed("DynDns Requesting");
+		_threads.runDaemonWithNameStartingWith("DynDns Requesting");
 		
 		assertBlinkingLight(error);
 	}
@@ -182,7 +199,7 @@ Unacceptable Client Behavior
 		final ListSignal<Light> lights = my(BlinkingLights.class).lights();
 		assertEquals(1, lights.size().currentValue().intValue());
 		final Light light = lights.currentGet(0);
-		assertTrue(light.isOn());
+		assertTrue(light.isOn().currentValue());
 		if (expectedError instanceof FriendlyException) {
 			assertEquals(((FriendlyException)expectedError).getHelp(), light.helpMessage());
 		}

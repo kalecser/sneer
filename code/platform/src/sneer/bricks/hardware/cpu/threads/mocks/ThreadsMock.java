@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
-import sneer.bricks.hardware.cpu.threads.Latch;
 import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.events.EventNotifier;
@@ -33,20 +32,22 @@ public class ThreadsMock implements Threads {
 		return _steppers.get(i);
 	}
 
-	public synchronized void runAllDaemonsNamed(String daemonName) {
+	public synchronized void runDaemonWithNameStartingWith(String prefix) {
 		Collection<Runnable> daemonsCopy = new ArrayList<Runnable>(_daemonNamesByRunnable.keySet());
 
+		boolean wasRun = false;
+		
 		for (Runnable daemon : daemonsCopy) {
-			String name = _daemonNamesByRunnable.get(daemon);
-			if (!daemonName.equals(name)) continue;
+			String daemonName = _daemonNamesByRunnable.get(daemon);
+			if (!daemonName.startsWith(prefix)) continue;
+			
 			_daemonNamesByRunnable.remove(daemon);
 			daemon.run();
+			if (wasRun) throw new IllegalStateException("Found more than one daemon named: " + prefix);
+			wasRun = true;
 		}
-	}
-
-	@Override
-	public Latch newLatch() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		
+		if (!wasRun) throw new IllegalStateException("Daemon not found: " + prefix);
 	}
 
 	@Override

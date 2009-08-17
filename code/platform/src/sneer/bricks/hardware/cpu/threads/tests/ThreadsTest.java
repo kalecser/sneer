@@ -8,6 +8,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Latch;
 import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.foundation.brickness.testsupport.BrickTest;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
@@ -19,7 +20,7 @@ public class ThreadsTest extends BrickTest {
 	@Test (timeout = 2000)
 	public void environmentIsPropagatedToSteppables() throws Exception {
 		final Environment environment = my(Environment.class);
-		final Latch latch = _subject.newLatch();
+		final Latch latch = my(Latches.class).newLatch();
 
 		_subject.startStepping(new Steppable() { @Override public void step() {
 			assertSame(environment, Environments.my(Environment.class));
@@ -50,7 +51,7 @@ public class ThreadsTest extends BrickTest {
 	@Test (timeout = 2000)
 	public void crashHandlersAreNotified() {
 		
-		final Latch crashingLatch = my(Threads.class).newLatch();
+		final Latch crashingLatch = my(Latches.class).newLatch();
 		@SuppressWarnings("unused")
 		WeakContract crashingContract = my(Threads.class).crashing().addPulseReceiver(crashingLatch);
 		

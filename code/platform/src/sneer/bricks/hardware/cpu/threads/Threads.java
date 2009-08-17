@@ -18,8 +18,6 @@ public interface Threads {
 	void waitUntilCrash();
 	void crashAllThreads();
 	PulseSource crashing();
-	
-	Latch newLatch();
 
 
 }

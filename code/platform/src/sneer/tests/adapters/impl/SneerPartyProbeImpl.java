@@ -14,6 +14,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Latch;
 import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.iterables.Iterables;
@@ -157,7 +158,7 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 
 	@Override
 	public void waitForShouts(final String shoutsExpected) {
-		final Latch latch = my(Threads.class).newLatch();
+		final Latch latch = my(Latches.class).newLatch();
 
 		WeakContract contract = my(Wind.class).shoutsHeard().addPulseReceiver(new Runnable() { @Override public void run() {
 			openLatchIfShoutsHeard(shoutsExpected, latch);
@@ -226,7 +227,7 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 
 	@Override
 	public void waitForAvailableBrick(final String brickName, final String brickStatus) {
-		final Latch latch = my(Threads.class).newLatch();
+		final Latch latch = my(Latches.class).newLatch();
 		
 		WeakContract contract = my(BrickSpace.class).newBrickConfigurationFound().addReceiver(new Consumer<Contact>() { @Override public void consume(Contact contact) {
 			my(Logger.class).log("New brick configuration found for: " + contact);

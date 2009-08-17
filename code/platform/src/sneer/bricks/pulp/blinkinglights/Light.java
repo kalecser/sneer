@@ -1,8 +1,10 @@
 package sneer.bricks.pulp.blinkinglights;
 
+import sneer.bricks.pulp.reactive.Signal;
+
 public interface Light {
 
-	boolean isOn();
+	Signal<Boolean> isOn();
 	
 	LightType type();
 	String caption();

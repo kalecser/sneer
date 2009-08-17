@@ -5,6 +5,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Latch;
 import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.events.pulsers.PulseSource;
 import sneer.bricks.pulp.events.pulsers.Pulser;
 import sneer.bricks.pulp.events.pulsers.Pulsers;
@@ -13,7 +14,9 @@ import sneer.foundation.environments.Environments;
 
 class ThreadsImpl implements Threads {
 
-	private final Latch _crash = newLatch();
+	private static final Latches Latches = my(Latches.class);
+	
+	private final Latch _crash = Latches.newLatch();
 	private final Pulser _crashingPulser = my(Pulsers.class).newInstance();
 	static private boolean _isCrashing = false;
 
@@ -52,7 +55,7 @@ class ThreadsImpl implements Threads {
 		if (_isCrashing) return;
 		
 		final Environment environment = my(Environment.class);
-		final Latch hasStarted = newLatch();
+		final Latch hasStarted = Latches.newLatch();
 
 		new Daemon(threadName) { @Override public void run() {
 			hasStarted.open();
@@ -60,11 +63,6 @@ class ThreadsImpl implements Threads {
 		}};
 		
 		hasStarted.waitTillOpen();
-	}
-
-	@Override
-	public Latch newLatch() {
-		return new LatchImpl();
 	}
 
 	@Override

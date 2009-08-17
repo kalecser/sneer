@@ -47,7 +47,7 @@ class BlinkingLightsImpl implements BlinkingLights {
 	
 	@Override
 	public void turnOffIfNecessary(Light light) {
-		if (!light.isOn()) return;
+		if (!light.isOn().currentValue()) return;
 		
 		_lights.remove(light);
 		((LightImpl)light).turnOff();
@@ -93,8 +93,8 @@ class BlinkingLightsImpl implements BlinkingLights {
 	public void turnOnIfNecessary(Light light_, String caption, String helpMessage, Throwable t, int timeout) {
 		LightImpl light = (LightImpl)light_;
 
-		if (light.isOn()) return;
-		light._isOn = true;
+		if (light.isOn().currentValue()) return;
+		light._isOn.setter().consume(true);
 		light._caption = caption;
 		light._error = t;
 		light._helpMessage = helpMessage == null ? "If this problem doesn't go away on its own, get an expert sovereign friend to help you. ;)" : helpMessage;

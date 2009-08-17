@@ -12,8 +12,9 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.foundation.brickness.testsupport.BrickTest;
+import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.foundation.brickness.testsupport.Bind;
+import sneer.foundation.brickness.testsupport.BrickTest;
 
 public class ReachabilityTest extends BrickTest {
 	
@@ -35,7 +36,7 @@ public class ReachabilityTest extends BrickTest {
 		assertEquals(0, _lights.lights().size().currentValue().intValue());
 		
 		_clock.advanceTime(30*1000);
-		assertEquals(1, _lights.lights().size().currentValue().intValue());
+		my(SignalUtils.class).waitForValue(_lights.lights().size(), 1);
 		
 		ByteArraySocket socket = mock(ByteArraySocket.class);
 		_notifier.notifyReceivers(socket);

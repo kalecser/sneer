@@ -4,13 +4,16 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.cpu.threads.Latch;
 import sneer.bricks.hardware.cpu.threads.Steppable;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.foundation.brickness.testsupport.BrickTest;
 import sneer.foundation.lang.ByRef;
 
@@ -18,7 +21,6 @@ public class TimerTest extends BrickTest {
 
 	private final Clock _clock = my(Clock.class);
 	private final Timer _subject = my(Timer.class);
-	private StringBuilder _events = new StringBuilder();
 	
 	@SuppressWarnings("unused")	private WeakContract _c1;
 	@SuppressWarnings("unused")	private WeakContract _c2;
@@ -26,37 +28,33 @@ public class TimerTest extends BrickTest {
 	@SuppressWarnings("unused")	private WeakContract _c4;
 	@SuppressWarnings("unused")	private WeakContract _c5;
 	
-	@Test
+	@Test (timeout = 2000)
 	public void testAlarms() throws Exception {
 		final List<Integer> _order = new ArrayList<Integer>();
 		
-		_c1 = _subject.wakeUpInAtLeast(50, new Worker(50, _order));
-		_c2 = _subject.wakeUpEvery(20, new Worker(20, _order));
-		_c3 = _subject.wakeUpInAtLeast(10, new Worker(10, _order));
-		_c4 = _subject.wakeUpEvery(35, new Worker(35, _order));
-		_c5 = _subject.wakeUpInAtLeast(30, new Worker(30,_order));
+		CountDownLatch latch = new CountDownLatch(5);
+		_c1 = _subject.wakeUpInAtLeast(50, new Worker(50, _order, latch));
+		_c2 = _subject.wakeUpEvery(20, new Worker(20, _order, latch));
+		_c3 = _subject.wakeUpInAtLeast(10, new Worker(10, _order, latch));
+		_c4 = _subject.wakeUpEvery(35, new Worker(35, _order, latch));
+		_c5 = _subject.wakeUpInAtLeast(30, new Worker(30,_order, latch));
 		
 		_clock.advanceTime(81);
-		assertTrue(81 == _clock.time().currentValue());
 		
-		Integer lastInteger = null;
-		for (Integer timeout : _order) {
-			if(lastInteger!=null)
-				assertTrue(timeout>=lastInteger);
-			lastInteger = timeout;
-		}
+		latch.await();
 	}
 
 	@Test
 	public void testSimultaneousAlarms() throws Exception {
 		final List<Integer> _order = new ArrayList<Integer>();
 		
-		_c1 = _subject.wakeUpInAtLeast(10, new Worker(10, _order));
-		_c2 = _subject.wakeUpInAtLeast(10, new Worker(10, _order));
+		CountDownLatch latch = new CountDownLatch(2);
+		_c1 = _subject.wakeUpInAtLeast(10, new Worker(10, _order, latch));
+		_c2 = _subject.wakeUpInAtLeast(10, new Worker(10, _order, latch));
 		
 		_clock.advanceTime(10);
 		
-		assertEquals(2, _order.size());
+		latch.await();
 	}
 
 	@Test (timeout = 6000)
@@ -88,16 +86,19 @@ public class TimerTest extends BrickTest {
 		private final int _timeout;
 		private final List<Integer> _order;
 		private int _count = 0;
+		private final CountDownLatch _latch;
 
-		public Worker(int timeout, List<Integer> order) {
+		public Worker(int timeout, List<Integer> order, CountDownLatch latch) {
 			_timeout = timeout;
 			_order = order;
+			_latch = latch;
 		}
 
 		@Override
 		public void step() {
 			_count++;
 			_order.add(_timeout * _count);
+			_latch.countDown();
 		}
 
 		@Override
@@ -108,23 +109,21 @@ public class TimerTest extends BrickTest {
 	
 	@Test
 	public void testAlarmThatAddsAlarm() throws Exception {
+		final Latch latch1 = my(Latches.class).newLatch();
+		final Latch latch2 = my(Latches.class).newLatch();
+		
 		_c1 = _subject.wakeUpInAtLeast(1, new Runnable(){ @Override public void run() {
-			_events.append("first");
 			_c2 = _subject.wakeUpInAtLeast(1, new Runnable(){ @Override public void run() {
-				_events.append("second");
+				latch2.open();
 			}});
+			latch1.open();
 		}});
 		
 		_clock.advanceTime(2);
-		assertEvents("first");
+		latch1.waitTillOpen();
 
 		_clock.advanceTime(1);
-		assertEvents("second");
-	}
-
-	private void assertEvents(String expected) {
-		assertEquals(expected, _events.toString());
-		_events = new StringBuilder();
+		latch2.waitTillOpen();
 	}
 
 }

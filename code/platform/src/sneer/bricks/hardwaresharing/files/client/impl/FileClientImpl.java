@@ -3,7 +3,7 @@ package sneer.bricks.hardwaresharing.files.client.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Latch;
-import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardwaresharing.files.cache.FileCache;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.hardwaresharing.files.protocol.FileContents;
@@ -50,7 +50,7 @@ class FileClientImpl implements FileClient {
 			my(TupleSpace.class).publish(new FileRequest(hashOfContents));
 			
 			latch = _latchesByHash.get(hashOfContents, new Producer<Latch>() { @Override public Latch produce() {
-				return my(Threads.class).newLatch();
+				return my(Latches.class).newLatch();
 			}});
 		}
 		

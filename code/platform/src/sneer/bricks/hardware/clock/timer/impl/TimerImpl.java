@@ -14,15 +14,13 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Latch;
 import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.cpu.timebox.Timebox;
-import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.foundation.lang.Consumer;
 
 class TimerImpl implements Timer {
 	
 	private final  Clock _clock = my(Clock.class);
 	private final SortedSet<Alarm> _alarms = new TreeSet<Alarm>();
-	private final  ExceptionHandler _exceptionHandler = my(ExceptionHandler.class);
 	
 	@SuppressWarnings("unused") private final WeakContract _timeContract;
 	
@@ -70,7 +68,7 @@ class TimerImpl implements Timer {
 
 	@Override
 	public void sleepAtLeast(long millis) {
-		Latch latch = my(Threads.class).newLatch();
+		Latch latch = my(Latches.class).newLatch();
 		wakeUpInAtLeast(millis, latch);
 		latch.waitTillOpen();
 	}
@@ -86,15 +84,6 @@ class TimerImpl implements Timer {
 	}
 
 	
-	private void step(final Steppable stepper) {
-		_exceptionHandler.shield(new Runnable() { @Override public void run() {
-			my(Timebox.class).run(10000, new Runnable() { @Override public void run() {
-				stepper.step();
-			}}, null);
-		}});
-	}
-
-	
 	static private long _nextSequence = 0;
 
 	private class Alarm implements Comparable<Alarm>, Disposable {
@@ -105,6 +94,9 @@ class TimerImpl implements Timer {
 		private final long _period;
 		private long _wakeUpTime;
 		private final long _sequence = _nextSequence++;
+
+		volatile
+		private boolean _isRunning;
 
 		volatile
 		private boolean _isDisposed = false;
@@ -133,6 +125,17 @@ class TimerImpl implements Timer {
 			_alarms.add(this);
 		}
 
+		
+		private void step(final Steppable stepper) {
+			if (_isRunning) return;
+			_isRunning = true;
+			my(Threads.class).startDaemon("Timer for " + stepper, new Runnable() { @Override public void run() {
+				stepper.step();
+				_isRunning = false;
+			}});
+		}
+
+		
 		boolean isTimeToWakeUp() {
 			return currentTime() >= _wakeUpTime;
 		}

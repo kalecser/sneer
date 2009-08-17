@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Latch;
-import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.reactive.Signals;
@@ -27,7 +27,7 @@ public class EventNotifiersTest extends BrickTest {
 	@Test (timeout = 2000)
 	public void actsAsPulser() {
 		final EventNotifier<Object> notifier = my(EventNotifiers.class).newInstance();
-		final Latch pulseLatch = my(Threads.class).newLatch();
+		final Latch pulseLatch = my(Latches.class).newLatch();
 		@SuppressWarnings("unused")
 		final WeakContract pulseContract = notifier.output().addPulseReceiver(pulseLatch);
 		

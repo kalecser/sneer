@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Latch;
-import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.impl.SetRegisterImpl;
@@ -25,7 +25,7 @@ public class SetRegisterTest extends BrickTest {
 
 	@Test (timeout = 2000)
 	public void addAll() {
-		final Latch latch = my(Threads.class).newLatch();
+		final Latch latch = my(Latches.class).newLatch();
 
 		final ArrayList<Integer> _sizes = new ArrayList<Integer>();
 		@SuppressWarnings("unused") final Object sizeContract = _subject.output().size().addReceiver(new Consumer<Integer>() {@Override public void consume(Integer value) {
