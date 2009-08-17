@@ -15,14 +15,21 @@ class SignalUtilsImpl implements SignalUtils {
 
 	@Override
 	public <T> void waitForValue(Signal<T> signal, final T expected) {
+		final StringBuilder seen = new StringBuilder();
 		final Latch latch = my(Latches.class).newLatch();
 		@SuppressWarnings("unused")
 		WeakContract reception = signal.addReceiver(new Consumer<T>() { @Override public void consume(T value) {
 			if (equalsWithNulls(expected, value))
 				latch.open();
+			else
+				seen.append(value.toString() + ", ");
 		}});
 		
-		latch.waitTillOpen();
+		try {
+			latch.waitTillOpen();
+		} catch (RuntimeException e) {
+			throw new IllegalStateException("Expected: " + expected + " Seen: " + seen, e);
+		}
 	}
 
 	@Override

@@ -1,6 +1,8 @@
 ﻿TASKS
 =========
 
+	- [Klaus] BandwidthConsolidationTest
+
 	- [Klaus] Get Sandro to cover functional tests with clover. 
 
 	- [Klaus] Hudson Linux Reboot with Sandro.

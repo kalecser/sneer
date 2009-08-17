@@ -22,6 +22,13 @@ abstract class Daemon extends Thread {
 	synchronized static void killAllInstances() {
 		for (Daemon victim : _instances)
 			victim.dieQuietly();
+
+		for (Daemon victim : _instances)
+			try {
+				victim.join(100); //Give them a little time to die.
+			} catch (InterruptedException e) {
+				throw new IllegalStateException(e);
+			}
 		
 		_instances.clear();
 	}
@@ -29,16 +36,10 @@ abstract class Daemon extends Thread {
 	@SuppressWarnings("deprecation")
 	private void dieQuietly() {
 		setUncaughtExceptionHandler(new UncaughtExceptionHandler() { @Override public void uncaughtException(Thread t, Throwable ignored) {
-			//Do nothing.
+			//Shhhh.
 		}});
 		
-		interrupt();
 		stop();
-		try {
-			join(100);
-		} catch (InterruptedException e) {
-			throw new IllegalStateException(e);
-		}
 	}
 
 	

@@ -2,40 +2,56 @@ package sneer.bricks.pulp.bandwidth.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
+import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.bandwidth.BandwidthCounter;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.foundation.brickness.testsupport.BrickTest;
 
 public class BandwidthConsolidationTest extends BrickTest {
 	
-	@Test (timeout = 3000)
-	public void test() throws Exception {
-		final SignalUtils signalsUtils = my(SignalUtils.class);
-		final Clock clock = my(Clock.class);		
-		final BandwidthCounter subject = my(BandwidthCounter.class);
+	private final BandwidthCounter _subject = my(BandwidthCounter.class);
 
-		signalsUtils.waitForValue(subject.downloadSpeed(), 0);
-		signalsUtils.waitForValue(subject.uploadSpeed(), 0);
+	@Before
+	public void beforeBandwidthConsolidation() {
+		System.gc();
+		my(Threads.class).sleepWithoutInterruptions(3000);
+		System.gc();
+		my(Threads.class).sleepWithoutInterruptions(3000);
+	}
+	
+	@Test (timeout = 2000)
+	public void bandwidthConsolidation() throws Exception {
+		assertDownloadSpeed(0);
+		assertUploadSpeed(0);
 
-		subject.received(1024*4);
-		subject.sent(1024*40);
-		signalsUtils.waitForValue(subject.downloadSpeed(), 0);
-		signalsUtils.waitForValue(subject.uploadSpeed(), 0);
+		_subject.received(1024*4);
+		_subject.sent(1024*40);
+		assertDownloadSpeed(0);
+		assertUploadSpeed(0);
 
-		clock.advanceTime(4000);
-		signalsUtils.waitForValue(subject.downloadSpeed(), 1);
-		signalsUtils.waitForValue(subject.uploadSpeed(), 10);
+		my(Clock.class).advanceTime(4000);
+		assertDownloadSpeed(1);
+		assertUploadSpeed(10);
 
-		subject.received(1024*50);
-		subject.sent(1024*5);
-		signalsUtils.waitForValue(subject.downloadSpeed(), 1);
-		signalsUtils.waitForValue(subject.uploadSpeed(), 10);
+		_subject.received(1024*50);
+		_subject.sent(1024*5);
+		assertDownloadSpeed(1);
+		assertUploadSpeed(10);
 
-		clock.advanceTime(5000);
-		signalsUtils.waitForValue(subject.downloadSpeed(), 10);
-		signalsUtils.waitForValue(subject.uploadSpeed(), 1);
+		my(Clock.class).advanceTime(5000);
+		assertDownloadSpeed(10);
+		assertUploadSpeed(1);
+	}
+
+	private void assertDownloadSpeed(int expected) {
+		my(SignalUtils.class).waitForValue(_subject.downloadSpeed(), expected);
+	}
+
+	private void assertUploadSpeed(int expected) {
+		my(SignalUtils.class).waitForValue(_subject.uploadSpeed(), expected);
 	}
 }

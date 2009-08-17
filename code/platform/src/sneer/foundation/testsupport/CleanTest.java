@@ -59,6 +59,8 @@ public abstract class CleanTest extends AssertUtils {
 
 	@Before
 	public void beforeCleanTest() {
+		//System.gc();
+		
 		_activeThreadsBeforeTest = Thread.getAllStackTraces().keySet();
 		
 		System.setOut(_outSentinel);
