@@ -8,8 +8,6 @@ import java.util.Arrays;
 import org.jmock.Expectations;
 import org.junit.Test;
 
-import sneer.bricks.pulp.reactive.collections.SetRegister;
-import sneer.bricks.pulp.reactive.collections.impl.SetRegisterImpl;
 import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.FolderConfig;
@@ -35,7 +33,7 @@ public class BrickInstallerTest extends BrickTest {
 			
 			final BrickInfo brick = mock(BrickInfo.class);
 			allowing(_brickSpace).availableBricks();
-				will(returnValue(newSetRegister(brick).output()));
+				will(returnValue(Arrays.asList(brick)));
 			
 			allowing(brick).name(); will(returnValue("bricks.y.Y"));
 				
@@ -110,13 +108,6 @@ public class BrickInstallerTest extends BrickTest {
 	private String implDefinition() {
 		return "package bricks.y.impl;\n" +
 		"class YImpl implements bricks.y.Y {}";
-	}
-
-
-	private <T> SetRegister<T> newSetRegister(T... elements) {
-		final SetRegister<T> result = new SetRegisterImpl<T>();
-		result.addAll(Arrays.asList(elements));
-		return result;
 	}
 
 }

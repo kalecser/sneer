@@ -17,7 +17,6 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.iterables.Iterables;
-import sneer.bricks.hardwaresharing.files.server.FileServer;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
 import sneer.bricks.network.computers.sockets.connections.receiver.SocketReceiver;
 import sneer.bricks.network.social.Contact;
@@ -201,8 +200,8 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 
 		startAndKeep(Wind.class);
 
-		startAndKeep(FileServer.class);
-		startAndKeep(BrickSpace.class);
+//		startAndKeep(FileServer.class);
+//		startAndKeep(BrickSpace.class);
 
 		startAndKeep(Stethoscope.class);
 		startAndKeep(Heart.class);
@@ -228,12 +227,12 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 	@Override
 	public void waitForAvailableBrick(final String brickName, final String brickStatus) {
 		final Latch latch = my(Threads.class).newLatch();
-		if (isBrickAvailable(brickName, brickStatus)) latch.open();
 		
 		WeakContract contract = my(BrickSpace.class).newBrickConfigurationFound().addReceiver(new Consumer<Contact>() { @Override public void consume(Contact contact) {
 			my(Logger.class).log("New brick configuration found for: " + contact);
 			if (isBrickAvailable(brickName, brickStatus)) latch.open();
 		}});
+		if (isBrickAvailable(brickName, brickStatus)) latch.open();
 
 		latch.waitTillOpen();
 		contract.dispose();

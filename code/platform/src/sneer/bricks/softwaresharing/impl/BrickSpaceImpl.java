@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.crypto.Sneer1024;
@@ -64,7 +65,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 	private void fetch(final SrcFolderHash srcFolderHash) {
 		my(FileClient.class).fetchToCache(srcFolderHash.value);
-		System.err.println("FileClient: if already fetching join that thread. Keep set of all hashes being fetched");
+		my(Logger.class).log("FileClient: if already fetching join that thread. Keep set of all hashes being fetched");
 
 		markAsCached(srcFolderHash);
 	}
