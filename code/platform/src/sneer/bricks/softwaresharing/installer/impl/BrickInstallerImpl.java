@@ -4,6 +4,8 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
@@ -59,23 +61,36 @@ public class BrickInstallerImpl implements BrickInstaller {
 	private void prepareStagedBin() throws JavaCompilerException, IOException {
 		my(JavaCompiler.class).compile(_srcStage, _binStage, platformBin());
 	}
-
 	
 	private File platformBin() {
 		return my(FolderConfig.class).platformBinFolder().get();
 	}
+	
 	private File platformSrc() {
 		return my(FolderConfig.class).platformSrcFolder().get();
 	}
-
 	
 	private void prepareStagedSrc() throws IOException {
+		List<String> stagedBrickNames = new ArrayList<String>();
+		
 		for(BrickInfo brickInfo: my(BrickSpace.class).availableBricks())
 			for (BrickVersion version : brickInfo.versions())
 				if (version.isStagedForExecution()) {
 					prepareStagedSrc(brickSrcFolder(brickInfo), version);
+					stagedBrickNames.add(brickInfo.name());
 					break;
 				}
+		
+		writeBrickListFile(stagedBrickNames);
+	}
+
+	private void writeBrickListFile(List<String> stagedBrickNames)
+			throws IOException {
+		my(IO.class).files().writeString(brickListFile(), my(Lang.class).strings().join(stagedBrickNames, "\n"));
+	}
+
+	private File brickListFile() {
+		return new File(_srcStage, "bricks.lst");
 	}
 
 	private File brickSrcFolder(BrickInfo brickInfo) {
