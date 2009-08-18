@@ -6,6 +6,6 @@ import sneer.foundation.brickness.Brick;
 public interface BrickStateStore {
 
 	void writeObjectFor(Class<?> brick, Object object);
-	Object readObjectFor(Class<?> brick, ClassLoader classloader);
+	Object readObjectFor(Class<?> brick);
 	
 }

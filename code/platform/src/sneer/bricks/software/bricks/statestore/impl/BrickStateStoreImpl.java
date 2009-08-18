@@ -25,7 +25,7 @@ public class BrickStateStoreImpl implements BrickStateStore {
 	private final Map<Class<?>, Light> _saveLights = new HashMap<Class<?>, Light>(); 
 
 	@Override
-	public Object readObjectFor(Class<?> brick, ClassLoader classloader) throws BrickStateStoreException {
+	public Object readObjectFor(Class<?> brick) throws BrickStateStoreException {
 		File file = my(FolderConfig.class).storageFolderFor(brick);
 		if(!file.exists()) file.mkdirs();
 		
@@ -37,7 +37,7 @@ public class BrickStateStoreImpl implements BrickStateStore {
 		}
 		
 		try {
-			return my(Serializer.class).deserialize(stream, classloader);
+			return my(Serializer.class).deserialize(stream, implClassLoader(brick));
 		} catch (Exception e) {
 			if(!_restoreLights.containsKey(brick))
 				_restoreLights.put(brick, my(BlinkingLights.class).prepare(LightType.ERROR));
@@ -47,6 +47,10 @@ public class BrickStateStoreImpl implements BrickStateStore {
 		} finally{
 			try { stream.close(); } catch (Throwable ignore) { }
 		}	
+	}
+
+	private ClassLoader implClassLoader(Class<?> brick) {
+		return my(brick).getClass().getClassLoader();
 	}
 
 	@Override

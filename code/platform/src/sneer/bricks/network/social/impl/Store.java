@@ -14,7 +14,7 @@ abstract class Store{
 
 	static List<String> restore() {
 		try {
-			List<String> nicks = (List<String>) my(BrickStateStore.class).readObjectFor(ContactManager.class, ContactManagerImpl.class.getClassLoader());
+			List<String> nicks = (List<String>) my(BrickStateStore.class).readObjectFor(ContactManager.class);
 			if(nicks!=null) 
 				return nicks;
 		} catch (BrickStateStoreException ignore) { } 

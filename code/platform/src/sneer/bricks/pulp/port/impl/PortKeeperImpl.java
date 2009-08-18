@@ -39,7 +39,7 @@ class PortKeeperImpl implements PortKeeper {
 	}
 	
 	private void restore() {
-		Integer restoredPort = (Integer) _store.readObjectFor(PortKeeper.class, getClass().getClassLoader());
+		Integer restoredPort = (Integer) _store.readObjectFor(PortKeeper.class);
 		if(restoredPort!=null)
 			try {
 				portSetter().consume(restoredPort);

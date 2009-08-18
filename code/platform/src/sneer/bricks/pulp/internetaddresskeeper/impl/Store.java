@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddress;
+import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
 import sneer.bricks.software.bricks.statestore.BrickStateStore;
 import sneer.bricks.software.bricks.statestore.impl.BrickStateStoreException;
 
@@ -14,7 +15,7 @@ abstract class Store {
 	
 	static List<Object[]> restore() {
 		try {
-			List<Object[]> addresses  = (List<Object[]>) my(BrickStateStore.class).readObjectFor(InternetAddress.class, InternetAddressKeeperImpl.class.getClassLoader());
+			List<Object[]> addresses  = (List<Object[]>) my(BrickStateStore.class).readObjectFor(InternetAddressKeeper.class);
 			if (addresses != null)	
 				return addresses;
 		} catch (BrickStateStoreException ignore) {} 
@@ -30,7 +31,7 @@ abstract class Store {
 					address.host(), 
 					address.port()});
 
-			my(BrickStateStore.class).writeObjectFor(InternetAddress.class, addresses);
+			my(BrickStateStore.class).writeObjectFor(InternetAddressKeeper.class, addresses);
 		} catch (BrickStateStoreException ignore) {}
 	 }
 }
