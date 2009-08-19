@@ -50,7 +50,7 @@ class TimerImpl implements Timer {
 	@Override
 	synchronized
 	public WeakContract wakeUpNowAndEvery(long period, final Steppable stepper) {
-		wakeUp(0, stepper, false);
+		new Alarm(stepper, 0, false).wakeUp();
 		return wakeUpEvery(period, stepper);
 	}
 

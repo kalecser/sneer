@@ -11,6 +11,7 @@ class RegisterImpl<T> implements Register<T> {
 	class MyOutput extends AbstractSignal<T> {
 
 		@Override
+		synchronized
 		public T currentValue() {
 			return _currentValue;
 		}
@@ -19,6 +20,7 @@ class RegisterImpl<T> implements Register<T> {
 	class MySetter implements Consumer<T> {
 
 		@Override
+		synchronized
 		public void consume(T newValue) {
 			if (isSameValue(newValue)) return;
 

@@ -2,11 +2,9 @@ package sneer.bricks.pulp.bandwidth.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
-import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.bandwidth.BandwidthCounter;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.foundation.brickness.testsupport.BrickTest;
@@ -15,13 +13,6 @@ public class BandwidthConsolidationTest extends BrickTest {
 	
 	private final BandwidthCounter _subject = my(BandwidthCounter.class);
 
-	@Before
-	public void beforeBandwidthConsolidation() {
-		System.gc();
-		my(Threads.class).sleepWithoutInterruptions(3000);
-		System.gc();
-		my(Threads.class).sleepWithoutInterruptions(3000);
-	}
 	
 	@Test (timeout = 2000)
 	public void bandwidthConsolidation() throws Exception {
