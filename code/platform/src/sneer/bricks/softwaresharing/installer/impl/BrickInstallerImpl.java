@@ -57,24 +57,14 @@ public class BrickInstallerImpl implements BrickInstaller {
 		prepareFolder(_srcStage);
 		prepareFolder(_binStage);
 		
-		List<BrickInfo> stagedBricks = stagedBricks();
-		prepareStagedSrc(stagedBricks);
-		prepareStagedBin(stagedBricks);
+		prepareStagedSrc(stagedBricks());
+		prepareStagedBin();
 	}
 
-	private void prepareStagedBin(List<BrickInfo> stagedBricks) throws JavaCompilerException, IOException {
-		
-//		my(IO.class).files().copyFolder(platformBin(), _binStage);
-		for (BrickInfo brickInfo : stagedBricks)
-			prepareStagedBin(brickInfo);
-		
+	private void prepareStagedBin() throws JavaCompilerException, IOException {
 		my(JavaCompiler.class).compile(_srcStage, _binStage, platformBin());
 	}
 	
-	private void prepareStagedBin(BrickInfo brickInfo) throws IOException {
-		cleanStagedBrickFolder(new File(_binStage, packageFolder(brickInfo)));
-	}
-
 	private File platformBin() {
 		return my(FolderConfig.class).platformBinFolder().get();
 	}
