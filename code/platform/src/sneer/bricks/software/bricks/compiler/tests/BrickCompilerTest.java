@@ -30,7 +30,7 @@ public class BrickCompilerTest extends BrickTest {
 		srcFolder().mkdirs();
 		binFolder().mkdirs();
 		
-		copyRequiredPlatformSourceFiles();
+		copyRequiredFoundationSourceFiles();
 	}
 
 	@Test
@@ -57,6 +57,11 @@ public class BrickCompilerTest extends BrickTest {
 		
 		_subject.compile(srcFolder(), binFolder());
 		
+		assertBinFilesExist(
+			"bricks/a/A.class",
+			"bricks/a/impl/AImpl.class",
+			"bricks/b/B.class");
+		
 	}
 	
 	@Ignore
@@ -71,7 +76,10 @@ public class BrickCompilerTest extends BrickTest {
 		writeSourceFile("bricks/a/impl/AImpl.java",
 				"package bricks.a.impl;" +
 				"public class AImpl implements bricks.a.A {" +
+				
+					// ILLEGAL DEPENDENCY ON IMPL CLASS
 					"{ bricks.b.impl.BImpl.foo(); }" +
+					
 				"}");
 		
 		writeSourceFile("bricks/b/impl/BImpl.java", "" +
@@ -81,7 +89,13 @@ public class BrickCompilerTest extends BrickTest {
 		_subject.compile(srcFolder(), binFolder());
 	}
 	
-	private void copyRequiredPlatformSourceFiles() throws IOException {
+	private void assertBinFilesExist(String... filenames) {
+		for (String filename : filenames)
+			assertExists(new File(binFolder(), filename));
+	}
+
+	
+	private void copyRequiredFoundationSourceFiles() throws IOException {
 		
 		copyPlatformSourceFiles(
 				Brick.class,
