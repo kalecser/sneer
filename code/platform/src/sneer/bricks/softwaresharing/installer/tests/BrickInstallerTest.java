@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 import org.jmock.Expectations;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
@@ -32,6 +31,13 @@ public class BrickInstallerTest extends BrickTest {
 	
 	@Before
 	public void setUpPlatformBin() throws IOException {
+		
+		my(FolderConfig.class).platformBinFolder().set(binFolder());
+		binFolder().mkdirs();
+		
+		my(FolderConfig.class).platformSrcFolder().set(srcFolder());
+		srcFolder().mkdirs();
+
 		copyClassToBinFolder(Brick.class);
 		copyClassToBinFolder(Snapp.class);
 	}
@@ -46,18 +52,14 @@ public class BrickInstallerTest extends BrickTest {
 				will(returnValue(Arrays.asList(brick)));
 			
 			allowing(brick).name(); will(returnValue("bricks.y.Y"));
-				
+			
 			final BrickVersion version1 = mock("version1", BrickVersion.class);
-			final BrickVersion version2 = mock("version2", BrickVersion.class);
-			allowing(brick).versions();
-				will(returnValue(Arrays.asList(version1, version2)));
-				
 			allowing(version1).isStagedForExecution();
 				will(returnValue(true));
 				
-			allowing(version2).isStagedForExecution();
-				will(returnValue(false));
-
+			allowing(brick).getVersionStagedForExecution();
+				will(returnValue(version1));
+				
 			FileVersion interfaceFile = mock("Y.java", FileVersion.class);
 			FileVersion implFile = mock("YImpl.java", FileVersion.class);
 			
@@ -74,8 +76,6 @@ public class BrickInstallerTest extends BrickTest {
 				
 		}});
 		
-		my(FolderConfig.class).platformBinFolder().set(binFolder());
-		
 		_subject.prepareStagedBricksInstallation();
 		
 		assertStagedFilesExist(
@@ -87,26 +87,37 @@ public class BrickInstallerTest extends BrickTest {
 		
 	}
 	
-	@Ignore
 	@Test
 	public void commitStagedFiles() throws Exception {
 		
-		prepareStagedBricksInstallation();
-		
 		final File garbageSrc = createFile(srcFolder(), "bricks/y/Garbage.java");
+		final File garbageImplSrc = createFile(srcFolder(), "bricks/y/impl/GarbageImpl.java");
+		final File garbageTestsSrc = createFile(srcFolder(), "bricks/y/tests/GarbageTest.java");
 		final File garbageBin = createFile(binFolder(), "bricks/y/Garbage.class");
 		
-		final File nestedBrickSrc = createFile(srcFolder(), "bricks/y/nested/NestedBrick.java");
+		final File nestedBrickSrc = createFile(srcFolder(), "bricks/y/nested/NestedBrick.java",
+				"package bricks.y.nested;" +
+				"public interface NestedBrick {}");
 		final File nestedBrickBin = createFile(binFolder(), "bricks/y/nested/NestedBrick.class");
 		
-		my(FolderConfig.class).platformSrcFolder().set(srcFolder());
+		prepareStagedBricksInstallation();
 		_subject.commitStagedBricksInstallation();
 		
-		assertExists(nestedBrickSrc);
-		assertExists(nestedBrickBin);
+		assertExists(
+				nestedBrickSrc,
+				nestedBrickBin);
 		
-		assertDoesNotExist(garbageSrc);
-		assertDoesNotExist(garbageBin);
+		assertDoesNotExist(
+				garbageSrc,
+				garbageImplSrc,
+				garbageTestsSrc,
+				garbageBin);
+	}
+
+	private File createFile(File folder, String filename, String data) throws IOException {
+		File file = createFile(folder, filename);
+		my(IO.class).files().writeString(file, data);
+		return file;
 	}
 
 	private File createFile(File parent, String filename) throws IOException {

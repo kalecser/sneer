@@ -32,9 +32,12 @@ public class BrickInstallerImpl implements BrickInstaller {
 		backup(platformSrc(), backupFolder, "src");
 		backup(platformBin(), backupFolder, "bin");
 		
+		clean(platformSrc());
+		clean(platformBin());
+		
 		my(IO.class).files().copyFolder(_srcStage, platformSrc());
 		my(IO.class).files().copyFolder(_binStage, platformBin());
-
+		
 		clean(_srcStage);
 		clean(_binStage);
 	}
@@ -53,15 +56,25 @@ public class BrickInstallerImpl implements BrickInstaller {
 	public void prepareStagedBricksInstallation() throws IOException, JavaCompilerException {
 		prepareFolder(_srcStage);
 		prepareFolder(_binStage);
-
-		prepareStagedSrc();
-		prepareStagedBin();
+		
+		List<BrickInfo> stagedBricks = stagedBricks();
+		prepareStagedSrc(stagedBricks);
+		prepareStagedBin(stagedBricks);
 	}
 
-	private void prepareStagedBin() throws JavaCompilerException, IOException {
+	private void prepareStagedBin(List<BrickInfo> stagedBricks) throws JavaCompilerException, IOException {
+		
+//		my(IO.class).files().copyFolder(platformBin(), _binStage);
+		for (BrickInfo brickInfo : stagedBricks)
+			prepareStagedBin(brickInfo);
+		
 		my(JavaCompiler.class).compile(_srcStage, _binStage, platformBin());
 	}
 	
+	private void prepareStagedBin(BrickInfo brickInfo) throws IOException {
+		cleanStagedBrickFolder(new File(_binStage, packageFolder(brickInfo)));
+	}
+
 	private File platformBin() {
 		return my(FolderConfig.class).platformBinFolder().get();
 	}
@@ -70,27 +83,26 @@ public class BrickInstallerImpl implements BrickInstaller {
 		return my(FolderConfig.class).platformSrcFolder().get();
 	}
 	
-	private void prepareStagedSrc() throws IOException {
-		List<String> stagedBrickNames = new ArrayList<String>();
+	private void prepareStagedSrc(List<BrickInfo> stagedBricks) throws IOException {
 		
-		for(BrickInfo brickInfo: my(BrickSpace.class).availableBricks())
-			for (BrickVersion version : brickInfo.versions())
-				if (version.isStagedForExecution()) {
-					prepareStagedSrc(brickSrcFolder(brickInfo), version);
-					stagedBrickNames.add(brickInfo.name());
-					break;
-				}
+		my(IO.class).files().copyFolder(platformSrc(), _srcStage);		
 		
-		writeBrickListFile(stagedBrickNames);
+		for (BrickInfo brickInfo : stagedBricks)
+			prepareStagedSrc(brickInfo);
+		
 	}
 
-	private void writeBrickListFile(List<String> stagedBrickNames)
-			throws IOException {
-		my(IO.class).files().writeString(brickListFile(), my(Lang.class).strings().join(stagedBrickNames, "\n"));
+	private List<BrickInfo> stagedBricks() {
+		List<BrickInfo> stagedBricks = new ArrayList<BrickInfo>();
+		for(BrickInfo brickInfo: my(BrickSpace.class).availableBricks()) {
+			BrickVersion version = brickInfo.getVersionStagedForExecution();
+			if (version != null) stagedBricks.add(brickInfo);
+		}
+		return stagedBricks;
 	}
 
-	private File brickListFile() {
-		return new File(_srcStage, "bricks.lst");
+	private void prepareStagedSrc(BrickInfo brickInfo) throws IOException {
+		prepareStagedSrc(brickSrcFolder(brickInfo), brickInfo.getVersionStagedForExecution());
 	}
 
 	private File brickSrcFolder(BrickInfo brickInfo) {
@@ -98,16 +110,35 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 
 	private String packageFolder(BrickInfo brickInfo) {
-		return packageName(brickInfo).replace(".", "/");
+		return packageFolder(brickInfo.name());
 	}
 
-	private String packageName(BrickInfo brickInfo) {
-		return my(Lang.class).strings().substringBeforeLast(brickInfo.name(), ".");
+	private String packageFolder(String brickName) {
+		return packageName(brickName).replace(".", "/");
+	}
+
+	private String packageName(String brickName) {
+		return my(Lang.class).strings().substringBeforeLast(brickName, ".");
 	}
 
 	private void prepareStagedSrc(File brickSrcFolder, BrickVersion version) throws IOException {
+		cleanStagedBrickFolder(brickSrcFolder);
 		for (FileVersion fileVersion : version.files())
 			prepareStagedSrc(brickSrcFolder, fileVersion);
+	}
+
+	private void cleanStagedBrickFolder(File brickFolder) throws IOException {
+		deleteFilesIn(brickFolder);
+		clean(new File(brickFolder, "impl"));
+		clean(new File(brickFolder, "tests"));
+	}
+
+	private void deleteFilesIn(File brickFolder) {
+		File[] files = brickFolder.listFiles();
+		if (files == null) return;
+		
+		for (File f : files)
+			if (f.isFile()) f.delete();
 	}
 
 	private void prepareStagedSrc(File brickSrcFolder, FileVersion fileVersion) throws IOException {

@@ -37,12 +37,14 @@ public abstract class AssertUtils extends Assert {
 		fail("Expecting '" + throwable + "'.");
 	}
 
-	protected void assertExists(File file) {
-		assertTrue("File does not exist: " + file, file.exists());
+	protected void assertExists(File... files) {
+		for (File file : files)
+			assertTrue("File does not exist: " + file, file.exists());
 	}
 	
-	protected void assertDoesNotExist(File file) {
-		assertFalse("File should not exist: " + file, file.exists());
+	protected void assertDoesNotExist(File... files) {
+		for (File file : files)
+			assertFalse("File should not exist: " + file, file.exists());
 	}
 
 }

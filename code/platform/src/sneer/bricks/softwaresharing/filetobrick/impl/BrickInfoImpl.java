@@ -62,4 +62,12 @@ class BrickInfoImpl implements BrickInfo {
 		((BrickVersionImpl)version).setStagedForExecution(staged);
 	}
 
+
+	@Override
+	public BrickVersion getVersionStagedForExecution() {
+		return _currentVersion.isStagedForExecution()
+			? _currentVersion
+			: null;
+	}
+
 }

@@ -25,7 +25,9 @@ public interface BrickInfo {
 	
 	List<BrickVersion> versions();
 	void setStagedForExecution(BrickVersion version, boolean staged);
+	BrickVersion getVersionStagedForExecution();
 
 	Status status();
 	boolean isSnapp();
+
 }

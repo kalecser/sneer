@@ -101,6 +101,7 @@ class FakeModel {
 			@Override public List<BrickVersion> versions() { return versions;}
 			@Override public void setStagedForExecution(BrickVersion version, boolean staged) {}
 			@Override public BrickInfo.Status status() { return status; }
+			@Override public BrickVersion getVersionStagedForExecution() { return null; }
 		};
 	}
 }
