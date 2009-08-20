@@ -10,8 +10,7 @@ import java.util.List;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.software.code.compilers.java.JavaCompiler;
-import sneer.bricks.software.code.compilers.java.JavaCompilerException;
+import sneer.bricks.software.bricks.compiler.BrickCompiler;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
@@ -53,7 +52,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 
 	@Override
-	public void prepareStagedBricksInstallation() throws IOException, JavaCompilerException {
+	public void prepareStagedBricksInstallation() throws IOException {
 		prepareFolder(_srcStage);
 		prepareFolder(_binStage);
 		
@@ -61,8 +60,19 @@ public class BrickInstallerImpl implements BrickInstaller {
 		prepareStagedBin();
 	}
 
-	private void prepareStagedBin() throws JavaCompilerException, IOException {
-		my(JavaCompiler.class).compile(_srcStage, _binStage, platformBin());
+	private void prepareStagedBin() throws IOException {
+		
+		copyPlatformBinFolder("sneer/foundation");
+		copyPlatformBinFolder("sneer/main");
+		copyPlatformBinFolder("sneer/tests");
+		
+		my(BrickCompiler.class).compile(_srcStage, _binStage);
+	}
+
+	private void copyPlatformBinFolder(String folderName) throws IOException {
+		copyFolder(
+			new File(platformBin(), folderName),
+			new File(_binStage, folderName));
 	}
 	
 	private File platformBin() {
@@ -75,11 +85,15 @@ public class BrickInstallerImpl implements BrickInstaller {
 	
 	private void prepareStagedSrc(List<BrickInfo> stagedBricks) throws IOException {
 		
-		my(IO.class).files().copyFolder(platformSrc(), _srcStage);		
+		copyFolder(platformSrc(), _srcStage);		
 		
 		for (BrickInfo brickInfo : stagedBricks)
 			prepareStagedSrc(brickInfo);
 		
+	}
+
+	private void copyFolder(File from, File to) throws IOException {
+		my(IO.class).files().copyFolder(from, to);
 	}
 
 	private List<BrickInfo> stagedBricks() {

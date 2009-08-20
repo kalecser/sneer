@@ -21,6 +21,11 @@ class ClassUtilsImpl implements ClassUtils {
 		}
 	}
 
+	@Override
+	public String toRelativeFileName(Class<?> clazz) {
+		return clazz.getName().replace('.', '/') + ".class";
+	}
+
 	private File rootFolderFor(Class<?> clazz, File classFile) {
 		final int packageCount = packageName(clazz).split("\\.").length;
 

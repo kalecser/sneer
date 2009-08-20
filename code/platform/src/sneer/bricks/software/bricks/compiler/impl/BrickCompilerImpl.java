@@ -12,8 +12,13 @@ class BrickCompilerImpl implements BrickCompiler {
 
 	@Override
 	public void compile(File srcFolder, File destinationFolder) {
+		/*
+		 	compile all interfaces to stage bin
+			compile each brick to tmp folder with stage bin in the classpath
+			move all bricks to stage bin
+		 */
 		try {
-			my(JavaCompiler.class).compile(srcFolder, destinationFolder);
+			my(JavaCompiler.class).compile(srcFolder, destinationFolder, destinationFolder);
 		} catch (Exception e) {
 			throw new NotImplementedYet(e);
 		}

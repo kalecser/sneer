@@ -11,4 +11,6 @@ public interface ClassUtils {
 
 	File toFile(Class<?> clazz);
 
+	String toRelativeFileName(Class<?> clazz);
+
 }

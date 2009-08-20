@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickInfo;
@@ -38,8 +37,9 @@ public class BrickInstallerTest extends BrickTest {
 		my(FolderConfig.class).platformSrcFolder().set(srcFolder());
 		srcFolder().mkdirs();
 
-		copyClassToBinFolder(Brick.class);
-		copyClassToBinFolder(Snapp.class);
+		copyClassToBinFolder(sneer.foundation.brickness.Brick.class);
+		copyClassToBinFolder(sneer.main.Sneer.class);
+		copyClassToBinFolder(sneer.tests.freedom1.Freedom1TestBase.class);
 	}
 	
 	@Test
@@ -94,6 +94,7 @@ public class BrickInstallerTest extends BrickTest {
 		final File garbageImplSrc = createFile(srcFolder(), "bricks/y/impl/GarbageImpl.java");
 		final File garbageTestsSrc = createFile(srcFolder(), "bricks/y/tests/GarbageTest.java");
 		final File garbageBin = createFile(binFolder(), "bricks/y/Garbage.class");
+		final File sneerGarbage = createFile(binFolder(), "sneer/garbage/Garbage.class");
 		
 		final File nestedBrickSrc = createFile(srcFolder(), "bricks/y/nested/NestedBrick.java",
 				"package bricks.y.nested;" +
@@ -105,13 +106,22 @@ public class BrickInstallerTest extends BrickTest {
 		
 		assertExists(
 				nestedBrickSrc,
-				nestedBrickBin);
+				nestedBrickBin,
+				
+				binFileFor(Brick.class),
+				binFileFor(sneer.main.Sneer.class),
+				binFileFor(sneer.tests.freedom1.Freedom1TestBase.class));
 		
 		assertDoesNotExist(
 				garbageSrc,
 				garbageImplSrc,
 				garbageTestsSrc,
-				garbageBin);
+				garbageBin,
+				sneerGarbage);
+	}
+
+	private File binFileFor(Class<?> clazz) {
+		return new File(binFolder(), my(ClassUtils.class).toRelativeFileName(clazz));
 	}
 
 	private File createFile(File folder, String filename, String data) throws IOException {
@@ -160,7 +170,6 @@ public class BrickInstallerTest extends BrickTest {
 	private String interfaceDefinition() {
 		return "package bricks.y;\n" +
 		"@" + Brick.class.getName() + " " +
-		"@" + Snapp.class.getName() + " " +
 		"public interface Y {}";
 	}
 
