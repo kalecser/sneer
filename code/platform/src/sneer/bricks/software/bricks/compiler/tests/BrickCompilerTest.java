@@ -30,7 +30,7 @@ public class BrickCompilerTest extends BrickTest {
 		srcFolder().mkdirs();
 		binFolder().mkdirs();
 		
-		copyRequiredFoundationSourceFiles();
+		copyRequiredFoundationFiles();
 	}
 
 	@Test
@@ -93,11 +93,10 @@ public class BrickCompilerTest extends BrickTest {
 		for (String filename : filenames)
 			assertExists(new File(binFolder(), filename));
 	}
-
 	
-	private void copyRequiredFoundationSourceFiles() throws IOException {
+	private void copyRequiredFoundationFiles() throws IOException {
 		
-		copyPlatformSourceFiles(
+		copyClassFilesToBin(
 				Brick.class,
 				Nature.class,
 				ClassDefinition.class,
@@ -108,21 +107,26 @@ public class BrickCompilerTest extends BrickTest {
 		
 	}
 
-	private void copyPlatformSourceFiles(Class<?>... classes) throws IOException {
-		for (Class<?> c : classes) copyPlatformSourceFile(c);
+	private void copyClassFilesToBin(Class<?>... classes) throws IOException {
+		for (Class<?> c : classes) copyClassFileToBin(c);
 	}
 
-	private void copyPlatformSourceFile(Class<?> clazz) throws IOException {
-		String sourceFile = clazz.getName().replace('.', '/') + ".java";
-		my(IO.class).files().copyFile(new File(platformSrc(), sourceFile), new File(srcFolder(), sourceFile));
+	private void copyClassFileToBin(Class<?> clazz) throws IOException {
+		copyFile(
+				toFile(clazz),
+				new File(binFolder(), toRelativeFileName(clazz)));
 	}
 
-	private File platformSrc() {
-		return new File(platformBin().getParentFile(), "src");
+	private String toRelativeFileName(Class<?> clazz) {
+		return my(ClassUtils.class).toRelativeFileName(clazz);
 	}
 
-	private File platformBin() {
-		return my(ClassUtils.class).classpathRootFor(Brick.class);
+	private void copyFile(File from, File to) throws IOException {
+		my(IO.class).files().copyFile(from, to);
+	}
+
+	private File toFile(Class<?> clazz) {
+		return my(ClassUtils.class).toFile(clazz);
 	}
 
 	private void writeSourceFile(String filename, String data) throws IOException {
