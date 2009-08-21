@@ -14,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -127,11 +128,13 @@ class IOImpl implements IO {
 
 	private FileFilters _fileFilters = new FileFilters(){
 		@Override public Filter name(String name) { return adapt(FileFilterUtils.nameFileFilter(name)); }
-		@Override public Filter not(Filter filter) { return adapt(FileFilterUtils.notFileFilter((IOFileFilter) filter)); }
+		@Override public Filter not(Filter filter) { return adapt(FileFilterUtils.notFileFilter(asIOFileFilter(filter))); }
 		@Override public Filter suffix(String sulfix) { return adapt(FileFilterUtils.suffixFileFilter(sulfix)); }
+		@Override public Filter any() { return adapt(TrueFileFilter.INSTANCE); }
+		@Override public Filter or(Filter filter1, Filter filter2) { return adapt(FileFilterUtils.orFileFilter(asIOFileFilter(filter1), asIOFileFilter(filter2))); }
 
 		@Override public Collection<File> listFiles(File folder, Filter fileFilter, Filter dirFilter){ 
-			return FileUtils.listFiles(folder, (IOFileFilter)fileFilter, (IOFileFilter)dirFilter);}
+			return FileUtils.listFiles(folder, asIOFileFilter(fileFilter), asIOFileFilter(dirFilter));}
 		
 		private Filter adapt(IOFileFilter filter) { return new IOFileFilterAdapter(filter); }
 		
@@ -141,6 +144,9 @@ class IOImpl implements IO {
 			@Override public boolean accept(File file) { return _delegate.accept(file);}
 			@Override public boolean accept(File dir, String name) { return _delegate.accept(dir, name); }
 		}
+
+
+
 	};
 	
 	@Override public Files files() { return _files; }
@@ -151,5 +157,26 @@ class IOImpl implements IO {
 		try {
 			if(closeable!=null) closeable.close();
 		} catch (IOException ignored) {}
+	}
+	
+	private static IOFileFilter asIOFileFilter(final Filter filter) {
+		if (filter == null)
+			return null;
+		
+		if (filter instanceof IOFileFilter)
+			return (IOFileFilter)filter;
+		
+		return new IOFileFilter() {
+			
+			@Override
+			public boolean accept(File dir, String name) {
+				return filter.accept(dir, name);
+			}
+			
+			@Override
+			public boolean accept(File file) {
+				return filter.accept(file);
+			}
+		};
 	}
 }

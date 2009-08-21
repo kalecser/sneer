@@ -28,23 +28,11 @@ class JavaCompilerImpl implements JavaCompiler {
 	public void compile(File srcFolder, File destinationFolder,	File... classpath) throws JavaCompilerException, IOException {
 		List<File> srcFiles = new ArrayList<File>(my(IO.class).files().listFiles(srcFolder, new String[]{"java"}, true));
 
-		Result result = compile(srcFiles, destinationFolder, classpath);
-		
-		if (!result.success())
-			throw new JavaCompilerException(result.getErrorString());
+		compile(srcFiles, destinationFolder, classpath);
 	}
 
-
-	
-	@SuppressWarnings("deprecation")
 	@Override
-	public Result compile(List<File> sourceFiles, File destination) throws IOException {
-		return compile(sourceFiles, destination, new File[0]);
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public Result compile(List<File> sourceFiles, File destination, File... classpath) throws IOException {
+	public Result compile(Collection<File> sourceFiles, File destination, File... classpath) throws IOException, JavaCompilerException {
 		
 		File tmpFile = createArgsFileForJavac(sourceFiles);
 		my(Logger.class).log("Compiling {} files to {}", sourceFiles.size(), destination);
@@ -60,10 +48,10 @@ class JavaCompilerImpl implements JavaCompiler {
 		StringWriter writer = new StringWriter();
 		int code = Main.compile(parameters, new PrintWriter(writer));
 		tmpFile.delete();
-		
 		Result result = new CompilationResult(code, destination);
 		if (code != 0) {
 			result.setError(writer.getBuffer().toString());
+			throw new JavaCompilerException(result);
 		}
 		return result;
 	}
@@ -79,9 +67,7 @@ class JavaCompilerImpl implements JavaCompiler {
 		return my(Lang.class).strings().join(result, File.pathSeparator);
 	}
 
-
-
-	private File createArgsFileForJavac(List<File> files) throws IOException {
+	private File createArgsFileForJavac(Collection<File> files) throws IOException {
 		File args = File.createTempFile("javac-", ".args");
 			
 		my(IO.class).files().writeString(args, my(Lang.class).strings().join(files, "\n"));

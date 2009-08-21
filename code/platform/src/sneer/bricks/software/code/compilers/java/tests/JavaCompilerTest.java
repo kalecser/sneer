@@ -12,6 +12,7 @@ import org.junit.Test;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.software.code.compilers.java.CompilationError;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
+import sneer.bricks.software.code.compilers.java.JavaCompilerException;
 import sneer.bricks.software.code.compilers.java.Result;
 import sneer.foundation.brickness.testsupport.BrickTest;
 
@@ -65,11 +66,14 @@ public class JavaCompilerTest extends BrickTest {
 		return dir;
 	}
 
-	@SuppressWarnings("deprecation")
 	private Result compile(String code, File libDir) throws IOException {
 		File java = writeSourceFile(code);
 		File[] classpath = classPathForLibs(libDir);
-		return _compiler.compile(Collections.singletonList(java), tmpFolder(), classpath);
+		try {
+			return _compiler.compile(Collections.singletonList(java), tmpFolder(), classpath);
+		} catch (JavaCompilerException e) {
+			return e.result();
+		}
 	}
 
 	private File writeSourceFile(String code) {

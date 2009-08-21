@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
@@ -64,7 +63,6 @@ public class BrickCompilerTest extends BrickTest {
 		
 	}
 	
-	@Ignore
 	@Test(expected=BrickCompilerException.class)
 	public void illegalDependency() throws Exception {
 		
@@ -85,6 +83,21 @@ public class BrickCompilerTest extends BrickTest {
 		writeSourceFile("bricks/b/impl/BImpl.java", "" +
 				"package bricks.b.impl;" +
 				"public class BImpl { public static void foo() {} }");
+		
+		_subject.compile(srcFolder(), binFolder());
+	}
+	
+	@Test(expected=BrickCompilerException.class)
+	public void illegalApiDependency() throws Exception {
+		
+		writeSourceFile("bricks/a/A.java",
+			"package bricks.a;" +
+			"@" + Brick.class.getName() + " " +
+			"public interface A { Foo foo(); }");
+		
+		writeSourceFile("bricks/a/impl/Foo.java",
+				"package bricks.a.impl;" +
+				"public class Foo {}");
 		
 		_subject.compile(srcFolder(), binFolder());
 	}

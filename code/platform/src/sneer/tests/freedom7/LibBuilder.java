@@ -9,6 +9,7 @@ import java.util.Iterator;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.iterables.Iterables;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
+import sneer.bricks.software.code.compilers.java.JavaCompilerException;
 import sneer.bricks.software.code.compilers.java.Result;
 import sneer.bricks.software.code.jar.JarBuilder;
 import sneer.bricks.software.code.jar.Jars;
@@ -26,13 +27,10 @@ public class LibBuilder {
 		_tmpFolder = tmpFolder;
 	}
 
-	@SuppressWarnings("deprecation")
-	public void build(File targetJar) throws IOException {
+	public void build(File targetJar) throws IOException, JavaCompilerException {
 		_tmpFolder.mkdirs();
 		
 		final Result result = _compiler.compile(my(Iterables.class).toList(iterateSourceFiles()), _tmpFolder);
-		if (!result.success())
-			throw new IllegalArgumentException(result.getErrorString());
 		
 		targetJar.getParentFile().mkdirs();
 		

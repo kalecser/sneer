@@ -20,7 +20,9 @@ public interface IO {
 	Streams streams();
 	
 	interface FileFilters{
+		Filter any();
 		Filter not(Filter filter);
+		Filter or(Filter filter1, Filter filter2);
 		Filter suffix(String sulfix);
 		Filter name(String name);
 		Collection<File> listFiles(File folder, Filter fileFilter, Filter folderFilter);
