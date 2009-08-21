@@ -1,7 +1,7 @@
 package sneer.foundation.lang;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -12,7 +12,7 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 	}
 	
 	
-	Set<K> _keysBeingResolved = new HashSet<K>();
+	Map<K, Thread> _keysByResolver = new HashMap<K, Thread>();
 	
 	
 	public V get(K key, final Producer<V> producerToUseIfAbsent) {
@@ -23,36 +23,51 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 
 	
 	public V get(K key, Functor<K, V> functorToUseIfAbsent) {
-		boolean mustResolve;
-		synchronized (_keysBeingResolved) {
-			V present = get(key);
-			if (present != null) return present;
+		boolean thisThreadMustResolve = false;
+		synchronized (_keysByResolver) {
+			V found = get(key);
+			if (found != null) return found;
 			
-			mustResolve = _keysBeingResolved.add(key);
+			thisThreadMustResolve = volunteerToResolve(key);
 		}
 
-		if (mustResolve) {
+		if (thisThreadMustResolve) {
 			V resolved = functorToUseIfAbsent.evaluate(key);
-			synchronized (_keysBeingResolved) {
+			synchronized (_keysByResolver) {
 				put(key, resolved);
-				_keysBeingResolved.remove(key);
-				_keysBeingResolved.notifyAll();
+				_keysByResolver.remove(key);
+				_keysByResolver.notifyAll();
 			};
 			return resolved;
 		}
 		
-		synchronized (_keysBeingResolved) {
-			while (_keysBeingResolved.contains(key))
+		synchronized (_keysByResolver) {
+			while (_keysByResolver.containsKey(key))
 				waitWithoutInterruptions();
 		}
 		
 		return get(key);
 	}
 
+
+	private boolean volunteerToResolve(K key) {
+		Thread resolver = _keysByResolver.get(key);
+		
+		if (resolver == null) {
+			_keysByResolver.put(key, Thread.currentThread());
+			return true;
+		}
+
+		if (resolver == Thread.currentThread())
+			throw new IllegalStateException("The resolution (loading) of " + key + " is being triggered recursively.");
+		
+		return false;
+	}
+
 	
 	private void waitWithoutInterruptions() {
 		try {
-			_keysBeingResolved.wait();
+			_keysByResolver.wait();
 		} catch (InterruptedException e) {
 			throw new IllegalStateException(e);
 		}

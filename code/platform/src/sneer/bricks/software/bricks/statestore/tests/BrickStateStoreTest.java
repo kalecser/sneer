@@ -22,7 +22,7 @@ public class BrickStateStoreTest extends BrickTest {
 		toStore.add("3");
 
 		_subject.writeObjectFor(BrickStateStore.class, toStore);
-		List<String> restored = (List<String>) _subject.readObjectFor(BrickStateStore.class);
+		List<String> restored = (List<String>) _subject.readObjectFor(BrickStateStore.class, _subject.getClass().getClassLoader());
 		
 		assertEquals(toStore.size(), restored.size());
 		assertTrue(toStore!=restored);

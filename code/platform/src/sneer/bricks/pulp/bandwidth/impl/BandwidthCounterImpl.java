@@ -42,7 +42,8 @@ class BandwidthCounterImpl implements BandwidthCounter {
 	@Override public void received(int sizeBytes) { received.addAndGet(sizeBytes); }
 	@Override public void sent(int sizeBytes) { sent.addAndGet(sizeBytes); }
 	
-	private final void consolidate(){
+	private final void consolidate() {
+//		System.out.println("CONSOLIDATE");
 		long currentTime = _clock.time().currentValue();
 		int deltaTime = (int) (currentTime-_lastConsolidationTime);
 		int deltaTimeInSeconds =deltaTime/1000;

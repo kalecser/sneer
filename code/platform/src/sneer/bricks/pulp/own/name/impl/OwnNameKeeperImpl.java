@@ -39,7 +39,7 @@ class OwnNameKeeperImpl implements OwnNameKeeper {
 	}
 
 	private void restore() {
-		String restoredName = (String) my(BrickStateStore.class).readObjectFor(OwnNameKeeper.class);
+		String restoredName = (String) my(BrickStateStore.class).readObjectFor(OwnNameKeeper.class, getClass().getClassLoader());
 		if (restoredName == null) return;
 
 		nameSetter().consume(restoredName);

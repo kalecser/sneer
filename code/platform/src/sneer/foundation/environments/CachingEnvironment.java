@@ -7,7 +7,12 @@ import sneer.foundation.lang.Functor;
 
 public class CachingEnvironment implements Environment {
 
-	private final CacheMap<Class<?>, Object> _cache = new CacheMap<Class<?>, Object>();
+	public CachingEnvironment(Environment delegate) {
+		_delegate = delegate;
+	}
+
+	
+	private final CacheMap<Class<?>, Object> _cache = CacheMap.newInstance();
 	
 	private final Environment _delegate;
 
@@ -15,15 +20,13 @@ public class CachingEnvironment implements Environment {
 		return _delegate.provide(key);
 	}};;
 
-	public CachingEnvironment(Environment delegate) {
-		_delegate = delegate;
-	}
-
+	
 	@Override
 	public <T> T provide(Class<T> need) {
 		return (T)_cache.get(need, _functor);
 	}
 
+	
 	public void clear() {
 		_cache.clear();
 	}

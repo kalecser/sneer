@@ -5,7 +5,7 @@ import sneer.bricks.software.bricks.statestore.BrickStateStore;
 public class BrickStateStoreMock implements BrickStateStore {
 
 	@Override
-	public Object readObjectFor(Class<?> brick) {
+	public Object readObjectFor(Class<?> brick, ClassLoader classLoader) {
 		return null;
 	}
 

@@ -15,7 +15,7 @@ abstract class Store {
 	
 	static List<Object[]> restore() {
 		try {
-			List<Object[]> addresses  = (List<Object[]>) my(BrickStateStore.class).readObjectFor(InternetAddressKeeper.class);
+			List<Object[]> addresses  = (List<Object[]>) my(BrickStateStore.class).readObjectFor(InternetAddressKeeper.class, InternetAddressKeeperImpl.class.getClassLoader());
 			if (addresses != null)	
 				return addresses;
 		} catch (BrickStateStoreException ignore) {} 

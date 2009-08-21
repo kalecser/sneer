@@ -48,7 +48,7 @@ public class BricknessImpl implements Environment {
 	private <T> T loadBrick(Class<T> brick) {
 		try {
 			return tryToLoadBrick(brick);
-		} catch (Exception e) {
+		} catch (ClassNotFoundException e) {
 			throw new BrickLoadingException("Exception loading brick: " + brick + ": " + e.getMessage(), e);
 		}
 	}
