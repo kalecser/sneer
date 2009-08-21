@@ -19,7 +19,7 @@ import sneer.foundation.lang.Consumer;
 
 class TimerImpl implements Timer {
 	
-	private final  Clock _clock = my(Clock.class);
+	private final Clock _clock = my(Clock.class);
 	private final SortedSet<Alarm> _alarms = new TreeSet<Alarm>();
 	
 	@SuppressWarnings("unused") private final WeakContract _timeContract;
