@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.publisher.FilePublisher;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
@@ -22,7 +23,7 @@ class BrickPublisherImpl implements BrickPublisher {
 	@Override
 	public void publishAllBricks() {
 		
-		publishBuilding(platformSrcFolder());
+		publishAllBricks(platformSrcFolder());
 		
 	}
 
@@ -32,7 +33,7 @@ class BrickPublisherImpl implements BrickPublisher {
 	}
 
 
-	private void publishBuilding(File srcFolder) {
+	private void publishAllBricks(File srcFolder) {
 		Sneer1024 hash;
 		try {
 			hash = my(FilePublisher.class).publish(srcFolder);
@@ -41,6 +42,7 @@ class BrickPublisherImpl implements BrickPublisher {
 			return;
 		}
 		
+		my(Logger.class).log("Publishing " + SrcFolderHash.class.getSimpleName());
 		my(TupleSpace.class).publish(new SrcFolderHash(hash));
 	}
 

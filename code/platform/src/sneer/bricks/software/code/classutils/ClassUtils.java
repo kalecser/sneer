@@ -7,10 +7,10 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface ClassUtils {
 
+	File classFile(Class<?> clazz);
 	File classpathRootFor(Class<?> clazz);
 
-	File toFile(Class<?> clazz);
-
-	String toRelativeFileName(Class<?> clazz);
+	String relativeClassFileName(Class<?> clazz);
+	String relativeJavaFileName(Class<?> clazz);
 
 }

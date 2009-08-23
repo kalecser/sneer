@@ -230,8 +230,8 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 	public void waitForAvailableBrick(final String brickName, final String brickStatus) {
 		final Latch latch = my(Latches.class).newLatch();
 		
-		WeakContract contract = my(BrickSpace.class).newBrickConfigurationFound().addReceiver(new Consumer<Contact>() { @Override public void consume(Contact contact) {
-			my(Logger.class).log("New brick configuration found for: " + contact);
+		WeakContract contract = my(BrickSpace.class).newBrickConfigurationFound().addReceiver(new Consumer<Seal>() { @Override public void consume(Seal publisher) {
+			my(Logger.class).log("New brick configuration found for: " + print(publisher));
 			if (isBrickAvailable(brickName, brickStatus)) latch.open();
 		}});
 		if (isBrickAvailable(brickName, brickStatus)) latch.open();
@@ -252,26 +252,36 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 	
 	@Override
 	public void stageBricksForExecution(String... brickNames) throws IOException, JavaCompilerException {
-		copyNecessaryClassFilesToTestPlatformBin();
 		for (String brickName : brickNames) stageBrickForExecution(brickName);
+
+		copyNecessaryClassFilesToTestPlatformSrc();
 		my(BrickInstaller.class).prepareStagedBricksInstallation();
 	}
 
-	private void copyNecessaryClassFilesToTestPlatformBin() throws IOException {
-		copyNecessaryClassToTestPlatformBin(Brick.class);
-		copyNecessaryClassToTestPlatformBin(Snapp.class);
-		new File(platformBin(), "sneer/main").mkdir();
-		new File(platformBin(), "sneer/tests").mkdir();
+	private void copyNecessaryClassFilesToTestPlatformSrc() throws IOException {
+		copyNecessaryClassToTestPlatformSrc(Brick.class);
+		copyNecessaryClassToTestPlatformSrc(Snapp.class);
+		new File(testPlatformSrc(), "sneer/main").mkdir();
+		new File(testPlatformSrc(), "sneer/tests").mkdir();
 	}
 
-	private void copyNecessaryClassToTestPlatformBin(Class<?> clazz) throws IOException {
-		File from = my(ClassUtils.class).toFile(clazz);
-		File to = new File(platformBin(), clazz.getName().replace(".", "/") + ".class");
-		my(IO.class).files().copyFile(from, to);
+	private void copyNecessaryClassToTestPlatformSrc(Class<?> clazz) throws IOException {
+		String javaFileName = my(ClassUtils.class).relativeJavaFileName(clazz);
+		my(IO.class).files().copyFile(
+			new File(platformSrc()    , javaFileName),
+			new File(testPlatformSrc(), javaFileName)
+		);
 	}
 
-	private File platformBin() {
-		return my(FolderConfig.class).platformBinFolder().get();
+	private File platformSrc() {
+		File platformBin = my(ClassUtils.class).classpathRootFor(getClass());
+		File result = new File(platformBin.getParent(), "src");
+		if (!result.exists()) throw new IllegalStateException("Platform src folder not found: " + result);
+		return result;
+	}
+
+	private File testPlatformSrc() {
+		return my(FolderConfig.class).platformSrcFolder().get();
 	}
 
 	private void stageBrickForExecution(String brickName) {
@@ -325,5 +335,10 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 		return my(FolderConfig.class).platformSrcFolder().get();
 	}
 
+	private String print(Seal seal) {
+		return seal.equals(my(Seals.class).ownSeal())
+			? "myself"
+			: my(Seals.class).contactGiven(seal).nickname().toString();
+	}
 }
 

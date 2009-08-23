@@ -12,24 +12,23 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
-import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.EventSource;
-import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.filetobrick.FileToBrickConverter;
 import sneer.bricks.softwaresharing.publisher.BrickPublisher;
 import sneer.bricks.softwaresharing.publisher.SrcFolderHash;
+import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.Consumer;
 
 class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
-	private final Map<Contact, Sneer1024> _cachedSrcFolderHashesByPeer = new ConcurrentHashMap<Contact, Sneer1024>();
-	private final EventNotifier<Contact> _newBrickConfigurationFound = my(EventNotifiers.class).newInstance();
+	private final Map<Seal, Sneer1024> _cachedSrcFolderHashesByPeer = new ConcurrentHashMap<Seal, Sneer1024>();
+	private final EventNotifier<Seal> _newBrickConfigurationFound = my(EventNotifiers.class).newInstance();
 	
 	@SuppressWarnings("unused")	private final WeakContract _brickUsageContract;
 
@@ -59,7 +58,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	}
 
 	@Override
-	public EventSource<Contact> newBrickConfigurationFound() {
+	public EventSource<Seal> newBrickConfigurationFound() {
 		return _newBrickConfigurationFound.output();
 	}
 
@@ -70,18 +69,15 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 		markAsCached(srcFolderHash);
 	}
 
+	synchronized
 	private void markAsCached(final SrcFolderHash srcFolderHash) {
 		List<Sneer1024> previouslyCachedSrcFolders = cachedSrcFolders();
 
-		Contact contact = contact(srcFolderHash);
-		_cachedSrcFolderHashesByPeer.put(contact, srcFolderHash.value);
+		Seal publisher = srcFolderHash.publisher();
+		_cachedSrcFolderHashesByPeer.put(publisher, srcFolderHash.value);
 
 		if (!previouslyCachedSrcFolders.contains(srcFolderHash.value))
-			_newBrickConfigurationFound.notifyReceivers(contact);
-	}
-
-	private Contact contact(final SrcFolderHash srcFolderHash) {
-		return my(Seals.class).contactGiven(srcFolderHash.publisher());
+			_newBrickConfigurationFound.notifyReceivers(publisher);
 	}
 
 }

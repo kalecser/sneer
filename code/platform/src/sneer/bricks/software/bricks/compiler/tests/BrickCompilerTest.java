@@ -131,7 +131,7 @@ public class BrickCompilerTest extends BrickTest {
 	}
 
 	private String toRelativeFileName(Class<?> clazz) {
-		return my(ClassUtils.class).toRelativeFileName(clazz);
+		return my(ClassUtils.class).relativeClassFileName(clazz);
 	}
 
 	private void copyFile(File from, File to) throws IOException {
@@ -139,7 +139,7 @@ public class BrickCompilerTest extends BrickTest {
 	}
 
 	private File toFile(Class<?> clazz) {
-		return my(ClassUtils.class).toFile(clazz);
+		return my(ClassUtils.class).classFile(clazz);
 	}
 
 	private void writeSourceFile(String filename, String data) throws IOException {

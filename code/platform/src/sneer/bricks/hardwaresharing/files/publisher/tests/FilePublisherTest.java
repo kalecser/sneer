@@ -62,7 +62,7 @@ public class FilePublisherTest extends BrickTest {
 	}
 
 	private File myClassFile() {
-		return my(ClassUtils.class).toFile(getClass());
+		return my(ClassUtils.class).classFile(getClass());
 	}
 	
 }

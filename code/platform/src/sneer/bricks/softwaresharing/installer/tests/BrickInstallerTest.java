@@ -121,7 +121,7 @@ public class BrickInstallerTest extends BrickTest {
 	}
 
 	private File binFileFor(Class<?> clazz) {
-		return new File(binFolder(), my(ClassUtils.class).toRelativeFileName(clazz));
+		return new File(binFolder(), my(ClassUtils.class).relativeClassFileName(clazz));
 	}
 
 	private File createFile(File folder, String filename, String data) throws IOException {
@@ -180,7 +180,7 @@ public class BrickInstallerTest extends BrickTest {
 
 	private void copyClassToBinFolder(final Class<?> clazz) throws IOException {
 		my(IO.class).files().copyFile(
-			my(ClassUtils.class).toFile(clazz),
+			my(ClassUtils.class).classFile(clazz),
 			new File(binFolder(), clazz.getName().replace('.', File.separatorChar) + ".class"));
 	}
 

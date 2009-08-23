@@ -9,14 +9,26 @@ import org.junit.Test;
 import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.foundation.brickness.Brick;
 import sneer.tests.SovereignFunctionalTestBase;
+import sneer.tests.SovereignParty;
 import sneer.tests.adapters.LoggerForTests;
 
 public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 	
 //	private final JavaCompiler _compiler = my(JavaCompiler.class);
 
+	//@Ignore
+	@Test (timeout = 6000)
+	public void publish() throws Exception {
+		SovereignParty neide = createParty("Neide");
+		neide.copyToSourceFolder(generateY());
+		
+		neide = newSession(neide);
+		
+		neide.waitForAvailableBrick("freedom7.y.Y", "CURRENT");
+	}
+
 	@Ignore
-	@Test (timeout = 12000)
+	@Test //(timeout = 12000)
 	public void meToo() throws Exception {
 		LoggerForTests.isOn = true;
 		
@@ -25,15 +37,20 @@ public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 		newSession(a());
 		
 		a().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
+		System.out.println("A AVAILABLE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		b().waitForAvailableBrick("freedom7.y.Y", "DIFFERENT");
+		System.out.println("B AVAILABLE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		
 		b().stageBricksForExecution("freedom7.y.Y");
+		System.out.println("B STAGED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
 		System.clearProperty("freedom7.y.Y.installed");
 		newSession(b());
 		assertEquals("true", System.getProperty("freedom7.y.Y.installed"));
 		
 		b().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
+		
+		fail("FileToBrickConversion ctor is only doing ");
 	}
 
 	@Test

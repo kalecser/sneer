@@ -56,7 +56,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 		prepareFolder(_srcStage);
 		prepareFolder(_binStage);
 		
-		prepareStagedSrc(stagedBricks());
+		prepareStagedSrc();
 		prepareStagedBin();
 	}
 
@@ -83,13 +83,11 @@ public class BrickInstallerImpl implements BrickInstaller {
 		return my(FolderConfig.class).platformSrcFolder().get();
 	}
 	
-	private void prepareStagedSrc(List<BrickInfo> stagedBricks) throws IOException {
-		
+	private void prepareStagedSrc() throws IOException {
 		copyFolder(platformSrc(), _srcStage);		
 		
-		for (BrickInfo brickInfo : stagedBricks)
+		for (BrickInfo brickInfo : stagedBricks())
 			prepareStagedSrc(brickInfo);
-		
 	}
 
 	private void copyFolder(File from, File to) throws IOException {

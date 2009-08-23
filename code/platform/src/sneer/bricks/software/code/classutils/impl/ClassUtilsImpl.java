@@ -1,19 +1,22 @@
 package sneer.bricks.software.code.classutils.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.io.File;
 import java.net.URISyntaxException;
 
+import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.software.code.classutils.ClassUtils;
 
 class ClassUtilsImpl implements ClassUtils {
 
 	@Override
 	public File classpathRootFor(Class<?> clazz) {
-		return rootFolderFor(clazz, toFile(clazz));
+		return rootFolderFor(clazz, classFile(clazz));
 	}
 
 	@Override
-	public File toFile(Class<?> clazz) {
+	public File classFile(Class<?> clazz) {
 		try {
 			return new File(clazz.getResource(clazz.getSimpleName() + ".class").toURI());
 		} catch (URISyntaxException e) {
@@ -22,8 +25,13 @@ class ClassUtilsImpl implements ClassUtils {
 	}
 
 	@Override
-	public String toRelativeFileName(Class<?> clazz) {
+	public String relativeClassFileName(Class<?> clazz) {
 		return clazz.getName().replace('.', '/') + ".class";
+	}
+
+	@Override
+	public String relativeJavaFileName(Class<?> clazz) {
+		return clazz.getName().replace('.', '/') + ".java";
 	}
 
 	private File rootFolderFor(Class<?> clazz, File classFile) {
@@ -37,6 +45,6 @@ class ClassUtilsImpl implements ClassUtils {
 	}
 
 	private String packageName(Class<?> clazz) {
-		return clazz.getPackage().getName();
+		return my(Lang.class).strings().substringBeforeLast(clazz.getName(), ".");
 	}
 }
