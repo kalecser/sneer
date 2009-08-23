@@ -20,8 +20,6 @@ public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 	public void meToo() throws Exception {
 		LoggerForTests.isOn = true;
 		
-		System.err.println("Uncomment startAndKeep(FileServer.class); and startAndKeep(BrickSpace.class); in SneerPartyProbeImpl.");
-		
 		a().copyToSourceFolder(generateY());
 		
 		newSession(a());

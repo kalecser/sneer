@@ -26,6 +26,7 @@ class FileToBrickConversion implements FileCacheVisitor {
 	
 
 	FileToBrickConversion(Collection<Sneer1024> srcFolderHashes) {
+		if (srcFolderHashes.isEmpty()) return;
 		my(FileCacheGuide.class).guide(this, srcFolderHashes.iterator().next());
 		System.err.println("Only doing the first above");
 	}
