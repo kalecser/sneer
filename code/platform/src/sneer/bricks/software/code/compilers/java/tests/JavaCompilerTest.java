@@ -47,13 +47,9 @@ public class JavaCompilerTest extends BrickTest {
 	@Test
 	public void testWithExternalDependencies() throws Exception {
 		final File libFolder = createLibFolder();
-		try {
-			JarUtils.createJar(new File(libFolder, "lib.jar"), TestLib.class);
-			Result result = compile("class Foo extends " + TestLib.class.getName() + " {}", libFolder);
-			assertSuccess(result);
-		} finally {
-			my(IO.class).files().forceDelete(libFolder);
-		}
+		JarUtils.createJar(new File(libFolder, "lib.jar"), TestLib.class);
+		Result result = compile("class Foo extends " + TestLib.class.getName() + " {}", libFolder);
+		assertSuccess(result);
 	}
 		
 	private void assertSuccess(Result result) {

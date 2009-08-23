@@ -81,7 +81,6 @@ class BrickCompilerImpl implements BrickCompiler {
 	}
 
 	private Collection<File> brickApiFilesIn(File srcFolder) {
-		
 		return listJavaFiles(
 					srcFolder,
 					fileFilters().not(fileFilters().or(

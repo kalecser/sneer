@@ -24,9 +24,11 @@ public class JarsImpl implements Jars {
 class JarBuilderImpl implements JarBuilder{
 
 	private final JarOutputStream _out;
+	private final FileOutputStream _fileOutputStream;
 	
 	public JarBuilderImpl(File file) throws IOException {
-		_out = new JarOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
+		_fileOutputStream = new FileOutputStream(file);
+		_out = new JarOutputStream(new BufferedOutputStream(_fileOutputStream));
 	}
 	
 	@Override
@@ -46,6 +48,9 @@ class JarBuilderImpl implements JarBuilder{
 	
 	@Override
 	public void close() {
-		try { _out.close(); } catch (Throwable ignore) { }
+		try {
+			_out.close();
+			_fileOutputStream.close();
+		} catch (Throwable ignore) { }
 	}
 }
