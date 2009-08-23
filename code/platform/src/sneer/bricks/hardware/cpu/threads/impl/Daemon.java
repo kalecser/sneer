@@ -1,38 +1,42 @@
 package sneer.bricks.hardware.cpu.threads.impl;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 abstract class Daemon extends Thread {
 
-	static private final Set<Daemon> _instances = new HashSet<Daemon>();
-
 	public Daemon(String name) {
 		super(name);
-		addInstance(this);
-
 		setDaemon(true);
 		start();
 	}
 
-	synchronized static private void addInstance(Daemon instance) {
-		_instances.add(instance);
-	}
-
+	
 	synchronized static void killAllInstances() {
-		for (Daemon victim : _instances)
+		List<Daemon> allDaemons = new ArrayList<Daemon>();
+		
+		for (Thread cadidate : allThreads())
+			if (cadidate instanceof Daemon)
+				allDaemons.add((Daemon)cadidate);
+
+		for (Daemon victim : allDaemons)
 			victim.dieQuietly();
 
-		for (Daemon victim : _instances)
+		for (Daemon victim : allDaemons)
 			try {
-				victim.join(100); //Give them a little time to die.
+				victim.join(100); //Gives them a little time to die but does not wait if they are already dead.
 			} catch (InterruptedException e) {
 				throw new IllegalStateException(e);
 			}
-		
-		_instances.clear();
 	}
 
+	
+	private static Set<Thread> allThreads() {
+		return Thread.getAllStackTraces().keySet();
+	}
+
+	
 	@SuppressWarnings("deprecation")
 	private void dieQuietly() {
 		setUncaughtExceptionHandler(new UncaughtExceptionHandler() { @Override public void uncaughtException(Thread t, Throwable ignored) {
