@@ -55,7 +55,7 @@ class BrickInfoImpl implements BrickInfo {
 
 
 	@Override
-	public void setStagedForExecution(BrickVersion version, boolean staged) {
+	public void setStagedForInstallation(BrickVersion version, boolean staged) {
 		if (!versions().contains(version))
 			throw new IllegalArgumentException();
 		
@@ -64,7 +64,7 @@ class BrickInfoImpl implements BrickInfo {
 
 
 	@Override
-	public BrickVersion getVersionStagedForExecution() {
+	public BrickVersion getVersionStagedForInstallation() {
 		return _currentVersion.isStagedForExecution()
 			? _currentVersion
 			: null;

@@ -251,8 +251,8 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 	}
 	
 	@Override
-	public void stageBricksForExecution(String... brickNames) throws IOException, JavaCompilerException {
-		for (String brickName : brickNames) stageBrickForExecution(brickName);
+	public void stageBricksForInstallation(String... brickNames) throws IOException, JavaCompilerException {
+		for (String brickName : brickNames) stageBrickForInstallation(brickName);
 
 		copyNecessaryClassFilesToTestPlatformBin();
 		my(BrickInstaller.class).prepareStagedBricksInstallation();
@@ -281,10 +281,10 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 		return my(FolderConfig.class).platformBinFolder().get();
 	}
 
-	private void stageBrickForExecution(String brickName) {
+	private void stageBrickForInstallation(String brickName) {
 		final BrickInfo brick = availableBrick(brickName);
 		final BrickVersion singleVersion = singleVersionOf(brick);
-		brick.setStagedForExecution(singleVersion, true);
+		brick.setStagedForInstallation(singleVersion, true);
 	}
 
 	private BrickVersion singleVersionOf(BrickInfo brick) {

@@ -24,8 +24,8 @@ public interface BrickInfo {
 	String name();
 	
 	List<BrickVersion> versions();
-	void setStagedForExecution(BrickVersion version, boolean staged);
-	BrickVersion getVersionStagedForExecution();
+	void setStagedForInstallation(BrickVersion version, boolean staged);
+	BrickVersion getVersionStagedForInstallation();
 
 	Status status();
 	boolean isSnapp();

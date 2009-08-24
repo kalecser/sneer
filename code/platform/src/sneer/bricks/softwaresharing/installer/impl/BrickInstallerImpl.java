@@ -95,16 +95,18 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 
 	private List<BrickInfo> stagedBricks() {
-		List<BrickInfo> stagedBricks = new ArrayList<BrickInfo>();
+		List<BrickInfo> result = new ArrayList<BrickInfo>();
 		for(BrickInfo brickInfo: my(BrickSpace.class).availableBricks()) {
-			BrickVersion version = brickInfo.getVersionStagedForExecution();
-			if (version != null) stagedBricks.add(brickInfo);
+			BrickVersion version = brickInfo.getVersionStagedForInstallation();
+			if (version != null) result.add(brickInfo);
 		}
-		return stagedBricks;
+		if (result.isEmpty()) throw new IllegalStateException("No staged brick were found.");
+		
+		return result;
 	}
 
 	private void prepareStagedSrc(BrickInfo brickInfo) throws IOException {
-		prepareStagedSrc(brickSrcFolder(brickInfo), brickInfo.getVersionStagedForExecution());
+		prepareStagedSrc(brickSrcFolder(brickInfo), brickInfo.getVersionStagedForInstallation());
 	}
 
 	private File brickSrcFolder(BrickInfo brickInfo) {

@@ -41,7 +41,7 @@ public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 		b().waitForAvailableBrick("freedom7.y.Y", "DIFFERENT");
 		System.out.println("B AVAILABLE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		
-		b().stageBricksForExecution("freedom7.y.Y");
+		b().stageBricksForInstallation("freedom7.y.Y");
 		System.out.println("B STAGED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
 		System.clearProperty("freedom7.y.Y.installed");

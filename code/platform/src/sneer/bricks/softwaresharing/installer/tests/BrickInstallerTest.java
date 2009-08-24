@@ -56,7 +56,7 @@ public class BrickInstallerTest extends BrickTest {
 			allowing(version1).isStagedForExecution();
 				will(returnValue(true));
 				
-			allowing(brick).getVersionStagedForExecution();
+			allowing(brick).getVersionStagedForInstallation();
 				will(returnValue(version1));
 				
 			FileVersion interfaceFile = mock("Y.java", FileVersion.class);

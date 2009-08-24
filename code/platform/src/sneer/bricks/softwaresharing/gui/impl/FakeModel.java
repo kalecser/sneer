@@ -99,9 +99,9 @@ class FakeModel {
 			@Override public boolean isSnapp() { return false; }
 			@Override public String name() {return name; }
 			@Override public List<BrickVersion> versions() { return versions;}
-			@Override public void setStagedForExecution(BrickVersion version, boolean staged) {}
+			@Override public void setStagedForInstallation(BrickVersion version, boolean staged) {}
 			@Override public BrickInfo.Status status() { return status; }
-			@Override public BrickVersion getVersionStagedForExecution() { return null; }
+			@Override public BrickVersion getVersionStagedForInstallation() { return null; }
 		};
 	}
 }
