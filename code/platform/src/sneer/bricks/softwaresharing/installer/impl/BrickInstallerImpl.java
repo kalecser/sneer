@@ -84,7 +84,6 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 	
 	private void prepareStagedSrc() throws IOException {
-		System.out.println("PLATFORM SRC: " + platformSrc());
 		copyFolder(platformSrc(), _srcStage);		
 		
 		for (BrickInfo brickInfo : stagedBricks())
@@ -125,7 +124,6 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 
 	private void prepareStagedSrc(File brickSrcFolder, BrickVersion version) throws IOException {
-		System.out.println("BRICK SRC FOLDER:" + brickSrcFolder);
 		cleanStagedBrickFolder(brickSrcFolder);
 		for (FileVersion fileVersion : version.files())
 			prepareStagedSrc(brickSrcFolder, fileVersion);
