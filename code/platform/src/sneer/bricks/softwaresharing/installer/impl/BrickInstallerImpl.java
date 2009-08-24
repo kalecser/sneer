@@ -31,14 +31,14 @@ public class BrickInstallerImpl implements BrickInstaller {
 		backup(platformSrc(), backupFolder, "src");
 		backup(platformBin(), backupFolder, "bin");
 		
-		clean(platformSrc());
-		clean(platformBin());
+		delete(platformSrc());
+		delete(platformBin());
 		
 		my(IO.class).files().copyFolder(_srcStage, platformSrc());
 		my(IO.class).files().copyFolder(_binStage, platformBin());
 		
-		clean(_srcStage);
-		clean(_binStage);
+		delete(_srcStage);
+		delete(_binStage);
 	}
 
 	private void backup(File folder, File backupFolder, String backupName) throws IOException {
@@ -53,8 +53,8 @@ public class BrickInstallerImpl implements BrickInstaller {
 
 	@Override
 	public void prepareStagedBricksInstallation() throws IOException {
-		prepareFolder(_srcStage);
-		prepareFolder(_binStage);
+		resetFolder(_srcStage);
+		resetFolder(_binStage);
 		
 		prepareStagedSrc();
 		prepareStagedBin();
@@ -84,6 +84,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 	
 	private void prepareStagedSrc() throws IOException {
+		System.out.println("PLATFORM SRC: " + platformSrc());
 		copyFolder(platformSrc(), _srcStage);		
 		
 		for (BrickInfo brickInfo : stagedBricks())
@@ -124,6 +125,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 
 	private void prepareStagedSrc(File brickSrcFolder, BrickVersion version) throws IOException {
+		System.out.println("BRICK SRC FOLDER:" + brickSrcFolder);
 		cleanStagedBrickFolder(brickSrcFolder);
 		for (FileVersion fileVersion : version.files())
 			prepareStagedSrc(brickSrcFolder, fileVersion);
@@ -131,8 +133,8 @@ public class BrickInstallerImpl implements BrickInstaller {
 
 	private void cleanStagedBrickFolder(File brickFolder) throws IOException {
 		deleteFilesIn(brickFolder);
-		clean(new File(brickFolder, "impl"));
-		clean(new File(brickFolder, "tests"));
+		delete(new File(brickFolder, "impl"));
+		delete(new File(brickFolder, "tests"));
 	}
 
 	private void deleteFilesIn(File brickFolder) {
@@ -152,13 +154,13 @@ public class BrickInstallerImpl implements BrickInstaller {
 		my(IO.class).files().writeByteArrayToFile(file, bytes);
 	}
 
-	private void prepareFolder(File folder) throws IOException {
-		clean(folder);
+	private void resetFolder(File folder) throws IOException {
+		delete(folder);
 		if (!folder.mkdirs())
 			throw new IOException("Unable to create folder: " + folder);
 	}
 
-	private void clean(File folder) throws IOException {
+	private void delete(File folder) throws IOException {
 		my(IO.class).files().forceDelete(folder);
 	}
 

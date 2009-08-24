@@ -30,12 +30,11 @@ public class BrickInstallerTest extends BrickTest {
 	
 	@Before
 	public void setUpPlatformBin() throws IOException {
-		
-		my(FolderConfig.class).platformBinFolder().set(binFolder());
 		binFolder().mkdirs();
-		
-		my(FolderConfig.class).platformSrcFolder().set(srcFolder());
 		srcFolder().mkdirs();
+
+		my(FolderConfig.class).platformBinFolder().set(binFolder());
+		my(FolderConfig.class).platformSrcFolder().set(srcFolder());
 
 		copyClassToBinFolder(sneer.foundation.brickness.Brick.class);
 		copyClassToBinFolder(sneer.main.Sneer.class);
