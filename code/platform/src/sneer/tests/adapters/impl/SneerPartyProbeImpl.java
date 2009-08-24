@@ -254,34 +254,31 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 	public void stageBricksForExecution(String... brickNames) throws IOException, JavaCompilerException {
 		for (String brickName : brickNames) stageBrickForExecution(brickName);
 
-		copyNecessaryClassFilesToTestPlatformSrc();
+		copyNecessaryClassFilesToTestPlatformBin();
 		my(BrickInstaller.class).prepareStagedBricksInstallation();
 	}
 
-	private void copyNecessaryClassFilesToTestPlatformSrc() throws IOException {
-		copyNecessaryClassToTestPlatformSrc(Brick.class);
-		copyNecessaryClassToTestPlatformSrc(Snapp.class);
-		new File(testPlatformSrc(), "sneer/main").mkdir();
-		new File(testPlatformSrc(), "sneer/tests").mkdir();
+	private void copyNecessaryClassFilesToTestPlatformBin() throws IOException {
+		copyNecessaryClassToTestPlatformBin(Brick.class);
+		copyNecessaryClassToTestPlatformBin(Snapp.class);
+		new File(testPlatformBin(), "sneer/main").mkdir();
+		new File(testPlatformBin(), "sneer/tests").mkdir();
 	}
 
-	private void copyNecessaryClassToTestPlatformSrc(Class<?> clazz) throws IOException {
-		String javaFileName = my(ClassUtils.class).relativeJavaFileName(clazz);
+	private void copyNecessaryClassToTestPlatformBin(Class<?> clazz) throws IOException {
+		String classFileName = my(ClassUtils.class).relativeClassFileName(clazz);
 		my(IO.class).files().copyFile(
-			new File(platformSrc()    , javaFileName),
-			new File(testPlatformSrc(), javaFileName)
+			new File(platformBin()    , classFileName),
+			new File(testPlatformBin(), classFileName)
 		);
 	}
 
-	private File platformSrc() {
-		File platformBin = my(ClassUtils.class).classpathRootFor(getClass());
-		File result = new File(platformBin.getParent(), "src");
-		if (!result.exists()) throw new IllegalStateException("Platform src folder not found: " + result);
-		return result;
+	private File platformBin() {
+		return my(ClassUtils.class).classpathRootFor(getClass());
 	}
 
-	private File testPlatformSrc() {
-		return my(FolderConfig.class).platformSrcFolder().get();
+	private File testPlatformBin() {
+		return my(FolderConfig.class).platformBinFolder().get();
 	}
 
 	private void stageBrickForExecution(String brickName) {
