@@ -11,10 +11,12 @@ class FileVersionImpl implements FileVersion {
 
 	private final String _name;
 	private final byte[] _contents;
+	private final Status _status;
 
-	FileVersionImpl(List<String> path, byte[] contents) {
+	FileVersionImpl(List<String> path, byte[] contents, boolean isCurrent) {
 		_name = my(Lang.class).strings().join(path, "/");
 		_contents = contents;
+		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
 	}
 
 	@Override
@@ -24,7 +26,7 @@ class FileVersionImpl implements FileVersion {
 
 	@Override
 	public byte[] contentsInCurrentVersion() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		return _status == Status.CURRENT ? _contents : null;
 	}
 
 	@Override
@@ -34,7 +36,7 @@ class FileVersionImpl implements FileVersion {
 
 	@Override
 	public Status status() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		return _status;
 	}
 
 }

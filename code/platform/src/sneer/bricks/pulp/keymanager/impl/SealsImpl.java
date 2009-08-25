@@ -88,7 +88,9 @@ class SealsImpl implements Seals {
 //	}
 	
 	private String ownName() {
-		return my(OwnNameKeeper.class).name().currentValue();
+		String result = my(OwnNameKeeper.class).name().currentValue();
+		if (result.length() < 3) result = result + "   ";
+		return result;
 	}
 
 }

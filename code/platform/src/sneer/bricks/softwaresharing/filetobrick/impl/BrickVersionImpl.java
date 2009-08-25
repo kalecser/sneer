@@ -19,10 +19,12 @@ class BrickVersionImpl implements BrickVersion {
 	private final Sneer1024 _hash;
 	private boolean _stagedForExecution;
 	private List<FileVersion> _files;
+	private Status _status;
 
 	
-	BrickVersionImpl(Sneer1024 hash) {
+	BrickVersionImpl(Sneer1024 hash, boolean isCurrent) {
 		_hash = hash;
+		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
 	}
 
 	@Override
@@ -43,17 +45,17 @@ class BrickVersionImpl implements BrickVersion {
 
 	@Override
 	public int unknownUsers() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		return 0;
 	}
 	
 	@Override
 	public List<String> knownUsers() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		return new ArrayList<String>();
 	}
 
 	@Override
 	public long publicationDate() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		return 0;
 	}
 
 	@Override
@@ -63,8 +65,9 @@ class BrickVersionImpl implements BrickVersion {
 
 	@Override
 	public Status status() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		return _status;
 	}
+	
 
 	void setStagedForExecution(boolean value) {
 		_stagedForExecution = value;
@@ -73,13 +76,18 @@ class BrickVersionImpl implements BrickVersion {
 	private List<FileVersion> findFiles() {
 		Visitor visitor = new Visitor();
 		my(FileCacheGuide.class).guide(visitor, _hash);
-		return visitor._files;
+		return visitor._visitedFiles;
 	}
 
 	
-	private static class Visitor implements FileCacheVisitor {
+	private boolean isCurrent() {
+		return _status == Status.CURRENT;
+	}
 
-		List<FileVersion> _files = new ArrayList<FileVersion>();
+
+	private class Visitor implements FileCacheVisitor {
+
+		List<FileVersion> _visitedFiles = new ArrayList<FileVersion>();
 		
 		private Deque<String> _path = new LinkedList<String>();
 
@@ -100,7 +108,7 @@ class BrickVersionImpl implements BrickVersion {
 
 		@Override
 		public void visitFileContents(byte[] fileContents) {
-			_files.add(new FileVersionImpl((List<String>)_path, fileContents));
+			_visitedFiles.add(new FileVersionImpl((List<String>)_path, fileContents, isCurrent()));
 			_path.removeLast();
 		}
 

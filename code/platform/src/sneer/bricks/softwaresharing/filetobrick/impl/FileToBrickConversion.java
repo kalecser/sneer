@@ -24,10 +24,13 @@ class FileToBrickConversion implements FileCacheVisitor {
 
 	private final Deque<String> _namePath = new LinkedList<String>();
 	private final Deque<Sneer1024> _hashPath = new LinkedList<Sneer1024>();
+
+	private final boolean _isCurrent;
 	
 
-	FileToBrickConversion(CacheMap<String,BrickInfo> bricksByName, Sneer1024 srcFolderHash) {
+	FileToBrickConversion(CacheMap<String,BrickInfo> bricksByName, Sneer1024 srcFolderHash, boolean isCurrent) {
 		_bricksByName = bricksByName;
+		_isCurrent = isCurrent;
 		my(FileCacheGuide.class).guide(this, srcFolderHash);
 	}
 
@@ -58,11 +61,13 @@ class FileToBrickConversion implements FileCacheVisitor {
 		String packageName = _strings.join(_namePath, ".");
 		final String brickName = _strings.chomp(packageName + "." + fileName, ".java");
 
-		_bricksByName.get(brickName, new Producer<BrickInfo>() { @Override public BrickInfo produce() {
-			return new BrickInfoImpl(brickName, _hashPath.peek());
+		BrickInfoImpl brick = (BrickInfoImpl) _bricksByName.get(brickName, new Producer<BrickInfo>() { @Override public BrickInfo produce() {
+			return new BrickInfoImpl(brickName);
 		}});
 		
-		my(Logger.class).log("Brick found: " + brickName);
+		brick.addVersion(_hashPath.peek(), _isCurrent);
+
+		my(Logger.class).log("+++++++++++++++++++++++++++++++++++++++++++++++ Brick accumulated: " + brickName);
 	}
 	
 

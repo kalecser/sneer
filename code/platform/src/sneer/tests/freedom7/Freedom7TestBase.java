@@ -26,14 +26,16 @@ public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 		neide.waitForAvailableBrick("freedom7.y.Y", "CURRENT");
 	}
 
+	@Ignore
 	@Test (timeout = 12000)
 	public void meToo() throws Exception {
+		LoggerForTests.isOn = true;
 		a().copyToSourceFolder(generateY());
 		
 		newSession(a());
 		
 		a().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
-		b().waitForAvailableBrick("freedom7.y.Y", "DIFFERENT");
+		b().waitForAvailableBrick("freedom7.y.Y", "NEW");
 		
 		b().stageBricksForInstallation("freedom7.y.Y");
 

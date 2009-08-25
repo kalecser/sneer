@@ -9,8 +9,8 @@ import sneer.foundation.lang.CacheMap;
 class FileToBrickConverterImpl implements FileToBrickConverter {
 
 	@Override
-	public void accumulateBricksFromCachedSrcFolder(CacheMap<String,BrickInfo> bricksByName, Sneer1024 srcFolderHash) {
-		new FileToBrickConversion(bricksByName, srcFolderHash);
+	public void accumulateBricksFromCachedSrcFolder(CacheMap<String,BrickInfo> bricksByName, Sneer1024 srcFolderHash, boolean isCurrent) {
+		new FileToBrickConversion(bricksByName, srcFolderHash, isCurrent);
 	}
 
 }

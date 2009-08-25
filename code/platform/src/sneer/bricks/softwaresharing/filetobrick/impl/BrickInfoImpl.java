@@ -1,23 +1,28 @@
 package sneer.bricks.softwaresharing.filetobrick.impl;
 
-import java.util.Arrays;
+import static sneer.foundation.environments.Environments.my;
+
+import java.util.ArrayList;
 import java.util.List;
 
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickVersion;
+import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.Producer;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 class BrickInfoImpl implements BrickInfo {
 
 	
 	private final String _brickName;
-	private final BrickVersion _currentVersion;
+	private final CacheMap<Sneer1024, BrickVersion> _versionsByHash = new CacheMap<Sneer1024, BrickVersion>();
 
 	
-	public BrickInfoImpl(String brickName, Sneer1024 hashOfCurrentVersion) {
+	public BrickInfoImpl(String brickName) {
+		my(Logger.class).log("BrickInfo created: " + brickName);
 		_brickName = brickName;
-		_currentVersion = new BrickVersionImpl(hashOfCurrentVersion);
 	}
 
 
@@ -35,7 +40,7 @@ class BrickInfoImpl implements BrickInfo {
 
 	@Override
 	public List<BrickVersion> versions() {
-		return Arrays.asList(_currentVersion);
+		return new ArrayList<BrickVersion>(_versionsByHash.values());
 	}
 
 	
@@ -65,9 +70,17 @@ class BrickInfoImpl implements BrickInfo {
 
 	@Override
 	public BrickVersion getVersionStagedForInstallation() {
-		return _currentVersion.isStagedForExecution()
-			? _currentVersion
-			: null;
+		for (BrickVersion version : _versionsByHash.values())
+			if (version.isStagedForExecution()) return version;
+		
+		return null;
+	}
+
+
+	void addVersion(final Sneer1024 versionHash, final boolean isCurrent) {
+		_versionsByHash.get(versionHash, new Producer<BrickVersion>() { @Override public BrickVersion produce() {
+			return new BrickVersionImpl(versionHash, isCurrent);
+		}});
 	}
 
 }

@@ -12,6 +12,7 @@ import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.EventSource;
+import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
@@ -72,10 +73,16 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	private void accumulateBricks(final SrcFolderHash srcFolderHash) {
 		my(FileToBrickConverter.class).accumulateBricksFromCachedSrcFolder(
 			_availableBricksByName,
-			srcFolderHash.value
+			srcFolderHash.value,
+			isCurrent(srcFolderHash)
 		);
 		
 		_newBrickConfigurationFound.notifyReceivers(srcFolderHash.publisher());
+	}
+
+
+	private boolean isCurrent(SrcFolderHash srcFolderHash) {
+		return srcFolderHash.publisher().equals(my(Seals.class).ownSeal());
 	}
 
 }

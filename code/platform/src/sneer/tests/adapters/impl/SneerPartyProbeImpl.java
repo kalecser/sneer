@@ -240,11 +240,11 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 		contract.dispose();
 	}
 
-	private boolean isBrickAvailable(final String brickName, @SuppressWarnings("unused") final String brickStatus) {
+	private boolean isBrickAvailable(final String brickName, final String brickStatus) {
 		for (BrickInfo brickInfo : my(BrickSpace.class).availableBricks()) {
-//			my(Logger.class).log("Brick found: " + brickInfo.name() + " status: " + brickInfo.status().name());
-			if (brickInfo.name().equals(brickName))
-//				&& brickInfo.status().name().equals(brickStatus)
+			my(Logger.class).log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Brick found: " + brickInfo.name() + " status: " + brickInfo.status().name());
+			if (brickInfo.name().equals(brickName)
+				&& brickInfo.status().name().equals(brickStatus))
 				return true;
 		};
 		return false;
