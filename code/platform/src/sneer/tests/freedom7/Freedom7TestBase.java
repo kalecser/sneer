@@ -16,8 +16,7 @@ public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 	
 //	private final JavaCompiler _compiler = my(JavaCompiler.class);
 
-	//@Ignore
-	@Test (timeout = 6000)
+	@Test (timeout = 4000)
 	public void publish() throws Exception {
 		SovereignParty neide = createParty("Neide");
 		neide.copyToSourceFolder(generateY());
@@ -27,30 +26,22 @@ public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 		neide.waitForAvailableBrick("freedom7.y.Y", "CURRENT");
 	}
 
-	@Ignore
-	@Test //(timeout = 12000)
+	@Test (timeout = 12000)
 	public void meToo() throws Exception {
-		LoggerForTests.isOn = true;
-		
 		a().copyToSourceFolder(generateY());
 		
 		newSession(a());
 		
 		a().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
-		System.out.println("A AVAILABLE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		b().waitForAvailableBrick("freedom7.y.Y", "DIFFERENT");
-		System.out.println("B AVAILABLE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		
 		b().stageBricksForInstallation("freedom7.y.Y");
-		System.out.println("B STAGED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
 		System.clearProperty("freedom7.y.Y.installed");
 		newSession(b());
 		assertEquals("true", System.getProperty("freedom7.y.Y.installed"));
 		
 		b().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
-		
-		fail("FileToBrickConversion ctor is only doing ");
 	}
 
 	@Test

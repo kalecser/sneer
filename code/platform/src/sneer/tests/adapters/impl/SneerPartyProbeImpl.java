@@ -260,7 +260,7 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 
 	private void copyNecessaryClassFilesToTestPlatformBin() throws IOException {
 		copyNecessaryClassToTestPlatformBin(Brick.class);
-		copyNecessaryClassToTestPlatformBin(Snapp.class);
+		copyNecessaryClassToTestPlatformSrc(Snapp.class);
 		new File(testPlatformBin(), "sneer/main").mkdir();
 		new File(testPlatformBin(), "sneer/tests").mkdir();
 	}
@@ -273,12 +273,28 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 		);
 	}
 
+	private void copyNecessaryClassToTestPlatformSrc(Class<?> clazz) throws IOException {
+		String classFileName = my(ClassUtils.class).relativeJavaFileName(clazz);
+		my(IO.class).files().copyFile(
+			new File(platformSrc()    , classFileName),
+			new File(testPlatformSrc(), classFileName)
+		);
+	}
+
 	private File platformBin() {
 		return my(ClassUtils.class).classpathRootFor(getClass());
 	}
 
+	private File platformSrc() {
+		return new File(platformBin().getParent(), "src");
+	}
+
 	private File testPlatformBin() {
 		return my(FolderConfig.class).platformBinFolder().get();
+	}
+
+	private File testPlatformSrc() {
+		return my(FolderConfig.class).platformSrcFolder().get();
 	}
 
 	private void stageBrickForInstallation(String brickName) {
