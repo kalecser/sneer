@@ -3,31 +3,32 @@ package sneer.bricks.softwaresharing.filetobrick.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
 import java.util.Deque;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.Lang.Strings;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheGuide;
 import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheVisitor;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.softwaresharing.BrickInfo;
+import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.Producer;
 
 class FileToBrickConversion implements FileCacheVisitor {
 
 	private final Strings _strings = my(Lang.class).strings();
 	
-	final Set<BrickInfo> _result = new HashSet<BrickInfo>();
+	private final CacheMap<String, BrickInfo> _bricksByName;
+
 	private final Deque<String> _namePath = new LinkedList<String>();
 	private final Deque<Sneer1024> _hashPath = new LinkedList<Sneer1024>();
 	
 
-	FileToBrickConversion(Collection<Sneer1024> srcFolderHashes) {
-		for (Sneer1024 srcFolderHash : srcFolderHashes)
-			my(FileCacheGuide.class).guide(this, srcFolderHash);
+	FileToBrickConversion(CacheMap<String,BrickInfo> bricksByName, Sneer1024 srcFolderHash) {
+		_bricksByName = bricksByName;
+		my(FileCacheGuide.class).guide(this, srcFolderHash);
 	}
 
 
@@ -49,13 +50,19 @@ class FileToBrickConversion implements FileCacheVisitor {
 
 		if (!isBrickDefinition(fileContents)) return;
 		
-		_result.add(brickFound(fileName));
+		accumulateBrick(fileName);
 	}
 
-	private BrickInfo brickFound(String fileName) {
+
+	private void accumulateBrick(String fileName) {
 		String packageName = _strings.join(_namePath, ".");
-		String brickName = _strings.chomp(packageName + "." + fileName, ".java");
-		return new BrickInfoImpl(brickName, _hashPath.peek());
+		final String brickName = _strings.chomp(packageName + "." + fileName, ".java");
+
+		_bricksByName.get(brickName, new Producer<BrickInfo>() { @Override public BrickInfo produce() {
+			return new BrickInfoImpl(brickName, _hashPath.peek());
+		}});
+		
+		my(Logger.class).log("Brick found: " + brickName);
 	}
 	
 

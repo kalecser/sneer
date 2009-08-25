@@ -8,7 +8,6 @@ import sneer.bricks.hardwaresharing.files.cache.FileCache;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.hardwaresharing.files.protocol.FileContents;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
-import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
@@ -47,7 +46,7 @@ class FileClientImpl implements FileClient {
 			if (cachedContentsOf(hashOfContents) != null)
 				return;
 			
-			my(TupleSpace.class).publish(new FileRequest(hashOfContents));
+			FileRequestPublisher.startPublishing(hashOfContents);
 			
 			latch = _latchesByHash.get(hashOfContents, new Producer<Latch>() { @Override public Latch produce() {
 				return my(Latches.class).newLatch();
@@ -55,6 +54,7 @@ class FileClientImpl implements FileClient {
 		}
 		
 		latch.waitTillOpen();
+		FileRequestPublisher.stopPublishing(hashOfContents);
 		
 		Object contents = cachedContentsOf(hashOfContents);
 		if (contents instanceof FolderContents)

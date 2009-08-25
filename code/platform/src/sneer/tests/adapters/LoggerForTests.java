@@ -25,7 +25,7 @@ public class LoggerForTests implements Logger {
 		if (!isOn) return;
 		String formatted = format(message, messageInsets);
 		if (formatted.contains("Heartbeat")) return; ///////////////////// Message to filter out.
-		if (formatted.contains("Tuple")) return; ///////////////////// Message to filter out.
+		//if (formatted.contains("Tuple")) return; ///////////////////// Message to filter out.
 		System.out.println(formatted); //////////////////////// This is the line you uncomment to turn logging on for functional tests.
 	}
 
