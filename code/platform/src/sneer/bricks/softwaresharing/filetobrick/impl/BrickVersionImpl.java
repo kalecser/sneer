@@ -80,6 +80,11 @@ class BrickVersionImpl implements BrickVersion {
 	}
 
 	
+	void setCurrent() {
+		_status = Status.CURRENT;
+	}
+	
+	
 	private boolean isCurrent() {
 		return _status == Status.CURRENT;
 	}
@@ -90,11 +95,13 @@ class BrickVersionImpl implements BrickVersion {
 		List<FileVersion> _visitedFiles = new ArrayList<FileVersion>();
 		
 		private Deque<String> _path = new LinkedList<String>();
+		private long _lastModified;
 
 		
 		@Override
 		public void visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
 			_path.add(name);
+			_lastModified = lastModified;
 		}
 		
 		@Override
@@ -108,7 +115,7 @@ class BrickVersionImpl implements BrickVersion {
 
 		@Override
 		public void visitFileContents(byte[] fileContents) {
-			_visitedFiles.add(new FileVersionImpl((List<String>)_path, fileContents, isCurrent()));
+			_visitedFiles.add(new FileVersionImpl((List<String>)_path, fileContents, _lastModified, isCurrent()));
 			_path.removeLast();
 		}
 

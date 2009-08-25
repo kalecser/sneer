@@ -228,6 +228,8 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 
 	@Override
 	public void waitForAvailableBrick(final String brickName, final String brickStatus) {
+		my(Logger.class).log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Waiting for brick: " + brickName + " status: " + brickStatus);
+
 		final Latch latch = my(Latches.class).newLatch();
 		
 		WeakContract contract = my(BrickSpace.class).newBrickConfigurationFound().addReceiver(new Consumer<Seal>() { @Override public void consume(Seal publisher) {

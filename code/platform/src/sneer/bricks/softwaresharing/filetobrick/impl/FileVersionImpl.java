@@ -11,11 +11,13 @@ class FileVersionImpl implements FileVersion {
 
 	private final String _name;
 	private final byte[] _contents;
+	private final long _lastModified;
 	private final Status _status;
 
-	FileVersionImpl(List<String> path, byte[] contents, boolean isCurrent) {
+	FileVersionImpl(List<String> path, byte[] contents, long lastModified, boolean isCurrent) {
 		_name = my(Lang.class).strings().join(path, "/");
 		_contents = contents;
+		_lastModified = lastModified;
 		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
 	}
 
@@ -37,6 +39,11 @@ class FileVersionImpl implements FileVersion {
 	@Override
 	public Status status() {
 		return _status;
+	}
+
+	@Override
+	public long lastModified() {
+		return _lastModified;
 	}
 
 }

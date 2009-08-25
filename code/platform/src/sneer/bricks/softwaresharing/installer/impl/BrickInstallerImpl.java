@@ -148,6 +148,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 	private void prepareStagedSrc(File brickSrcFolder, FileVersion fileVersion) throws IOException {
 		File srcFile = new File(brickSrcFolder, fileVersion.name());
 		write(srcFile, fileVersion.contents());
+		srcFile.setLastModified(fileVersion.lastModified());
 	}
 
 	private void write(File file, byte[] bytes) throws IOException {

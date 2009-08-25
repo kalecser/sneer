@@ -44,6 +44,8 @@ public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 		assertEquals("true", System.getProperty("freedom7.y.Y.installed"));
 		
 		b().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
+		
+		fail("Unignore publish test.");
 	}
 
 	@Test

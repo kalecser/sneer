@@ -18,9 +18,11 @@ public interface FileVersion {
 
 	String name();
 	Status status();
-
+	
 	byte[] contents();
 	/** Used for diff comparisons. Returns null if the brick that contains this file is not currently being used (new or deleted brick). Returns the same as contents() if the status is CURRENT. */
 	byte[] contentsInCurrentVersion();
-	
+
+	long lastModified();
+
 }

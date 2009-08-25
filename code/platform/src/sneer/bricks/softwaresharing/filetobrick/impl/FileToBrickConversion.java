@@ -65,9 +65,10 @@ class FileToBrickConversion implements FileCacheVisitor {
 			return new BrickInfoImpl(brickName);
 		}});
 		
-		brick.addVersion(_hashPath.peek(), _isCurrent);
+		Sneer1024 versionHash = _hashPath.peekLast();
+		brick.addVersion(versionHash, _isCurrent);
 
-		my(Logger.class).log("+++++++++++++++++++++++++++++++++++++++++++++++ Brick accumulated: " + brickName);
+		my(Logger.class).log("+++++++++++++++++++++++++++++++++++++++++++++++ Brick accumulated: " + brickName + " isCurrent: " + _isCurrent + " version: " + versionHash);
 	}
 	
 

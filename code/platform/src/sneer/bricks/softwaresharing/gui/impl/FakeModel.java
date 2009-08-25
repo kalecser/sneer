@@ -60,6 +60,7 @@ class FakeModel {
 			@Override public byte[] contentsInCurrentVersion() { 	return currentContents.getBytes(); }
 			@Override public String name() { return fileName; }
 			@Override public Status status() { return status; }
+			@Override public long lastModified() { return System.currentTimeMillis(); }
 		};
 	}
 
