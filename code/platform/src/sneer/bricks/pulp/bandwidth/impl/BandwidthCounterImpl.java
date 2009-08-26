@@ -35,8 +35,8 @@ class BandwidthCounterImpl implements BandwidthCounter {
 	@Override public Signal<Integer> uploadSpeed()   { return _upSpeed.output(); }
 	@Override public Signal<Integer> downloadSpeed() { return _dnSpeed.output(); }
 	
-	@Override synchronized public void received(int byteCount) { _dnCounter += byteCount; }
 	@Override synchronized public void sent    (int byteCount) { _upCounter += byteCount; }
+	@Override synchronized public void received(int byteCount) { _dnCounter += byteCount; }
 	
 	
 	synchronized
