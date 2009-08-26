@@ -1,5 +1,7 @@
 package sneer.tests.freedom7;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -7,24 +9,15 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.software.bricks.snappstarter.Snapp;
+import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
+import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.foundation.brickness.Brick;
 import sneer.tests.SovereignFunctionalTestBase;
-import sneer.tests.SovereignParty;
 import sneer.tests.adapters.LoggerForTests;
 
 public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 	
 //	private final JavaCompiler _compiler = my(JavaCompiler.class);
-
-	@Test (timeout = 4000)
-	public void publish() throws Exception {
-		SovereignParty neide = createParty("Neide");
-		neide.copyToSourceFolder(generateY());
-		
-		neide = newSession(neide);
-		
-		neide.waitForAvailableBrick("freedom7.y.Y", "CURRENT");
-	}
 
 	@Ignore
 	@Test (timeout = 12000)
@@ -44,8 +37,6 @@ public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 		assertEquals("true", System.getProperty("freedom7.y.Y.installed"));
 		
 		b().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
-		
-		fail("Unignore publish test.");
 	}
 
 	@Test
@@ -139,7 +130,7 @@ public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 
 	private File generateY() throws IOException {
 		File src = sourceFolder("src-y");
-		writeY(new SourceFileWriter(src));
+		writeY(src);
 		return src;
 	}
 	
@@ -154,7 +145,8 @@ public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 //		return src;
 //	}
 //
-	private void writeY(SourceFileWriter writer) throws IOException {
+	private void writeY(File srcFolder) throws IOException {
+		JavaSourceWriter writer = my(JavaSourceWriters.class).newInstance(srcFolder);
 		writer.write("freedom7.y.Y",
 				"@" + Brick.class.getName() + " " +
 				"@" + Snapp.class.getName() + " " +

@@ -5,7 +5,6 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 
-import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.publisher.FilePublisher;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
@@ -42,18 +41,12 @@ class BrickPublisherImpl implements BrickPublisher {
 			return;
 		}
 		
-		my(Logger.class).log("Publishing " + SrcFolderHash.class.getSimpleName());
 		my(TupleSpace.class).publish(new SrcFolderHash(hash));
 	}
 
+	
 	private static String helpMessage() {
 		return "There was trouble trying to publish bricks. See log for details.";
 	}
 	
-//
-//
-//	private String packageFor(String brickName) {
-//		return my(Lang.class).strings().substringBeforeLast(brickName, ".");
-//	}
-
 }

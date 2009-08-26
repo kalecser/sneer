@@ -341,14 +341,15 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 
 	@Override
 	public void copyToSourceFolder(File folderWithBricks) throws IOException {
-		
 		my(IO.class).files().copyFolder(folderWithBricks, platformSrcFolder());
 	}
 
+	
 	private File platformSrcFolder() {
 		return my(FolderConfig.class).platformSrcFolder().get();
 	}
 
+	
 	private String print(Seal seal) {
 		return seal.equals(my(Seals.class).ownSeal())
 			? "myself"
