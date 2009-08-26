@@ -9,7 +9,6 @@ import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
@@ -96,7 +95,7 @@ class WatchMeImpl implements WatchMe {
 
 	@Override
 	public void startShowingMyScreen() {
-		_stepperContract = _threads.startStepping(new Steppable(){ @Override public void step() {
+		_stepperContract = _threads.startStepping(new Runnable(){ @Override public void run() {
 			doPublishShot();
 			my(Timer.class).sleepAtLeast(PERIOD_IN_MILLIS);
 		}});

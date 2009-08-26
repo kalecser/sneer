@@ -8,7 +8,6 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import spikes.sneer.bricks.skin.audio.kernel.Audio;
 
@@ -33,7 +32,7 @@ class Player {
 
 		_buffer = buffer;
 		
-		_stepperContract = my(Threads.class).startStepping(new Steppable() { @Override public void step() {
+		_stepperContract = my(Threads.class).startStepping(new Runnable() { @Override public void run() {
 			playBuffer();
 		}});
 		return true;

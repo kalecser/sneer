@@ -1,20 +1,19 @@
 package sneer.bricks.hardware.cpu.threads.impl;
 
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 
 class Stepper implements Runnable, Contract {
 
-	private final Steppable _steppable;
+	private final Runnable _steppable;
 	private volatile boolean _isDisposed = false;
 
-	Stepper(Steppable steppable) {
+	Stepper(Runnable steppable) {
 		_steppable = steppable;
 	}
 
 	@Override
 	public void run() {
-		while (!_isDisposed) _steppable.step();
+		while (!_isDisposed) _steppable.run();
 	}
 
 	@Override

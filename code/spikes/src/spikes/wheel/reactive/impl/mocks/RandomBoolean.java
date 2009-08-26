@@ -4,7 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.util.Random;
 
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
@@ -16,7 +15,7 @@ public class RandomBoolean {
 	private Register<Boolean> _register = my(Signals.class).newRegister(false);
 
 	{
-		my(Threads.class).startStepping(new Steppable() { @Override public void step() {
+		my(Threads.class).startStepping(new Runnable() { @Override public void run() {
 			sleepAndFlip();
 		}});
 	}

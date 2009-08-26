@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.computers.sockets.accepter.SocketAccepter;
@@ -54,7 +53,7 @@ class SocketAccepterImpl implements SocketAccepter {
 			setPort(port);
 		}});
 
-		_threads.startStepping(new Steppable() { @Override public void step() {
+		_threads.startStepping(new Runnable() { @Override public void run() {
 			listenToSneerPort();
 		}});
 	}
@@ -85,7 +84,7 @@ class SocketAccepterImpl implements SocketAccepter {
     }
 	
 	private void startAccepting() {
-		_stepperContract = _threads.startStepping(new Steppable() { @Override public void step() {
+		_stepperContract = _threads.startStepping(new Runnable() { @Override public void run() {
 			try {
 				dealWith(_serverSocket.accept());
 			} catch (IOException e) {

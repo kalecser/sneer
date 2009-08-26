@@ -2,7 +2,7 @@ package sneer.bricks.hardware.cpu.threads.impl;
 
 import java.util.concurrent.CountDownLatch;
 
-import sneer.bricks.hardware.cpu.threads.Latch;
+import sneer.bricks.hardware.cpu.threads.latches.Latch;
 
 public class LatchImpl implements Latch {
 

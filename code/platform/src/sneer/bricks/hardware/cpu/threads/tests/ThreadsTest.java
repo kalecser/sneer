@@ -5,9 +5,8 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Latch;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.foundation.brickness.testsupport.BrickTest;
 import sneer.foundation.environments.Environment;
@@ -22,7 +21,7 @@ public class ThreadsTest extends BrickTest {
 		final Environment environment = my(Environment.class);
 		final Latch latch = my(Latches.class).newLatch();
 
-		_subject.startStepping(new Steppable() { @Override public void step() {
+		_subject.startStepping(new Runnable() { @Override public void run() {
 			assertSame(environment, Environments.my(Environment.class));
 			latch.open();
 		}});

@@ -11,8 +11,7 @@ import org.junit.Test;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Latch;
-import sneer.bricks.hardware.cpu.threads.Steppable;
+import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.foundation.brickness.testsupport.BrickTest;
 import sneer.foundation.lang.ByRef;
@@ -61,9 +60,9 @@ public class TimerTest extends BrickTest {
 	public void testContractWeakness() throws Exception {
 		final ByRef<Boolean> finalized = ByRef.newInstance(false);
 		
-		_subject.wakeUpEvery(42, new Steppable() {
+		_subject.wakeUpEvery(42, new Runnable() {
 			@Override
-			public void step() {
+			public void run() {
 				return;
 			}
 
@@ -81,7 +80,7 @@ public class TimerTest extends BrickTest {
 	}
 
 	
-	private class Worker implements Steppable, Runnable {
+	private class Worker implements Runnable {
 
 		private final int _timeout;
 		private final List<Integer> _order;
@@ -95,15 +94,10 @@ public class TimerTest extends BrickTest {
 		}
 
 		@Override
-		public void step() {
+		public void run() {
 			_count++;
 			_order.add(_timeout * _count);
 			_latch.countDown();
-		}
-
-		@Override
-		public void run() {
-			step();
 		}
 	}
 	

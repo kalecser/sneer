@@ -4,7 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
@@ -23,7 +22,7 @@ class RetrierImpl implements Retrier {
 	private final Contract _steppingContract;
 	
 	RetrierImpl(final int periodBetweenAttempts, final Task task) {
-		_steppingContract = _threads.startStepping(new Steppable() { @Override public void step() {
+		_steppingContract = _threads.startStepping(new Runnable() { @Override public void run() {
 			if (wasSuccessful(task))
 				_steppingContract.dispose();
 			else

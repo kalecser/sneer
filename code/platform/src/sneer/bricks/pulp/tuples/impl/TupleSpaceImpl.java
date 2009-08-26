@@ -26,7 +26,6 @@ import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.lang.contracts.Contracts;
 import sneer.bricks.hardware.cpu.lang.contracts.Disposable;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -62,8 +61,8 @@ class TupleSpaceImpl implements TupleSpace {
 			_stepperContract = _threads.startStepping(notifier());
 		}
 
-		private Steppable notifier() {
-			return new Steppable() { @Override public void step() {
+		private Runnable notifier() {
+			return new Runnable() { @Override public void run() {
 				Tuple nextTuple = waitToPopTuple();
 				notifySubscriber(nextTuple);
 				dispatchCounterDecrement();

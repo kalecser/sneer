@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
@@ -28,7 +27,7 @@ class OutgoingAttempt {
 	OutgoingAttempt(InternetAddress address) {
 		_address = address;
 
-		_steppingContract = my(Timer.class).wakeUpNowAndEvery(20 * 1000, new Steppable() { @Override public void step() {
+		_steppingContract = my(Timer.class).wakeUpNowAndEvery(20 * 1000, new Runnable() { @Override public void run() {
 			my(Threads.class).startDaemon("Outgoing Attempt", new Runnable() { @Override public void run() {
 				tryToOpenOnlyOnce();
 			}});

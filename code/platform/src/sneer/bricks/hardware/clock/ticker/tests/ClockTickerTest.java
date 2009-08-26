@@ -7,7 +7,7 @@ import org.junit.Test;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.ticker.ClockTicker;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Latch;
+import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.foundation.brickness.testsupport.BrickTest;
 import sneer.foundation.lang.Consumer;

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
@@ -17,18 +16,18 @@ import sneer.bricks.pulp.events.pulsers.PulseSource;
 
 public class ThreadsMock implements Threads {
 
-	List<Steppable> _steppers = new ArrayList<Steppable>();
+	List<Runnable> _steppers = new ArrayList<Runnable>();
 	private Map<Runnable, String> _daemonNamesByRunnable = new HashMap<Runnable, String>();
 	private final EventNotifier<Object> _crashingPulser = my(EventNotifiers.class).newInstance();
 
 
 	@Override
-	public synchronized Contract startStepping(final Steppable stepper) {
+	public synchronized Contract startStepping(final Runnable stepper) {
 		_steppers.add(stepper);
 		return null;
 	}
 
-	public synchronized Steppable getStepper(int i) {
+	public synchronized Runnable getStepper(int i) {
 		return _steppers.get(i);
 	}
 

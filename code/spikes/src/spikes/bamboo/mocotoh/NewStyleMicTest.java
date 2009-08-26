@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
@@ -38,7 +37,7 @@ public class NewStyleMicTest {
 					_tupleSpaceContract = tuples.addSubscription(PcmSoundPacket.class, subscriber);
 				}};
 	
-				final Steppable stepper = capture();
+				final Runnable stepper = capture();
 				new Stimulus() {{
 					mic.open();
 						threads.startStepping(stepper);
@@ -48,7 +47,7 @@ public class NewStyleMicTest {
 				final PcmSoundPacket packet = capture();
 				new Stimulus() {{
 					line = audio.tryToOpenCaptureLine();
-					stepper.step();
+					stepper.run();
 						line.open();
 						line.start();
 						
@@ -61,7 +60,7 @@ public class NewStyleMicTest {
 				}};
 						
 				new Stimulus() {{
-					stepper.step();
+					stepper.run();
 						line.read(buffer, 0, 640);
 						buffer[0] = 20;
 						
@@ -71,7 +70,7 @@ public class NewStyleMicTest {
 				}};
 				
 				new Stimulus() {{
-					stepper.step();	
+					stepper.run();	
 						line.read(buffer, 0, 640);
 						buffer[0] = 30;
 						
@@ -85,7 +84,7 @@ public class NewStyleMicTest {
 				}};
 				
 				new Stimulus() {{
-					stepper.step();
+					stepper.run();
 						line.close();
 				}};
 			}

@@ -5,7 +5,6 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.IOException;
 
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection;
 import sneer.bricks.pulp.bandwidth.BandwidthCounter;
@@ -45,14 +44,14 @@ class ByteConnectionImpl implements ByteConnection {
 
 	
 	private void startSending() {
-		_contractToSend = Threads.startStepping(new Steppable() { @Override public void step() {
+		_contractToSend = Threads.startStepping(new Runnable() { @Override public void run() {
 			send(_socketHolder.waitForSocket());
 		}});
 	}
 
 	
 	private void startReceiving() {
-		_contractToReceive = Threads.startStepping(new Steppable() { @Override public void step() {
+		_contractToReceive = Threads.startStepping(new Runnable() { @Override public void run() {
 			receiveFrom(_socketHolder.waitForSocket());
 		}});
 	}

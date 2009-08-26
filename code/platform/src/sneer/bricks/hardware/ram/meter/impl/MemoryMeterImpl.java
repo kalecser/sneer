@@ -3,7 +3,6 @@ package sneer.bricks.hardware.ram.meter.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.ram.meter.MemoryMeter;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
@@ -21,7 +20,7 @@ class MemoryMeterImpl implements MemoryMeter {
 	private final WeakContract _timerContract;
 	
 	{
-		_timerContract = my(Timer.class).wakeUpNowAndEvery(PERIOD_IN_MILLIS, new Steppable() { @Override public void step() {
+		_timerContract = my(Timer.class).wakeUpNowAndEvery(PERIOD_IN_MILLIS, new Runnable() { @Override public void run() {
 			measureMemory();
 		}});
 	}

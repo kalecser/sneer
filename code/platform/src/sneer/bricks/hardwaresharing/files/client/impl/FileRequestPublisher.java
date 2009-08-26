@@ -7,7 +7,6 @@ import java.util.LinkedList;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
@@ -20,7 +19,7 @@ class FileRequestPublisher {
 
 	
 	static {
-		_timerContract = my(Timer.class).wakeUpNowAndEvery(10000, new Steppable() { @Override public void step() {
+		_timerContract = my(Timer.class).wakeUpNowAndEvery(10000, new Runnable() { @Override public void run() {
 			publishPendingRequest();
 		}});
 	}

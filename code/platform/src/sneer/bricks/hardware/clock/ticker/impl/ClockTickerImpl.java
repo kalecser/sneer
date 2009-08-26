@@ -3,7 +3,6 @@ package sneer.bricks.hardware.clock.ticker.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.ticker.ClockTicker;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
 
 class ClockTickerImpl implements ClockTicker {
@@ -13,7 +12,7 @@ class ClockTickerImpl implements ClockTicker {
 
 	ClockTickerImpl() {
 		tick();
-		_threads.startStepping(new Steppable() { @Override public void step() {
+		_threads.startStepping(new Runnable() { @Override public void run() {
 			tick();
 		}});
 	}

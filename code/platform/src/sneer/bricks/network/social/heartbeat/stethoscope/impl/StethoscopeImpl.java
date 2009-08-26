@@ -4,7 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.heartbeat.Heartbeat;
@@ -20,7 +19,7 @@ import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Producer;
 
-class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Steppable {
+class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Runnable {
 
 	private static final int TIME_TILL_DEATH = 30 * 1000;
 	private static final int MAX_BEAT_AGE = 10 * 60 * 1000;
@@ -119,7 +118,7 @@ class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Steppable {
 
 
 	@Override
-	public void step() {
+	public void run() {
 		notifyDeathOfStaleContacts();
 	}
 

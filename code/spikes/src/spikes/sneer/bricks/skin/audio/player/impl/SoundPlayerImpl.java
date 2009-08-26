@@ -16,7 +16,6 @@ import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
@@ -24,7 +23,7 @@ import sneer.foundation.lang.exceptions.NotImplementedYet;
 import spikes.sneer.bricks.skin.audio.kernel.Audio;
 import spikes.sneer.bricks.skin.audio.player.SoundPlayer;
 
-class SoundPlayerImpl implements SoundPlayer, Steppable {
+class SoundPlayerImpl implements SoundPlayer, Runnable {
 
 	private final Audio _audio = my(Audio.class);
 	private final List<URL> urls = Collections.synchronizedList(new ArrayList<URL>());
@@ -40,7 +39,7 @@ class SoundPlayerImpl implements SoundPlayer, Steppable {
 	}
 
 	@Override
-	public void step() {
+	public void run() {
 		doPlay(urls.get(0));
 		synchronized (urls) {
 			urls.remove(0);

@@ -2,9 +2,8 @@ package sneer.bricks.hardware.cpu.threads.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
-import sneer.bricks.hardware.cpu.threads.Latch;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.events.pulsers.PulseSource;
 import sneer.bricks.pulp.events.pulsers.Pulser;
@@ -66,7 +65,7 @@ class ThreadsImpl implements Threads {
 	}
 
 	@Override
-	public Contract startStepping(Steppable steppable) {
+	public Contract startStepping(Runnable steppable) {
 		Stepper result = new Stepper(steppable);
 		startDaemon(inferThreadName(), result);
 		return result;

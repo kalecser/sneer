@@ -2,7 +2,6 @@ package spikes.sneer.bricks.skin.audio.mic.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.pulp.events.EventNotifier;
@@ -48,7 +47,7 @@ class MicImpl implements Mic {
 	private void startToWorkIfNecessary() {
 		if (_stepperContract != null) return;
 
-		_stepperContract = _threads.startStepping(new Steppable() { @Override public void step() {
+		_stepperContract = _threads.startStepping(new Runnable() { @Override public void run() {
 			work();
 		}});
 	}

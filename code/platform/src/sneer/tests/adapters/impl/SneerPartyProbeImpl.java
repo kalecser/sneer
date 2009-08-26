@@ -11,9 +11,8 @@ import java.util.List;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Latch;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
@@ -220,7 +219,7 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 	}
 
 	private void accelerateHeartbeat() {
-		my(Threads.class).startStepping(new Steppable() { @Override public void step() {
+		my(Threads.class).startStepping(new Runnable() { @Override public void run() {
 			my(Clock.class).advanceTime(1000);
 			my(Threads.class).sleepWithoutInterruptions(20);
 		}});

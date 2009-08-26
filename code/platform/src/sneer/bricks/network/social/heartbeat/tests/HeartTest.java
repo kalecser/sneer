@@ -8,7 +8,6 @@ import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.timer.Timer;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.network.social.heartbeat.Heart;
 import sneer.bricks.network.social.heartbeat.Heartbeat;
 import sneer.bricks.pulp.tuples.TupleSpace;
@@ -24,21 +23,21 @@ public class HeartTest extends BrickTest {
 	@Test
 	public void heartIsBeating() {
 		
-		final ByRef<Steppable> _timerSteppable = ByRef.newInstance();
+		final ByRef<Runnable> _timerSteppable = ByRef.newInstance();
 		
 		checking(new Expectations() {{
-			allowing(_timer).wakeUpNowAndEvery(with(any(Long.class)), with(any(Steppable.class)));
+			allowing(_timer).wakeUpNowAndEvery(with(any(Long.class)), with(any(Runnable.class)));
 			will(new CustomAction("Run timer runnables") { @Override public Object invoke(Invocation invocation) throws Throwable {
 				assertEquals(10000L, invocation.getParameter(0));
-				_timerSteppable.value = (Steppable)invocation.getParameter(1); return null;
+				_timerSteppable.value = (Runnable)invocation.getParameter(1); return null;
 			}});
 
 			exactly(2).of(_tupleSpace).publish(with(any(Heartbeat.class)));
 		}});
 
 		my(Heart.class);
-		_timerSteppable.value.step();
-		_timerSteppable.value.step();
+		_timerSteppable.value.run();
+		_timerSteppable.value.run();
 	}
 
 }

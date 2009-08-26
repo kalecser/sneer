@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.pulp.bandwidth.BandwidthCounter;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
@@ -32,7 +31,7 @@ class BandwidthCounterImpl implements BandwidthCounter {
 	
 	BandwidthCounterImpl(){
 		_lastConsolidationTime = _clock.time().currentValue();
-		_alarmContract = my(Timer.class).wakeUpEvery(CONSOLIDATION_TIME, new Steppable(){ @Override public void step() {
+		_alarmContract = my(Timer.class).wakeUpEvery(CONSOLIDATION_TIME, new Runnable(){ @Override public void run() {
 			consolidate();
 		}});
 	}
@@ -42,6 +41,7 @@ class BandwidthCounterImpl implements BandwidthCounter {
 	@Override public void received(int sizeBytes) { received.addAndGet(sizeBytes); }
 	@Override public void sent(int sizeBytes) { sent.addAndGet(sizeBytes); }
 	
+	synchronized
 	private final void consolidate() {
 //		System.out.println("CONSOLIDATE");
 		long currentTime = _clock.time().currentValue();

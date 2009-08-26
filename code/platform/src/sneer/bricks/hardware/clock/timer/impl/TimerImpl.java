@@ -11,9 +11,8 @@ import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.Contracts;
 import sneer.bricks.hardware.cpu.lang.contracts.Disposable;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Latch;
-import sneer.bricks.hardware.cpu.threads.Steppable;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.foundation.lang.Consumer;
 
@@ -44,23 +43,23 @@ class TimerImpl implements Timer {
 	@Override
 	synchronized
 	public WeakContract wakeUpInAtLeast(long millisFromCurrentTime, Runnable runnable) {
-		return wakeUp(millisFromCurrentTime, asSteppable(runnable), false);
+		return wakeUp(millisFromCurrentTime, runnable, false);
 	}
 
 	@Override
 	synchronized
-	public WeakContract wakeUpNowAndEvery(long period, final Steppable stepper) {
+	public WeakContract wakeUpNowAndEvery(long period, final Runnable stepper) {
 		new Alarm(stepper, 0, false).wakeUp();
 		return wakeUpEvery(period, stepper);
 	}
 
 	@Override
 	synchronized
-	public WeakContract wakeUpEvery(long period, Steppable stepper) {
+	public WeakContract wakeUpEvery(long period, Runnable stepper) {
 		return wakeUp(period, stepper, true);
 	}
 
-	private WeakContract wakeUp(long period, Steppable stepper, boolean isPeriodic) {
+	private WeakContract wakeUp(long period, Runnable stepper, boolean isPeriodic) {
 		Alarm result = new Alarm(stepper, period, isPeriodic);
 		_alarms.add(result);
 		return my(Contracts.class).weakContractFor(result, stepper);
@@ -88,7 +87,7 @@ class TimerImpl implements Timer {
 
 	private class Alarm implements Comparable<Alarm>, Disposable {
 
-		private final WeakReference<Steppable> _stepper;
+		private final WeakReference<Runnable> _stepper;
 
 		private final boolean _isPeriodic;
 		private final long _period;
@@ -102,9 +101,9 @@ class TimerImpl implements Timer {
 		private boolean _isDisposed = false;
 
 		
-		public Alarm(Steppable stepper, long period, boolean isPeriodic) {
+		public Alarm(Runnable stepper, long period, boolean isPeriodic) {
 			if (period < 0) throw new IllegalArgumentException("" + period);
-			_stepper = new WeakReference<Steppable>(stepper);
+			_stepper = new WeakReference<Runnable>(stepper);
 			_period = period;
 			_wakeUpTime = currentTime() + period;
 			_isPeriodic = isPeriodic;
@@ -114,7 +113,7 @@ class TimerImpl implements Timer {
 		void wakeUp() {
 			_alarms.remove(this);
 
-			Steppable stepper = _stepper.get();
+			Runnable stepper = _stepper.get();
 			if (stepper == null) return;
 			if (_isDisposed) return;
 			
@@ -126,11 +125,11 @@ class TimerImpl implements Timer {
 		}
 
 		
-		private void step(final Steppable stepper) {
+		private void step(final Runnable stepper) {
 			if (_isRunning) return;
 			_isRunning = true;
 			my(Threads.class).startDaemon("Timer for " + stepper, new Runnable() { @Override public void run() {
-				stepper.step();
+				stepper.run();
 				_isRunning = false;
 			}});
 		}
@@ -157,12 +156,6 @@ class TimerImpl implements Timer {
 			_isDisposed = true;
 		}
 
-	}
-
-	private static Steppable asSteppable(final Runnable runnable) {
-		return new Steppable() { @Override public void step() {
-			runnable.run();
-		}};
 	}
 
 	
