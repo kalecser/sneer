@@ -231,7 +231,7 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 
 		final Latch latch = my(Latches.class).newLatch();
 		
-		WeakContract contract = my(BrickSpace.class).newBrickConfigurationFound().addReceiver(new Consumer<Seal>() { @Override public void consume(Seal publisher) {
+		WeakContract contract = my(BrickSpace.class).newBuildingFound().addReceiver(new Consumer<Seal>() { @Override public void consume(Seal publisher) {
 			my(Logger.class).log("New brick configuration found for: " + print(publisher));
 			if (isBrickAvailable(brickName, brickStatus)) latch.open();
 		}});

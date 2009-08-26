@@ -36,46 +36,26 @@ class FileToBrickConversion implements FileCacheVisitor {
 
 
 	@Override
-	public void visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
+	public boolean visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
+		if (name.equals("impl")) return false;
+		if (name.equals("tests")) return false;
+		
 		_namePath.add(name);
 		_hashPath.add(hashOfContents);
+		return true;
 	}
 
 	
 	@Override
 	public void visitFileContents(byte[] fileContents) {
 		String fileName = _namePath.peekLast();
-
 		_namePath.removeLast();
 		_hashPath.removeLast();
 
 		if (!fileName.endsWith(".java")) return;
-
 		if (!isBrickDefinition(fileContents)) return;
 		
 		accumulateBrick(fileName);
-	}
-
-
-	private void accumulateBrick(String fileName) {
-		String packageName = _strings.join(_namePath, ".");
-		final String brickName = _strings.chomp(packageName + "." + fileName, ".java");
-
-		BrickInfoImpl brick = (BrickInfoImpl) _bricksByName.get(brickName, new Producer<BrickInfo>() { @Override public BrickInfo produce() {
-			return new BrickInfoImpl(brickName);
-		}});
-		
-		Sneer1024 versionHash = _hashPath.peekLast();
-		brick.addVersion(versionHash, _isCurrent);
-
-		my(Logger.class).log("+++++++++++++++++++++++++++++++++++++++++++++++ Brick accumulated: " + brickName + " isCurrent: " + _isCurrent + " version: " + versionHash);
-	}
-	
-
-	private boolean isBrickDefinition(byte[] fileContents) {
-		String contents = asString(fileContents);
-		return contents.contains("@Brick")
-			|| contents.contains("@sneer.foundation.brickness.Brick");
 	}
 
 
@@ -88,6 +68,29 @@ class FileToBrickConversion implements FileCacheVisitor {
 		_namePath.removeLast();
 		_hashPath.removeLast();
 	}
+
+	
+	private void accumulateBrick(String fileName) {
+		String packageName = _strings.join(_namePath, ".");
+		final String brickName = _strings.chomp(packageName + "." + fileName, ".java");
+
+		BrickInfoImpl brick = (BrickInfoImpl) _bricksByName.get(brickName, new Producer<BrickInfo>() { @Override public BrickInfo produce() {
+			return new BrickInfoImpl(brickName);
+		}});
+		
+		Sneer1024 packageHash = _hashPath.peekLast();
+		brick.addVersionFromPackage(packageHash, _isCurrent);
+
+		my(Logger.class).log("+++++++++++++++++++++++++++++++++++++++++++++++ Brick accumulated: " + brickName + " isCurrent: " + _isCurrent);
+	}
+	
+
+	private boolean isBrickDefinition(byte[] fileContents) {
+		String contents = asString(fileContents);
+		return contents.contains("@Brick")
+			|| contents.contains("@sneer.foundation.brickness.Brick");
+	}
+
 	
 	private String asString(byte[] fileContents) {
 		try {

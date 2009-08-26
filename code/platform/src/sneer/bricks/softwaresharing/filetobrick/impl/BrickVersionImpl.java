@@ -99,9 +99,10 @@ class BrickVersionImpl implements BrickVersion {
 
 		
 		@Override
-		public void visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
+		public boolean visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
 			_path.add(name);
 			_lastModified = lastModified;
+			return true;
 		}
 		
 		@Override

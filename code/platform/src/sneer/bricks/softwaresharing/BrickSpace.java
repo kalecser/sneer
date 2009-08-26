@@ -11,7 +11,7 @@ import sneer.foundation.brickness.Seal;
 @Brick
 public interface BrickSpace {
 
-	EventSource<Seal> newBrickConfigurationFound();
+	EventSource<Seal> newBuildingFound();
 
 	Collection<BrickInfo> availableBricks();
 	

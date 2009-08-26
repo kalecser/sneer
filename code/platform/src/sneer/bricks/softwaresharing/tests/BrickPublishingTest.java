@@ -69,7 +69,7 @@ public class BrickPublishingTest extends BrickTest {
 	private BrickInfo waitForAvailableBrick(final String brickName, final Status status) {
 		final Latch latch = my(Latches.class).newLatch();
 		
-		WeakContract contract = my(BrickSpace.class).newBrickConfigurationFound().addReceiver(new Consumer<Seal>() { @Override public void consume(Seal publisher) {
+		WeakContract contract = my(BrickSpace.class).newBuildingFound().addReceiver(new Consumer<Seal>() { @Override public void consume(Seal publisher) {
 			if (isBrickAvailable(brickName, status)) latch.open();
 		}});
 		if (isBrickAvailable(brickName, status)) latch.open();

@@ -27,14 +27,14 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 	private final CacheMap<String, BrickInfo> _availableBricksByName = new CacheMap<String, BrickInfo>();
 
-	private final EventNotifier<Seal> _newBrickConfigurationFound = my(EventNotifiers.class).newInstance();
+	private final EventNotifier<Seal> _newBuildingFound = my(EventNotifiers.class).newInstance();
 	
-	@SuppressWarnings("unused")	private final WeakContract _brickUsageContract;
+	@SuppressWarnings("unused")	private final WeakContract _tupleSubscription;
 
 	
 	{
 		my(TupleSpace.class).keep(SrcFolderHash.class);
-		_brickUsageContract = my(TupleSpace.class).addSubscription(SrcFolderHash.class, this);
+		_tupleSubscription = my(TupleSpace.class).addSubscription(SrcFolderHash.class, this);
 		
 		my(SourcePublisher.class).publishSourceFolder();
 	}
@@ -55,8 +55,8 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 	
 	@Override
-	public EventSource<Seal> newBrickConfigurationFound() {
-		return _newBrickConfigurationFound.output();
+	public EventSource<Seal> newBuildingFound() {
+		return _newBuildingFound.output();
 	}
 
 	
@@ -77,7 +77,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 			isCurrent(srcFolderHash)
 		);
 		
-		_newBrickConfigurationFound.notifyReceivers(srcFolderHash.publisher());
+		_newBuildingFound.notifyReceivers(srcFolderHash.publisher());
 	}
 
 

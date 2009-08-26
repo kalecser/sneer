@@ -24,9 +24,10 @@ final class FileWritingVisitor implements FileCacheVisitor {
 	}
 
 	
-	@Override public void visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
+	@Override public boolean visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
 		_fileOrFolder = new File(_fileOrFolder, name);
 		_lastModified.push(lastModified);
+		return true;
 	}
 
 	
