@@ -1,9 +1,6 @@
 package sneer.bricks.pulp.bandwidth.impl;
 
 import static sneer.foundation.environments.Environments.my;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -16,45 +13,49 @@ class BandwidthCounterImpl implements BandwidthCounter {
 
 	static private final int CONSOLIDATION_TIME = 3000;
 	
-	private final Clock _clock = my(Clock.class);
+	static private final Clock Clock = my(Clock.class);
+	private long _lastConsolidationTime = Clock.time().currentValue();
 	
-	private final AtomicInteger sent = new AtomicInteger();
-	private final AtomicInteger received  = new AtomicInteger();
+	private int _upCounter = 0;
+	private int _dnCounter = 0;
 	
-	private final Register<Integer> _download = my(Signals.class).newRegister(0); 
-	private final Register<Integer> _upload = my(Signals.class).newRegister(0); 
+	private final Register<Integer> _upSpeed = my(Signals.class).newRegister(0); 
+	private final Register<Integer> _dnSpeed = my(Signals.class).newRegister(0); 
 
-	@SuppressWarnings("unused")
-	private final WeakContract _alarmContract;
-	private long _lastConsolidationTime;
+	@SuppressWarnings("unused")	private final WeakContract _alarmContract;
 
 	
 	BandwidthCounterImpl(){
-		_lastConsolidationTime = _clock.time().currentValue();
 		_alarmContract = my(Timer.class).wakeUpEvery(CONSOLIDATION_TIME, new Runnable(){ @Override public void run() {
 			consolidate();
 		}});
 	}
 	
-	@Override public Signal<Integer> downloadSpeed() { return _download.output(); }
-	@Override public Signal<Integer> uploadSpeed() { return _upload.output();  }
-	@Override public void received(int sizeBytes) { received.addAndGet(sizeBytes); }
-	@Override public void sent(int sizeBytes) { sent.addAndGet(sizeBytes); }
+	
+	@Override public Signal<Integer> uploadSpeed()   { return _upSpeed.output(); }
+	@Override public Signal<Integer> downloadSpeed() { return _dnSpeed.output(); }
+	
+	@Override synchronized public void received(int byteCount) { _dnCounter += byteCount; }
+	@Override synchronized public void sent    (int byteCount) { _upCounter += byteCount; }
+	
 	
 	synchronized
 	private final void consolidate() {
-//		System.out.println("CONSOLIDATE");
-		long currentTime = _clock.time().currentValue();
-		int deltaTime = (int) (currentTime-_lastConsolidationTime);
-		int deltaTimeInSeconds =deltaTime/1000;
-		
-		_download.setter().consume(toKbytes(received, deltaTimeInSeconds));
-		_upload.setter().consume(toKbytes(sent, deltaTimeInSeconds));
-		
+		long currentTime = Clock.time().currentValue();
+		long deltaMillis = currentTime - _lastConsolidationTime;
 		_lastConsolidationTime = currentTime;
+		
+		setKBytesPerSecond(_upSpeed, _upCounter, deltaMillis);
+		setKBytesPerSecond(_dnSpeed, _dnCounter, deltaMillis);
+		
+		_upCounter = 0;
+		_dnCounter = 0;
 	}
 
-	private int toKbytes(AtomicInteger sum, int deltaTimeInSeconds) {
-		return sum.getAndSet(0) / (1024 * deltaTimeInSeconds);
+	
+	private void setKBytesPerSecond(Register<Integer> speed, int byteCount, long deltaMillis) {
+		int value = (int)(byteCount * 1000 / deltaMillis / 1024);
+		speed.setter().consume(value);
 	}
+
 }

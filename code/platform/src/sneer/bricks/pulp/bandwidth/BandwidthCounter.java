@@ -6,9 +6,9 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface BandwidthCounter {
 
-	void sent(int sizeBytes);
-	void received(int sizeBytes);
+	void sent(int byteCount);
+	void received(int byteCount);
 
-	Signal<Integer> downloadSpeed();
 	Signal<Integer> uploadSpeed();
+	Signal<Integer> downloadSpeed();
 }
