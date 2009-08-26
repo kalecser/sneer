@@ -6,7 +6,7 @@ public interface FileCacheVisitor {
 
 	boolean visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents);
 
-	void enterFolder();
+	boolean enterFolder();
 	void leaveFolder();
 	
 	void visitFileContents(byte[] fileContents);

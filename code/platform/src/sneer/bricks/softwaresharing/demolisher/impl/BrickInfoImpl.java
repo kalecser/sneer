@@ -49,7 +49,7 @@ class BrickInfoImpl implements BrickInfo {
 		boolean hasCurrent = false, hasDifferent = false;
 		for (BrickVersion version : versions()) {
 			if (version.status().equals(BrickVersion.Status.DIFFERENT)) hasDifferent = true;
-			if (version.status().equals(BrickVersion.Status.CURRENT)) hasCurrent = true;
+			if (version.status().equals(BrickVersion.Status.CURRENT  )) hasCurrent   = true;
 		}
 
 		if ( hasDifferent &&  hasCurrent) return Status.DIFFERENT;
@@ -77,12 +77,14 @@ class BrickInfoImpl implements BrickInfo {
 	}
 
 
-	void addVersionFromPackage(final Sneer1024 versionHash, final boolean isCurrent) {
-		BrickVersionImpl version = _versionsByHash.get(versionHash, new Producer<BrickVersionImpl>() { @Override public BrickVersionImpl produce() {
-			return new BrickVersionImpl(versionHash, isCurrent);
+	void addVersionFromPackage(Sneer1024 packageHash, boolean isCurrent) {
+		final BrickVersionImpl newVersion = new BrickVersionImpl(packageHash, isCurrent);
+		
+		BrickVersionImpl versionKept = _versionsByHash.get(newVersion.hash(), new Producer<BrickVersionImpl>() { @Override public BrickVersionImpl produce() {
+			return newVersion;
 		}});
 		
-		if (isCurrent) version.setCurrent();
+		if (isCurrent) versionKept.setCurrent(); //Previous kept version might not have been current.
 	}
 
 }

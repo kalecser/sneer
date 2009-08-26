@@ -37,8 +37,9 @@ final class FileWritingVisitor implements FileCacheVisitor {
 	}
 	
 	
-	@Override public void enterFolder() {
+	@Override public boolean enterFolder() {
 		_fileOrFolder.mkdirs();
+		return true;
 	}
 	
 	

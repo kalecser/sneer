@@ -22,8 +22,8 @@ class BrickVersionImpl implements BrickVersion {
 	private Status _status;
 
 	
-	BrickVersionImpl(Sneer1024 hash, boolean isCurrent) {
-		_hash = hash;
+	BrickVersionImpl(Sneer1024 hashOfPackage, boolean isCurrent) {
+		_hash = hashOfPackage;
 		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
 	}
 
@@ -106,7 +106,9 @@ class BrickVersionImpl implements BrickVersion {
 		}
 		
 		@Override
-		public void enterFolder() {}
+		public boolean enterFolder() {
+			return true;
+		}
 
 		@Override
 		public void leaveFolder() {
