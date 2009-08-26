@@ -73,6 +73,8 @@ public class BrickInstallerTest extends BrickTest {
 			allowing(interfaceFile).contents();	will(returnValue(interfaceDefinition().getBytes("UTF-8")));
 			allowing(implFile).contents(); will(returnValue(implDefinition().getBytes("UTF-8")));
 				
+			allowing(interfaceFile).lastModified();	will(returnValue(1L));
+			allowing(implFile).lastModified(); will(returnValue(1L));
 		}});
 		
 		_subject.prepareStagedBricksInstallation();
