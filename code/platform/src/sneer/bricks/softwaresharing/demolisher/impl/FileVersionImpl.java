@@ -2,6 +2,7 @@ package sneer.bricks.softwaresharing.demolisher.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
@@ -28,7 +29,11 @@ class FileVersionImpl implements FileVersion {
 
 	@Override
 	public byte[] contentsInCurrentVersion() {
-		return _status == Status.CURRENT ? _contents : null;
+		try {
+			return "implement: contentsInCurrentVersion()".getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+		}
 	}
 
 	@Override
