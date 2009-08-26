@@ -73,13 +73,15 @@ class Demolition implements FileCacheVisitor {
 	private void accumulateBrick(String fileName) {
 		String packageName = _strings.join(_namePath, ".");
 		final String brickName = _strings.chomp(packageName + "." + fileName, ".java");
+		final Sneer1024 packageHash = _hashPath.peekLast();
 
-		BrickInfoImpl brick = (BrickInfoImpl) _bricksByName.get(brickName, new Producer<BrickInfo>() { @Override public BrickInfo produce() {
-			return new BrickInfoImpl(brickName);
+		BrickInfoImpl existingBrick = (BrickInfoImpl) _bricksByName.get(brickName, new Producer<BrickInfo>() { @Override public BrickInfo produce() {
+			BrickInfoImpl newBrick = new BrickInfoImpl(brickName);
+			newBrick.addVersionFromPackage(packageHash, _isCurrent);
+			return newBrick;
 		}});
 		
-		Sneer1024 packageHash = _hashPath.peekLast();
-		brick.addVersionFromPackage(packageHash, _isCurrent);
+		existingBrick.addVersionFromPackage(packageHash, _isCurrent);
 
 		my(Logger.class).log("+++++++++++++++++++++++++++++++++++++++++++++++ Brick accumulated: " + brickName + " isCurrent: " + _isCurrent);
 	}

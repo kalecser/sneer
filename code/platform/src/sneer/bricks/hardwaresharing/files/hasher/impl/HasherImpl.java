@@ -5,10 +5,11 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.hasher.Hasher;
 import sneer.bricks.hardwaresharing.files.protocol.FileContents;
-import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
+import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.pulp.crypto.Crypto;
 import sneer.bricks.pulp.crypto.Digester;
 import sneer.bricks.pulp.crypto.Sneer1024;
@@ -34,6 +35,8 @@ class HasherImpl implements Hasher {
 	}
 
 	private static Sneer1024 hash(FileOrFolder entry) {
+		my(Logger.class).log("name={}, lm={}, hoc={}", entry.name, entry.lastModified, entry.hashOfContents);
+		
 		Digester digester = my(Crypto.class).newDigester();
 		digester.update(bytesUtf8(entry.name));
 		digester.update(BigInteger.valueOf(entry.lastModified).toByteArray());

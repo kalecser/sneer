@@ -78,9 +78,10 @@ class BrickInfoImpl implements BrickInfo {
 
 
 	void addVersionFromPackage(Sneer1024 packageHash, boolean isCurrent) {
-		final BrickVersionImpl newVersion = new BrickVersionImpl(packageHash, isCurrent);
 		
+		final BrickVersionImpl newVersion = new BrickVersionImpl(packageHash, isCurrent);
 		BrickVersionImpl versionKept = _versionsByHash.get(newVersion.hash(), new Producer<BrickVersionImpl>() { @Override public BrickVersionImpl produce() {
+			my(Logger.class).log("Brick version found: " + newVersion.hash());
 			return newVersion;
 		}});
 		

@@ -1,6 +1,8 @@
 ﻿TASKS
 =========
 
+	- [Klaus] BrickInstallerTest - update to FileWriter
+	
 	- [Klaus] BandwidthConsolidationTest
 
 	- [Klaus] Get Sandro to cover functional tests with clover. 
