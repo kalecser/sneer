@@ -7,6 +7,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheGuide;
 import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheVisitor;
 import sneer.bricks.pulp.crypto.Sneer1024;
@@ -24,6 +25,7 @@ class BrickVersionImpl implements BrickVersion {
 	
 	BrickVersionImpl(Sneer1024 hashOfPackage, boolean isCurrent) {
 		_hash = BrickFilter.cacheOnlyFilesFromThisBrick(hashOfPackage);
+		my(Logger.class).log("Brick version found: " + _hash);
 		_files = findFiles();
 		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
 	}
