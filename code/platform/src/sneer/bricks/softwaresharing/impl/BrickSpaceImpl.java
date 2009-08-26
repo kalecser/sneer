@@ -17,7 +17,7 @@ import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.filetobrick.FileToBrickConverter;
-import sneer.bricks.softwaresharing.publisher.BrickPublisher;
+import sneer.bricks.softwaresharing.publisher.SourcePublisher;
 import sneer.bricks.softwaresharing.publisher.SrcFolderHash;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.CacheMap;
@@ -36,7 +36,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 		my(TupleSpace.class).keep(SrcFolderHash.class);
 		_brickUsageContract = my(TupleSpace.class).addSubscription(SrcFolderHash.class, this);
 		
-		my(BrickPublisher.class).publishAllBricks();
+		my(SourcePublisher.class).publishSourceFolder();
 	}
 	
 	
