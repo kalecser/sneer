@@ -16,7 +16,7 @@ import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
-import sneer.bricks.softwaresharing.filetobrick.FileToBrickConverter;
+import sneer.bricks.softwaresharing.demolisher.Demolisher;
 import sneer.bricks.softwaresharing.publisher.SourcePublisher;
 import sneer.bricks.softwaresharing.publisher.SrcFolderHash;
 import sneer.foundation.brickness.Seal;
@@ -71,7 +71,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 	
 	private void accumulateBricks(final SrcFolderHash srcFolderHash) {
-		my(FileToBrickConverter.class).accumulateBricksFromCachedSrcFolder(
+		my(Demolisher.class).demolishBuilding(
 			_availableBricksByName,
 			srcFolderHash.value,
 			isCurrent(srcFolderHash)
