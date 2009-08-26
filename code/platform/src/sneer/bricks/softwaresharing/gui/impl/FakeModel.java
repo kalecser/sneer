@@ -46,10 +46,10 @@ class FakeModel {
 
 	private static List<BrickVersion> newVersions(List<FileVersion> files) {
 		List<BrickVersion> versions = new ArrayList<BrickVersion>();
-		versions.add(newBrickVersion(Status.CURRENT, 1, files)); 
-		versions.add(newBrickVersion(Status.DIVERGING, 2, files)); 
-		versions.add(newBrickVersion(Status.DIFFERENT, 20, files)); 
-		versions.add(newBrickVersion(Status.REJECTED, 3, files));
+		versions.add(newBrickVersion(Status.CURRENT, files)); 
+		versions.add(newBrickVersion(Status.DIVERGING, files)); 
+		versions.add(newBrickVersion(Status.DIFFERENT, files)); 
+		versions.add(newBrickVersion(Status.REJECTED, files));
 		return versions;
 	}
 
@@ -64,7 +64,7 @@ class FakeModel {
 		};
 	}
 
-	private static BrickVersion newBrickVersion(final Status status, final int _unknownUsersCount, final List<FileVersion> _fileVersions) {
+	private static BrickVersion newBrickVersion(final Status status, final List<FileVersion> _fileVersions) {
 		return new BrickVersion(){ 
 
 			private boolean _staged;
@@ -74,8 +74,7 @@ class FakeModel {
 			@Override public List<FileVersion> files() {return _fileVersions;}
 			@Override public boolean isStagedForExecution() {return _staged;}
 			@Override public Status status() {return _status; }
-			@Override public int unknownUsers() { return _unknownUsersCount; }
-			@Override public List<String> knownUsers() {  return  _users;}			
+			@Override public List<String> users() {  return  _users;}			
 			
 			@Override public long publicationDate() { 
 				_initialTimeStamp += 1000;

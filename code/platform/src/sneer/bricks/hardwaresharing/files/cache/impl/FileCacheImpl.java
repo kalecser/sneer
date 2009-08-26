@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import sneer.bricks.hardwaresharing.files.cache.FileCache;
 import sneer.bricks.hardwaresharing.files.hasher.Hasher;
+import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.events.EventNotifier;
@@ -48,9 +49,17 @@ class FileCacheImpl implements FileCache {
 	}
 
 	
+	@Override
+	public boolean isFolder(FileOrFolder fileOrFolder) {
+		Object contents = getContents(fileOrFolder.hashOfContents);
+		if (contents == null) throw new IllegalArgumentException("Contents not found in FileCache.");
+		return contents instanceof FolderContents;
+	}
+	
+	
 	private void put(Sneer1024 hash, Object contents) {
 		_contents.put(hash, contents);
 		_contentsAdded.notifyReceivers(hash);
 	}
-	
+
 }

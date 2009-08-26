@@ -34,8 +34,7 @@ class GuidedTour {
 	
 
 	private void showFolder(FolderContents folderContents) {
-		if (!_visitor.enterFolder())
-			return;
+		_visitor.enterFolder();
 			
 		for (FileOrFolder fileOrFolder : folderContents.contents)
 			showFileOrFolder(fileOrFolder);

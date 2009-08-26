@@ -15,41 +15,28 @@ import sneer.bricks.softwaresharing.FileVersion;
 
 class BrickVersionImpl implements BrickVersion {
 
-
 	private final Sneer1024 _hash;
-	private boolean _stagedForExecution;
-	private List<FileVersion> _files;
+	private final List<FileVersion> _files;
+	
 	private Status _status;
+	private boolean _stagedForExecution;
 
 	
 	BrickVersionImpl(Sneer1024 hashOfPackage, boolean isCurrent) {
-		_hash = hashOfPackage;
+		_hash = BrickFilter.cacheOnlyFilesFromThisBrick(hashOfPackage);
+		_files = findFiles();
 		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
 	}
 
-	@Override
-	public List<FileVersion> files() {
-		if (_files == null) _files = findFiles();
-		return _files;
-	}
 
-	@Override
-	public Sneer1024 hash() {
-		return _hash;
-	}
+	@Override public List<FileVersion> files() { return _files; }
+	@Override public Sneer1024 hash() { return _hash; }
+	@Override public boolean isStagedForExecution() { return _stagedForExecution; }
+	@Override public Status status() { return _status; }
 
-	@Override
-	public boolean isStagedForExecution() {
-		return _stagedForExecution;
-	}
-
-	@Override
-	public int unknownUsers() {
-		return 0;
-	}
 	
 	@Override
-	public List<String> knownUsers() {
+	public List<String> users() {
 		return new ArrayList<String>();
 	}
 
@@ -63,11 +50,6 @@ class BrickVersionImpl implements BrickVersion {
 		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
-	@Override
-	public Status status() {
-		return _status;
-	}
-	
 
 	void setStagedForExecution(boolean value) {
 		_stagedForExecution = value;
@@ -100,15 +82,13 @@ class BrickVersionImpl implements BrickVersion {
 		
 		@Override
 		public boolean visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
-			_path.add(name);
+			_path.addLast(name);
 			_lastModified = lastModified;
 			return true;
 		}
 		
 		@Override
-		public boolean enterFolder() {
-			return true;
-		}
+		public void enterFolder() {}
 
 		@Override
 		public void leaveFolder() {

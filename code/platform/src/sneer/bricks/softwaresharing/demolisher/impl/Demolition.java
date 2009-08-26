@@ -59,9 +59,7 @@ class Demolition implements FileCacheVisitor {
 	}
 
 
-	@Override public boolean enterFolder() {
-		return true;
-	}
+	@Override public void enterFolder() {}
 	
 	
 	@Override public void leaveFolder() {

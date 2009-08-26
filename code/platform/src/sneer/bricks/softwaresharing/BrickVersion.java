@@ -28,8 +28,7 @@ public interface BrickVersion {
 	
 	long publicationDate();
 	
-	List<String> knownUsers();
-	int unknownUsers();
+	List<String> users();
 	
 	List<FileVersion> files();
 }
