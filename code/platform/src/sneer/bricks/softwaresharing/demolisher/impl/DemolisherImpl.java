@@ -10,7 +10,7 @@ class DemolisherImpl implements Demolisher {
 
 	@Override
 	public void demolishBuilding(CacheMap<String,BrickInfo> bricksByName, Sneer1024 srcFolderHash, boolean isCurrent) {
-		new FileToBrickConversion(bricksByName, srcFolderHash, isCurrent);
+		new Demolition(bricksByName, srcFolderHash, isCurrent);
 	}
 
 }

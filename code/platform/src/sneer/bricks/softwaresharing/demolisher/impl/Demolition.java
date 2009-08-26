@@ -16,7 +16,7 @@ import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
 
-class FileToBrickConversion implements FileCacheVisitor {
+class Demolition implements FileCacheVisitor {
 
 	private final Strings _strings = my(Lang.class).strings();
 	
@@ -28,7 +28,7 @@ class FileToBrickConversion implements FileCacheVisitor {
 	private final boolean _isCurrent;
 	
 
-	FileToBrickConversion(CacheMap<String,BrickInfo> bricksByName, Sneer1024 srcFolderHash, boolean isCurrent) {
+	Demolition(CacheMap<String,BrickInfo> bricksByName, Sneer1024 srcFolderHash, boolean isCurrent) {
 		_bricksByName = bricksByName;
 		_isCurrent = isCurrent;
 		my(FileCacheGuide.class).guide(this, srcFolderHash);
