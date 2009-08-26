@@ -49,8 +49,9 @@ class TimerImpl implements Timer {
 	@Override
 	synchronized
 	public WeakContract wakeUpNowAndEvery(long period, final Runnable stepper) {
-		new Alarm(stepper, 0, false).wakeUp();
-		return wakeUpEvery(period, stepper);
+		Alarm alarm = new Alarm(stepper, period, true);
+		alarm.wakeUp();
+		return my(Contracts.class).weakContractFor(alarm, stepper);
 	}
 
 	@Override
@@ -60,9 +61,9 @@ class TimerImpl implements Timer {
 	}
 
 	private WeakContract wakeUp(long period, Runnable stepper, boolean isPeriodic) {
-		Alarm result = new Alarm(stepper, period, isPeriodic);
-		_alarms.add(result);
-		return my(Contracts.class).weakContractFor(result, stepper);
+		Alarm alarm = new Alarm(stepper, period, isPeriodic);
+		_alarms.add(alarm);
+		return my(Contracts.class).weakContractFor(alarm, stepper);
 	}
 
 	@Override
