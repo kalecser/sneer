@@ -18,6 +18,7 @@ import sneer.foundation.lang.Consumer;
 
 class TimerImpl implements Timer {
 	
+	private static final Alarm[] ALARM_ARRAY_TYPE = new Alarm[0];
 	private final Clock _clock = my(Clock.class);
 	private final SortedSet<Alarm> _alarms = new TreeSet<Alarm>();
 	
@@ -75,11 +76,16 @@ class TimerImpl implements Timer {
 	
 	synchronized
 	private void wakeUpAlarmsIfNecessary() {
-		while (!_alarms.isEmpty()) {
-			Alarm first = _alarms.first();
-			if (!first.isTimeToWakeUp()) break;
-			
-			first.wakeUp();
+//		while (!_alarms.isEmpty()) {
+//			Alarm first = _alarms.first();
+//			if (!first.isTimeToWakeUp()) break;
+//			
+//			first.wakeUp();
+//		}
+
+		for (Alarm alarm : _alarms.toArray(ALARM_ARRAY_TYPE)) {
+			if (!alarm.isTimeToWakeUp()) return;
+			alarm.wakeUp();
 		}
 	}
 
