@@ -18,7 +18,7 @@ public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 	
 //	private final JavaCompiler _compiler = my(JavaCompiler.class);
 
-	//@Ignore
+	@Ignore
 	@Test (timeout = 12000)
 	public void meToo() throws Exception {
 		a().copyToSourceFolder(generateY());
