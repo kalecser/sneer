@@ -22,7 +22,7 @@ public abstract class CleanTest extends AssertUtils {
 	private final PrintStreamSentinel _outSentinel = new PrintStreamSentinel(System.out);
 	private final PrintStreamSentinel _errSentinel = new PrintStreamSentinel(System.err);
 
-	private boolean _wasSuccessful = false;
+	private boolean _hasFailed = false;
 
 	
 	protected File tmpFolder() {
@@ -67,18 +67,16 @@ public abstract class CleanTest extends AssertUtils {
 		System.setErr(_errSentinel);
 	}
 
-	void successDetected() {
-		_wasSuccessful = true;
+	void failed() {
+		_hasFailed = true;
 	}
 
 	@After
 	public void afterCleanTest() {
 		recoverConsole();
 
-		if (!_wasSuccessful) {
+		if (_hasFailed)
 			afterFailedtest();
-			return;
-		}
 
 		deleteFiles();
 		checkThreadLeak();

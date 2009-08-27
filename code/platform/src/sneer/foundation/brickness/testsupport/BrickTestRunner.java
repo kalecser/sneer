@@ -27,6 +27,7 @@ public class BrickTestRunner extends CleanTestRunner {
 		}});
 	}
 
+	
 	@Override
 	protected TestMethod wrapMethod(Method method) {
 		return new TestMethodWithEnvironment(method, getTestClass());

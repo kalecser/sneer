@@ -23,8 +23,8 @@ public abstract class BrickTest extends CleanTest {
 	
 	private final Mockery _mockery = new JUnit4Mockery();
 	
-	@SuppressWarnings("unused")
-	@Bind private final Logger _logger = new LoggerForTests(); 
+	@Bind private final LoggerMocks _loggerMocks = new LoggerMocks(); 
+	@SuppressWarnings("unused") @Bind private final Logger _logger = _loggerMocks.newInstance(); 
     
 	{
 		my(BrickTestRunner.class).instanceBeingInitialized(this);
@@ -41,7 +41,7 @@ public abstract class BrickTest extends CleanTest {
 	
 	@Override
 	protected void afterFailedtest() {
-		((LoggerForTests)my(Logger.class)).printLog();
+		my(LoggerMocks.class).printAllKeptMessages();
 	}
 
 

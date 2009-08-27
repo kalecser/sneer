@@ -9,13 +9,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.junit.internal.runners.TestClass;
+import org.junit.internal.runners.TestMethod;
 
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
-import sneer.foundation.testsupport.CleanTestMethod;
 
-class TestMethodWithEnvironment extends CleanTestMethod {
+class TestMethodWithEnvironment extends TestMethod {
 
 	private final Environment _environment;
 

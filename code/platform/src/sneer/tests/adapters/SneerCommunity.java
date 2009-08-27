@@ -16,7 +16,7 @@ import sneer.bricks.pulp.network.Network;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.brickness.impl.EagerClassLoader;
-import sneer.foundation.brickness.testsupport.LoggerForTests;
+import sneer.foundation.brickness.testsupport.LoggerMocks;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.tests.SovereignCommunity;
@@ -54,7 +54,7 @@ public class SneerCommunity implements SovereignCommunity {
 		File privatePlatformSrc = makeFolder(sneerHome, "platform/src");
 		File sharedPlatfromBin = my(ClassUtils.class).classpathRootFor(SneerCommunity.class);
 		
-		Environment container = Brickness.newBrickContainer(_network, new LoggerForTests(name));
+		Environment container = Brickness.newBrickContainer(_network, newLogger(name));
 		URLClassLoader apiClassLoader = apiClassLoader(privatePlatformBin, sharedPlatfromBin, name);
 		
 		Object partyImpl = EnvironmentUtils.retrieveFrom(container, loadProbeClassUsing(apiClassLoader));
@@ -70,7 +70,7 @@ public class SneerCommunity implements SovereignCommunity {
 		return party;
 	}
 
-	
+
 	@Override
 	public SovereignParty newSession(SovereignParty party) {
 		SneerParty sneerParty = (SneerParty)party;
@@ -157,6 +157,12 @@ public class SneerCommunity implements SovereignCommunity {
 		partyA.connectTo(partyB);
 		partyB.connectTo(partyA);
 	}
+
+	
+	private Logger newLogger(final String name) {
+		return my(LoggerMocks.class).newInstance(name);
+	}
+	
 
 	@Override
 	public void crash() {
