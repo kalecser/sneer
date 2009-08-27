@@ -28,10 +28,10 @@ import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 import sneer.foundation.testsupport.AssertUtils;
 
-public class BrickPublishingTest extends BrickTest {
+public class LocalBrickDiscoveryTest extends BrickTest {
 
 	@Test (timeout = 2000)
-	public void publishingWithBricksInSubfoldersToo() throws IOException {
+	public void localBrickDiscoveryWithBricksInSubfolders() throws IOException {
 		generateBrick(tmpFolder());
 		my(FolderConfig.class).platformSrcFolder().set(tmpFolder());
 
