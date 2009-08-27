@@ -13,6 +13,7 @@ import org.junit.After;
 import org.junit.runner.RunWith;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.testsupport.CleanTest;
@@ -21,6 +22,9 @@ import sneer.foundation.testsupport.CleanTest;
 public abstract class BrickTest extends CleanTest {
 	
 	private final Mockery _mockery = new JUnit4Mockery();
+	
+	@SuppressWarnings("unused")
+	@Bind private final Logger _logger = new LoggerForTests(); 
     
 	{
 		my(BrickTestRunner.class).instanceBeingInitialized(this);
@@ -34,6 +38,13 @@ public abstract class BrickTest extends CleanTest {
 		my(BrickTestRunner.class).dispose();
 	}
 	
+	
+	@Override
+	protected void afterFailedtest() {
+		((LoggerForTests)my(Logger.class)).printLog();
+	}
+
+
 	protected Sequence newSequence(String name) {
 		return _mockery.sequence(name);
 	}
@@ -51,6 +62,6 @@ public abstract class BrickTest extends CleanTest {
 	}
 
 	protected Environment newTestEnvironment(Object... bindings) {
-		return my(BrickTestRunner.class).newTestEnvironment(bindings);
+		return my(BrickTestRunner.class).cloneTestEnvironment(bindings);
 	}
 }

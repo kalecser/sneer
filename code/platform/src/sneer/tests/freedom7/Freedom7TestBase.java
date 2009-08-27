@@ -13,16 +13,14 @@ import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.foundation.brickness.Brick;
 import sneer.tests.SovereignFunctionalTestBase;
-import sneer.tests.adapters.LoggerForTests;
 
 public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
 	
 //	private final JavaCompiler _compiler = my(JavaCompiler.class);
 
-	@Ignore
+	//@Ignore
 	@Test (timeout = 12000)
 	public void meToo() throws Exception {
-		LoggerForTests.isOn = true;
 		a().copyToSourceFolder(generateY());
 		
 		newSession(a());

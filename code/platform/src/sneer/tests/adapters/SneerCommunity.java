@@ -16,6 +16,7 @@ import sneer.bricks.pulp.network.Network;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.brickness.impl.EagerClassLoader;
+import sneer.foundation.brickness.testsupport.LoggerForTests;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.tests.SovereignCommunity;

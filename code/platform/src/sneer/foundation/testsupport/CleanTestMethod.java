@@ -18,7 +18,7 @@ public class CleanTestMethod extends TestMethod {
 		
 		//Will only happen if the test passes (if InvocationTargetException is not thrown above).
 		if (!(test instanceof CleanTest)) return;
-		((CleanTest)test).afterSuccessfulTest();
+		((CleanTest)test).successDetected();
 	}
 
 }

@@ -1,6 +1,7 @@
-package sneer.tests.adapters;
+package sneer.foundation.brickness.testsupport;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import sneer.bricks.hardware.io.log.LogWorker;
@@ -8,13 +9,16 @@ import sneer.bricks.hardware.io.log.Logger;
 
 public class LoggerForTests implements Logger {
 
-	public static boolean isOn = false;
-
 	private static List<String> _allPrefixes = new ArrayList<String>();
 	private final String _prefix;
+	private final List<String> _messages = Collections.synchronizedList(new ArrayList<String>());
 
 	
-	LoggerForTests(String prefix) {
+	public LoggerForTests() {
+		_prefix = "";
+	}
+
+	public LoggerForTests(String prefix) {
 		_allPrefixes.add(prefix);
 		_prefix = prefix + count(prefix) + " : ";
 	}
@@ -22,11 +26,11 @@ public class LoggerForTests implements Logger {
 
 	@Override
 	public void log(String message, Object... messageInsets) {
-		if (!isOn) return;
 		String formatted = format(message, messageInsets);
 		if (formatted.contains("Heartbeat")) return; ///////////////////// Message to filter out.
 		if (formatted.contains("Tuple")) return; ///////////////////// Message to filter out.
-		System.out.println(formatted); //////////////////////// This is the line you uncomment to turn logging on for functional tests.
+		
+		_messages.add(formatted);
 	}
 
 	@Override
@@ -61,6 +65,11 @@ public class LoggerForTests implements Logger {
 		for (String existing : _allPrefixes)
 			if (existing.equals(prefix)) result++;
 		return result == 1 ? "" : " " + result;
+	}
+
+	public void printLog() {
+		for (String message : _messages)
+			System.out.println(message);
 	}
 
 

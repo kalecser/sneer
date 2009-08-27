@@ -67,7 +67,7 @@ public abstract class CleanTest extends AssertUtils {
 		System.setErr(_errSentinel);
 	}
 
-	void afterSuccessfulTest() {
+	void successDetected() {
 		_wasSuccessful = true;
 	}
 
@@ -75,13 +75,18 @@ public abstract class CleanTest extends AssertUtils {
 	public void afterCleanTest() {
 		recoverConsole();
 
-		if (!_wasSuccessful) return; 
+		if (!_wasSuccessful) {
+			afterFailedtest();
+			return;
+		}
 
 		deleteFiles();
 		checkThreadLeak();
 		checkConsolePollution();
 	}
 	
+	protected void afterFailedtest() {}
+
 	private void recoverConsole() {
 		System.setOut(_outSentinel._delegate);
 		System.setErr(_errSentinel._delegate);

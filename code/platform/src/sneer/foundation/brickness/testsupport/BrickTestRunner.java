@@ -22,7 +22,7 @@ public class BrickTestRunner extends CleanTestRunner {
 
 	@Override
 	protected void invokeTestMethod(final Method method, final RunNotifier notifier) {
-		Environments.runWith(newEnvironment(), new Runnable() { @Override public void run() {
+		Environments.runWith(createTestEnvironment(), new Runnable() { @Override public void run() {
 			BrickTestRunner.super.invokeTestMethod(method, notifier);
 		}});
 	}
@@ -33,7 +33,7 @@ public class BrickTestRunner extends CleanTestRunner {
 	}
 
 
-	class TestInstanceEnvironment implements Environment {
+	private class TestInstanceEnvironment implements Environment {
 
 		private Object _testInstance;
 
@@ -67,14 +67,14 @@ public class BrickTestRunner extends CleanTestRunner {
 			}
 		}
 		
-		public void instanceBeingInitialized(Object testInstance) {
+		private void instanceBeingInitialized(Object testInstance) {
 			if (_testInstance != null) throw new IllegalStateException();
 			_testInstance = testInstance;
 		}
 	}
 
 	
-	private final Field[] _contributedFields; 
+	private final Field[] _contributedFields;
 	
 	public BrickTestRunner(Class<?> testClass) throws InitializationError {
 		super(testClass);
@@ -115,18 +115,19 @@ public class BrickTestRunner extends CleanTestRunner {
 		my(TestInstanceEnvironment.class).instanceBeingInitialized(testInstance);
 	}
 
-	Environment newTestEnvironment(Object... bindings) {
+	Environment cloneTestEnvironment(Object... bindings) {
+		return createEnvironment(my(TestInstanceEnvironment.class), bindings);
+	}
+
+	private Environment createTestEnvironment() {
+		return createEnvironment(new TestInstanceEnvironment());
+	}
+	
+	private Environment createEnvironment(TestInstanceEnvironment testEnvironment, Object... bindings) {
 		return new CachingEnvironment(
 				EnvironmentUtils.compose(
 					new Bindings(bindings).environment(),
-					my(TestInstanceEnvironment.class),
-					Brickness.newBrickContainer()));
-	}
-
-	private Environment newEnvironment() {
-		return new CachingEnvironment(
-				EnvironmentUtils.compose(
-					new TestInstanceEnvironment(),
+					testEnvironment,
 					Brickness.newBrickContainer()));
 	}
 
