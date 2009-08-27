@@ -16,16 +16,18 @@ public class CleanTestRunner extends JUnit4ClassRunner {
 		super(testClass);
 	}
 	
+	
 	@Override
 	protected Object createTest() throws Exception {
 		_currentTest = super.createTest();
 		return _currentTest;
 	}
 
+	
 	@Override
-	protected void invokeTestMethod(Method method, RunNotifier notifier) {
+	protected void invokeTestMethod(final Method method, RunNotifier notifier) {
 		RunListener listener = new RunListener() { @Override public void testFailure(Failure failure) throws Exception {
-			notifyFailure();
+			notifyFailure(method, failure.getException());
 		}};
 			
 		notifier.addListener(listener);
@@ -35,9 +37,10 @@ public class CleanTestRunner extends JUnit4ClassRunner {
 		_currentTest = null;
 	}
 
-	private void notifyFailure() {
+
+	private void notifyFailure(Method method, Throwable thrown) {
 		if (_currentTest instanceof CleanTest)
-			((CleanTest)_currentTest).failed();
+			((CleanTest)_currentTest).failedWith(method, thrown);
 	}
 
 	

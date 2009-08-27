@@ -4,13 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 
-/** A test that does not pollute the environment: it closes all files handles it opens, it does not leak threads, it does not write do the console (out and err). */
+/** A test that does not pollute the environment: it closes all files handles it opens, it does not leak threads, it does not write to the console (out and err). */
 @RunWith(CleanTestRunner.class)
 public abstract class CleanTest extends AssertUtils {
 
@@ -22,7 +23,9 @@ public abstract class CleanTest extends AssertUtils {
 	private final PrintStreamSentinel _outSentinel = new PrintStreamSentinel(System.out);
 	private final PrintStreamSentinel _errSentinel = new PrintStreamSentinel(System.err);
 
-	private boolean _hasFailed = false;
+	private final Object _failureMonitor = new Object();
+	private Throwable _failure = null;
+	private Method _failedMethod;
 
 	
 	protected File tmpFolder() {
@@ -67,23 +70,21 @@ public abstract class CleanTest extends AssertUtils {
 		System.setErr(_errSentinel);
 	}
 
-	void failed() {
-		_hasFailed = true;
-	}
-
 	@After
 	public void afterCleanTest() {
 		recoverConsole();
 
-		if (_hasFailed)
-			afterFailedtest();
+		if (_failure != null)
+			afterFailedtest(_failedMethod, _failure);
 
 		deleteFiles();
 		checkThreadLeak();
 		checkConsolePollution();
 	}
 	
-	protected void afterFailedtest() {}
+	
+	/** To be subclassed optionally. */
+	protected void afterFailedtest(@SuppressWarnings("unused") Method method, @SuppressWarnings("unused") Throwable thrown) {}
 
 	private void recoverConsole() {
 		System.setOut(_outSentinel._delegate);
@@ -188,6 +189,34 @@ public abstract class CleanTest extends AssertUtils {
 		}
 	}
 
+
+	void failedWith(Method method, Throwable thrown) {
+		if (_failure != null) return;
+		
+		if (thrown.getMessage().startsWith("test timed out")) //Kent, Erich, please improve the JUnit API for tests with timeouts. JUnit4ClassRunner.invokeTestMethod hides the test instance and the roadie. TestRunner and TestMethod parallel hierarchies is the only (clumsy) way to get close to what one needs. Klaus.
+			tryToWaitForTheFailureFromTheActualTestThread(method, thrown);
+		else
+			keepFailure(method, thrown);
+	}
+
+	private void keepFailure(Method method, Throwable thrown) {
+		synchronized (_failureMonitor) {
+			_failure = thrown;
+			_failedMethod = method;
+			_failureMonitor.notifyAll();
+		}
+	}
+
+	private void tryToWaitForTheFailureFromTheActualTestThread(Method method, Throwable thrown) {
+		synchronized (_failureMonitor) {
+			try {
+				_failureMonitor.wait(5000);
+			} catch (InterruptedException e) {
+				throw new IllegalStateException(e);
+			}
+			if (_failure == null) keepFailure(method, thrown);
+		}
+	}
 
 }
 
