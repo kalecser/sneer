@@ -13,14 +13,37 @@ import sneer.bricks.pulp.crypto.Sneer1024;
 
 public class FileWriterImpl implements FileWriter {
 
+	
 	@Override
-	public void writeTo(File fileOrFolder, final long lastModified, Sneer1024 hash) throws IOException {
+	public void writeAtomicallyTo(File fileOrFolder, final long lastModified, Sneer1024 hashOfContents) throws IOException {
 		if (fileOrFolder.exists()) throw new IOException("File to be written already exists: " + fileOrFolder);
 		
 		final File dotPart = prepareDotPart(fileOrFolder);
-		my(FileCacheGuide.class).guide(new FileWritingVisitor(dotPart, lastModified), hash);
+		
+		writeTo(dotPart, hashOfContents);
+		
+		dotPart.setLastModified(lastModified);
 		rename(dotPart, fileOrFolder);
 	}
+
+	
+	@Override
+	public void mergeOver(File existingFolder, Sneer1024 hashOfContents) {
+		check(existingFolder);
+		writeTo(existingFolder, hashOfContents);
+	}
+
+
+	private void writeTo(File fileOrFolder, Sneer1024 hashOfContents) {
+		my(FileCacheGuide.class).guide(new FileWritingVisitor(fileOrFolder), hashOfContents);
+	}
+
+	
+	private void check(final File existingFolder) {
+		if (!existingFolder.isDirectory()) throw new IllegalArgumentException("existingFolder must be a folder: " + existingFolder);
+		if (!existingFolder.exists()) throw new IllegalArgumentException("Folder does not exist: " + existingFolder);
+	}
+
 	
 	private File prepareDotPart(File fileOrFolder) throws IOException {
 		File result = new File(fileOrFolder.getParent(), fileOrFolder.getName() + ".part");

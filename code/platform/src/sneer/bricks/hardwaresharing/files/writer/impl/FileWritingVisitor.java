@@ -18,9 +18,8 @@ final class FileWritingVisitor implements FileCacheVisitor {
 	Deque<Long> _lastModified = new LinkedList<Long>();
 
 	
-	FileWritingVisitor(File targetFileOrFolder, long lastModified) {
+	FileWritingVisitor(File targetFileOrFolder) {
 		_fileOrFolder = targetFileOrFolder;
-		_lastModified.push(lastModified);
 	}
 
 	
@@ -48,6 +47,8 @@ final class FileWritingVisitor implements FileCacheVisitor {
 
 	
 	private void leaveFileOrFolder() {
+		if (_lastModified.isEmpty()) return;
+
 		setLastModified(_fileOrFolder, _lastModified.pop());
 		_fileOrFolder = _fileOrFolder.getParentFile();
 	}

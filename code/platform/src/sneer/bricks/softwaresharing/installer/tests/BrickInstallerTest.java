@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -29,11 +28,71 @@ import sneer.foundation.lang.Consumer;
 public class BrickInstallerTest extends BrickTest {
 	
 	final BrickInstaller _subject = my(BrickInstaller.class);
+
 	
-	@Before
-	public void beforeBrickInstallerTest() throws IOException {
+	@Test (timeout = 4000)
+	public void stageOneBrick() throws Exception  {
 		setUpPlatform();
 		stageBrickY();
+		
+		_subject.prepareStagedBricksInstallation();
+		
+		assertStagedFilesExist(
+			"bin/sneer/foundation/brickness/Brick.class",
+			"bin/sneer/main/Sneer.class",
+			"bin/sneer/tests/freedom1/Freedom1TestBase.class",
+
+			"src/bricks/y/Y.java",
+			"src/bricks/y/impl/YImpl.java",
+			"bin/bricks/y/Y.class",
+			"bin/bricks/y/impl/YImpl.class"
+		);
+		
+		File original = new File(srcFolder(), "bricks/y");
+		File staged = stagedFile("src/bricks/y");
+		assertSameContents(original, staged);
+	}
+
+
+	@Test (timeout = 6000)
+	public void commitStagedFiles() throws Exception {
+		setUpPlatform();
+		stageBrickY();
+		
+		File nestedBrickSrc = createFile(srcFolder(), "bricks/y/nested/NestedBrick.java",
+			"package bricks.y.nested;" +
+			"public interface NestedBrick {}");
+		File nestedBrickBin = createFile(binFolder(), "bricks/y/nested/NestedBrick.class");
+
+		_subject.prepareStagedBricksInstallation();
+
+		File garbageSrc      = createFile(srcFolder(), "bricks/y/Garbage.java");
+		File garbageImplSrc  = createFile(srcFolder(), "bricks/y/impl/GarbageImpl.java");
+		File garbageTestsSrc = createFile(srcFolder(), "bricks/y/tests/GarbageTest.java");
+		File garbageBin      = createFile(binFolder(), "bricks/y/Garbage.class");
+		File garbageImplBin  = createFile(binFolder(), "bricks/y/impl/GarbageImpl.class");
+		File garbageTestsBin = createFile(binFolder(), "bricks/y/tests/GarbageTest.class");
+		File sneerGarbage    = createFile(binFolder(), "sneer/garbage/Garbage.class");
+		
+		my(Logger.class).log("Comitting...");
+		_subject.commitStagedBricksInstallation();
+		
+		assertExists(
+			nestedBrickSrc,
+			nestedBrickBin,
+				
+			binFileFor(sneer.foundation.brickness.Brick.class),
+			binFileFor(sneer.main.Sneer.class),
+			binFileFor(sneer.tests.freedom1.Freedom1TestBase.class));
+		
+		assertDoesNotExist(
+			garbageSrc,
+			garbageImplSrc,
+			garbageTestsSrc,
+			garbageBin,
+			garbageImplBin,
+			garbageTestsBin,
+			sneerGarbage);
 	}
 
 	
@@ -65,64 +124,6 @@ public class BrickInstallerTest extends BrickTest {
 	}
 
 
-	@Test (timeout = 4000)
-	public void stageOneBrick() throws Exception  {
-		_subject.prepareStagedBricksInstallation();
-		
-		assertStagedFilesExist(
-			"bin/sneer/foundation/brickness/Brick.class",
-			"bin/sneer/main/Sneer.class",
-			"bin/sneer/tests/freedom1/Freedom1TestBase.class",
-
-			"src/bricks/y/Y.java",
-			"src/bricks/y/impl/YImpl.java",
-			"bin/bricks/y/Y.class",
-			"bin/bricks/y/impl/YImpl.class"
-		);
-		
-	}
-
-
-	@Test
-	public void commitStagedFiles() throws Exception {
-		
-		File nestedBrickSrc = createFile(srcFolder(), "bricks/y/nested/NestedBrick.java",
-			"package bricks.y.nested;" +
-			"public interface NestedBrick {}");
-		File nestedBrickBin = createFile(binFolder(), "bricks/y/nested/NestedBrick.class");
-
-		_subject.prepareStagedBricksInstallation();
-
-		File garbageSrc      = createFile(srcFolder(), "bricks/y/Garbage.java");
-		File garbageImplSrc  = createFile(srcFolder(), "bricks/y/impl/GarbageImpl.java");
-		File garbageTestsSrc = createFile(srcFolder(), "bricks/y/tests/GarbageTest.java");
-		File garbageBin      = createFile(binFolder(), "bricks/y/Garbage.class");
-		File garbageImplBin  = createFile(binFolder(), "bricks/y/impl/GarbageImpl.class");
-		File garbageTestsBin = createFile(binFolder(), "bricks/y/tests/GarbageTest.class");
-		File sneerGarbage    = createFile(binFolder(), "sneer/garbage/Garbage.class");
-		
-		my(Logger.class).log("Comitting...");
-		_subject.commitStagedBricksInstallation();
-		
-		assertExists(
-				nestedBrickSrc,
-				nestedBrickBin,
-				
-				binFileFor(sneer.foundation.brickness.Brick.class),
-				binFileFor(sneer.main.Sneer.class),
-				binFileFor(sneer.tests.freedom1.Freedom1TestBase.class));
-		
-		assertDoesNotExist(
-				garbageSrc,
-				garbageImplSrc,
-				garbageTestsSrc,
-				garbageBin,
-				garbageImplBin,
-				garbageTestsBin,
-				sneerGarbage);
-	}
-
-	
 	private File binFileFor(Class<?> clazz) {
 		return new File(binFolder(), my(ClassUtils.class).relativeClassFileName(clazz));
 	}
@@ -207,11 +208,13 @@ public class BrickInstallerTest extends BrickTest {
 		return false;
 	}
 
+	
 	private JavaSourceWriter srcWriterFor(File srcFolder) {
 		return my(JavaSourceWriters.class).newInstance(srcFolder);
 	}
 	
 
-
-
+	private void assertSameContents(File original, File staged)	throws IOException {
+		my(IO.class).files().assertSameContents(original, staged);
+	}
 }

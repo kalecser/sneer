@@ -12,7 +12,7 @@ public class LocalCopyTest extends FileCopyTestBase {
 
 	@Override
 	protected void copyFromFileCache(Sneer1024 hashOfContents, File destination) throws IOException {
-		my(FileWriter.class).writeTo(destination, anyReasonableDate(), hashOfContents);
+		my(FileWriter.class).writeAtomicallyTo(destination, anyReasonableDate(), hashOfContents);
 	}
 
 	

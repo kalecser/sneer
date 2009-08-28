@@ -11,12 +11,12 @@ import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardwaresharing.files.writer.FileWriter;
 import sneer.bricks.software.bricks.compiler.BrickCompiler;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
-import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
 
 public class BrickInstallerImpl implements BrickInstaller {
@@ -128,8 +128,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 
 	private void prepareStagedSrc(File brickSrcFolder, BrickVersion version) throws IOException {
 		cleanStagedBrickFolder(brickSrcFolder);
-		for (FileVersion fileVersion : version.files())
-			prepareStagedSrc(brickSrcFolder, fileVersion);
+		my(FileWriter.class).mergeOver(brickSrcFolder, version.hash());
 	}
 
 	private void cleanStagedBrickFolder(File brickFolder) throws IOException {
@@ -146,16 +145,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 			if (f.isFile()) f.delete();
 	}
 
-	private void prepareStagedSrc(File brickSrcFolder, FileVersion fileVersion) throws IOException {
-		File srcFile = new File(brickSrcFolder, fileVersion.name());
-		write(srcFile, fileVersion.contents());
-		srcFile.setLastModified(fileVersion.lastModified());
-	}
-
-	private void write(File file, byte[] bytes) throws IOException {
-		my(IO.class).files().writeByteArrayToFile(file, bytes);
-	}
-
+	
 	private void resetFolder(File folder) throws IOException {
 		delete(folder);
 		if (!folder.mkdirs())
