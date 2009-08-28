@@ -6,6 +6,7 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardwaresharing.files.cache.FileCache;
 import sneer.bricks.hardwaresharing.files.protocol.FileContents;
+import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.hardwaresharing.files.server.FileServer;
@@ -37,14 +38,25 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 			return;
 		}
 		
-		my(TupleSpace.class).publish(asTuple(response));
+		Tuple reply = asTuple(response);
+		my(TupleSpace.class).publish(reply);
+
+		if (reply instanceof FolderContents) {
+			my(Logger.class).log("Sending Folder Contents:");
+			for (FileOrFolder fileOrFolder : ((FolderContents)reply).contents)
+				my(Logger.class).log("   FileOrFolder: {} date: {} hash: {}", fileOrFolder.name, fileOrFolder.lastModified, fileOrFolder.hashOfContents);
+				
+		}
+
 	}
 
 
 	private Tuple asTuple(Object response) {
-		return response instanceof FolderContents
+		Tuple result = response instanceof FolderContents
 			? new FolderContents(((FolderContents)response).contents)
 			: asFileContents((byte[])response);
+			
+		return result;
 	}
 
 
