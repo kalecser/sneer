@@ -10,6 +10,7 @@ import java.util.List;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.software.bricks.compiler.BrickCompiler;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickInfo;
@@ -162,6 +163,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 
 	private void delete(File folder) throws IOException {
+		my(Logger.class).log("Deleting: ", folder);
 		my(IO.class).files().forceDelete(folder);
 	}
 

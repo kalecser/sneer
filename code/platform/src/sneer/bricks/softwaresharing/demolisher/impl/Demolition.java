@@ -76,12 +76,10 @@ class Demolition implements FileCacheVisitor {
 		final Sneer1024 packageHash = _hashPath.peekLast();
 
 		BrickInfoImpl existingBrick = (BrickInfoImpl) _bricksByName.get(brickName, new Producer<BrickInfo>() { @Override public BrickInfo produce() {
-			BrickInfoImpl newBrick = new BrickInfoImpl(brickName);
-			newBrick.addVersionFromPackage(packageHash, _isCurrent);
-			return newBrick;
+			return new BrickInfoImpl(brickName, packageHash, _isCurrent);
 		}});
 		
-		existingBrick.addVersionFromPackage(packageHash, _isCurrent);
+		existingBrick.addVersionIfNecessary(packageHash, _isCurrent);
 
 		my(Logger.class).log("+++++++++++++++++++++++++++++++++++++++++++++++ Brick accumulated: " + brickName + " isCurrent: " + _isCurrent);
 	}

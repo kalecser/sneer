@@ -20,9 +20,10 @@ class BrickInfoImpl implements BrickInfo {
 	private final CacheMap<Sneer1024, BrickVersionImpl> _versionsByHash = new CacheMap<Sneer1024, BrickVersionImpl>();
 
 	
-	public BrickInfoImpl(String brickName) {
+	public BrickInfoImpl(String brickName, Sneer1024 packageHash, boolean isCurrent) {
 		my(Logger.class).log("BrickInfo created: " + brickName);
 		_brickName = brickName;
+		addVersionIfNecessary(packageHash, isCurrent);
 	}
 
 
@@ -77,7 +78,7 @@ class BrickInfoImpl implements BrickInfo {
 	}
 
 
-	void addVersionFromPackage(Sneer1024 packageHash, boolean isCurrent) {
+	void addVersionIfNecessary(Sneer1024 packageHash, boolean isCurrent) {
 		
 		final BrickVersionImpl newVersion = new BrickVersionImpl(packageHash, isCurrent);
 		BrickVersionImpl versionKept = _versionsByHash.get(newVersion.hash(), new Producer<BrickVersionImpl>() { @Override public BrickVersionImpl produce() {
