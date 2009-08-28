@@ -34,9 +34,10 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	
 	{
 		my(TupleSpace.class).keep(SrcFolderHash.class);
-		_tupleSubscription = my(TupleSpace.class).addSubscription(SrcFolderHash.class, this);
-		
+
 		my(SourcePublisher.class).publishSourceFolder();
+
+		_tupleSubscription = my(TupleSpace.class).addSubscription(SrcFolderHash.class, this);
 	}
 	
 	
