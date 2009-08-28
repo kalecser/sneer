@@ -19,7 +19,9 @@ class BrickFilter {
 	static Sneer1024 cacheOnlyFilesFromThisBrick(Sneer1024 hashOfPackage) {
 		FolderContents packageContents = packageContents(hashOfPackage);
 		FolderContents brickContents = filterOtherBricksOutOf(packageContents);
-		return FileCache.putFolderContents(brickContents);
+		return brickContents.contents.length() == packageContents.contents.length()
+			? hashOfPackage
+			: FileCache.putFolderContents(brickContents);
 	}
 
 
