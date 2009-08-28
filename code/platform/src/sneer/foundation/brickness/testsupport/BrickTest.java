@@ -83,7 +83,8 @@ public abstract class BrickTest extends CleanTest {
 		System.out.println(getClass().getName() + "  " + method.getName());
 		System.out.println();
 		System.out.println("Filtered Stack: ==================================================================================================");
-		System.out.println(filteredStack(thrown));
+		printFilteredStack(thrown);
+		System.out.println();
 		System.out.println("Log: =============================================================================================================");
 		my(LoggerMocks.class).printAllKeptMessages();
 		System.out.println("==================================================================================================================");
@@ -92,14 +93,10 @@ public abstract class BrickTest extends CleanTest {
 	}
 
 
-	private String filteredStack(Throwable thrown) {
-		StringBuilder result = new StringBuilder();
-		
+	private void printFilteredStack(Throwable thrown) {
 		for (String line : getTrace(thrown).split("\n"))
 			if (isInteresting(line))
-				result.append(line + "\n");
-		
-		return result.toString();
+				System.out.println(line);
 	}
 
 
