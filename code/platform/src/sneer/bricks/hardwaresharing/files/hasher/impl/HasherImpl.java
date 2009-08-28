@@ -28,6 +28,7 @@ class HasherImpl implements Hasher {
 	
 	@Override
 	public Sneer1024 hashFolder(FolderContents folder) {
+		my(Logger.class).log("Hasing folder...");
 		Digester digester = my(Crypto.class).newDigester();
 		for (FileOrFolder entry : folder.contents)
 			digester.update(hash(entry).bytes());
@@ -35,7 +36,7 @@ class HasherImpl implements Hasher {
 	}
 
 	private static Sneer1024 hash(FileOrFolder entry) {
-		my(Logger.class).log("name={}, lm={}, hoc={}", entry.name, entry.lastModified, entry.hashOfContents);
+		my(Logger.class).log("   name={}, date={}, hash={}", entry.name, entry.lastModified, entry.hashOfContents);
 		
 		Digester digester = my(Crypto.class).newDigester();
 		digester.update(bytesUtf8(entry.name));
