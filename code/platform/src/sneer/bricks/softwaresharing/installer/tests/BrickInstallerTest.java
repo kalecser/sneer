@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -30,32 +29,6 @@ public class BrickInstallerTest extends BrickTest {
 	
 	final BrickInstaller _subject = my(BrickInstaller.class);
 
-	@Ignore
-	@Test (timeout = 4000)
-	public void folderCopySpike() throws Exception  {
-		createFile(tmpFolder(), "a1/a2/a3");
-		Thread.sleep(2000);
-		my(IO.class).files().copyFolder(new File(tmpFolder(), "a1"), new File(tmpFolder(), "b1"));
-		
-		assertSameContents(new File(tmpFolder(), "a1"), new File(tmpFolder(), "b1"));
-	}
-	@Ignore
-	@Test (timeout = 4000)
-	public void folderLastModifiedSpike() throws Exception  {
-		createFile(tmpFolder(), "a1/a2/a3");
-		long modified = new File(tmpFolder(), "a1").lastModified();
-		
-		Thread.sleep(2000);
-		createFile(tmpFolder(), "a1/a2/a33");
-		assertEquals(modified, new File(tmpFolder(), "a1").lastModified());
-		
-		Thread.sleep(2000);
-		createFile(tmpFolder(), "a1/a22");
-		assertEquals(modified, new File(tmpFolder(), "a1").lastModified());
-	}
-
-	
-	
 	
 	@Test (timeout = 4000)
 	public void stageOneBrick() throws Exception  {
