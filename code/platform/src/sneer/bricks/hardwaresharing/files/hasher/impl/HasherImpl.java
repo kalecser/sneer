@@ -28,7 +28,7 @@ class HasherImpl implements Hasher {
 	
 	@Override
 	public Sneer1024 hashFolder(FolderContents folder) {
-		my(Logger.class).log("Hasing folder...");
+		my(Logger.class).log("Hashing folder...");
 		Digester digester = my(Crypto.class).newDigester();
 		for (FileOrFolder entry : folder.contents)
 			digester.update(hash(entry).bytes());

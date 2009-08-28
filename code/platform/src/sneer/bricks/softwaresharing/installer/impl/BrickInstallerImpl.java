@@ -127,7 +127,11 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 
 	private void prepareStagedSrc(File brickSrcFolder, BrickVersion version) throws IOException {
-		cleanStagedBrickFolder(brickSrcFolder);
+		if (brickSrcFolder.exists())
+			cleanStagedBrickFolder(brickSrcFolder);
+		else
+			brickSrcFolder.mkdirs();
+		
 		my(FileWriter.class).mergeOver(brickSrcFolder, version.hash());
 	}
 
