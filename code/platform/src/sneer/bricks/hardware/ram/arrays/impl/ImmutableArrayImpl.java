@@ -22,4 +22,9 @@ final class ImmutableArrayImpl<T> implements ImmutableArray<T> {
 	public Iterator<T> iterator() {
 		return (Iterator<T>) Collections.unmodifiableCollection(Arrays.asList(_elements)).iterator();
 	}
+
+	@Override
+	public int length() {
+		return _elements.length;
+	}
 }
