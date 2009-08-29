@@ -11,7 +11,6 @@ import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 class BrickInfoImpl implements BrickInfo {
 
@@ -29,7 +28,7 @@ class BrickInfoImpl implements BrickInfo {
 
 	@Override
 	public boolean isSnapp() {
-		throw new NotImplementedYet(); // Implement
+		return false; // Implement
 	}
 
 	
