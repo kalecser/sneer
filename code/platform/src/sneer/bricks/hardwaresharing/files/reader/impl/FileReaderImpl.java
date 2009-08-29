@@ -1,4 +1,4 @@
-package sneer.bricks.hardwaresharing.files.publisher.impl;
+package sneer.bricks.hardwaresharing.files.reader.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -13,58 +13,47 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardwaresharing.files.cache.FileCache;
-import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
-import sneer.bricks.hardwaresharing.files.publisher.FilePublisher;
+import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
+import sneer.bricks.hardwaresharing.files.reader.FileReader;
 import sneer.bricks.pulp.crypto.Sneer1024;
 
-class FilePublisherImpl implements FilePublisher {
+class FileReaderImpl implements FileReader {
 
-	
-//	private final Light _errorLight = my(BlinkingLights.class).prepare(LightType.ERROR);
-//	try {
-//	} catch (IOException e) {
-//		my(Logger.class).logShort(e, "Error reading file.");
-//		my(BlinkingLights.class).turnOnIfNecessary(_errorLight, "Error reading file.", helpMessage(), e);
-//	}
-//	private static String helpMessage() {
-//		return "There was trouble reading files from disk when trying to publish them. See log for details.";
-//	}
-	
 	@Override
-	public Sneer1024 publish(File fileOrFolder) throws IOException {
+	public Sneer1024 readIntoTheFileCache(File fileOrFolder) throws IOException {
 		return (fileOrFolder.isDirectory())
-			? publishFolder(fileOrFolder)
-			: publishFile(fileOrFolder);
+			? readFolder(fileOrFolder)
+			: readFile(fileOrFolder);
 	}
 
 
-	private static Sneer1024 publishFile(File file) throws IOException {
+	private static Sneer1024 readFile(File file) throws IOException {
 		return my(FileCache.class).putFileContents(readFileContents(file));
 	}
 
 	
-	private Sneer1024 publishFolder(File folder) throws IOException {
+	private Sneer1024 readFolder(File folder) throws IOException {
 		return my(FileCache.class).putFolderContents(
 			new FolderContents(immutable(
-				publishEachFolderEntry(folder)
+				readEachFolderEntry(folder)
 			))
 		);
 	}
 
 	
-	private List<FileOrFolder> publishEachFolderEntry(File folder) throws IOException {
+	private List<FileOrFolder> readEachFolderEntry(File folder) throws IOException {
 		List<FileOrFolder> result = new ArrayList<FileOrFolder>();
 		
 		for (File fileOrFolder : sortedFiles(folder))
-			result.add(publishFolderEntry(fileOrFolder));
+			result.add(readFolderEntry(fileOrFolder));
 		
 		return result;
 	}
 
 	
-	private FileOrFolder publishFolderEntry(File fileOrFolder) throws IOException {
-		Sneer1024 hashOfContents = publish(fileOrFolder);
+	private FileOrFolder readFolderEntry(File fileOrFolder) throws IOException {
+		Sneer1024 hashOfContents = readIntoTheFileCache(fileOrFolder);
 		
 		return new FileOrFolder(
 			fileOrFolder.getName(),
@@ -77,6 +66,7 @@ class FilePublisherImpl implements FilePublisher {
 	private static ImmutableArray<FileOrFolder> immutable(List<FileOrFolder> entries) {
 		return my(ImmutableArrays.class).newImmutableArray(entries);
 	}
+
 	
 	private static File[] sortedFiles(File folder) {
 		File[] result = folder.listFiles();
@@ -89,11 +79,9 @@ class FilePublisherImpl implements FilePublisher {
 		return result;
 	}
 	
+	
 	private static byte[] readFileContents(File file) throws IOException {
 		return my(IO.class).files().readBytes(file);
 	}
-
-	
-
 	
 }
