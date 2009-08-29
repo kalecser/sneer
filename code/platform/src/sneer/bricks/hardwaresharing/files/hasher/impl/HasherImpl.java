@@ -17,11 +17,6 @@ import sneer.bricks.pulp.crypto.Sneer1024;
 class HasherImpl implements Hasher {
 
 	@Override
-	public Sneer1024 hashFile(FileContents contents) {
-		return hashFile(contents.bytes.copy());
-	}
-
-	@Override
 	public Sneer1024 hashFile(byte[] contents) {
 		return my(Crypto.class).digest(contents);
 	}
