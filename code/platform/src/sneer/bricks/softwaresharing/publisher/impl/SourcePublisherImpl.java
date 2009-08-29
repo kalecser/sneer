@@ -33,7 +33,7 @@ class SourcePublisherImpl implements SourcePublisher {
 		try {
 			hash = my(FilePublisher.class).publish(platformSrcFolder());
 		} catch (IOException e) {
-			my(BlinkingLights.class).turnOnIfNecessary(_errorLight, "Error publishing bricks.", helpMessage(), e);
+			my(BlinkingLights.class).turnOnIfNecessary(_errorLight, "Error publishing your source folder.", helpMessage(), e);
 			return;
 		}
 		
