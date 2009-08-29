@@ -43,7 +43,7 @@ class FileClientImpl implements FileClient {
 		Latch latch;
 
 		synchronized (this) {
-			if (cachedContentsOf(hashOfContents) != null)
+			if (cachedContentsBy(hashOfContents) != null)
 				return;
 			
 			FileRequestPublisher.startPublishing(hashOfContents);
@@ -56,17 +56,13 @@ class FileClientImpl implements FileClient {
 		latch.waitTillOpen();
 		FileRequestPublisher.stopPublishing(hashOfContents);
 		
-		Object contents = cachedContentsOf(hashOfContents);
+		Object contents = cachedContentsBy(hashOfContents);
 		if (contents instanceof FolderContents)
-			fetchFolderEntries((FolderContents)contents);
+			for (FileOrFolder entry : ((FolderContents)contents).contents)
+				fetchToCache(entry.hashOfContents);
 	}
 
-	private void fetchFolderEntries(FolderContents contents) {
-		for (FileOrFolder entry : contents.contents)
-			fetchToCache(entry.hashOfContents);
-	}
-
-	private Object cachedContentsOf(Sneer1024 hashOfContents) {
+	private Object cachedContentsBy(Sneer1024 hashOfContents) {
 		return my(FileCache.class).getContents(hashOfContents);
 	}
 	
@@ -85,61 +81,5 @@ class FileClientImpl implements FileClient {
 	private void receiveFolder(FolderContents contents) {
 		my(FileCache.class).putFolderContents(contents);
 	}
-
-	
-
-	
-
-
-
-
-
-
-
-	
-	
-	//	private Object waitForContents(Sneer1024 hash) {
-//		synchronized (_contentsBufferByHash) {
-//			while (true) {
-//				Object contents = _contentsBufferByHash.get(hash);
-//				if (contents != null) return contents;
-//				my(Threads.class).waitWithoutInterruptions(_contentsBufferByHash);
-//			}
-//		}
-//	}
-//
-//	
-//	private void fetchFolderContentsInto(File folder, long lastModified, FolderContents contents) throws IOException {
-//		folder.mkdirs();
-//		
-//		for (FolderEntry entry : contents.contents)
-//			fetchFolderEntryInto(folder, entry);
-//		
-//		folder.setLastModified(lastModified);
-//	}
-//
-//	
-//	private void fetchFolderEntryInto(File folder, FolderEntry entry) throws IOException {
-//		writeTo(
-//			new File(folder, entry.name),
-//			entry.lastModified,
-//			entry.hashOfContents
-//		);
-//	}
-//
-//	
-//	private void fetchFileContentsInto(File destination, long lastModified, FileContents contents) throws IOException {
-//		my(IO.class).files().writeByteArrayToFile(destination, contents.bytes.copy());
-//		destination.setLastModified(lastModified);
-//	}
-//
-//	
-	
-	
-	
-	
-	
-	
-	
 	
 }
