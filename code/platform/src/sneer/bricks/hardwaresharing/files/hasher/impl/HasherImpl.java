@@ -7,7 +7,6 @@ import java.math.BigInteger;
 
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.hasher.Hasher;
-import sneer.bricks.hardwaresharing.files.protocol.FileContents;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.pulp.crypto.Crypto;
