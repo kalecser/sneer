@@ -1,4 +1,4 @@
-LEGAL STUFF
+ LEGAL STUFF
 ===============
 
 See license.txt in this same repository or distribution for licensing info.   
