@@ -38,7 +38,7 @@ class BrickVersionTreeNode extends AbstractTreeNodeWrapper<String> {
 		super(parent, brickVersion);
 		_brickVersion = brickVersion;
 		
-		_toString = _ddMMyyHHmmss.format(new Date(_brickVersion.publicationDate())) + " (users = " + usersCount() + ")";
+		_toString = _ddMMyyHHmmss.format(new Date(_brickVersion.publicationDate())) + " - " + usersCount() + " users - hash:" + _brickVersion.hash();
 	}
 
 	@Override public ImageIcon getIcon() {

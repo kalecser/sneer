@@ -67,8 +67,14 @@ class BrickInfoTreeNode extends AbstractTreeNodeWrapper<BrickVersion> {
 		return _currentBrick;
 	}
 	
-	@Override public String toString() {  return _brickInfo.name(); }
+	
+	@Override public String toString() {
+		return _brickInfo.isSnapp()
+			? _brickInfo.name() + " (Snapp)"
+			: _brickInfo.name();
+	}
 
+	
 	@SuppressWarnings("unchecked")
 	@Override protected AbstractTreeNodeWrapper wrapChild(int childIndex) {
 		return new BrickVersionTreeNode(this, listChildren().get(childIndex));
