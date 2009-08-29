@@ -29,17 +29,22 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 	private final EventNotifier<Seal> _newBuildingFound = my(EventNotifiers.class).newInstance();
 	
-	@SuppressWarnings("unused")	private final WeakContract _tupleSubscription;
+	@SuppressWarnings("unused")	private WeakContract _tupleSubscription;
 
 	
 	{
-		my(TupleSpace.class).keep(SrcFolderHash.class);
-
-		my(SourcePublisher.class).publishSourceFolder();
-
-		_tupleSubscription = my(TupleSpace.class).addSubscription(SrcFolderHash.class, this);
+		my(Threads.class).startDaemon("BrickSpaceImpl init", new Runnable() { @Override public void run() {
+			init();
+		}});
 	}
+
 	
+	private void init() {
+		my(TupleSpace.class).keep(SrcFolderHash.class);
+		publishMySrcFolder();
+		receiveSrcFoldersFromPeers();
+	}
+
 	
 	@Override
 	public Collection<BrickInfo> availableBricks() {
@@ -62,9 +67,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 	
 	private void fetchIfNecessary(final SrcFolderHash srcFolderHash) {
-		my(Logger.class).log("Fetching: " + srcFolderHash);
 		my(FileClient.class).fetchToCache(srcFolderHash.value);
-		my(Logger.class).log("Fetched: " + srcFolderHash);
 		my(Logger.class).log("FileClient: if already fetching join that thread. Keep set of all hashes being fetched");
 
 		accumulateBricks(srcFolderHash);
@@ -84,6 +87,14 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 	private boolean isCurrent(SrcFolderHash srcFolderHash) {
 		return srcFolderHash.publisher().equals(my(Seals.class).ownSeal());
+	}
+
+	private void publishMySrcFolder() {
+		my(SourcePublisher.class).publishSourceFolder();
+	}
+
+	private void receiveSrcFoldersFromPeers() {
+		_tupleSubscription = my(TupleSpace.class).addSubscription(SrcFolderHash.class, BrickSpaceImpl.this);
 	}
 
 }
