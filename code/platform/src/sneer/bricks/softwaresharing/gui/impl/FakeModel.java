@@ -89,7 +89,7 @@ class FakeModel {
 				_status = Status.DIFFERENT;
 			}
 			@Override public Sneer1024 hash() {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+				return null;
 			}
 		};
 	}
