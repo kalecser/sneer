@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardwaresharing.files.publisher.FilePublisher;
+import sneer.bricks.hardwaresharing.files.reader.FileReader;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -31,9 +31,9 @@ class SourcePublisherImpl implements SourcePublisher {
 		
 		Sneer1024 hash;
 		try {
-			hash = my(FilePublisher.class).publish(platformSrcFolder());
+			hash = my(FileReader.class).readIntoTheFileCache(platformSrcFolder());
 		} catch (IOException e) {
-			my(BlinkingLights.class).turnOnIfNecessary(_errorLight, "Error publishing bricks.", helpMessage(), e);
+			my(BlinkingLights.class).turnOnIfNecessary(_errorLight, "Error reading your source folder.", "There was trouble trying to read your source folder in order to publish your bricks for your peers. See log for details.", e);
 			return;
 		}
 		
@@ -68,11 +68,6 @@ class SourcePublisherImpl implements SourcePublisher {
 
 	private File platformSrcFolder() {
 		return my(FolderConfig.class).platformSrcFolder().get();
-	}
-
-
-	private static String helpMessage() {
-		return "There was trouble trying to publish bricks. See log for details.";
 	}
 	
 }

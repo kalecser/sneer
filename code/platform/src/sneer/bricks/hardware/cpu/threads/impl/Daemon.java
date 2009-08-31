@@ -25,7 +25,7 @@ abstract class Daemon extends Thread {
 
 		for (Daemon victim : allDaemons)
 			try {
-				victim.join(100); //Gives them a little time to die but does not wait if they are already dead.
+				victim.join(2000); //Gives them a little time to die but does not wait if they are already dead.
 			} catch (InterruptedException e) {
 				throw new IllegalStateException(e);
 			}

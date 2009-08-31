@@ -25,34 +25,30 @@ class FileRequestPublisher {
 	}
 	
 	
+	synchronized
 	static void startPublishing(Sneer1024 hashOfContents) {
-		publish(hashOfContents);
-		synchronized (_pendingRequests) {
-			_pendingRequests.addLast(hashOfContents);
-		}
+		if (_pendingRequests.contains(hashOfContents))
+			return;
+		takeTurnToPublish(hashOfContents);
 	}
 
 	
+	synchronized
 	static void stopPublishing(Sneer1024 hashOfContents) {
-		synchronized (_pendingRequests) {
-			_pendingRequests.remove(hashOfContents);
-		}
+		_pendingRequests.remove(hashOfContents);
 	}
 
 	
+	synchronized
 	private static void publishPendingRequest() {
-		Sneer1024 hashOfContents;
-		synchronized (_pendingRequests) {
-			if (_pendingRequests.isEmpty()) return;
-			hashOfContents = _pendingRequests.removeFirst();
-			_pendingRequests.addLast(hashOfContents);
-		}
-		publish(hashOfContents);
+		if (_pendingRequests.isEmpty()) return;
+		takeTurnToPublish(_pendingRequests.removeFirst());
 	}
 
 	
-	private static void publish(Sneer1024 hashOfContents) {
+	private static void takeTurnToPublish(Sneer1024 hashOfContents) {
 		my(TupleSpace.class).publish(new FileRequest(hashOfContents));
+		_pendingRequests.addLast(hashOfContents);
 	}
 	
 }

@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
-import sneer.bricks.hardware.cpu.utils.profiler.Profiler;
-import sneer.bricks.hardware.cpu.utils.profiler.Profilers;
 import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.skin.image.ImageFactory;
@@ -24,30 +22,19 @@ import spikes.sneer.bricks.snapps.watchme.codec.ImageCodec.Encoder;
 
 class EncoderImpl implements Encoder {
 	
-	private static Profiler _generateDeltasProfiler = my(Profilers.class).newProfiler("EncoderImpl.generateDeltas()");
-	
 	private final ImageFactory _imageFactory = my(ImageFactory.class);	
 	
 	private Map<Pair<Integer, Integer>, int[]> _previousPixelsByCellCoordinate = new HashMap<Pair<Integer, Integer>, int[]>();
 	
 	public List<ImageDelta> generateDeltas(BufferedImage shot) throws Hiccup {
-		try {
-			_generateDeltasProfiler.enter();
-			return doGenerateDeltas(shot);
-		} finally {
-			_generateDeltasProfiler.exit();
-		}
-	}
-
-	private List<ImageDelta> doGenerateDeltas(BufferedImage shot) throws Hiccup {
 		final List<ImageDelta> result = new ArrayList<ImageDelta>();
 		
 		for (int y = 0; y < shot.getHeight(); y = y + CELL_SIZE) 
 			for (int x = 0; x < shot.getWidth(); x = x + CELL_SIZE) 
 				addImageDeltaIfNecessary(shot, x, y, result);
-
+		
 		return result;
-	}	
+	}
 
 	private void addImageDeltaIfNecessary(BufferedImage _shot, int x, int y, List<ImageDelta> result) throws Hiccup {
 		int cellWidth = Math.min(CELL_SIZE, _shot.getWidth() - x);

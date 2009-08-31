@@ -30,7 +30,7 @@ import sneer.foundation.testsupport.AssertUtils;
 
 public class LocalBrickDiscoveryTest extends BrickTest {
 
-	@Test (timeout = 2000)
+	@Test (timeout = 4000)
 	public void localBrickDiscoveryWithBricksInSubfolders() throws IOException {
 		generateBrick(tmpFolder());
 		my(FolderConfig.class).platformSrcFolder().set(tmpFolder());
