@@ -13,6 +13,8 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
@@ -28,7 +30,21 @@ import sneer.foundation.lang.Consumer;
 public class BrickInstallerTest extends BrickTest {
 	
 	final BrickInstaller _subject = my(BrickInstaller.class);
-
+	
+	@Test (timeout = 4000)
+	public void stagingFailureIsReportedAsBlinkingLight() throws Throwable {
+		setUpPlatform();
+		stageBrickY();
+		
+		binFileFor(Brick.class).delete();
+		
+		Signal<Integer> size = my(BlinkingLights.class).lights().size();
+		assertEquals(0, size.currentValue().intValue());
+		
+		_subject.prepareStagedBricksInstallation();
+		
+		assertEquals(1, size.currentValue().intValue());
+	}
 	
 	@Test (timeout = 4000)
 	public void stageOneBrick() throws Exception  {
@@ -177,7 +193,7 @@ public class BrickInstallerTest extends BrickTest {
 	private void copyClassToBinFolder(final Class<?> clazz) throws IOException {
 		my(IO.class).files().copyFile(
 			my(ClassUtils.class).classFile(clazz),
-			new File(binFolder(), clazz.getName().replace('.', '/') + ".class"));
+			binFileFor(clazz));
 	}
 
 	

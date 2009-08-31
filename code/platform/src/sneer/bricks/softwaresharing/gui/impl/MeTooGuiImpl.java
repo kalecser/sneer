@@ -34,10 +34,12 @@ import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.diff.text.gui.TextDiffPanel;
 import sneer.bricks.snapps.diff.text.gui.TextDiffPanels;
 import sneer.bricks.snapps.system.log.gui.LogConsole;
+import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.BrickVersion.Status;
 import sneer.bricks.softwaresharing.gui.MeTooGui;
+import sneer.bricks.softwaresharing.installer.BrickInstaller;
 
 class MeTooGuiImpl extends JFrame implements MeTooGui{
 
@@ -94,7 +96,7 @@ class MeTooGuiImpl extends JFrame implements MeTooGui{
 		
 		_meTooButton.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
 			BrickVersion version = selectedBrickVersion();
-			//version.setStagedForExecution(!version.isStagedForExecution());
+			selectedBrick().setStagedForInstallation(version, !version.isStagedForExecution());
 			_meTooButton.setSelected(version.isStagedForExecution());
 			_tree.repaint();
 		}});
@@ -129,7 +131,15 @@ class MeTooGuiImpl extends JFrame implements MeTooGui{
 	}
 
 	private BrickVersion selectedBrickVersion() {
-		return (BrickVersion) ((BrickVersionTreeNode) _lastSelectedNode).sourceObject();
+		return selectedBrickVersionTreeNode().sourceObject();
+	}
+
+	private BrickVersionTreeNode selectedBrickVersionTreeNode() {
+		return (BrickVersionTreeNode) _lastSelectedNode;
+	}
+	
+	private BrickInfo selectedBrick() {
+		return ((BrickInfoTreeNode)selectedBrickVersionTreeNode()._parent).sourceObject();
 	}
 
 	private void tryShowFiles() {
@@ -144,7 +154,7 @@ class MeTooGuiImpl extends JFrame implements MeTooGui{
 		
 		BrickVersionTreeNode node = (BrickVersionTreeNode) selected;
 		
-		_files.setModel(new FileVersionListModel((BrickVersion) node.sourceObject()));
+		_files.setModel(new FileVersionListModel(node.sourceObject()));
 	}	
 	
 	private void tryCompare() {
@@ -159,8 +169,8 @@ class MeTooGuiImpl extends JFrame implements MeTooGui{
 	}
 	
 	private void initGui() {
-//		final RootTreeNode root = new RootTreeNode();
-		final RootTreeNode root = new RootTreeNode(FakeModel.bricks());
+		final RootTreeNode root = new RootTreeNode();
+//		final RootTreeNode root = new RootTreeNode(FakeModel.bricks());
 
 		_tree.setRootVisible(false);
 		_tree.setModel(new DefaultTreeModel(root));
@@ -189,6 +199,12 @@ class MeTooGuiImpl extends JFrame implements MeTooGui{
 			root.load();
 			_tree.setModel(new DefaultTreeModel(root));
 			_files.setModel(new DefaultListModel());
+		}});
+		
+		JButton install = new JButton("Install");
+		toolbar.add(install);
+		install.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
+			my(BrickInstaller.class).prepareStagedBricksInstallation();
 		}});
 		
 		JScrollPane scrollTree = my(SynthScrolls.class).create();

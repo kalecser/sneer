@@ -38,6 +38,11 @@ class BrickInfoTreeNode extends AbstractTreeNodeWrapper<BrickVersion> {
 		
 		getIcon();
 	}
+	
+	@Override
+	public BrickInfo sourceObject() {
+		return _brickInfo;
+	}
 
 	@Override public ImageIcon getIcon() {
 		if(_brickInfo.status() == Status.DIFFERENT ) {

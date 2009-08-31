@@ -8,9 +8,6 @@ import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-import sneer.bricks.softwaresharing.BrickInfo;
-import sneer.bricks.softwaresharing.BrickVersion;
-
 class MeTooTreeCellRenderer extends DefaultTreeCellRenderer {
 
 @Override public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, 
@@ -24,11 +21,11 @@ class MeTooTreeCellRenderer extends DefaultTreeCellRenderer {
     	result.setIcon(icon);
 
     if(value instanceof BrickInfoTreeNode)
-    	if(Util.isBrickStagedForExecution((BrickInfo) ((BrickInfoTreeNode)value).sourceObject()))
+    	if(Util.isBrickStagedForExecution(((BrickInfoTreeNode)value).sourceObject()))
 			isStaged(result);
     
     if(value instanceof BrickVersionTreeNode)
-    	if(((BrickVersion)((BrickVersionTreeNode)value).sourceObject()).isStagedForExecution())
+    	if((((BrickVersionTreeNode)value).sourceObject()).isStagedForExecution())
 			isStaged(result);
     
     return result;

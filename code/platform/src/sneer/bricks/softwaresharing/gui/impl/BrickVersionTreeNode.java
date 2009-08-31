@@ -40,6 +40,11 @@ class BrickVersionTreeNode extends AbstractTreeNodeWrapper<String> {
 		
 		_toString = _ddMMyyHHmmss.format(new Date(_brickVersion.publicationDate())) + " - " + usersCount() + " users - hash:" + _brickVersion.hash();
 	}
+	
+	@Override
+	public BrickVersion sourceObject() {
+		return _brickVersion;
+	}
 
 	@Override public ImageIcon getIcon() {
 		if(_brickVersion.status()==Status.DIFFERENT){

@@ -37,7 +37,6 @@ import sneer.bricks.snapps.wind.Wind;
 import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.bricks.software.bricks.snappstarter.SnappStarter;
 import sneer.bricks.software.code.classutils.ClassUtils;
-import sneer.bricks.software.code.compilers.java.JavaCompilerException;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickInfo;
@@ -253,7 +252,7 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 	}
 	
 	@Override
-	public void stageBricksForInstallation(String... brickNames) throws IOException, JavaCompilerException {
+	public void stageBricksForInstallation(String... brickNames) throws IOException {
 		for (String brickName : brickNames) stageBrickForInstallation(brickName);
 
 		copyNecessaryClassFilesToTestPlatform();
