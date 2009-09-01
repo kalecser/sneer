@@ -19,7 +19,7 @@ public class ThreadsTest extends BrickTest {
 	@Test (timeout = 2000)
 	public void environmentIsPropagatedToSteppables() throws Exception {
 		final Environment environment = my(Environment.class);
-		final Latch latch = my(Latches.class).newLatch();
+		final Latch latch = my(Latches.class).produce();
 
 		_subject.startStepping(new Runnable() { @Override public void run() {
 			assertSame(environment, Environments.my(Environment.class));
@@ -50,7 +50,7 @@ public class ThreadsTest extends BrickTest {
 	@Test (timeout = 2000)
 	public void crashHandlersAreNotified() {
 		
-		final Latch crashingLatch = my(Latches.class).newLatch();
+		final Latch crashingLatch = my(Latches.class).produce();
 		@SuppressWarnings("unused")
 		WeakContract crashingContract = my(Threads.class).crashing().addPulseReceiver(crashingLatch);
 		

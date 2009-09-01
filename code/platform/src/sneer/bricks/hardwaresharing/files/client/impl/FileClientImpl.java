@@ -13,7 +13,6 @@ import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Producer;
 
 class FileClientImpl implements FileClient {
 	
@@ -41,21 +40,20 @@ class FileClientImpl implements FileClient {
 	@Override
 	public void fetchToCache(Sneer1024 hashOfContents) {
 		Latch latch;
-
 		synchronized (this) {
-			if (cachedContentsBy(hashOfContents) != null)
-				return;
-			
-			FileRequestPublisher.startPublishing(hashOfContents);
-			
-			latch = _latchesByHash.get(hashOfContents, new Producer<Latch>() { @Override public Latch produce() {
-				return my(Latches.class).newLatch();
-			}});
+			if (cachedContentsBy(hashOfContents) != null) return;
+			FileRequestPublisher.startRequesting(hashOfContents);
+			latch = _latchesByHash.get(hashOfContents, my(Latches.class));
 		}
 		
 		latch.waitTillOpen();
-		FileRequestPublisher.stopPublishing(hashOfContents);
+		FileRequestPublisher.stopRequesting(hashOfContents);
 		
+		recurseIfFolder(hashOfContents);
+	}
+
+	
+	private void recurseIfFolder(Sneer1024 hashOfContents) {
 		Object contents = cachedContentsBy(hashOfContents);
 		if (contents instanceof FolderContents)
 			for (FileOrFolder entry : ((FolderContents)contents).contents)

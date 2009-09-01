@@ -32,7 +32,7 @@ public class FileCacheTest extends BrickTest {
 
 	@Test
 	public void cacheFolderContents() {
-		final Latch latch = my(Latches.class).newLatch();
+		final Latch latch = my(Latches.class).produce();
 		
 		@SuppressWarnings("unused")	WeakContract contract =
 			_subject.contentsAdded().addReceiver(new Consumer<Object>() { @Override public void consume(Object contents) {

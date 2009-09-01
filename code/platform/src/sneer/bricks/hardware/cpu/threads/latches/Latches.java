@@ -1,10 +1,7 @@
 package sneer.bricks.hardware.cpu.threads.latches;
 
 import sneer.foundation.brickness.Brick;
+import sneer.foundation.lang.Factory;
 
 @Brick
-public interface Latches {
-
-	Latch newLatch();
-
-}
+public interface Latches extends Factory<Latch> {}

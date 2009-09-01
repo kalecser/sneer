@@ -103,8 +103,8 @@ public class TimerTest extends BrickTest {
 	
 	@Test
 	public void testAlarmThatAddsAlarm() throws Exception {
-		final Latch latch1 = my(Latches.class).newLatch();
-		final Latch latch2 = my(Latches.class).newLatch();
+		final Latch latch1 = my(Latches.class).produce();
+		final Latch latch2 = my(Latches.class).produce();
 		
 		_c1 = _subject.wakeUpInAtLeast(1, new Runnable(){ @Override public void run() {
 			_c2 = _subject.wakeUpInAtLeast(1, new Runnable(){ @Override public void run() {

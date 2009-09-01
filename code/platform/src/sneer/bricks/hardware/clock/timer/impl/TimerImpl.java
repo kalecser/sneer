@@ -70,7 +70,7 @@ class TimerImpl implements Timer {
 
 	@Override
 	public void sleepAtLeast(long millis) {
-		Latch latch = my(Latches.class).newLatch();
+		Latch latch = my(Latches.class).produce();
 		wakeUpInAtLeast(millis, latch);
 		latch.waitTillOpen();
 	}

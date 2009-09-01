@@ -15,7 +15,7 @@ class ThreadsImpl implements Threads {
 
 	private static final Latches Latches = my(Latches.class);
 	
-	private final Latch _crash = Latches.newLatch();
+	private final Latch _crash = Latches.produce();
 	private final Pulser _crashingPulser = my(Pulsers.class).newInstance();
 	static private boolean _isCrashing = false;
 
@@ -54,7 +54,7 @@ class ThreadsImpl implements Threads {
 		if (_isCrashing) return;
 		
 		final Environment environment = my(Environment.class);
-		final Latch hasStarted = Latches.newLatch();
+		final Latch hasStarted = Latches.produce();
 
 		new Daemon(threadName) { @Override public void run() {
 			hasStarted.open();

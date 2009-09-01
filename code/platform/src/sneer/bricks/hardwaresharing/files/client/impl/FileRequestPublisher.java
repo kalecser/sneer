@@ -26,7 +26,7 @@ class FileRequestPublisher {
 	
 	
 	synchronized
-	static void startPublishing(Sneer1024 hashOfContents) {
+	static void startRequesting(Sneer1024 hashOfContents) {
 		if (_pendingRequests.contains(hashOfContents))
 			return;
 		takeTurnToPublish(hashOfContents);
@@ -34,7 +34,7 @@ class FileRequestPublisher {
 
 	
 	synchronized
-	static void stopPublishing(Sneer1024 hashOfContents) {
+	static void stopRequesting(Sneer1024 hashOfContents) {
 		_pendingRequests.remove(hashOfContents);
 	}
 

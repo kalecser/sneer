@@ -7,9 +7,9 @@ import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.CacheMap;
 
 @Brick
-/** "Demolishes" a brick building contained in a source folder and retrieves individual brick info.*/
 public interface Demolisher {
 
-	void demolishBuilding(CacheMap<String,BrickInfo> bricksByName, Sneer1024 srcFolderHash, boolean isCurrent);
+	/** "Demolishes" a brick building contained in a source folder and stores individual brick info into bricksByName.*/
+	void demolishBuildingInto(CacheMap<String,BrickInfo> bricksByName, Sneer1024 srcFolderHash, boolean isMyOwn);
 
 }

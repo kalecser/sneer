@@ -158,7 +158,7 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 
 	@Override
 	public void waitForShouts(final String shoutsExpected) {
-		final Latch latch = my(Latches.class).newLatch();
+		final Latch latch = my(Latches.class).produce();
 
 		WeakContract contract = my(Wind.class).shoutsHeard().addPulseReceiver(new Runnable() { @Override public void run() {
 			openLatchIfShoutsHeard(shoutsExpected, latch);
@@ -229,7 +229,7 @@ class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
 	public void waitForAvailableBrick(final String brickName, final String brickStatus) {
 		my(Logger.class).log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Waiting for brick: " + brickName + " status: " + brickStatus);
 
-		final Latch latch = my(Latches.class).newLatch();
+		final Latch latch = my(Latches.class).produce();
 		
 		WeakContract contract = my(BrickSpace.class).newBuildingFound().addReceiver(new Consumer<Seal>() { @Override public void consume(Seal publisher) {
 			my(Logger.class).log("New brick configuration found for: " + print(publisher));

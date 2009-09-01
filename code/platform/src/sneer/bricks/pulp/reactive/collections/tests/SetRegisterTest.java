@@ -25,7 +25,7 @@ public class SetRegisterTest extends BrickTest {
 
 	@Test (timeout = 2000)
 	public void addAll() {
-		final Latch latch = my(Latches.class).newLatch();
+		final Latch latch = my(Latches.class).produce();
 
 		final ArrayList<Integer> _sizes = new ArrayList<Integer>();
 		@SuppressWarnings("unused") final Object sizeContract = _subject.output().size().addReceiver(new Consumer<Integer>() {@Override public void consume(Integer value) {

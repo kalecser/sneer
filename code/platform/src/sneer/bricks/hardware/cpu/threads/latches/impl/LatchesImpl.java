@@ -7,7 +7,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latches;
 class LatchesImpl implements Latches {
 
 	@Override
-	public Latch newLatch() {
+	public Latch produce() {
 		return new LatchImpl();
 	}
 

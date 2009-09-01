@@ -27,7 +27,7 @@ public class EventNotifiersTest extends BrickTest {
 	@Test (timeout = 2000)
 	public void actsAsPulser() {
 		final EventNotifier<Object> notifier = my(EventNotifiers.class).newInstance();
-		final Latch pulseLatch = my(Latches.class).newLatch();
+		final Latch pulseLatch = my(Latches.class).produce();
 		@SuppressWarnings("unused")
 		final WeakContract pulseContract = notifier.output().addPulseReceiver(pulseLatch);
 		

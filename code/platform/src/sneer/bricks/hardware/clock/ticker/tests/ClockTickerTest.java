@@ -28,7 +28,7 @@ public class ClockTickerTest extends BrickTest {
 	}
 
 	private void waitForATick() {
-		final Latch latch = my(Latches.class).newLatch();
+		final Latch latch = my(Latches.class).produce();
 		@SuppressWarnings("unused")
 		WeakContract contract = _clock.time().addReceiver(new Consumer<Long>() { @Override public void consume(Long value) {
 			latch.open();

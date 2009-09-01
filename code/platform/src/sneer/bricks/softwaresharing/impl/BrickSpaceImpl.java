@@ -7,7 +7,6 @@ import java.util.Collection;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
@@ -22,6 +21,7 @@ import sneer.bricks.softwaresharing.publisher.SrcFolderHash;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Predicate;
 
 class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
@@ -68,24 +68,22 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	
 	private void fetchIfNecessary(final SrcFolderHash srcFolderHash) {
 		my(FileClient.class).fetchToCache(srcFolderHash.value);
-		my(Logger.class).log("FileClient: if already fetching join that thread. Keep set of all hashes being fetched");
-
 		accumulateBricks(srcFolderHash);
 	}
 
 	
 	private void accumulateBricks(final SrcFolderHash srcFolderHash) {
-		my(Demolisher.class).demolishBuilding(
+		my(Demolisher.class).demolishBuildingInto(
 			_availableBricksByName,
 			srcFolderHash.value,
-			isCurrent(srcFolderHash)
+			isMyOwn(srcFolderHash)
 		);
 		
 		_newBuildingFound.notifyReceivers(srcFolderHash.publisher());
 	}
 
 
-	private boolean isCurrent(SrcFolderHash srcFolderHash) {
+	private boolean isMyOwn(SrcFolderHash srcFolderHash) {
 		return srcFolderHash.publisher().equals(my(Seals.class).ownSeal());
 	}
 
@@ -94,7 +92,13 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	}
 
 	private void receiveSrcFoldersFromPeers() {
-		_tupleSubscription = my(TupleSpace.class).addSubscription(SrcFolderHash.class, BrickSpaceImpl.this);
+//		_tupleSubscription = my(TupleSpace.class).addSubscription(SrcFolderHash.class, this);
+		_tupleSubscription = my(TupleSpace.class).addSubscription(SrcFolderHash.class, this, new Predicate<SrcFolderHash>() {
+			@Override
+			public boolean evaluate(SrcFolderHash tuple) {
+				return true; 
+			}
+		});
 	}
 
 }

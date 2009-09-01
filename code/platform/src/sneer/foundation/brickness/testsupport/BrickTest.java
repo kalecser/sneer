@@ -3,10 +3,15 @@ package sneer.foundation.brickness.testsupport;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.jmock.Mockery;
 import org.jmock.Sequence;
@@ -94,7 +99,7 @@ public abstract class BrickTest extends CleanTest {
 
 
 	private void printFilteredStack(Throwable thrown) {
-		for (String line : getTrace(thrown).split("\n"))
+		for (String line : stackAsLines(thrown))
 			if (isInteresting(line))
 				System.out.println(line);
 	}
@@ -124,9 +129,31 @@ public abstract class BrickTest extends CleanTest {
 		return line.indexOf(token) != -1;
 	}
 	
-	private static String getTrace(Throwable throwable) {
-		StringWriter result= new StringWriter();
+	private static Collection<String> stackAsLines(Throwable throwable) {
+		String stack = stackAsString(throwable);
+		return asLines(stack);   //This is done instead of simply calling String.split("\n") because the stack is printed out with different end-of-line delimiters in Windows and Linux.
+	}
+
+	private static Collection<String> asLines(String stack) {
+		Collection<String> result = new ArrayList<String>();
+		BufferedReader reader = new BufferedReader(new StringReader(stack));
+		while (true) {
+			String line = readLine(reader);
+			if (line == null) break;
+			result.add(line);
+		}
+		return result;
+	}
+
+	private static String stackAsString(Throwable throwable) {
+		StringWriter result = new StringWriter();
 		throwable.printStackTrace(new PrintWriter(result));
 		return result.getBuffer().toString();
+	}
+
+	private static String readLine(BufferedReader reader) {
+		try {
+			return reader.readLine();
+		} catch (IOException e) { throw new IllegalStateException(e); }
 	}
 }
