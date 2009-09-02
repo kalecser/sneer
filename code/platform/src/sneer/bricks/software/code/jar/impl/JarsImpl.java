@@ -27,6 +27,7 @@ class JarBuilderImpl implements JarBuilder{
 	private final FileOutputStream _fileOutputStream;
 	
 	public JarBuilderImpl(File file) throws IOException {
+		file.getParentFile().mkdirs();
 		_fileOutputStream = new FileOutputStream(file);
 		_out = new JarOutputStream(new BufferedOutputStream(_fileOutputStream));
 	}

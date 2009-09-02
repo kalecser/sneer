@@ -11,7 +11,11 @@ import org.junit.Test;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.software.bricks.compiler.BrickCompiler;
 import sneer.bricks.software.bricks.compiler.BrickCompilerException;
+import sneer.bricks.software.bricks.compiler.tests.fixtures.Foo;
 import sneer.bricks.software.code.classutils.ClassUtils;
+import sneer.bricks.software.code.jar.JarBuilder;
+import sneer.bricks.software.code.jar.Jars;
+import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.brickness.Nature;
@@ -30,6 +34,38 @@ public class BrickCompilerTest extends BrickTest {
 		binFolder().mkdirs();
 		
 		copyRequiredFoundationFiles();
+	}
+	
+	@Test
+	public void libizinha() throws IOException {
+		
+		my(FolderConfig.class).platformBinFolder().set(my(ClassUtils.class).classpathRootFor(Brick.class));
+		
+		writeSourceFile("bricks/a/A.java",
+				"package bricks.a;" +
+				"@" + Brick.class.getName() + " " +
+				"public interface A {}");
+			
+		writeSourceFile("bricks/a/impl/AImpl.java",
+				"package bricks.a.impl;" +
+				"class AImpl implements bricks.a.A {" +
+					"{ " + Foo.class.getName() + ".bar(); }" +
+				"}");
+		
+		writeLib("bricks/a/impl/lib/foo.jar", Foo.class);
+		
+		_subject.compile(srcFolder(), binFolder());
+		
+		assertBinFilesExist(
+			"bricks/a/A.class",
+			"bricks/a/impl/AImpl.class",
+			"bricks/a/impl/lib/foo.jar");
+	}
+
+	private void writeLib(String filename, Class<Foo> clazz) throws IOException {
+		JarBuilder builder = my(Jars.class).builder(sourceFile(filename));
+		builder.add(my(ClassUtils.class).relativeClassFileName(clazz), my(ClassUtils.class).classFile(clazz));
+		builder.close();
 	}
 
 	@Test
@@ -143,7 +179,11 @@ public class BrickCompilerTest extends BrickTest {
 	}
 
 	private void writeSourceFile(String filename, String data) throws IOException {
-		my(IO.class).files().writeString(new File(srcFolder(), filename), data);
+		my(IO.class).files().writeString(sourceFile(filename), data);
+	}
+
+	private File sourceFile(String filename) {
+		return new File(srcFolder(), filename);
 	}
 
 	private File binFolder() {

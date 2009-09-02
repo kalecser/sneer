@@ -16,6 +16,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.hardware.ram.iterables.Iterables;
 import sneer.bricks.hardwaresharing.files.server.FileServer;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
@@ -25,6 +26,9 @@ import sneer.bricks.network.social.ContactManager;
 import sneer.bricks.network.social.heartbeat.Heart;
 import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.network.social.loggers.tuples.TupleLogger;
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.Light;
+import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.own.name.OwnNameKeeper;
@@ -32,18 +36,16 @@ import sneer.bricks.pulp.port.PortKeeper;
 import sneer.bricks.pulp.probe.ProbeManager;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
+import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.snapps.wind.Shout;
 import sneer.bricks.snapps.wind.Wind;
-import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.bricks.software.bricks.snappstarter.SnappStarter;
 import sneer.bricks.software.code.classutils.ClassUtils;
-import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
-import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
@@ -56,6 +58,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	static private final String MOCK_ADDRESS = "localhost";
 	private Collection<Object> _referenceToAvoidGc = new ArrayList<Object>();
+	private WeakContract _blinkingLightContract;
 
 	@Override
 	public void setSneerPort(int port) {
@@ -255,41 +258,19 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	public void stageBricksForInstallation(String... brickNames) throws IOException {
 		for (String brickName : brickNames) stageBrickForInstallation(brickName);
 
-		copyNecessaryClassFilesToTestPlatform();
+		my(Logger.class).log("Copying platform sources...");
+		copyPlatformSources();
+		my(Logger.class).log("Finished copying platform sources.");
+		
 		my(BrickInstaller.class).prepareStagedBricksInstallation();
 	}
 
-	private void copyNecessaryClassFilesToTestPlatform() throws IOException {
-		copyToTestPlatformBin(Brick.class);
-		writeSnappClassToTestPlatformSrc();
-		new File(testPlatformBin(), "sneer/main").mkdir();
-		new File(testPlatformBin(), "sneer/tests").mkdir();
-	}
-
-	private void writeSnappClassToTestPlatformSrc() throws IOException {
-		my(JavaSourceWriters.class).newInstance(testPlatformSrc())
-			.write(Snapp.class.getName(),
-				"import java.lang.annotation.Retention;\n" +
-				"import java.lang.annotation.RetentionPolicy;\n" +
-				"@Retention(RetentionPolicy.RUNTIME)\n" +
-				"public @interface Snapp {}"
-			);
-	}
-
-	private void copyToTestPlatformBin(Class<?> clazz) throws IOException {
-		String classFileName = my(ClassUtils.class).relativeClassFileName(clazz);
-		my(IO.class).files().copyFile(
-			new File(platformBin()    , classFileName),
-			new File(testPlatformBin(), classFileName)
-		);
+	private void copyPlatformSources() throws IOException {
+		copyToSourceFolder(new File(platformBin().getParentFile(), "src"));
 	}
 
 	private File platformBin() {
 		return my(ClassUtils.class).classpathRootFor(getClass());
-	}
-
-	private File testPlatformBin() {
-		return my(FolderConfig.class).platformBinFolder().get();
 	}
 
 	private void stageBrickForInstallation(String brickName) {
@@ -318,10 +299,21 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	@Override
 	public void start() {
+		
+		throwOnBlinkingErrors();
+		
 		commitStagedBricksInstallation();
 		
 		startSnapps();
 		accelerateHeartbeat();
+	}
+
+	private void throwOnBlinkingErrors() {
+		_blinkingLightContract = my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>() { @Override public void consume(CollectionChange<Light> value) {
+			for (Light l : value.elementsAdded())
+				if (l.type() == LightType.ERROR)
+					throw new IllegalStateException(l.error());
+		}});
 	}
 
 	private void commitStagedBricksInstallation() {

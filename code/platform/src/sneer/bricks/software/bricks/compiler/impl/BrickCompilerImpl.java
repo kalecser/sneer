@@ -4,8 +4,11 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.IO.FileFilters;
@@ -37,10 +40,37 @@ class BrickCompilerImpl implements BrickCompiler {
 	private void compileBricks(Collection<File> brickFolders, File destinationFolder) throws IOException {
 		File tmpFolder = cleanTmpBrickImplFolder();
 		
-		for (File brickFolder : brickFolders)
-			compileBrick(brickFolder, tmpFolder, destinationFolder);
+		File[] testClasspath = testClassPath(destinationFolder);
+		
+		for (File brickFolder : brickFolders) {
+			File[] implClasspath = classpathFor(destinationFolder, new File(brickFolder, "impl/lib"));
+			compileBrick(brickFolder, tmpFolder, testClasspath, implClasspath);
+		}
 		
 		copyFolder(tmpFolder, destinationFolder);
+	}
+
+	private File[] toFileArray(List<File> testClasspath) {
+		return testClasspath.toArray(new File[testClasspath.size()]);
+	}
+
+	private File[] testClassPath(File destinationFolder) {
+		return classpathFor(destinationFolder, foundationBin());
+	}
+
+	private File[] classpathFor(File destinationFolder, File libFolder) {
+		List<File> classpath = new ArrayList<File>();
+		classpath.add(destinationFolder);
+		
+		Iterator<File> foundationJars = my(IO.class).files().iterate(libFolder, new String[] { "jar" }, true);
+		while (foundationJars.hasNext()) {
+			classpath.add(foundationJars.next());
+		}
+		return toFileArray(classpath);
+	}
+
+	private File foundationBin() {
+		return new File(my(FolderConfig.class).platformBinFolder().get(), "sneer/foundation");
 	}
 
 	private void copyFolder(File srcFolder, File destinationFolder) throws IOException {
@@ -58,12 +88,12 @@ class BrickCompilerImpl implements BrickCompiler {
 		tmpFolder.mkdirs();
 	}
 
-	private void compileBrick(File brickFolder, File tmpFolder, File classpath) throws IOException {
-		compile(new File(brickFolder, "tests"), tmpFolder, classpath);
-		compile(new File(brickFolder, "impl"), tmpFolder, classpath);
+	private void compileBrick(File brickFolder, File tmpFolder, File[] testsClasspath, File[] implClasspath) throws IOException {
+		compile(new File(brickFolder, "tests"), tmpFolder, testsClasspath);
+		compile(new File(brickFolder, "impl"), tmpFolder, implClasspath);
 	}
 
-	private void compile(File srcFolder, File destinationFolder, File classpath) throws IOException {
+	private void compile(File srcFolder, File destinationFolder, File... classpath) throws IOException {
 		if (!srcFolder.exists()) return;
 		try {
 			my(JavaCompiler.class).compile(srcFolder, destinationFolder, classpath);

@@ -28,7 +28,8 @@ public class BrickInstallerImpl implements BrickInstaller {
 
 	@Override
 	public void commitStagedBricksInstallation() throws IOException {
-		if (!_srcStage.exists()) return;
+		if (!_srcStage.exists())
+			return;
 
 		File backupFolder = createBackupFolder();
 		backup(platformSrc(), backupFolder, "src");
@@ -69,17 +70,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 
 	private void prepareStagedBin() throws IOException {
 		
-		copyPlatformBinFolder("sneer/foundation");
-		copyPlatformBinFolder("sneer/main");
-		copyPlatformBinFolder("sneer/tests");
-		
 		my(BrickCompiler.class).compile(_srcStage, _binStage);
-	}
-
-	private void copyPlatformBinFolder(String folderName) throws IOException {
-		copyFolder(
-			new File(platformBin(), folderName),
-			new File(_binStage, folderName));
 	}
 	
 	private File platformBin() {
