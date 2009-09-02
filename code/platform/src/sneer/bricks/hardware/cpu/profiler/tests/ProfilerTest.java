@@ -10,11 +10,11 @@ import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.MapSignal;
 import sneer.foundation.brickness.testsupport.BrickTest;
 
+@Ignore
 public class ProfilerTest extends BrickTest {
 
 	private final Profiler _subject = my(Profiler.class);
 
-	@Ignore
 	@Test (timeout = 2000)
 	public void testProfiling() {
 		MapSignal<String, Float> profileResult = _subject.percentagesByMethod();
