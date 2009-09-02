@@ -94,7 +94,7 @@ public class SneerCommunity implements SovereignCommunity {
 
 	private Class<?> loadProbeClassUsing(URLClassLoader apiClassLoader) {
 		try {
-			return apiClassLoader.loadClass(SneerPartyProbe.class.getName());
+			return apiClassLoader.loadClass(SneerPartyController.class.getName());
 		} catch (ClassNotFoundException e) {
 			throw new IllegalStateException(e);
 		}
@@ -110,7 +110,7 @@ public class SneerCommunity implements SovereignCommunity {
 			private boolean isSharedByAllParties(String className) {
 				if (isNetworkClass(className)) return true;
 				if (className.equals(Logger.class.getName())) return true;
-				if (className.equals(SneerPartyProbe.class.getName())) return false;
+				if (className.equals(SneerPartyController.class.getName())) return false;
 				if (isPublishedByUser(className)) return false;
 				return !isSneerBrick(className); //Foundation classes such as Environments and functional tests classes such as SovereignParty must be shared by all SneerParties.
 			}

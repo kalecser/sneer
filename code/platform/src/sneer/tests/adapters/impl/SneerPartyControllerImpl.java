@@ -50,9 +50,9 @@ import sneer.foundation.lang.exceptions.NotImplementedYet;
 import sneer.foundation.lang.exceptions.Refusal;
 import sneer.tests.SovereignParty;
 import sneer.tests.adapters.SneerParty;
-import sneer.tests.adapters.SneerPartyProbe;
+import sneer.tests.adapters.SneerPartyController;
 
-class SneerPartyProbeImpl implements SneerPartyProbe, SneerParty {
+class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	static private final String MOCK_ADDRESS = "localhost";
 	private Collection<Object> _referenceToAvoidGc = new ArrayList<Object>();
