@@ -92,11 +92,10 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	}
 
 	private void receiveSrcFoldersFromPeers() {
-//		_tupleSubscription = my(TupleSpace.class).addSubscription(SrcFolderHash.class, this);
 		_tupleSubscription = my(TupleSpace.class).addSubscription(SrcFolderHash.class, this, new Predicate<SrcFolderHash>() {
 			@Override
 			public boolean evaluate(SrcFolderHash tuple) {
-				return true; 
+				return true;
 			}
 		});
 	}
