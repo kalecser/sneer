@@ -132,7 +132,16 @@ class IOImpl implements IO {
 		@Override public Filter not(Filter filter) { return adapt(FileFilterUtils.notFileFilter(asIOFileFilter(filter))); }
 		@Override public Filter suffix(String sulfix) { return adapt(FileFilterUtils.suffixFileFilter(sulfix)); }
 		@Override public Filter any() { return adapt(TrueFileFilter.INSTANCE); }
-		@Override public Filter or(Filter filter1, Filter filter2) { return adapt(FileFilterUtils.orFileFilter(asIOFileFilter(filter1), asIOFileFilter(filter2))); }
+		@Override public Filter or(Filter... filters) {
+			if (filters.length < 2) throw new IllegalArgumentException("At least two filters must be specified.");
+			
+			IOFileFilter current = asIOFileFilter(filters[0]);
+			for (int i = 1; i < filters.length; i++) {
+				IOFileFilter filter = asIOFileFilter(filters[i]);
+				current = FileFilterUtils.orFileFilter(current, filter);
+			}
+			return adapt(current);
+		}
 
 		@Override public Collection<File> listFiles(File folder, Filter fileFilter, Filter dirFilter){ 
 			return FileUtils.listFiles(folder, asIOFileFilter(fileFilter), asIOFileFilter(dirFilter));}

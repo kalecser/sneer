@@ -25,17 +25,26 @@ class BuilderImpl implements Builder {
 	@Override
 	public void build(File srcFolder, File destFolder) throws IOException {
 		
-		compileFoundation(srcFolder, destFolder);
+		buildFoundation(srcFolder, destFolder);
 		
-		Collection<File> apiFiles = brickApiFilesIn(srcFolder);
-		compileApi(apiFiles, destFolder);
-		compileBricks(brickFolders(apiFiles), destFolder);
+		buildBricks(srcFolder, destFolder);
 		
 		copyResources(srcFolder, destFolder);
 	}
 
-	private void compileFoundation(File srcFolder, File destFolder) throws IOException {
-		compile(new File(srcFolder, "sneer/foundation"), destFolder);
+	private void buildBricks(File srcFolder, File destFolder) throws IOException {
+		
+		Collection<File> apiFiles = brickApiFilesIn(srcFolder);
+		if (apiFiles.isEmpty()) return;
+		
+		compileApi(apiFiles, destFolder);
+		compileBricks(brickFolders(apiFiles), destFolder);
+	}
+
+	private void buildFoundation(File srcFolder, File destFolder) throws IOException {
+		File foundationSrc = new File(srcFolder, "sneer/foundation");
+		File[] fileArray = toFileArray(jarsIn(foundationSrc));
+		compile(foundationSrc, destFolder, fileArray);
 	}
 
 	private void copyResources(File srcFolder, File destFolder) throws IOException {
@@ -76,14 +85,18 @@ class BuilderImpl implements Builder {
 			return new File[] { destinationFolder };
 		}
 		
-		List<File> classpath = new ArrayList<File>();
+		List<File> classpath = jarsIn(libFolder);
 		classpath.add(destinationFolder);
-		
+		return toFileArray(classpath);
+	}
+
+	private List<File> jarsIn(File libFolder) {
+		List<File> classpath = new ArrayList<File>();
 		Iterator<File> foundationJars = files().iterate(libFolder, new String[] { "jar" }, true);
 		while (foundationJars.hasNext()) {
 			classpath.add(foundationJars.next());
 		}
-		return toFileArray(classpath);
+		return classpath;
 	}
 
 	private Files files() {
@@ -136,7 +149,8 @@ class BuilderImpl implements Builder {
 					srcFolder,
 					fileFilters().not(fileFilters().or(
 							fileFilters().name("impl"),
-							fileFilters().name("tests"))));
+							fileFilters().name("tests"),
+							fileFilters().name("foundation"))));
 	}
 
 	private Collection<File> listJavaFiles(File srcFolder, Filter folderFilter) {

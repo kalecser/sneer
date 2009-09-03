@@ -40,6 +40,23 @@ public class BuilderTest extends BrickTest {
 	}
 	
 	@Test
+	public void foundationLibs() throws IOException {
+		writeSourceFile("sneer/foundation/Bar.java",
+				"package sneer.foundation;" +
+				"class Bar {" +
+					"{ " + Foo.class.getName() + ".bar(); }" +
+				"}");
+		
+		writeLib("sneer/foundation/foo.jar", Foo.class);
+		
+		_subject.build(srcFolder(), binFolder());
+		
+		assertBinFilesExist(
+			"sneer/foundation/Bar.class",
+			"sneer/foundation/foo.jar");
+	}
+	
+	@Test
 	public void testsCanDependOnFoundationLibs() throws IOException {
 		writeSourceFile("bricks/a/A.java",
 				"package bricks.a;" +

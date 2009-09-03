@@ -22,7 +22,7 @@ public interface IO {
 	interface FileFilters{
 		Filter any();
 		Filter not(Filter filter);
-		Filter or(Filter filter1, Filter filter2);
+		Filter or(Filter... filters);
 		Filter suffix(String sulfix);
 		Filter name(String name);
 		
