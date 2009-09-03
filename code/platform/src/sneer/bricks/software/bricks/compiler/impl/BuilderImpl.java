@@ -14,23 +14,28 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.IO.FileFilters;
 import sneer.bricks.hardware.io.IO.Files;
 import sneer.bricks.hardware.io.IO.Filter;
-import sneer.bricks.software.bricks.compiler.BrickCompiler;
+import sneer.bricks.software.bricks.compiler.Builder;
 import sneer.bricks.software.bricks.compiler.BrickCompilerException;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.compilers.java.JavaCompilerException;
 import sneer.bricks.software.folderconfig.FolderConfig;
 
-class BrickCompilerImpl implements BrickCompiler {
+class BuilderImpl implements Builder {
 
 	@Override
-	public void compile(File srcFolder, File destFolder) throws IOException {
+	public void build(File srcFolder, File destFolder) throws IOException {
+		
+		compileFoundation(srcFolder, destFolder);
 		
 		Collection<File> apiFiles = brickApiFilesIn(srcFolder);
 		compileApi(apiFiles, destFolder);
 		compileBricks(brickFolders(apiFiles), destFolder);
 		
 		copyResources(srcFolder, destFolder);
-		
+	}
+
+	private void compileFoundation(File srcFolder, File destFolder) throws IOException {
+		compile(new File(srcFolder, "sneer/foundation"), destFolder);
 	}
 
 	private void copyResources(File srcFolder, File destFolder) throws IOException {
@@ -94,7 +99,7 @@ class BrickCompilerImpl implements BrickCompiler {
 	}
 
 	private File cleanTmpBrickImplFolder() throws IOException {
-		File tmpFolder = new File(my(FolderConfig.class).tmpFolderFor(BrickCompiler.class), "brickimpls");
+		File tmpFolder = new File(my(FolderConfig.class).tmpFolderFor(Builder.class), "brickimpls");
 		resetFolder(tmpFolder);
 		return tmpFolder;
 	}

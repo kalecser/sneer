@@ -218,12 +218,16 @@ public class BrickInstallerTest extends BrickTest {
 	
 	private void copyClassToSrcFolder(final Class<?> clazz) throws IOException {
 		my(IO.class).files().copyFile(
-			javaFileNameAt(platformSrcFolder(), clazz),
+			platformSrcFileFor(clazz),
 			srcFileFor(clazz));
 	}
 
 	private File srcFileFor(final Class<?> clazz) {
 		return javaFileNameAt(srcFolder(), clazz);
+	}
+
+	private File platformSrcFileFor(final Class<?> clazz) {
+		return new File(platformSrcFolder(), classUtils().relativeJavaFileName(clazz));
 	}
 	
 	private File platformSrcFolder() {

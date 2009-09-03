@@ -16,7 +16,6 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.hardware.ram.iterables.Iterables;
 import sneer.bricks.hardwaresharing.files.server.FileServer;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
@@ -58,6 +57,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	static private final String MOCK_ADDRESS = "localhost";
 	private Collection<Object> _referenceToAvoidGc = new ArrayList<Object>();
+	@SuppressWarnings("unused")
 	private WeakContract _blinkingLightContract;
 
 	@Override

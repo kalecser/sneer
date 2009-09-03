@@ -6,8 +6,8 @@ import java.io.IOException;
 import sneer.foundation.brickness.Brick;
 
 @Brick
-public interface BrickCompiler {
+public interface Builder {
 
-	void compile(File srcFolder, File destinationFolder) throws IOException;
+	void build(File srcFolder, File binFolder) throws IOException;
 
 }

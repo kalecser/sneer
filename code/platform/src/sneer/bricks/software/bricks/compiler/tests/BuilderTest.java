@@ -9,8 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.software.bricks.compiler.BrickCompiler;
 import sneer.bricks.software.bricks.compiler.BrickCompilerException;
+import sneer.bricks.software.bricks.compiler.Builder;
 import sneer.bricks.software.bricks.compiler.tests.fixtures.Foo;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.code.jar.JarBuilder;
@@ -24,19 +24,42 @@ import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
-public class BrickCompilerTest extends BrickTest {
+public class BuilderTest extends BrickTest {
 	
-	private final BrickCompiler _subject = my(BrickCompiler.class);
+	private final Builder _subject = my(Builder.class);
 	
 	@Before
 	public void prepareFolders() throws Exception {
 		
-		my(FolderConfig.class).platformSrcFolder().set(new File(platformBin().getParentFile(), "src"));
+		my(FolderConfig.class).platformSrcFolder().set(srcFolder());
 		
 		srcFolder().mkdirs();
 		binFolder().mkdirs();
 		
 		copyRequiredFoundationFiles();
+	}
+	
+	@Test
+	public void testsCanDependOnFoundationLibs() throws IOException {
+		writeSourceFile("bricks/a/A.java",
+				"package bricks.a;" +
+				"@" + Brick.class.getName() + " " +
+				"public interface A {}");
+			
+		writeSourceFile("bricks/a/tests/ATest.java",
+				"package bricks.a.tests;" +
+				"class ATest {" +
+					"{ " + Foo.class.getName() + ".bar(); }" +
+				"}");
+		
+		writeLib("sneer/foundation/foo.jar", Foo.class);
+		
+		_subject.build(srcFolder(), binFolder());
+		
+		assertBinFilesExist(
+			"bricks/a/A.class",
+			"bricks/a/tests/ATest.class",
+			"sneer/foundation/foo.jar");
 	}
 	
 	@Test
@@ -56,7 +79,7 @@ public class BrickCompilerTest extends BrickTest {
 		
 		writeLib("bricks/a/impl/lib/foo.jar", Foo.class);
 		
-		_subject.compile(srcFolder(), binFolder());
+		_subject.build(srcFolder(), binFolder());
 		
 		assertBinFilesExist(
 			"bricks/a/A.class",
@@ -65,7 +88,7 @@ public class BrickCompilerTest extends BrickTest {
 	}
 
 	private void writeLib(String filename, Class<Foo> clazz) throws IOException {
-		JarBuilder builder = my(Jars.class).builder(sourceFile(filename));
+		JarBuilder builder = my(Jars.class).builder(srcFile(filename));
 		builder.add(my(ClassUtils.class).relativeClassFileName(clazz), my(ClassUtils.class).classFile(clazz));
 		builder.close();
 	}
@@ -92,7 +115,7 @@ public class BrickCompilerTest extends BrickTest {
 					"void foo();" +
 				"}");
 		
-		_subject.compile(srcFolder(), binFolder());
+		_subject.build(srcFolder(), binFolder());
 		
 		assertBinFilesExist(
 			"bricks/a/A.class",
@@ -122,7 +145,7 @@ public class BrickCompilerTest extends BrickTest {
 				"package bricks.b.impl;" +
 				"public class BImpl { public static void foo() {} }");
 		
-		_subject.compile(srcFolder(), binFolder());
+		_subject.build(srcFolder(), binFolder());
 	}
 	
 	@Test(expected=BrickCompilerException.class)
@@ -137,7 +160,7 @@ public class BrickCompilerTest extends BrickTest {
 				"package bricks.a.impl;" +
 				"public class Foo {}");
 		
-		_subject.compile(srcFolder(), binFolder());
+		_subject.build(srcFolder(), binFolder());
 	}
 	
 	private File platformBin() {
@@ -151,7 +174,7 @@ public class BrickCompilerTest extends BrickTest {
 	
 	private void copyRequiredFoundationFiles() throws IOException {
 		
-		copyClassFilesToBin(
+		copySourceFiles(
 				Brick.class,
 				Nature.class,
 				ClassDefinition.class,
@@ -162,33 +185,37 @@ public class BrickCompilerTest extends BrickTest {
 		
 	}
 
-	private void copyClassFilesToBin(Class<?>... classes) throws IOException {
-		for (Class<?> c : classes) copyClassFileToBin(c);
+	private void copySourceFiles(Class<?>... classes) throws IOException {
+		for (Class<?> c : classes) copySourceFile(c);
 	}
 
-	private void copyClassFileToBin(Class<?> clazz) throws IOException {
+	private void copySourceFile(Class<?> clazz) throws IOException {
 		copyFile(
-				toFile(clazz),
-				new File(binFolder(), toRelativeFileName(clazz)));
+				platformSourceFileFor(clazz),
+				srcFile(relativeJavaFileName(clazz)));
 	}
 
-	private String toRelativeFileName(Class<?> clazz) {
-		return my(ClassUtils.class).relativeClassFileName(clazz);
+	private String relativeJavaFileName(Class<?> clazz) {
+		return my(ClassUtils.class).relativeJavaFileName(clazz);
 	}
 
 	private void copyFile(File from, File to) throws IOException {
 		my(IO.class).files().copyFile(from, to);
 	}
 
-	private File toFile(Class<?> clazz) {
-		return my(ClassUtils.class).classFile(clazz);
+	private File platformSourceFileFor(Class<?> clazz) {
+		return new File(platformSrcFolder(), relativeJavaFileName(clazz));
+	}
+
+	private File platformSrcFolder() {
+		return new File(platformBin().getParentFile(), "src");
 	}
 
 	private void writeSourceFile(String filename, String data) throws IOException {
-		my(IO.class).files().writeString(sourceFile(filename), data);
+		my(IO.class).files().writeString(srcFile(filename), data);
 	}
 
-	private File sourceFile(String filename) {
+	private File srcFile(String filename) {
 		return new File(srcFolder(), filename);
 	}
 
