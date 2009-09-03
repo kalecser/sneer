@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -14,7 +15,11 @@ import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.Light;
+import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.collections.CollectionChange;
+import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
@@ -31,33 +36,55 @@ public class BrickInstallerTest extends BrickTest {
 	
 	final BrickInstaller _subject = my(BrickInstaller.class);
 	
+	@Before
+	public void setUpPlatform() throws IOException {
+		
+		binFolder().mkdirs();
+		srcFolder().mkdirs();
+		
+		my(FolderConfig.class).platformBinFolder().set(binFolder());
+		my(FolderConfig.class).platformSrcFolder().set(srcFolder());
+		
+		copyClassesToSrcFolder(
+			sneer.foundation.brickness.Brick.class,
+			sneer.foundation.brickness.Nature.class,
+			sneer.foundation.brickness.ClassDefinition.class);
+		
+	}
+	
+	private void copyClassesToSrcFolder(Class<?>... classes) throws IOException {
+		for (Class<?> c : classes)
+			copyClassToSrcFolder(c);
+	}
+
 	@Test (timeout = 4000)
 	public void stagingFailureIsReportedAsBlinkingLight() throws Throwable {
-		setUpPlatform();
 		stageBrickY();
 		
-		binFileFor(Brick.class).delete();
+		srcFileFor(Brick.class).delete();
 		
-		Signal<Integer> size = my(BlinkingLights.class).lights().size();
+		Signal<Integer> size = blinkingLights().size();
 		assertEquals(0, size.currentValue().intValue());
 		
 		_subject.prepareStagedBricksInstallation();
 		
 		assertEquals(1, size.currentValue().intValue());
 	}
+
+	private ListSignal<Light> blinkingLights() {
+		return my(BlinkingLights.class).lights();
+	}
 	
 	@Test (timeout = 4000)
 	public void stageOneBrick() throws Exception  {
-		setUpPlatform();
 		stageBrickY();
 		
 		_subject.prepareStagedBricksInstallation();
 		
 		assertStagedFilesExist(
+			"src/sneer/foundation/brickness/Brick.java",
 			"bin/sneer/foundation/brickness/Brick.class",
-			"bin/sneer/main/Sneer.class",
-			"bin/sneer/tests/freedom1/Freedom1TestBase.class",
-
+			
 			"src/bricks/y/Y.java",
 			"src/bricks/y/impl/YImpl.java",
 			"bin/bricks/y/Y.class",
@@ -72,7 +99,10 @@ public class BrickInstallerTest extends BrickTest {
 
 	@Test (timeout = 6000)
 	public void commitStagedFiles() throws Exception {
-		setUpPlatform();
+		
+		@SuppressWarnings("unused")
+		WeakContract blinkingErrorsContract = throwOnBlinkingErrors();
+		
 		stageBrickY();
 		
 		File nestedBrickSrc = createFile(srcFolder(), "bricks/y/nested/NestedBrick.java",
@@ -91,15 +121,13 @@ public class BrickInstallerTest extends BrickTest {
 		File sneerGarbage    = createFile(binFolder(), "sneer/garbage/Garbage.class");
 		
 		my(Logger.class).log("Comitting...");
+		
 		_subject.commitStagedBricksInstallation();
 		
 		assertExists(
 			nestedBrickSrc,
 			nestedBrickBin,
-				
-			binFileFor(sneer.foundation.brickness.Brick.class),
-			binFileFor(sneer.main.Sneer.class),
-			binFileFor(sneer.tests.freedom1.Freedom1TestBase.class));
+			binFileFor(sneer.foundation.brickness.Brick.class));
 		
 		assertDoesNotExist(
 			garbageSrc,
@@ -109,22 +137,16 @@ public class BrickInstallerTest extends BrickTest {
 			garbageImplBin,
 			garbageTestsBin,
 			sneerGarbage);
-	}
-
+	}	
 	
-	private void setUpPlatform() throws IOException {
-		binFolder().mkdirs();
-		srcFolder().mkdirs();
-		
-		my(FolderConfig.class).platformBinFolder().set(binFolder());
-		my(FolderConfig.class).platformSrcFolder().set(srcFolder());
-		
-		copyClassToBinFolder(sneer.foundation.brickness.Brick.class);
-		copyClassToBinFolder(sneer.main.Sneer.class);
-		copyClassToBinFolder(sneer.tests.freedom1.Freedom1TestBase.class);
+	private WeakContract throwOnBlinkingErrors() {
+		return my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>() { @Override public void consume(CollectionChange<Light> value) {
+			for (Light l : value.elementsAdded())
+				if (l.type() == LightType.ERROR)
+					throw new IllegalStateException(l.error());
+		}});
 	}
-
-	
+		
 	private void stageBrickY() throws IOException {
 		JavaSourceWriter writer = srcWriterFor(srcFolder());
 		writer.write("bricks.y.Y", "@" + Brick.class.getName() + " public interface Y {}");
@@ -139,18 +161,23 @@ public class BrickInstallerTest extends BrickTest {
 		Y.setStagedForInstallation(single(Y.versions()), true);
 	}
 
-
 	private File binFileFor(Class<?> clazz) {
-		return new File(binFolder(), my(ClassUtils.class).relativeClassFileName(clazz));
+		return new File(binFolder(), classUtils().relativeClassFileName(clazz));
 	}
 
+	private File javaFileNameAt(File rootFolder, Class<?> clazz) {
+		return new File(rootFolder, classUtils().relativeJavaFileName(clazz));
+	}
+	
+	private ClassUtils classUtils() {
+		return my(ClassUtils.class);
+	}
 	
 	private File createFile(File folder, String filename, String data) throws IOException {
 		File file = createFile(folder, filename);
 		my(IO.class).files().writeString(file, data);
 		return file;
 	}
-
 	
 	private File createFile(File parent, String filename) throws IOException {
 		final File file = new File(parent, filename);
@@ -178,8 +205,7 @@ public class BrickInstallerTest extends BrickTest {
 	private void assertStagedFileExists(String fileName) {
 		assertExists(stagedFile(fileName));
 	}
-
-
+	
 	private File stagedFile(String fileName) {
 		return new File(stagingFolder(), fileName);
 	}
@@ -190,13 +216,24 @@ public class BrickInstallerTest extends BrickTest {
 	}
 
 	
-	private void copyClassToBinFolder(final Class<?> clazz) throws IOException {
+	private void copyClassToSrcFolder(final Class<?> clazz) throws IOException {
 		my(IO.class).files().copyFile(
-			my(ClassUtils.class).classFile(clazz),
-			binFileFor(clazz));
+			javaFileNameAt(platformSrcFolder(), clazz),
+			srcFileFor(clazz));
 	}
 
+	private File srcFileFor(final Class<?> clazz) {
+		return javaFileNameAt(srcFolder(), clazz);
+	}
 	
+	private File platformSrcFolder() {
+		return new File(platformBin(), "src");
+	}
+
+	private File platformBin() {
+		return classUtils().classpathRootFor(Brick.class).getParentFile();
+	}
+
 	private <T> T single(Collection<T> collection) {
 		assertEquals(1, collection.size());
 		return collection.iterator().next();

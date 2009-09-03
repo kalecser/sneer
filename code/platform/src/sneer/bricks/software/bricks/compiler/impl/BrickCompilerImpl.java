@@ -12,6 +12,7 @@ import java.util.List;
 
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.IO.FileFilters;
+import sneer.bricks.hardware.io.IO.Files;
 import sneer.bricks.hardware.io.IO.Filter;
 import sneer.bricks.software.bricks.compiler.BrickCompiler;
 import sneer.bricks.software.bricks.compiler.BrickCompilerException;
@@ -22,12 +23,19 @@ import sneer.bricks.software.folderconfig.FolderConfig;
 class BrickCompilerImpl implements BrickCompiler {
 
 	@Override
-	public void compile(File srcFolder, File destinationFolder) throws IOException {
+	public void compile(File srcFolder, File destFolder) throws IOException {
 		
 		Collection<File> apiFiles = brickApiFilesIn(srcFolder);
-		compileApi(apiFiles, destinationFolder);
-		compileBricks(brickFolders(apiFiles), destinationFolder);
+		compileApi(apiFiles, destFolder);
+		compileBricks(brickFolders(apiFiles), destFolder);
 		
+		copyResources(srcFolder, destFolder);
+		
+	}
+
+	private void copyResources(File srcFolder, File destFolder) throws IOException {
+		Filter nonJavaFiles = fileFilters().not(fileFilters().suffix(".java"));
+		files().copyFolder(srcFolder, destFolder, nonJavaFiles);
 	}
 
 	private Collection<File> brickFolders(Collection<File> apiFiles) {
@@ -43,7 +51,7 @@ class BrickCompilerImpl implements BrickCompiler {
 		File[] testClasspath = testClassPath(destinationFolder);
 		
 		for (File brickFolder : brickFolders) {
-			File[] implClasspath = classpathFor(destinationFolder, new File(brickFolder, "impl/lib"));
+			File[] implClasspath = brickClasspathWith(destinationFolder, new File(brickFolder, "impl/lib"));
 			compileBrick(brickFolder, tmpFolder, testClasspath, implClasspath);
 		}
 		
@@ -55,26 +63,34 @@ class BrickCompilerImpl implements BrickCompiler {
 	}
 
 	private File[] testClassPath(File destinationFolder) {
-		return classpathFor(destinationFolder, foundationBin());
+		return brickClasspathWith(destinationFolder, foundationSrcFolder());
 	}
 
-	private File[] classpathFor(File destinationFolder, File libFolder) {
+	private File[] brickClasspathWith(File destinationFolder, File libFolder) {
+		if (!libFolder.exists()) {
+			return new File[] { destinationFolder };
+		}
+		
 		List<File> classpath = new ArrayList<File>();
 		classpath.add(destinationFolder);
 		
-		Iterator<File> foundationJars = my(IO.class).files().iterate(libFolder, new String[] { "jar" }, true);
+		Iterator<File> foundationJars = files().iterate(libFolder, new String[] { "jar" }, true);
 		while (foundationJars.hasNext()) {
 			classpath.add(foundationJars.next());
 		}
 		return toFileArray(classpath);
 	}
 
-	private File foundationBin() {
-		return new File(my(FolderConfig.class).platformBinFolder().get(), "sneer/foundation");
+	private Files files() {
+		return my(IO.class).files();
+	}
+
+	private File foundationSrcFolder() {
+		return new File(my(FolderConfig.class).platformSrcFolder().get(), "sneer/foundation");
 	}
 
 	private void copyFolder(File srcFolder, File destinationFolder) throws IOException {
-		my(IO.class).files().copyFolder(srcFolder, destinationFolder);
+		files().copyFolder(srcFolder, destinationFolder);
 	}
 
 	private File cleanTmpBrickImplFolder() throws IOException {
@@ -84,7 +100,7 @@ class BrickCompilerImpl implements BrickCompiler {
 	}
 
 	private void resetFolder(File tmpFolder) throws IOException {
-		my(IO.class).files().forceDelete(tmpFolder);
+		files().forceDelete(tmpFolder);
 		tmpFolder.mkdirs();
 	}
 

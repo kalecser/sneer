@@ -25,6 +25,7 @@ public interface IO {
 		Filter or(Filter filter1, Filter filter2);
 		Filter suffix(String sulfix);
 		Filter name(String name);
+		
 		Collection<File> listFiles(File folder, Filter fileFilter, Filter folderFilter);
 	}
 	
@@ -38,6 +39,7 @@ public interface IO {
 		
 		void copyFile(File from, File to) throws IOException;
 		void copyFolder(File srcFolder, File destFolder) throws IOException;
+		void copyFolder(File srcFolder, File destFolder, Filter fileFilter) throws IOException;
 		void forceDelete(File fileOrFolder) throws IOException;
 		Iterator<File> iterate(File folder, String[] extensions, boolean recursive);
 
@@ -54,6 +56,7 @@ public interface IO {
 		void writeByteArrayToFile(File file, byte[] data) throws IOException;
 
 		void assertSameContents(File file1, File file2) throws IOException;
+
 	}
 	
 	interface Streams{

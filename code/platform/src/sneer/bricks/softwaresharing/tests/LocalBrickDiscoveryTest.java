@@ -41,7 +41,6 @@ public class LocalBrickDiscoveryTest extends BrickTest {
 		assertBrickInfo("brick.sub.Bar", "Bar.java", "impl/BarImpl.java");
 	}
 
-
 	private void assertBrickInfo(String brickName, String... expectedFileNames) {
 		BrickInfo brick = waitForAvailableBrick(brickName, Status.CURRENT);
 

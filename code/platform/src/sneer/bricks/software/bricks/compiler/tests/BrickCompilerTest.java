@@ -30,6 +30,9 @@ public class BrickCompilerTest extends BrickTest {
 	
 	@Before
 	public void prepareFolders() throws Exception {
+		
+		my(FolderConfig.class).platformSrcFolder().set(new File(platformBin().getParentFile(), "src"));
+		
 		srcFolder().mkdirs();
 		binFolder().mkdirs();
 		
@@ -37,9 +40,8 @@ public class BrickCompilerTest extends BrickTest {
 	}
 	
 	@Test
-	public void libizinha() throws IOException {
+	public void libDependencies() throws IOException {
 		
-		my(FolderConfig.class).platformBinFolder().set(my(ClassUtils.class).classpathRootFor(Brick.class));
 		
 		writeSourceFile("bricks/a/A.java",
 				"package bricks.a;" +
@@ -136,6 +138,10 @@ public class BrickCompilerTest extends BrickTest {
 				"public class Foo {}");
 		
 		_subject.compile(srcFolder(), binFolder());
+	}
+	
+	private File platformBin() {
+		return my(ClassUtils.class).classpathRootFor(Brick.class);
 	}
 	
 	private void assertBinFilesExist(String... filenames) {
