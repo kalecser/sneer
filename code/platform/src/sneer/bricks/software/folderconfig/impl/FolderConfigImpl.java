@@ -17,7 +17,6 @@ public class FolderConfigImpl implements FolderConfig {
 	private final Immutable<File> _platformSrcFolder = immutable();
 	private final Immutable<File> _storageFolder = immutable();
 	private final Immutable<File> _tmpFolder = immutable();
-	private final Immutable<File> _logFile = immutable();
 
 	@Override
 	public Immutable<File> ownBinFolder() {
@@ -43,11 +42,6 @@ public class FolderConfigImpl implements FolderConfig {
 		final File folder = new File(parent, brick.getName().replace(".", "/"));
 		folder.mkdirs();
 		return folder;
-	}
-
-	@Override
-	public Immutable<File> logFile() {
-		return _logFile;
 	}
 
 	private static <T> Immutable<T> immutable() {

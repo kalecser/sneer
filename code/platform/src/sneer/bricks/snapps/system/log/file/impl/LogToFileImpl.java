@@ -6,41 +6,52 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.workers.notifier.LogNotifier;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.snapps.system.log.file.LogToFile;
-import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.lang.Consumer;
 
 class LogToFileImpl implements LogToFile {
 
-	private static final boolean WRITE_TO_THE_END = true;
+	private FileWriter _logWriter;
+	@SuppressWarnings("unused")	private WeakContract _loggedMessagesContract;
+
 	
-	private final File _file = my(FolderConfig.class).logFile().get();
-
-	@SuppressWarnings("unused")	
-	private final Object _referenceToAvoidGc;
-
-	private LogToFileImpl() {
-		_referenceToAvoidGc = my(LogNotifier.class).loggedMessages().addReceiver(new Consumer<String>(){ @Override public void consume(String msg) {
-			log(msg);
+	@Override
+	public void startWritingLogTo(File logFile) {
+		if (_logWriter != null) throw new IllegalStateException("Logging to file was already started.");
+		_logWriter = initFileWriter(logFile);
+		
+		_loggedMessagesContract = my(LogNotifier.class).loggedMessages().addReceiver(new Consumer<String>(){ @Override public void consume(String msg) {
+			write(msg);
 		}});
 	}
 	
-	private void log(String msg){
-        FileWriter fileWriter = null;
+	
+	private FileWriter initFileWriter(File logFile) {
+		if(!logFile.getParentFile().exists())
+			logFile.getParentFile().mkdirs();
+
 		try {
-			if(!_file.getParentFile().exists())
-				_file.getParentFile().mkdirs();
-			
-			fileWriter = new FileWriter(_file, WRITE_TO_THE_END);
-			fileWriter.write(msg);
-			fileWriter.flush();
+			boolean append = true;
+			return new FileWriter(logFile, append);
 		} catch (IOException e) {
-			my(BlinkingLights.class).turnOn(LightType.ERROR, "Loggin Error", null, e);
-		} finally{
-			try { fileWriter.close(); } catch (Exception ignore) {}
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error opening log file.", null, e);
+			return null;
 		}
 	}
+
+
+	private void write(String msg){
+		try {
+			_logWriter.write(msg);
+			_logWriter.flush();
+		} catch (IOException e) {
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error writing to log file.", null, e);
+		}
+	}
+
+	
 }

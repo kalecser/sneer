@@ -13,6 +13,7 @@ import java.io.File;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.robust.RobustExceptionLogging;
 import sneer.bricks.hardware.ram.ref.immutable.Immutable;
+import sneer.bricks.snapps.system.log.file.LogToFile;
 import sneer.bricks.snapps.system.log.sysout.LogToSysout;
 import sneer.bricks.software.bricks.snappstarter.SnappStarter;
 import sneer.bricks.software.folderconfig.FolderConfig;
@@ -40,6 +41,7 @@ public class SneerSession implements Runnable {
 	private void startLogging() {
 		my(RobustExceptionLogging.class).turnOn();
 		my(LogToSysout.class);
+		my(LogToFile.class).startWritingLogTo(LOG_FILE);
 	}
 
 	
@@ -49,8 +51,6 @@ public class SneerSession implements Runnable {
 	
 	
 	private static void configure(FolderConfig dirs) {
-		dirs.logFile().set(LOG_FILE);
-
 		set(dirs.storageFolder(), DATA);
 		set(dirs.tmpFolder(), TMP);
 		set(dirs.ownBinFolder(), OWN_BIN);

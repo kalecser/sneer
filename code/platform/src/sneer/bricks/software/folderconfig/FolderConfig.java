@@ -20,6 +20,4 @@ public interface FolderConfig {
 	Immutable<File> tmpFolder();
 	File tmpFolderFor(Class<?> brick);
 
-	Immutable<File> logFile();
-
 }
