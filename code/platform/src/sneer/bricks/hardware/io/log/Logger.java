@@ -7,6 +7,4 @@ public interface Logger {
 
 	void log(String message, Object... messageInsets);
 
-	void setDelegate(LogWorker worker);
-	
 }

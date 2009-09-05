@@ -7,7 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.io.log.workers.notifier.LogNotifier;
+import sneer.bricks.hardware.io.log.notifier.LogNotifier;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.snapps.system.log.file.LogToFile;

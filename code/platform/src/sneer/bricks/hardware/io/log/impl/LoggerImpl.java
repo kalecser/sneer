@@ -1,20 +1,22 @@
 package sneer.bricks.hardware.io.log.impl;
 
-import sneer.bricks.hardware.io.log.LogWorker;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.io.log.worker.LogWorker;
+import sneer.bricks.hardware.io.log.worker.LogWorkerHolder;
+import static sneer.foundation.environments.Environments.my;
 
 class LoggerImpl implements Logger {
 
 	private LogWorker _delegate;
-	
-	@Override
-	public void setDelegate(LogWorker worker) {
-		_delegate = worker;
-	}
+
 	
 	@Override
 	public void log(String message, Object... messageInsets) {
-		if (_delegate == null) return;
+		if (_delegate == null) {
+			_delegate = my(LogWorkerHolder.class).worker();
+			if (_delegate == null) return;
+		}
+		
 		_delegate.log(message, messageInsets);
 	}
 

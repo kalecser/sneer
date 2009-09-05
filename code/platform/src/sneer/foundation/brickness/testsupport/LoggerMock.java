@@ -1,6 +1,5 @@
 package sneer.foundation.brickness.testsupport;
 
-import sneer.bricks.hardware.io.log.LogWorker;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.foundation.lang.Consumer;
 
@@ -37,12 +36,6 @@ class LoggerMock implements Logger {
 	}
 
 
-	@Override
-	public void setDelegate(LogWorker worker) {
-		throw new UnsupportedOperationException();
-	}
-
-	
 	String weaveInsets(String message, Object... messageInsets) {
 		StringBuilder result = new StringBuilder();
 		formatInsets(result, message, messageInsets);

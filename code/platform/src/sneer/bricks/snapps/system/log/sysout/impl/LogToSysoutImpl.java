@@ -1,7 +1,7 @@
 package sneer.bricks.snapps.system.log.sysout.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.hardware.io.log.workers.notifier.LogNotifier;
+import sneer.bricks.hardware.io.log.notifier.LogNotifier;
 import sneer.bricks.snapps.system.log.sysout.LogToSysout;
 import sneer.foundation.lang.Consumer;
 

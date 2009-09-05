@@ -1,4 +1,4 @@
-package sneer.bricks.hardware.io.log;
+package sneer.bricks.hardware.io.log.worker;
 
 public interface LogWorker {
 

@@ -32,7 +32,7 @@ import javax.swing.event.ChangeListener;
 import sneer.bricks.hardware.gui.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.io.log.filter.LogFilter;
-import sneer.bricks.hardware.io.log.workers.notifier.LogNotifier;
+import sneer.bricks.hardware.io.log.notifier.LogNotifier;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.skin.main.dashboard.Dashboard;
 import sneer.bricks.skin.main.menu.MainMenu;
