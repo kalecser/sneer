@@ -4,13 +4,13 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
 import sneer.foundation.brickness.Tuple;
-import sneer.foundation.brickness.testsupport.BrickTest;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Predicate;
 
-public class TupleFilterManagerTest extends BrickTest {
+public class TupleFilterManagerTest extends TestThatUsesLogger {
 
 	private final TupleFilterManager _subject = my(TupleFilterManager.class);
 

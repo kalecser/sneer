@@ -5,10 +5,10 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.foundation.brickness.testsupport.BrickTest;
 
-public class TupleGcTest extends BrickTest {
+public class TupleGcTest extends TestThatUsesLogger {
 
 	private final TupleSpace _subject = my(TupleSpace.class);
 	

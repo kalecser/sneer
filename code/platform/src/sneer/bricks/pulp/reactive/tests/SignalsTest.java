@@ -5,14 +5,14 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.foundation.brickness.testsupport.BrickTest;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 
-public class SignalsTest extends BrickTest {
+public class SignalsTest extends TestThatUsesLogger {
 
 	private final Signals _subject = my(Signals.class);
 

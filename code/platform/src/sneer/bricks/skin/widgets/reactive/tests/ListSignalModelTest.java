@@ -9,6 +9,7 @@ import javax.swing.event.ListDataListener;
 import org.junit.Assert;
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -16,9 +17,8 @@ import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
-import sneer.foundation.brickness.testsupport.BrickTest;
 
-public class ListSignalModelTest extends BrickTest {
+public class ListSignalModelTest extends TestThatUsesLogger {
 
 	private final ReactiveWidgetFactory _factory = my(ReactiveWidgetFactory.class); 
 	

@@ -7,15 +7,15 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.brickness.testsupport.BrickTest;
 
-public class BlinkingLightsTest extends BrickTest {
+public class BlinkingLightsTest extends TestThatUsesLogger {
 
 	private final BlinkingLights _subject = my(BlinkingLights.class);
 

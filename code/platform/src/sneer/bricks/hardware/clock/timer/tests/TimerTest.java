@@ -13,10 +13,10 @@ import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.foundation.brickness.testsupport.BrickTest;
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.foundation.lang.ByRef;
 
-public class TimerTest extends BrickTest {
+public class TimerTest extends TestThatUsesLogger {
 
 	private final Clock _clock = my(Clock.class);
 	private final Timer _subject = my(Timer.class);

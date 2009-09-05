@@ -8,6 +8,7 @@ import org.jmock.Expectations;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.codecs.base64.Base64;
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.pulp.dyndns.updater.BadAuthException;
 import sneer.bricks.pulp.dyndns.updater.InvalidHostException;
 import sneer.bricks.pulp.dyndns.updater.RedundantUpdateException;
@@ -16,11 +17,10 @@ import sneer.bricks.pulp.dyndns.updater.UnexpectedResponseException;
 import sneer.bricks.pulp.dyndns.updater.Updater;
 import sneer.bricks.pulp.dyndns.updater.UpdaterException;
 import sneer.bricks.pulp.httpclient.HttpClient;
-import sneer.foundation.brickness.testsupport.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Pair;
 
-public class UpdaterTest extends BrickTest {
+public class UpdaterTest extends TestThatUsesLogger {
 
 	@Bind final HttpClient client = mock(HttpClient.class);
 	

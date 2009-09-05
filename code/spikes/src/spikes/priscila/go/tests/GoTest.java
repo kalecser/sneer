@@ -3,12 +3,12 @@ package spikes.priscila.go.tests;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.foundation.brickness.testsupport.BrickTest;
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 import spikes.priscila.go.GoBoard;
 import spikes.priscila.go.ToroidalGoBoard;
 
-public class GoTest extends BrickTest {
+public class GoTest extends TestThatUsesLogger {
 
 	private GoBoard _board;
 	

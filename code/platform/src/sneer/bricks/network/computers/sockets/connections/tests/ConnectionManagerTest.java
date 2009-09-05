@@ -5,14 +5,14 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.ContactManager;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
-import sneer.foundation.brickness.testsupport.BrickTest;
 
-public class ConnectionManagerTest extends BrickTest {
+public class ConnectionManagerTest extends TestThatUsesLogger {
 
 	private final ConnectionManager _subject = my(ConnectionManager.class);
 

@@ -13,6 +13,7 @@ import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.threads.mocks.ThreadsMock;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.dyndns.client.DynDnsClient;
@@ -29,12 +30,11 @@ import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.brickness.testsupport.BrickTest;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.exceptions.FriendlyException;
 
-public class DynDnsClientTest extends BrickTest {
+public class DynDnsClientTest extends TestThatUsesLogger {
 	
 	/*
 

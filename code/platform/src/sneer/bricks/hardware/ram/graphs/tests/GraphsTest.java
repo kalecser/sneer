@@ -9,11 +9,11 @@ import java.util.List;
 
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.hardware.ram.graphs.DirectedGraph;
 import sneer.bricks.hardware.ram.graphs.Graphs;
-import sneer.foundation.brickness.testsupport.BrickTest;
 
-public class GraphsTest extends BrickTest {
+public class GraphsTest extends TestThatUsesLogger {
 
 	DirectedGraph<String> _subject = my(Graphs.class).createDirectedGraph();
 

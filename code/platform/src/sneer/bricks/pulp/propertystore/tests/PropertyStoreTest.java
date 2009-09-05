@@ -4,12 +4,12 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.pulp.propertystore.PropertyStore;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.foundation.brickness.testsupport.BrickTest;
 import sneer.foundation.environments.Environments;
 
-public class PropertyStoreTest extends BrickTest {
+public class PropertyStoreTest extends TestThatUsesLogger {
 
 	@Test
 	public void testPropertyStore() {

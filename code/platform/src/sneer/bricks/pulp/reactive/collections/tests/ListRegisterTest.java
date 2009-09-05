@@ -6,12 +6,12 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
-import sneer.foundation.brickness.testsupport.BrickTest;
 import sneer.foundation.lang.Consumer;
 
-public class ListRegisterTest extends BrickTest {
+public class ListRegisterTest extends TestThatUsesLogger {
 
 	@Test
 	public void testSize() {

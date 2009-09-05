@@ -8,11 +8,11 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.foundation.brickness.testsupport.BrickTest;
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 
-public class ThreadsTest extends BrickTest {
+public class ThreadsTest extends TestThatUsesLogger {
 
 	private final Threads _subject = my(Threads.class);
 

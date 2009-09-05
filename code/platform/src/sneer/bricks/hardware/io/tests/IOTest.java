@@ -7,9 +7,9 @@ import java.io.File;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.foundation.brickness.testsupport.BrickTest;
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 
-public class IOTest extends BrickTest {
+public class IOTest extends TestThatUsesLogger {
 	
 	private IO _subject = my(IO.class);
 

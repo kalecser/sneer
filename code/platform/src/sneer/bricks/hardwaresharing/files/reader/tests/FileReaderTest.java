@@ -10,14 +10,14 @@ import org.jmock.Sequence;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.hardwaresharing.files.cache.FileCache;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.hardwaresharing.files.reader.FileReader;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.brickness.testsupport.BrickTest;
 
-public class FileReaderTest extends BrickTest {
+public class FileReaderTest extends TestThatUsesLogger {
 
 	@Bind private final FileCache _cache = mock(FileCache.class); 
 	

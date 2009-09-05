@@ -7,13 +7,13 @@ import java.io.IOException;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.pulp.network.ByteArrayServerSocket;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
-import sneer.foundation.brickness.testsupport.BrickTest;
 
 
-public class NetworkTest extends BrickTest {
+public class NetworkTest extends TestThatUsesLogger {
 	
 	private final Threads _threads = my(Threads.class);
 	

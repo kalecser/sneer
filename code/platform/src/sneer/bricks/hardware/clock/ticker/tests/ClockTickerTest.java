@@ -9,11 +9,11 @@ import sneer.bricks.hardware.clock.ticker.ClockTicker;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.foundation.brickness.testsupport.BrickTest;
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.foundation.lang.Consumer;
 
 
-public class ClockTickerTest extends BrickTest {
+public class ClockTickerTest extends TestThatUsesLogger {
 
 	private final Clock _clock = my(Clock.class);
 

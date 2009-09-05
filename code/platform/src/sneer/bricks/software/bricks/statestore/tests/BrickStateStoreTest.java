@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.software.bricks.statestore.BrickStateStore;
-import sneer.foundation.brickness.testsupport.BrickTest;
 
-public class BrickStateStoreTest extends BrickTest {
+public class BrickStateStoreTest extends TestThatUsesLogger {
 	
 	private final BrickStateStore _subject = my(BrickStateStore.class);
 

@@ -5,12 +5,12 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.snapps.wind.Shout;
 import sneer.bricks.snapps.wind.Wind;
-import sneer.foundation.brickness.testsupport.BrickTest;
 
-public class WindTest extends BrickTest {
+public class WindTest extends TestThatUsesLogger {
 
 	private static final int YEAR_ONE = 1000 * 60 * 60 * 24 * 356;
 	private final Wind _subject =  my(Wind.class);

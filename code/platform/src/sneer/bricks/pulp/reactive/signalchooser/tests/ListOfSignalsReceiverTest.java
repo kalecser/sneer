@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Assert;
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -15,9 +16,8 @@ import sneer.bricks.pulp.reactive.collections.impl.VisitingListReceiver;
 import sneer.bricks.pulp.reactive.signalchooser.ListOfSignalsReceiver;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChoosers;
-import sneer.foundation.brickness.testsupport.BrickTest;
 
-public class ListOfSignalsReceiverTest extends BrickTest {
+public class ListOfSignalsReceiverTest extends TestThatUsesLogger {
 
 	private final SignalChoosers _factory = my(SignalChoosers.class); 
 	

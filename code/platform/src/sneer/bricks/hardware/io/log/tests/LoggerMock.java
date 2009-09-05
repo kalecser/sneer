@@ -1,4 +1,4 @@
-package sneer.foundation.brickness.testsupport;
+package sneer.bricks.hardware.io.log.tests;
 
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.foundation.lang.Consumer;

@@ -4,11 +4,11 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.pulp.datastructures.cache.Cache;
 import sneer.bricks.pulp.datastructures.cache.CacheFactory;
-import sneer.foundation.brickness.testsupport.BrickTest;
 
-public class CacheTest extends BrickTest{
+public class CacheTest extends TestThatUsesLogger{
 	
 	private final Cache<Object> _subject= my(CacheFactory.class).createWithCapacity(3);
 

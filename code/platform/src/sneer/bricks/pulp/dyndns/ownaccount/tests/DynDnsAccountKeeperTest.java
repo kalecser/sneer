@@ -4,11 +4,11 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccount;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccountKeeper;
-import sneer.foundation.brickness.testsupport.BrickTest;
 
-public class DynDnsAccountKeeperTest extends BrickTest {
+public class DynDnsAccountKeeperTest extends TestThatUsesLogger {
 
 	private final DynDnsAccountKeeper _subject = my(DynDnsAccountKeeper.class);
 	

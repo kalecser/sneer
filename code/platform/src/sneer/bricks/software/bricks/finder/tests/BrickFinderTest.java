@@ -8,13 +8,13 @@ import java.util.Collection;
 
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.software.bricks.finder.BrickFinder;
 import sneer.bricks.software.code.compilers.java.tests.JarUtils;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.foundation.brickness.testsupport.BrickTest;
 import sneer.foundation.testsupport.AssertUtils;
 
-public class BrickFinderTest extends BrickTest {
+public class BrickFinderTest extends TestThatUsesLogger {
 
 	private final BrickFinder _subject = my(BrickFinder.class);
 	

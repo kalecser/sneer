@@ -8,15 +8,15 @@ import java.util.List;
 
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 import sneer.bricks.software.diff.TextComparator.TextBlock;
 import sneer.bricks.software.diff.TextComparator.TextBlockType;
 import static sneer.bricks.software.diff.TextComparator.TextBlockType.INSERT;
 import static sneer.bricks.software.diff.TextComparator.TextBlockType.DELETE;
 import static sneer.bricks.software.diff.TextComparator.TextBlockType.EQUAL;
 import sneer.bricks.software.diff.TextComparator;
-import sneer.foundation.brickness.testsupport.BrickTest;
 
-public class TextComparatorTest extends BrickTest {
+public class TextComparatorTest extends TestThatUsesLogger {
 	
 	private final TextComparator _subject = my(TextComparator.class);
 	private final List<Object[]> _expectations = new ArrayList<Object[]>();

@@ -1,4 +1,4 @@
-package sneer.foundation.brickness.testsupport;
+package sneer.bricks.hardware.io.log.tests;
 
 import java.util.ArrayList;
 import java.util.Collections;

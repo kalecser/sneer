@@ -26,8 +26,9 @@ class RegisterImpl<T> implements Register<T> {
 
 			_currentValue = newValue;
 
-			if (!isOutputInitialized()) return;
-			_output.get().notifyReceivers(newValue);
+			AbstractSignal<T> rawOutput = rawOutput();
+			if (rawOutput == null) return;
+			rawOutput.notifyReceivers(newValue);
 		}
 	}
 
@@ -46,14 +47,20 @@ class RegisterImpl<T> implements Register<T> {
 	}
 
 	public synchronized Signal<T> output() {
-		if (!isOutputInitialized())
-			_output = new WeakReference<AbstractSignal<T>>(new MyOutput());
+		AbstractSignal<T> rawOutput = rawOutput();
+		if (rawOutput != null) return rawOutput;
 
-		return _output.get();
+		MyOutput newOutput = new MyOutput();
+		_output = new WeakReference<AbstractSignal<T>>(newOutput);
+		return newOutput;
+
+		//Care is taken, above, not to ever lose the reference to the returned output. This, for example, would allow the reference to be GCd between one line and the other:
+		//_output = new WeakReference<AbstractSignal<T>>(new MyOutput());
+		//return newOutput.get();
 	}
 
-	private boolean isOutputInitialized() {
-		return _output != null && _output.get() != null;
+	private AbstractSignal<T> rawOutput() {
+		return _output == null ? null : _output.get();
 	}
 
 	public Consumer<T> setter() {

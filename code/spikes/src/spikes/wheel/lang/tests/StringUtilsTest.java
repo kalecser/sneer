@@ -5,9 +5,9 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
-import sneer.foundation.brickness.testsupport.BrickTest;
+import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
 
-public class StringUtilsTest extends BrickTest {
+public class StringUtilsTest extends TestThatUsesLogger {
 
 	@Test
 	public void testSplitRight() {

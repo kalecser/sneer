@@ -10,13 +10,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.io.log.tests.LoggerMocks;
 import sneer.bricks.pulp.network.ByteArrayServerSocket;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.brickness.impl.EagerClassLoader;
-import sneer.foundation.brickness.testsupport.LoggerMocks;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.tests.SovereignCommunity;
