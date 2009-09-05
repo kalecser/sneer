@@ -12,7 +12,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
@@ -28,7 +28,7 @@ import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 import sneer.foundation.testsupport.AssertUtils;
 
-public class LocalBrickDiscoveryTest extends TestThatUsesLogger {
+public class LocalBrickDiscoveryTest extends BrickTestWithLogger {
 
 	@Test (timeout = 4000)
 	public void localBrickDiscoveryWithBricksInSubfolders() throws IOException {

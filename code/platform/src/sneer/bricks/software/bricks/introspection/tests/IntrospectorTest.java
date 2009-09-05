@@ -4,10 +4,10 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.software.bricks.introspection.Introspector;
 
-public class IntrospectorTest extends TestThatUsesLogger {
+public class IntrospectorTest extends BrickTestWithLogger {
 	
 	@Test
 	public void brickInterfaceFor() {

@@ -14,7 +14,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -32,7 +32,7 @@ import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.Consumer;
 
-public class BrickInstallerTest extends TestThatUsesLogger {
+public class BrickInstallerTest extends BrickTestWithLogger {
 	
 	final BrickInstaller _subject = my(BrickInstaller.class);
 	
@@ -57,7 +57,7 @@ public class BrickInstallerTest extends TestThatUsesLogger {
 			copyClassToSrcFolder(c);
 	}
 
-	@Test (timeout = 4000)
+	@Test (timeout = 6000)
 	public void stagingFailureIsReportedAsBlinkingLight() throws Throwable {
 		stageBrickY();
 		
@@ -75,7 +75,7 @@ public class BrickInstallerTest extends TestThatUsesLogger {
 		return my(BlinkingLights.class).lights();
 	}
 	
-	@Test (timeout = 4000)
+	@Test (timeout = 6000)
 	public void stageOneBrick() throws Exception  {
 		stageBrickY();
 		

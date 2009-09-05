@@ -8,13 +8,13 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Consumer;
 
-public class TupleSpaceTest extends TestThatUsesLogger {
+public class TupleSpaceTest extends BrickTestWithLogger {
 
 	private final TupleSpace _subject = my(TupleSpace.class);
 	

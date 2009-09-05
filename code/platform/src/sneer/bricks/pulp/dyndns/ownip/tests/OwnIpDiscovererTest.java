@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.dyndns.checkip.CheckIp;
 import sneer.bricks.pulp.dyndns.ownip.OwnIpDiscoverer;
 import sneer.bricks.pulp.propertystore.PropertyStore;
@@ -20,7 +20,7 @@ import sneer.bricks.pulp.propertystore.mocks.TransientPropertyStore;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
 
-public class OwnIpDiscovererTest extends TestThatUsesLogger {
+public class OwnIpDiscovererTest extends BrickTestWithLogger {
 	
 	@Bind private final CheckIp _checkip = mock(CheckIp.class);
 	@Bind private final Timer _timer = mock(Timer.class);

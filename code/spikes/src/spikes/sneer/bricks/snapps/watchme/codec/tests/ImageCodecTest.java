@@ -12,7 +12,7 @@ import org.junit.Test;
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.gui.images.Images;
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.serialization.Serializer;
 import sneer.bricks.skin.image.ImageFactory;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageCodec;
@@ -20,7 +20,7 @@ import spikes.sneer.bricks.snapps.watchme.codec.ImageDelta;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageCodec.Decoder;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageCodec.Encoder;
 
-public class ImageCodecTest extends TestThatUsesLogger {
+public class ImageCodecTest extends BrickTestWithLogger {
 	
 	private final ImageCodec _subject = my(ImageCodec.class);
 	

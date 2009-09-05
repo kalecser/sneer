@@ -9,7 +9,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -24,7 +24,7 @@ import sneer.foundation.lang.Consumer;
 import sneer.foundation.testsupport.AssertUtils;
 
 @Ignore
-public class ListSorterTest extends TestThatUsesLogger {
+public class ListSorterTest extends BrickTestWithLogger {
 	
 	private final ListSorter _sorter = my(ListSorter.class);
 

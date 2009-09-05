@@ -11,11 +11,11 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.foundation.testsupport.AssertUtils;
 import spikes.sneer.kernel.container.bytecode.dependencies.DependencyFinder;
 
-public class DependencyTest extends TestThatUsesLogger {
+public class DependencyTest extends BrickTestWithLogger {
 	
 	@Test
 	public void testFindDependencies() throws IOException {

@@ -4,10 +4,10 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import spikes.sneer.bricks.pulp.own.tagline.OwnTaglineKeeper;
 
-public class OwnTaglineKeeperTest extends TestThatUsesLogger {
+public class OwnTaglineKeeperTest extends BrickTestWithLogger {
 
 	private final OwnTaglineKeeper _taglineKeeper = my(OwnTaglineKeeper.class);
 	

@@ -6,7 +6,7 @@ import org.jmock.Expectations;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.network.computers.sockets.accepter.SocketAccepter;
 import sneer.bricks.network.computers.sockets.reachability.ReachabilitySentinel;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -16,7 +16,7 @@ import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.foundation.brickness.testsupport.Bind;
 
-public class ReachabilityTest extends TestThatUsesLogger {
+public class ReachabilityTest extends BrickTestWithLogger {
 	
 	@Bind private final SocketAccepter _accepter = mock(SocketAccepter.class);
 	private final EventNotifier<ByteArraySocket> _notifier = my(EventNotifiers.class).newInstance();

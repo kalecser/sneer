@@ -7,14 +7,14 @@ import java.util.List;
 
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.gates.logic.LogicGates;
 import sneer.foundation.lang.Consumer;
 
-public class AndTest extends TestThatUsesLogger {
+public class AndTest extends BrickTestWithLogger {
 
 	private final Signals SIGNALS = my(Signals.class);
 

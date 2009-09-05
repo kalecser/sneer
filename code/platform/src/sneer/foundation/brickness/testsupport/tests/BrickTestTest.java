@@ -4,12 +4,12 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.brickness.testsupport.tests.bar.BarBrick;
 import sneer.foundation.brickness.testsupport.tests.foo.FooBrick;
 
-public class BrickTestTest extends TestThatUsesLogger {
+public class BrickTestTest extends BrickTestWithLogger {
 	
 	@Bind final BarBrick _bar = new BarBrick() {};
 	

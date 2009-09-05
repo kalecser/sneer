@@ -4,7 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.reactive.ReactivePredicate;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
@@ -15,7 +15,7 @@ import sneer.bricks.pulp.reactive.collections.impl.SetRegisterImpl;
 import sneer.bricks.pulp.reactive.collections.setfilter.SetFilter;
 import sneer.foundation.lang.Functor;
 
-public class SetFilterTest extends TestThatUsesLogger {
+public class SetFilterTest extends BrickTestWithLogger {
 	
 	private final SetFilter _subject = my(SetFilter.class);
 

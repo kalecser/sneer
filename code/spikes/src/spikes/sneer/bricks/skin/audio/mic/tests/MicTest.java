@@ -9,13 +9,13 @@ import javax.sound.sampled.TargetDataLine;
 import org.jmock.Expectations;
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.foundation.brickness.testsupport.Bind;
 import spikes.sneer.bricks.skin.audio.kernel.Audio;
 import spikes.sneer.bricks.skin.audio.mic.Mic;
 
-public class MicTest extends TestThatUsesLogger {
+public class MicTest extends BrickTestWithLogger {
 
 	private final Mic _subject = my(Mic.class);
 	private final TargetDataLine _line = mock(TargetDataLine.class);

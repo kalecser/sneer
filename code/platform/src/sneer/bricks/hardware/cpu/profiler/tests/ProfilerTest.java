@@ -6,12 +6,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.profiler.Profiler;
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.MapSignal;
 
 @Ignore
-public class ProfilerTest extends TestThatUsesLogger {
+public class ProfilerTest extends BrickTestWithLogger {
 
 	private final Profiler _subject = my(Profiler.class);
 

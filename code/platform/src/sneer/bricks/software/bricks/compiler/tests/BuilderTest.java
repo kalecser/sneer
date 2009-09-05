@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.software.bricks.compiler.BrickCompilerException;
 import sneer.bricks.software.bricks.compiler.Builder;
 import sneer.bricks.software.bricks.compiler.tests.fixtures.Foo;
@@ -24,7 +24,7 @@ import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
-public class BuilderTest extends TestThatUsesLogger {
+public class BuilderTest extends BrickTestWithLogger {
 	
 	private final Builder _subject = my(Builder.class);
 	

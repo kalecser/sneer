@@ -16,7 +16,7 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.brickness.testsupport.BrickTest;
 
-public abstract class TestThatUsesLogger extends BrickTest {
+public abstract class BrickTestWithLogger extends BrickTest {
 	
 	@Bind private final LoggerMocks _loggerMocks = new LoggerMocks(); 
 	@SuppressWarnings("unused") @Bind private final Logger _logger = _loggerMocks.newInstance(); 

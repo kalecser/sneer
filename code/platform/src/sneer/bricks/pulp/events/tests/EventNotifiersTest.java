@@ -7,13 +7,13 @@ import org.junit.Test;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.lang.Consumer;
 
-public class EventNotifiersTest extends TestThatUsesLogger {
+public class EventNotifiersTest extends BrickTestWithLogger {
 	
 	@Test (expected = Throwable.class)
 	public void throwablesBubbleUpDuringTests() {

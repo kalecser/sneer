@@ -4,13 +4,13 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.software.code.metaclass.MetaClass;
 import sneer.bricks.software.code.metaclass.MetaClasses;
 import spikes.sneer.kernel.container.utils.metaclass.tests.bean.Bean;
 
 
-public class MetaClassTest extends TestThatUsesLogger {
+public class MetaClassTest extends BrickTestWithLogger {
 
 	@Test
 	public void testMetaClass() throws Exception {

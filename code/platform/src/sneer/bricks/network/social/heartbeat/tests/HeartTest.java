@@ -8,14 +8,14 @@ import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.timer.Timer;
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.network.social.heartbeat.Heart;
 import sneer.bricks.network.social.heartbeat.Heartbeat;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.ByRef;
 
-public class HeartTest extends TestThatUsesLogger {
+public class HeartTest extends BrickTestWithLogger {
 
 	@Bind TupleSpace _tupleSpace = mock(TupleSpace.class);
 	@Bind Timer _timer = mock(Timer.class);

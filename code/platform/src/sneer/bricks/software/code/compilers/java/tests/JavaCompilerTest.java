@@ -10,13 +10,13 @@ import java.util.Collections;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.software.code.compilers.java.CompilationError;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.compilers.java.JavaCompilerException;
 import sneer.bricks.software.code.compilers.java.Result;
 
-public class JavaCompilerTest extends TestThatUsesLogger {
+public class JavaCompilerTest extends BrickTestWithLogger {
 
 	private static final String TEST_FILE_PREFIX = "sneer-test-";
 

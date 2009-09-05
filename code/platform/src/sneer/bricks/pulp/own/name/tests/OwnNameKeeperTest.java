@@ -4,10 +4,10 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.TestThatUsesLogger;
+import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.own.name.OwnNameKeeper;
 
-public class OwnNameKeeperTest extends TestThatUsesLogger {
+public class OwnNameKeeperTest extends BrickTestWithLogger {
 
 	private final OwnNameKeeper _nameKeeper = my(OwnNameKeeper.class);
 	
