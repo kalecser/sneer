@@ -11,7 +11,7 @@ public abstract class BrickTest extends BrickTestWithThreads {
 
 	{
 		my(FolderConfig.class).storageFolder().set(new File(tmpFolderName(), "data"));
-		my(FolderConfig.class).tmpFolder().set(new File(tmpFolderName(), "tmp"));
+		my(FolderConfig.class).tmpFolder()    .set(new File(tmpFolderName(), "tmp" ));
 	}
 	
 }
