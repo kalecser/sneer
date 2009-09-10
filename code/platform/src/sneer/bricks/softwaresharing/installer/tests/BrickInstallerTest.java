@@ -14,7 +14,6 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -24,6 +23,7 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
+import sneer.bricks.software.folderconfig.BrickTest;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
@@ -32,7 +32,7 @@ import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.Consumer;
 
-public class BrickInstallerTest extends BrickTestWithLogger {
+public class BrickInstallerTest extends BrickTest {
 	
 	final BrickInstaller _subject = my(BrickInstaller.class);
 	

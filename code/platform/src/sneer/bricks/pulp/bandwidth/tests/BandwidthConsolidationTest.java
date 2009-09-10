@@ -5,11 +5,11 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.bandwidth.BandwidthCounter;
 import sneer.bricks.pulp.reactive.SignalUtils;
+import sneer.bricks.software.folderconfig.BrickTest;
 
-public class BandwidthConsolidationTest extends BrickTestWithLogger {
+public class BandwidthConsolidationTest extends BrickTest {
 	
 	
 	private final BandwidthCounter _subject = my(BandwidthCounter.class);

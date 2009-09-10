@@ -18,11 +18,11 @@ import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.gui.images.Images;
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.skin.image.ImageFactory;
+import sneer.bricks.software.folderconfig.BrickTest;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.environments.Environment;
@@ -31,7 +31,7 @@ import sneer.foundation.lang.Consumer;
 import spikes.sneer.bricks.skin.screenshotter.Screenshotter;
 import spikes.sneer.bricks.snapps.watchme.WatchMe;
 
-public class WatchMeTest extends BrickTestWithLogger {
+public class WatchMeTest extends BrickTest {
 	
 	@Bind
 	final private Screenshotter _shotter = mock(Screenshotter.class);

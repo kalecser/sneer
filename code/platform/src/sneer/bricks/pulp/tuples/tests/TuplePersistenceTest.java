@@ -9,14 +9,14 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.bricks.software.folderconfig.BrickTest;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.brickness.Tuple;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 
-public class TuplePersistenceTest extends BrickTestWithLogger {
+public class TuplePersistenceTest extends BrickTest {
 
 	@Test
 	public void testTuplePersistence() {

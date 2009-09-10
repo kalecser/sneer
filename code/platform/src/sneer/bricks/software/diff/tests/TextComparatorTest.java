@@ -1,5 +1,8 @@
 package sneer.bricks.software.diff.tests;
 
+import static sneer.bricks.software.diff.TextComparator.TextBlockType.DELETE;
+import static sneer.bricks.software.diff.TextComparator.TextBlockType.EQUAL;
+import static sneer.bricks.software.diff.TextComparator.TextBlockType.INSERT;
 import static sneer.foundation.environments.Environments.my;
 
 import java.util.ArrayList;
@@ -8,15 +11,12 @@ import java.util.List;
 
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
+import sneer.bricks.software.diff.TextComparator;
 import sneer.bricks.software.diff.TextComparator.TextBlock;
 import sneer.bricks.software.diff.TextComparator.TextBlockType;
-import static sneer.bricks.software.diff.TextComparator.TextBlockType.INSERT;
-import static sneer.bricks.software.diff.TextComparator.TextBlockType.DELETE;
-import static sneer.bricks.software.diff.TextComparator.TextBlockType.EQUAL;
-import sneer.bricks.software.diff.TextComparator;
+import sneer.bricks.software.folderconfig.BrickTest;
 
-public class TextComparatorTest extends BrickTestWithLogger {
+public class TextComparatorTest extends BrickTest {
 	
 	private final TextComparator _subject = my(TextComparator.class);
 	private final List<Object[]> _expectations = new ArrayList<Object[]>();

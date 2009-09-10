@@ -8,12 +8,12 @@ import java.util.List;
 
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
+import sneer.bricks.software.folderconfig.BrickTest;
 import sneer.foundation.testsupport.AssertUtils;
 
-public class ImmutableArrayTest extends BrickTestWithLogger {
+public class ImmutableArrayTest extends BrickTest {
 
 	private final ImmutableArrays _subject = my(ImmutableArrays.class);
 

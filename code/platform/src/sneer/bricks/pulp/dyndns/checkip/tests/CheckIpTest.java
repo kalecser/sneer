@@ -7,12 +7,12 @@ import java.io.IOException;
 import org.jmock.Expectations;
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.dyndns.checkip.CheckIp;
 import sneer.bricks.pulp.httpclient.HttpClient;
+import sneer.bricks.software.folderconfig.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 
-public class CheckIpTest extends BrickTestWithLogger {
+public class CheckIpTest extends BrickTest {
 	
 	@Bind final HttpClient _client = mock(HttpClient.class);
 	

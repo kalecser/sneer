@@ -5,7 +5,6 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.pulp.reactive.Register;
@@ -17,10 +16,11 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.collections.listsorter.ListSorter;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.snapps.contacts.gui.comparator.ContactComparator;
+import sneer.bricks.software.folderconfig.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.testsupport.AssertUtils;
 
-public class ContactComparatorTest extends BrickTestWithLogger {
+public class ContactComparatorTest extends BrickTest {
 	
 	@Bind final Stethoscope _stethoscopeMock = new StethoscopeMock();
 	

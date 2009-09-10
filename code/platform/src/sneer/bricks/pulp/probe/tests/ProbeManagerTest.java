@@ -9,7 +9,6 @@ import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection.PacketScheduler;
@@ -22,10 +21,11 @@ import sneer.bricks.pulp.serialization.Serializer;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.bricks.statestore.BrickStateStore;
 import sneer.bricks.software.bricks.statestore.tests.BrickStateStoreMock;
+import sneer.bricks.software.folderconfig.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
 
-public class ProbeManagerTest extends BrickTestWithLogger {
+public class ProbeManagerTest extends BrickTest {
 
 	@Bind private final ConnectionManager _connectionManager = mock(ConnectionManager.class);
 	@Bind private final Serializer _serializer = mock(Serializer.class);

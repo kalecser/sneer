@@ -5,11 +5,11 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.bricks.software.folderconfig.BrickTest;
 import sneer.foundation.lang.Consumer;
 
-public class TupleKeepingTest extends BrickTestWithLogger {
+public class TupleKeepingTest extends BrickTest {
 
 	private int _notificationCounter;
 	

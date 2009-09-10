@@ -7,17 +7,17 @@ import org.jmock.Sequence;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.ContactManager;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.network.ByteArraySocket;
+import sneer.bricks.software.folderconfig.BrickTest;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.brickness.testsupport.Bind;
 
-public class IncomingSocketTest extends BrickTestWithLogger {
+public class IncomingSocketTest extends BrickTest {
 
 	private ConnectionManager _subject = my(ConnectionManager.class);
 

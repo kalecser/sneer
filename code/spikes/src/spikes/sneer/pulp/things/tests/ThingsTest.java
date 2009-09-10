@@ -6,15 +6,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
+import sneer.bricks.software.folderconfig.BrickTest;
 import spikes.klaus.Daemon;
 import spikes.sneer.pulp.things.Thing;
 import spikes.sneer.pulp.things.ThingHome;
 import spikes.wheel.testutil.TestDashboard;
 
 @SuppressWarnings("deprecation")
-public class ThingsTest extends BrickTestWithLogger {
+public class ThingsTest extends BrickTest {
 	
 	private final ThingHome _subject = my(ThingHome.class);
 

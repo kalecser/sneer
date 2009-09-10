@@ -12,14 +12,14 @@ import org.junit.Test;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.impl.SetRegisterImpl;
+import sneer.bricks.software.folderconfig.BrickTest;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.testsupport.AssertUtils;
 
-public class SetRegisterTest extends BrickTestWithLogger {
+public class SetRegisterTest extends BrickTest {
 
 	private final SetRegister<String> _subject = new SetRegisterImpl<String>();
 

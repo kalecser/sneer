@@ -5,13 +5,13 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.impl.SetRegisterImpl;
+import sneer.bricks.software.folderconfig.BrickTest;
 import sneer.foundation.lang.Predicate;
 
 
-public class SignalUtilsTest extends BrickTestWithLogger {
+public class SignalUtilsTest extends BrickTest {
 	
 	@Test (timeout = 2000)
 	public void waitForExistingElementWithPredicate() {

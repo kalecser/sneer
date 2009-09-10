@@ -8,13 +8,13 @@ import java.io.IOException;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.hardwaresharing.files.reader.FileReader;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.software.code.classutils.ClassUtils;
+import sneer.bricks.software.folderconfig.BrickTest;
 
 /** Abstract test class names must not end in "Test" or else Hudson will try to instantiate them and fail. :P */
-public abstract class FileCopyTestBase extends BrickTestWithLogger {
+public abstract class FileCopyTestBase extends BrickTest {
 
 	private final FileReader _publisher = my(FileReader.class);
 

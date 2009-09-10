@@ -5,10 +5,10 @@ import static sneer.foundation.environments.Environments.my;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.crypto.Crypto;
+import sneer.bricks.software.folderconfig.BrickTest;
 
-public class CryptoTest extends BrickTestWithLogger {
+public class CryptoTest extends BrickTest {
 
 	private final Crypto _crypto = my(Crypto.class);
 	

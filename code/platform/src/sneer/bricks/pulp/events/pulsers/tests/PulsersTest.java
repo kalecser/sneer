@@ -5,11 +5,11 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
 import sneer.bricks.pulp.events.pulsers.Pulser;
 import sneer.bricks.pulp.events.pulsers.Pulsers;
+import sneer.bricks.software.folderconfig.BrickTest;
 
-public class PulsersTest extends BrickTestWithLogger {
+public class PulsersTest extends BrickTest {
 
 	private final Pulsers _subject = my(Pulsers.class);
 	private int _counter = 0;

@@ -2,10 +2,10 @@ package sneer.tests;
 
 import org.junit.After;
 
-import sneer.bricks.hardware.io.log.tests.BrickTestWithLogger;
+import sneer.bricks.software.folderconfig.BrickTest;
 
 /** Abstract test class names must not end in "Test" or else Hudson will try to instantiate them and fail. :P */
-public abstract class SovereignFunctionalTestBase extends BrickTestWithLogger {
+public abstract class SovereignFunctionalTestBase extends BrickTest {
 
 	private SovereignCommunity _community = createNewCommunity();
 	
