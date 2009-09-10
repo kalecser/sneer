@@ -123,7 +123,6 @@ class BuilderImpl implements Builder {
 	}
 
 	private void compileBrick(File brickFolder, File tmpFolder, @SuppressWarnings("unused") File[] testsClasspath, File[] implClasspath) throws IOException {
-		System.err.println("Tests folders are not being compiled");
 		//compile(new File(brickFolder, "tests"), tmpFolder, testsClasspath);
 
 		compile(new File(brickFolder, "impl"), tmpFolder, implClasspath);

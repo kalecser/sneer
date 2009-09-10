@@ -76,10 +76,11 @@ public abstract class CleanTest extends AssertUtils {
 
 		if (_failure != null)
 			afterFailedtest(_failedMethod, _failure);
+		else
+			checkConsolePollution();
 
 		deleteFiles();
 		checkThreadLeak();
-		checkConsolePollution();
 	}
 	
 	

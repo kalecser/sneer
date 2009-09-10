@@ -1,10 +1,10 @@
-package sneer.bricks.hardware.cpu.threads.impl;
+package sneer.bricks.hardware.cpu.threads.latches.impl;
 
 import java.util.concurrent.CountDownLatch;
 
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 
-public class LatchImpl implements Latch {
+class LatchImpl implements Latch {
 
 	CountDownLatch _delegate = new CountDownLatch(1);
 	
