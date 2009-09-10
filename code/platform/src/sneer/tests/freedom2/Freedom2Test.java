@@ -6,7 +6,7 @@ import org.junit.Test;
 import sneer.tests.SovereignFunctionalTestBase;
 import sneer.tests.SovereignParty;
 
-public abstract class Freedom2TestBase extends SovereignFunctionalTestBase {
+public class Freedom2Test extends SovereignFunctionalTestBase {
 
 	@Test (timeout = 4000)
 	public void isOnline() {

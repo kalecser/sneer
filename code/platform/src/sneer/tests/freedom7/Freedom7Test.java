@@ -14,7 +14,7 @@ import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.foundation.brickness.Brick;
 import sneer.tests.SovereignFunctionalTestBase;
 
-public abstract class Freedom7TestBase extends SovereignFunctionalTestBase {
+public class Freedom7Test extends SovereignFunctionalTestBase {
 	
 //	private final JavaCompiler _compiler = my(JavaCompiler.class);
 

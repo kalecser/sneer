@@ -6,7 +6,7 @@ import sneer.tests.SovereignFunctionalTestBase;
 import sneer.tests.SovereignParty;
 
 
-public abstract class Freedom5TestBase extends SovereignFunctionalTestBase {
+public class Freedom5Test extends SovereignFunctionalTestBase {
 
 	@Test (timeout = 13000)
 	public void shoutToTheWind() {

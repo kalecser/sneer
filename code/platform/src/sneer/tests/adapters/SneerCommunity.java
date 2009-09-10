@@ -21,7 +21,7 @@ import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.tests.SovereignCommunity;
 import sneer.tests.SovereignParty;
-import sneer.tests.utils.network.InProcessNetwork;
+import sneer.tests.adapters.impl.utils.network.InProcessNetwork;
 
 public class SneerCommunity implements SovereignCommunity {
 

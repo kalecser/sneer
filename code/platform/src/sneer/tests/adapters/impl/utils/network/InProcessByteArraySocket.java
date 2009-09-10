@@ -1,4 +1,4 @@
-package sneer.tests.utils.network;
+package sneer.tests.adapters.impl.utils.network;
 
 import java.io.IOException;
 import java.util.LinkedList;
