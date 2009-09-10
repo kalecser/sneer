@@ -28,7 +28,7 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.lang.ByRef;

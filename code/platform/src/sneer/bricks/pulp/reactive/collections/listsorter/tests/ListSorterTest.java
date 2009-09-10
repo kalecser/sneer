@@ -19,7 +19,7 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.collections.ListChange.Visitor;
 import sneer.bricks.pulp.reactive.collections.listsorter.ListSorter;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.testsupport.AssertUtils;
 

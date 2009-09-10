@@ -20,7 +20,7 @@ import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 
 public class SocketOriginatorTest extends BrickTest {

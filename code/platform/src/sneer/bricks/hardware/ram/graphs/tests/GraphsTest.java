@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.ram.graphs.DirectedGraph;
 import sneer.bricks.hardware.ram.graphs.Graphs;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class GraphsTest extends BrickTest {
 

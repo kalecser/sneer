@@ -13,7 +13,7 @@ import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.ContactManager;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.brickness.testsupport.Bind;
 

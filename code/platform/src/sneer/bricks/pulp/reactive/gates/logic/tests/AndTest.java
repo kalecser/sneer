@@ -11,7 +11,7 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.gates.logic.LogicGates;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Consumer;
 
 public class AndTest extends BrickTest {

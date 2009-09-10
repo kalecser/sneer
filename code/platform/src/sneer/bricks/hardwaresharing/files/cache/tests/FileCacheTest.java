@@ -17,7 +17,7 @@ import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.pulp.crypto.Crypto;
 import sneer.bricks.pulp.crypto.Sneer1024;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Consumer;
 
 public class FileCacheTest extends BrickTest {

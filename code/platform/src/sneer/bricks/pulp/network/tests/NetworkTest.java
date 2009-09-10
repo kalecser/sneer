@@ -10,7 +10,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.network.ByteArrayServerSocket;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 
 public class NetworkTest extends BrickTest {

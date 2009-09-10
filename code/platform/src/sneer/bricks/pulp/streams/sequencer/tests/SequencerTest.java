@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import sneer.bricks.pulp.streams.sequencer.Sequencer;
 import sneer.bricks.pulp.streams.sequencer.Sequencers;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Consumer;
 
 public class SequencerTest extends BrickTest {

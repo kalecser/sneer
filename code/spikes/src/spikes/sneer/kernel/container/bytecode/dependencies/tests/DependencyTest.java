@@ -11,7 +11,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.testsupport.AssertUtils;
 import spikes.sneer.kernel.container.bytecode.dependencies.DependencyFinder;
 

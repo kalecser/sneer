@@ -11,7 +11,7 @@ import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.network.social.heartbeat.Heart;
 import sneer.bricks.network.social.heartbeat.Heartbeat;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.ByRef;
 

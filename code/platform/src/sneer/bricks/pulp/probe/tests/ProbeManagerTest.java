@@ -21,7 +21,7 @@ import sneer.bricks.pulp.serialization.Serializer;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.bricks.statestore.BrickStateStore;
 import sneer.bricks.software.bricks.statestore.tests.BrickStateStoreMock;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
 

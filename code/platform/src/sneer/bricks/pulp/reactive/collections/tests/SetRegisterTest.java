@@ -15,7 +15,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.impl.SetRegisterImpl;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.testsupport.AssertUtils;
 

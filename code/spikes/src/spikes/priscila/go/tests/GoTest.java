@@ -3,7 +3,7 @@ package spikes.priscila.go.tests;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 import spikes.priscila.go.GoBoard;
 import spikes.priscila.go.ToroidalGoBoard;

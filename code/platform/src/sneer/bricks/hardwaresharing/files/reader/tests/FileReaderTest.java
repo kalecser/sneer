@@ -14,7 +14,7 @@ import sneer.bricks.hardwaresharing.files.cache.FileCache;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.hardwaresharing.files.reader.FileReader;
 import sneer.bricks.software.code.classutils.ClassUtils;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 
 public class FileReaderTest extends BrickTest {

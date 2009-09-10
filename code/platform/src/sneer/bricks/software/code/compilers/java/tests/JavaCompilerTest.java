@@ -14,7 +14,7 @@ import sneer.bricks.software.code.compilers.java.CompilationError;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.compilers.java.JavaCompilerException;
 import sneer.bricks.software.code.compilers.java.Result;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class JavaCompilerTest extends BrickTest {
 

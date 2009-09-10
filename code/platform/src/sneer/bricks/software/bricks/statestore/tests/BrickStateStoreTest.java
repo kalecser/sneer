@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.Test;
 
 import sneer.bricks.software.bricks.statestore.BrickStateStore;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class BrickStateStoreTest extends BrickTest {
 	

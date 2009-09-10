@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.testsupport.AssertUtils;
 
 public class ImmutableArrayTest extends BrickTest {

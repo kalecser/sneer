@@ -13,7 +13,7 @@ import sneer.bricks.hardware.ram.arrays.ImmutableByteArray2D;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.skin.rooms.ActiveRoomKeeper;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.brickness.Tuple;
 import sneer.foundation.brickness.testsupport.Bind;

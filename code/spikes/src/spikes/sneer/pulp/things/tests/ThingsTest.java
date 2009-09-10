@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import spikes.klaus.Daemon;
 import spikes.sneer.pulp.things.Thing;
 import spikes.sneer.pulp.things.ThingHome;

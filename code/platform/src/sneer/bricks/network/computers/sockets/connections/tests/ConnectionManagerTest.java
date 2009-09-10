@@ -10,7 +10,7 @@ import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.ContactManager;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class ConnectionManagerTest extends BrickTest {
 

@@ -7,7 +7,7 @@ import org.junit.Test;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.events.pulsers.Pulser;
 import sneer.bricks.pulp.events.pulsers.Pulsers;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class PulsersTest extends BrickTest {
 

@@ -8,7 +8,7 @@ import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.snapps.wind.Shout;
 import sneer.bricks.snapps.wind.Wind;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class WindTest extends BrickTest {
 

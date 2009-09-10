@@ -5,8 +5,8 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.pulp.propertystore.PropertyStore;
-import sneer.bricks.software.folderconfig.BrickTest;
 import sneer.bricks.software.folderconfig.FolderConfig;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.environments.Environments;
 
 public class PropertyStoreTest extends BrickTest {

@@ -18,7 +18,7 @@ import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.widgets.autoscroll.AutoScroll;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 

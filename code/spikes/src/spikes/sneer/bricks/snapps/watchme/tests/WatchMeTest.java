@@ -22,7 +22,7 @@ import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.skin.image.ImageFactory;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.environments.Environment;

@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import sneer.bricks.pulp.datastructures.cache.Cache;
 import sneer.bricks.pulp.datastructures.cache.CacheFactory;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class CacheTest extends BrickTest{
 	

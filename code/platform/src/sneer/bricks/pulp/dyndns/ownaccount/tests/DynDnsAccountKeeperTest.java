@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccount;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccountKeeper;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class DynDnsAccountKeeperTest extends BrickTest {
 

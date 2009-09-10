@@ -11,7 +11,7 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.reader.FileReader;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.software.code.classutils.ClassUtils;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 /** Abstract test class names must not end in "Test" or else Hudson will try to instantiate them and fail. :P */
 public abstract class FileCopyTestBase extends BrickTest {

@@ -9,7 +9,7 @@ import org.junit.Test;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Consumer;

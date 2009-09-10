@@ -10,8 +10,8 @@ import org.junit.Test;
 
 import sneer.bricks.software.bricks.finder.BrickFinder;
 import sneer.bricks.software.code.compilers.java.tests.JarUtils;
-import sneer.bricks.software.folderconfig.BrickTest;
 import sneer.bricks.software.folderconfig.FolderConfig;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.testsupport.AssertUtils;
 
 public class BrickFinderTest extends BrickTest {

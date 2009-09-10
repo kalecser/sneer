@@ -16,7 +16,7 @@ import sneer.bricks.pulp.dyndns.updater.UnexpectedResponseException;
 import sneer.bricks.pulp.dyndns.updater.Updater;
 import sneer.bricks.pulp.dyndns.updater.UpdaterException;
 import sneer.bricks.pulp.httpclient.HttpClient;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Pair;
 

@@ -16,7 +16,7 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.collections.listsorter.ListSorter;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.snapps.contacts.gui.comparator.ContactComparator;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.testsupport.AssertUtils;
 

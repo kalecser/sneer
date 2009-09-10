@@ -7,7 +7,7 @@ import java.io.File;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class IOTest extends BrickTest {
 	

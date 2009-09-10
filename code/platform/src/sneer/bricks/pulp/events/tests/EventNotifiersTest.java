@@ -10,7 +10,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Consumer;
 
 public class EventNotifiersTest extends BrickTest {

@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import sneer.bricks.software.code.metaclass.MetaClass;
 import sneer.bricks.software.code.metaclass.MetaClasses;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import spikes.sneer.kernel.container.utils.metaclass.tests.bean.Bean;
 
 

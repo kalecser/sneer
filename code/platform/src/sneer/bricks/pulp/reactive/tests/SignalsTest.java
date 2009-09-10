@@ -8,7 +8,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 

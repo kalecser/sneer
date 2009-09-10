@@ -12,7 +12,7 @@ import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 
 public class BlinkingLightsTest extends BrickTest {

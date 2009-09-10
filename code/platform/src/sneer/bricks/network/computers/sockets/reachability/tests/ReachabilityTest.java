@@ -13,7 +13,7 @@ import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.reactive.SignalUtils;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 
 public class ReachabilityTest extends BrickTest {

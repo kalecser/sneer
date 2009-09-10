@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Consumer;
 
 public class TupleKeepingTest extends BrickTest {

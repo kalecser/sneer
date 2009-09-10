@@ -6,7 +6,7 @@ import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 
 import sneer.bricks.pulp.crypto.Crypto;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class CryptoTest extends BrickTest {
 

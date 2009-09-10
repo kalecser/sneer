@@ -7,7 +7,7 @@ import org.junit.Test;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.impl.SetRegisterImpl;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Predicate;
 
 

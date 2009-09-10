@@ -9,7 +9,7 @@ import sneer.bricks.hardware.clock.ticker.ClockTicker;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Consumer;
 
 

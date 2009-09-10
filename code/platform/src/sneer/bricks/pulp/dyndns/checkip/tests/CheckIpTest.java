@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import sneer.bricks.pulp.dyndns.checkip.CheckIp;
 import sneer.bricks.pulp.httpclient.HttpClient;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 
 public class CheckIpTest extends BrickTest {

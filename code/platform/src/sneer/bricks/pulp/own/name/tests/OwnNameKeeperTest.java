@@ -5,7 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.pulp.own.name.OwnNameKeeper;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class OwnNameKeeperTest extends BrickTest {
 

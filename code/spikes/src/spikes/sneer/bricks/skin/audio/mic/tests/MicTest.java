@@ -10,7 +10,7 @@ import org.jmock.Expectations;
 import org.junit.Test;
 
 import sneer.bricks.pulp.reactive.SignalUtils;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import spikes.sneer.bricks.skin.audio.kernel.Audio;
 import spikes.sneer.bricks.skin.audio.mic.Mic;

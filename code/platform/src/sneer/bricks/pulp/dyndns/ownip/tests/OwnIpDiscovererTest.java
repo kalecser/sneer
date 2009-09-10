@@ -16,7 +16,7 @@ import sneer.bricks.pulp.dyndns.checkip.CheckIp;
 import sneer.bricks.pulp.dyndns.ownip.OwnIpDiscoverer;
 import sneer.bricks.pulp.propertystore.PropertyStore;
 import sneer.bricks.pulp.propertystore.mocks.TransientPropertyStore;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
 

@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class TupleGcTest extends BrickTest {
 

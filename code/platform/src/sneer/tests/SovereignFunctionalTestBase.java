@@ -2,7 +2,7 @@ package sneer.tests;
 
 import org.junit.After;
 
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.tests.adapters.SneerCommunity;
 
 
