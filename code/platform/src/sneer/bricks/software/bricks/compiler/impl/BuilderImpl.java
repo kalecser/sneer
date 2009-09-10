@@ -14,8 +14,8 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.IO.FileFilters;
 import sneer.bricks.hardware.io.IO.Files;
 import sneer.bricks.hardware.io.IO.Filter;
-import sneer.bricks.software.bricks.compiler.Builder;
 import sneer.bricks.software.bricks.compiler.BrickCompilerException;
+import sneer.bricks.software.bricks.compiler.Builder;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.compilers.java.JavaCompilerException;
 import sneer.bricks.software.folderconfig.FolderConfig;
@@ -65,7 +65,7 @@ class BuilderImpl implements Builder {
 		File[] testClasspath = testClassPath(destinationFolder);
 		
 		for (File brickFolder : brickFolders) {
-			File[] implClasspath = brickClasspathWith(destinationFolder, new File(brickFolder, "impl/lib"));
+			File[] implClasspath = classpathWithLibs(destinationFolder, new File(brickFolder, "impl/lib"));
 			compileBrick(brickFolder, tmpFolder, testClasspath, implClasspath);
 		}
 		
@@ -77,10 +77,10 @@ class BuilderImpl implements Builder {
 	}
 
 	private File[] testClassPath(File destinationFolder) {
-		return brickClasspathWith(destinationFolder, foundationSrcFolder());
+		return classpathWithLibs(destinationFolder, foundationSrcFolder());
 	}
 
-	private File[] brickClasspathWith(File destinationFolder, File libFolder) {
+	private File[] classpathWithLibs(File destinationFolder, File libFolder) {
 		if (!libFolder.exists()) {
 			return new File[] { destinationFolder };
 		}
@@ -122,8 +122,10 @@ class BuilderImpl implements Builder {
 		tmpFolder.mkdirs();
 	}
 
-	private void compileBrick(File brickFolder, File tmpFolder, File[] testsClasspath, File[] implClasspath) throws IOException {
-		compile(new File(brickFolder, "tests"), tmpFolder, testsClasspath);
+	private void compileBrick(File brickFolder, File tmpFolder, @SuppressWarnings("unused") File[] testsClasspath, File[] implClasspath) throws IOException {
+		System.err.println("Tests folders are not being compiled");
+		//compile(new File(brickFolder, "tests"), tmpFolder, testsClasspath);
+
 		compile(new File(brickFolder, "impl"), tmpFolder, implClasspath);
 	}
 
