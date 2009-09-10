@@ -25,13 +25,13 @@ public class BrickStateStoreImpl implements BrickStateStore {
 	private final Map<Class<?>, Light> _saveLights = new HashMap<Class<?>, Light>(); 
 
 	@Override
-	public Object readObjectFor(Class<?> brick, ClassLoader classLoader) throws BrickStateStoreException {
-		File file = my(FolderConfig.class).storageFolderFor(brick);
-		if(!file.exists()) file.mkdirs();
+	public Object readObjectFor(Class<?> brick, ClassLoader classLoader) {
+		File storageFolder = my(FolderConfig.class).storageFolderFor(brick);
+		if(!storageFolder.exists()) return null;
 		
 		FileInputStream stream = null;
 		try {
-			stream = new FileInputStream(new File(file, FILE_NAME));
+			stream = new FileInputStream(new File(storageFolder, FILE_NAME));
 		} catch (FileNotFoundException e) {
 			return null;
 		}
@@ -39,14 +39,19 @@ public class BrickStateStoreImpl implements BrickStateStore {
 		try {
 			return my(Serializer.class).deserialize(stream, classLoader);
 		} catch (Exception e) {
-			if(!_restoreLights.containsKey(brick))
-				_restoreLights.put(brick, my(BlinkingLights.class).prepare(LightType.ERROR));
-			
-			my(BlinkingLights.class).turnOnIfNecessary(_restoreLights.get(brick), "Restore Brick State Error", "Unable to restore state for brick '" + brick.getName() + "'", e);
-			throw new BrickStateStoreException(brick, e);
+			turnRestoreLightOn(brick, e);
+			return null;
 		} finally{
 			try { stream.close(); } catch (Throwable ignore) { }
 		}	
+	}
+
+
+	private void turnRestoreLightOn(Class<?> brick, Exception e) {
+		if(!_restoreLights.containsKey(brick))
+			_restoreLights.put(brick, my(BlinkingLights.class).prepare(LightType.ERROR));
+		
+		my(BlinkingLights.class).turnOnIfNecessary(_restoreLights.get(brick), "Restore Brick State Error", "Unable to restore state for brick '" + brick.getName() + "'", e);
 	}
 
 
@@ -60,13 +65,17 @@ public class BrickStateStoreImpl implements BrickStateStore {
 			stream = new FileOutputStream(new File(file, FILE_NAME));
 			my(Serializer.class).serialize(stream, object);
 		} catch (IOException e) {
-			if(!_saveLights.containsKey(brick))
-				_saveLights.put(brick, my(BlinkingLights.class).prepare(LightType.ERROR));
-			
-			my(BlinkingLights.class).turnOnIfNecessary(_saveLights.get(brick), "Persistence Brick State Error", "Unable to persist state for brick '" + brick.getName() + "'", e);
-			throw new BrickStateStoreException(brick, e);
+			turnSaveLightOn(brick, e);
 		} finally{
 			try { stream.close(); } catch (Throwable ignore) { }
 		}
+	}
+
+
+	private void turnSaveLightOn(Class<?> brick, IOException e) {
+		if(!_saveLights.containsKey(brick))
+			_saveLights.put(brick, my(BlinkingLights.class).prepare(LightType.ERROR));
+		
+		my(BlinkingLights.class).turnOnIfNecessary(_saveLights.get(brick), "Persistence Brick State Error", "Unable to persist state for brick '" + brick.getName() + "'", e);
 	}
 }

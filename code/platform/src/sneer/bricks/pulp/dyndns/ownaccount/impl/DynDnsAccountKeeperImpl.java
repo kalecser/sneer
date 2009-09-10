@@ -7,7 +7,6 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.bricks.statestore.BrickStateStore;
-import sneer.bricks.software.bricks.statestore.impl.BrickStateStoreException;
 import sneer.foundation.lang.Consumer;
 
 class DynDnsAccountKeeperImpl implements DynDnsAccountKeeper {
@@ -40,18 +39,13 @@ class DynDnsAccountKeeperImpl implements DynDnsAccountKeeper {
 	}
 	
 	private void restore() {
-		String[] data = null;
-		try {
-			data = (String[]) _store.readObjectFor(DynDnsAccountKeeper.class, getClass().getClassLoader());
-		} catch (BrickStateStoreException ignore) { }
+		String[] data = (String[]) _store.readObjectFor(DynDnsAccountKeeper.class, getClass().getClassLoader());
 		
-		if(data!=null) 	accountSetter().consume(new DynDnsAccount(data[0], data[1], data[2]));
+		if (data != null) accountSetter().consume(new DynDnsAccount(data[0], data[1], data[2]));
 	}
 	
 	private void save(DynDnsAccount dynDnsAccount) {
-		if(dynDnsAccount==null) return;
-		try {
-			_store.writeObjectFor(DynDnsAccountKeeper.class,  new String[]{dynDnsAccount.host, dynDnsAccount.user, dynDnsAccount.password});
-		} catch (BrickStateStoreException ignore) { }
+		if (dynDnsAccount == null) return;
+		_store.writeObjectFor(DynDnsAccountKeeper.class,  new String[]{dynDnsAccount.host, dynDnsAccount.user, dynDnsAccount.password});
 	}
 }
