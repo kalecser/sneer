@@ -24,7 +24,7 @@ import sneer.foundation.lang.Consumer;
 
 
 
-public class SetRegisterImpl<T> implements SetRegister<T> {
+class SetRegisterImpl<T> implements SetRegister<T> {
 
 
 	private static final long serialVersionUID = 1L;

@@ -1,5 +1,7 @@
 package spikes.sneer.pulp.things.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.io.IOException;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -18,9 +20,9 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.RAMDirectory;
 
+import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.bricks.pulp.reactive.collections.impl.SetRegisterImpl;
 import spikes.sneer.pulp.things.Thing;
 import spikes.sneer.pulp.things.ThingHome;
 
@@ -51,7 +53,7 @@ class ThingHomeImpl implements ThingHome {
 		IndexSearcher searcher = new IndexSearcher(_directory);
 		Hits hits = searcher.search(query);
 		
-		SetRegister<Thing> result = new SetRegisterImpl<Thing>();
+		SetRegister<Thing> result = my(CollectionSignals.class).newSetRegister();
 		for (int i = 0; i < hits.length(); i++) {
 			Document doc = hits.doc(i);
 			String name = doc.getFields(TEXT_FIELD)[0].stringValue();

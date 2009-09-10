@@ -7,7 +7,7 @@ import java.util.Collections;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 
 
-public class CollectionChangeImpl<T> implements CollectionChange<T> {
+class CollectionChangeImpl<T> implements CollectionChange<T> {
 
 	private final Collection<T> _elementsAdded;
 	private final Collection<T> _elementsRemoved;

@@ -10,9 +10,9 @@ import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.pulp.reactive.ReactivePredicate;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
+import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.bricks.pulp.reactive.collections.impl.SetRegisterImpl;
 import sneer.foundation.lang.Consumer;
 
 final class Filter<T> {
@@ -28,7 +28,7 @@ final class Filter<T> {
 	Filter(SetSignal<T> input, ReactivePredicate<T> predicate) {
 		_input = input;
 		_predicate = predicate;
-		 _output = new SetRegisterImpl<T>();
+		 _output = my(CollectionSignals.class).newSetRegister();
 		 
 		 addElements(_input);
 		 

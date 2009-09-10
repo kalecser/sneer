@@ -13,15 +13,15 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
+import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
-import sneer.bricks.pulp.reactive.collections.impl.SetRegisterImpl;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.testsupport.AssertUtils;
 
 public class SetRegisterTest extends BrickTest {
 
-	private final SetRegister<String> _subject = new SetRegisterImpl<String>();
+	private final SetRegister<String> _subject = my(CollectionSignals.class).newSetRegister();
 
 	@Test (timeout = 2000)
 	public void addAll() {

@@ -8,9 +8,9 @@ import sneer.bricks.pulp.reactive.ReactivePredicate;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.bricks.pulp.reactive.collections.impl.SetRegisterImpl;
 import sneer.bricks.pulp.reactive.collections.setfilter.SetFilter;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Functor;
@@ -27,7 +27,7 @@ public class SetFilterTest extends BrickTest {
 
 	@Test
 	public void addRemoveTest() {
-		SetRegister<Signal<Integer>> src = new SetRegisterImpl<Signal<Integer>>();
+		SetRegister<Signal<Integer>> src = my(CollectionSignals.class).newSetRegister();
 		SetSignal<Signal<Integer>> filtered = _subject.filter(src.output(), reactivePredicate());
 
 		src.add(_10);
@@ -53,7 +53,7 @@ public class SetFilterTest extends BrickTest {
 	
 	@Test
 	public void changeValueTest() {
-		SetRegister<Signal<Integer>> src = new SetRegisterImpl<Signal<Integer>>();
+		SetRegister<Signal<Integer>> src = my(CollectionSignals.class).newSetRegister();
 		SetSignal<Signal<Integer>> filtered = _subject.filter(src.output(), reactivePredicate());
 		
 		Register<Integer> r15 = my(Signals.class).newRegister(15);
