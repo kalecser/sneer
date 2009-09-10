@@ -4,12 +4,12 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
-import sneer.bricks.software.folderconfig.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
+import sneer.foundation.brickness.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.tests.bar.BarBrick;
 import sneer.foundation.brickness.testsupport.tests.foo.FooBrick;
 
-public class BrickTestTest extends BrickTest {
+public class BrickTestTest extends BrickTestBase {
 	
 	@Bind final BarBrick _bar = new BarBrick() {};
 	

@@ -4,9 +4,9 @@ import org.jmock.Mockery;
 import org.junit.After;
 import org.junit.Test;
 
-import sneer.bricks.software.folderconfig.BrickTest;
+import sneer.foundation.brickness.testsupport.BrickTestBase;
 
-public class BrickTestWithMockRunnerTest extends BrickTest {
+public class BrickTestWithMockRunnerTest extends BrickTestBase {
 
 	protected boolean _assertIsSatisfiedCalled;
 	
