@@ -312,7 +312,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		_blinkingLightContract = my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>() { @Override public void consume(CollectionChange<Light> value) {
 			for (Light l : value.elementsAdded())
 				if (l.type() == LightType.ERROR)
-					throw new IllegalStateException("ERROR blinking light detected: " + l.error());
+					throw new IllegalStateException("ERROR blinking light detected", l.error());
 		}});
 	}
 
