@@ -87,19 +87,21 @@ class DashboardImpl implements Dashboard {
 
 	
 	{
-		_refToAvoidGc = my(InstrumentRegistry.class).installedInstruments().addReceiver(new Consumer<CollectionChange<Instrument>>(){ @Override public void consume(CollectionChange<Instrument> change) {
+		_refToAvoidGc = receiveInstruments();
+
+		initGuiTimebox();
+		initGui();
+	}
+
+
+	private WeakContract receiveInstruments() {
+		return my(InstrumentRegistry.class).installedInstruments().addReceiver(new Consumer<CollectionChange<Instrument>>(){ @Override public void consume(CollectionChange<Instrument> change) {
 			for (Instrument instrument : change.elementsAdded())
 				_dashboardPanel.install(instrument);
 			
 			if (!change.elementsRemoved().isEmpty())
 				throw new sneer.foundation.lang.exceptions.NotImplementedYet();
 		}});
-	}
-
-
-	DashboardImpl() {
-		initGuiTimebox();
-		initGui();
 	}
 	
 	
