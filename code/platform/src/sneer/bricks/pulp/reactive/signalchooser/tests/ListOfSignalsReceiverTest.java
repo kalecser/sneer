@@ -5,13 +5,14 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Assert;
 import org.junit.Test;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
+import sneer.bricks.pulp.reactive.collections.ListChange;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
-import sneer.bricks.pulp.reactive.collections.impl.VisitingListReceiver;
 import sneer.bricks.pulp.reactive.signalchooser.ListOfSignalsReceiver;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChoosers;
@@ -32,7 +33,7 @@ public class ListOfSignalsReceiverTest extends BrickTest {
 		
 		addElement("0");
 		assertEvents("");
-		_refToAvoidGc = _factory.receive(_listRegister.output(), newListOfSignalsReceiver(_listRegister.output()));
+		_refToAvoidGc = _factory.receive(_listRegister.output(), new MyListOfSignalsReceiver(_listRegister.output()));
 		
 		Register<String> r1 = addElement("1");
 		Register<String> r2 = addElement("2");
@@ -84,14 +85,15 @@ public class ListOfSignalsReceiverTest extends BrickTest {
 		_recorder.clear();
 	}
 	
-	private ListOfSignalsReceiver<Register<String>>newListOfSignalsReceiver(ListSignal<Register<String>> input) {
-		return new MyListOfSignalsReceiver(input);
-	}
 	
-	class MyListOfSignalsReceiver extends VisitingListReceiver<Register<String>> implements ListOfSignalsReceiver<Register<String>>{
-		
+	class MyListOfSignalsReceiver implements ListChange.Visitor<Register<String>>, ListOfSignalsReceiver<Register<String>>{
+
+		@SuppressWarnings("unused")
+		private final WeakContract _refToAvoidGc2;
+
+	
 		public MyListOfSignalsReceiver(ListSignal<Register<String>> input) {
-			super(input);
+			_refToAvoidGc2 = input.addListReceiverAsVisitor(this);
 		}
 
 		@Override 
@@ -101,6 +103,7 @@ public class ListOfSignalsReceiverTest extends BrickTest {
 			}};
 		}
 
+		
 		@Override public void elementSignalChanged(Register<String> element) {  
 			_recorder.record("Changed", value(element));}
 		

@@ -4,40 +4,45 @@ import static sneer.foundation.environments.Environments.my;
 
 import javax.swing.AbstractListModel;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.collections.ListChange;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
-import sneer.bricks.pulp.reactive.collections.impl.VisitingListReceiver;
 import sneer.bricks.pulp.reactive.signalchooser.ListOfSignalsReceiver;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChoosers;
 
 class ListSignalModel<T> extends AbstractListModel {
 
-	private final SignalChoosers _signalChooserManagerFactory = my(SignalChoosers.class);
+	private static final SignalChoosers _SignalChoosers = my(SignalChoosers.class);
+
 	
 	private final ListSignal<T> _input;
-	
+	private final SignalChooser<T> _chooser;
 	@SuppressWarnings("unused") private final Object _refToAvoidGc;
 
-	private final SignalChooser<T> _chooser;
 	
 	ListSignalModel(ListSignal<T> input, SignalChooser<T> chooser) {
 		_input = input;
 		_chooser = chooser;
-		_refToAvoidGc = _signalChooserManagerFactory.receive(input, new ModelChangeReceiver(_input));
+		_refToAvoidGc = _SignalChoosers.receive(_input, new ModelChangeReceiver(_input));
 	}
 	
-	private class ModelChangeReceiver extends VisitingListReceiver<T> implements ListOfSignalsReceiver<T> {
+	
+	private class ModelChangeReceiver implements ListChange.Visitor<T>, ListOfSignalsReceiver<T> {
+
+		@SuppressWarnings("unused") private final WeakContract _refToAvoidGc2;
 
 		private ModelChangeReceiver(ListSignal<T> input) {
-			super(input);
+			_refToAvoidGc2 = input.addListReceiverAsVisitor(this);
 		}
 
 		@Override public void elementAdded(final int index, T value) { fireIntervalAdded(ListSignalModel.this, index, index); }
 		@Override public void elementRemoved(final int index, T value) { fireIntervalRemoved(ListSignalModel.this, index, index); }
 		@Override public void elementReplaced(final int index, T oldValue, T newValue) { contentsChanged(index); }
-		@Override public void elementSignalChanged(final T value) { elementChanged(value); }
 		@Override public void elementMoved(final int index, final int newIndex, T newElement) { fireContentsChanged(ListSignalModel.this, index, newIndex); }
+
+		@Override public void elementSignalChanged(final T value) { elementChanged(value); }
 		@Override public SignalChooser<T> signalChooser() { return _chooser; }
 	}
 	

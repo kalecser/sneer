@@ -12,4 +12,6 @@ public interface ListSignal<T> extends CollectionSignal<T> {
 	List<T> currentElements();
 	
 	WeakContract addListReceiver(Consumer<? super ListChange<T>> receiver);
+	/**Same as addListReceiver() but implemented as a visitor for convenience. */
+	WeakContract addListReceiverAsVisitor(ListChange.Visitor<T> visitor);
 }

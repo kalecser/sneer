@@ -1,22 +1,19 @@
 package sneer.bricks.pulp.reactive.collections.impl;
 
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.collections.ListChange;
-import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.collections.ListChange.Visitor;
 import sneer.foundation.lang.Consumer;
 
-public abstract class VisitingListReceiver<T> implements Consumer<ListChange<T>>, Visitor<T> {
+class VisitingListReceiver<T> implements Consumer<ListChange<T>> {
 
-	@SuppressWarnings("unused")
-	private final WeakContract _refToAvoidGc;
+	private final Visitor<T> _delegate;
 
-	public VisitingListReceiver(ListSignal<T> input) {
-		_refToAvoidGc = input.addListReceiver(this);
+	public VisitingListReceiver(Visitor<T> delegate) {
+		_delegate = delegate;
 	}
 
 	@Override
 	public void consume(ListChange<T> listChange) {
-		listChange.accept(this);
+		listChange.accept(_delegate);
 	}
 }

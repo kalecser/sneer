@@ -20,12 +20,13 @@ import javax.swing.JScrollBar;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
 import sneer.bricks.pulp.own.name.OwnNameKeeper;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.pulp.reactive.collections.impl.SimpleListReceiver;
+import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.skin.main.dashboard.Dashboard;
 import sneer.bricks.skin.main.instrumentregistry.Instrument;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
@@ -35,6 +36,7 @@ import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.Widget;
 import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
+import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 
 class DashboardImpl implements Dashboard {
@@ -81,27 +83,35 @@ class DashboardImpl implements Dashboard {
 	private Dimension _screenSize;
 	private Rectangle _bounds;
 	
-	@SuppressWarnings("unused")
-	private SimpleListReceiver<Instrument> _instrumentsReceiver = new SimpleListReceiver<Instrument>(my(InstrumentRegistry.class).installedInstruments()){
-		@Override protected void elementAdded(Instrument instrument) { 	_dashboardPanel.install(instrument); }
-		@Override protected void elementPresent(Instrument instrument) { _dashboardPanel.install(instrument); }
-		@Override protected void elementRemoved(Instrument element) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
-		}
-	};
+	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
+
+	
+	{
+		_refToAvoidGc = my(InstrumentRegistry.class).installedInstruments().addReceiver(new Consumer<CollectionChange<Instrument>>(){ @Override public void consume(CollectionChange<Instrument> change) {
+			for (Instrument instrument : change.elementsAdded())
+				_dashboardPanel.install(instrument);
+			
+			if (!change.elementsRemoved().isEmpty())
+				throw new sneer.foundation.lang.exceptions.NotImplementedYet();
+		}});
+	}
+
 
 	DashboardImpl() {
 		initGuiTimebox();
 		initGui();
 	}
-		
+	
+	
 	private <T>  T synthValue(String key){
 		return (T)_synth.getDefaultProperty(key);
 	}
 	
+	
 	private void initGuiTimebox() {
 		my(TimeboxedEventQueue.class).startQueueing(TIMEOUT_FOR_GUI_EVENTS);
 	}
+	
 	
 	private void initGui() {
 		my(GuiThread.class).invokeLater(new Runnable() { @Override public void run() {
@@ -110,6 +120,7 @@ class DashboardImpl implements Dashboard {
 			new TrayIconSupport(windowSupport);
 		}});
 	}
+	
 	
    class WindowSupport{
 		private Widget<JFrame> _rwindow;

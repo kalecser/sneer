@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
+import sneer.bricks.pulp.reactive.collections.ListChange.Visitor;
 import sneer.foundation.lang.Consumer;
 
 class ListRegisterImpl<VO> implements ListRegister<VO> {
@@ -43,6 +45,11 @@ class ListRegisterImpl<VO> implements ListRegister<VO> {
 			synchronized (_list) {
 				return new ArrayList<VO>(_list);
 			}
+		}
+
+		@Override
+		public WeakContract addListReceiverAsVisitor(Visitor<VO> visitor) {
+			return addListReceiver(new VisitingListReceiver<VO>(visitor));
 		}
 	}
 

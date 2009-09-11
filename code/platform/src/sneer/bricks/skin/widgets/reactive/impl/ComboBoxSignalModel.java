@@ -5,7 +5,7 @@ import javax.swing.ComboBoxModel;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 
-public class ComboBoxSignalModel<T> extends ListSignalModel<T> implements ComboBoxModel {
+class ComboBoxSignalModel<T> extends ListSignalModel<T> implements ComboBoxModel {
 
 	private Object _selectedItem;
 
