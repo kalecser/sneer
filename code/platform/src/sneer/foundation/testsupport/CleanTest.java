@@ -74,11 +74,12 @@ public abstract class CleanTest extends AssertUtils {
 	public void afterCleanTest() {
 		recoverConsole();
 
-		if (_failure != null)
+		if (_failure != null) {
 			afterFailedtest(_failedMethod, _failure);
-		else
-			checkConsolePollution();
-
+			return;
+		}
+		
+		checkConsolePollution();
 		deleteFiles();
 		checkThreadLeak();
 	}

@@ -14,6 +14,7 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.IO.FileFilters;
 import sneer.bricks.hardware.io.IO.Files;
 import sneer.bricks.hardware.io.IO.Filter;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.software.bricks.compiler.BrickCompilerException;
 import sneer.bricks.software.bricks.compiler.Builder;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
@@ -24,47 +25,50 @@ class BuilderImpl implements Builder {
 
 	@Override
 	public void build(File srcFolder, File destFolder) throws IOException {
-		
 		buildFoundation(srcFolder, destFolder);
-		
 		buildBricks(srcFolder, destFolder);
-		
 		copyResources(srcFolder, destFolder);
 	}
 
-	private void buildBricks(File srcFolder, File destFolder) throws IOException {
-		
-		Collection<File> apiFiles = brickApiFilesIn(srcFolder);
-		if (apiFiles.isEmpty()) return;
-		
-		compileApi(apiFiles, destFolder);
-		compileBricks(brickFolders(apiFiles), destFolder);
-	}
-
+	
 	private void buildFoundation(File srcFolder, File destFolder) throws IOException {
 		File foundationSrc = new File(srcFolder, "sneer/foundation");
 		File[] fileArray = toFileArray(jarsIn(foundationSrc));
 		compile(foundationSrc, destFolder, fileArray);
 	}
+	
+	
+	private void buildBricks(File srcFolder, File destFolder) throws IOException {
+		Collection<File> apiFiles = brickApiFilesIn(srcFolder);
+		if (apiFiles.isEmpty()) return;
+		
+		compileApi(apiFiles, destFolder);
+		compileBricks(parentFolders(apiFiles), destFolder);
+	}
 
+	
 	private void copyResources(File srcFolder, File destFolder) throws IOException {
 		Filter nonJavaFiles = fileFilters().not(fileFilters().suffix(".java"));
 		files().copyFolder(srcFolder, destFolder, nonJavaFiles);
 	}
 
-	private Collection<File> brickFolders(Collection<File> apiFiles) {
+	
+	private Collection<File> parentFolders(Collection<File> files) {
 		HashSet<File> result = new HashSet<File>();
-		for (File file : apiFiles)
+		for (File file : files)
 			result.add(file.getParentFile());
 		return result;
 	}
+	
 	
 	private void compileBricks(Collection<File> brickFolders, File destinationFolder) throws IOException {
 		File tmpFolder = cleanTmpBrickImplFolder();
 		
 		File[] testClasspath = testClassPath(destinationFolder);
 		
+		int i = 0;
 		for (File brickFolder : brickFolders) {
+			my(Logger.class).log("Compiling brick {} of ", ++i, brickFolders.size());
 			File[] implClasspath = classpathWithLibs(destinationFolder, new File(brickFolder, "impl/lib"));
 			compileBrick(brickFolder, tmpFolder, testClasspath, implClasspath);
 		}
@@ -72,14 +76,17 @@ class BuilderImpl implements Builder {
 		copyFolder(tmpFolder, destinationFolder);
 	}
 
+	
 	private File[] toFileArray(List<File> testClasspath) {
 		return testClasspath.toArray(new File[testClasspath.size()]);
 	}
 
+	
 	private File[] testClassPath(File destinationFolder) {
 		return classpathWithLibs(destinationFolder, foundationSrcFolder());
 	}
 
+	
 	private File[] classpathWithLibs(File destinationFolder, File libFolder) {
 		if (!libFolder.exists()) {
 			return new File[] { destinationFolder };
@@ -90,6 +97,7 @@ class BuilderImpl implements Builder {
 		return toFileArray(classpath);
 	}
 
+	
 	private List<File> jarsIn(File libFolder) {
 		List<File> classpath = new ArrayList<File>();
 		Iterator<File> foundationJars = files().iterate(libFolder, new String[] { "jar" }, true);
@@ -99,35 +107,42 @@ class BuilderImpl implements Builder {
 		return classpath;
 	}
 
+	
 	private Files files() {
 		return my(IO.class).files();
 	}
 
+	
 	private File foundationSrcFolder() {
 		return new File(my(FolderConfig.class).platformSrcFolder().get(), "sneer/foundation");
 	}
 
+	
 	private void copyFolder(File srcFolder, File destinationFolder) throws IOException {
 		files().copyFolder(srcFolder, destinationFolder);
 	}
 
+	
 	private File cleanTmpBrickImplFolder() throws IOException {
 		File tmpFolder = new File(my(FolderConfig.class).tmpFolderFor(Builder.class), "brickimpls");
 		resetFolder(tmpFolder);
 		return tmpFolder;
 	}
 
+	
 	private void resetFolder(File tmpFolder) throws IOException {
 		files().forceDelete(tmpFolder);
 		tmpFolder.mkdirs();
 	}
 
+	
 	private void compileBrick(File brickFolder, File tmpFolder, @SuppressWarnings("unused") File[] testsClasspath, File[] implClasspath) throws IOException {
 		//compile(new File(brickFolder, "tests"), tmpFolder, testsClasspath);
 
 		compile(new File(brickFolder, "impl"), tmpFolder, implClasspath);
 	}
 
+	
 	private void compile(File srcFolder, File destinationFolder, File... classpath) throws IOException {
 		if (!srcFolder.exists()) return;
 		try {
@@ -137,6 +152,7 @@ class BuilderImpl implements Builder {
 		}
 	}
 
+	
 	private void compileApi(Collection<File> apiFiles, File destinationFolder) throws IOException {
 		try {
 			my(JavaCompiler.class).compile(apiFiles, destinationFolder, destinationFolder);
@@ -145,6 +161,7 @@ class BuilderImpl implements Builder {
 		}
 	}
 
+	
 	private Collection<File> brickApiFilesIn(File srcFolder) {
 		return listJavaFiles(
 					srcFolder,
@@ -154,6 +171,7 @@ class BuilderImpl implements Builder {
 							fileFilters().name("foundation"))));
 	}
 
+	
 	private Collection<File> listJavaFiles(File srcFolder, Filter folderFilter) {
 		return fileFilters().listFiles(
 				srcFolder,
@@ -161,12 +179,14 @@ class BuilderImpl implements Builder {
 				folderFilter);
 	}
 
-	protected boolean hasFiles(File folder) {
-		for (File file : folder.listFiles())
-			if (!file.isDirectory()) return true;
-		return false;
-	}
+	
+//	private boolean hasFiles(File folder) {
+//		for (File file : folder.listFiles())
+//			if (!file.isDirectory()) return true;
+//		return false;
+//	}
 
+	
 	private FileFilters fileFilters() {
 		return my(IO.class).fileFilters();
 	}
