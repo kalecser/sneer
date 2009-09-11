@@ -1,5 +1,6 @@
 package sneer.bricks.pulp.reactive.collections.impl;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 final class ListElementReplaced<T> extends AbstractListElementReplacement<T> {
@@ -15,11 +16,11 @@ final class ListElementReplaced<T> extends AbstractListElementReplacement<T> {
 
 	@Override
 	public Collection<T> elementsAdded() {
-		return newColection(_newElement);
+		return Arrays.asList(_newElement);
 	}
 
 	@Override
 	public Collection<T> elementsRemoved() {
-		return newColection(_element);
+		return Arrays.asList(_element);
 	}
 }

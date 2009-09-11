@@ -1,5 +1,6 @@
 package sneer.bricks.pulp.reactive.collections.impl;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 final class ListElementRemoved<T> extends AbstractListValueChange<T> {
@@ -15,6 +16,6 @@ final class ListElementRemoved<T> extends AbstractListValueChange<T> {
 
 	@Override
 	public Collection<T> elementsRemoved() {
-		return newColection(_element);
+		return Arrays.asList(_element);
 	}
 }

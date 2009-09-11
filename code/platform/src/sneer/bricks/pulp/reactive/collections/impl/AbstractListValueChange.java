@@ -1,6 +1,5 @@
 package sneer.bricks.pulp.reactive.collections.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -20,12 +19,6 @@ abstract class AbstractListValueChange<T>  implements CollectionChange<T>, ListC
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + " index:" + _index + " element:" + _element; 
-	}
-
-	protected ArrayList<T> newColection(T element) {
-		ArrayList<T> result = new ArrayList<T>();
-		result.add(element);
-		return result;
 	}
 
 	@Override
