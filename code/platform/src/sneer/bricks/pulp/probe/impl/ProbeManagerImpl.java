@@ -6,12 +6,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.ContactManager;
 import sneer.bricks.pulp.probe.ProbeManager;
-import sneer.bricks.pulp.reactive.collections.impl.SimpleListReceiver;
+import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.serialization.Serializer;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.brickness.Tuple;
@@ -19,50 +20,38 @@ import sneer.foundation.lang.Consumer;
 
 class ProbeManagerImpl implements ProbeManager {
 	
-	private final TupleSpace _tuples = my(TupleSpace.class);
-	private final ContactManager _contacts = my(ContactManager.class);
-	private final ConnectionManager _connections = my(ConnectionManager.class);
-	private final Serializer _serializer = my(Serializer.class);
+	private static final ContactManager ContactManager = my(ContactManager.class);
+	private static final ConnectionManager ConnectionManager = my(ConnectionManager.class);
+	private static final Serializer Serializer = my(Serializer.class);
+	private static final TupleSpace TupleSpace = my(TupleSpace.class);
 	
-	@SuppressWarnings("unused")
-	private SimpleListReceiver<Contact> _contactListReceiverToAvoidGC;
-
-	private Map<Contact, ProbeImpl> _probesByContact = new HashMap<Contact, ProbeImpl>();
-	
-
 	private static final ClassLoader CLASSLOADER_FOR_TUPLES = TupleSpace.class.getClassLoader();
 
+	
+	private final Map<Contact, ProbeImpl> _probesByContact = new HashMap<Contact, ProbeImpl>();
+	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
+
+	
 	{
-		registerContactReceiver();
+		_refToAvoidGc = ContactManager.contacts().addReceiver(new Consumer<CollectionChange<Contact>>(){ @Override public void consume(CollectionChange<Contact> change) {
+			for (Contact contact : change.elementsAdded()) startProbeFor(contact);
+			for (Contact contact : change.elementsRemoved()) stopProbeFor(contact);
+		}});
 	}
 
-	private void registerContactReceiver() {
-		_contactListReceiverToAvoidGC = new SimpleListReceiver<Contact>(_contacts.contacts()){
-
-			@Override
-			protected void elementPresent(Contact contact) {
-				startProbeFor(contact);
-			}
-
-			@Override
-			protected void elementAdded(Contact contact) {
-				startProbeFor(contact);
-			}
-
-			@Override
-			protected void elementRemoved(Contact contact) {
-				_connections.closeConnectionFor(contact);
-				_probesByContact.remove(contact);
-			}
-
-		};
-	}
-
+	
 	private void startProbeFor(Contact contact) {
-		ByteConnection connection = _connections.connectionFor(contact);
+		ByteConnection connection = ConnectionManager.connectionFor(contact);
 		ProbeImpl probe = createProbe(contact, connection);
 		connection.initCommunications(probe._scheduler, createReceiver());
 	}
+
+	
+	private void stopProbeFor(Contact contact) {
+		ConnectionManager.closeConnectionFor(contact);
+		_probesByContact.remove(contact);
+	}
+	
 
 	private ProbeImpl createProbe(Contact contact, ByteConnection connection) {
 		ProbeImpl result = new ProbeImpl(contact, connection.isConnected());
@@ -70,15 +59,17 @@ class ProbeManagerImpl implements ProbeManager {
 		return result;
 	}
 
+	
 	private Consumer<byte[]> createReceiver() {
 		return new Consumer<byte[]>(){ @Override public void consume(byte[] packet) {
-			_tuples.acquire((Tuple)desserialize(packet));
+			TupleSpace.acquire((Tuple)desserialize(packet));
 		}};
 	}
 
+	
 	private Object desserialize(byte[] packet) {
 		try {
-			return _serializer.deserialize(packet, CLASSLOADER_FOR_TUPLES);
+			return Serializer.deserialize(packet, CLASSLOADER_FOR_TUPLES);
 		} catch (ClassNotFoundException e) {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		} catch (IOException e) {

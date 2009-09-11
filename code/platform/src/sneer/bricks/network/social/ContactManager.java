@@ -1,6 +1,6 @@
 package sneer.bricks.network.social;
 
-import sneer.bricks.pulp.reactive.collections.ListSignal;
+import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.exceptions.Refusal;
@@ -8,7 +8,7 @@ import sneer.foundation.lang.exceptions.Refusal;
 @Brick
 public interface ContactManager {
     
-	ListSignal<Contact> contacts();
+	SetSignal<Contact> contacts();
 
 	boolean isNicknameAlreadyUsed(String nickname);
 	

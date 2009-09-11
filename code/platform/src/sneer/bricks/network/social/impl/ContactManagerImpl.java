@@ -4,14 +4,14 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.ContactManager;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
-import sneer.bricks.pulp.reactive.collections.ListRegister;
-import sneer.bricks.pulp.reactive.collections.ListSignal;
+import sneer.bricks.pulp.reactive.collections.SetRegister;
+import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.exceptions.Refusal;
 
 class ContactManagerImpl implements ContactManager {
     
-    private final ListRegister<Contact> _contacts = my(CollectionSignals.class).newListRegister();
+    private final SetRegister<Contact> _contacts = my(CollectionSignals.class).newSetRegister();
     
     ContactManagerImpl(){
 		restore();
@@ -54,7 +54,7 @@ class ContactManagerImpl implements ContactManager {
 	}
 
 	@Override
-	public ListSignal<Contact> contacts() {
+	public SetSignal<Contact> contacts() {
 		return _contacts.output();
 	}
 
