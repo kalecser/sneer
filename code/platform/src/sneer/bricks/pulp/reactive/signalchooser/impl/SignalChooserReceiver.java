@@ -26,14 +26,6 @@ class SignalChooserReceiver<T> {
 		_refToAvoidGc = input.addReceiver ( new Consumer<CollectionChange<T>>() { @Override public void consume(CollectionChange<T> change) {
 			receiveChange(change);
 		}});
-
-		receiveInitialElements(input);
-	}
-
-	synchronized
-	private void receiveInitialElements(CollectionSignal<T> input) {
-		for (T element : input)
-			SignalChooserReceiver.this.elementAdded(element);
 	}
 
 	synchronized
@@ -58,7 +50,7 @@ class SignalChooserReceiver<T> {
 			
 		ElementReceiver receiver = new ElementReceiver(element);
 		if (_receiversByElement.put(element, receiver) != null)
-			throw new NotImplementedYet("Duplicated elements are not supported since there is no tracking yet of the number of occurences.");
+			throw new NotImplementedYet("Duplicated elements are not supported since there is no tracking yet of the number of occurences. Duplicate element: " + element);
 	}
 	
 	private SignalChooser<T> signalChooser() {
