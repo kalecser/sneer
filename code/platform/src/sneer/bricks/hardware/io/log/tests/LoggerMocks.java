@@ -29,6 +29,7 @@ public class LoggerMocks {
 	private Consumer<String> messageKeeper(final String prefix) {
 		return new Consumer<String>() { @Override public void consume(String message) {
 			_keptMessages.add(prefix + message);
+			//System.out.println(prefix + message);
 		}};
 	}
 
