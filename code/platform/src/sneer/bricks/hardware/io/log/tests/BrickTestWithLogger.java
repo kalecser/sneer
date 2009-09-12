@@ -61,6 +61,8 @@ public abstract class BrickTestWithLogger extends BrickTestBase {
 			"sun",
 			"$Proxy",
 			"org.junit",
+			"org.eclipse.jdt.internal",
+			"sneer.foundation.testsupport",
 			"sneer.foundation.brickness.testsupport",
 			"sneer.tests.adapters.ProxyInEnvironment",
 			"sneer.foundation.environments.Environments"
