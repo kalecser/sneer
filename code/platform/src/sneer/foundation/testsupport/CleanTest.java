@@ -93,7 +93,6 @@ public abstract class CleanTest extends AssertUtils {
 		System.setErr(_errSentinel._delegate);
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void checkThreadLeak() {
 		Set<Thread> activeThreadsAfterTest = Thread.getAllStackTraces().keySet();
 
@@ -101,6 +100,7 @@ public abstract class CleanTest extends AssertUtils {
 			stopIfNecessary(thread);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void stopIfNecessary(Thread thread) {
 		if(_activeThreadsBeforeTest.contains(thread)) return;
 		if (waitForTermination(thread)) return;
