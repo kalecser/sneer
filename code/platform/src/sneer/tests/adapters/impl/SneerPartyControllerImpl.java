@@ -38,7 +38,6 @@ import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.snapps.wind.Shout;
 import sneer.bricks.snapps.wind.Wind;
-import sneer.bricks.software.bricks.snappstarter.SnappStarter;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickInfo;
@@ -194,8 +193,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 
 	private void startSnapps() {
-		my(SnappStarter.class).startSnapps(); //Will find only the Snapps installed (Freedom7) in the local test ownBin and platformBin folders, not the ones in the classpath. 
-		
 		startAndKeep(SocketOriginator.class);
 		startAndKeep(SocketReceiver.class);
 		startAndKeep(ProbeManager.class);
@@ -210,11 +207,22 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		startAndKeep(Stethoscope.class);
 		startAndKeep(Heart.class);
 	}
-
+	
 	private void startAndKeep(Class<?> snapp) {
 		_referenceToAvoidGc.add(my(snapp));
 	}
 
+	
+	@Override
+	public void loadBrick(String brickName) {
+		try {
+			my(Class.forName(brickName));
+		} catch (ClassNotFoundException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+	
+	
 	@Override
 	public boolean isOnline(String nickname) {
 		Contact contact = my(ContactManager.class).contactGiven(nickname);

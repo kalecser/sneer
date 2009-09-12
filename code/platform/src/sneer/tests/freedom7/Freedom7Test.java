@@ -2,6 +2,7 @@ package sneer.tests.freedom7;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 
@@ -18,9 +19,10 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 	
 //	private final JavaCompiler _compiler = my(JavaCompiler.class);
 
-	@Test (timeout = 120000)
-	@Ignore
-	public void meToo_TakesTwoMinutes() throws Exception {
+	@Test (timeout = 180000)
+	public void meToo_TakesACoupleOfMinutesToRunAndRunsOnlyOnHeadlessServer() throws Exception {
+		if (!isHudsonServer()) return;
+		
 		a().copyToSourceFolder(generateY());
 		
 		newSession(a());
@@ -32,14 +34,20 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 
 		System.clearProperty("freedom7.y.Y.installed");
 		newSession(b());
+		b().loadBrick("freedom7.y.Y");
 		assertEquals("true", System.getProperty("freedom7.y.Y.installed"));
 		
 		b().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
 		
 		fail("Tests folders are not being compiled. See commented line in BuilderImpl. Unignore BuilderTest.testsCanDependOnFoundationLibs");
-		
 	}
 
+	
+	private boolean isHudsonServer() {
+		return GraphicsEnvironment.isHeadless();
+	}
+
+	
 	@Test
 	@Ignore
 	public void testPublishBrickWithTupleType() throws Exception {
