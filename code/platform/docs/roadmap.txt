@@ -1,6 +1,8 @@
 ﻿TASKS
 =========
 
+	- [Klaus] Build Tests - Uncomment BuilderTest.
+
 	- [Klaus] BrickInstallerTest - update to FileWriter
 	
 	- [Klaus] BandwidthConsolidationTest
