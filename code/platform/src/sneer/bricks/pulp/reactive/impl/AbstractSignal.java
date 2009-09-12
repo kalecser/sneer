@@ -10,11 +10,12 @@ import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Producer;
 
 abstract class AbstractSignal<T> implements Signal<T> {
 
-	EventNotifier<T> _notifier = my(EventNotifiers.class).newInstance(new Consumer<Consumer<? super T>>(){@Override public void consume(Consumer<? super T> newReceiver) {
-		newReceiver.consume(currentValue());
+	EventNotifier<T> _notifier = my(EventNotifiers.class).newInstance(new Producer<T>(){@Override public T produce() {
+		return currentValue();
 	}});
 
 	@Override

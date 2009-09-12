@@ -39,7 +39,7 @@ public class ListOfSignalsReceiverTest extends BrickTest {
 		Register<String> r2 = addElement("2");
 		addElement("3");
 		addElement("4");
-		assertEvents("Added=1, Added=2, Added=3, Added=4, ");
+		assertEvents("Added=0, Added=1, Added=2, Added=3, Added=4, ");
 
 		_listRegister.move(1, 4);
 		assertEvents("Moved=1->4, ");

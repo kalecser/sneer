@@ -21,6 +21,7 @@ import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Producer;
 
 
 
@@ -31,9 +32,8 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 
 	private class MyOutput implements SetSignal<T> {
 
-		private final EventNotifier<CollectionChange<T>> _notifier = my(EventNotifiers.class).newInstance(new Consumer<Consumer<? super CollectionChange<T>>>(){@Override public void consume(Consumer<? super CollectionChange<T>> newReceiver) {
-			if (_contents.isEmpty()) return;
-			newReceiver.consume(new CollectionChangeImpl<T>(contentsCopy(), null));
+		private final EventNotifier<CollectionChange<T>> _notifier = my(EventNotifiers.class).newInstance(new Producer<CollectionChange<T>>(){@Override public CollectionChange<T> produce() {
+			return new CollectionChangeImpl<T>(contentsCopy(), null);
 		}});
 
 		@Override

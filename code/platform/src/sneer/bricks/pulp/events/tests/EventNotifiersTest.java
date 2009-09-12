@@ -11,16 +11,16 @@ import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
-import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Producer;
 
 public class EventNotifiersTest extends BrickTest {
 	
 	@Test (expected = Throwable.class)
 	public void throwablesBubbleUpDuringTests() {
-		Consumer<Consumer<? super Object>> receiverHandler = new Consumer<Consumer<? super Object>>() { @Override public void consume(Consumer<Object> receiver) {
+		Producer<Object> welcomeEventProducer = new Producer<Object>() { @Override public Object produce() {
 			throw new Error();
 		}};
-		EventNotifier<Object> notifier = my(EventNotifiers.class).newInstance(receiverHandler);
+		EventNotifier<Object> notifier = my(EventNotifiers.class).newInstance(welcomeEventProducer);
 		notifier.output().addReceiver(my(Signals.class).sink());
 	}
 	

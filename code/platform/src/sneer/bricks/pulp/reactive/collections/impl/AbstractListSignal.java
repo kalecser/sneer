@@ -7,35 +7,52 @@ import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.ListChange;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
+import sneer.bricks.pulp.reactive.collections.ListChange.Visitor;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Producer;
 
 abstract class AbstractListSignal<T> implements ListSignal<T> {
 
-	EventNotifier<ListChange<T>> _notifierAsList = my(EventNotifiers.class).newInstance(new Consumer<Consumer<? super ListChange<T>>>(){@Override public void consume(Consumer<? super ListChange<T>> receiver) {
-		//TODO
+	
+	EventNotifier<ListChange<T>> _notifierAsList = my(EventNotifiers.class).newInstance(new Producer<ListChange<T>>(){@Override public ListChange<T> produce() {
+		return currentElementsAsListChange();
+	}});
+	
+	EventNotifier<CollectionChange<T>> _notifierAsCollection = my(EventNotifiers.class).newInstance(new Producer<CollectionChange<T>>(){@Override public CollectionChange<T> produce() {
+		return currentElementsAsCollectionChange();
 	}});
 
-	EventNotifier<CollectionChange<T>> _notifierAsCollection = my(EventNotifiers.class).newInstance(new Consumer<Consumer<? super CollectionChange<T>>>(){@Override public void consume(Consumer<? super CollectionChange<T>> receiver) {
-		//TODO
-	}});
-
-	void notifyReceivers(final AbstractListValueChange<T> valueChange) {
-		_notifierAsList.notifyReceivers(valueChange);
-		_notifierAsCollection.notifyReceivers(valueChange);
-	}
-
+	
 	@Override
 	public WeakContract addPulseReceiver(Runnable pulseReceiver) {
 		return _notifierAsCollection.output().addPulseReceiver(pulseReceiver);
 	}
 
+	
 	@Override
 	public WeakContract addListReceiver(Consumer<? super ListChange<T>> receiver) {
 		return _notifierAsList.output().addReceiver(receiver);
 	}
 
+	
+	@Override
+	public WeakContract addListReceiverAsVisitor(Visitor<T> visitor) {
+		return addListReceiver(new VisitingListReceiver<T>(visitor));
+	}
+	
+	
 	@Override
 	public WeakContract addReceiver(Consumer<? super CollectionChange<T>> receiver) {
 		return _notifierAsCollection.output().addReceiver(receiver);
+	}
+	
+	
+	protected abstract CollectionChange<T> currentElementsAsCollectionChange();
+	protected abstract ListChange<T> currentElementsAsListChange();
+	
+	
+	void notifyReceivers(final AbstractListValueChange<T> valueChange) {
+		_notifierAsList.notifyReceivers(valueChange);
+		_notifierAsCollection.notifyReceivers(valueChange);
 	}
 }

@@ -19,6 +19,7 @@ import sneer.bricks.pulp.reactive.collections.MapSignal;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Producer;
 
 class MapRegisterImpl<K,V> implements MapRegister<K,V> {
 	
@@ -51,9 +52,8 @@ class MapRegisterImpl<K,V> implements MapRegister<K,V> {
 
 	private class MyOutput implements MapSignal<K,V> {
 
-		private final EventNotifier<CollectionChange<Map.Entry<K,V>>> _notifier = my(EventNotifiers.class).newInstance(new Consumer<Consumer<? super CollectionChange<Map.Entry<K,V>>>>(){@Override public void consume(Consumer<? super CollectionChange<Entry<K, V>>> newReceiver) {
-			if (_map.isEmpty()) return;
-			newReceiver.consume(asChange(_map.entrySet()));
+		private final EventNotifier<CollectionChange<Map.Entry<K,V>>> _notifier = my(EventNotifiers.class).newInstance(new Producer<CollectionChange<Map.Entry<K,V>>>(){@Override public CollectionChange<Entry<K, V>> produce() {
+			return asChange(_map.entrySet());
 		}});
 
 		@Override

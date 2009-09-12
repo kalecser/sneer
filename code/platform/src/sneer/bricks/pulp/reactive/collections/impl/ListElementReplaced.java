@@ -3,10 +3,13 @@ package sneer.bricks.pulp.reactive.collections.impl;
 import java.util.Arrays;
 import java.util.Collection;
 
-final class ListElementReplaced<T> extends AbstractListElementReplacement<T> {
+final class ListElementReplaced<T> extends AbstractListValueChange<T> {
+
+	protected final T _newElement;
 
 	ListElementReplaced(int index, T oldElement, T newElement) {
-		super(index, oldElement, newElement);
+		super(index, oldElement);
+		_newElement = newElement;
 	}
 
 	@Override

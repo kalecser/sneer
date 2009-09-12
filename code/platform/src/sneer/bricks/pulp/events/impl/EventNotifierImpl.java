@@ -13,6 +13,7 @@ import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Producer;
 
 class EventNotifierImpl<T> implements EventNotifier<T>, EventSource<T> {
 
@@ -20,14 +21,10 @@ class EventNotifierImpl<T> implements EventNotifier<T>, EventSource<T> {
 	
 	private final List<WeakRefWithAlias<Consumer<? super T>>> _receivers = Collections.synchronizedList(new ArrayList<WeakRefWithAlias<Consumer<? super T>>>());
 
-	private final Consumer<Consumer<? super T>> _receiverHandler;
+	private final Producer<? extends T> _welcomeEventProducer;
 
-	EventNotifierImpl() {
-		this(null);
-	}
-
-	EventNotifierImpl(Consumer<Consumer<? super T>> receiverHandler) {
-		_receiverHandler = receiverHandler;
+	EventNotifierImpl(Producer<? extends T> welcomeEventProducer) {
+		_welcomeEventProducer = welcomeEventProducer;
 	}
 
 	@Override
@@ -87,17 +84,17 @@ class EventNotifierImpl<T> implements EventNotifier<T>, EventSource<T> {
 	@Override
 	public WeakContract addReceiver(final Consumer<? super T> eventReceiver) {
 		_receivers.add(weakRefFor(eventReceiver));
-		handleNewReceiver(eventReceiver); //Fix: this is a potential inconsistency. The receiver might be notified before the handler can do its thing. Reversing the two lines can cause the receiver to lose events. Some sort of synchronization has to happen here, without blocking too much.
+		if (true)	notifyCurrentValue(eventReceiver); //Fix: this is a potential inconsistency. The receiver might be notified of changes before the initial value. Reversing this line and the one above can cause the receiver to lose events. Some sort of synchronization has to happen here, without blocking too much.
 		
 		return new WeakContract() {	@Override public void dispose() {
 			_receivers.remove(weakRefFor(eventReceiver)); //Optimize consider a Set for when there is a great number of receivers.
 		}};	
 	}
 
-	private void handleNewReceiver(final Consumer<? super T> receiver) {
-		if (_receiverHandler == null) return;
+	private void notifyCurrentValue(final Consumer<? super T> receiver) {
+		if (_welcomeEventProducer == null) return;
 		Environments.my(ExceptionHandler.class).shield(new Runnable() { @Override public void run() {
-			_receiverHandler.consume(receiver);
+			receiver.consume(_welcomeEventProducer.produce());
 		}});
 	}
 

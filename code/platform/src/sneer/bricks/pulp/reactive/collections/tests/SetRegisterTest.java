@@ -33,6 +33,7 @@ public class SetRegisterTest extends BrickTest {
 		}});
 
 		@SuppressWarnings("unused") final Object changeContract = _subject.output().addReceiver(new Consumer<CollectionChange<String>>() {@Override public void consume(CollectionChange<String> change) {
+			if (change.elementsAdded().isEmpty()) return; //First time.
 			AssertUtils.assertSameContents(sorted(change.elementsAdded()), "bacon", "eggs", "spam");
 			latch.open();
 		}});

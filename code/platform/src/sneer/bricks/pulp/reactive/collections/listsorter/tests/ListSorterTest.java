@@ -5,7 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.util.Comparator;
 
 import org.jmock.Expectations;
-import org.junit.Ignore;
+import org.jmock.Sequence;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -13,17 +13,14 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
-import sneer.bricks.pulp.reactive.collections.ListChange;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.collections.ListChange.Visitor;
 import sneer.bricks.pulp.reactive.collections.listsorter.ListSorter;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
-import sneer.foundation.lang.Consumer;
 import sneer.foundation.testsupport.AssertUtils;
 
-@Ignore
 public class ListSorterTest extends BrickTest {
 	
 	private final ListSorter _sorter = my(ListSorter.class);
@@ -47,43 +44,42 @@ public class ListSorterTest extends BrickTest {
 	@Test
 	public void testVisitor() {
 		checking(new Expectations(){{
-			one(_visitor).elementAdded(0, _50);
-			one(_visitor).elementAdded(0, _00);
-			one(_visitor).elementAdded(1, _10);
-			one(_visitor).elementAdded(2, _30);
-			one(_visitor).elementAdded(2, _20);
-			one(_visitor).elementAdded(4, _40);
+			Sequence seq = newSequence("seq");
+			one(_visitor).elementAdded  (0, _50); inSequence(seq); //50
+			one(_visitor).elementAdded  (0, _00); inSequence(seq); //00, 50
+			one(_visitor).elementAdded  (1, _10); inSequence(seq); //00, 10, 50
+			one(_visitor).elementAdded  (2, _30); inSequence(seq); //00, 10, 30, 50
+			one(_visitor).elementAdded  (2, _20); inSequence(seq); //00, 10, 20, 30, 50
+			one(_visitor).elementAdded  (4, _40); inSequence(seq); //00, 10, 20, 30, 40, 50
 
-			one(_visitor).elementRemoved(2, _20);
-			one(_visitor).elementRemoved(2, _30);
-			one(_visitor).elementRemoved(3, _50);
+			one(_visitor).elementRemoved(2, _20); inSequence(seq); //00, 10, 30, 40, 50
+			one(_visitor).elementRemoved(2, _30); inSequence(seq); //00, 10, 40, 50
+			one(_visitor).elementRemoved(3, _50); inSequence(seq); //00, 10, 40
 
-			one(_visitor).elementRemoved(2, _40);
-			one(_visitor).elementAdded(1, _05);
+			one(_visitor).elementAdded  (1, _05); inSequence(seq); //00, 05, 10, 40
+			one(_visitor).elementRemoved(3, _40); inSequence(seq); //00, 05, 10
 		}});		
 
-		ListRegister<Signal<Integer>> src = my(CollectionSignals.class).newListRegister();
+		ListRegister<Signal<Integer>> list = my(CollectionSignals.class).newListRegister();
 
-		src.add(_60);
-		src.remove(_60);
+		list.add(_60);
+		list.remove(_60);
 
-		ListSignal<Signal<Integer>> sortedList = _sorter.sort(src.output(), integerComparator(), _chooser);
-		@SuppressWarnings("unused")	WeakContract contract = sortedList.addListReceiver(new Consumer<ListChange<Signal<Integer>>>(){ @Override public void consume(ListChange<Signal<Integer>> value) {
-			value.accept(_visitor);
-		}});
+		ListSignal<Signal<Integer>> sortedList = _sorter.sort(list.output(), integerComparator(), _chooser);
+		@SuppressWarnings("unused")	WeakContract contract = sortedList.addListReceiverAsVisitor(_visitor);
 
-		src.add(_50);
-		src.add(_00);
-		src.add(_10);
-		src.add(_30);
-		src.add(_20);
-		src.addAt(0, _40);
+		list.add(_50);
+		list.add(_00);
+		list.add(_10);
+		list.add(_30);
+		list.add(_20);
+		list.addAt(0, _40);
 
-		src.remove(_20);
-		src.remove(_30);
-		src.removeAt(1);
+		list.remove(_20);
+		list.remove(_30);
+		list.removeAt(1);
 
-		src.replace(0, _05);
+		list.replace(0, _05);
 	}
 	
 	@Test

@@ -2,9 +2,9 @@ package sneer.bricks.pulp.reactive.collections.listsorter.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
@@ -20,78 +20,76 @@ import sneer.foundation.lang.Consumer;
 
 final class ReactiveSorter<T> implements ListOfSignalsReceiver<T>{
 
-	private final CollectionSignal<T> _input;
+	private static final SignalChoosers SignalChoosers = my(SignalChoosers.class);
 
-	private final SignalChoosers _signalChoosers = my(SignalChoosers.class);
 	
-	@SuppressWarnings("unused")
-	private Object _refToAvoidGc;
-	
+	private final CollectionSignal<T> _input;
 	private final SignalChooser<T> _chooser;	
 	private final Comparator<T> _comparator;
-	private final ListRegister<T> _sorted;
-	@SuppressWarnings("unused")	private final WeakContract _contractToAvoidGc;
 	
-	private final Object _monitor = new Object();
+	private final ListRegister<T> _output;
+	
+	@SuppressWarnings("unused") private final Object _refToAvoidGc;
+	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGc2;
+	
 	
 	ReactiveSorter(CollectionSignal<T> input, Comparator<T> comparator, SignalChooser<T> chooser) {
 		_input = input;
-		_chooser = chooser;
 		_comparator = comparator;
-		_sorted = my(CollectionSignals.class).newListRegister();
+		_chooser = chooser;
+		_output = my(CollectionSignals.class).newListRegister();
 		
-		synchronized (_monitor) {
-			ArrayList<T> tmp = resortedList();
-			
-			for (T element : tmp) 
-				_sorted.add(element);
-
-			_contractToAvoidGc = _input.addReceiver(new Consumer<CollectionChange<T>>(){@Override public void consume(CollectionChange<T> change) {
-				executeChanges(change);
-			}});
-		}
+		_refToAvoidGc2 = _input.addReceiver(new Consumer<CollectionChange<T>>(){ @Override public void consume(CollectionChange<T> change) {
+			inputChanged(change);
+		}});
 		
-		_refToAvoidGc = _signalChoosers.receive(input, this);
+		_refToAvoidGc = SignalChoosers.receive(input, this);
 	}
 
-	private ArrayList<T> resortedList() {
-		ArrayList<T> tmp = new ArrayList<T>(_input.currentElements());
-		Collections.sort(tmp, _comparator);
-		return tmp;
-	}
+	
+	@Override public void elementSignalChanged(T element) { move(element); }
+	@Override public SignalChooser<T> signalChooser() { return _chooser; }
+	
 	
 	ListSignal<T> output() {
-		return my(WeakReferenceKeeper.class).keep(_sorted.output(), this);
+		return my(WeakReferenceKeeper.class).keep(_output.output(), this);
 	}
 	
-	private void executeChanges(CollectionChange<T> change) {
-		synchronized (_monitor) {
-			for (T element : change.elementsAdded()) {
-				_sorted.add(element);
-				move(element); 
-			}
-			for (T element : change.elementsRemoved()) {
-				_sorted.remove(element);
-			}
-		}
-	}
-
+	
+	synchronized
 	private void move(T element) {
-		synchronized (_monitor) {
-			int oldIndex = _sorted.output().currentIndexOf(element);
-			ArrayList<T> tmp = resortedList();
-			int newIndex = tmp.indexOf(element);
-			_sorted.move(oldIndex, newIndex);
-		}
+		_output.move(
+			_output.output().currentIndexOf(element),
+			findPositionToMove(element)
+		);
+	}
+	
+	
+	synchronized
+	private void inputChanged(CollectionChange<T> change) {
+		for (T element : change.elementsAdded()  )
+			_output.addAt(findPositionToInsert(element), element);
+		
+		for (T element : change.elementsRemoved())
+			_output.remove(element);
 	}
 
-	@Override
-	public void elementSignalChanged(T element) {
-		move(element);
+
+	private int findPositionToMove(T element) {
+		List<T> copy = _output.output().currentElements(); //Optimize
+		Collections.sort(copy, _comparator);
+		
+		return copy.indexOf(element);
+	}
+	
+	
+	private int findPositionToInsert(T element) {
+		List<T> copy = _output.output().currentElements(); //Optimize
+		copy.add(element);
+		Collections.sort(copy, _comparator);
+		
+		return copy.indexOf(element);
 	}
 
-	@Override
-	public SignalChooser<T> signalChooser() {
-		return _chooser;
-	}
+	
 }
