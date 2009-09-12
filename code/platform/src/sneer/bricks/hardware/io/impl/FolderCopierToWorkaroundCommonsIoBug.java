@@ -12,7 +12,9 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 
 @SuppressWarnings("unchecked")
+/** Commons-IO 1.4 does not preserve folder lastModified dates when copying. */
 public class FolderCopierToWorkaroundCommonsIoBug {
+	
 	static void copyDirectory(File srcDir, File destDir, FileFilter filter, boolean preserveFileDate) throws IOException {
 	    if (srcDir == null) {
 	        throw new NullPointerException("Source must not be null");
