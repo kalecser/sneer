@@ -16,7 +16,6 @@ import sneer.bricks.software.bricks.compiler.tests.fixtures.Foo;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.code.jar.JarBuilder;
 import sneer.bricks.software.code.jar.Jars;
-import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.ClassDefinition;
@@ -31,9 +30,6 @@ public class BuilderTest extends BrickTest {
 	
 	@Before
 	public void prepareFolders() throws Exception {
-		
-		my(FolderConfig.class).platformSrcFolder().set(srcFolder());
-		
 		srcFolder().mkdirs();
 		binFolder().mkdirs();
 		

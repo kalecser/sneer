@@ -38,8 +38,6 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 		assertEquals("true", System.getProperty("freedom7.y.Y.installed"));
 		
 		b().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
-		
-		fail("Tests folders are not being compiled. See commented line in BuilderImpl. Unignore BuilderTest.testsCanDependOnFoundationLibs");
 	}
 
 	
