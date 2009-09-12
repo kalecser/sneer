@@ -48,8 +48,11 @@ class BuilderImpl implements Builder {
 
 	
 	private void copyResources(File srcFolder, File destFolder) throws IOException {
+		my(Logger.class).log("Copying resources...");
 		Filter nonJavaFiles = fileFilters().not(fileFilters().suffix(".java"));
 		files().copyFolder(srcFolder, destFolder, nonJavaFiles);
+		my(Logger.class).log("Copying resources... done.");
+
 	}
 
 	
@@ -73,7 +76,9 @@ class BuilderImpl implements Builder {
 			compileBrick(brickFolder, tmpFolder, testClasspath, implClasspath);
 		}
 		
+		my(Logger.class).log("Copying compiled bricks...");
 		copyFolder(tmpFolder, destinationFolder);
+		my(Logger.class).log("Copying compiled bricks... done.");
 	}
 
 	
