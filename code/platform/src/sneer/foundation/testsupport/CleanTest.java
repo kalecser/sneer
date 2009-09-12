@@ -97,16 +97,19 @@ public abstract class CleanTest extends AssertUtils {
 	private void checkThreadLeak() {
 		Set<Thread> activeThreadsAfterTest = Thread.getAllStackTraces().keySet();
 
-		for (Thread thread : activeThreadsAfterTest) {
-			if(_activeThreadsBeforeTest.contains(thread)) continue;
+		for (Thread thread : activeThreadsAfterTest)
+			stopIfNecessary(thread);
+	}
 
-			if (waitForTermination(thread)) continue;
+	private void stopIfNecessary(Thread thread) {
+		if(_activeThreadsBeforeTest.contains(thread)) return;
+		if (waitForTermination(thread)) return;
+		if (thread.getName().indexOf("AWT") != -1) return; //Fix: Check for leaking Gui resources too.
 
-			final LeakingThreadStopped plug = new LeakingThreadStopped(thread, "" + thread + " was leaked by test: " + this.getClass() + " and is now being stopped!");
-			thread.stop(plug);
-			
-			throw new IllegalStateException(plug);
-		}
+		final LeakingThreadStopped plug = new LeakingThreadStopped(thread, "" + thread + " was leaked by test: " + this.getClass() + " and is now being stopped!");
+		thread.stop(plug);
+		
+		throw new IllegalStateException(plug);
 	}
 
 	private boolean waitForTermination(Thread thread) {
