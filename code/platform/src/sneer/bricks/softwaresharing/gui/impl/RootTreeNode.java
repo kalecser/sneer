@@ -20,7 +20,7 @@ class RootTreeNode extends AbstractTreeNodeWrapper<BrickInfo> {
 	RootTreeNode(List<BrickInfo> infos) {
 		super(null, null);
 		_infos = infos;
-		sortBriks();
+		sortBricks();
 	}
 
 	RootTreeNode() {
@@ -32,11 +32,10 @@ class RootTreeNode extends AbstractTreeNodeWrapper<BrickInfo> {
 		_infos = new ArrayList<BrickInfo>();
 		Collection<BrickInfo> currentElements = my(BrickSpace.class).availableBricks();
 		_infos.addAll(currentElements);
-		System.out.println(currentElements.size());
-		sortBriks();
+		sortBricks();
 	}
 
-	private void sortBriks() {
+	private void sortBricks() {
 		Comparator<BrickInfo> comparator = new Comparator<BrickInfo>(){ @Override public int compare(BrickInfo brick1, BrickInfo brick2) {
 			if(brick1.status().ordinal()==brick2.status().ordinal())
 				return brick1.name().compareTo(brick2.name());
