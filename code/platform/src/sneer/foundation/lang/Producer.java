@@ -1,8 +1,4 @@
 package sneer.foundation.lang;
 
 
-public interface Producer<T> {
-
-	T produce();
-	
-}
+public interface Producer<T> extends ProducerWithThrowable<T, RuntimeException> {}
