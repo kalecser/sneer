@@ -6,12 +6,18 @@
 	- [Klaus] Hudson Linux Reboot with Sandro.
 
 	- [Klaus] Revise entire package structure.
-		- Remove all calls to sleep() including indirect.  
+		- Remove all calls to sleep() including indirect.
+
+	- [Kalecser] File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.
+		- Inline Arrays.merge(). It is not generic enough to be part of Arrays.
+		- Inline IO.files().openAsStream(). The implementation is simpler than the call. :P
+		- Clean BigFileBlocks. Tuple types can have only final public fields and constructors that set those fields. They can have absolutely no other logic.
+		- Standardize? "Box"? "Slice"? "Block"? "Package"? 
+		
 
 	- Metoo
 		- [Sandro] Gui
 		- [Klaus and Bamboo] Business
-			- (Kalecser) File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.
 			- Test that backup of platform src and bin is being done before install.
 			- Make staging atomic by using directory rename only after compilation is successful.
 			- Brick States - All
