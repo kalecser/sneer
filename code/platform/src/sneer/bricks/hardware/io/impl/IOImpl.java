@@ -143,8 +143,7 @@ class IOImpl implements IO {
 			return adapt(current);
 		}
 
-		@Override public Collection<File> listFiles(File folder, Filter fileFilter, Filter dirFilter){ 
-			return FileUtils.listFiles(folder, asIOFileFilter(fileFilter), asIOFileFilter(dirFilter));}
+		@Override public Collection<File> listFiles(File folder, Filter fileFilter, Filter dirFilter) { return FileUtils.listFiles(folder, asIOFileFilter(fileFilter), asIOFileFilter(dirFilter)); }
 		
 		private Filter adapt(IOFileFilter filter) { return new IOFileFilterAdapter(filter); }
 		
