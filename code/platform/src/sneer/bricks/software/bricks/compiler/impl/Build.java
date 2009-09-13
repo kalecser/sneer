@@ -88,7 +88,7 @@ class Build {
 		}
 		
 		my(Logger.class).log("Copying compiled bricks...");
-		copyFolder(tmpFolder, _destFolder);
+		copyFolder(tmpFolder, _destFolder); //Refactor: This whole thing of compiling to a tmpFolder so that one brick cannot reference the impl of another directly will no longer be necessary once the check that no class can be public inside an impl is done elsewhere.   
 		my(Logger.class).log("Copying compiled bricks... done.");
 	}
 
