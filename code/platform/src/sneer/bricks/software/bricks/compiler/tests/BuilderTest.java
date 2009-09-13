@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
@@ -53,7 +52,6 @@ public class BuilderTest extends BrickTest {
 			"sneer/foundation/foo.jar");
 	}
 	
-	@Ignore
 	@Test
 	public void testsCanDependOnFoundationLibs() throws IOException {
 		writeSourceFile("bricks/a/A.java",
