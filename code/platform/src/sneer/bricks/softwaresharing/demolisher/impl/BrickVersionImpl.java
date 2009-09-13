@@ -9,6 +9,7 @@ import java.util.List;
 
 import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheGuide;
 import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheVisitor;
+import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;

@@ -6,6 +6,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardwaresharing.files.cache.FileCache;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
+import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
 import sneer.bricks.hardwaresharing.files.protocol.FileContents;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
@@ -21,8 +22,14 @@ class FileClientImpl implements FileClient {
 	@SuppressWarnings("unused") private final WeakContract _fileContract;
 	@SuppressWarnings("unused") private final WeakContract _folderContract;
 	@SuppressWarnings("unused") private final WeakContract _cacheContract;
+	@SuppressWarnings("unused") private WeakContract _bigFileBlockContract;
 	
 	{
+		
+		_bigFileBlockContract = my(TupleSpace.class).addSubscription(BigFileBlocks.class, new Consumer<BigFileBlocks>() { @Override public void consume(BigFileBlocks contents) {
+			receiveBigFileBlocks(contents);
+		}});
+		
 		_fileContract = my(TupleSpace.class).addSubscription(FileContents.class, new Consumer<FileContents>() { @Override public void consume(FileContents contents) {
 			receiveFile(contents);
 		}});
@@ -52,7 +59,7 @@ class FileClientImpl implements FileClient {
 		recurseIfFolder(hashOfContents);
 	}
 
-	
+
 	private void recurseIfFolder(Sneer1024 hashOfContents) {
 		Object contents = cachedContentsBy(hashOfContents);
 		if (contents instanceof FolderContents)
@@ -80,4 +87,7 @@ class FileClientImpl implements FileClient {
 		my(FileCache.class).putFolderContents(contents);
 	}
 	
+	protected void receiveBigFileBlocks(BigFileBlocks contents) {
+		my(FileCache.class).putBigFileBlocks(contents);
+	}
 }

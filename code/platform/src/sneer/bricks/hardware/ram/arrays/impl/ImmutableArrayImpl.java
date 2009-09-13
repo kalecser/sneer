@@ -18,6 +18,10 @@ final class ImmutableArrayImpl<T> implements ImmutableArray<T> {
 		_elements = elements.toArray(new Object[elements.size()]);
 	}
 
+	public ImmutableArrayImpl(T[] elements) {
+		_elements = elements.clone();
+	}
+
 	@Override
 	public Iterator<T> iterator() {
 		return (Iterator<T>) Collections.unmodifiableCollection(Arrays.asList(_elements)).iterator();

@@ -21,13 +21,19 @@ class GuidedTour {
 		Object contents = my(FileCache.class).getContents(hashOfContents);
 		if (contents == null) throw new IllegalStateException("Contents not found in " + FileCache.class.getSimpleName());
 		
-		if (contents instanceof FolderContents)
+		if (contents instanceof FolderContents){
 			showFolder((FolderContents)contents);
-		else
+			return;
+		}
+		
+		if (contents instanceof byte[]){
 			showFile((byte[])contents);
+			return;
+		}
+		
+		throw new IllegalStateException("Can't show contents for type " + contents.getClass());
 	}
 
-	
 	private void showFile(byte[] contents) {
 		_visitor.visitFileContents(contents);
 	}

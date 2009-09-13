@@ -29,4 +29,9 @@ class ImmutableArraysImpl implements ImmutableArrays {
 		return new ImmutableArrayImpl<T>(elements);
 	}
 
+	@Override
+	public <T> ImmutableArray<T> newImmutableArray(T[] elements) {
+		return new ImmutableArrayImpl(elements);
+	}
+
 }

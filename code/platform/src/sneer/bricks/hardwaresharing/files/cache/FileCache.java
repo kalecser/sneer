@@ -1,5 +1,6 @@
 package sneer.bricks.hardwaresharing.files.cache;
 
+import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.pulp.crypto.Sneer1024;
@@ -10,6 +11,7 @@ import sneer.foundation.brickness.Brick;
 public interface FileCache {
 
 	Sneer1024 putFileContents(byte[] contents);
+	Sneer1024 putBigFileBlocks(BigFileBlocks bigFileBlocks);
 	Sneer1024 putFolderContents(FolderContents contents);
 
 	EventSource<Sneer1024> contentsAdded();

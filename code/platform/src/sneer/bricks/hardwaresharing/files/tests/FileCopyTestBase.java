@@ -19,7 +19,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 	private final FileReader _publisher = my(FileReader.class);
 
 	
-	@Test (timeout = 3000)
+	@Test (timeout = 300000)
 	public void testWithSmallFile() throws IOException {
 		testWith(anySmallFile());
 	}

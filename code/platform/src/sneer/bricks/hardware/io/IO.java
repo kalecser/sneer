@@ -2,6 +2,7 @@ package sneer.bricks.hardware.io;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -56,6 +57,8 @@ public interface IO {
 		void writeByteArrayToFile(File file, byte[] data) throws IOException;
 
 		void assertSameContents(File file1, File file2) throws IOException;
+
+		InputStream openAsStream(File file) throws FileNotFoundException;
 
 	}
 	

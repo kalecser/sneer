@@ -15,6 +15,7 @@ public interface Lang {
 	
 	interface Arrays { 
 		void reverse(Object[] array);
+		byte[] merge(byte[][] array); 
 	}
 	
 	interface Serialization {

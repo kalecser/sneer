@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import sneer.bricks.hardwaresharing.files.cache.FileCache;
 import sneer.bricks.hardwaresharing.files.hasher.Hasher;
+import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.pulp.crypto.Sneer1024;
@@ -23,6 +24,7 @@ class FileCacheImpl implements FileCache {
 	
 	@Override
 	public Sneer1024 putFileContents(byte[] contents) {
+		
 		Sneer1024 hash = my(Hasher.class).hashFile(contents);
 		put(hash, contents);
 		return hash; 
@@ -60,6 +62,14 @@ class FileCacheImpl implements FileCache {
 	private void put(Sneer1024 hash, Object contents) {
 		_contents.put(hash, contents);
 		_contentsAdded.notifyReceivers(hash);
+	}
+
+
+	@Override
+	public Sneer1024 putBigFileBlocks(BigFileBlocks bigFileBlocks) {
+		Sneer1024 hash = my(Hasher.class).hashFile(bigFileBlocks.hashAsByteArray());
+		put(hash, bigFileBlocks);
+		return hash;
 	}
 
 }

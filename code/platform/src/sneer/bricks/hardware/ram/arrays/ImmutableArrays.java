@@ -12,5 +12,6 @@ public interface ImmutableArrays {
 	
 	ImmutableByteArray2D newImmutableByteArray2D(byte[][] array2D);
 	<T> ImmutableArray<T> newImmutableArray(Collection<T> elements);
+	<T> ImmutableArray<T> newImmutableArray(T[] elements);
 	
 }

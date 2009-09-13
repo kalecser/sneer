@@ -8,6 +8,8 @@ import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface FileReader {
+	
+	public static int MAXIMUM_FILE_BLOCK_SIZE = -1;
 
 	/** Reads the contents of fileOrFolder into the FileCache.
 	 * @return handle to be used to retrieve the read contents of fileOrFolder from the cache. */

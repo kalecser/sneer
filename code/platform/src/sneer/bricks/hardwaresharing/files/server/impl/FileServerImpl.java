@@ -5,6 +5,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardwaresharing.files.cache.FileCache;
+import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
 import sneer.bricks.hardwaresharing.files.protocol.FileContents;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
@@ -52,11 +53,20 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 
 	private Tuple asTuple(Object response) {
-		Tuple result = response instanceof FolderContents
-			? new FolderContents(((FolderContents)response).contents)
-			: asFileContents((byte[])response);
+
+		if (response == null)
+			throw new IllegalArgumentException("response must not be null");
+		
+		if (response instanceof FolderContents)
+			return new FolderContents(((FolderContents)response).contents);
+		
+		if (response instanceof byte[])
+			return asFileContents((byte[])response);
+		
+		if (response instanceof BigFileBlocks)
+			return new BigFileBlocks(((BigFileBlocks)response)._hash);
 			
-		return result;
+		throw new IllegalStateException("I don know how to obtain a tuple from type: " + response.getClass());
 	}
 
 
