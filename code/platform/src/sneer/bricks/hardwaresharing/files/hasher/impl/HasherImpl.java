@@ -15,12 +15,12 @@ import sneer.bricks.pulp.crypto.Sneer1024;
 class HasherImpl implements Hasher {
 
 	@Override
-	public Sneer1024 hashFile(byte[] contents) {
+	public Sneer1024 hash(byte[] contents) {
 		return my(Crypto.class).digest(contents);
 	}
 	
 	@Override
-	public Sneer1024 hashFolder(FolderContents folder) {
+	public Sneer1024 hash(FolderContents folder) {
 		Digester digester = my(Crypto.class).newDigester();
 		for (FileOrFolder entry : folder.contents)
 			digester.update(hash(entry).bytes());

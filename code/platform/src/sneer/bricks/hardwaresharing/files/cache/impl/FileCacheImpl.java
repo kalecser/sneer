@@ -25,7 +25,7 @@ class FileCacheImpl implements FileCache {
 	@Override
 	public Sneer1024 putFileContents(byte[] contents) {
 		
-		Sneer1024 hash = my(Hasher.class).hashFile(contents);
+		Sneer1024 hash = my(Hasher.class).hash(contents);
 		put(hash, contents);
 		return hash; 
 	}
@@ -33,7 +33,7 @@ class FileCacheImpl implements FileCache {
 
 	@Override
 	public Sneer1024 putFolderContents(FolderContents contents) {
-		Sneer1024 hash = my(Hasher.class).hashFolder(contents);
+		Sneer1024 hash = my(Hasher.class).hash(contents);
 		put(hash, contents);
 		return hash; 
 	}
@@ -67,7 +67,7 @@ class FileCacheImpl implements FileCache {
 
 	@Override
 	public Sneer1024 putBigFileBlocks(BigFileBlocks bigFileBlocks) {
-		Sneer1024 hash = my(Hasher.class).hashFile(bigFileBlocks.hashAsByteArray());
+		Sneer1024 hash = my(Hasher.class).hash(bigFileBlocks.hashAsByteArray());
 		put(hash, bigFileBlocks);
 		return hash;
 	}

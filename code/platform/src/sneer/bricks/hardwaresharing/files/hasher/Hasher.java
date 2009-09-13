@@ -7,9 +7,9 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface Hasher {
 
-	Sneer1024 hashFile(byte[] contents);
+	Sneer1024 hash(byte[] contents);
 
-	Sneer1024 hashFolder(FolderContents contents);
+	Sneer1024 hash(FolderContents contents);
 
 
 }
