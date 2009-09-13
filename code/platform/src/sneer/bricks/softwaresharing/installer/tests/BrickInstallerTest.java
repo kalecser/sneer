@@ -32,9 +32,12 @@ import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.Consumer;
 
+
 public class BrickInstallerTest extends BrickTest {
+
 	
 	final BrickInstaller _subject = my(BrickInstaller.class);
+	
 	
 	@Before
 	public void setUpPlatform() throws IOException {
@@ -52,11 +55,13 @@ public class BrickInstallerTest extends BrickTest {
 		
 	}
 	
+	
 	private void copyClassesToSrcFolder(Class<?>... classes) throws IOException {
 		for (Class<?> c : classes)
 			copyClassToSrcFolder(c);
 	}
 
+	
 	@Test (timeout = 6000)
 	public void stagingFailureIsReportedAsBlinkingLight() throws Throwable {
 		stageBrickY();
@@ -71,9 +76,11 @@ public class BrickInstallerTest extends BrickTest {
 		assertEquals(1, size.currentValue().intValue());
 	}
 
+	
 	private ListSignal<Light> blinkingLights() {
 		return my(BlinkingLights.class).lights();
 	}
+	
 	
 	@Test (timeout = 6000)
 	public void stageOneBrick() throws Exception  {
@@ -139,6 +146,7 @@ public class BrickInstallerTest extends BrickTest {
 			sneerGarbage);
 	}	
 	
+	
 	private WeakContract throwOnBlinkingErrors() {
 		return my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>() { @Override public void consume(CollectionChange<Light> value) {
 			for (Light l : value.elementsAdded())
@@ -146,7 +154,8 @@ public class BrickInstallerTest extends BrickTest {
 					throw new IllegalStateException(l.error());
 		}});
 	}
-		
+	
+	
 	private void stageBrickY() throws IOException {
 		JavaSourceWriter writer = srcWriterFor(srcFolder());
 		writer.write("bricks.y.Y", "@" + Brick.class.getName() + " public interface Y {}");
@@ -161,23 +170,28 @@ public class BrickInstallerTest extends BrickTest {
 		Y.setStagedForInstallation(single(Y.versions()), true);
 	}
 
+	
 	private File binFileFor(Class<?> clazz) {
 		return new File(binFolder(), classUtils().relativeClassFileName(clazz));
 	}
 
+	
 	private File javaFileNameAt(File rootFolder, Class<?> clazz) {
 		return new File(rootFolder, classUtils().relativeJavaFileName(clazz));
 	}
 	
+	
 	private ClassUtils classUtils() {
 		return my(ClassUtils.class);
 	}
+	
 	
 	private File createFile(File folder, String filename, String data) throws IOException {
 		File file = createFile(folder, filename);
 		my(IO.class).files().writeString(file, data);
 		return file;
 	}
+	
 	
 	private File createFile(File parent, String filename) throws IOException {
 		final File file = new File(parent, filename);
@@ -206,6 +220,7 @@ public class BrickInstallerTest extends BrickTest {
 		assertExists(stagedFile(fileName));
 	}
 	
+	
 	private File stagedFile(String fileName) {
 		return new File(stagingFolder(), fileName);
 	}
@@ -222,22 +237,27 @@ public class BrickInstallerTest extends BrickTest {
 			srcFileFor(clazz));
 	}
 
+	
 	private File srcFileFor(final Class<?> clazz) {
 		return javaFileNameAt(srcFolder(), clazz);
 	}
 
+	
 	private File platformSrcFileFor(final Class<?> clazz) {
 		return new File(platformSrcFolder(), classUtils().relativeJavaFileName(clazz));
 	}
+	
 	
 	private File platformSrcFolder() {
 		return new File(platformBin(), "src");
 	}
 
+	
 	private File platformBin() {
 		return classUtils().classpathRootFor(Brick.class).getParentFile();
 	}
 
+	
 	private <T> T single(Collection<T> collection) {
 		assertEquals(1, collection.size());
 		return collection.iterator().next();
