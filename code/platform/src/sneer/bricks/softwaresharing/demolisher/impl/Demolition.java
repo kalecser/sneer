@@ -10,13 +10,13 @@ import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.Lang.Strings;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheGuide;
-import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheVisitor;
+import sneer.bricks.hardwaresharing.files.cache.visitors.FolderStructureVisitor;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
 
-class Demolition implements FileCacheVisitor {
+class Demolition implements FolderStructureVisitor {
 
 	private final Strings _strings = my(Lang.class).strings();
 	

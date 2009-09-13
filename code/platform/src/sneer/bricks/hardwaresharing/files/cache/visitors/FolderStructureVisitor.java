@@ -2,7 +2,7 @@ package sneer.bricks.hardwaresharing.files.cache.visitors;
 
 import sneer.bricks.pulp.crypto.Sneer1024;
 
-public interface FileCacheVisitor {
+public interface FolderStructureVisitor {
 
 
 	void enterFolder();

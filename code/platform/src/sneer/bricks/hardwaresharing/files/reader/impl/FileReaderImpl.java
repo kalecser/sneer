@@ -33,7 +33,7 @@ class FileReaderImpl implements FileReader {
 
 	private static Sneer1024 readFile(File file) throws IOException {
 		long length = file.length();
-		return length > FileReader.MAXIMUM_FILE_BLOCK_SIZE
+		return length > FileReader.FILE_BLOCK_SIZE
 			? BigFileReader.readFile(file)
 			: FileCache.putFileContents(readFileContents(file));
 	}

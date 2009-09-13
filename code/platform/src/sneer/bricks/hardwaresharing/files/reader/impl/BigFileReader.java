@@ -31,14 +31,14 @@ class BigFileReader {
 
 	
 	private static Sneer1024 sliceAndCache(InputStream stream, long length) throws IOException {
-		int sliceLength = FileReader.MAXIMUM_FILE_BLOCK_SIZE;
+		int sliceLength = FileReader.FILE_BLOCK_SIZE;
 		int slices = countSlices(sliceLength, length);
 
 		Sneer1024[] hashes = new Sneer1024[slices];
 		int currentSlice = 0;
-		for (int i = 0; i < length; i+=FileReader.MAXIMUM_FILE_BLOCK_SIZE) {
+		for (int i = 0; i < length; i+=FileReader.FILE_BLOCK_SIZE) {
 			
-			int sliceSize = (int) Math.min(length - i, FileReader.MAXIMUM_FILE_BLOCK_SIZE);
+			int sliceSize = (int) Math.min(length - i, FileReader.FILE_BLOCK_SIZE);
 			byte[] buffy = new byte[sliceSize];
 			
 			int read = stream.read(buffy);
