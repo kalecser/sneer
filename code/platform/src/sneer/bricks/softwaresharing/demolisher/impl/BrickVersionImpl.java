@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheGuide;
-import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheVisitor;
+import sneer.bricks.hardwaresharing.files.cache.visitors.FolderStructureVisitor;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
@@ -71,7 +71,7 @@ class BrickVersionImpl implements BrickVersion {
 	}
 
 
-	private class Visitor implements FileCacheVisitor {
+	private class Visitor implements FolderStructureVisitor {
 
 		List<FileVersion> _visitedFiles = new ArrayList<FileVersion>();
 		

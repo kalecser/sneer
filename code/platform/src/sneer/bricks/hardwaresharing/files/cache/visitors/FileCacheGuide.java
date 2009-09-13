@@ -6,7 +6,7 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface FileCacheGuide {
 
-	void guide(FileCacheVisitor visitor, Sneer1024 startingPoint);
+	void guide(FolderStructureVisitor visitor, Sneer1024 startingPoint);
 	
 }
 

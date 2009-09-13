@@ -2,16 +2,16 @@ package sneer.bricks.hardwaresharing.files.cache.visitors.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardwaresharing.files.cache.FileCache;
-import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheVisitor;
+import sneer.bricks.hardwaresharing.files.cache.visitors.FolderStructureVisitor;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.pulp.crypto.Sneer1024;
 
 class GuidedTour {
 	
-	private final FileCacheVisitor _visitor;
+	private final FolderStructureVisitor _visitor;
 
-	GuidedTour(Sneer1024 startingPoint, FileCacheVisitor visitor) {
+	GuidedTour(Sneer1024 startingPoint, FolderStructureVisitor visitor) {
 		_visitor = visitor;
 		showContents(startingPoint);
 	}
