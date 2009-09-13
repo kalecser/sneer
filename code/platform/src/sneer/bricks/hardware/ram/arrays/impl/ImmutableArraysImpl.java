@@ -31,7 +31,7 @@ class ImmutableArraysImpl implements ImmutableArrays {
 
 	@Override
 	public <T> ImmutableArray<T> newImmutableArray(T[] elements) {
-		return new ImmutableArrayImpl(elements);
+		return new ImmutableArrayImpl<T>(elements);
 	}
 
 }
