@@ -3,7 +3,6 @@ package sneer.bricks.hardwaresharing.files.reader.tests;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
@@ -26,17 +25,14 @@ public class FileReaderBigFilesTest extends BrickTest {
 	@Ignore
 	@Test
 	public void readBigFileToTheCache() throws IOException{
-		
-		
+		testReadBigFileToTheCache(FileReader.MAXIMUM_FILE_BLOCK_SIZE);
 		testReadBigFileToTheCache(FileReader.MAXIMUM_FILE_BLOCK_SIZE + 1);
 		testReadBigFileToTheCache(FileReader.MAXIMUM_FILE_BLOCK_SIZE * 200);
 		testReadBigFileToTheCache(FileReader.MAXIMUM_FILE_BLOCK_SIZE * BigFileBlocks.NUMBER_OF_BLOCKS + 1); 
-
 	}
 	
 
-	private void testReadBigFileToTheCache(int size) throws IOException,
-			FileNotFoundException {
+	private void testReadBigFileToTheCache(int size) throws IOException {
 		File originalFile = generateRandomFile(size);
 		Sneer1024 read = _subject.readIntoTheFileCache(originalFile);
 		
@@ -47,8 +43,8 @@ public class FileReaderBigFilesTest extends BrickTest {
 		assertEquals(FileUtils.checksumCRC32(originalFile), FileUtils.checksumCRC32(reintegratedFromCache));
 	}
 
+	
 	private File generateRandomFile(int size) throws IOException {
-		
 		File file = new File(tmpFolder(), "randomfile.rnd");
 		
 		byte[] buffy = new byte[size];
@@ -65,23 +61,24 @@ public class FileReaderBigFilesTest extends BrickTest {
 		return file;
 	}
 
-	private void unpackContentsToFile(BigFileBlocks blocks, File file)
-			throws FileNotFoundException, IOException {
-		FileOutputStream str = new FileOutputStream(file);
+	
+	private void unpackContentsToFile(BigFileBlocks blocks, File file) throws IOException {
+		FileOutputStream stream = new FileOutputStream(file);
 		try{
-			unpack(blocks._hash, str);
+			unpack(blocks._hash, stream);
 		}finally{
-			str.close();			
+			stream.close();			
 		}
 	}
 	
-	private void unpack(ImmutableArray<Sneer1024> immutableArray, FileOutputStream str) throws IOException {
+	
+	private void unpack(ImmutableArray<Sneer1024> immutableArray, FileOutputStream stream) throws IOException {
 		for (Sneer1024 hash : immutableArray){
 			Object contents = my(FileCache.class).getContents(hash);
 			if (contents instanceof BigFileBlocks){
-				unpack(((BigFileBlocks) contents)._hash, str);
+				unpack(((BigFileBlocks) contents)._hash, stream);
 			} else {
-				str.write((byte[])contents);
+				stream.write((byte[])contents);
 			}
 		}
 	}
