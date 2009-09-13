@@ -12,8 +12,6 @@ public abstract class BrickTestWithThreads extends BrickTestWithLogger {
 	@After
 	public void afterBrickTestWithTreads() {
 		my(Threads.class).crashAllThreads();
-		System.gc();
-
 	}
 
 }

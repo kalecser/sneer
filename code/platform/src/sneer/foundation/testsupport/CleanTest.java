@@ -62,8 +62,6 @@ public abstract class CleanTest extends AssertUtils {
 
 	@Before
 	public void beforeCleanTest() {
-		//System.gc();
-		
 		_activeThreadsBeforeTest = Thread.getAllStackTraces().keySet();
 		
 		System.setOut(_outSentinel);
@@ -117,6 +115,7 @@ public abstract class CleanTest extends AssertUtils {
 		while (true) {
 			if (thread.getState() == Thread.State.TERMINATED) return true;
 			if (System.currentTimeMillis() - t0 > 200) return false;
+			System.gc();
 			sleep(10);
 		}
 	}
