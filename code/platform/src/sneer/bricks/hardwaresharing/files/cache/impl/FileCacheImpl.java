@@ -67,9 +67,15 @@ class FileCacheImpl implements FileCache {
 
 	@Override
 	public Sneer1024 putBigFileBlocks(BigFileBlocks bigFileBlocks) {
-		Sneer1024 hash = my(Hasher.class).hash(bigFileBlocks.hashAsByteArray());
+		
+		byte[] mergedBytes = BigFileUtils.getBytes(bigFileBlocks);
+		
+		Sneer1024 hash = my(Hasher.class).hash(mergedBytes);
 		put(hash, bigFileBlocks);
 		return hash;
 	}
+
+
+	
 
 }

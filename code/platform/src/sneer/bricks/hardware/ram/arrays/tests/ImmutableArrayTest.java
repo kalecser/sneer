@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
@@ -33,6 +34,28 @@ public class ImmutableArrayTest extends BrickTest {
 		
 		original.add(4);
 		AssertUtils.assertSameContents(array, 1, 2, 3);
+	}
+	
+	@Test
+	public void immutableUsingAlternateConstructor() {
+		
+		Integer[] original = new Integer[]{1,2,3};
+		final ImmutableArray<Integer> array = _subject.newImmutableArray(original);
+		
+		original[2] = 4;
+		AssertUtils.assertSameContents(array, 1, 2, 3);
+
+	}
+	
+	@Test
+	public void toArray() {
+		
+		Integer[] original = new Integer[]{1,2,3};
+		final ImmutableArray<Integer> array = _subject.newImmutableArray(original);
+		Assert.assertArrayEquals(original, array.toArray());
+		
+		array.toArray()[2] = 4;
+		Assert.assertArrayEquals(original, array.toArray());
 	}
 
 }

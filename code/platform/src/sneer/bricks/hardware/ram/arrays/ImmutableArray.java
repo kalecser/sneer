@@ -4,4 +4,6 @@ public interface ImmutableArray<T> extends Iterable<T> {
 
 	int length();
 
+	T[] toArray();
+
 }

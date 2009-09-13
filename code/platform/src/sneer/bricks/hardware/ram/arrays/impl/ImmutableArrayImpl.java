@@ -12,10 +12,10 @@ import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 
 final class ImmutableArrayImpl<T> implements ImmutableArray<T> {
 	
-	private final Object[] _elements;
+	private final T[] _elements;
 
 	ImmutableArrayImpl(Collection<T> elements) {
-		_elements = elements.toArray(new Object[elements.size()]);
+		_elements = (T[]) elements.toArray(new Object[elements.size()]);
 	}
 
 	public ImmutableArrayImpl(T[] elements) {
@@ -24,11 +24,16 @@ final class ImmutableArrayImpl<T> implements ImmutableArray<T> {
 
 	@Override
 	public Iterator<T> iterator() {
-		return (Iterator<T>) Collections.unmodifiableCollection(Arrays.asList(_elements)).iterator();
+		return Collections.unmodifiableCollection(Arrays.asList(_elements)).iterator();
 	}
 
 	@Override
 	public int length() {
 		return _elements.length;
+	}
+
+	@Override
+	public T[] toArray() {
+		return _elements.clone();
 	}
 }

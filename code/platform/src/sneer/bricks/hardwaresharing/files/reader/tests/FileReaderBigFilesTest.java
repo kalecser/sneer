@@ -26,8 +26,6 @@ public class FileReaderBigFilesTest extends BrickTest {
 	@Ignore
 	@Test
 	public void readBigFileToTheCache() throws IOException{
-		
-		
 		testReadBigFileToTheCache(FileReader.MAXIMUM_FILE_BLOCK_SIZE + 1);
 		testReadBigFileToTheCache(FileReader.MAXIMUM_FILE_BLOCK_SIZE * 200);
 		testReadBigFileToTheCache(FileReader.MAXIMUM_FILE_BLOCK_SIZE * BigFileBlocks.NUMBER_OF_BLOCKS + 1); 
@@ -69,7 +67,7 @@ public class FileReaderBigFilesTest extends BrickTest {
 			throws FileNotFoundException, IOException {
 		FileOutputStream str = new FileOutputStream(file);
 		try{
-			unpack(blocks._hash, str);
+			unpack(blocks._contents, str);
 		}finally{
 			str.close();			
 		}
@@ -79,7 +77,7 @@ public class FileReaderBigFilesTest extends BrickTest {
 		for (Sneer1024 hash : immutableArray){
 			Object contents = my(FileCache.class).getContents(hash);
 			if (contents instanceof BigFileBlocks){
-				unpack(((BigFileBlocks) contents)._hash, str);
+				unpack(((BigFileBlocks) contents)._contents, str);
 			} else {
 				str.write((byte[])contents);
 			}

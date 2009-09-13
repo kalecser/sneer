@@ -17,7 +17,11 @@ class ClassFiles {
 
 	private static File fileFor(Class<?> brick) {
 		final String fileName = brick.getCanonicalName().replace('.', '/') + ".class";
-		final URL url = brick.getResource("/" + fileName);
+		String resourceName = "/" + fileName;
+		final URL url = brick.getResource(resourceName);
+		if (url == null)
+			throw new IllegalStateException("Resource " + resourceName + " not found");
+		
 		return new File(ClassFiles.toURI(url));
 	}
 	

@@ -4,8 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -114,10 +112,6 @@ class IOImpl implements IO {
 		@Override
 		public void copyFile(File from, File to) throws IOException {
 			FileUtils.copyFile(from, to);
-		}
-		@Override
-		public InputStream openAsStream(File file) throws FileNotFoundException {
-			return new FileInputStream(file);
 		}
 	};
 	

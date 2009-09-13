@@ -3,11 +3,11 @@ package sneer.bricks.hardwaresharing.files.reader.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.cache.FileCache;
 import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
 import sneer.bricks.hardwaresharing.files.reader.FileReader;
@@ -21,7 +21,7 @@ class BigFileReader {
 	
 	static Sneer1024 readFile(File file) throws IOException {
 		long length = file.length();
-		InputStream stream = my(IO.class).files().openAsStream(file);
+		InputStream stream = new FileInputStream(file);
 		try {
 			return sliceAndCache(stream, length);
 		} finally {
@@ -31,8 +31,8 @@ class BigFileReader {
 
 	
 	private static Sneer1024 sliceAndCache(InputStream stream, long length) throws IOException {
-		int boxSize = FileReader.MAXIMUM_FILE_BLOCK_SIZE;
-		int slices = countBoxes(boxSize, length);
+		int sliceLength = FileReader.MAXIMUM_FILE_BLOCK_SIZE;
+		int slices = countSlices(sliceLength, length);
 
 		Sneer1024[] hashes = new Sneer1024[slices];
 		int currentSlice = 0;
@@ -56,7 +56,7 @@ class BigFileReader {
 		if (slices.length == 1)
 			return slices[0];
 		
-		int packageSize = countBoxes(BigFileBlocks.NUMBER_OF_BLOCKS, slices.length);
+		int packageSize = countSlices(BigFileBlocks.NUMBER_OF_BLOCKS, slices.length);
 		
 		Sneer1024[] hashes = new Sneer1024[packageSize];
 		int currentBlock = 0;
@@ -71,14 +71,14 @@ class BigFileReader {
 	}
 	
 	
-	private static int countBoxes(int boxSize, long ammmountOfObjects) {
-		boolean hasRemainder = (ammmountOfObjects % boxSize) != 0l;
-		long boxesNeeded = (ammmountOfObjects / boxSize) + (hasRemainder ? 1 : 0);
+	private static int countSlices(int sliceLength, long totalLength) {
+		boolean hasRemainder = (totalLength % sliceLength) != 0l;
+		long slices = (totalLength / sliceLength) + (hasRemainder ? 1 : 0);
 		
-		if (boxesNeeded != (int)boxesNeeded)
+		if (slices != (int)slices)
 			throw new IllegalStateException("File is too big");
 		
-		return (int) boxesNeeded;
+		return (int) slices;
 	}
 	
 }

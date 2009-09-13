@@ -64,7 +64,7 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 			return asFileContents((byte[])response);
 		
 		if (response instanceof BigFileBlocks)
-			return new BigFileBlocks(((BigFileBlocks)response)._hash);
+			return new BigFileBlocks(((BigFileBlocks)response)._contents);
 			
 		throw new IllegalStateException("I don know how to obtain a tuple from type: " + response.getClass());
 	}

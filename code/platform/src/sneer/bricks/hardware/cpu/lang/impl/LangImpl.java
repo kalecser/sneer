@@ -21,29 +21,6 @@ class LangImpl implements Lang {
 
 	private final Arrays _arrays = new Lang.Arrays(){
 		@Override public void reverse(Object[] array) { ArrayUtils.reverse(array);}
-
-		@Override
-		public byte[] merge(byte[][] hash) {
-			int totalLength = 0;
-			for (int i = 0; i < hash.length; i++) {
-				
-				long length = hash[i].length;
-				if (totalLength > Integer.MAX_VALUE - length)
-					throw new IllegalStateException("Integer overflow");
-				
-				totalLength += length;
-			}
-			
-			byte[] merged = new byte[totalLength];
-			int current  = 0;
-			for (int i = 0; i < hash.length; i++) {
-				for (int j = 0; j < hash[i].length; j++) {
-					merged[current++] = hash[i][j];
-				}
-			}
-			
-			return merged;
-		}
 	};
 	
 	private final Serialization _serialization = new Lang.Serialization(){
