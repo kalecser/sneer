@@ -14,6 +14,7 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.writer.FileWriter;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.bricks.software.bricks.compiler.BrickCompilerException;
 import sneer.bricks.software.bricks.compiler.Builder;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickInfo;
@@ -68,8 +69,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 		}
 	}
 
-	private void prepareStagedBin() throws IOException {
-		
+	private void prepareStagedBin() throws IOException, BrickCompilerException {
 		my(Builder.class).build(_srcStage, _binStage);
 	}
 	

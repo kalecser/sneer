@@ -27,7 +27,7 @@ class Build {
 	private final File _destFolder;
 
 
-	Build(File srcFolder, File destFolder) throws IOException {
+	Build(File srcFolder, File destFolder) throws IOException, BrickCompilerException {
 		_srcFolder = srcFolder;
 		_destFolder = destFolder;
 		
@@ -37,7 +37,7 @@ class Build {
 	}
 
 	
-	private void buildFoundation() throws IOException {
+	private void buildFoundation() throws IOException, BrickCompilerException {
 		File foundationSrc = foundationSrcFolder();
 		File[] fileArray = toFileArray(jarsIn(foundationSrc));
 		compile(foundationSrc, _destFolder, fileArray);
@@ -49,7 +49,7 @@ class Build {
 	}
 	
 	
-	private void buildBricks() throws IOException {
+	private void buildBricks() throws IOException, BrickCompilerException {
 		Collection<File> apiFiles = brickApiFiles();
 		if (apiFiles.isEmpty()) return;
 		
@@ -63,7 +63,6 @@ class Build {
 		Filter nonJavaFiles = fileFilters().not(fileFilters().suffix(".java"));
 		files().copyFolder(_srcFolder, _destFolder, nonJavaFiles);
 		my(Logger.class).log("Copying resources... done.");
-
 	}
 
 	
@@ -75,21 +74,49 @@ class Build {
 	}
 	
 	
-	private void compileBricks(Collection<File> brickFolders) throws IOException {
+	private void compileBricks(Collection<File> brickFolders) throws IOException, BrickCompilerException {
 		File tmpFolder = cleanTmpBrickImplFolder();
 		
-//		File[] testClasspath = testClassPath();
+		compileImplsTo(brickFolders, tmpFolder);
+		compileTests(brickFolders);
 		
+		copyFolder(tmpFolder, _destFolder); //Refactor: This whole thing of compiling to a tmpFolder so that one brick cannot reference the impl of another directly will no longer be necessary once the check that no class can be public inside an impl is done elsewhere.   
+	}
+
+
+	private void compileTests(Collection<File> brickFolders) throws IOException, BrickCompilerException {
+		Collection<File> testFiles = new ArrayList<File>();
+		for (File brickFolder : brickFolders)
+			accumulateTestFiles(testFiles, brickFolder);
+		
+		if (testFiles.isEmpty()) return;
+		compile(testFiles);
+	}
+
+
+	private void accumulateTestFiles(Collection<File> testFiles, File brickFolder) {
+		File testsFolder = new File(brickFolder, "tests");
+		if (!testsFolder.exists()) return;
+		
+		testFiles.addAll(listJavaFiles(testsFolder, fileFilters().any()));
+	}
+
+
+	private void compile(Collection<File> testFiles) throws IOException, BrickCompilerException {
+		try {
+			my(JavaCompiler.class).compile(testFiles, _destFolder, testClassPath());
+		} catch (JavaCompilerException e) {
+			throw new BrickCompilerException(e);
+		}
+	}
+
+
+	private void compileImplsTo(Collection<File> brickFolders, File tmpFolder) throws IOException, BrickCompilerException {
 		int i = 0;
 		for (File brickFolder : brickFolders) {
-			my(Logger.class).log("Compiling brick {} of ", ++i, brickFolders.size());
-			File[] implClasspath = classpathWithLibs(new File(brickFolder, "impl/lib"));
-			compileBrick(brickFolder, tmpFolder, implClasspath);
+			my(Logger.class).log("Compiling brick impl {} of ", ++i, brickFolders.size());
+			compileBrick(brickFolder, tmpFolder);
 		}
-		
-		my(Logger.class).log("Copying compiled bricks...");
-		copyFolder(tmpFolder, _destFolder); //Refactor: This whole thing of compiling to a tmpFolder so that one brick cannot reference the impl of another directly will no longer be necessary once the check that no class can be public inside an impl is done elsewhere.   
-		my(Logger.class).log("Copying compiled bricks... done.");
 	}
 
 	
@@ -98,7 +125,6 @@ class Build {
 	}
 
 	
-	@SuppressWarnings("unused")
 	private File[] testClassPath() {
 		return classpathWithLibs(foundationSrcFolder());
 	}
@@ -148,12 +174,13 @@ class Build {
 	}
 
 	
-	private void compileBrick(File brickFolder, File tmpFolder, File[] implClasspath) throws IOException {
-		compile(new File(brickFolder, "impl"), tmpFolder, implClasspath);
+	private void compileBrick(File brickFolder, File tmpFolder) throws IOException, BrickCompilerException {
+		File[] classpath = classpathWithLibs(new File(brickFolder, "impl/lib"));
+		compile(new File(brickFolder, "impl"), tmpFolder, classpath);
 	}
 
 	
-	private void compile(File srcFolder, File binFolder, File... classpath) throws IOException {
+	private void compile(File srcFolder, File binFolder, File... classpath) throws IOException, BrickCompilerException {
 		if (!srcFolder.exists()) return;
 		try {
 			my(JavaCompiler.class).compile(srcFolder, binFolder, classpath);
@@ -163,7 +190,7 @@ class Build {
 	}
 
 	
-	private void compileApi(Collection<File> apiFiles, File destinationFolder) throws IOException {
+	private void compileApi(Collection<File> apiFiles, File destinationFolder) throws IOException, BrickCompilerException {
 		try {
 			my(JavaCompiler.class).compile(apiFiles, destinationFolder, destinationFolder);
 		} catch (JavaCompilerException e) {
@@ -174,6 +201,7 @@ class Build {
 	
 	private Collection<File> brickApiFiles() {
 		return listJavaFiles(
+			_srcFolder,
 			fileFilters().not(fileFilters().or(
 				fileFilters().name("impl"),
 				fileFilters().name("tests"),
@@ -181,19 +209,12 @@ class Build {
 	}
 
 	
-	private Collection<File> listJavaFiles(Filter folderFilter) {
+	private Collection<File> listJavaFiles(File srcFolder, Filter filterForSubfolders) {
 		return fileFilters().listFiles(
-			_srcFolder,
+			srcFolder,
 			fileFilters().suffix(".java"),
-			folderFilter);
+			filterForSubfolders);
 	}
-
-	
-//	private boolean hasFiles(File folder) {
-//		for (File file : folder.listFiles())
-//			if (!file.isDirectory()) return true;
-//		return false;
-//	}
 
 	
 	private FileFilters fileFilters() {

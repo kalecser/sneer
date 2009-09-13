@@ -27,16 +27,18 @@ public class BuilderTest extends BrickTest {
 	
 	private final Builder _subject = my(Builder.class);
 	
+	
 	@Before
 	public void prepareFolders() throws Exception {
-		srcFolder().mkdirs();
-		binFolder().mkdirs();
+		testSrcFolder().mkdirs();
+		testBinFolder().mkdirs();
 		
 		copyRequiredFoundationFiles();
 	}
 	
+	
 	@Test
-	public void foundationLibs() throws IOException {
+	public void foundationLibs() throws Exception {
 		writeSourceFile("sneer/foundation/Bar.java",
 				"package sneer.foundation;" +
 				"class Bar {" +
@@ -45,29 +47,30 @@ public class BuilderTest extends BrickTest {
 		
 		writeLib("sneer/foundation/foo.jar", Foo.class);
 		
-		_subject.build(srcFolder(), binFolder());
+		_subject.build(testSrcFolder(), testBinFolder());
 		
 		assertBinFilesExist(
 			"sneer/foundation/Bar.class",
 			"sneer/foundation/foo.jar");
 	}
 	
+	
 	@Test
-	public void testsCanDependOnFoundationLibs() throws IOException {
+	public void testsCanDependOnFoundationLibs() throws Exception {
 		writeSourceFile("bricks/a/A.java",
-				"package bricks.a;" +
-				"@" + Brick.class.getName() + " " +
-				"public interface A {}");
+			"package bricks.a;" +
+			"@" + Brick.class.getName() + " " +
+			"public interface A {}");
 			
 		writeSourceFile("bricks/a/tests/ATest.java",
-				"package bricks.a.tests;" +
-				"class ATest {" +
-					"{ " + Foo.class.getName() + ".bar(); }" +
-				"}");
+			"package bricks.a.tests;" +
+			"class ATest {" +
+				"{ " + Foo.class.getName() + ".bar(); }" +
+			"}");
 		
 		writeLib("sneer/foundation/foo.jar", Foo.class);
 		
-		_subject.build(srcFolder(), binFolder());
+		_subject.build(testSrcFolder(), testBinFolder());
 		
 		assertBinFilesExist(
 			"bricks/a/A.class",
@@ -75,10 +78,9 @@ public class BuilderTest extends BrickTest {
 			"sneer/foundation/foo.jar");
 	}
 	
+	
 	@Test
-	public void libDependencies() throws IOException {
-		
-		
+	public void libDependencies() throws Exception {
 		writeSourceFile("bricks/a/A.java",
 				"package bricks.a;" +
 				"@" + Brick.class.getName() + " " +
@@ -92,7 +94,7 @@ public class BuilderTest extends BrickTest {
 		
 		writeLib("bricks/a/impl/lib/foo.jar", Foo.class);
 		
-		_subject.build(srcFolder(), binFolder());
+		_subject.build(testSrcFolder(), testBinFolder());
 		
 		assertBinFilesExist(
 			"bricks/a/A.class",
@@ -100,15 +102,16 @@ public class BuilderTest extends BrickTest {
 			"bricks/a/impl/lib/foo.jar");
 	}
 
+	
 	private void writeLib(String filename, Class<Foo> clazz) throws IOException {
-		JarBuilder builder = my(Jars.class).builder(srcFile(filename));
+		JarBuilder builder = my(Jars.class).builder(testSrcFile(filename));
 		builder.add(my(ClassUtils.class).relativeClassFileName(clazz), my(ClassUtils.class).classFile(clazz));
 		builder.close();
 	}
 
+	
 	@Test
 	public void brickDependency() throws Exception {
-		
 		writeSourceFile("bricks/a/A.java",
 			"package bricks.a;" +
 			"@" + Brick.class.getName() + " " +
@@ -128,18 +131,17 @@ public class BuilderTest extends BrickTest {
 					"void foo();" +
 				"}");
 		
-		_subject.build(srcFolder(), binFolder());
+		_subject.build(testSrcFolder(), testBinFolder());
 		
 		assertBinFilesExist(
 			"bricks/a/A.class",
 			"bricks/a/impl/AImpl.class",
 			"bricks/b/B.class");
-		
 	}
+
 	
 	@Test(expected=BrickCompilerException.class)
 	public void illegalDependency() throws Exception {
-		
 		writeSourceFile("bricks/a/A.java",
 			"package bricks.a;" +
 			"@" + Brick.class.getName() + " " +
@@ -158,12 +160,12 @@ public class BuilderTest extends BrickTest {
 				"package bricks.b.impl;" +
 				"public class BImpl { public static void foo() {} }");
 		
-		_subject.build(srcFolder(), binFolder());
+		_subject.build(testSrcFolder(), testBinFolder());
 	}
+
 	
 	@Test(expected=BrickCompilerException.class)
 	public void illegalApiDependency() throws Exception {
-		
 		writeSourceFile("bricks/a/A.java",
 			"package bricks.a;" +
 			"@" + Brick.class.getName() + " " +
@@ -173,20 +175,22 @@ public class BuilderTest extends BrickTest {
 				"package bricks.a.impl;" +
 				"public class Foo {}");
 		
-		_subject.build(srcFolder(), binFolder());
+		_subject.build(testSrcFolder(), testBinFolder());
 	}
+
 	
 	private File platformBin() {
 		return my(ClassUtils.class).classpathRootFor(Brick.class);
 	}
 	
+	
 	private void assertBinFilesExist(String... filenames) {
 		for (String filename : filenames)
-			assertExists(new File(binFolder(), filename));
+			assertExists(new File(testBinFolder(), filename));
 	}
 	
+	
 	private void copyRequiredFoundationFiles() throws IOException {
-		
 		copySourceFiles(
 				Brick.class,
 				Nature.class,
@@ -198,45 +202,55 @@ public class BuilderTest extends BrickTest {
 		
 	}
 
+	
 	private void copySourceFiles(Class<?>... classes) throws IOException {
 		for (Class<?> c : classes) copySourceFile(c);
 	}
 
+	
 	private void copySourceFile(Class<?> clazz) throws IOException {
 		copyFile(
 				platformSourceFileFor(clazz),
-				srcFile(relativeJavaFileName(clazz)));
+				testSrcFile(relativeJavaFileName(clazz)));
 	}
 
+	
 	private String relativeJavaFileName(Class<?> clazz) {
 		return my(ClassUtils.class).relativeJavaFileName(clazz);
 	}
 
+	
 	private void copyFile(File from, File to) throws IOException {
 		my(IO.class).files().copyFile(from, to);
 	}
 
+	
 	private File platformSourceFileFor(Class<?> clazz) {
 		return new File(platformSrcFolder(), relativeJavaFileName(clazz));
 	}
 
+	
 	private File platformSrcFolder() {
 		return new File(platformBin().getParentFile(), "src");
 	}
 
+	
 	private void writeSourceFile(String filename, String data) throws IOException {
-		my(IO.class).files().writeString(srcFile(filename), data);
+		my(IO.class).files().writeString(testSrcFile(filename), data);
 	}
 
-	private File srcFile(String filename) {
-		return new File(srcFolder(), filename);
+	
+	private File testSrcFile(String filename) {
+		return new File(testSrcFolder(), filename);
 	}
 
-	private File binFolder() {
+	
+	private File testBinFolder() {
 		return new File(tmpFolder(), "bin");
 	}
 
-	private File srcFolder() {
+	
+	private File testSrcFolder() {
 		return new File(tmpFolder(), "src");
 	}
 

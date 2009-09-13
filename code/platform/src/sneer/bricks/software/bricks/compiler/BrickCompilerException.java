@@ -1,6 +1,6 @@
 package sneer.bricks.software.bricks.compiler;
 
-public class BrickCompilerException extends RuntimeException {
+public class BrickCompilerException extends Exception {
 
 	public BrickCompilerException(Exception cause) {
 		super(cause);
