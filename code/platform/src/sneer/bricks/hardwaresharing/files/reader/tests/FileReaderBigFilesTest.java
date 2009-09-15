@@ -7,10 +7,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 import sneer.bricks.hardwaresharing.files.cache.FileCache;
 import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
@@ -39,7 +39,7 @@ public class FileReaderBigFilesTest extends BrickTest {
 		File reintegratedFromCache = new File(tmpFolder(), "file.reintegrated");
 		unpackContentsToFile(blocks, reintegratedFromCache);
 		
-		assertEquals(FileUtils.checksumCRC32(originalFile), FileUtils.checksumCRC32(reintegratedFromCache));
+		my(IO.class).files().assertSameContents(originalFile, reintegratedFromCache);
 	}
 
 	
