@@ -9,6 +9,7 @@ import static sneer.main.SneerFolders.PLATFORM_SRC;
 import static sneer.main.SneerFolders.TMP;
 
 import java.io.File;
+import java.io.IOException;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.robust.RobustExceptionLogging;
@@ -17,6 +18,7 @@ import sneer.bricks.snapps.system.log.file.LogToFile;
 import sneer.bricks.snapps.system.log.sysout.LogToSysout;
 import sneer.bricks.software.bricks.snappstarter.SnappStarter;
 import sneer.bricks.software.folderconfig.FolderConfig;
+import sneer.bricks.softwaresharing.installer.BrickInstaller;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
@@ -32,9 +34,19 @@ public class SneerSession implements Runnable {
 		configure(my(FolderConfig.class));
 
 		startLogging();
+		installStagedBricks();
 		my(SnappStarter.class).startSnapps();
 		
 		my(Threads.class).waitUntilCrash();
+	}
+
+
+	private void installStagedBricks() {
+		try {
+			my(BrickInstaller.class).commitStagedBricksInstallation();
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	
