@@ -7,6 +7,7 @@ import java.util.Collection;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
@@ -22,6 +23,7 @@ import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Predicate;
+
 
 class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
@@ -54,6 +56,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	
 	@Override
 	public void consume(final SrcFolderHash srcFolderHash) {
+		my(Logger.class).log("Consuming SrcFolderHash");
 		my(Threads.class).startDaemon("BrickSpace Fetcher", new Runnable() { @Override public void run() {
 			fetchIfNecessary(srcFolderHash);
 		}});

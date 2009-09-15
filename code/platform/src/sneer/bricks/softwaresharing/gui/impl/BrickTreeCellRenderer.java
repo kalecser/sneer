@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-class MeTooTreeCellRenderer extends DefaultTreeCellRenderer {
+class BrickTreeCellRenderer extends DefaultTreeCellRenderer {
 
 @Override public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, 
 			boolean expanded, boolean leaf, int row, boolean hasFocus_) {

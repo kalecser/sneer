@@ -5,6 +5,6 @@ import sneer.foundation.brickness.Brick;
 
 @Snapp
 @Brick
-public interface MeTooGui {
+public interface BricksGui {
 
 }

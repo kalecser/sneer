@@ -26,6 +26,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
+import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.skin.image.ImageFactory;
 import sneer.bricks.skin.main.menu.MainMenu;
 import sneer.bricks.skin.main.synth.Synth;
@@ -38,12 +39,12 @@ import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.BrickVersion.Status;
-import sneer.bricks.softwaresharing.gui.MeTooGui;
+import sneer.bricks.softwaresharing.gui.BricksGui;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
 
-class MeTooGuiImpl extends JFrame implements MeTooGui{
+class BricksGuiImpl extends JFrame implements BricksGui {
 
-	private static final JToggleButton _meTooButton = new JToggleButton(loadIcon("add.png"));
+	private static final JToggleButton _selectButton = new JToggleButton(loadIcon("add.png"));
 	private static final JToggleButton _rejectButton = new JToggleButton(loadIcon("rejectedVersion.png"));
 	private final JTree _tree = new JTree();
 	private final JList _files = new JList();
@@ -56,11 +57,11 @@ class MeTooGuiImpl extends JFrame implements MeTooGui{
 	protected Object _lastSelectedNode;
 	
 	private static ImageIcon loadIcon(String fileName){
-		return my(ImageFactory.class).getIcon(MeTooGuiImpl.class, fileName);
+		return my(ImageFactory.class).getIcon(BricksGuiImpl.class, fileName);
 	}
 	
-	MeTooGuiImpl(){
-		super("MeToo");
+	BricksGuiImpl(){
+		super("Bricks");
 		
 		my(LogConsole.class);
 		Synth _synth = my(Synth.class);
@@ -71,14 +72,14 @@ class MeTooGuiImpl extends JFrame implements MeTooGui{
 		
 		initGui(); 
 		initListeners();
-		initMeTooMenu();
+		registerMainMenuItem();
 	}
 	
-	private void initMeTooMenu() {
+	private void registerMainMenuItem() {
 		final WindowBoundsSetter wbSetter = my(WindowBoundsSetter.class);
 		wbSetter.runWhenBaseContainerIsReady(new Runnable(){ @Override public void run() {
-			my(MainMenu.class).addAction("MeToo", new Runnable() { @Override public void run() {
-				showMeToo(wbSetter);
+			my(MainMenu.class).addAction("Bricks", new Runnable() { @Override public void run() {
+				show(wbSetter);
 			}});
 		}});
 	}
@@ -94,10 +95,10 @@ class MeTooGuiImpl extends JFrame implements MeTooGui{
 			tryCompare();
 		}});
 		
-		_meTooButton.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
+		_selectButton.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
 			BrickVersion version = selectedBrickVersion();
 			selectedBrick().setStagedForInstallation(version, !version.isStagedForExecution());
-			_meTooButton.setSelected(version.isStagedForExecution());
+			_selectButton.setSelected(version.isStagedForExecution());
 			_tree.repaint();
 		}});
 		
@@ -110,8 +111,8 @@ class MeTooGuiImpl extends JFrame implements MeTooGui{
 	}
 
 	protected void adjustToolbar() {
-		_meTooButton.setSelected(false);
-		_meTooButton.setEnabled(false);
+		_selectButton.setSelected(false);
+		_selectButton.setEnabled(false);
 		_rejectButton.setSelected(false);
 		_rejectButton.setEnabled(false);
 		
@@ -123,8 +124,8 @@ class MeTooGuiImpl extends JFrame implements MeTooGui{
 		if(version.status()==Status.CURRENT)
 			return;
 		
-		_meTooButton.setEnabled(true);
-		_meTooButton.setSelected(version.isStagedForExecution());
+		_selectButton.setEnabled(true);
+		_selectButton.setSelected(version.isStagedForExecution());
 
 		_rejectButton.setEnabled(true);
 		_rejectButton.setSelected(version.status()==Status.REJECTED);
@@ -175,14 +176,14 @@ class MeTooGuiImpl extends JFrame implements MeTooGui{
 		_tree.setRootVisible(false);
 		_tree.setModel(new DefaultTreeModel(root));
 		_tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		_tree.setCellRenderer(new MeTooTreeCellRenderer());
+		_tree.setCellRenderer(new BrickTreeCellRenderer());
 		_tree.setBorder(new EmptyBorder(5,5,5,5));
 		_tree.setShowsRootHandles(true);
 		
 		_files.setBorder(new EmptyBorder(5,5,5,5));
-		_files.setCellRenderer(new MeeTooListCellRenderer());
+		_files.setCellRenderer(new BrickListCellRenderer());
 
-		_meTooButton.setEnabled(false);
+		_selectButton.setEnabled(false);
 		_rejectButton.setEnabled(false);
 		
 		Container contentPane = getContentPane();
@@ -190,7 +191,7 @@ class MeTooGuiImpl extends JFrame implements MeTooGui{
 		
 		JToolBar toolbar = new JToolBar();
 		contentPane.add(toolbar, BorderLayout.NORTH);
-		toolbar.add(_meTooButton);
+		toolbar.add(_selectButton);
 		toolbar.add(_rejectButton);
 		
 		JButton reload = new JButton(loadIcon("reload.png"));
@@ -201,11 +202,7 @@ class MeTooGuiImpl extends JFrame implements MeTooGui{
 			_files.setModel(new DefaultListModel());
 		}});
 		
-		JButton install = new JButton("Install");
-		toolbar.add(install);
-		install.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
-			my(BrickInstaller.class).prepareStagedBricksInstallation();
-		}});
+		addMeTooButton(toolbar);
 		
 		JScrollPane scrollTree = my(SynthScrolls.class).create();
 		JScrollPane scrollFiles = my(SynthScrolls.class).create();
@@ -225,8 +222,23 @@ class MeTooGuiImpl extends JFrame implements MeTooGui{
 		scrollDiff.getViewport().add(_diffPanel.component());
 		scrollFiles.getViewport().add(_files);
 	}
+
+	private void addMeTooButton(JToolBar toolbar) {
+		final JButton button = new JButton("Me Too");
+		toolbar.add(button);
+		button.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
+			button.setEnabled(false);
+			my(Threads.class).startDaemon("BricksGui MeToo", new Runnable() { @Override public void run() {
+				try {
+					my(BrickInstaller.class).prepareStagedBricksInstallation();
+				} finally {
+					button.setEnabled(true);
+				}
+			}});
+		}});
+	}
 	
-	private void showMeToo(final WindowBoundsSetter wbSetter) {
+	private void show(final WindowBoundsSetter wbSetter) {
 		Rectangle unused = wbSetter.unusedArea();
 		setBounds(_X , _OFFSET_Y, unused.width-_OFFSET_X, unused.height -_HEIGHT-_OFFSET_Y*2);
 		setFocusableWindowState(false);

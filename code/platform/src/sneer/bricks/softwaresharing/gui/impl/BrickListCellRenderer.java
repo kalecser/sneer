@@ -6,7 +6,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
-class MeeTooListCellRenderer extends DefaultListCellRenderer {
+class BrickListCellRenderer extends DefaultListCellRenderer {
 	@Override
 	public Component getListCellRendererComponent(JList jList, Object element, int ignored2, boolean isSelected, boolean cellHasFocus) {
 		FileVersionWrapper wrapper = (FileVersionWrapper) element;
