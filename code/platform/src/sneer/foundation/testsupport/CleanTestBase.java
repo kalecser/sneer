@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 
 /** A test that does not pollute the environment: it closes all files handles it opens, it does not leak threads, it does not write to the console (out and err). */
 @RunWith(CleanTestRunner.class)
-public abstract class CleanTest extends AssertUtils {
+public abstract class CleanTestBase extends AssertUtils {
 
 	private File _tmpFolder;
 	private String _tmpFolderName;

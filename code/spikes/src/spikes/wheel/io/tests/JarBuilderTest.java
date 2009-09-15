@@ -1,8 +1,8 @@
 package spikes.wheel.io.tests;
 
-import sneer.foundation.testsupport.CleanTest;
+import sneer.foundation.testsupport.CleanTestBase;
 
-public class JarBuilderTest extends CleanTest {
+public class JarBuilderTest extends CleanTestBase {
 
 //	@Test
 //	public void testSimpleJar() throws Exception {

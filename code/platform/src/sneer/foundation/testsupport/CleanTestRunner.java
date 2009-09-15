@@ -39,8 +39,8 @@ public class CleanTestRunner extends JUnit4ClassRunner {
 
 
 	private void notifyFailure(Method method, Throwable thrown) {
-		if (_currentTest instanceof CleanTest)
-			((CleanTest)_currentTest).failedWith(method, thrown);
+		if (_currentTest instanceof CleanTestBase)
+			((CleanTestBase)_currentTest).failedWith(method, thrown);
 	}
 
 	

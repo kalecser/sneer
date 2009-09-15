@@ -12,10 +12,10 @@ import org.junit.After;
 import org.junit.runner.RunWith;
 
 import sneer.foundation.environments.Environment;
-import sneer.foundation.testsupport.CleanTest;
+import sneer.foundation.testsupport.CleanTestBase;
 
 @RunWith(BrickTestWithMockRunner.class)
-public abstract class BrickTestBase extends CleanTest {
+public abstract class BrickTestBase extends CleanTestBase {
 
 	private final Mockery _mockery = new JUnit4Mockery();
 
