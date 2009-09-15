@@ -86,8 +86,7 @@
 			</classpath>
 			<batchtest todir="${bin.dir}">
 				<fileset dir="${bin.dir}">
-					<include name="**/freedom*/*Test.class" />
-					<include name="**/tests/*Test.class" />
+					<include name="**/*Test.class" />
 					<exclude name="**/BrickTest.class" />
 				</fileset>
 				<formatter type="plain"/>
