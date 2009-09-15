@@ -76,7 +76,7 @@
 		<echo>Test failures! Check the output for details.</echo>
 	</target>
 
-	<target name="test-execution">
+	<target name="test-execution" depends="copy-src-for-tests">
 		<junit printsummary="true" failureproperty="junit.failures" fork="yes" timeout="60000">
 			<formatter type="xml"/>
 			<sysproperty key="java.awt.headless" value="${java.awt.headless}" />
@@ -88,6 +88,7 @@
 				<fileset dir="${bin.dir}">
 					<include name="**/freedom*/*Test.class" />
 					<include name="**/tests/*Test.class" />
+					<exclude name="**/BrickTest.class" />
 				</fileset>
 				<formatter type="plain"/>
 			</batchtest>
@@ -128,6 +129,15 @@
 			<fileset dir="${sneer.src}">
 				<include name='**/**'/>
 				<exclude name='**/*.java'/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="copy-src-for-tests">
+		<mkdir dir="${bin.dir}/../src"/>
+		<copy todir="${bin.dir}/../src">
+			<fileset dir="${sneer.src}">
+				<include name='**/**'/>
 			</fileset>
 		</copy>
 	</target>
