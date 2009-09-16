@@ -4,8 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -19,7 +17,6 @@ import java.util.Set;
 
 import org.prevayler.Prevayler;
 import org.prevayler.PrevaylerFactory;
-import org.prevayler.foundation.serialization.Serializer;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
@@ -171,15 +168,7 @@ class TupleSpaceImpl implements TupleSpace {
 		factory.configurePrevalentSystem(system);
 		factory.configurePrevalenceDirectory(folder().getAbsolutePath());
 		factory.configureTransactionFiltering(false);
-		factory.configureJournalSerializer("xstreamjournal", new Serializer(){
-			@Override public Object readObject(InputStream stream) throws IOException, ClassNotFoundException {
-				return my(sneer.bricks.pulp.serialization.Serializer.class).deserialize(stream, TupleSpaceImpl.class.getClassLoader());
-			}
-
-			@Override public void writeObject(OutputStream stream, Object object) throws IOException {
-				my(sneer.bricks.pulp.serialization.Serializer.class).serialize(stream, object);
-			}
-		});
+		factory.configureJournalSerializer("xstreamjournal", new OldTupleDiscardingSerializer());
 		return factory;
 	}
 

@@ -15,7 +15,7 @@ import sneer.foundation.lang.PickyConsumer;
 
 class Bubble {
 
-	public static <STATE_MACHINE> STATE_MACHINE wrapStateMachine(Prevayler prevayler) {
+	static <STATE_MACHINE> STATE_MACHINE wrapStateMachine(Prevayler prevayler) {
 		Object stateMachine = prevayler.prevalentSystem();
 		return (STATE_MACHINE)wrap(stateMachine, prevayler, new ArrayList<String>());
 	}

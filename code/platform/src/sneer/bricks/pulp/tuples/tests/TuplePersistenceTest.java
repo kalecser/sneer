@@ -19,7 +19,7 @@ import sneer.foundation.environments.Environments;
 public class TuplePersistenceTest extends BrickTest {
 
 	@Test
-	public void testTuplePersistence() {
+	public void tuplePersistence() {
 		runInNewEnvironment(new Runnable() { @Override public void run() {
 			TupleSpace subject1 = createSubject();
 	
@@ -42,6 +42,7 @@ public class TuplePersistenceTest extends BrickTest {
 
 		}});
 	}
+
 	
 	@Test
 	public void filesAreClosedUponCrash() throws IOException {
