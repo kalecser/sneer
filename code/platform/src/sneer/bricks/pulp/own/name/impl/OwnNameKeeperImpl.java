@@ -34,6 +34,7 @@ class OwnNameKeeperImpl implements OwnNameKeeper {
 		restore();
 		
 		_refToAvoidGc = name().addReceiver(new Consumer<String>(){ @Override public void consume(String name) {
+			if ("".equals(name)) return;
 			save(name);
 		}});
 	}
