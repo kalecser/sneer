@@ -6,7 +6,7 @@ import dfcsantos.songplayer.SongContract;
 
 class SongContractImpl implements SongContract {
 	
-	private final Thread _playingThread;
+	private final Thread _playingThread; //Refactor: Pass a pausable Stream to JLayer instead of suspending the thread.
 	private Status _status;
 	
 	

@@ -1,6 +1,10 @@
 ﻿TASKS
 =========
 
+	- [Daniel] Standardize: Choose "Track" or "Song".
+
+	- [Klaus] Fix LightType.CONFIRMATION
+
 	- [Klaus] Get Sandro to cover functional tests with clover. 
 
 	- [Klaus] Hudson Linux Reboot with Sandro.

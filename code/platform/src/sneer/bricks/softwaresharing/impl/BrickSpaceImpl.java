@@ -22,7 +22,6 @@ import sneer.bricks.softwaresharing.publisher.SrcFolderHash;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Predicate;
 
 
 class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
@@ -95,12 +94,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	}
 
 	private void receiveSrcFoldersFromPeers() {
-		_tupleSubscription = my(TupleSpace.class).addSubscription(SrcFolderHash.class, this, new Predicate<SrcFolderHash>() {
-			@Override
-			public boolean evaluate(SrcFolderHash tuple) {
-				return true;
-			}
-		});
+		_tupleSubscription = my(TupleSpace.class).addSubscription(SrcFolderHash.class, this);
 	}
 
 }

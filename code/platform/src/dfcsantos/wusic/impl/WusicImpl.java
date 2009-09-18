@@ -9,6 +9,9 @@ import java.util.Enumeration;
 
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.bricks.pulp.events.EventNotifier;
+import sneer.bricks.pulp.events.EventNotifiers;
+import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -17,12 +20,13 @@ import dfcsantos.songplayer.SongContract;
 import dfcsantos.songplayer.SongPlayer;
 import dfcsantos.wusic.Wusic;
 
-public class WusicImpl  implements Wusic {
+public class WusicImpl implements Wusic {
 
 	private Enumeration<Track> _playlist;
 	private final Register<String> _songPlaying = my(Signals.class).newRegister("");
 	private SongContract _currentSongContract;
 	private SongPlayer _songPlayer = my(SongPlayer.class);
+	private EventNotifier<Track> _songPlayed = my(EventNotifiers.class).newInstance();
 	
 	{	
 		setMySongsFolder(defaultSongsFolder());
@@ -55,6 +59,12 @@ public class WusicImpl  implements Wusic {
 		stop();
 		playNextSong();
 	}
+	
+	
+	@Override
+	public EventSource<Track> songPlayed() {
+		return _songPlayed.output();
+	}
 
 
 	private void playNextSong() {
@@ -72,14 +82,14 @@ public class WusicImpl  implements Wusic {
 	}
 
 
-	private void play(Track songToPlay) {
-		FileInputStream stream = openFileStream(songToPlay);
+	private void play(final Track song) {
+		FileInputStream stream = openFileStream(song);
 		if (stream == null) return;
 		_currentSongContract = _songPlayer.startPlaying(stream, new Runnable() { @Override public void run() {
+			_songPlayed.notifyReceivers(song);
 			playNextSong();
 		}});
 	}
-
 
 
 	private FileInputStream openFileStream(Track songToPlay) {
