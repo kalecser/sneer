@@ -18,6 +18,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import dfcsantos.songplayer.SongContract;
 import dfcsantos.songplayer.SongPlayer;
+import dfcsantos.wusic.Track;
 import dfcsantos.wusic.Wusic;
 
 public class WusicImpl implements Wusic {

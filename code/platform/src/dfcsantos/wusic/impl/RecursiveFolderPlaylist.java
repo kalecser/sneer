@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 import sneer.bricks.hardware.io.IO;
+import dfcsantos.wusic.Track;
 
 
 class RecursiveFolderPlaylist implements Enumeration<Track> {
@@ -29,7 +30,7 @@ class RecursiveFolderPlaylist implements Enumeration<Track> {
 	
 	private Track randomTrack() {
 		int indexOfRandom = _random.nextInt( _trackFiles.size());
-		return new Track(_trackFiles.get(indexOfRandom));
+		return new TrackImpl(_trackFiles.get(indexOfRandom));
 	}
 
 	

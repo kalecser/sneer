@@ -13,8 +13,8 @@ import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.wusic.SongPlayed;
+import dfcsantos.wusic.Track;
 import dfcsantos.wusic.Wusic;
-import dfcsantos.wusic.impl.Track;
 import dfcsantos.wusic.songs.server.SongServer;
 
 public class SongServerImpl implements SongServer {

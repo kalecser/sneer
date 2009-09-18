@@ -6,7 +6,6 @@ import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.foundation.brickness.Brick;
-import dfcsantos.wusic.impl.Track;
 
 @Snapp
 @Brick
