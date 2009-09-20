@@ -18,7 +18,7 @@ class TrackPlayerImpl implements TrackPlayer {
 	private Player _player;
 	
 	@Override
-	public TrackContract startPlaying(InputStream stream, Runnable toCallWhenFinished) {
+	public TrackContract startPlaying(InputStream stream, final Runnable toCallWhenFinished) {
 		BufferedInputStream bis = new BufferedInputStream(stream);
 		try {
 			_player = new Player(bis);
@@ -32,6 +32,7 @@ class TrackPlayerImpl implements TrackPlayer {
 			playerThread.value = Thread.currentThread();
 			try {
 				_player.play();
+				toCallWhenFinished.run();
 			} catch (JavaLayerException e) {
 				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e);
 			}
