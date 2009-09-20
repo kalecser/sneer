@@ -11,15 +11,15 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface Wusic {
 
-	public enum SongSource { MY_SONGS, PEER_SONGS_STAGING_AREA }
+	public enum TrackSource { MY_TRACKS, PEER_TRACKS_STAGING_AREA }
 	
 	void start();
 	
-	void setMySongsFolder(File selectedFolder);
-	void chooseSongSource(SongSource source);
+	void setMyTracksFolder(File selectedFolder);
+	void chooseTrackSource(TrackSource source);
 	
-	Signal<String> songPlaying();
-	EventSource<Track> songPlayed();
+	Signal<String> trackPlaying();
+	EventSource<Track> trackPlayed();
 
 	void pauseResume();
 	void skip();

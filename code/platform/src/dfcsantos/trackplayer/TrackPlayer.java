@@ -1,13 +1,13 @@
-package dfcsantos.songplayer;
+package dfcsantos.trackplayer;
 
 import java.io.InputStream;
 
 import sneer.foundation.brickness.Brick;
 
 @Brick
-public interface SongPlayer {
+public interface TrackPlayer {
 
-	SongContract startPlaying(InputStream stream, Runnable toCallWhenFinished);
+	TrackContract startPlaying(InputStream stream, Runnable toCallWhenFinished);
 }
 /*
  

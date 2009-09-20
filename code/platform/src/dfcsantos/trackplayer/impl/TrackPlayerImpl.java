@@ -1,4 +1,4 @@
-package dfcsantos.songplayer.impl;
+package dfcsantos.trackplayer.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -9,16 +9,16 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.foundation.lang.ByRef;
-import dfcsantos.songplayer.SongContract;
-import dfcsantos.songplayer.SongPlayer;
+import dfcsantos.trackplayer.TrackContract;
+import dfcsantos.trackplayer.TrackPlayer;
 
 
-class SongPlayerImpl implements SongPlayer {
+class TrackPlayerImpl implements TrackPlayer {
 
 	private Player _player;
 	
 	@Override
-	public SongContract startPlaying(InputStream stream, Runnable toCallWhenFinished) {
+	public TrackContract startPlaying(InputStream stream, Runnable toCallWhenFinished) {
 		BufferedInputStream bis = new BufferedInputStream(stream);
 		try {
 			_player = new Player(bis);
@@ -28,7 +28,7 @@ class SongPlayerImpl implements SongPlayer {
 		
 		final ByRef<Thread> playerThread = ByRef.newInstance();
 		
-		my(Threads.class).startDaemon("Song Player", new Runnable() { @Override public void run() {
+		my(Threads.class).startDaemon("Track Player", new Runnable() { @Override public void run() {
 			playerThread.value = Thread.currentThread();
 			try {
 				_player.play();
@@ -37,7 +37,7 @@ class SongPlayerImpl implements SongPlayer {
 			}
 		}});
 		
-		return new SongContractImpl(playerThread.value);
+		return new TrackContractImpl(playerThread.value);
 	}
 
 }

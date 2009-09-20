@@ -44,8 +44,8 @@ class WusicGuiImpl000 implements WusicGui {
 
 	
 	private Signal<String> title() {
-		return my(Signals.class).adapt(Wusic.songPlaying(), new Functor<String, String>() { @Override public String evaluate(String song) {
-			return "Wusic :: " + song;
+		return my(Signals.class).adapt(Wusic.trackPlaying(), new Functor<String, String>() { @Override public String evaluate(String track) {
+			return "Wusic :: " + track;
 		}});
 	}
 	

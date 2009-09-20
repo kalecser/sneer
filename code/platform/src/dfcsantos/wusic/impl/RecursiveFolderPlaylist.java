@@ -19,11 +19,11 @@ class RecursiveFolderPlaylist implements Enumeration<Track> {
 	
 	
 	RecursiveFolderPlaylist(File folder) {
-		_trackFiles = searchSongs(folder);
+		_trackFiles = searchTracks(folder);
 	}
 	
 	
-	private List<File> searchSongs(File folder) {
+	private List<File> searchTracks(File folder) {
 		return new ArrayList<File>(my(IO.class).files().listFiles(folder, new String[] {"mp3","MP3"}, true));
 	}
 

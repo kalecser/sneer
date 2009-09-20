@@ -16,31 +16,31 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import dfcsantos.songplayer.SongContract;
-import dfcsantos.songplayer.SongPlayer;
+import dfcsantos.trackplayer.TrackContract;
+import dfcsantos.trackplayer.TrackPlayer;
 import dfcsantos.wusic.Track;
 import dfcsantos.wusic.Wusic;
 
 public class WusicImpl implements Wusic {
 
 	private Enumeration<Track> _playlist;
-	private final Register<String> _songPlaying = my(Signals.class).newRegister("");
-	private SongContract _currentSongContract;
-	private SongPlayer _songPlayer = my(SongPlayer.class);
-	private EventNotifier<Track> _songPlayed = my(EventNotifiers.class).newInstance();
+	private final Register<String> _trackPlaying = my(Signals.class).newRegister("");
+	private TrackContract _currentTrackContract;
+	private TrackPlayer _trackPlayer = my(TrackPlayer.class);
+	private EventNotifier<Track> _trackPlayed = my(EventNotifiers.class).newInstance();
 	
 	{	
-		setMySongsFolder(defaultSongsFolder());
+		setMyTracksFolder(defaultTracksFolder());
 	}
 	
 	@Override
-	public void setMySongsFolder(File playlistFolder) {
+	public void setMyTracksFolder(File playlistFolder) {
 		_playlist = new RecursiveFolderPlaylist(playlistFolder);
 	}
 
 	
 	
-	private File defaultSongsFolder() {
+	private File defaultTracksFolder() {
 		File result = new File(my(FolderConfig.class).storageFolder().get() ,"media/songs");
 		result.mkdirs();
 		return result;
@@ -50,31 +50,31 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void pauseResume(){
-		_currentSongContract.pauseResume();
+		_currentTrackContract.pauseResume();
 	}
 	
 
 	@Override
 	public void skip() {
 		stop();
-		playNextSong();
+		playNextTrack();
 	}
 	
 	
 	@Override
-	public EventSource<Track> songPlayed() {
-		return _songPlayed.output();
+	public EventSource<Track> trackPlayed() {
+		return _trackPlayed.output();
 	}
 
 
-	private void playNextSong() {
-		Track songToPlay = nextSong();
-		if (songToPlay == null) return;
-		play(songToPlay);
+	private void playNextTrack() {
+		Track trackToPlay = nextTrack();
+		if (trackToPlay == null) return;
+		play(trackToPlay);
 	}
 
 
-	private Track nextSong()  {
+	private Track nextTrack()  {
 		if (!_playlist.hasMoreElements()) {
 			my(BlinkingLights.class).turnOn(LightType.WARN, "No songs found", "Please choose a folder with MP3 files in it or in its subfolders.", 10000);
 		}
@@ -82,39 +82,39 @@ public class WusicImpl implements Wusic {
 	}
 
 
-	private void play(final Track song) {
-		FileInputStream stream = openFileStream(song);
+	private void play(final Track track) {
+		FileInputStream stream = openFileStream(track);
 		if (stream == null) return;
-		_currentSongContract = _songPlayer.startPlaying(stream, new Runnable() { @Override public void run() {
-			_songPlayed.notifyReceivers(song);
-			playNextSong();
+		_currentTrackContract = _trackPlayer.startPlaying(stream, new Runnable() { @Override public void run() {
+			_trackPlayed.notifyReceivers(track);
+			playNextTrack();
 		}});
 	}
 
 
-	private FileInputStream openFileStream(Track songToPlay) {
+	private FileInputStream openFileStream(Track trackToPlay) {
 		try {
-			return new FileInputStream(songToPlay.file());
+			return new FileInputStream(trackToPlay.file());
 		} catch (FileNotFoundException e) {
-			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to find file " + songToPlay.file() , "File might have been deleted manually.", 15000);
+			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to find file " + trackToPlay.file() , "File might have been deleted manually.", 15000);
 			return null;
 		}
 	}
 
 
 	private void stop() {
-		if (_currentSongContract != null)
-			_currentSongContract.dispose();
+		if (_currentTrackContract != null)
+			_currentTrackContract.dispose();
 	}
 
 	@Override
-	public Signal<String> songPlaying() {
-		return _songPlaying.output();
+	public Signal<String> trackPlaying() {
+		return _trackPlaying.output();
 	}
 
 
 	@Override
-	public void chooseSongSource(SongSource source) {
+	public void chooseTrackSource(TrackSource source) {
 		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
@@ -134,6 +134,6 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void start() {
-		playNextSong();
+		playNextTrack();
 	}
 }

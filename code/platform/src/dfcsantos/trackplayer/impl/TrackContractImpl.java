@@ -1,16 +1,16 @@
-package dfcsantos.songplayer.impl;
+package dfcsantos.trackplayer.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.io.log.Logger;
-import dfcsantos.songplayer.SongContract;
+import dfcsantos.trackplayer.TrackContract;
 
-class SongContractImpl implements SongContract {
+class TrackContractImpl implements TrackContract {
 	
 	private final Thread _playingThread; //Refactor: Pass a pausable Stream to JLayer instead of suspending the thread.
 	private Status _status;
 	
 	
-	SongContractImpl(Thread playingThread){
+	TrackContractImpl(Thread playingThread){
 		_playingThread = playingThread;
 		_status = Status.NEW;
 	}

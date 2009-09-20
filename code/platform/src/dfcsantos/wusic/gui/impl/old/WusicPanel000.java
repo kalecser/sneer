@@ -31,7 +31,7 @@ class WusicPanel000 extends javax.swing.JPanel {
 	private final JFileChooser _selectFolderFileChooser;
 
 	{
-		playingLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.songPlaying()).getMainWidget();
+		playingLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.trackPlaying()).getMainWidget();
 		playButton = new javax.swing.JButton();
 		skipButton = new javax.swing.JButton();
 		pauseButton = new javax.swing.JButton();
@@ -58,7 +58,7 @@ class WusicPanel000 extends javax.swing.JPanel {
 		}});
 		_selectFolderFileChooser = my(FileChoosers.class).newFileChooser(new Consumer<File>() { @Override public void consume(File selectedFolder) {
 			if (selectedFolder == null) return;
-			Wusic.setMySongsFolder(selectedFolder);
+			Wusic.setMyTracksFolder(selectedFolder);
 			Wusic.skip();
 		}});
 		_selectFolderFileChooser.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);

@@ -4,7 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.skin.main.menu.MainMenu;
 import sneer.foundation.environments.Environments;
 import dfcsantos.wusic.Wusic;
-import dfcsantos.wusic.Wusic.SongSource;
+import dfcsantos.wusic.Wusic.TrackSource;
 import dfcsantos.wusic.gui.WusicGui;
 
 /**
@@ -30,9 +30,9 @@ public class WusicGuiImpl extends javax.swing.JFrame implements WusicGui{
 
     private void initComponents() {
 
-        songsSource = new javax.swing.ButtonGroup();
-        mySongs = new javax.swing.JRadioButton();
-        songsFromPeers = new javax.swing.JRadioButton();
+        tracksSource = new javax.swing.ButtonGroup();
+        myTracks = new javax.swing.JRadioButton();
+        tracksFromPeers = new javax.swing.JRadioButton();
         playingLabel = new javax.swing.JLabel();
         pauseButton = new javax.swing.JButton();
         skipButton = new javax.swing.JButton();
@@ -40,26 +40,26 @@ public class WusicGuiImpl extends javax.swing.JFrame implements WusicGui{
         noWayButton = new javax.swing.JButton();
         mainMenuBar = new javax.swing.JMenuBar();
         mainMenu = new javax.swing.JMenu();
-        chooseMySongsFolder = new javax.swing.JMenuItem();
+        chooseMyTracksFolder = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Wusic");
 
-        songsSource.add(mySongs);
-        mySongs.setSelected(true);
-        mySongs.setText("Play My Songs");
-        mySongs.setName("mySongs"); // NOI18N
-        mySongs.addActionListener(new java.awt.event.ActionListener() {
+        tracksSource.add(myTracks);
+        myTracks.setSelected(true);
+        myTracks.setText("Play My Songs");
+        myTracks.setName("mySongs"); // NOI18N
+        myTracks.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mySongsActionPerformed();
+                myTracksActionPerformed();
             }
         });
 
-        songsSource.add(songsFromPeers);
-        songsFromPeers.setText("Play Songs From Peers");
-        songsFromPeers.addActionListener(new java.awt.event.ActionListener() {
+        tracksSource.add(tracksFromPeers);
+        tracksFromPeers.setText("Play Songs From Peers");
+        tracksFromPeers.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                songsFromPeersActionPerformed();
+                tracksFromPeersActionPerformed();
             }
         });
 
@@ -96,15 +96,15 @@ public class WusicGuiImpl extends javax.swing.JFrame implements WusicGui{
 
         mainMenu.setText("File");
 
-        chooseMySongsFolder.setText("Choose Song Folder");
-        chooseMySongsFolder.setName("chooseSongFolderMenu"); // NOI18N
-        chooseMySongsFolder.addActionListener(new java.awt.event.ActionListener() {
+        chooseMyTracksFolder.setText("Choose Song Folder");
+        chooseMyTracksFolder.setName("chooseSongFolderMenu"); // NOI18N
+        chooseMyTracksFolder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chooseMySongsFolderActionPerformed();
+                chooseMyTracksFolderActionPerformed();
             }
         });
-        mainMenu.add(chooseMySongsFolder);
-        chooseMySongsFolder.getAccessibleContext().setAccessibleName("chooseSongFolderMenu");
+        mainMenu.add(chooseMyTracksFolder);
+        chooseMyTracksFolder.getAccessibleContext().setAccessibleName("chooseSongFolderMenu");
 
         mainMenuBar.add(mainMenu);
 
@@ -118,8 +118,8 @@ public class WusicGuiImpl extends javax.swing.JFrame implements WusicGui{
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(playingLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
-                    .addComponent(mySongs, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(songsFromPeers, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(myTracks, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tracksFromPeers, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(pauseButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -133,9 +133,9 @@ public class WusicGuiImpl extends javax.swing.JFrame implements WusicGui{
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(mySongs)
+                .addComponent(myTracks)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(songsFromPeers)
+                .addComponent(tracksFromPeers)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(playingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -166,29 +166,29 @@ public class WusicGuiImpl extends javax.swing.JFrame implements WusicGui{
         Wusic.noWay();
     }
 
-    private void mySongsActionPerformed() {
-        Wusic.chooseSongSource(SongSource.MY_SONGS);
+    private void myTracksActionPerformed() {
+        Wusic.chooseTrackSource(TrackSource.MY_TRACKS);
     }
 
-    private void songsFromPeersActionPerformed() {
-        Wusic.chooseSongSource(SongSource.PEER_SONGS_STAGING_AREA);
+    private void tracksFromPeersActionPerformed() {
+        Wusic.chooseTrackSource(TrackSource.PEER_TRACKS_STAGING_AREA);
     }
 
-    private void chooseMySongsFolderActionPerformed() {
+    private void chooseMyTracksFolderActionPerformed() {
         // TODO add your handling code here:
     }
 
-    private javax.swing.JMenuItem chooseMySongsFolder;
+    private javax.swing.JMenuItem chooseMyTracksFolder;
     private javax.swing.JMenu mainMenu;
     private javax.swing.JMenuBar mainMenuBar;
     private javax.swing.JButton meTooButton;
-    private javax.swing.JRadioButton mySongs;
+    private javax.swing.JRadioButton myTracks;
     private javax.swing.JButton noWayButton;
     private javax.swing.JButton pauseButton;
     private javax.swing.JLabel playingLabel;
     private javax.swing.JButton skipButton;
-    private javax.swing.JRadioButton songsFromPeers;
-    private javax.swing.ButtonGroup songsSource;
+    private javax.swing.JRadioButton tracksFromPeers;
+    private javax.swing.ButtonGroup tracksSource;
 
 }
 
