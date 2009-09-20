@@ -42,7 +42,6 @@ public class WusicImpl implements Wusic {
 	
 	private File defaultSongsFolder() {
 		File result = new File(my(FolderConfig.class).storageFolder().get() ,"media/songs");
-		System.err.println("Default songs folder: " + result);
 		result.mkdirs();
 		return result;
 	}

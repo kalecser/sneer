@@ -26,8 +26,8 @@ class RecursiveFolderPlaylist implements Enumeration<Track> {
 	private List<File> searchSongs(File folder) {
 		return new ArrayList<File>(my(IO.class).files().listFiles(folder, new String[] {"mp3","MP3"}, true));
 	}
-	
-	
+
+
 	private Track randomTrack() {
 		int indexOfRandom = _random.nextInt( _trackFiles.size());
 		return new TrackImpl(_trackFiles.get(indexOfRandom));
