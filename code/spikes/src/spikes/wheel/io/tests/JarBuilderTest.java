@@ -1,7 +1,10 @@
 package spikes.wheel.io.tests;
 
+import org.junit.Ignore;
+
 import sneer.foundation.testsupport.CleanTestBase;
 
+@Ignore
 public class JarBuilderTest extends CleanTestBase {
 
 //	@Test

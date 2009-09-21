@@ -80,8 +80,8 @@ public abstract class ListAnimatorDecorator extends AbstractComponentDecorator {
     }
     protected Object getPlaceholder() { return ""; }
     protected abstract void move(int fromIndex, int toIndex);
-    protected void drop(Transferable t, 
-    					int index) { 
+    protected void drop(@SuppressWarnings("unused") Transferable t, 
+    					@SuppressWarnings("unused") int index) { 
     	//ignore
     } 
     

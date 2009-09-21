@@ -50,7 +50,7 @@ public class ListAnimatorBackgroundPainter extends AbstractComponentDecorator {
 	}
 
 	private void paintBackground(Graphics g, 
-			Component parent, JComponent jc) {
+			@SuppressWarnings("unused") Component parent, JComponent jc) {
 		int x = jc.getX();
 		int y = jc.getY();
 		int w = jc.getWidth();
@@ -112,7 +112,6 @@ public class ListAnimatorBackgroundPainter extends AbstractComponentDecorator {
 		return list;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void paintForeground(Graphics g, JComponent jc) {
 		List<JComponent> opaque = (List<JComponent>) findOpaque(jc);
 		List<JComponent> db = (List<JComponent>) findDoubleBuffered(jc);

@@ -7,7 +7,7 @@ class DurableStateMachine implements StateMachine {
 	@SuppressWarnings("unused")
 	private final StateMachine _business;
 
-	DurableStateMachine(StateMachine business, String prevalenceDirectory) {
+	DurableStateMachine(StateMachine business, @SuppressWarnings("unused") String prevalenceDirectory) {
 		_business = business;
 	}
 

@@ -22,17 +22,17 @@ public class MP3 {
 		musica.play();
 	}
 
-	private File mp3;
+	private File _mp3;
 
 	private Player player;
 
 	public MP3(File mp3) {
-		this.mp3 = mp3;
+		_mp3 = mp3;
 	}
 
 	@SuppressWarnings("deprecation")
 	public void play() throws FileNotFoundException, JavaLayerException {
-		FileInputStream fis = new FileInputStream(mp3);
+		FileInputStream fis = new FileInputStream(_mp3);
 		BufferedInputStream bis = new BufferedInputStream(fis);
 		player = new Player(bis);
 

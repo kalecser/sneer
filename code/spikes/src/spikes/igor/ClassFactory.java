@@ -55,7 +55,6 @@ public class ClassFactory {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> Class<T> getClass(ClassBlueprint classBlueprint) throws CannotCompileException {
 		CtClass ctClass = classPool.makeClass(classBlueprint.getName());
 

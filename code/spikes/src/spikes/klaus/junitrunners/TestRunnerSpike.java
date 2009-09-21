@@ -6,7 +6,7 @@ import org.junit.internal.runners.JUnit4ClassRunner;
 public class TestRunnerSpike extends JUnit4ClassRunner {
 
 	
-	public TestRunnerSpike(Class<?> testClass) throws InitializationError {
+	public TestRunnerSpike(@SuppressWarnings("unused") Class<?> testClass) throws InitializationError {
 		super(TestThatPasses.class);
 	}
 	

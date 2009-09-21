@@ -10,7 +10,7 @@ public class TestSpec {
 		return null;
 	}
 	
-	public static <T> T my(Class<T> brickType) {
+	public static <T> T my(@SuppressWarnings("unused") Class<T> brickType) {
 		return null;
 	}
 

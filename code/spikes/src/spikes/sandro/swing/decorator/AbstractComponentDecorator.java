@@ -66,7 +66,7 @@ public abstract class AbstractComponentDecorator {
         return _painter.getToolTipText();
     }
     
-    public String getToolTipText(MouseEvent e) {
+    public String getToolTipText(@SuppressWarnings("unused") MouseEvent e) {
         return getToolTipText();
     }
     
