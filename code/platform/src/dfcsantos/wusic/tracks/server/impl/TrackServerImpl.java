@@ -15,9 +15,9 @@ import sneer.foundation.lang.Consumer;
 import dfcsantos.wusic.TrackPlayed;
 import dfcsantos.wusic.Track;
 import dfcsantos.wusic.Wusic;
-import dfcsantos.wusic.tracks.server.SongServer;
+import dfcsantos.wusic.tracks.server.TrackServer;
 
-public class TrackServerImpl implements SongServer {
+public class TrackServerImpl implements TrackServer {
 	
 	@SuppressWarnings("unused")	private final WeakContract _refToAvoidCG;
 
