@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Enumeration;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.events.EventNotifier;
@@ -15,7 +16,8 @@ import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.software.folderconfig.FolderConfig;
+import sneer.foundation.lang.Consumer;
+import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
 import dfcsantos.tracks.player.TrackContract;
 import dfcsantos.tracks.player.TrackPlayer;
 import dfcsantos.wusic.Track;
@@ -28,25 +30,19 @@ public class WusicImpl implements Wusic {
 	private TrackContract _currentTrackContract;
 	private TrackPlayer _trackPlayer = my(TrackPlayer.class);
 	private EventNotifier<Track> _trackPlayed = my(EventNotifiers.class).newInstance();
+	@SuppressWarnings("unused")
+	private final WeakContract _refToAvoidGC;
 	
 	{	
-		setMyTracksFolder(defaultTracksFolder());
+		_refToAvoidGC = my(OwnTracksFolderKeeper.class).ownTracksFolder().addReceiver(new Consumer<File>() {@Override public void consume(File ownTracksFolder) {
+			_playlist = new RecursiveFolderPlaylist(ownTracksFolder);
+		}});
 	}
 	
 	@Override
-	public void setMyTracksFolder(File playlistFolder) {
-		_playlist = new RecursiveFolderPlaylist(playlistFolder);
+	public void setMyTracksFolder(File ownTracksFolder) {
+		my(OwnTracksFolderKeeper.class).setOwnTracksFolder(ownTracksFolder);
 	}
-
-	
-	
-	private File defaultTracksFolder() {
-		File result = new File(my(FolderConfig.class).storageFolder().get() ,"media/songs");
-		result.mkdirs();
-		return result;
-	}
-
-
 
 	@Override
 	public void pauseResume(){

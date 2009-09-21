@@ -2,39 +2,37 @@ package dfcsantos.tracks.announcer.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 
+import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.hasher.Hasher;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.announcer.TrackAnnouncer;
-import dfcsantos.wusic.TrackPlayed;
-import dfcsantos.wusic.Track;
-import dfcsantos.wusic.Wusic;
+import dfcsantos.tracks.announcer.TrackAnnouncement;
+import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
 
 public class TrackAnnouncerImpl implements TrackAnnouncer {
 	
 	@SuppressWarnings("unused")	private final WeakContract _refToAvoidCG;
 
-
 	{
-		_refToAvoidCG = my(Wusic.class).trackPlayed().addReceiver(new Consumer<Track>() { @Override public void consume(Track track) {
-			announceTrack(track);
+		_refToAvoidCG = my(Timer.class).wakeUpNowAndEvery(60*1000, new Runnable(){@Override public void run() {
+			announceRandomTrack();
 		}});
 		
-		my(TupleSpace.class).addSubscription(TrackPlayed.class, new Consumer<TrackPlayed>() { @Override public void consume(TrackPlayed trackPlayed) {
-			consumeAnnouncement(trackPlayed);
-		}});
-
 	}
 
 	
-	private void announceTrack(final Track track) {
+	private void announceTrack(final File track) {
 		my(Threads.class).startDaemon("Announcing Played Song", new Runnable() { @Override public void run() {
 			try {
 				tryToAnnounceTrack(track);
@@ -45,15 +43,24 @@ public class TrackAnnouncerImpl implements TrackAnnouncer {
 	}
 
 
-	private void tryToAnnounceTrack(Track track) throws IOException {
-		Sneer1024 hash = my(Hasher.class).hash(track.file());
-		String path = track.file().getAbsolutePath();
-		my(TupleSpace.class).publish(new TrackPlayed(path, hash));
+	protected void announceRandomTrack() {
+
+		ArrayList<File> tracks = new ArrayList<File>(my(IO.class).files().listFiles(currentFolder(), new String[] {"mp3","MP3"}, true));
+		Random random = new Random();
+		int randomIndex = random.nextInt( tracks.size());
+		announceTrack(tracks.get(randomIndex));
 	}
 
-	
-	private void consumeAnnouncement(@SuppressWarnings("unused") TrackPlayed songPlayed) {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+
+	private File currentFolder() {
+		return my(OwnTracksFolderKeeper.class).ownTracksFolder().currentValue();
+	}
+
+
+	private void tryToAnnounceTrack(File track) throws IOException {
+		Sneer1024 hash = my(Hasher.class).hash(track);
+		String path = track.getAbsolutePath();
+		my(TupleSpace.class).publish(new TrackAnnouncement(path, hash));
 	}
 
 }
