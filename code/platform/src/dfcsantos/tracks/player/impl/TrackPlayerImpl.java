@@ -1,4 +1,4 @@
-package dfcsantos.trackplayer.impl;
+package dfcsantos.tracks.player.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -9,8 +9,8 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.foundation.lang.ByRef;
-import dfcsantos.trackplayer.TrackContract;
-import dfcsantos.trackplayer.TrackPlayer;
+import dfcsantos.tracks.player.TrackContract;
+import dfcsantos.tracks.player.TrackPlayer;
 
 
 class TrackPlayerImpl implements TrackPlayer {

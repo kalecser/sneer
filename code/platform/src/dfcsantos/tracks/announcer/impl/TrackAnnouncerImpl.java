@@ -1,4 +1,4 @@
-package dfcsantos.wusic.tracks.server.impl;
+package dfcsantos.tracks.announcer.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -12,12 +12,12 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
+import dfcsantos.tracks.announcer.TrackAnnouncer;
 import dfcsantos.wusic.TrackPlayed;
 import dfcsantos.wusic.Track;
 import dfcsantos.wusic.Wusic;
-import dfcsantos.wusic.tracks.server.TrackServer;
 
-public class TrackServerImpl implements TrackServer {
+public class TrackAnnouncerImpl implements TrackAnnouncer {
 	
 	@SuppressWarnings("unused")	private final WeakContract _refToAvoidCG;
 

@@ -1,4 +1,4 @@
-package dfcsantos.trackplayer;
+package dfcsantos.tracks.player;
 
 import java.io.InputStream;
 

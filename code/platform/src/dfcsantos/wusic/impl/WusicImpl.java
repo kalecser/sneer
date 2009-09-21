@@ -16,8 +16,8 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import dfcsantos.trackplayer.TrackContract;
-import dfcsantos.trackplayer.TrackPlayer;
+import dfcsantos.tracks.player.TrackContract;
+import dfcsantos.tracks.player.TrackPlayer;
 import dfcsantos.wusic.Track;
 import dfcsantos.wusic.Wusic;
 

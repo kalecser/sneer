@@ -1,8 +1,8 @@
-package dfcsantos.wusic.tracks.server;
+package dfcsantos.tracks.announcer;
 
 import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.foundation.brickness.Brick;
 
 @Snapp
 @Brick
-public interface TrackServer {}
+public interface TrackAnnouncer {}

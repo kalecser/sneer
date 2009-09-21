@@ -20,6 +20,6 @@
 	<classpathentry kind="lib" path="src/sneer/bricks/software/code/metaclass/asm/impl/lib/asm-all-3.1.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/diff/impl/lib/diff_match_patch.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/timing/impl/lib/TimingFramework-1.0.jar"/>
-	<classpathentry kind="lib" path="src/dfcsantos/trackplayer/impl/lib/jl1.0.1.jar"/>
+	<classpathentry kind="lib" path="src/dfcsantos/tracks/player/impl/lib/jl1.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

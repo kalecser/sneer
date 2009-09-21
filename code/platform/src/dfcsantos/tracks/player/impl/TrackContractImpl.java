@@ -1,8 +1,8 @@
-package dfcsantos.trackplayer.impl;
+package dfcsantos.tracks.player.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.io.log.Logger;
-import dfcsantos.trackplayer.TrackContract;
+import dfcsantos.tracks.player.TrackContract;
 
 class TrackContractImpl implements TrackContract {
 	
