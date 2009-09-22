@@ -1,8 +1,6 @@
 ﻿TASKS
 =========
 
-    - [Igor] Create manageable stream to allow player to pause or stop without having to resort to Thread's methods
-
 	- [Daniel] Standardize: Choose "Track" or "Song".
 
 	- [Klaus] Fix LightType.CONFIRMATION
