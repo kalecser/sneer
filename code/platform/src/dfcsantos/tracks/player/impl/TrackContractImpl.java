@@ -1,52 +1,48 @@
 package dfcsantos.tracks.player.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.hardware.io.log.Logger;
+
+import java.io.InputStream;
+
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
+import sneer.bricks.hardware.cpu.threads.Threads;
 import dfcsantos.tracks.player.TrackContract;
 
 class TrackContractImpl implements TrackContract {
-	
-	private final Thread _playingThread; //Refactor: Pass a pausable Stream to JLayer instead of suspending the thread.
-	private Status _status;
-	
-	
-	TrackContractImpl(Thread playingThread){
-		_playingThread = playingThread;
-		_status = Status.NEW;
+
+	private final PausableInputStream _trackStream;
+
+	TrackContractImpl(InputStream stream, final Runnable toCallWhenFinished) {
+		_trackStream = new PausableInputStream(stream);
+		final Player player;
+
+		try {
+			player = new Player(_trackStream);
+
+		} catch (JavaLayerException e1) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e1); // Fix Handle this exception.
+		}
+
+		my(Threads.class).startDaemon("Track Player", new Runnable() { @Override public void run() {
+			try {
+				player.play();
+				toCallWhenFinished.run();
+
+			} catch (JavaLayerException e) {
+				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e);
+			}
+		}});
 	}
-	
-	
-	@SuppressWarnings("deprecation")
+
 	@Override
 	public void pauseResume() {
-		if (_status == Status.PLAYING){
-			my(Logger.class).log("Paused...");
-			_playingThread.suspend();
-		}
-		if (_status == Status.PAUSED){
-			my(Logger.class).log("Resumed...");
-			_playingThread.resume();
-		}
+	 _trackStream.pauseResume();
 	}
-	
-	
-	@SuppressWarnings("deprecation")
+
 	@Override
 	public void dispose() {
-		_playingThread.stop();
-		_status = Status.DISPOSED;
+		_trackStream.stop();
 	}
-	
-	
-	@Override
-	public void startPlaying() {
-		_playingThread.start();
-		_status = Status.PLAYING;
-	}
-	
-	
-	@Override
-	public Status status() {
-		return _status;
-	}
+
 }
