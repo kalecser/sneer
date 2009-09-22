@@ -1,13 +1,26 @@
 package spikes.klaus;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 
 
 @SuppressWarnings("deprecation")
 public class Anything {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
+//		File classFile = new File(Anything.class.getResource("SneerJockey.class").toURI());
+		File classFile = new File("lixo35345435");
+		System.out.println(classFile);
+		classFile.createNewFile();
+		System.out.println(classFile.exists());
+		File banana = new File(classFile.getParentFile(), "banana");
+		System.out.println(banana);
+		System.out.println("Renamed: " + classFile.renameTo(banana));
+		System.out.println(classFile.exists());
+		
+		System.exit(0);
+		
 		new Daemon("Spike") { @Override public void run() {
 			while (true) {
 				new Object();
