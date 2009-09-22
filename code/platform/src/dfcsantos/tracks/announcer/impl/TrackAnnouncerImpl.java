@@ -46,6 +46,7 @@ public class TrackAnnouncerImpl implements TrackAnnouncer {
 	protected void announceRandomTrack() {
 
 		ArrayList<File> tracks = new ArrayList<File>(my(IO.class).files().listFiles(currentFolder(), new String[] {"mp3","MP3"}, true));
+		if (tracks.isEmpty()) return;
 		Random random = new Random();
 		int randomIndex = random.nextInt( tracks.size());
 		announceTrack(tracks.get(randomIndex));

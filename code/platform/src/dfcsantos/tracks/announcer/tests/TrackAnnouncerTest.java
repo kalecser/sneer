@@ -33,4 +33,5 @@ public class TrackAnnouncerTest extends BrickTest {
 		my(TrackAnnouncer.class);
 		latch.waitTillOpen();
 	}
+
 }
