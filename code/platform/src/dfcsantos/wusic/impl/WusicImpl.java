@@ -5,18 +5,13 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.Enumeration;
 
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.bricks.pulp.events.EventNotifier;
-import sneer.bricks.pulp.events.EventNotifiers;
-import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
 import dfcsantos.tracks.player.TrackContract;
 import dfcsantos.tracks.player.TrackPlayer;
@@ -25,25 +20,24 @@ import dfcsantos.wusic.Wusic;
 
 public class WusicImpl implements Wusic {
 
-	private Enumeration<Track> _playlist;
-	private final Register<String> _trackPlaying = my(Signals.class).newRegister("");
+	private TrackSourceStrategy _trackSource = OwnTracks.INSTANCE;
+
+	private final Register<Track> _trackPlaying = my(Signals.class).newRegister(null);
 	private TrackContract _currentTrackContract;
-	private TrackPlayer _trackPlayer = my(TrackPlayer.class);
-	private EventNotifier<Track> _trackPlayed = my(EventNotifiers.class).newInstance();
-	@SuppressWarnings("unused")
-	private final WeakContract _refToAvoidGC;
 	
-	{	
-		_refToAvoidGC = my(OwnTracksFolderKeeper.class).ownTracksFolder().addReceiver(new Consumer<File>() {@Override public void consume(File ownTracksFolder) {
-			_playlist = new RecursiveFolderPlaylist(ownTracksFolder);
-		}});
+	
+	@Override
+	public void start() {
+		playNextTrack();
 	}
+	
 	
 	@Override
 	public void setMyTracksFolder(File ownTracksFolder) {
 		my(OwnTracksFolderKeeper.class).setOwnTracksFolder(ownTracksFolder);
 	}
 
+	
 	@Override
 	public void pauseResume(){
 		_currentTrackContract.pauseResume();
@@ -57,32 +51,18 @@ public class WusicImpl implements Wusic {
 	}
 	
 	
-	@Override
-	public EventSource<Track> trackPlayed() {
-		return _trackPlayed.output();
-	}
-
-
 	private void playNextTrack() {
-		Track trackToPlay = nextTrack();
+		Track trackToPlay = _trackSource.nextTrack();
 		if (trackToPlay == null) return;
 		play(trackToPlay);
-	}
-
-
-	private Track nextTrack()  {
-		if (!_playlist.hasMoreElements()) {
-			my(BlinkingLights.class).turnOn(LightType.WARN, "No songs found", "Please choose a folder with MP3 files in it or in its subfolders.", 10000);
-		}
-		return _playlist.nextElement();
 	}
 
 
 	private void play(final Track track) {
 		FileInputStream stream = openFileStream(track);
 		if (stream == null) return;
-		_currentTrackContract = _trackPlayer.startPlaying(stream, new Runnable() { @Override public void run() {
-			_trackPlayed.notifyReceivers(track);
+		_trackPlaying.setter().consume(track);
+		_currentTrackContract = my(TrackPlayer.class).startPlaying(stream, new Runnable() { @Override public void run() {
 			playNextTrack();
 		}});
 	}
@@ -104,32 +84,33 @@ public class WusicImpl implements Wusic {
 	}
 
 	@Override
-	public Signal<String> trackPlaying() {
-		return _trackPlaying.output();
+	public Signal<String> trackPlayingName() {
+		return my(Signals.class).adapt(_trackPlaying.output(), new Functor<Track, String>() { @Override public String evaluate(Track track) {
+		return track == null ? "<No track playing>" : track.name();
+		}});
 	}
 
 
 	@Override
 	public void chooseTrackSource(TrackSource source) {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		_trackSource = source == TrackSource.OWN_TRACKS
+			? OwnTracks.INSTANCE
+			: PeerTracks.INSTANCE;
+		skip();
 	}
 
 
 	@Override
 	public void meToo() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		((PeerTracks)_trackSource).meToo();
 	}
 
 
 	@Override
 	public void noWay() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		Track currentTrack = _trackPlaying.output().currentValue();
+		skip();
+		_trackSource.noWay(currentTrack);
 	}
 
-
-
-	@Override
-	public void start() {
-		playNextTrack();
-	}
 }

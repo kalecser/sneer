@@ -15,7 +15,7 @@ class TrackImpl implements Track {
 	}
 	
 	@Override
-	public String info() {
+	public String name() {
 		return _info; 
 	}
 	
