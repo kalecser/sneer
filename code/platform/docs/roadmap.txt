@@ -1,7 +1,15 @@
 ﻿TASKS
 =========
 
-	- [Daniel] Standardize: Choose "Track" or "Song".
+	- Wusic
+		- [Igor] JLayer Player - Change code to implement play, pause and stop.
+		- Enable File Delete Button - Menu checkmark option.
+		- Buttons
+			- Play/Pause, Skip, Me Too :), No Way :( - Buttons for Peer Tracks mode.
+			- Play/Pause, Skip, Delete File! - Buttons for Own Tracks mode.
+			- Play/Pause - Toggle text: ">" or "||"
+		- Choose subfolder - Button to the right of "Play Own Tracks" option. 
+		- Shuffle checkbox.
 
 	- [Klaus] Fix LightType.CONFIRMATION
 
