@@ -20,7 +20,7 @@ class OwnTracksFolderKeeperImpl implements OwnTracksFolderKeeper {
 	}
 
 	private File defaultTracksFolder() {
-		File result = new File(my(FolderConfig.class).storageFolder().get() ,"media/songs");
+		File result = new File(my(FolderConfig.class).storageFolder().get() ,"media/tracks");
 		result.mkdirs();
 		return result;
 	}
