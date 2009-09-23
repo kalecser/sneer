@@ -10,7 +10,7 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface Wusic {
 
-	public enum TrackSource { MY_TRACKS, PEER_TRACKS_STAGING_AREA }
+	public enum TrackSource { OWN_TRACKS, PEER_TRACKS_STAGING_AREA }
 	
 	void start();
 	

@@ -139,7 +139,7 @@ class WusicPanel extends javax.swing.JPanel {
     }
 
     private void myTracksActionPerformed() {
-        Wusic.chooseTrackSource(TrackSource.MY_TRACKS);
+        Wusic.chooseTrackSource(TrackSource.OWN_TRACKS);
     }
 
     private void tracksFromPeersActionPerformed() {
