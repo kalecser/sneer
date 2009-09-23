@@ -27,25 +27,30 @@ public class BrickInstallerImpl implements BrickInstaller {
 /*
 
 Prepare staged
-	tmpStage
-		src
-		bin
 
-	src -> backup/src
-	tmpStage/src -> src
+	delete stage
 
-	bin -> backup/bin
-	tmpStage/bin -> bin
-	
-	delete tmpStage
+	stage
+		src copy
+		bin compile
+
 
 
 (bin)sneer.main.Sneer:
 
 	stage.exists?
-
-	bin -copy-> tmpBin
-	"jump" tmpBin
+		backup src
+		backup bin
+		
+		delete src
+		delete bin except for this
+		
+		stage/src -copy-> src
+		stage/bin -copy-> bin
+	
+	stage -> stageToDelete
+	
+	delete stageToDelete
 
 */	
 	
