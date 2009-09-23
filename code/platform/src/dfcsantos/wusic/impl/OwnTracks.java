@@ -45,8 +45,8 @@ public class OwnTracks extends TrackSourceStrategy {
 
 	@Override
 	void noWay(Track rejected) {
-		rejected.file().delete();
+		if (!rejected.file().delete())
+			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to delete track", "Unable to delete track: " + rejected.file(), 7000);
 	}
-
 
 }

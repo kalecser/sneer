@@ -12,7 +12,7 @@ class PausableInputStream extends BufferedInputStream {
 
 	private final Object _stateMonitor = new Object();
 	private boolean _isPaused;
-	private boolean _isStopped;
+	private boolean _isClosed;
 
 	PausableInputStream(InputStream inputStream) {
 		super(inputStream);
@@ -20,43 +20,48 @@ class PausableInputStream extends BufferedInputStream {
 
 	void pauseResume() {
 		synchronized (_stateMonitor) {
+			if (_isClosed) return;
 			_isPaused = !_isPaused;
 			_stateMonitor.notify();
 		}
 	}
 
-	private boolean shouldStop() {
+	@Override
+	public void close() {
+		try {
+			super.close();
+		} catch (IOException e) {}
+
 		synchronized (_stateMonitor) {
-			while (true) {
-				if (_isStopped)
-					return true;
-				if (!_isPaused)
-					return false;
-				my(Threads.class).waitWithoutInterruptions(_stateMonitor);
-			}
+			_isClosed = true;
+			_isPaused = false;
+			_stateMonitor.notify();
 		}
 	}
 
-	void stop() {
+	private void pauseIfNecessary() {
 		synchronized (_stateMonitor) {
-			_isStopped = true;
-			_stateMonitor.notify();
+			while (_isPaused)
+				my(Threads.class).waitWithoutInterruptions(_stateMonitor);
 		}
 	}
 
 	@Override
 	public synchronized int read() throws IOException {
-		return shouldStop() ? -1 : super.read(); 
+		pauseIfNecessary();
+		return super.read(); 
 	}
 
 	@Override
 	public synchronized int read(byte[] b, int off, int len) throws IOException {
-		return shouldStop() ? -1 : super.read(b, off, len);
+		pauseIfNecessary();
+		return super.read(b, off, len);
 	}
 
 	@Override
 	public int read(byte[] b) throws IOException {
-		return shouldStop() ? -1 : super.read(b);
+		pauseIfNecessary();
+		return super.read(b);
 	}
 
 }

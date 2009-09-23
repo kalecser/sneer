@@ -2,8 +2,6 @@
 =========
 
 	- Wusic
-		- [Igor] JLayer Player - Change code to implement play, pause and stop.
-		- Close file before deleting.
 		- Enable File Delete Button - Menu checkmark option.
 		- Buttons
 			- Play/Pause, Skip, Me Too :), No Way :( - Buttons for Peer Tracks mode.
@@ -12,6 +10,7 @@
 		- Number of Tracks downloaded from peers - In (parenthesis) after "Play Tracks from Peers" option.
 		- Choose subfolder - Button to the right of "Play Own Tracks" option. 
 		- Shuffle checkbox.
+		- Find another way to solve pause lag (try to use a smaller frame in player)
 
 	- [Klaus] Fix LightType.CONFIRMATION
 
