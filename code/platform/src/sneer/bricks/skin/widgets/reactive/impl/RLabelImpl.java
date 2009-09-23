@@ -10,6 +10,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
+import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
@@ -87,6 +88,6 @@ class RLabelImpl extends RPanel<JLabel> implements TextWidget<JLabel>{
 	}
 	
 	public JLabel textComponent() {
-		return _textComponent;
+		return my(WeakReferenceKeeper.class).keep(_textComponent, this);
 	}
 }
