@@ -1,12 +1,12 @@
 package dfcsantos.tracks.player.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.io.BufferedInputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
-import static sneer.foundation.environments.Environments.my;
 
 class PausableInputStream extends BufferedInputStream {
 
@@ -25,13 +25,13 @@ class PausableInputStream extends BufferedInputStream {
 		}
 	}
 
-	private void pauseIfNecessary() throws EOFException {
+	private boolean shouldStop() {
 		synchronized (_stateMonitor) {
 			while (true) {
 				if (_isStopped)
-					throw new EOFException();
+					return true;
 				if (!_isPaused)
-					break;
+					return false;
 				my(Threads.class).waitWithoutInterruptions(_stateMonitor);
 			}
 		}
@@ -46,20 +46,17 @@ class PausableInputStream extends BufferedInputStream {
 
 	@Override
 	public synchronized int read() throws IOException {
-		pauseIfNecessary();
-		return super.read();
+		return shouldStop() ? -1 : super.read(); 
 	}
 
 	@Override
 	public synchronized int read(byte[] b, int off, int len) throws IOException {
-		pauseIfNecessary();
-		return super.read(b, off, len);
+		return shouldStop() ? -1 : super.read(b, off, len);
 	}
 
 	@Override
 	public int read(byte[] b) throws IOException {
-		pauseIfNecessary();
-		return super.read(b);
+		return shouldStop() ? -1 : super.read(b);
 	}
 
 }

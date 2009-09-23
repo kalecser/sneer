@@ -27,11 +27,11 @@ class TrackContractImpl implements TrackContract {
 		my(Threads.class).startDaemon("Track Player", new Runnable() { @Override public void run() {
 			try {
 				player.play();
-				toCallWhenFinished.run();
-
 			} catch (JavaLayerException e) {
 				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e);
 			}
+
+			toCallWhenFinished.run();
 		}});
 	}
 
