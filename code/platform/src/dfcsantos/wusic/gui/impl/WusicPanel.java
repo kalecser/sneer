@@ -26,7 +26,7 @@ class WusicPanel extends javax.swing.JPanel {
     
 
 	{
-		playingLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.trackPlaying()).getMainWidget();
+		playingLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.trackPlayingName()).getMainWidget();
         tracksSource = new javax.swing.ButtonGroup();
         myTracks = new javax.swing.JRadioButton();
         tracksFromPeers = new javax.swing.JRadioButton();
@@ -38,8 +38,8 @@ class WusicPanel extends javax.swing.JPanel {
 
         tracksSource.add(myTracks);
         myTracks.setSelected(true);
-        myTracks.setText("Play My Songs");
-        myTracks.setName("mySongs"); // NOI18N
+        myTracks.setText("Play My Tracks");
+        myTracks.setName("myTracks"); // NOI18N
         myTracks.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 myTracksActionPerformed();
@@ -47,7 +47,7 @@ class WusicPanel extends javax.swing.JPanel {
         });
 
         tracksSource.add(tracksFromPeers);
-        tracksFromPeers.setText("Play Songs From Peers");
+        tracksFromPeers.setText("Play Tracks From Peers");
         tracksFromPeers.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tracksFromPeersActionPerformed();
@@ -78,7 +78,7 @@ class WusicPanel extends javax.swing.JPanel {
             }
         });
 
-        noWayButton.setText("No Way :(");
+        noWayButton.setText("Delete File!");
         noWayButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 noWayButtonActionPerformed();

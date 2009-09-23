@@ -14,7 +14,7 @@ class PeerTracks extends TrackSourceStrategy {
 	}
 
 	@Override
-	void noWay() {
+	void noWay(Track rejected) {
 		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 

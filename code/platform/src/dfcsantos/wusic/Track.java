@@ -4,7 +4,7 @@ import java.io.File;
 
 public interface Track {
 
-	String info();
+	String name();
 	File file();
 
 }

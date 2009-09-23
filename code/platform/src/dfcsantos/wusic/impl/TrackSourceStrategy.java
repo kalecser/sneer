@@ -7,6 +7,6 @@ abstract class TrackSourceStrategy {
 
 	abstract Track nextTrack();
 
-	abstract void noWay();
+	abstract void noWay(Track rejected);
 
 }

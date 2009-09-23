@@ -17,7 +17,7 @@ public interface Wusic {
 	void setMyTracksFolder(File selectedFolder);
 	void chooseTrackSource(TrackSource source);
 	
-	Signal<String> trackPlaying();
+	Signal<String> trackPlayingName();
 
 	void pauseResume();
 	void skip();

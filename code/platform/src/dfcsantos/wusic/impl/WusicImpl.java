@@ -11,6 +11,7 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
 import dfcsantos.tracks.player.TrackContract;
 import dfcsantos.tracks.player.TrackPlayer;
@@ -21,7 +22,7 @@ public class WusicImpl implements Wusic {
 
 	private TrackSourceStrategy _trackSource = OwnTracks.INSTANCE;
 
-	private final Register<String> _trackPlaying = my(Signals.class).newRegister("");
+	private final Register<Track> _trackPlaying = my(Signals.class).newRegister(null);
 	private TrackContract _currentTrackContract;
 	
 	
@@ -60,7 +61,7 @@ public class WusicImpl implements Wusic {
 	private void play(final Track track) {
 		FileInputStream stream = openFileStream(track);
 		if (stream == null) return;
-		_trackPlaying.setter().consume(track.info());
+		_trackPlaying.setter().consume(track);
 		_currentTrackContract = my(TrackPlayer.class).startPlaying(stream, new Runnable() { @Override public void run() {
 			playNextTrack();
 		}});
@@ -83,8 +84,10 @@ public class WusicImpl implements Wusic {
 	}
 
 	@Override
-	public Signal<String> trackPlaying() {
-		return _trackPlaying.output();
+	public Signal<String> trackPlayingName() {
+		return my(Signals.class).adapt(_trackPlaying.output(), new Functor<Track, String>() { @Override public String evaluate(Track track) {
+			return track.name();
+		}});
 	}
 
 
@@ -93,6 +96,7 @@ public class WusicImpl implements Wusic {
 		_trackSource = source == TrackSource.OWN_TRACKS
 			? OwnTracks.INSTANCE
 			: PeerTracks.INSTANCE;
+		skip();
 	}
 
 
@@ -104,7 +108,9 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void noWay() {
-		_trackSource.noWay();
+		Track currentTrack = _trackPlaying.output().currentValue();
+		skip();
+		_trackSource.noWay(currentTrack);
 	}
 
 }

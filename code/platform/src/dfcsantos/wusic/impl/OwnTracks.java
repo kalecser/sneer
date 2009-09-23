@@ -18,6 +18,8 @@ public class OwnTracks extends TrackSourceStrategy {
 	
 	private Enumeration<Track> _playlist;
 	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGC;
+
+	private Track _currentTrack;
 	
 	
 	{	
@@ -36,13 +38,14 @@ public class OwnTracks extends TrackSourceStrategy {
 			my(BlinkingLights.class).turnOn(LightType.WARN, "No songs found", "Please choose a folder with MP3 files in it or in its subfolders.", 10000);
 			return null;
 		}
-		return _playlist.nextElement();
+		_currentTrack = _playlist.nextElement();
+		return _currentTrack;
 	}
 
 
 	@Override
-	void noWay() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	void noWay(Track rejected) {
+		rejected.file().delete();
 	}
 
 
