@@ -1,6 +1,7 @@
 package dfcsantos.wusic.gui.impl;
 
 import static sneer.foundation.environments.Environments.my;
+import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import dfcsantos.wusic.Wusic;
 import dfcsantos.wusic.Wusic.TrackSource;
 
@@ -25,11 +26,11 @@ class WusicPanel extends javax.swing.JPanel {
     
 
 	{
-//		playingLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.trackPlaying()).getMainWidget();
+		playingLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.trackPlaying()).getMainWidget();
         tracksSource = new javax.swing.ButtonGroup();
         myTracks = new javax.swing.JRadioButton();
         tracksFromPeers = new javax.swing.JRadioButton();
-        playingLabel = new javax.swing.JLabel();
+//        playingLabel = new javax.swing.JLabel();
         pauseButton = new javax.swing.JButton();
         skipButton = new javax.swing.JButton();
         meTooButton = new javax.swing.JButton();
@@ -54,7 +55,7 @@ class WusicPanel extends javax.swing.JPanel {
         });
 
         playingLabel.setFont(new java.awt.Font("Tahoma", 2, 14));
-        playingLabel.setText("Playing Label - Playing Label 00:00");
+        //playingLabel.setText("Playing Label - Playing Label 00:00");
 
         pauseButton.setText("> / ||");
         pauseButton.addActionListener(new java.awt.event.ActionListener() {

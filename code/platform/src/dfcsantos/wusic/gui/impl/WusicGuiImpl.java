@@ -49,7 +49,7 @@ class WusicGuiImpl implements WusicGui {
 
         mainMenu.setText("File");
         chooseMyTracksFolder.setText("Choose Song Folder");
-        chooseMyTracksFolder.setName("chooseSongFolderMenu"); // NOI18N
+        chooseMyTracksFolder.setName("chooseSongFolderMenu"); // NOI18N                    Thread.sleep(100);
         chooseMyTracksFolder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chooseMyTracksFolderActionPerformed();

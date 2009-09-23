@@ -10,9 +10,6 @@ import java.util.Enumeration;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.bricks.pulp.events.EventNotifier;
-import sneer.bricks.pulp.events.EventNotifiers;
-import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -29,7 +26,6 @@ public class WusicImpl implements Wusic {
 	private final Register<String> _trackPlaying = my(Signals.class).newRegister("");
 	private TrackContract _currentTrackContract;
 	private TrackPlayer _trackPlayer = my(TrackPlayer.class);
-	private EventNotifier<Track> _trackPlayed = my(EventNotifiers.class).newInstance();
 	@SuppressWarnings("unused")
 	private final WeakContract _refToAvoidGC;
 	
@@ -57,12 +53,6 @@ public class WusicImpl implements Wusic {
 	}
 	
 	
-	@Override
-	public EventSource<Track> trackPlayed() {
-		return _trackPlayed.output();
-	}
-
-
 	private void playNextTrack() {
 		Track trackToPlay = nextTrack();
 		if (trackToPlay == null) return;
@@ -81,8 +71,8 @@ public class WusicImpl implements Wusic {
 	private void play(final Track track) {
 		FileInputStream stream = openFileStream(track);
 		if (stream == null) return;
+		_trackPlaying.setter().consume(track.info());
 		_currentTrackContract = _trackPlayer.startPlaying(stream, new Runnable() { @Override public void run() {
-			_trackPlayed.notifyReceivers(track);
 			playNextTrack();
 		}});
 	}
