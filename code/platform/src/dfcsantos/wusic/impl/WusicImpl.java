@@ -86,7 +86,7 @@ public class WusicImpl implements Wusic {
 	@Override
 	public Signal<String> trackPlayingName() {
 		return my(Signals.class).adapt(_trackPlaying.output(), new Functor<Track, String>() { @Override public String evaluate(Track track) {
-			return track.name();
+		return track == null ? "<No track playing>" : track.name();
 		}});
 	}
 

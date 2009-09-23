@@ -15,7 +15,7 @@ class WusicPanel extends javax.swing.JPanel {
 
 
     private javax.swing.JButton meTooButton;
-    private javax.swing.JRadioButton myTracks;
+    private javax.swing.JRadioButton ownTracks;
     private javax.swing.JButton noWayButton;
     private javax.swing.JButton pauseButton;
     private javax.swing.JLabel playingLabel;
@@ -28,7 +28,7 @@ class WusicPanel extends javax.swing.JPanel {
 	{
 		playingLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.trackPlayingName()).getMainWidget();
         tracksSource = new javax.swing.ButtonGroup();
-        myTracks = new javax.swing.JRadioButton();
+        ownTracks = new javax.swing.JRadioButton();
         tracksFromPeers = new javax.swing.JRadioButton();
 //        playingLabel = new javax.swing.JLabel();
         pauseButton = new javax.swing.JButton();
@@ -36,11 +36,11 @@ class WusicPanel extends javax.swing.JPanel {
         meTooButton = new javax.swing.JButton();
         noWayButton = new javax.swing.JButton();
 
-        tracksSource.add(myTracks);
-        myTracks.setSelected(true);
-        myTracks.setText("Play My Tracks");
-        myTracks.setName("myTracks"); // NOI18N
-        myTracks.addActionListener(new java.awt.event.ActionListener() {
+        tracksSource.add(ownTracks);
+        ownTracks.setSelected(true);
+        ownTracks.setText("Play Own Tracks");
+        ownTracks.setName("ownTracks"); // NOI18N
+        ownTracks.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 myTracksActionPerformed();
             }
@@ -93,7 +93,7 @@ class WusicPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(playingLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
-                    .addComponent(myTracks, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ownTracks, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tracksFromPeers, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(pauseButton)
@@ -108,7 +108,7 @@ class WusicPanel extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(myTracks)
+                .addComponent(ownTracks)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(tracksFromPeers)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
