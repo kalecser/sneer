@@ -24,6 +24,35 @@ import sneer.bricks.softwaresharing.installer.BrickInstaller;
 
 public class BrickInstallerImpl implements BrickInstaller {
 
+/*
+
+Prepare staged
+	tmpStage
+		src
+		bin
+
+	src -> backup/src
+	tmpStage/src -> src
+
+	bin -> backup/bin
+	tmpStage/bin -> bin
+	
+	delete tmpStage
+
+
+(bin)sneer.main.Sneer:
+
+	stage.exists?
+
+	bin -copy-> tmpBin
+	"jump" tmpBin
+
+*/	
+	
+	
+	
+	
+	
 	private final File _srcStage  = new File(my(FolderConfig.class).tmpFolderFor(BrickInstaller.class), "src");
 	private final File _binStage  = new File(my(FolderConfig.class).tmpFolderFor(BrickInstaller.class), "bin");
 
