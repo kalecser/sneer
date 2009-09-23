@@ -9,10 +9,10 @@ public class Anything {
 
 	public static void main(String[] args) throws Exception {
 
-//		File classFile = new File(Anything.class.getResource("SneerJockey.class").toURI());
-		File classFile = new File("lixo35345435");
+		File classFile = new File(Anything.class.getResource("Anything.class").toURI());
+//		File classFile = new File("lixo35345435");
 		System.out.println(classFile);
-		classFile.createNewFile();
+//		classFile.createNewFile();
 		System.out.println(classFile.exists());
 		File banana = new File(classFile.getParentFile(), "banana");
 		System.out.println(banana);
