@@ -3,6 +3,7 @@
 
 	- Wusic
 		- [Igor] JLayer Player - Change code to implement play, pause and stop.
+		- Close file before deleting.
 		- Enable File Delete Button - Menu checkmark option.
 		- Buttons
 			- Play/Pause, Skip, Me Too :), No Way :( - Buttons for Peer Tracks mode.
