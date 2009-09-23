@@ -8,6 +8,7 @@
 			- Play/Pause, Skip, Me Too :), No Way :( - Buttons for Peer Tracks mode.
 			- Play/Pause, Skip, Delete File! - Buttons for Own Tracks mode.
 			- Play/Pause - Toggle text: ">" or "||"
+		- Number of Tracks downloaded from peers - In (parenthesis) after "Play Tracks from Peers" option.
 		- Choose subfolder - Button to the right of "Play Own Tracks" option. 
 		- Shuffle checkbox.
 
