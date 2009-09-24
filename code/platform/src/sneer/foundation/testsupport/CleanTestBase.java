@@ -54,10 +54,20 @@ public abstract class CleanTestBase extends AssertUtils {
 			assertTmpFileExists(fileName);
 	}
 
+	protected void assertTmpFilesDontExist(String... fileNames) {
+		for (String fileName : fileNames)
+			assertTmpFileDoesntExist(fileName);
+	}
+
 
 	private void assertTmpFileExists(String fileName) {
 		File file = new File(tmpFolder(), fileName);
 		assertExists(file);
+	}
+
+	private void assertTmpFileDoesntExist(String fileName) {
+		File file = new File(tmpFolder(), fileName);
+		assertDoesNotExist(file);
 	}
 
 	@Before
@@ -220,6 +230,18 @@ public abstract class CleanTestBase extends AssertUtils {
 			}
 			if (_failure == null) keepFailure(method, thrown);
 		}
+	}
+
+	protected void createTmpFiles(String... fileNames) throws IOException {
+		for (String fileName : fileNames)
+			createTmpFile(fileName);
+	}
+
+	protected void createTmpFile(String fileName) throws IOException {
+		File file = new File(tmpFolder(), fileName);
+		if (!file.getParentFile().exists())
+			assertTrue("Unable to mkdirs: " + file.getParentFile(), file.getParentFile().mkdirs());
+		file.createNewFile();
 	}
 
 }
