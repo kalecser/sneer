@@ -47,6 +47,7 @@ public class WusicImpl implements Wusic {
 	@Override
 	public void skip() {
 		stop();
+		playNextTrack();
 	}
 	
 	
@@ -77,7 +78,8 @@ public class WusicImpl implements Wusic {
 	}
 
 
-	private void stop() {
+	@Override
+	public void stop() {
 		if (_currentTrackContract != null)
 			_currentTrackContract.dispose();
 	}

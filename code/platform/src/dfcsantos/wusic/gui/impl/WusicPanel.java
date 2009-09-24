@@ -127,7 +127,7 @@ class WusicPanel extends javax.swing.JPanel {
     }                                           
 
     private void skipButtonActionPerformed() {
-        Wusic.skip();
+        Wusic.stop();
     }
 
     private void meTooButtonActionPerformed() {
