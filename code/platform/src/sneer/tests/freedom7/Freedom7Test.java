@@ -19,6 +19,7 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 	
 //	private final JavaCompiler _compiler = my(JavaCompiler.class);
 
+	@Ignore
 	@Test (timeout = 180000)
 	public void meToo_TakesACoupleOfMinutesToRunAndRunsOnlyOnHeadlessServer() throws Exception {
 		if (!isHudsonServer()) return;

@@ -310,7 +310,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		
 		throwOnBlinkingErrors();
 		
-		commitStagedBricksInstallation();
+		//commitStagedBricksInstallation();
 		
 		startSnapps();
 		accelerateHeartbeat();
@@ -324,14 +324,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		}});
 	}
 
-	private void commitStagedBricksInstallation() {
-		try {
-			my(BrickInstaller.class).commitStagedBricksInstallation();
-		} catch (IOException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-	
 
 	@Override
 	public void copyToSourceFolder(File folderWithBricks) throws IOException {

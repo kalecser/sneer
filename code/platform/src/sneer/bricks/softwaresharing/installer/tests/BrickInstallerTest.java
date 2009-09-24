@@ -16,9 +16,7 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
-import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
@@ -103,58 +101,6 @@ public class BrickInstallerTest extends BrickTest {
 		assertSameContents(original, staged);
 	}
 
-
-	@Test (timeout = 6000)
-	public void commitStagedFiles() throws Exception {
-		
-		@SuppressWarnings("unused")
-		WeakContract blinkingErrorsContract = throwOnBlinkingErrors();
-		
-		stageBrickY();
-		
-		File nestedBrickSrc = createFile(srcFolder(), "bricks/y/nested/NestedBrick.java",
-			"package bricks.y.nested;" +
-			"public interface NestedBrick {}");
-		File nestedBrickBin = createFile(binFolder(), "bricks/y/nested/NestedBrick.class");
-
-		_subject.prepareStagedBricksInstallation();
-
-		File garbageSrc      = createFile(srcFolder(), "bricks/y/Garbage.java");
-		File garbageImplSrc  = createFile(srcFolder(), "bricks/y/impl/GarbageImpl.java");
-		File garbageTestsSrc = createFile(srcFolder(), "bricks/y/tests/GarbageTest.java");
-		File garbageBin      = createFile(binFolder(), "bricks/y/Garbage.class");
-		File garbageImplBin  = createFile(binFolder(), "bricks/y/impl/GarbageImpl.class");
-		File garbageTestsBin = createFile(binFolder(), "bricks/y/tests/GarbageTest.class");
-		File sneerGarbage    = createFile(binFolder(), "sneer/garbage/Garbage.class");
-		
-		my(Logger.class).log("Comitting...");
-		
-		_subject.commitStagedBricksInstallation();
-		
-		assertExists(
-			nestedBrickSrc,
-			nestedBrickBin,
-			binFileFor(sneer.foundation.brickness.Brick.class));
-		
-		assertDoesNotExist(
-			garbageSrc,
-			garbageImplSrc,
-			garbageTestsSrc,
-			garbageBin,
-			garbageImplBin,
-			garbageTestsBin,
-			sneerGarbage);
-	}	
-	
-	
-	private WeakContract throwOnBlinkingErrors() {
-		return my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>() { @Override public void consume(CollectionChange<Light> value) {
-			for (Light l : value.elementsAdded())
-				if (l.type() == LightType.ERROR)
-					throw new IllegalStateException(l.error());
-		}});
-	}
-	
 	
 	private void stageBrickY() throws IOException {
 		JavaSourceWriter writer = srcWriterFor(srcFolder());
@@ -171,11 +117,6 @@ public class BrickInstallerTest extends BrickTest {
 	}
 
 	
-	private File binFileFor(Class<?> clazz) {
-		return new File(binFolder(), classUtils().relativeClassFileName(clazz));
-	}
-
-	
 	private File javaFileNameAt(File rootFolder, Class<?> clazz) {
 		return new File(rootFolder, classUtils().relativeJavaFileName(clazz));
 	}
@@ -185,21 +126,6 @@ public class BrickInstallerTest extends BrickTest {
 		return my(ClassUtils.class);
 	}
 	
-	
-	private File createFile(File folder, String filename, String data) throws IOException {
-		File file = createFile(folder, filename);
-		my(IO.class).files().writeString(file, data);
-		return file;
-	}
-	
-	
-	private File createFile(File parent, String filename) throws IOException {
-		final File file = new File(parent, filename);
-		file.getParentFile().mkdirs();
-		file.createNewFile();
-		return file;
-	}
-
 	
 	private File srcFolder() {
 		return new File(tmpFolder(), "platform-src");

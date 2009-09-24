@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
@@ -27,34 +26,6 @@ public class BrickInstallerImpl implements BrickInstaller {
 	private final File _srcStage  = new File(my(FolderConfig.class).tmpFolderFor(BrickInstaller.class), "src");
 	private final File _binStage  = new File(my(FolderConfig.class).tmpFolderFor(BrickInstaller.class), "bin");
 
-	@Override
-	public void commitStagedBricksInstallation() throws IOException {
-		if (!_srcStage.exists())
-			return;
-
-		File backupFolder = createBackupFolder();
-		backup(platformSrc(), backupFolder, "src");
-		backup(platformBin(), backupFolder, "bin");
-		
-		delete(platformSrc());
-		delete(platformBin());
-		
-		my(IO.class).files().copyFolder(_srcStage, platformSrc());
-		my(IO.class).files().copyFolder(_binStage, platformBin());
-		
-		delete(_srcStage);
-		delete(_binStage);
-	}
-
-	private void backup(File folder, File backupFolder, String backupName) throws IOException {
-		File destFolder = new File(backupFolder, backupName);
-		my(IO.class).files().copyFolder(folder, destFolder);
-	}
-
-	private File createBackupFolder() {
-		File tmpFolder = my(FolderConfig.class).tmpFolderFor(BrickInstaller.class);
-		return new File(tmpFolder, "backup/" + my(Clock.class).time());
-	}
 
 	@Override
 	public void prepareStagedBricksInstallation() {
@@ -69,14 +40,12 @@ public class BrickInstallerImpl implements BrickInstaller {
 		}
 	}
 
+	
 	private void prepareStagedBin() throws IOException, BrickCompilerException {
 		my(Builder.class).build(_srcStage, _binStage);
 	}
 	
-	private File platformBin() {
-		return my(FolderConfig.class).platformBinFolder().get();
-	}
-	
+
 	private File platformSrc() {
 		return my(FolderConfig.class).platformSrcFolder().get();
 	}
