@@ -12,6 +12,8 @@
 		- Shuffle checkbox.
 		- Find another way to solve pause lag (try to use a smaller frame in player)
 
+	- SneerJockey - Extract from Sneer so it can be updated (Sneer itself is not updatable).
+
 	- sneer.installer.Folders - Eliminate
 
 	- [Klaus] Fix LightType.CONFIRMATION
