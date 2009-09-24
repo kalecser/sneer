@@ -1,5 +1,9 @@
 package sneer.main;
 
+import static sneer.main.SneerCodeFolders.PLATFORM_CODE;
+import static sneer.main.SneerCodeFolders.PLATFORM_CODE_BACKUP;
+import static sneer.main.SneerCodeFolders.PLATFORM_CODE_STAGE;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileFilter;
@@ -10,10 +14,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
-
 
 public class Sneer {
 
@@ -48,18 +53,19 @@ public class Sneer {
 	}
 
 	
-	
-	private static void installStagedCodeIfNecessary() {
-		//if (!stageFolder().exists()) return;
-		//throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	private static void installStagedCodeIfNecessary() throws IOException {
+		if (!PLATFORM_CODE_STAGE.exists()) return;
+		installStagedCode(PLATFORM_CODE_STAGE, newBackupFolder(), PLATFORM_CODE);
 	}
 
 	
-	private static File stageFolder() {
-		return null;
-		//return new SneerFolders
+	private static File newBackupFolder() {
+		String now = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+		File result = new File(PLATFORM_CODE_BACKUP, now);
+		if (!result.mkdirs()) throw new IllegalStateException("Unable to mkdirs: " + result);
+		return result;
 	}
-	
+
 
 	public static void installStagedCode(File stageFolder, File backupFolder, File codeFolder) throws IOException {
 		copyDirectory(codeFolder, backupFolder, null);

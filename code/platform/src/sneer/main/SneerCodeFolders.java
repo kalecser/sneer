@@ -6,9 +6,9 @@ public class SneerCodeFolders {
 
 	public static final File SNEER_HOME = sneerHome();
 	public static final File CODE                 = new File(SNEER_HOME, "code");
-	public static final File PLATFORM_CODE        = new File(SNEER_HOME, "code/platform");
-	public static final File PLATFORM_CODE_BACKUP = new File(SNEER_HOME, "code/backup");
-	public static final File PLATFORM_CODE_STAGE  = new File(SNEER_HOME, "code/stage");
+	public static final File PLATFORM_CODE        = new File(CODE, "platform");
+	public static final File PLATFORM_CODE_BACKUP = new File(CODE, "backup");
+	public static final File PLATFORM_CODE_STAGE  = new File(CODE, "stage");
 
 	
 	private static File sneerHome() {
