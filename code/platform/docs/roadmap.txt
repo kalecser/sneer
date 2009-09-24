@@ -31,8 +31,7 @@
 	- Metoo
 		- [Sandro] Gui
 		- [Klaus and Bamboo] Business
-			- Test that backup of platform src and bin is being done before install.
-			- Make staging atomic by using directory rename only after compilation is successful.
+			- Unignore Freedom7.
 			- Brick States - All
 			- Hierarchical View - Consider groups of bricks (brick package at any level, examples: bricks.hardware, bricks.software, bricks.hardware.io, etc) as an optional grouping for versioning and downloading from friends, not only individual bricks.
 				- Do not allow circular dependencies among any level of groups of bricks and voilà: the world is free of cyclic dependencies.
