@@ -2,6 +2,10 @@
 =========
 
 	- Wusic
+		- Tracks Folder - Make configurable.
+		- Play Tracks From Peers
+			- Play from /tracks/candidates
+			- Me Too - Copy to /tracks/
 		- Enable File Delete Button - Menu checkmark option.
 		- Buttons
 			- Play/Pause, Skip, Me Too :), No Way :( - Buttons for Peer Tracks mode.
