@@ -12,6 +12,8 @@
 		- Shuffle checkbox.
 		- Find another way to solve pause lag (try to use a smaller frame in player)
 
+	- sneer.installer.Folders - Eliminate
+
 	- [Klaus] Fix LightType.CONFIRMATION
 
 	- [Klaus] Get Sandro to cover functional tests with clover. 

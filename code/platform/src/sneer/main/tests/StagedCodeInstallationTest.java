@@ -51,6 +51,8 @@ public class StagedCodeInstallationTest extends CleanTestBase {
 			"code/src/sneer/main/Sneer.java",
 			"code/bin/sneer/main/Sneer.class",
 			"code/bin/sneer/main/ExclusionFilter.class",
+			"code/src/sneer/main/SneerCodeFolders.java",
+			"code/bin/sneer/main/SneerCodeFolders.class",
 			"code/src/toBeDeleted.java",
 			"code/bin/toBeDeleted.class",
 			

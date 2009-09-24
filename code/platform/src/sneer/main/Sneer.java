@@ -50,11 +50,17 @@ public class Sneer {
 	
 	
 	private static void installStagedCodeIfNecessary() {
-		//if (!stageFolder.exists()) return;
+		//if (!stageFolder().exists()) return;
 		//throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 	
+	private static File stageFolder() {
+		return null;
+		//return new SneerFolders
+	}
+	
+
 	public static void installStagedCode(File stageFolder, File backupFolder, File codeFolder) throws IOException {
 		copyDirectory(codeFolder, backupFolder, null);
 		deleteCode(codeFolder);
@@ -67,7 +73,9 @@ public class Sneer {
 		deleteFolder(codeFolder, new ExclusionFilter(
 			existingFile(codeFolder, "src/sneer/main/Sneer.java"),
 			existingFile(codeFolder, "bin/sneer/main/Sneer.class"),
-			existingFile(codeFolder, "bin/sneer/main/ExclusionFilter.class")
+			existingFile(codeFolder, "bin/sneer/main/ExclusionFilter.class"),
+			existingFile(codeFolder, "src/sneer/main/SneerCodeFolders.java"),
+			existingFile(codeFolder, "bin/sneer/main/SneerCodeFolders.class")
 		));
 	}
 

@@ -1,5 +1,7 @@
 package sneer.installer;
 
+import static sneer.main.SneerCodeFolders.SNEER_HOME;
+
 import java.io.File;
 
 import sneer.main.SneerFolders;
