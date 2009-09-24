@@ -49,7 +49,6 @@ public class SneerCommunity implements SovereignCommunity {
 		File sneerHome = rootFolder(name);
 		File dataFolder = makeFolder(sneerHome, "data");
 		File tmpFolder = makeFolder(sneerHome, "tmp");
-		File ownBin = makeFolder(sneerHome, "platform/own");
 		File privatePlatformBin = makeFolder(sneerHome, "platform/bin");
 		File privatePlatformSrc = makeFolder(sneerHome, "platform/src");
 		File sharedPlatfromBin = my(ClassUtils.class).classpathRootFor(SneerCommunity.class);
@@ -60,7 +59,7 @@ public class SneerCommunity implements SovereignCommunity {
 		Object partyImpl = EnvironmentUtils.retrieveFrom(container, loadProbeClassUsing(apiClassLoader));
 		final SneerParty party = (SneerParty)ProxyInEnvironment.newInstance(container, partyImpl);
 		
-		party.configDirectories(dataFolder, tmpFolder, ownBin, privatePlatformSrc, privatePlatformBin);
+		party.configDirectories(dataFolder, tmpFolder, privatePlatformSrc, privatePlatformBin);
 		party.setOwnName(name);
 		party.setSneerPort(port);
 
