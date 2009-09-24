@@ -38,19 +38,15 @@ public class BrickInstallerTest extends BrickTest {
 	
 	
 	@Before
-	public void setUpPlatform() throws IOException {
-		
-		binFolder().mkdirs();
+	public void setUpSrc() throws IOException {
 		srcFolder().mkdirs();
 		
-		my(FolderConfig.class).platformBinFolder().set(binFolder());
 		my(FolderConfig.class).platformSrcFolder().set(srcFolder());
 		
 		copyClassesToSrcFolder(
 			sneer.foundation.brickness.Brick.class,
 			sneer.foundation.brickness.Nature.class,
 			sneer.foundation.brickness.ClassDefinition.class);
-		
 	}
 	
 	
@@ -130,12 +126,6 @@ public class BrickInstallerTest extends BrickTest {
 	private File srcFolder() {
 		return new File(tmpFolder(), "platform-src");
 	}
-
-
-	private File binFolder() {
-		return new File(tmpFolder(), "platform-bin");
-	}
-
 
 	private void assertStagedFilesExist(String... fileNames) {
 		for (String fileName : fileNames) assertStagedFileExists(fileName);
