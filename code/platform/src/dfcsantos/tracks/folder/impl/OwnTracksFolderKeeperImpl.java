@@ -16,7 +16,7 @@ class OwnTracksFolderKeeperImpl implements OwnTracksFolderKeeper {
 
 	@Override
 	public Signal<File> ownTracksFolder() {
-		return _ownTracksFolder .output();
+		return _ownTracksFolder.output();
 	}
 
 	private File defaultTracksFolder() {

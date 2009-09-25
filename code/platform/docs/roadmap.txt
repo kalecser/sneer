@@ -2,7 +2,6 @@
 =========
 
 	- Wusic
-		- Tracks Folder - Make configurable.
 		- Play Tracks From Peers
 			- Play from /tracks/candidates
 			- Me Too - Copy to /tracks/

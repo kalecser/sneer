@@ -20,43 +20,37 @@ import dfcsantos.wusic.Wusic;
 
 public class WusicImpl implements Wusic {
 
-	private TrackSourceStrategy _trackSource = OwnTracks.INSTANCE;
-
 	private final Register<Track> _trackPlaying = my(Signals.class).newRegister(null);
+	private TrackSourceStrategy _trackSource = OwnTracks.INSTANCE;
 	private TrackContract _currentTrackContract;
-	
-	
+
 	@Override
 	public void start() {
 		playNextTrack();
 	}
-	
-	
+
 	@Override
 	public void setMyTracksFolder(File ownTracksFolder) {
 		my(OwnTracksFolderKeeper.class).setOwnTracksFolder(ownTracksFolder);
+		stop();
 	}
 
-	
 	@Override
 	public void pauseResume(){
 		_currentTrackContract.pauseResume();
 	}
-	
 
 	@Override
 	public void skip() {
 		stop();
 		playNextTrack();
 	}
-	
-	
+
 	private void playNextTrack() {
 		Track trackToPlay = _trackSource.nextTrack();
 		if (trackToPlay == null) return;
 		play(trackToPlay);
 	}
-
 
 	private void play(final Track track) {
 		FileInputStream stream = openFileStream(track);
@@ -67,7 +61,6 @@ public class WusicImpl implements Wusic {
 		}});
 	}
 
-
 	private FileInputStream openFileStream(Track trackToPlay) {
 		try {
 			return new FileInputStream(trackToPlay.file());
@@ -76,7 +69,6 @@ public class WusicImpl implements Wusic {
 			return null;
 		}
 	}
-
 
 	@Override
 	public void stop() {
@@ -91,7 +83,6 @@ public class WusicImpl implements Wusic {
 		}});
 	}
 
-
 	@Override
 	public void chooseTrackSource(TrackSource source) {
 		_trackSource = source == TrackSource.OWN_TRACKS
@@ -100,17 +91,15 @@ public class WusicImpl implements Wusic {
 		skip();
 	}
 
-
 	@Override
 	public void meToo() {
 		((PeerTracks)_trackSource).meToo();
 	}
 
-
 	@Override
 	public void noWay() {
 		Track currentTrack = _trackPlaying.output().currentValue();
-		skip();
+		stop();
 		_trackSource.noWay(currentTrack);
 	}
 
