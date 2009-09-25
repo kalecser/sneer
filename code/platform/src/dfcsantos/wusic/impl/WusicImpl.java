@@ -99,7 +99,7 @@ public class WusicImpl implements Wusic {
 	@Override
 	public void noWay() {
 		Track currentTrack = _trackPlaying.output().currentValue();
-		skip();
+		stop();
 		_trackSource.noWay(currentTrack);
 	}
 
