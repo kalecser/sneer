@@ -48,6 +48,7 @@ import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 import sneer.foundation.lang.exceptions.Refusal;
+import sneer.main.Sneer;
 import sneer.tests.SovereignParty;
 import sneer.tests.adapters.SneerParty;
 import sneer.tests.adapters.SneerPartyController;
@@ -55,10 +56,14 @@ import sneer.tests.adapters.SneerPartyController;
 class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	static private final String MOCK_ADDRESS = "localhost";
-	private Collection<Object> _referenceToAvoidGc = new ArrayList<Object>();
-	@SuppressWarnings("unused")
-	private WeakContract _blinkingLightContract;
+	
+	private Collection<Object> _refToAvoidGc = new ArrayList<Object>();
+	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc2;
+	
+	private File _backupFolder;
+	private File _codeFolder;
 
+	
 	@Override
 	public void setSneerPort(int port) {
 		try {
@@ -183,11 +188,15 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	}
 
 	@Override
-	public void configDirectories(File dataFolder, File tmpFolder, File platformSrcFolder, File platformBinFolder) {
+	public void configDirectories(File dataFolder, File tmpFolder, File codeFolder, File platformSrcFolder, File platformBinFolder, File stageFolder, File backupFolder) {
 		my(FolderConfig.class).storageFolder().set(dataFolder);
 		my(FolderConfig.class).tmpFolder().set(tmpFolder);
 		my(FolderConfig.class).platformSrcFolder().set(platformSrcFolder);
 		my(FolderConfig.class).platformBinFolder().set(platformBinFolder);
+		
+		my(FolderConfig.class).platformCodeStage().set(stageFolder);
+		_codeFolder = codeFolder;
+		_backupFolder = backupFolder;
 	}
 
 
@@ -208,7 +217,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	}
 	
 	private void startAndKeep(Class<?> snapp) {
-		_referenceToAvoidGc.add(my(snapp));
+		_refToAvoidGc.add(my(snapp));
 	}
 
 	
@@ -265,12 +274,33 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	public void stageBricksForInstallation(String... brickNames) throws IOException {
 		for (String brickName : brickNames) stageBrickForInstallation(brickName);
 
-		my(Logger.class).log("Copying platform sources...");
+		my(Logger.class).log("Copying necessary platform code...");
 		copyPlatformSources();
-		my(Logger.class).log("Finished copying platform sources.");
+		copyNecessaryPlatformBinFiles();
+		my(Logger.class).log("Copying necessary platform code... done.");
 		
 		my(BrickInstaller.class).stageBricksForInstallation();
 	}
+
+	private void copyNecessaryPlatformBinFiles() throws IOException {
+		copyNecessaryPlatformBinFiles(
+			"sneer/main/Sneer.class",
+			"sneer/main/Sneer$ExclusionFilter.class",
+			"sneer/main/SneerCodeFolders.class"
+		);
+	}
+
+	private void copyNecessaryPlatformBinFiles(String... fileNames) throws IOException {
+		for (String fileName : fileNames)
+			copyNecessaryPlatformBinFile(fileName);
+	}
+
+	private void copyNecessaryPlatformBinFile(String fileName) throws IOException {
+		File from = new File(platformBin(), fileName);
+		File to = new File(testPlatfromBin(), fileName);
+		my(IO.class).files().copyFile(from, to);
+	}
+
 
 	private void copyPlatformSources() throws IOException {
 		copyToSourceFolder(new File(platformBin().getParentFile(), "src"));
@@ -299,24 +329,36 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		throw new IllegalArgumentException();
 	}
 
+	
 	@Override
 	public void crash() {
 		my(Threads.class).crashAllThreads();
 	}
 
+	
 	@Override
 	public void start() {
-		
 		throwOnBlinkingErrors();
 		
-		//commitStagedBricksInstallation();
+		installStagedCodeIfNecessary();
 		
 		startSnapps();
 		accelerateHeartbeat();
 	}
 
+	
+	private void installStagedCodeIfNecessary() {
+		File stageFolder = my(FolderConfig.class).platformCodeStage().get();
+		try {
+			Sneer.installStagedCodeIfNecessary(stageFolder , _backupFolder, _codeFolder);
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	
 	private void throwOnBlinkingErrors() {
-		_blinkingLightContract = my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>() { @Override public void consume(CollectionChange<Light> value) {
+		_refToAvoidGc2 = my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>() { @Override public void consume(CollectionChange<Light> value) {
 			for (Light l : value.elementsAdded())
 				if (l.type() == LightType.ERROR)
 					throw new IllegalStateException("ERROR blinking light detected", l.error());
@@ -330,9 +372,8 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	}
 
 	
-	private File testPlatformSrc() {
-		return my(FolderConfig.class).platformSrcFolder().get();
-	}
+	private File testPlatfromBin() { return my(FolderConfig.class).platformBinFolder().get(); }
+	private File testPlatformSrc() { return my(FolderConfig.class).platformSrcFolder().get(); }
 
 	
 	private String print(Seal seal) {

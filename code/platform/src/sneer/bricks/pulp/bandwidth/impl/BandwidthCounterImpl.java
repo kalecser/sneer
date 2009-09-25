@@ -43,6 +43,7 @@ class BandwidthCounterImpl implements BandwidthCounter {
 	private final void consolidate() {
 		long currentTime = Clock.time().currentValue();
 		long deltaMillis = currentTime - _lastConsolidationTime;
+		if (deltaMillis == 0) return; //This might happen when the clock is mocked.
 		_lastConsolidationTime = currentTime;
 		
 		setKBytesPerSecond(_upSpeed, _upCounter, deltaMillis);

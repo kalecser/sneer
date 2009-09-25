@@ -1,13 +1,13 @@
 package sneer.main;
 
 import static sneer.foundation.environments.Environments.my;
+import static sneer.main.SneerCodeFolders.PLATFORM_BIN;
 import static sneer.main.SneerCodeFolders.PLATFORM_CODE_BACKUP;
 import static sneer.main.SneerCodeFolders.PLATFORM_CODE_STAGE;
+import static sneer.main.SneerCodeFolders.PLATFORM_SRC;
 import static sneer.main.SneerFolders.DATA;
 import static sneer.main.SneerFolders.LOG_FILE;
 import static sneer.main.SneerFolders.OWN_BIN;
-import static sneer.main.SneerFolders.PLATFORM_BIN;
-import static sneer.main.SneerFolders.PLATFORM_SRC;
 import static sneer.main.SneerFolders.TMP;
 
 import java.io.File;
@@ -53,18 +53,18 @@ public class SneerSession implements Runnable {
 	
 	
 	private static void configure(FolderConfig dirs) {
-		set(dirs.storageFolder(), DATA);
-		set(dirs.tmpFolder(), TMP);
-		set(dirs.ownBinFolder(), OWN_BIN);
-		set(dirs.platformSrcFolder(), PLATFORM_SRC);
-		set(dirs.platformBinFolder(), PLATFORM_BIN);
-		set(dirs.platformCodeBackup(), PLATFORM_CODE_BACKUP);
+		createAndSet(dirs.storageFolder(), DATA);
+		createAndSet(dirs.tmpFolder(), TMP);
+		createAndSet(dirs.ownBinFolder(), OWN_BIN);
+		createAndSet(dirs.platformSrcFolder(), PLATFORM_SRC);
+		createAndSet(dirs.platformBinFolder(), PLATFORM_BIN);
+		createAndSet(dirs.platformCodeBackup(), PLATFORM_CODE_BACKUP);
 		
 		dirs.platformCodeStage().set(PLATFORM_CODE_STAGE);
 	}
 
 	
-	private static void set(Immutable<File> property, File folder) {
+	private static void createAndSet(Immutable<File> property, File folder) {
 		if (!folder.exists() && !folder.mkdirs()) throw new IllegalStateException("Unable to create folder " + property);
 		property.set(folder);
 	}

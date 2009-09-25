@@ -8,7 +8,6 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -40,7 +39,7 @@ public class Sneer {
 	private URL[] classpath() {
 		return new URL[] {
 			toURL(SneerFolders.OWN_BIN),
-			toURL(SneerFolders.PLATFORM_BIN)
+			toURL(SneerCodeFolders.PLATFORM_BIN)
 		};
 	}
 
@@ -54,8 +53,7 @@ public class Sneer {
 
 	
 	private static void installStagedCodeIfNecessary() throws IOException {
-		if (!PLATFORM_CODE_STAGE.exists()) return;
-		installStagedCode(PLATFORM_CODE_STAGE, newBackupFolder(), PLATFORM_CODE);
+		installStagedCodeIfNecessary(PLATFORM_CODE_STAGE, newBackupFolder(), PLATFORM_CODE);
 	}
 
 	
@@ -67,22 +65,26 @@ public class Sneer {
 	}
 
 
-	public static void installStagedCode(File stageFolder, File backupFolder, File codeFolder) throws IOException {
-		copyDirectory(codeFolder, backupFolder, null);
-		deleteCode(codeFolder);
-		copyDirectory(stageFolder, codeFolder, new ExclusionFilter());
+	public static void installStagedCodeIfNecessary(File stageFolder, File backupFolder, File currentFolder) throws IOException {
+		if (!stageFolder.exists()) return;
+		
+		copyFolder(currentFolder, backupFolder, null);
+		ExclusionFilter filesToPreserve = exclusionFilter(currentFolder);
+		deleteFolder(currentFolder, filesToPreserve);
+		copyFolder(stageFolder, currentFolder, filesToPreserve);
 		deleteAtomically(stageFolder);
 	}
 
 	
-	private static void deleteCode(File codeFolder) throws IOException {
-		deleteFolder(codeFolder, new ExclusionFilter(
-			existingFile(codeFolder, "src/sneer/main/Sneer.java"),
-			existingFile(codeFolder, "bin/sneer/main/Sneer.class"),
-			existingFile(codeFolder, "bin/sneer/main/ExclusionFilter.class"),
-			existingFile(codeFolder, "src/sneer/main/SneerCodeFolders.java"),
-			existingFile(codeFolder, "bin/sneer/main/SneerCodeFolders.class")
-		));
+	private static ExclusionFilter exclusionFilter(File currentFolder) {
+		return new ExclusionFilter(
+			existingFile(currentFolder, "src/sneer/main/Sneer.java"),
+			existingFile(currentFolder, "bin/sneer/main/Sneer.class"),
+			existingFile(currentFolder, "bin/sneer/main/Sneer$ExclusionFilter.class"),
+			
+			existingFile(currentFolder, "src/sneer/main/SneerCodeFolders.java"),
+			existingFile(currentFolder, "bin/sneer/main/SneerCodeFolders.class")
+		);
 	}
 
 	
@@ -97,151 +99,116 @@ public class Sneer {
 	}
 
 	
-	private static void copyDirectory(File srcDir, File destDir, FileFilter filter) throws IOException {
-		    if (srcDir == null) {
-		        throw new NullPointerException("Source must not be null");
-		    }
-		    if (destDir == null) {
-		        throw new NullPointerException("Destination must not be null");
-		    }
-		    if (srcDir.exists() == false) {
-		        throw new FileNotFoundException("Source '" + srcDir + "' does not exist");
-		    }
-		    if (srcDir.isDirectory() == false) {
-		        throw new IOException("Source '" + srcDir + "' exists but is not a directory");
-		    }
-		    if (srcDir.getCanonicalPath().equals(destDir.getCanonicalPath())) {
-		        throw new IOException("Source '" + srcDir + "' and destination '" + destDir + "' are the same");
-		    }
-		
-		    doCopyDirectory(srcDir, destDir, filter);
-		}
-		
-		private static void doCopyDirectory(File srcDir, File destDir, FileFilter filter) throws IOException {
-		    if (destDir.exists()) {
-		        if (destDir.isDirectory() == false) {
-		            throw new IOException("Destination '" + destDir + "' exists but is not a directory");
-		        }
-		    } else {
-		        if (destDir.mkdirs() == false) {
-		            throw new IOException("Destination '" + destDir + "' directory cannot be created");
-		        }
-		    }
-		    if (destDir.canWrite() == false) {
-		        throw new IOException("Destination '" + destDir + "' cannot be written to");
-		    }
-		    // recurse
-		    File[] files = filter == null ? srcDir.listFiles() : srcDir.listFiles(filter);
-		    if (files == null) {  // null if security restricted
-		        throw new IOException("Failed to list contents of " + srcDir);
-		    }
-		    for (int i = 0; i < files.length; i++) {
-		        File copiedFile = new File(destDir, files[i].getName());
-	            if (files[i].isDirectory()) {
-	                doCopyDirectory(files[i], copiedFile, filter);
-	            } else {
-	                doCopyFile(files[i], copiedFile);
-	            }
-		    }
-		    
-            destDir.setLastModified(srcDir.lastModified());
+	private static void copyFolder(File original, File copy, FileFilter filter) throws IOException {
+		if (!copy.exists() && !copy.mkdirs()) throw new IOException("Unable to create: " + copy);
+
+		File[] files = filter == null
+			? original.listFiles()
+			: original.listFiles(filter);
+
+		for (File entry : files) {
+			File entryCopy = new File(copy, entry.getName());
+			if (entry.isDirectory()) {
+				copyFolder(entry, entryCopy, filter);
+			} else {
+				copyFile(entry, entryCopy);
+			}
 		}
 
-		
-	    private static void doCopyFile(File srcFile, File destFile) throws IOException {
-	        if (destFile.exists() && destFile.isDirectory()) {
-	            throw new IOException("Destination '" + destFile + "' exists but is a directory");
-	        }
+		copy.setLastModified(original.lastModified());
+	}
 
-	        FileInputStream input = new FileInputStream(srcFile);
-	        try {
-	            FileOutputStream output = new FileOutputStream(destFile);
-	            try {
-	                copy(input, output);
-	            } finally {
-	                closeQuietly(output);
-	            }
-	        } finally {
-	            closeQuietly(input);
-	        }
-
-	        if (srcFile.length() != destFile.length()) {
-	            throw new IOException("Failed to copy full contents from '" +
-	                    srcFile + "' to '" + destFile + "'");
-	        }
-            destFile.setLastModified(srcFile.lastModified());
-	    }
-
-	    
-		private static void copy(FileInputStream input, FileOutputStream output) throws IOException {
-	        byte[] buffer = new byte[1024 * 4];
-	        int n = 0;
-	        while (-1 != (n = input.read(buffer)))
-	            output.write(buffer, 0, n);
+	private static void copyFile(File original, File copy)	throws IOException {
+		FileInputStream in = null;
+		FileOutputStream out = null;
+		try {
+			in = new FileInputStream(original);
+			out = new FileOutputStream(copy);
+			pipe(in, out);
+		} finally {
+			close(in);
+			close(out);
 		}
 
+		if (copy.length() != original.length())
+			throw new IllegalStateException("Files should be the same length. Original: " + original + " copy: " + copy);
 		
-		private static void closeQuietly(Closeable closable) {
-			try { closable.close(); } catch (IOException e) {}
+		copy.setLastModified(original.lastModified());
+	}
+
+    
+	private static void pipe(FileInputStream in, FileOutputStream out) throws IOException {
+        byte[] buffer = new byte[1024 * 4];
+        int bytesRead = 0;
+        while ((bytesRead = in.read(buffer)) != -1)
+            out.write(buffer, 0, bytesRead);
+	}
+
+	
+	private static void close(Closeable closable) {
+		if (closable == null) return;
+		try { closable.close(); } catch (IOException e) {}
+	}
+
+	
+	private static void deleteFolder(File folder) throws IOException {
+        deleteFolder(folder, null);
+    }
+
+	
+	private static boolean deleteFolder(File folder, FileFilter filter) throws IOException {
+		if (!folder.exists()) return true;
+		
+		boolean isEmpty = true;
+
+        for (File file : folder.listFiles())
+        	if (!deleteFileOrFolder(file, filter))
+        		isEmpty = false;
+        
+        if (!isEmpty) return false;
+        
+        if (!folder.delete())
+        	throw new IOException(("Unable to delete folder " + folder + "."));
+        
+        return true;
+	}		
+	
+	
+    private static boolean deleteFileOrFolder(File file, FileFilter filter) throws IOException {
+    	if (filter != null && !filter.accept(file)) return false;
+    	
+        if (file.isDirectory())
+            return deleteFolder(file, filter);
+        
+        if (!file.delete())
+        	throw new IOException(("Unable to delete file: " + file));
+        
+        return true;
+    }
+
+    
+	private static File existingFile(File folder, String fileName) {
+		File result = new File(folder, fileName);
+		if (!result.exists()) throw new IllegalStateException("File should exist: " + result);
+		return result;
+	}
+
+	
+	private static class ExclusionFilter implements FileFilter {
+		
+		private final Collection<File> _filesToExclude;
+
+		ExclusionFilter(File... filesToExclude) {
+			_filesToExclude = new HashSet<File>(Arrays.asList(filesToExclude));
 		}
 
-		
-		private static void deleteFolder(File folder) throws IOException {
-	        deleteFolder(folder, null);
-	    }
-
-		
-		private static boolean deleteFolder(File folder, FileFilter filter) throws IOException {
-			if (!folder.exists()) return true;
-			
-			boolean isEmpty = true;
-
-	        for (File file : folder.listFiles())
-	        	if (!deleteFileOrFolder(file, filter))
-	        		isEmpty = false;
-	        
-	        if (!isEmpty) return false;
-	        
-	        if (!folder.delete())
-	        	throw new IOException(("Unable to delete folder " + folder + "."));
-	        
-	        return true;
-		}		
-		
-		
-	    private static boolean deleteFileOrFolder(File file, FileFilter filter) throws IOException {
-	    	if (filter != null && !filter.accept(file)) return false;
-	    	
-	        if (file.isDirectory())
-	            return deleteFolder(file, filter);
-	        
-	        if (!file.delete())
-	        	throw new IOException(("Unable to delete file: " + file));
-	        
-	        return true;
-	    }
-
-	    
-		private static File existingFile(File folder, String fileName) {
-			File result = new File(folder, fileName);
-			if (!result.exists()) throw new IllegalStateException("File should exist: " + result);
-			return result;
+		@Override public boolean accept(File candidate) {
+			return !_filesToExclude.contains(candidate);
 		}
+		
+	}
 
 }
 
 
 
-class ExclusionFilter implements FileFilter {
-	
-	private final Collection<File> _filesToExclude;
-
-	ExclusionFilter(File... filesToExclude) {
-		_filesToExclude = new HashSet<File>(Arrays.asList(filesToExclude));
-	}
-
-	@Override public boolean accept(File candidate) {
-		return !_filesToExclude.contains(candidate);
-	}
-	
-}

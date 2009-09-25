@@ -47,19 +47,22 @@ public class SneerCommunity implements SovereignCommunity {
 
 	private SovereignParty createParty(final String name, int port) {
 		File sneerHome = rootFolder(name);
-		File dataFolder = makeFolder(sneerHome, "data");
-		File tmpFolder = makeFolder(sneerHome, "tmp");
-		File privatePlatformBin = makeFolder(sneerHome, "platform/bin");
-		File privatePlatformSrc = makeFolder(sneerHome, "platform/src");
-		File sharedPlatfromBin = my(ClassUtils.class).classpathRootFor(SneerCommunity.class);
+		File dataFolder        = makeFolder(sneerHome, "data");
+		File tmpFolder         = makeFolder(sneerHome, "tmp");
+		File currentCodeFolder = makeFolder(sneerHome, "code/current");
+		File privateBin        = makeFolder(sneerHome, "code/current/bin");
+		File privateSrc        = makeFolder(sneerHome, "code/current/src");
+		File stageFolder       = new File  (sneerHome, "code/stage");
+		File backupFolder      = makeFolder(sneerHome, "code/backup");
+		File sharedBin = my(ClassUtils.class).classpathRootFor(SneerCommunity.class);
 		
 		Environment container = Brickness.newBrickContainer(_network, newLogger(name));
-		URLClassLoader apiClassLoader = apiClassLoader(privatePlatformBin, sharedPlatfromBin, name);
+		URLClassLoader apiClassLoader = apiClassLoader(privateBin, sharedBin, name);
 		
 		Object partyImpl = EnvironmentUtils.retrieveFrom(container, loadProbeClassUsing(apiClassLoader));
 		final SneerParty party = (SneerParty)ProxyInEnvironment.newInstance(container, partyImpl);
 		
-		party.configDirectories(dataFolder, tmpFolder, privatePlatformSrc, privatePlatformBin);
+		party.configDirectories(dataFolder, tmpFolder, currentCodeFolder, privateSrc, privateBin, stageFolder, backupFolder);
 		party.setOwnName(name);
 		party.setSneerPort(port);
 

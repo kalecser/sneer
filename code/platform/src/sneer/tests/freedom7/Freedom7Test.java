@@ -37,7 +37,7 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 		newSession(b());
 		b().loadBrick("freedom7.y.Y");
 		assertEquals("true", System.getProperty("freedom7.y.Y.installed"));
-		
+
 		b().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
 	}
 
