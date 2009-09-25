@@ -48,13 +48,13 @@ public class StagedCodeInstallationTest extends CleanTestBase {
 	@Test
 	public void stagedCodeInstallation() throws IOException {
 		createTmpFiles(
-			"code/src/sneer/main/Sneer.java",
-			"code/bin/sneer/main/Sneer.class",
-			"code/bin/sneer/main/ExclusionFilter.class",
-			"code/src/sneer/main/SneerCodeFolders.java",
-			"code/bin/sneer/main/SneerCodeFolders.class",
-			"code/src/toBeDeleted.java",
-			"code/bin/toBeDeleted.class",
+			"current/src/sneer/main/Sneer.java",
+			"current/bin/sneer/main/Sneer.class",
+			"current/bin/sneer/main/Sneer$ExclusionFilter.class",
+			"current/src/sneer/main/SneerCodeFolders.java",
+			"current/bin/sneer/main/SneerCodeFolders.class",
+			"current/src/toBeDeleted.java",
+			"current/bin/toBeDeleted.class",
 			
 			"backup/2000-01-01-00-00-00", //Previous backup
 			
@@ -62,7 +62,7 @@ public class StagedCodeInstallationTest extends CleanTestBase {
 			"stage/bin/foo.class"
 		);
 		
-		Sneer.installStagedCode(tmpFolder("stage"), tmpFolder("backup/2008-12-31-23-59-59"), tmpFolder("code"));
+		Sneer.installStagedCodeIfNecessary(tmpFolder("stage"), tmpFolder("backup/2008-12-31-23-59-59"), tmpFolder("current"));
 		
 		assertTmpFilesExist(
 			"backup/2000-01-01-00-00-00",
@@ -72,17 +72,20 @@ public class StagedCodeInstallationTest extends CleanTestBase {
 			"backup/2008-12-31-23-59-59/src/toBeDeleted.java",
 			"backup/2008-12-31-23-59-59/bin/toBeDeleted.class",
 
-			"code/src/sneer/main/Sneer.java", //Preserved
-			"code/bin/sneer/main/Sneer.class",
+			"current/src/sneer/main/Sneer.java", //Preserved
+			"current/bin/sneer/main/Sneer.class",
+			"current/bin/sneer/main/Sneer$ExclusionFilter.class",
+			"current/src/sneer/main/SneerCodeFolders.java",
+			"current/bin/sneer/main/SneerCodeFolders.class",
 
-			"code/src/foo.java", //Copied
-			"code/bin/foo.class"
+			"current/src/foo.java", //Copied
+			"current/bin/foo.class"
 		);
 		
 		assertTmpFilesDontExist(
 			"stage",
-			"code/src/toBeDeleted.java",
-			"code/bin/toBeDeleted.class"			
+			"current/src/toBeDeleted.java",
+			"current/bin/toBeDeleted.class"			
 		);
 		
 	}

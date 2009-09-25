@@ -43,7 +43,7 @@ class SerializerImpl implements Serializer {
 		try {
 			serialize(result, object);
 		} catch (IOException e) {
-			throw new IllegalStateException(e);
+			throw new IllegalStateException("Failed to serialize: " + object, e);
 		}
 		return result.toByteArray(); 
 	}

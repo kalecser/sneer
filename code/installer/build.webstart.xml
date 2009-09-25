@@ -96,6 +96,7 @@
 				<include name='sneer/installer/*.*' />
 				<include name='sneer/main/Sneer.*' />
 				<include name='sneer/main/SneerFolders.*' /> 
+				<include name='sneer/main/SneerCodeFolders.*' /> 
 			</fileset>
 			<fileset dir="src">
 				<include name='**/*.*' />

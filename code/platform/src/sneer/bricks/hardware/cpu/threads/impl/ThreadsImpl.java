@@ -8,12 +8,15 @@ import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.events.pulsers.PulseSource;
 import sneer.bricks.pulp.events.pulsers.Pulser;
 import sneer.bricks.pulp.events.pulsers.Pulsers;
+import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 
 class ThreadsImpl implements Threads {
 
 	private static final Latches Latches = my(Latches.class);
+	private static final ExceptionHandler ExceptionHandler = my(ExceptionHandler.class);
+;
 	
 	private final Latch _crash = Latches.produce();
 	private final Pulser _crashingPulser = my(Pulsers.class).newInstance();
@@ -58,7 +61,9 @@ class ThreadsImpl implements Threads {
 
 		new Daemon(threadName) { @Override public void run() {
 			hasStarted.open();
-			Environments.runWith(environment, runnable);
+			Environments.runWith(environment, new Runnable() { @Override public void run() {
+				ExceptionHandler.shield(runnable);
+			}});
 		}};
 		
 		hasStarted.waitTillOpen();

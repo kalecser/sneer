@@ -6,7 +6,7 @@ import sneer.tests.SovereignParty;
 
 public interface SneerParty extends SovereignParty {
 
-	void configDirectories(File dataFolder, File tmpFolder, File platformSrcFolder, File platformBinFolder);
+	void configDirectories(File dataFolder, File tmpFolder, File currentCodeFolder, File platformSrcFolder, File platformBinFolder, File stageFolder, File backupFolder);
 	void setSneerPort(int port);
 	int sneerPort();
 

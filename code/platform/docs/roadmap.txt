@@ -16,6 +16,9 @@
 		- Shuffle checkbox.
 		- Find another way to solve pause lag (try to use a smaller frame in player)
 
+	- "Platform" (Remove this term when referring to the code. "Own" is used to distinguish other code.)
+		- code/own -> code-own
+
 	- SneerJockey - Extract from Sneer so it can be updated (Sneer itself is not updatable).
 
 	- sneer.installer.Folders - Eliminate
