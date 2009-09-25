@@ -1,11 +1,12 @@
 package sneer.installer;
 
+import static sneer.main.SneerCodeFolders.SNEER_HOME;
 import sneer.main.Sneer;
 
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		if(Folders.SNEER_HOME().exists())
+		if(SNEER_HOME.exists())
 			new Installation();
 		else
 			new InstallationWizard();

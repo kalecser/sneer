@@ -1,5 +1,7 @@
 package sneer.installer;
 
+import static sneer.main.SneerCodeFolders.SNEER_HOME;
+
 import java.io.IOException;
 import java.text.ParseException;
 
@@ -8,6 +10,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.synth.SynthLookAndFeel;
+
 
 public class InstallationWizard extends JFrame {
 
@@ -59,7 +62,7 @@ public class InstallationWizard extends JFrame {
 		showDialog(
 		"Each user of this computer can have his own Sneer setup.\n\n" +
 		"To store your setup, the following folder will be created:\n" +
-		Folders.SNEER_HOME().getAbsolutePath(), 
+		SNEER_HOME.getAbsolutePath(), 
 		
 		"Whatever >");
 	}

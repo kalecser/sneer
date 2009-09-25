@@ -1,5 +1,10 @@
 package sneer.installer;
 
+import static sneer.main.SneerCodeFolders.PLATFORM_CODE;
+import static sneer.main.SneerCodeFolders.SNEER_HOME;
+import static sneer.main.SneerFolders.LOG_FILE;
+import static sneer.main.SneerFolders.OWN_CODE;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -55,21 +60,19 @@ class Installation {
 	}
 
 	private void createOwnProjectIfNecessary() throws IOException {
-		if(ownCode().exists()) return;
+		if(OWN_CODE.exists()) return;
 		
-		IOUtils.write(logFile(), "jar file url: " + ownFileName.toString());
+		IOUtils.write(LOG_FILE, "jar file url: " + ownFileName.toString());
 		File file = extractJar(ownFileName, "own", "jar");
-		extractFiles(file, ownCode().getParentFile());		
+		extractFiles(file, OWN_CODE.getParentFile());		
 	}
 
 	private void createDirectories() throws IOException {
-		if(!sneerHome().exists())
-			sneerHome().mkdirs();
+		if(!SNEER_HOME.exists())
+			SNEER_HOME.mkdirs();
 		
-		if(platformCode().exists())
-			deleteFolder(platformCode());
-		
-		platformCode().mkdirs();
+		deleteFolder(PLATFORM_CODE);
+		PLATFORM_CODE.mkdirs();
 	}
 
 	private void deleteFolder(File folder) throws IOException {
@@ -90,9 +93,9 @@ class Installation {
     }
 	
 	private void addBinaries() throws IOException {
-		IOUtils.write(logFile(), "jar file url: " + jarFileName.toString());
+		IOUtils.write(LOG_FILE, "jar file url: " + jarFileName.toString());
 		File file = extractJar(jarFileName, "sneer", "jar");
-		extractFiles(file, platformCode());
+		extractFiles(file, PLATFORM_CODE);
 	}
 
 	private File extractJar(URL url, String prefix, String suffix) throws IOException {
@@ -106,7 +109,7 @@ class Installation {
 	}
 	
 	private void extractFiles(File src, File toDir) throws IOException {
-		IOUtils.write(logFile(), "expand files from: " + src.getAbsolutePath());
+		IOUtils.write(LOG_FILE, "expand files from: " + src.getAbsolutePath());
 		if(!(src.exists()))
 			throw new IOException("File '" + src.getAbsolutePath() + "' not found!");	
 
@@ -131,10 +134,6 @@ class Installation {
         }
 	}
 
-	private File ownCode() { return Folders.OWN_CODE(); }
-	private File platformCode() { return Folders.PLATFORM_CODE(); }
-	private File sneerHome() { return Folders.SNEER_HOME(); }
-	private File logFile() { return Folders.LOG_FILE(); }
 	
 	public static void main(String[] args) throws IOException {
 		new Installation();
