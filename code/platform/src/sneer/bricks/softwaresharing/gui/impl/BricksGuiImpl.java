@@ -230,7 +230,7 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 			button.setEnabled(false);
 			my(Threads.class).startDaemon("BricksGui MeToo", new Runnable() { @Override public void run() {
 				try {
-					my(BrickInstaller.class).prepareStagedBricksInstallation();
+					my(BrickInstaller.class).stageBricksForInstallation();
 				} finally {
 					button.setEnabled(true);
 				}

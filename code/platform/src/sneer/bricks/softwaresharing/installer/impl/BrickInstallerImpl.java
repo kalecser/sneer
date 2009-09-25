@@ -28,7 +28,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 
 
 	@Override
-	public void prepareStagedBricksInstallation() {
+	public void stageBricksForInstallation() {
 		try {
 			resetFolder(_srcStage);
 			resetFolder(_binStage);

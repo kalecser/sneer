@@ -65,7 +65,7 @@ public class BrickInstallerTest extends BrickTest {
 		Signal<Integer> size = blinkingLights().size();
 		assertEquals(0, size.currentValue().intValue());
 		
-		_subject.prepareStagedBricksInstallation();
+		_subject.stageBricksForInstallation();
 		
 		assertEquals(1, size.currentValue().intValue());
 	}
@@ -80,7 +80,7 @@ public class BrickInstallerTest extends BrickTest {
 	public void stageOneBrick() throws Exception  {
 		stageBrickY();
 		
-		_subject.prepareStagedBricksInstallation();
+		_subject.stageBricksForInstallation();
 		
 		assertStagedFilesExist(
 			"src/sneer/foundation/brickness/Brick.java",

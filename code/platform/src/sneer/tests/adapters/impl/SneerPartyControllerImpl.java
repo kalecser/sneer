@@ -269,7 +269,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		copyPlatformSources();
 		my(Logger.class).log("Finished copying platform sources.");
 		
-		my(BrickInstaller.class).prepareStagedBricksInstallation();
+		my(BrickInstaller.class).stageBricksForInstallation();
 	}
 
 	private void copyPlatformSources() throws IOException {

@@ -5,6 +5,6 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface BrickInstaller {
 
-	void prepareStagedBricksInstallation();
+	void stageBricksForInstallation();
 
 }
