@@ -42,8 +42,6 @@ class FileChoosersImpl implements FileChoosers {
 			String title = getUI().getDialogTitle(this);
 			putClientProperty(AccessibleContext.ACCESSIBLE_DESCRIPTION_PROPERTY, title);
 
-			setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-
 			if(parent == null) 
 				dialog = new JDialog();
 			else 

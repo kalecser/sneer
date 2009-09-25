@@ -76,6 +76,7 @@ class WusicGuiImpl implements WusicGui {
         		_wusic.setMyTracksFolder(chosenFolder);
         	}
     	}});
+        _tracksFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         _tracksFolderChooser.setCurrentDirectory(my(OwnTracksFolderKeeper.class).ownTracksFolder().currentValue());
 
 		result = my(ReactiveWidgetFactory.class).newFrame(title()).getMainWidget();
