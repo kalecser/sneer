@@ -23,15 +23,14 @@ import sneer.bricks.softwaresharing.installer.BrickInstaller;
 
 public class BrickInstallerImpl implements BrickInstaller {
 
-	private final File _srcStage  = new File(my(FolderConfig.class).tmpFolderFor(BrickInstaller.class), "src");
-	private final File _binStage  = new File(my(FolderConfig.class).tmpFolderFor(BrickInstaller.class), "bin");
+	private final File _srcStage  = staged("src");
+	private final File _binStage  = staged("bin");
 
 
 	@Override
 	public void stageBricksForInstallation() {
 		try {
-			resetFolder(_srcStage);
-			resetFolder(_binStage);
+			resetFolder(stage());
 			
 			prepareStagedSrc();
 			prepareStagedBin();
@@ -41,7 +40,18 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 
 	
+	private File staged(String folder) {
+		return new File(stage(), folder);
+	}
+
+
+	private File stage() {
+		return my(FolderConfig.class).platformCodeStage().get();
+	}
+
+
 	private void prepareStagedBin() throws IOException, BrickCompilerException {
+		_binStage.mkdir();
 		my(Builder.class).build(_srcStage, _binStage);
 	}
 	

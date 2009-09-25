@@ -33,6 +33,10 @@ import sneer.foundation.lang.Consumer;
 
 public class BrickInstallerTest extends BrickTest {
 
+	{
+		my(FolderConfig.class).platformCodeStage().set(stagingFolder());
+		my(FolderConfig.class).platformSrcFolder().set(srcFolder());
+	}
 	
 	final BrickInstaller _subject = my(BrickInstaller.class);
 	
@@ -40,8 +44,6 @@ public class BrickInstallerTest extends BrickTest {
 	@Before
 	public void setUpSrc() throws IOException {
 		srcFolder().mkdirs();
-		
-		my(FolderConfig.class).platformSrcFolder().set(srcFolder());
 		
 		copyClassesToSrcFolder(
 			sneer.foundation.brickness.Brick.class,
@@ -81,7 +83,7 @@ public class BrickInstallerTest extends BrickTest {
 		stageBrickY();
 		
 		_subject.stageBricksForInstallation();
-		
+
 		assertStagedFilesExist(
 			"src/sneer/foundation/brickness/Brick.java",
 			"bin/sneer/foundation/brickness/Brick.class",
@@ -124,7 +126,7 @@ public class BrickInstallerTest extends BrickTest {
 	
 	
 	private File srcFolder() {
-		return new File(tmpFolder(), "platform-src");
+		return new File(tmpFolder(), "src");
 	}
 
 	private void assertStagedFilesExist(String... fileNames) {
@@ -143,7 +145,7 @@ public class BrickInstallerTest extends BrickTest {
 
 
 	private File stagingFolder() {
-		return my(FolderConfig.class).tmpFolderFor(BrickInstaller.class);
+		return new File(tmpFolder(), "stage");
 	}
 
 	

@@ -8,16 +8,19 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface FolderConfig {
 
-	Immutable<File> ownBinFolder();
-	Immutable<File> platformBinFolder();
-
 	Immutable<File> ownSrcFolder();
+	Immutable<File> ownBinFolder();
+
 	Immutable<File> platformSrcFolder();
+	Immutable<File> platformBinFolder();
 
 	Immutable<File> storageFolder();
 	File storageFolderFor(Class<?> brick);
 
 	Immutable<File> tmpFolder();
 	File tmpFolderFor(Class<?> brick);
+
+	Immutable<File> platformCodeStage();
+	Immutable<File> platformCodeBackup();
 
 }

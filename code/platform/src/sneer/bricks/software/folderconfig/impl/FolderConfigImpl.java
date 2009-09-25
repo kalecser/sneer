@@ -11,13 +11,17 @@ import sneer.bricks.software.folderconfig.FolderConfig;
 
 public class FolderConfigImpl implements FolderConfig {
 
-	private final Immutable<File> _ownBinFolder = immutable();
-	private final Immutable<File> _platformBinFolder = immutable();
 	private final Immutable<File> _ownSrcFolder = immutable();
+	private final Immutable<File> _ownBinFolder = immutable();
 	private final Immutable<File> _platformSrcFolder = immutable();
+	private final Immutable<File> _platformBinFolder = immutable();
+	private final Immutable<File> _plaformCodeBackup = immutable();
+	private final Immutable<File> _plaformCodeStage = immutable();
+
 	private final Immutable<File> _storageFolder = immutable();
 	private final Immutable<File> _tmpFolder = immutable();
-
+	
+	
 	@Override
 	public Immutable<File> ownBinFolder() {
 		return _ownBinFolder;
@@ -66,6 +70,16 @@ public class FolderConfigImpl implements FolderConfig {
 	@Override
 	public Immutable<File> tmpFolder() {
 		return _tmpFolder;
+	}
+
+	@Override
+	public Immutable<File> platformCodeBackup() {
+		return _plaformCodeBackup;
+	}
+
+	@Override
+	public Immutable<File> platformCodeStage() {
+		return _plaformCodeStage;
 	}
 	
 	
