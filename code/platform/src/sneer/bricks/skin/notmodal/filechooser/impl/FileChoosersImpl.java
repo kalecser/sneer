@@ -19,20 +19,21 @@ import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.foundation.lang.Consumer;
 
 class FileChoosersImpl implements FileChoosers {
-	
+
 	@Override
 	public JFileChooser newFileChooser(Consumer<File> selectionReceiver) {
 		return new NotModalFileChooser(selectionReceiver);
 	}
 
 	private static class NotModalFileChooser extends JFileChooser {
-	
+
 		public static final int WAITING_OPTION = 100;
+
 		private final Consumer<File> _selectionReceiver;
 
 		protected JDialog dialog;
-	    
-	    public NotModalFileChooser(Consumer<File> selectionReceiver) {
+
+		public NotModalFileChooser(Consumer<File> selectionReceiver) {
 			_selectionReceiver = selectionReceiver;
 		}
 
@@ -40,33 +41,37 @@ class FileChoosersImpl implements FileChoosers {
 		protected JDialog createDialog(Component parent) throws HeadlessException {
 			String title = getUI().getDialogTitle(this);
 			putClientProperty(AccessibleContext.ACCESSIBLE_DESCRIPTION_PROPERTY, title);
-			
-			if(parent==null) 
+
+			setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+
+			if(parent == null) 
 				dialog = new JDialog();
 			else 
 				dialog = new JDialog(SwingUtilities.getWindowAncestor(parent));
-			
+
 			dialog.setTitle(title);
 			dialog.setModal(false);
 			dialog.setComponentOrientation(this.getComponentOrientation());
-	
+
 			Container contentPane = dialog.getContentPane();
 			contentPane.setLayout(new BorderLayout());
 			contentPane.add(this, BorderLayout.CENTER);
-	
+
 			if (JDialog.isDefaultLookAndFeelDecorated()) 
 				if (supportsWindowDecorations())
-					dialog.getRootPane().setWindowDecorationStyle( JRootPane.FILE_CHOOSER_DIALOG);
-	
+					dialog.getRootPane().setWindowDecorationStyle(JRootPane.FILE_CHOOSER_DIALOG);
+
 			dialog.pack();
 			dialog.setLocationRelativeTo(parent);
+
 			return dialog;
 		}
-		
+
 	    @Override
 		public int showDialog(Component parent, String approveButtonText) throws HeadlessException {
 	    	final int returnValue[] = new int[1];
-			if(approveButtonText != null) {
+
+	    	if(approveButtonText != null) {
 			    setApproveButtonText(approveButtonText);
 			    setDialogType(CUSTOM_DIALOG);
 			}
@@ -114,9 +119,9 @@ class FileChoosersImpl implements FileChoosers {
 		Consumer<File> selectionReceiver = new Consumer<File>(){ @Override public void consume(File file) {
 			System.out.println(file);
 		}};
-		
-		//	JFileChooser chooser = my(FileChooser.class).newNotModalFileChooser(selectionReceiver);
+
 		JFileChooser chooser = new FileChoosersImpl().newFileChooser(selectionReceiver);
 		chooser.showOpenDialog(null);
 	}
+
 }

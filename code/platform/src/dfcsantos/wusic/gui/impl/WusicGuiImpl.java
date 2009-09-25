@@ -2,14 +2,25 @@ package dfcsantos.wusic.gui.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.main.menu.MainMenu;
+import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
+import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
 import dfcsantos.wusic.gui.WusicGui;
 
@@ -18,66 +29,72 @@ import dfcsantos.wusic.gui.WusicGui;
  * @author daniel
  */
 class WusicGuiImpl implements WusicGui {
-    
-    private static final Wusic Wusic = my(Wusic.class);
-	private javax.swing.JMenuItem chooseMyTracksFolder;
-    private javax.swing.JMenu mainMenu;
-    private javax.swing.JMenuBar mainMenuBar;
-    
+
+    private static final Wusic _wusic = my(Wusic.class);
+
+	private JFileChooser _tracksFolderChooser;
+    private JMenuItem _chooseMyTracksFolder;
+    private JMenu _mainMenu;
+    private JMenuBar _mainMenuBar;
     private JFrame _frame;
 
     private boolean _isInitialized = false;
 
-    
     {
 		Environments.my(MainMenu.class).addAction("Wusic", new Runnable() { @Override public void run() {
 			if (!_isInitialized){
 				_isInitialized = true;
 				_frame = initFrame();
-				Wusic.start();
+				_wusic.start();
 			}
 			_frame.setVisible(true);
 		}});
 	}
 
-    
 	private JFrame initFrame() {
 		JFrame result;
-		mainMenuBar = new javax.swing.JMenuBar();
-		mainMenu = new javax.swing.JMenu();
-		chooseMyTracksFolder = new javax.swing.JMenuItem();
 
-        mainMenu.setText("File");
-        chooseMyTracksFolder.setText("Choose Song Folder");
-        chooseMyTracksFolder.setName("chooseSongFolderMenu"); // NOI18N                    Thread.sleep(100);
-        chooseMyTracksFolder.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+		_mainMenu = new JMenu();
+		_mainMenu.setText("File");
+
+		_mainMenuBar = new JMenuBar();
+        _mainMenuBar.add(_mainMenu);
+
+		_chooseMyTracksFolder = new JMenuItem();
+        _chooseMyTracksFolder.setText("Choose Song Folder");
+        _chooseMyTracksFolder.setName("chooseSongFolderMenu");
+        _chooseMyTracksFolder.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 chooseMyTracksFolderActionPerformed();
             }
         });
-        mainMenu.add(chooseMyTracksFolder);
-        chooseMyTracksFolder.getAccessibleContext().setAccessibleName("chooseSongFolderMenu");
+        _chooseMyTracksFolder.getAccessibleContext().setAccessibleName("chooseSongFolderMenu");
+        _mainMenu.add(_chooseMyTracksFolder);
 
-        mainMenuBar.add(mainMenu);
-
+        _tracksFolderChooser = my(FileChoosers.class).newFileChooser(new Consumer<File>() { @Override public void consume(File chosenFolder) {
+        	if (chosenFolder != null) {
+        		_wusic.setMyTracksFolder(chosenFolder);
+        	}
+    	}});
+        _tracksFolderChooser.setCurrentDirectory(my(OwnTracksFolderKeeper.class).ownTracksFolder().currentValue());
 
 		result = my(ReactiveWidgetFactory.class).newFrame(title()).getMainWidget();
-		result.setJMenuBar(mainMenuBar);
+		result.setJMenuBar(_mainMenuBar);
     	result.getContentPane().add(new WusicPanel());
     	result.pack();
-		return result;
+
+    	return result;
 	}
-	
+
     private void chooseMyTracksFolderActionPerformed() {
-        // TODO add your handling code here:
+    	_tracksFolderChooser.showOpenDialog(null);
+    	_tracksFolderChooser.setCurrentDirectory(my(OwnTracksFolderKeeper.class).ownTracksFolder().currentValue());
     }
 
-
-	
 	private Signal<String> title() {
-		return my(Signals.class).adapt(Wusic.trackPlayingName(), new Functor<String, String>() { @Override public String evaluate(String track) {
+		return my(Signals.class).adapt(_wusic.trackPlayingName(), new Functor<String, String>() { @Override public String evaluate(String track) {
 			return "Wusic :: " + track;
 		}});
 	}
-	
+
 }
