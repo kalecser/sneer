@@ -2,18 +2,21 @@
 =========
 
 	- Wusic
+		- Track Folder Choice - Persist. Use same approach as OwnNameKeeper.
+		- Enable File Delete Button - Menu checkmark option.
+		- Choose subfolder - Button to the right of "Play Own Tracks" option. 
+		- Shuffle checkbox.
 		- Play Tracks From Peers
 			- Play from /tracks/candidates
 			- Me Too - Copy to /tracks/
-		- Enable File Delete Button - Menu checkmark option.
 		- Buttons
+			- Stop
 			- Play/Pause, Skip, Me Too :), No Way :( - Buttons for Peer Tracks mode.
 			- Play/Pause, Skip, Delete File! - Buttons for Own Tracks mode.
 			- Play/Pause - Toggle text: ">" or "||"
 		- Number of Tracks downloaded from peers - In (parenthesis) after "Play Tracks from Peers" option.
-		- Choose subfolder - Button to the right of "Play Own Tracks" option. 
-		- Shuffle checkbox.
 		- Find another way to solve pause lag (try to use a smaller frame in player)
+		
 
 	- "Platform" (Remove this term when referring to the code. "Own" is used to distinguish other code.)
 		- code/own -> code-own
