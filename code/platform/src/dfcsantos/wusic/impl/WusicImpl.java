@@ -36,11 +36,23 @@ public class WusicImpl implements Wusic {
 	}
 
 	@Override
-	public void pauseResume(){
-		_currentTrackContract.pauseResume();
+	public void pauseResume() {
+		if(_currentTrackContract == null)
+			start();
+		else
+			_currentTrackContract.pauseResume();
 	}
 
-	private void skip() {
+	@Override
+	public void stop() {
+		if (_currentTrackContract != null) {
+			_currentTrackContract.dispose();
+			_currentTrackContract = null;
+		}
+	}
+
+	@Override
+	public void skip() {
 		stop();
 		playNextTrack();
 	}
@@ -67,12 +79,6 @@ public class WusicImpl implements Wusic {
 			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to find file " + trackToPlay.file() , "File might have been deleted manually.", 15000);
 			return null;
 		}
-	}
-
-	@Override
-	public void stop() {
-		if (_currentTrackContract != null)
-			_currentTrackContract.dispose();
 	}
 
 	@Override

@@ -20,6 +20,7 @@ public interface Wusic {
 
 	void pauseResume();
 	void stop();
+	void skip();
 
 	void meToo();
 	void noWay();

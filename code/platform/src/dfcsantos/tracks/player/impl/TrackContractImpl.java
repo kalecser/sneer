@@ -30,7 +30,7 @@ class TrackContractImpl implements TrackContract {
 					my(BlinkingLights.class).turnOn(LightType.WARN, "Error reading track", "Error reading track", e, 30000);
 			}
 
-			toCallWhenFinished.run();
+			if (!_wasDisposed) toCallWhenFinished.run();
 		}});
 	}
 

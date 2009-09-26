@@ -1,6 +1,18 @@
 package dfcsantos.wusic.gui.impl;
 
 import static sneer.foundation.environments.Environments.my;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.ButtonGroup;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.LayoutStyle;
+
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import dfcsantos.wusic.Wusic;
 import dfcsantos.wusic.Wusic.TrackSource;
@@ -9,140 +21,153 @@ import dfcsantos.wusic.Wusic.TrackSource;
  * 
  * @author daniel
  */
-class WusicPanel extends javax.swing.JPanel {
+class WusicPanel extends JPanel {
 
-	private static final Wusic Wusic = my(Wusic.class);
+	private static final Wusic _wusic = my(Wusic.class);
 
-
-    private javax.swing.JButton meTooButton;
-    private javax.swing.JRadioButton ownTracks;
-    private javax.swing.JButton noWayButton;
-    private javax.swing.JButton pauseButton;
-    private javax.swing.JLabel playingLabel;
-    private javax.swing.JButton skipButton;
-    private javax.swing.JRadioButton tracksFromPeers;
-    private javax.swing.ButtonGroup tracksSource;
-
-    
+    private JButton _meTooButton;
+    private JRadioButton _ownTracks;
+    private JButton _noWayButton;
+    private JButton _pauseButton;
+    private JLabel _playingLabel;
+    private JButton _skipButton;
+    private JButton _stopButton;
+    private JRadioButton _tracksFromPeers;
+    private ButtonGroup _tracksSource;
 
 	{
-		playingLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.trackPlayingName()).getMainWidget();
-        tracksSource = new javax.swing.ButtonGroup();
-        ownTracks = new javax.swing.JRadioButton();
-        tracksFromPeers = new javax.swing.JRadioButton();
-//        playingLabel = new javax.swing.JLabel();
-        pauseButton = new javax.swing.JButton();
-        skipButton = new javax.swing.JButton();
-        meTooButton = new javax.swing.JButton();
-        noWayButton = new javax.swing.JButton();
+		_playingLabel = my(ReactiveWidgetFactory.class).newLabel(_wusic.trackPlayingName()).getMainWidget();
+        _tracksSource = new ButtonGroup();
+        _ownTracks = new JRadioButton();
+        _tracksFromPeers = new JRadioButton();
+        _pauseButton = new JButton();
+        _skipButton = new JButton();
+        _stopButton = new JButton();
+        _meTooButton = new JButton();
+        _noWayButton = new JButton();
 
-        tracksSource.add(ownTracks);
-        ownTracks.setSelected(true);
-        ownTracks.setText("Play Own Tracks");
-        ownTracks.setName("ownTracks"); // NOI18N
-        ownTracks.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        _tracksSource.add(_ownTracks);
+        _ownTracks.setSelected(true);
+        _ownTracks.setText("Play Own Tracks");
+        _ownTracks.setName("ownTracks"); // NOI18N
+        _ownTracks.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 myTracksActionPerformed();
             }
         });
 
-        tracksSource.add(tracksFromPeers);
-        tracksFromPeers.setText("Play Tracks From Peers");
-        tracksFromPeers.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        _tracksSource.add(_tracksFromPeers);
+        _tracksFromPeers.setText("Play Tracks From Peers");
+        _tracksFromPeers.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 tracksFromPeersActionPerformed();
             }
         });
 
-        playingLabel.setFont(new java.awt.Font("Tahoma", 2, 14));
-        //playingLabel.setText("Playing Label - Playing Label 00:00");
+        _playingLabel.setFont(new java.awt.Font("Tahoma", 2, 14));
 
-        pauseButton.setText("> / ||");
-        pauseButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        _pauseButton.setText("> / ||");
+        _pauseButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 pauseButtonActionPerformed();
             }
         });
 
-        skipButton.setText(">>");
-        skipButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        _skipButton.setText(">>");
+        _skipButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 skipButtonActionPerformed();
             }
         });
 
-        meTooButton.setText("Me Too :)");
-        meTooButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        _stopButton.setText("X");
+        _stopButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                stopButtonActionPerformed();
+            }
+        });
+
+        _meTooButton.setText("Me Too :)");
+        _meTooButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 meTooButtonActionPerformed();
             }
         });
 
-        noWayButton.setText("Delete File!");
-        noWayButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        _noWayButton.setText("Delete File!");
+        _noWayButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 noWayButtonActionPerformed();
             }
         });
-        
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+
+        GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(playingLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
-                    .addComponent(ownTracks, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tracksFromPeers, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(pauseButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(skipButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(meTooButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(noWayButton)))
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                    .addComponent(_playingLabel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                    .addComponent(_ownTracks, GroupLayout.Alignment.LEADING)
+                    .addComponent(_tracksFromPeers, GroupLayout.Alignment.LEADING)
+                    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(_pauseButton)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(_skipButton)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(_stopButton)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(_meTooButton)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(_noWayButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(ownTracks)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(tracksFromPeers)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(playingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(pauseButton)
-                    .addComponent(skipButton)
-                    .addComponent(meTooButton)
-                    .addComponent(noWayButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(_ownTracks)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(_tracksFromPeers)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(_playingLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(_pauseButton)
+                    .addComponent(_skipButton)
+                    .addComponent(_stopButton)
+                    .addComponent(_meTooButton)
+                    .addComponent(_noWayButton))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 	}
-    private void pauseButtonActionPerformed() {                                            
-    	Wusic.pauseResume();
+
+	private void pauseButtonActionPerformed() {                                            
+    	_wusic.pauseResume();
     }                                           
 
     private void skipButtonActionPerformed() {
-        Wusic.stop();
+        _wusic.skip();
+    }
+
+    private void stopButtonActionPerformed() {
+        _wusic.stop();
     }
 
     private void meTooButtonActionPerformed() {
-        Wusic.meToo();
+        _wusic.meToo();
     }
 
     private void noWayButtonActionPerformed() {
-        Wusic.noWay();
+        _wusic.noWay();
     }
 
     private void myTracksActionPerformed() {
-        Wusic.chooseTrackSource(TrackSource.OWN_TRACKS);
+        _wusic.chooseTrackSource(TrackSource.OWN_TRACKS);
     }
 
     private void tracksFromPeersActionPerformed() {
-        Wusic.chooseTrackSource(TrackSource.PEER_TRACKS_STAGING_AREA);
+        _wusic.chooseTrackSource(TrackSource.PEER_TRACKS_STAGING_AREA);
     }
+
 }
