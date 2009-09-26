@@ -61,8 +61,8 @@ class WusicGuiImpl implements WusicGui {
         _mainMenuBar.add(_mainMenu);
 
 		_chooseMyTracksFolder = new JMenuItem();
-        _chooseMyTracksFolder.setText("Choose Song Folder");
-        _chooseMyTracksFolder.setName("chooseSongFolderMenu");
+        _chooseMyTracksFolder.setText("Configure Root Track Folder");
+        _chooseMyTracksFolder.setName("configureTrackFolderMenu");
         _chooseMyTracksFolder.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 chooseMyTracksFolderActionPerformed();

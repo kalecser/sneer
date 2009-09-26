@@ -32,7 +32,7 @@ public class WusicImpl implements Wusic {
 	@Override
 	public void setMyTracksFolder(File ownTracksFolder) {
 		my(OwnTracksFolderKeeper.class).setOwnTracksFolder(ownTracksFolder);
-		stop();
+		skip();
 	}
 
 	@Override
@@ -40,8 +40,7 @@ public class WusicImpl implements Wusic {
 		_currentTrackContract.pauseResume();
 	}
 
-	@Override
-	public void skip() {
+	private void skip() {
 		stop();
 		playNextTrack();
 	}

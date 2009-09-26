@@ -10,24 +10,18 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface Wusic {
 
-	public enum TrackSource { OWN_TRACKS, PEER_TRACKS_STAGING_AREA }
-
 	void setMyTracksFolder(File selectedFolder);
 
+	public enum TrackSource { OWN_TRACKS, PEER_TRACKS_STAGING_AREA }
 	void chooseTrackSource(TrackSource source);
 
 	void start();
-
-	void stop();
+	Signal<String> trackPlayingName();
 
 	void pauseResume();
-
-	void skip();
+	void stop();
 
 	void meToo();
-
 	void noWay();
-
-	Signal<String> trackPlayingName();
 
 }
