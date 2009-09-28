@@ -142,6 +142,10 @@ class WusicPanel extends JPanel {
         );
 	}
 
+	void enableDeleteFile(boolean enabled) {
+		_noWayButton.setEnabled(enabled);
+	}
+	
 	private void pauseButtonActionPerformed() {                                            
     	_wusic.pauseResume();
     }                                           
@@ -169,5 +173,6 @@ class WusicPanel extends JPanel {
     private void tracksFromPeersActionPerformed() {
         _wusic.chooseTrackSource(TrackSource.PEER_TRACKS_STAGING_AREA);
     }
+
 
 }

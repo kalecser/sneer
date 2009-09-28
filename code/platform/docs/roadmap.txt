@@ -4,7 +4,6 @@
 	- Wusic
 		- Playlist -> back to Enumerable. Skip deleted files quietly. Remove next file from list. When empty rescan all files.
 		- Track Folder Choice - Persist. Use same approach as OwnNameKeeper.
-		- Hide File Delete Button - Menu checkmark option.
 		- Choose subfolder - Button to the right of "Play Own Tracks" option. 
 		- Shuffle checkbox.
 		- Play Tracks From Peers
