@@ -31,7 +31,7 @@ import dfcsantos.wusic.gui.WusicGui;
  */
 class WusicGuiImpl implements WusicGui {
 
-    private static final Wusic _wusic = my(Wusic.class);
+    private static final Wusic Wusic = my(Wusic.class);
 
 	private JFileChooser _tracksFolderChooser;
     private JMenuItem _chooseMyTracksFolder;
@@ -49,7 +49,7 @@ class WusicGuiImpl implements WusicGui {
 			if (!_isInitialized){
 				_isInitialized = true;
 				_frame = initFrame();
-				_wusic.start();
+				Wusic.start();
 			}
 			_frame.setVisible(true);
 		}});
@@ -80,7 +80,7 @@ class WusicGuiImpl implements WusicGui {
 
         _tracksFolderChooser = my(FileChoosers.class).newFileChooser(new Consumer<File>() { @Override public void consume(File chosenFolder) {
         	if (chosenFolder != null) {
-        		_wusic.setMyTracksFolder(chosenFolder);
+        		Wusic.setMyTracksFolder(chosenFolder);
         	}
     	}});
         
@@ -109,7 +109,7 @@ class WusicGuiImpl implements WusicGui {
     }
 
 	private Signal<String> title() {
-		return my(Signals.class).adapt(_wusic.trackPlayingName(), new Functor<String, String>() { @Override public String evaluate(String track) {
+		return my(Signals.class).adapt(Wusic.trackPlayingName(), new Functor<String, String>() { @Override public String evaluate(String track) {
 			return "Wusic :: " + track;
 		}});
 	}
