@@ -3,7 +3,6 @@ package dfcsantos.wusic.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
-import java.util.Iterator;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -16,7 +15,7 @@ public class OwnTracks extends TrackSourceStrategy {
 
 	static final TrackSourceStrategy INSTANCE = new OwnTracks();
 
-	private Iterator<Track> _playlist;
+	private RecursiveFolderPlaylist _playlist;
 	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGC;
 
 	private Track _currentTrack;
@@ -31,23 +30,20 @@ public class OwnTracks extends TrackSourceStrategy {
 
 	@Override
 	Track nextTrack()  {
-		if (!_playlist.hasNext()) {
-			my(BlinkingLights.class).turnOn(LightType.WARN, "No songs found", "Please choose a folder with MP3 files in it or in its subfolders.", 10000);
-			return null;
+		if (!_playlist.hasMoreElements()) {
+			_playlist.reload();
+			if (!_playlist.hasMoreElements()) {
+				my(BlinkingLights.class).turnOn(LightType.WARN, "No songs found", "Please choose a folder with MP3 files in it or in its subfolders.", 10000);
+				return null;
+			}
 		}
-		synchronized (_playlist) {
-			_currentTrack = _playlist.next();
-		}
+		_currentTrack = _playlist.nextElement();
 
 		return _currentTrack;
 	}
 
 	@Override
 	void noWay(Track rejected) {
-		synchronized (_playlist) {
-			_playlist.remove();
-		}
-
 		if (!rejected.file().delete())
 			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to delete track", "Unable to delete track: " + rejected.file(), 7000);
 	}
