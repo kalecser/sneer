@@ -40,8 +40,7 @@ class IOImpl implements IO {
 		@Override public Iterator<File> iterate(File folder, String[] extensions, boolean recursive){ return FileUtils.iterateFiles(folder, extensions, recursive); }
 		
 		@Override public String readString(File file) throws IOException {return new String(readBytes(file)); }
-		@Override public void readString(final File file, final Consumer<String> content) {
-			readBytes(file, new Consumer<byte[]>(){ @Override public void consume(byte[] value) { content.consume(new String(value)); }});}
+		@Override public void readString(final File file, final Consumer<String> content) { readBytes(file, new Consumer<byte[]>(){ @Override public void consume(byte[] value) { content.consume(new String(value)); }});}
 		@Override public void readString(final File file, final Consumer<String> content, final Consumer<IOException> exception) {
 			readBytes(file, new Consumer<byte[]>(){ @Override public void consume(byte[] value) {  content.consume(new String(value)); } }, exception);}
 
