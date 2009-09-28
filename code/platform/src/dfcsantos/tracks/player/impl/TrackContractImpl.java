@@ -2,41 +2,48 @@ package dfcsantos.tracks.player.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
-import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import dfcsantos.tracks.player.TrackContract;
+import dfcsantos.wusic.Track;
 
 class TrackContractImpl implements TrackContract {
 
-	private final PausableInputStream _trackStream;
+	private PausableInputStream _trackStream;
 	private Player _player;
 
 	private volatile boolean _wasDisposed;
 
-	TrackContractImpl(InputStream stream, final Runnable toCallWhenFinished) {
-		_trackStream = new PausableInputStream(stream);
-
+	TrackContractImpl(final Track track, final Runnable toCallWhenFinished) {
 		my(Threads.class).startDaemon("Track Player", new Runnable() { @Override public void run() {
 			try {
+				_trackStream = new PausableInputStream(new FileInputStream(track.file()));
 				_player = new Player(_trackStream);
 				_player.play();
-			} catch (JavaLayerException e) {
+				
+			} catch (FileNotFoundException e) {
+				my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to find file " + track.file() , "File might have been deleted manually.", 15000);
+				
+			} catch (Throwable t) {
 				if (!_wasDisposed)
-					my(BlinkingLights.class).turnOn(LightType.WARN, "Error reading track", "Error reading track", e, 30000);
+					my(BlinkingLights.class).turnOn(LightType.WARN, "Error reading track", "Error reading track", t, 30000);
+				
+			} finally {
+				if (_wasDisposed) return;
+				dispose();
+				toCallWhenFinished.run();
 			}
-
-			if (!_wasDisposed) toCallWhenFinished.run();
 		}});
 	}
 
 	@Override
 	public void pauseResume() {
-	 _trackStream.pauseResume();
+		_trackStream.pauseResume();
 	}
 
 	@Override
@@ -44,5 +51,6 @@ class TrackContractImpl implements TrackContract {
 		_wasDisposed = true;
 		if (_player != null) _player.close();
 	}
+
 
 }
