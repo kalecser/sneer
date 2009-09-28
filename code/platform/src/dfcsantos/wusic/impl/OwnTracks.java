@@ -35,7 +35,7 @@ public class OwnTracks extends TrackSourceStrategy {
 	@Override
 	Track nextTrack()  {
 		if (!_playlist.hasMoreElements()) {
-			_playlist.reload();
+			_playlist.rescan();
 			if (!_playlist.hasMoreElements()) {
 				my(BlinkingLights.class).turnOnIfNecessary(_noTracksFound, "No Tracks Found", "Please choose a folder with MP3 files in it or in its subfolders (Wusic > File > Configure Root Track Folder).");
 				return null;

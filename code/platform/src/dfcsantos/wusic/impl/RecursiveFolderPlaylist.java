@@ -46,7 +46,7 @@ class RecursiveFolderPlaylist implements Enumeration<Track> {
 		return nextElement;
 	}
 
-	public void reload() {
+	void rescan() {
 		loadTracks();
 	}
 }
