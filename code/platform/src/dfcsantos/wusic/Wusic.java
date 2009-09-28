@@ -25,4 +25,6 @@ public interface Wusic {
 	void meToo();
 	void noWay();
 
+	void setShuffleMode(boolean shuffle);
+
 }

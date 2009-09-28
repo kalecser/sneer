@@ -85,6 +85,12 @@ public class WusicImpl implements Wusic {
 
 	
 	@Override
+	public void setShuffleMode(boolean shuffle) {
+		_trackSource.setShuffleMode(shuffle);
+	}
+
+	
+	@Override
 	public void meToo() {
 		((PeerTracks)_trackSource).meToo();
 	}

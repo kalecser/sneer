@@ -3,6 +3,7 @@
 
 	- Wusic
 		- Playlist -> back to Enumerable. Skip deleted files quietly. Remove next file from list. When empty rescan all files.
+			- See design comment in TrackSourceStartegy. 
 		- Track Folder Choice - Persist. Use same approach as OwnNameKeeper.
 		- Choose subfolder - Button to the right of "Play Own Tracks" option. 
 		- Shuffle checkbox.
