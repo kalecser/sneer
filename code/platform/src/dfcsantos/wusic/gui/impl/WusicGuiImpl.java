@@ -86,7 +86,7 @@ class WusicGuiImpl implements WusicGui {
         
         _enableDeleteFile = new JCheckBoxMenuItem();
         _enableDeleteFile.setText("Enable Delete File");
-        _enableDeleteFile.setSelected(true);
+        _enableDeleteFile.setSelected(false);
         _enableDeleteFile.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
 				_wusicPanel.enableDeleteFile(_enableDeleteFile.isSelected());
 			}
