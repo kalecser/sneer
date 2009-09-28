@@ -95,6 +95,7 @@ class WusicPanel extends JPanel {
         });
 
         _noWayButton.setText("Delete File!");
+        _noWayButton.setEnabled(false);
         _noWayButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 noWayButtonActionPerformed();
