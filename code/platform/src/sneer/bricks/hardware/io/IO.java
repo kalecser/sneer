@@ -36,6 +36,7 @@ public interface IO {
 	
 	interface Files{
 		Collection<File> listFiles(File folder, String[] extensions, boolean recursive);
+		Collection<File> listFiles(File folder, Filter fileFilter, Filter folderFilter);
 		
 		void copyFile(File from, File to) throws IOException;
 		void copyFolder(File srcFolder, File destFolder) throws IOException;
@@ -56,6 +57,7 @@ public interface IO {
 		void writeByteArrayToFile(File file, byte[] data) throws IOException;
 
 		void assertSameContents(File file1, File file2) throws IOException;
+
 
 	}
 	
