@@ -1,8 +1,14 @@
 package sneer.bricks.pulp.blinkinglights.impl;
 
 import static sneer.foundation.environments.Environments.my;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.cpu.threads.latches.Latch;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
@@ -10,13 +16,14 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
+import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.exceptions.FriendlyException;
 
 class BlinkingLightsImpl implements BlinkingLights {
 	
 	private final ListRegister<Light> _lights = my(CollectionSignals.class).newListRegister();
-	@SuppressWarnings("unused")	private WeakContract _turnOffContract;
+	private final Set<WeakContract> _turnOffContracts = new HashSet<WeakContract>();
 	
 	@Override
 	public Light turnOn(LightType type, String caption, String helpMessage, Throwable t, int timeout) {
@@ -54,9 +61,18 @@ class BlinkingLightsImpl implements BlinkingLights {
 	}
 	
 	private void turnOffIn(final Light light, int millisFromNow) {
-		_turnOffContract = my(Timer.class).wakeUpInAtLeast(millisFromNow, new Runnable() { @Override public void run() {
-			turnOffIfNecessary(light);	
+		final Latch added = my(Latches.class).produce();
+		final ByRef<WeakContract> weakContract = ByRef.newInstance();
+		weakContract.value = my(Timer.class).wakeUpInAtLeast(millisFromNow, new Runnable() { @Override public void run() {
+			
+			turnOffIfNecessary(light);
+			
+			added.waitTillOpen();
+			_turnOffContracts.remove(weakContract.value);
 		}});
+		
+		_turnOffContracts.add(weakContract.value);
+		added.open();
 	}
 
 	@Override
