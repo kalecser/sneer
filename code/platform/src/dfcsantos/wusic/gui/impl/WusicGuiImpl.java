@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -34,11 +35,14 @@ class WusicGuiImpl implements WusicGui {
 
 	private JFileChooser _tracksFolderChooser;
     private JMenuItem _chooseMyTracksFolder;
+    private JCheckBoxMenuItem _enableDeleteFile;
     private JMenu _mainMenu;
     private JMenuBar _mainMenuBar;
     private JFrame _frame;
 
     private boolean _isInitialized = false;
+
+	private WusicPanel _wusicPanel;
 
     {
 		Environments.my(MainMenu.class).addAction("Wusic", new Runnable() { @Override public void run() {
@@ -53,6 +57,9 @@ class WusicGuiImpl implements WusicGui {
 
 	private JFrame initFrame() {
 		JFrame result;
+		result = my(ReactiveWidgetFactory.class).newFrame(title()).getMainWidget();
+		_wusicPanel = new WusicPanel();
+		result.getContentPane().add(_wusicPanel);
 
 		_mainMenu = new JMenu();
 		_mainMenu.setText("File");
@@ -76,12 +83,21 @@ class WusicGuiImpl implements WusicGui {
         		_wusic.setMyTracksFolder(chosenFolder);
         	}
     	}});
+        
+        _enableDeleteFile = new JCheckBoxMenuItem();
+        _enableDeleteFile.setText("Enable Delete File");
+        _enableDeleteFile.setSelected(true);
+        _enableDeleteFile.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
+				_wusicPanel.enableDeleteFile(_enableDeleteFile.isSelected());
+			}
+		});
+        
+        _mainMenu.add(_enableDeleteFile);
+        
         _tracksFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         _tracksFolderChooser.setCurrentDirectory(my(OwnTracksFolderKeeper.class).ownTracksFolder().currentValue());
 
-		result = my(ReactiveWidgetFactory.class).newFrame(title()).getMainWidget();
 		result.setJMenuBar(_mainMenuBar);
-    	result.getContentPane().add(new WusicPanel());
     	result.pack();
 
     	return result;
