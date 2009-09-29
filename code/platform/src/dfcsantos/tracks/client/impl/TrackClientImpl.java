@@ -1,24 +1,40 @@
 package dfcsantos.tracks.client.impl;
 
 import static sneer.foundation.environments.Environments.my;
+
+import java.io.File;
+import java.io.IOException;
+
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
+import sneer.bricks.hardwaresharing.files.writer.FileWriter;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.announcer.TrackAnnouncement;
 import dfcsantos.tracks.client.TrackClient;
+import dfcsantos.tracks.endorsements.TrackEndorsement;
+import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
 
 public class TrackClientImpl implements TrackClient {
 	@SuppressWarnings("unused")
 	private final WeakContract _refToAvoidGC;
 
 	{
-		_refToAvoidGC = my(TupleSpace.class).addSubscription(TrackAnnouncement.class, new Consumer<TrackAnnouncement>(){@Override public void consume(TrackAnnouncement trackAnnouncement) {
-			consumeTrackAnnouncement(trackAnnouncement);
+		_refToAvoidGC = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>(){@Override public void consume(TrackEndorsement trackEndorsement) {
+			consumeTrackEndorsement(trackEndorsement);
 		}});
 	}
 
-	private void consumeTrackAnnouncement(TrackAnnouncement trackAnnouncement) {
-		my(FileClient.class).fetchToCache(trackAnnouncement.hash);
+	private void consumeTrackEndorsement(TrackEndorsement track) {
+		my(FileClient.class).fetchToCache(track.hash);
+		try {
+			my(FileWriter.class).writeAtomicallyTo(toFile(track), track.lastModified, track.hash);
+
+		} catch (IOException e) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+		}
+	}
+
+	private File toFile(TrackEndorsement track) {
+		return new File(my(OwnTracksFolderKeeper.class).ownTracksFolder().currentValue(), "candidates/" + track.path);
 	}
 }
