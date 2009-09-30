@@ -1,58 +1,55 @@
 ﻿TASKS
 =========
 
+	- [Bamboo] Hudson
+		- Linux Reboot.
+		- Old code in the webstart jar - Avoid
+	
+
 	- Wusic
-		- [Humba / Daniel / Igor] Implement tracks sharing
-			- TrackEndorsementPublisher use FileReader to add the endorsed track to the cache 
-			- Define a download limit (maximum of 3 tracks simultaneously) and a timeout (15 min)
-		- Redesign according to comment in TrackSourceStartegy.
-		- Shuffle checkbox.
+		- Downloads
+			- Simultaneous download limit of 3.
+			- 15 min timeout per download.
+			- Do not download files user already has (includes candidates).
+			- Number of Tracks downloaded from peers - In (parenthesis) after "Play Tracks from Peers" option.
+		- [Igor] Redesign according to comment in TrackSourceStartegy.
+			- Shuffle checkbox.
 		- Track Folder Choice - Persist. Use same approach as OwnNameKeeper.
 		- Choose subfolder - Button to the right of "Play Own Tracks" option. 
 		- Play Tracks From Peers
 			- Play from /tracks/candidates
 			- Me Too - Copy to /tracks/
 		- Buttons
-			- Stop
-			- Play/Pause, Skip, Me Too :), No Way :( - Buttons for Peer Tracks mode.
-			- Play/Pause, Skip, Delete File! - Buttons for Own Tracks mode.
+			- Play/Pause, Skip, Stop, Me Too :), No Way :( - Buttons for Peer Tracks mode.
+			- Play/Pause, Skip, Stop, Delete File! - Buttons for Own Tracks mode.
 			- Play/Pause - Toggle text: ">" or "||"
-		- Number of Tracks downloaded from peers - In (parenthesis) after "Play Tracks from Peers" option.
 		- Find another way to solve pause lag (try to use a smaller frame in player)
-		- Do not download candidates more than once.
-		
 
+	- [Kalecser] File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.
+		
 	- "Platform" (Remove this term when referring to the code. "Own" is used to distinguish other code.)
 		- code/own -> code-own
 
 	- SneerJockey - Extract from Sneer so it can be updated (Sneer itself is not updatable).
 
-	- [Klaus] Fix LightType.CONFIRMATION
+	- Fix LightType.CONFIRMATION
 
-	- [Klaus] Get Sandro to cover functional tests with clover. 
+	- Get Sandro to cover functional tests with clover. 
 
-	- [Klaus] Hudson Linux Reboot with Sandro.
-
-	- [Klaus] Revise entire package structure.
+	- Revise entire package structure.
 		- Remove all calls to sleep() including indirect.
 
-	- [Kalecser] File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.
-		
-
 	- Metoo
-		- [Sandro] Gui
-		- [Klaus and Bamboo] Business
-			- Unignore Freedom7.
-			- Brick States - All
+		- Brick States - All
 			- Hierarchical View - Consider groups of bricks (brick package at any level, examples: bricks.hardware, bricks.software, bricks.hardware.io, etc) as an optional grouping for versioning and downloading from friends, not only individual bricks.
 				- Do not allow circular dependencies among any level of groups of bricks and voilà: the world is free of cyclic dependencies.
 	
-	- [Klaus and Sandro] Sneer Responsiveness - Find a way to avoid snapp starter thread from waiting for gui thread.
+	- Sneer Responsiveness - Find a way to avoid snapp starter thread from waiting for gui thread.
 
-	- [Sandro] RapidShare Killer
+	- RapidShare Killer
 		- Focus. Keep it simple. Zero sofistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
 
-	- [Sandro] Log Filter
+	- Log Filter
 		- By default, nothing is logged. For each event, process lines from a "filter text", from top to bottom:
 			- Lines starting with # are ignored
 			- Blank lines are ignored
@@ -62,40 +59,18 @@
 		- Gui become a text field (ask Sandro for help)
 		- Make persistent (ask Sandro for help).
 	
-	- [Igor] ConnectionManager - tests
-
         
 ------------------------------------------ "EAT YOUR OWN DOGFOOD" RELEASE
 
 	- [Bamboo] my(StorageDirectory.class) - Make it work context-based and delete DirectoryConfig.getStorageDirectoryFor(brick).
 
-	- Savepoints - For entire source code.
-
 	- DynDns
 		- Fix: Running on more than one machine will cause redundant (abusive) updates. Do not persist last discovered IP. Do a DNS lookup every time instead.
 		- User data - Check if persistence is ok, in the right directory.					
 
-	- [Igor] Daemon - Eliminate uses, especially Daemon.killAllInstances(). Find a better way. Talk to Klaus.
-
-	- [Igor] SimpleListReceiver - It cannot be public.
-		- Talk to Klaus about this.
-		- ListSignal - All receivers iterate through the list as they start listening. Consider making ListSignal.addReceiver notify the receiver of all contents, just like regular Signals do. See ListRegisterImpl.MyOutput._notifier
-		- SetSignal - Revise it also.
-		- Make a ListSignal->SetSignal adapter brick instead of SimpleListReceiver.
-
-	- [Igor] Implement ThreadsMock sleepWithoutInterruptions
-		- Make threads wait on a monitor and create other method that will notifyAll, such as wakeAllSleepers.
-
-	- [Igor] Clean thread leaks during tests (see TestThatMightUseResources for details)
-		- FYI: ThreadThatMightUseResources now waits up to 2000 millis for threads to terminate alone before killing them and printing their stack to System.err;
-
-	- [Bamboo] Unused code:
-		- GUIImpl.defineBrickMetadata param
-		- ASMMetaClass
-
-	- [Igor] SignalChoosers - Return a sneer.pulp.reactive.Reception that can de disposed, just like Signals.receive().
+	- SignalChoosers - Return a WeakContract, just like regular Signals.
 	
-	- [Igor] Break down packages with more than one brick
+	- Packages with more than one brick - Do not allow.
 
 	- Gui Thread - Always call gui brick code in the gui thread. What was already done with the GuiBrickInvocationHandler does not cover callbacks. Complicated and slow weak-proxy-bubble structures would have to be created to support that. Instead, the proposed idea is:
 		- [Bamboo] Enhance at load-time the beginning of all public methods in all classes (including nested) in all gui brick impl packages.
@@ -106,15 +81,7 @@
 			- GuiThread - Improve how environment handling is done. 
 				- Unignore GuiBrickTest.
 
-	- [Bamboo] Create/Install ("publish") brick locally
-		- Brickness - "The simplest possible container"
-			- Unify the Bindings vs Contributions metaphors.
-			- Unignore Freedom7 tests.
-			- Make a test run a brick in a directory that is not in the system ClassLoader classpath (Eclipse classpath). It will probably fail. Implement the logic using NewContainerImpl.createApiClassLoader() to return a URLClassloader that can be extended with new classpaths for new brick interfaces;
-
-	- [Klaus and Igor]
-		- Uncomment _logger field and finalize() method in EventNotifierImpl.
-		- Start breaking 'sneer.pulp' into new package structure (hardware, software, etc), and while doing that, fix packages with more than one Brick (ex: 'sneer.pulp.reactive'). 
+	- Uncomment _logger field and finalize() method in EventNotifierImpl.
 
 	- DynDns
 		- Simplify to remove all synchronization. Let the container synchronize the brick.
@@ -126,10 +93,6 @@
 			- Freedom2Test - Unignore and make it pass.
 		- Public Key Ids
 
-	- MeToo
-		- Unignore Freedom7 dependency tests
-		- Open Jar leak - Fix in Freedom7Test
-		- Diffs
 
 ------------------------------------------ "SHARE YOUR OWN DOGFOOD" RELEASE
 
