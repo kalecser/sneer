@@ -1,13 +1,12 @@
 package dfcsantos.tracks.player;
 
-import java.io.InputStream;
-
 import sneer.foundation.brickness.Brick;
+import dfcsantos.wusic.Track;
 
 @Brick
 public interface TrackPlayer {
 
-	TrackContract startPlaying(InputStream stream, Runnable toCallWhenFinished);
+	TrackContract startPlaying(Track track, Runnable toCallWhenFinished);
 }
 /*
  

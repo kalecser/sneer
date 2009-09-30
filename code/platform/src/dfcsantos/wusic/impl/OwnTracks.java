@@ -3,10 +3,10 @@ package dfcsantos.wusic.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
-import java.util.Iterator;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
@@ -16,10 +16,11 @@ public class OwnTracks extends TrackSourceStrategy {
 
 	static final TrackSourceStrategy INSTANCE = new OwnTracks();
 
-	private Iterator<Track> _playlist;
+	private final Light _noTracksFound = my(BlinkingLights.class).prepare(LightType.WARN);
+	
+	private RecursiveFolderPlaylist _playlist;
 	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGC;
 
-	private Track _currentTrack;
 
 	{	
 		_refToAvoidGC = my(OwnTracksFolderKeeper.class).ownTracksFolder().addReceiver(new Consumer<File>() {@Override public void consume(File ownTracksFolder) {
@@ -27,27 +28,26 @@ public class OwnTracks extends TrackSourceStrategy {
 		}});
 	}
 
+	
 	private OwnTracks() {}
 
+	
 	@Override
 	Track nextTrack()  {
-		if (!_playlist.hasNext()) {
-			my(BlinkingLights.class).turnOn(LightType.WARN, "No songs found", "Please choose a folder with MP3 files in it or in its subfolders.", 10000);
-			return null;
+		if (!_playlist.hasMoreElements()) {
+			_playlist.rescan();
+			if (!_playlist.hasMoreElements()) {
+				my(BlinkingLights.class).turnOnIfNecessary(_noTracksFound, "No Tracks Found", "Please choose a folder with MP3 files in it or in its subfolders (Wusic > File > Configure Root Track Folder).");
+				return null;
+			}
 		}
-		synchronized (_playlist) {
-			_currentTrack = _playlist.next();
-		}
-
-		return _currentTrack;
+		my(BlinkingLights.class).turnOffIfNecessary(_noTracksFound);
+		return _playlist.nextElement();
 	}
 
+	
 	@Override
 	void noWay(Track rejected) {
-		synchronized (_playlist) {
-			_playlist.remove();
-		}
-
 		if (!rejected.file().delete())
 			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to delete track", "Unable to delete track: " + rejected.file(), 7000);
 	}

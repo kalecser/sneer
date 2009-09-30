@@ -2,10 +2,14 @@
 =========
 
 	- Wusic
-		- Playlist -> back to Enumerable. Skip deleted files quietly. Remove next file from list. When empty rescan all files.
+		- [Humba / Daniel / Igor] Implement tracks sharing
+			- TrackClientTest remove hardcoded references to candidates (create method in OwnTracksFolderKeeper)
+			- TrackEndorsementPublisher use FileReader to add the endorsed track to the cache 
+			- Define a download limit (maximum of 3 tracks simultaneously) and a timeout (15 min)
+		- Redesign according to comment in TrackSourceStartegy.
+		- Shuffle checkbox.
 		- Track Folder Choice - Persist. Use same approach as OwnNameKeeper.
 		- Choose subfolder - Button to the right of "Play Own Tracks" option. 
-		- Shuffle checkbox.
 		- Play Tracks From Peers
 			- Play from /tracks/candidates
 			- Me Too - Copy to /tracks/

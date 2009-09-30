@@ -3,91 +3,78 @@ package dfcsantos.wusic.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
-import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
-import dfcsantos.tracks.player.TrackContract;
-import dfcsantos.tracks.player.TrackPlayer;
 import dfcsantos.wusic.Track;
 import dfcsantos.wusic.Wusic;
 
 public class WusicImpl implements Wusic {
 
-	private final Register<Track> _trackPlaying = my(Signals.class).newRegister(null);
 	private TrackSourceStrategy _trackSource = OwnTracks.INSTANCE;
-	private TrackContract _currentTrackContract;
 
+	private final Register<Track> _trackToPlay = my(Signals.class).newRegister(null);
+
+	private final DJ _dj = new DJ(_trackToPlay.output(), new Runnable() { @Override public void run() {
+		skip();
+	}});
+
+	
 	@Override
 	public void start() {
-		playNextTrack();
+		skip();
 	}
 
+	
 	@Override
 	public void setMyTracksFolder(File ownTracksFolder) {
 		my(OwnTracksFolderKeeper.class).setOwnTracksFolder(ownTracksFolder);
 		skip();
 	}
 
-	@Override
-	public void pauseResume() {
-		if(_currentTrackContract == null)
-			start();
-		else
-			_currentTrackContract.pauseResume();
-	}
-
-	@Override
-	public void stop() {
-		if (_currentTrackContract != null) {
-			_currentTrackContract.dispose();
-			_currentTrackContract = null;
-		}
-	}
-
+	
 	@Override
 	public void skip() {
-		stop();
-		playNextTrack();
+		play(_trackSource.nextTrack());
 	}
 
-	private void playNextTrack() {
-		Track trackToPlay = _trackSource.nextTrack();
-		if (trackToPlay == null) return;
-		play(trackToPlay);
+	
+	@Override
+	public void pauseResume() {
+		if (currentTrack() == null)
+			skip();
+		else
+			_dj.pauseResume();
 	}
 
+
+	private Track currentTrack() {
+		return _trackToPlay.output().currentValue();
+	}
+
+	
+	@Override
+	public void stop() {
+		play(null);
+	}
+
+	
 	private void play(final Track track) {
-		FileInputStream stream = openFileStream(track);
-		if (stream == null) return;
-		_trackPlaying.setter().consume(track);
-		_currentTrackContract = my(TrackPlayer.class).startPlaying(stream, new Runnable() { @Override public void run() {
-			playNextTrack();
-		}});
+		_trackToPlay.setter().consume(track);
 	}
 
-	private FileInputStream openFileStream(Track trackToPlay) {
-		try {
-			return new FileInputStream(trackToPlay.file());
-		} catch (FileNotFoundException e) {
-			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to find file " + trackToPlay.file() , "File might have been deleted manually.", 15000);
-			return null;
-		}
-	}
-
+	
 	@Override
 	public Signal<String> trackPlayingName() {
-		return my(Signals.class).adapt(_trackPlaying.output(), new Functor<Track, String>() { @Override public String evaluate(Track track) {
-		return track == null ? "<No track playing>" : track.name();
+		return my(Signals.class).adapt(_trackToPlay.output(), new Functor<Track, String>() { @Override public String evaluate(Track track) {
+			return track == null ? "<No track to play>" : track.name();
 		}});
 	}
 
+	
 	@Override
 	public void chooseTrackSource(TrackSource source) {
 		_trackSource = source == TrackSource.OWN_TRACKS
@@ -96,15 +83,25 @@ public class WusicImpl implements Wusic {
 		skip();
 	}
 
+	
+	@Override
+	public void setShuffleMode(boolean shuffle) {
+		_trackSource.setShuffleMode(shuffle);
+	}
+
+	
 	@Override
 	public void meToo() {
 		((PeerTracks)_trackSource).meToo();
 	}
 
+	
 	@Override
 	public void noWay() {
-		Track currentTrack = _trackPlaying.output().currentValue();
-		stop();
+		Track currentTrack = currentTrack();
+		if (currentTrack == null) return;
+
+		skip();
 		_trackSource.noWay(currentTrack);
 	}
 

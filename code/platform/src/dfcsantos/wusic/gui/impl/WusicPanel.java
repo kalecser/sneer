@@ -23,7 +23,7 @@ import dfcsantos.wusic.Wusic.TrackSource;
  */
 class WusicPanel extends JPanel {
 
-	private static final Wusic _wusic = my(Wusic.class);
+	private static final Wusic Wusic = my(Wusic.class);
 
     private JButton _meTooButton;
     private JRadioButton _ownTracks;
@@ -36,7 +36,7 @@ class WusicPanel extends JPanel {
     private ButtonGroup _tracksSource;
 
 	{
-		_playingLabel = my(ReactiveWidgetFactory.class).newLabel(_wusic.trackPlayingName()).getMainWidget();
+		_playingLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.trackPlayingName()).getMainWidget();
         _tracksSource = new ButtonGroup();
         _ownTracks = new JRadioButton();
         _tracksFromPeers = new JRadioButton();
@@ -148,31 +148,31 @@ class WusicPanel extends JPanel {
 	}
 	
 	private void pauseButtonActionPerformed() {                                            
-    	_wusic.pauseResume();
+    	Wusic.pauseResume();
     }                                           
 
     private void skipButtonActionPerformed() {
-        _wusic.skip();
+        Wusic.skip();
     }
 
     private void stopButtonActionPerformed() {
-        _wusic.stop();
+        Wusic.stop();
     }
 
     private void meTooButtonActionPerformed() {
-        _wusic.meToo();
+        Wusic.meToo();
     }
 
     private void noWayButtonActionPerformed() {
-        _wusic.noWay();
+        Wusic.noWay();
     }
 
     private void myTracksActionPerformed() {
-        _wusic.chooseTrackSource(TrackSource.OWN_TRACKS);
+        Wusic.chooseTrackSource(TrackSource.OWN_TRACKS);
     }
 
     private void tracksFromPeersActionPerformed() {
-        _wusic.chooseTrackSource(TrackSource.PEER_TRACKS_STAGING_AREA);
+        Wusic.chooseTrackSource(TrackSource.PEER_TRACKS_STAGING_AREA);
     }
 
 
