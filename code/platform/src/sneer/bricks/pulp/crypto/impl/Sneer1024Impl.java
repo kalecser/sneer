@@ -29,7 +29,7 @@ class Sneer1024Impl implements Sneer1024 {
 
 	@Override
 	public String toString() {
-		return toHexa().substring(0, 10) + ".."; 
+		return "" + _bytes[0] + _bytes[1] + _bytes[2]; 
 	}
 
 	@Override

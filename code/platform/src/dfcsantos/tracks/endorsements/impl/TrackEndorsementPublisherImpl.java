@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import sneer.bricks.hardware.clock.timer.Timer;
+import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
@@ -44,7 +45,6 @@ public class TrackEndorsementPublisherImpl implements TrackEndorsementPublisher 
 
 
 	protected void endorseRandomTrack() {
-
 		ArrayList<File> tracks = new ArrayList<File>(my(IO.class).files().listFiles(currentFolder(), new String[] {"mp3","MP3"}, true));
 		if (tracks.isEmpty()) return;
 		Random random = new Random();
@@ -60,8 +60,19 @@ public class TrackEndorsementPublisherImpl implements TrackEndorsementPublisher 
 
 	private void tryToEndorseTrack(File track) throws IOException {
 		Sneer1024 hash = my(FileReader.class).readIntoTheFileCache(track);
-		String path = track.getAbsolutePath();
-		my(TupleSpace.class).publish(new TrackEndorsement(path, track.lastModified(), hash));
+		my(TupleSpace.class).publish(new TrackEndorsement(relativePath(track), track.lastModified(), hash));
+	}
+
+
+	private String relativePath(File track) {
+		String prefix = ownTracksPath() + File.separator;
+		String result = my(Lang.class).strings().substringAfter(track.getAbsolutePath(), prefix);
+		return result.replace('\\', '/');
+	}
+
+
+	private String ownTracksPath() {
+		return my(OwnTracksFolderKeeper.class).ownTracksFolder().currentValue().getAbsolutePath();
 	}
 
 }

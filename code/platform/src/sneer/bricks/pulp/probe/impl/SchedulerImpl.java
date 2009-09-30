@@ -7,6 +7,8 @@ import java.util.List;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection.PacketScheduler;
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.serialization.Serializer;
 import sneer.foundation.brickness.Tuple;
 
@@ -20,8 +22,15 @@ class SchedulerImpl implements PacketScheduler {
 
 	@Override
 	public byte[] highestPriorityPacketToSend() {
-		Tuple tuple = highestPriorityTupleToSend();
-		return _serializer.serialize(tuple); //Optimize: Use same serialized form of this tuple for all interested contacts.
+		while (true) {
+			Tuple tuple = highestPriorityTupleToSend();
+			try {
+				return _serializer.serialize(tuple); //Optimize: Use same serialized form of this tuple for all interested contacts.
+			} catch (RuntimeException e) {
+				my(BlinkingLights.class).turnOn(LightType.ERROR, "Error Serializing Tuple to Send", "Report this to your sovereign buddy.", e, 20000);
+				previousPacketWasSent();
+			}
+		}
 	}
 
 	synchronized private Tuple highestPriorityTupleToSend() {

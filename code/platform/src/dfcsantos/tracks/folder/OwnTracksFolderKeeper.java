@@ -8,6 +8,8 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface OwnTracksFolderKeeper {
 
-		Signal<File> ownTracksFolder();
-		void setOwnTracksFolder(File ownTracksFolder);
+	void setOwnTracksFolder(File ownTracksFolder);
+	Signal<File> ownTracksFolder();
+	Signal<File> peerTracksFolder();
+	
 }

@@ -8,6 +8,7 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.FolderConfig;
+import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
 
 class OwnTracksFolderKeeperImpl implements OwnTracksFolderKeeper {
@@ -28,6 +29,13 @@ class OwnTracksFolderKeeperImpl implements OwnTracksFolderKeeper {
 	@Override
 	public void setOwnTracksFolder(File ownTracksFolder) {
 		_ownTracksFolder.setter().consume(ownTracksFolder);
+	}
+
+	@Override
+	public Signal<File> peerTracksFolder() {
+		return my(Signals.class).adapt(ownTracksFolder(), new Functor<File, File>() { @Override public File evaluate(File ownTracksFolder) {
+			return new File(ownTracksFolder, "candidates");
+		}});
 	}
 
 }

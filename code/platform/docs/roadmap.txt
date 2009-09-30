@@ -20,6 +20,7 @@
 			- Play/Pause - Toggle text: ">" or "||"
 		- Number of Tracks downloaded from peers - In (parenthesis) after "Play Tracks from Peers" option.
 		- Find another way to solve pause lag (try to use a smaller frame in player)
+		- Do not download candidates more than once.
 		
 
 	- "Platform" (Remove this term when referring to the code. "Own" is used to distinguish other code.)

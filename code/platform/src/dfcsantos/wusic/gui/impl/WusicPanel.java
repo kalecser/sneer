@@ -80,7 +80,7 @@ class WusicPanel extends JPanel {
             }
         });
 
-        _stopButton.setText("X");
+        _stopButton.setText("Stop");
         _stopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 stopButtonActionPerformed();

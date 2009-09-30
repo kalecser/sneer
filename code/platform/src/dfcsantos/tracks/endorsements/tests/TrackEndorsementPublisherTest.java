@@ -26,7 +26,7 @@ public class TrackEndorsementPublisherTest extends BrickTest {
 		final Latch latch = my(Latches.class).produce();
 		@SuppressWarnings("unused")
 		WeakContract refToAvoidGC = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() {@Override public void consume(TrackEndorsement trackEndorsement) {
-			assertTrue(trackEndorsement.path.indexOf("foo.mp3")!=-1);
+			assertEquals("subfolder/foo.mp3", trackEndorsement.path);
 			latch.open();
 		}});
 		my(OwnTracksFolderKeeper.class).setOwnTracksFolder(tmpFolder());
