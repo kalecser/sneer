@@ -14,7 +14,7 @@ import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
-import dfcsantos.tracks.endorsements.TrackEndorsementPublisher;
+import dfcsantos.tracks.endorsements.TrackEndorser;
 import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
 
 public class TrackEndorsementPublisherTest extends BrickTest {
@@ -30,7 +30,7 @@ public class TrackEndorsementPublisherTest extends BrickTest {
 			latch.open();
 		}});
 		my(OwnTracksFolderKeeper.class).setOwnTracksFolder(tmpFolder());
-		my(TrackEndorsementPublisher.class);
+		my(TrackEndorser.class);
 		latch.waitTillOpen();
 	}
 

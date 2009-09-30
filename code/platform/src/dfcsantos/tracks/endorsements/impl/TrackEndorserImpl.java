@@ -16,10 +16,10 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
-import dfcsantos.tracks.endorsements.TrackEndorsementPublisher;
+import dfcsantos.tracks.endorsements.TrackEndorser;
 import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
 
-public class TrackEndorsementPublisherImpl implements TrackEndorsementPublisher {
+public class TrackEndorserImpl implements TrackEndorser {
 	
 	private static final File[] FILE_ARRAY = new File[0];
 	

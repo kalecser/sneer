@@ -4,4 +4,4 @@ import sneer.foundation.brickness.Brick;
 
 //@Snapp
 @Brick
-public interface TrackEndorsementPublisher {}
+public interface TrackEndorser {}
