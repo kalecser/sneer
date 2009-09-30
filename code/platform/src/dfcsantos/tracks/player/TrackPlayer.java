@@ -1,7 +1,7 @@
 package dfcsantos.tracks.player;
 
 import sneer.foundation.brickness.Brick;
-import dfcsantos.wusic.Track;
+import dfcsantos.tracks.Track;
 
 @Brick
 public interface TrackPlayer {

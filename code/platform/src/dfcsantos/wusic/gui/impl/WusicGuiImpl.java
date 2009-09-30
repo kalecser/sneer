@@ -83,22 +83,22 @@ class WusicGuiImpl implements WusicGui {
         		Wusic.setMyTracksFolder(chosenFolder);
         	}
     	}});
-        
+        _tracksFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        _tracksFolderChooser.setCurrentDirectory(my(OwnTracksFolderKeeper.class).ownTracksFolder().currentValue());
+
         _enableDeleteFile = new JCheckBoxMenuItem();
         _enableDeleteFile.setText("Enable Delete Button");
         _enableDeleteFile.setSelected(false);
         _enableDeleteFile.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-				_wusicPanel.enableDeleteFile(_enableDeleteFile.isSelected());
+				_wusicPanel.enableDeleteFileActionPerformed(_enableDeleteFile.isSelected());
 			}
 		});
-        
+
         _mainMenu.add(_enableDeleteFile);
-        
-        _tracksFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        _tracksFolderChooser.setCurrentDirectory(my(OwnTracksFolderKeeper.class).ownTracksFolder().currentValue());
 
 		result.setJMenuBar(_mainMenuBar);
     	result.pack();
+    	result.setResizable(false);
 
     	return result;
 	}

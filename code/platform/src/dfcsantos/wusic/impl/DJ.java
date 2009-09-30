@@ -4,9 +4,9 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.events.EventSource;
 import sneer.foundation.lang.Consumer;
+import dfcsantos.tracks.Track;
 import dfcsantos.tracks.player.TrackContract;
 import dfcsantos.tracks.player.TrackPlayer;
-import dfcsantos.wusic.Track;
 
 public class DJ implements Consumer<Track> {
 

@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -27,6 +28,7 @@ class WusicPanel extends JPanel {
 
     private JButton _meTooButton;
     private JRadioButton _ownTracks;
+    private JCheckBox _shuffleMode;
     private JButton _noWayButton;
     private JButton _pauseButton;
     private JLabel _playingLabel;
@@ -39,6 +41,7 @@ class WusicPanel extends JPanel {
 		_playingLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.trackPlayingName()).getMainWidget();
         _tracksSource = new ButtonGroup();
         _ownTracks = new JRadioButton();
+        _shuffleMode = new JCheckBox();
         _tracksFromPeers = new JRadioButton();
         _pauseButton = new JButton();
         _skipButton = new JButton();
@@ -55,6 +58,14 @@ class WusicPanel extends JPanel {
                 myTracksActionPerformed();
             }
         });
+
+        _shuffleMode.setText(" Shuffle Mode");
+        _shuffleMode.setSelected(false);
+        _shuffleMode.addActionListener(new ActionListener() {
+        	@Override public void actionPerformed(ActionEvent e) {
+				shuffleModeActionPerformed();
+			}
+		});
 
         _tracksSource.add(_tracksFromPeers);
         _tracksFromPeers.setText("Play Tracks From Peers");
@@ -110,7 +121,11 @@ class WusicPanel extends JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                     .addComponent(_playingLabel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
-                    .addComponent(_ownTracks, GroupLayout.Alignment.LEADING)
+                    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                    	.addComponent(_ownTracks)
+                    	.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                    	.addComponent(_shuffleMode)
+               		.addContainerGap())
                     .addComponent(_tracksFromPeers, GroupLayout.Alignment.LEADING)
                     .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(_pauseButton)
@@ -127,8 +142,10 @@ class WusicPanel extends JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(_ownTracks)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+           		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+            		.addComponent(_ownTracks)
+            		.addComponent(_shuffleMode))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(_tracksFromPeers)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(_playingLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
@@ -143,10 +160,10 @@ class WusicPanel extends JPanel {
         );
 	}
 
-	void enableDeleteFile(boolean enabled) {
+	void enableDeleteFileActionPerformed(boolean enabled) {
 		_noWayButton.setEnabled(enabled);
 	}
-	
+
 	private void pauseButtonActionPerformed() {                                            
     	Wusic.pauseResume();
     }                                           
@@ -175,5 +192,8 @@ class WusicPanel extends JPanel {
         Wusic.chooseTrackSource(TrackSource.PEER_TRACKS_STAGING_AREA);
     }
 
+    private void shuffleModeActionPerformed() {
+    	Wusic.setShuffleMode(_shuffleMode.isSelected());
+	}
 
 }

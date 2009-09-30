@@ -6,11 +6,12 @@ import java.io.File;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Consumer;
+import dfcsantos.tracks.Track;
 import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
-import dfcsantos.wusic.Track;
+import dfcsantos.tracks.playlist.Playlist;
+import dfcsantos.tracks.playlist.Playlists;
 
 	/**
 	*		Super
@@ -42,37 +43,45 @@ import dfcsantos.wusic.Track;
 
 abstract class TrackSourceStrategy {
 	
-	private boolean _isShuffleOn;
-	private RecursiveFolderPlaylist _playlist;
-	private final Light _noTracksFound = my(BlinkingLights.class).prepare(LightType.WARN);
+	private Playlist _playlist;
+	private File _tracksFolder;
+	private boolean _isShuffleMode;
+
 	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGC;
 
 	{	
 		_refToAvoidGC = my(OwnTracksFolderKeeper.class).ownTracksFolder().addReceiver(new Consumer<File>() {@Override public void consume(File ownTracksFolder) {
-			_playlist = new RecursiveFolderPlaylist(new File(ownTracksFolder, tracksSubfolder()));
+			setTracksFolder(ownTracksFolder);
+			initPlaylist();
 		}});
+
 	}
 
 	abstract String tracksSubfolder();
 
-	protected void setShuffleMode(boolean shuffle) {
-		_isShuffleOn = shuffle;
+	private void setTracksFolder(File tracksFolder) {
+		_tracksFolder = tracksFolder; 
+	}
+
+	private Playlist createPlaylist(File tracksFolder) {
+		return isShuffleMode() ? my(Playlists.class).newRandomPlaylist(tracksFolder) : my(Playlists.class).newSequentialPlaylist(tracksFolder);
+	}
+
+	private void initPlaylist() {
+		_playlist = createPlaylist(new File(_tracksFolder, tracksSubfolder()));
+	}
+
+	protected void setShuffleMode(boolean isShuffleMode) {
+		_isShuffleMode = isShuffleMode;
+		initPlaylist();
 	}
 
 	protected boolean isShuffleMode() {
-		return _isShuffleOn;
+		return _isShuffleMode;
 	}
 
 	protected Track nextTrack() {
-		if (!_playlist.hasMoreElements()) {
-			_playlist.rescan();
-			if (!_playlist.hasMoreElements()) {
-				my(BlinkingLights.class).turnOnIfNecessary(_noTracksFound, "No Tracks Found", "Please choose a folder with MP3 files in it or in its subfolders (Wusic > File > Configure Root Track Folder).");
-				return null;
-			}
-		}
-		my(BlinkingLights.class).turnOffIfNecessary(_noTracksFound);
-		return _playlist.nextElement();
+		return _playlist.nextTrack();
 	}
 
 	protected void noWay(Track rejected) {

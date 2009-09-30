@@ -8,8 +8,8 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.lang.Functor;
+import dfcsantos.tracks.Track;
 import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
-import dfcsantos.wusic.Track;
 import dfcsantos.wusic.Wusic;
 
 public class WusicImpl implements Wusic {
@@ -87,6 +87,7 @@ public class WusicImpl implements Wusic {
 	@Override
 	public void setShuffleMode(boolean shuffle) {
 		_trackSource.setShuffleMode(shuffle);
+		skip();
 	}
 
 	

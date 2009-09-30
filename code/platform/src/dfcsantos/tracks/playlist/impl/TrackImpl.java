@@ -1,8 +1,8 @@
-package dfcsantos.wusic.impl;
+package dfcsantos.tracks.playlist.impl;
 
 import java.io.File;
 
-import dfcsantos.wusic.Track;
+import dfcsantos.tracks.Track;
 
 class TrackImpl implements Track {
 	private final File _file;

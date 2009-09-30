@@ -9,8 +9,8 @@ import javazoom.jl.player.Player;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import dfcsantos.tracks.Track;
 import dfcsantos.tracks.player.TrackContract;
-import dfcsantos.wusic.Track;
 
 class TrackContractImpl implements TrackContract {
 
