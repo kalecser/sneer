@@ -54,7 +54,6 @@ abstract class TrackSourceStrategy {
 			setTracksFolder(ownTracksFolder);
 			initPlaylist();
 		}});
-
 	}
 
 	abstract String tracksSubfolder();

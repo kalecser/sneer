@@ -13,7 +13,7 @@
 			- Do not download files user already has (includes candidates).
 			- Number of Tracks downloaded from peers - In (parenthesis) after "Play Tracks from Peers" option.
 		- [Igor] Redesign according to comment in TrackSourceStartegy.
-			- Shuffle checkbox.
+		- Wusic Frame -> Instrument
 		- Track Folder Choice - Persist. Use same approach as OwnNameKeeper.
 		- Choose subfolder - Button to the right of "Play Own Tracks" option. 
 		- Play Tracks From Peers
