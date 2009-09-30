@@ -29,7 +29,7 @@ public class TrackClientTest extends BrickTest {
 		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[]{1});
 		checking(new Expectations(){{
 			exactly(1).of(_fileClient).fetchToCache(hash1);
-			exactly(1).of(_fileWriter).writeAtomicallyTo(new File(tmpFolder(), "candidates\\songs\\subfolder\\foo.mp3"), 42, hash1);
+			exactly(1).of(_fileWriter).writeAtomicallyTo(new File(tmpFolder(), "candidates/songs/subfolder/foo.mp3"), 42, hash1);
 		}});
 		my(OwnTracksFolderKeeper.class).setOwnTracksFolder(tmpFolder());
 		my(TrackClient.class);
