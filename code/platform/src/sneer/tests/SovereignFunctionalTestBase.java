@@ -37,8 +37,8 @@ public abstract class SovereignFunctionalTestBase extends BrickTest {
 	private void init() { //This is done lazily because it has to run as part of the test and not during the constructor or even during the @Before method because JUnit will not count those as part of the test's timeout. :(
 		if (_a != null) return;
 		
-		_a = _subject.createParty("Ana Almeida");
-		_b = _subject.createParty("Bruno Barros");
+		_a = createParty("Ana Almeida");
+		_b = createParty("Bruno Barros");
 		
 		connect(_a, _b);
 	}

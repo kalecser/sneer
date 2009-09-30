@@ -210,7 +210,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		startAndKeep(Wind.class);
 
 		startAndKeep(FileServer.class);
-		startAndKeep(BrickSpace.class);
 
 		startAndKeep(Stethoscope.class);
 		startAndKeep(Heart.class);
@@ -271,18 +270,33 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	}
 	
 	@Override
-	public void stageBricksForInstallation(String... brickNames) throws IOException {
-		for (String brickName : brickNames) stageBrickForInstallation(brickName);
-
-		my(Logger.class).log("Copying necessary platform code...");
-		copyPlatformSources();
-		copyNecessaryPlatformBinFiles();
-		my(Logger.class).log("Copying necessary platform code... done.");
+	public void stageBricksForInstallation(String... brickNames) {
+		for (String brickName : brickNames)
+			setStagedForInstallation(brickName);
 		
 		my(BrickInstaller.class).stageBricksForInstallation();
 	}
 
-	private void copyNecessaryPlatformBinFiles() throws IOException {
+	
+	@Override
+	public void enableCodeSharing() {
+		try {
+			tryToCopyPlatformCode();
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+		startAndKeep(BrickSpace.class);
+	}
+
+	private void tryToCopyPlatformCode() throws IOException {
+		my(Logger.class).log("Copying necessary platform code...");
+		copyPlatformSources();
+		copyUnupdatableBinFiles();
+		my(Logger.class).log("Copying necessary platform code... done.");
+	}
+
+	
+	private void copyUnupdatableBinFiles() throws IOException {
 		copyNecessaryPlatformBinFiles(
 			"sneer/main/Sneer.class",
 			"sneer/main/Sneer$ExclusionFilter.class",
@@ -310,7 +324,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		return my(ClassUtils.class).classpathRootFor(getClass());
 	}
 
-	private void stageBrickForInstallation(String brickName) {
+	private void setStagedForInstallation(String brickName) {
 		final BrickInfo brick = availableBrick(brickName);
 		final BrickVersion singleVersion = singleVersionOf(brick);
 		brick.setStagedForInstallation(singleVersion, true);
@@ -367,8 +381,8 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 
 	@Override
-	public void copyToSourceFolder(File folderWithBricks) throws IOException {
-		my(IO.class).files().copyFolder(folderWithBricks, testPlatformSrc());
+	public void copyToSourceFolder(File folder) throws IOException {
+		my(IO.class).files().copyFolder(folder, testPlatformSrc());
 	}
 
 	
