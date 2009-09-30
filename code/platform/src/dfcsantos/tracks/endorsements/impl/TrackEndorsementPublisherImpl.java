@@ -4,7 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Random;
 
 import sneer.bricks.hardware.clock.timer.Timer;
@@ -23,8 +22,12 @@ import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
 
 public class TrackEndorsementPublisherImpl implements TrackEndorsementPublisher {
 	
+	private static final File[] FILE_ARRAY = new File[0];
+	
+	
 	@SuppressWarnings("unused")	private final WeakContract _refToAvoidCG;
 
+	
 	{
 		_refToAvoidCG = my(Timer.class).wakeUpNowAndEvery(60*1000, new Runnable(){@Override public void run() {
 			endorseRandomTrack();
@@ -34,26 +37,35 @@ public class TrackEndorsementPublisherImpl implements TrackEndorsementPublisher 
 
 	
 	private void endorseTrack(final File track) {
-		my(Threads.class).startDaemon("Endorsing Track Played", new Runnable() { @Override public void run() {
+		my(Threads.class).startDaemon("Endorsing Track", new Runnable() { @Override public void run() {
 			try {
 				tryToEndorseTrack(track);
 			} catch (IOException e) {
-				my(BlinkingLights.class).turnOn(LightType.ERROR, "Error trying to endorse track played: " + track, "This is not a critical error but might indicate problems with your hard drive.");
+				my(BlinkingLights.class).turnOn(LightType.ERROR, "Error reading track: " + track, "This is not a critical error but might indicate problems with your hard drive.");
 			}
 		}});
 	}
 
 
 	protected void endorseRandomTrack() {
-		ArrayList<File> tracks = new ArrayList<File>(my(IO.class).files().listFiles(currentFolder(), new String[] {"mp3","MP3"}, true));
-		if (tracks.isEmpty()) return;
-		Random random = new Random();
-		int randomIndex = random.nextInt( tracks.size());
-		endorseTrack(tracks.get(randomIndex));
+		File[] tracks = listMp3Files(ownTracksFolder());
+		if (tracks.length == 0) return;
+		
+		endorseTrack(pickOneAtRandom(tracks));
 	}
 
 
-	private File currentFolder() {
+	private <T> T pickOneAtRandom(T[] list) {
+		return list[new Random().nextInt(list.length)];
+	}
+
+
+	private File[] listMp3Files(File a) {
+		return my(IO.class).files().listFiles(a, new String[] {"mp3","MP3"}, true).toArray(FILE_ARRAY);
+	}
+
+
+	private File ownTracksFolder() {
 		return my(OwnTracksFolderKeeper.class).ownTracksFolder().currentValue();
 	}
 
