@@ -9,7 +9,6 @@ import java.util.Random;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.reader.FileReader;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -32,22 +31,10 @@ public class TrackEndorsementPublisherImpl implements TrackEndorsementPublisher 
 		_refToAvoidCG = my(Timer.class).wakeUpNowAndEvery(60*1000, new Runnable(){@Override public void run() {
 			endorseRandomTrack();
 		}});
-		
 	}
 
 	
-	private void endorseTrack(final File track) {
-		my(Threads.class).startDaemon("Endorsing Track", new Runnable() { @Override public void run() {
-			try {
-				tryToEndorseTrack(track);
-			} catch (IOException e) {
-				my(BlinkingLights.class).turnOn(LightType.ERROR, "Error reading track: " + track, "This is not a critical error but might indicate problems with your hard drive.");
-			}
-		}});
-	}
-
-
-	protected void endorseRandomTrack() {
+	private void endorseRandomTrack() {
 		File[] tracks = listMp3Files(ownTracksFolder());
 		if (tracks.length == 0) return;
 		
@@ -55,6 +42,21 @@ public class TrackEndorsementPublisherImpl implements TrackEndorsementPublisher 
 	}
 
 
+	private void endorseTrack(final File track) {
+		try {
+			tryToEndorseTrack(track);
+		} catch (IOException e) {
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error reading track: " + track, "This is not a critical error but might indicate problems with your hard drive.");
+		}
+	}
+	
+	
+	private void tryToEndorseTrack(File track) throws IOException {
+		Sneer1024 hash = my(FileReader.class).readIntoTheFileCache(track);
+		my(TupleSpace.class).publish(new TrackEndorsement(relativePath(track), track.lastModified(), hash));
+	}
+	
+	
 	private <T> T pickOneAtRandom(T[] list) {
 		return list[new Random().nextInt(list.length)];
 	}
@@ -67,12 +69,6 @@ public class TrackEndorsementPublisherImpl implements TrackEndorsementPublisher 
 
 	private File ownTracksFolder() {
 		return my(OwnTracksFolderKeeper.class).ownTracksFolder().currentValue();
-	}
-
-
-	private void tryToEndorseTrack(File track) throws IOException {
-		Sneer1024 hash = my(FileReader.class).readIntoTheFileCache(track);
-		my(TupleSpace.class).publish(new TrackEndorsement(relativePath(track), track.lastModified(), hash));
 	}
 
 
