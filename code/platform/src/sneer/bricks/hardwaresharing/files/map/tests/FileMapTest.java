@@ -32,6 +32,7 @@ public class FileMapTest extends BrickTest {
 		}});
 		
 		assertEquals(hash, _subject.put(file));
+		assertEquals(file, _subject.get(hash));
 	}
 
 }

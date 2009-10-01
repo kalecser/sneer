@@ -11,4 +11,6 @@ public interface FileMap {
 
 	Sneer1024 put(File file) throws IOException;
 
+	File get(Sneer1024 hash);
+
 }
