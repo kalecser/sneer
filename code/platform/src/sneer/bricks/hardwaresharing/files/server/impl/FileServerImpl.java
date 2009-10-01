@@ -4,7 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
-import sneer.bricks.hardwaresharing.files.cache.FileCache;
+import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
 import sneer.bricks.hardwaresharing.files.protocol.FileContents;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
@@ -33,7 +33,7 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 
 	private void reply(FileRequest request) {
-		final Object response = my(FileCache.class).getContents(request.hashOfContents);
+		final Object response = my(FileMap.class).getContents(request.hashOfContents);
 		if (response == null) {
 			my(Logger.class).log("FileCache miss.");
 			return;

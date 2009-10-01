@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardwaresharing.files.cache.visitors.FileCacheGuide;
+import sneer.bricks.hardwaresharing.files.map.visitors.FileCacheGuide;
 import sneer.bricks.hardwaresharing.files.writer.FileWriter;
 import sneer.bricks.pulp.crypto.Sneer1024;
 

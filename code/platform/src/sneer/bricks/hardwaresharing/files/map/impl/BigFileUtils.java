@@ -1,4 +1,4 @@
-package sneer.bricks.hardwaresharing.files.cache.impl;
+package sneer.bricks.hardwaresharing.files.map.impl;
 
 import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
 import sneer.bricks.pulp.crypto.Sneer1024;

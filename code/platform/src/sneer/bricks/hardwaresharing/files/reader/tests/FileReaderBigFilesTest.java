@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
-import sneer.bricks.hardwaresharing.files.cache.FileCache;
+import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
 import sneer.bricks.hardwaresharing.files.reader.FileReader;
 import sneer.bricks.pulp.crypto.Sneer1024;
@@ -35,7 +35,7 @@ public class FileReaderBigFilesTest extends BrickTest {
 		File originalFile = generateRandomFile(size);
 		Sneer1024 read = _subject.readIntoTheFileCache(originalFile);
 		
-		BigFileBlocks blocks = (BigFileBlocks) my(FileCache.class).getContents(read);
+		BigFileBlocks blocks = (BigFileBlocks) my(FileMap.class).getContents(read);
 		File reintegratedFromCache = new File(tmpFolder(), "file.reintegrated");
 		unpackContentsToFile(blocks, reintegratedFromCache);
 		
@@ -73,7 +73,7 @@ public class FileReaderBigFilesTest extends BrickTest {
 	
 	private void unpack(ImmutableArray<Sneer1024> immutableArray, FileOutputStream stream) throws IOException {
 		for (Sneer1024 hash : immutableArray){
-			Object contents = my(FileCache.class).getContents(hash);
+			Object contents = my(FileMap.class).getContents(hash);
 			if (contents instanceof BigFileBlocks){
 				unpack(((BigFileBlocks) contents)._contents, stream);
 			} else {

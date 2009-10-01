@@ -4,8 +4,8 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.bricks.hardwaresharing.files.cache.FileCache;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
+import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
 import sneer.bricks.hardwaresharing.files.protocol.FileContents;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
@@ -38,7 +38,7 @@ class FileClientImpl implements FileClient {
 			receiveFolder(contents);
 		}});
 		
-		_cacheContract = my(FileCache.class).contentsAdded().addReceiver(new Consumer<Sneer1024>() { @Override public void consume(Sneer1024 hashOfContents) {
+		_cacheContract = my(FileMap.class).contentsAdded().addReceiver(new Consumer<Sneer1024>() { @Override public void consume(Sneer1024 hashOfContents) {
 			contentsReceived(hashOfContents);
 		}});
 	}
@@ -68,7 +68,7 @@ class FileClientImpl implements FileClient {
 	}
 
 	private Object cachedContentsBy(Sneer1024 hashOfContents) {
-		return my(FileCache.class).getContents(hashOfContents);
+		return my(FileMap.class).getContents(hashOfContents);
 	}
 	
 	synchronized
@@ -79,15 +79,15 @@ class FileClientImpl implements FileClient {
 	
 
 	private void receiveFile(FileContents contents) {
-		my(FileCache.class).putFileContents(contents.bytes.copy());
+		my(FileMap.class).putFileContents(contents.bytes.copy());
 	}
 
 	
 	private void receiveFolder(FolderContents contents) {
-		my(FileCache.class).putFolderContents(contents);
+		my(FileMap.class).putFolderContents(contents);
 	}
 	
 	protected void receiveBigFileBlocks(BigFileBlocks contents) {
-		my(FileCache.class).putBigFileBlocks(contents);
+		my(FileMap.class).putBigFileBlocks(contents);
 	}
 }

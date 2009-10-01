@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import sneer.bricks.hardwaresharing.files.cache.FileCache;
+import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
 import sneer.bricks.hardwaresharing.files.reader.FileReader;
 import sneer.bricks.pulp.crypto.Sneer1024;
@@ -16,7 +16,7 @@ import sneer.bricks.pulp.crypto.Sneer1024;
 
 class BigFileReader {
 
-	static private final FileCache FileCache = my(FileCache.class);
+	static private final FileMap FileCache = my(FileMap.class);
 	
 	
 	static Sneer1024 readFile(File file) throws IOException {

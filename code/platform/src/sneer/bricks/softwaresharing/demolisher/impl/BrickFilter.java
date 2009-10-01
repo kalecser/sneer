@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
-import sneer.bricks.hardwaresharing.files.cache.FileCache;
+import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.pulp.crypto.Sneer1024;
 
 class BrickFilter {
 
-	private static final FileCache FileCache = my(FileCache.class);
+	private static final FileMap FileCache = my(FileMap.class);
 	
 
 	static Sneer1024 cacheOnlyFilesFromThisBrick(Sneer1024 hashOfPackage) {

@@ -1,4 +1,4 @@
-package sneer.bricks.hardwaresharing.files.cache.visitors.tests;
+package sneer.bricks.hardwaresharing.files.map.visitors.tests;
 
 import org.junit.Test;
 

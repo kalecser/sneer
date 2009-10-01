@@ -10,7 +10,7 @@ import org.jmock.Sequence;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardwaresharing.files.cache.FileCache;
+import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.hardwaresharing.files.reader.FileReader;
 import sneer.bricks.software.code.classutils.ClassUtils;
@@ -19,7 +19,7 @@ import sneer.foundation.brickness.testsupport.Bind;
 
 public class FileReaderTest extends BrickTest {
 
-	@Bind private final FileCache _cache = mock(FileCache.class); 
+	@Bind private final FileMap _cache = mock(FileMap.class); 
 	
 	private final FileReader _subject = my(FileReader.class);
 
