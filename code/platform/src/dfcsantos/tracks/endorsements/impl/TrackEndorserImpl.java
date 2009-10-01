@@ -10,7 +10,7 @@ import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardwaresharing.files.reader.FileReader;
+import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.crypto.Sneer1024;
@@ -52,7 +52,7 @@ public class TrackEndorserImpl implements TrackEndorser {
 	
 	
 	private void tryToEndorseTrack(File track) throws IOException {
-		Sneer1024 hash = my(FileReader.class).readIntoTheFileCache(track);
+		Sneer1024 hash = my(FileMap.class).put(track);
 		my(TupleSpace.class).publish(new TrackEndorsement(relativePath(track), track.lastModified(), hash));
 	}
 	
