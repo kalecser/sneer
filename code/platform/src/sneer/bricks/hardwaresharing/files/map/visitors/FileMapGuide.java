@@ -4,7 +4,7 @@ import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.foundation.brickness.Brick;
 
 @Brick
-public interface FileCacheGuide {
+public interface FileMapGuide {
 
 	void guide(FolderStructureVisitor visitor, Sneer1024 startingPoint);
 	

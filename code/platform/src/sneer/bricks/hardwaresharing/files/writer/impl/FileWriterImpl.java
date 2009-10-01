@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardwaresharing.files.map.visitors.FileCacheGuide;
+import sneer.bricks.hardwaresharing.files.map.visitors.FileMapGuide;
 import sneer.bricks.hardwaresharing.files.writer.FileWriter;
 import sneer.bricks.pulp.crypto.Sneer1024;
 
@@ -35,7 +35,7 @@ public class FileWriterImpl implements FileWriter {
 
 
 	private void writeTo(File fileOrFolder, Sneer1024 hashOfContents) {
-		my(FileCacheGuide.class).guide(new FileWritingVisitor(fileOrFolder), hashOfContents);
+		my(FileMapGuide.class).guide(new FileWritingVisitor(fileOrFolder), hashOfContents);
 	}
 
 	

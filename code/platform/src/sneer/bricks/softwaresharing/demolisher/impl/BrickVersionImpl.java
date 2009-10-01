@@ -7,7 +7,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
-import sneer.bricks.hardwaresharing.files.map.visitors.FileCacheGuide;
+import sneer.bricks.hardwaresharing.files.map.visitors.FileMapGuide;
 import sneer.bricks.hardwaresharing.files.map.visitors.FolderStructureVisitor;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.softwaresharing.BrickVersion;
@@ -56,7 +56,7 @@ class BrickVersionImpl implements BrickVersion {
 
 	private List<FileVersion> findFiles() {
 		Visitor visitor = new Visitor();
-		my(FileCacheGuide.class).guide(visitor, _hash);
+		my(FileMapGuide.class).guide(visitor, _hash);
 		return visitor._visitedFiles;
 	}
 

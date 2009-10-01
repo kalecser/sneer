@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.Lang.Strings;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardwaresharing.files.map.visitors.FileCacheGuide;
+import sneer.bricks.hardwaresharing.files.map.visitors.FileMapGuide;
 import sneer.bricks.hardwaresharing.files.map.visitors.FolderStructureVisitor;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.softwaresharing.BrickInfo;
@@ -31,7 +31,7 @@ class Demolition implements FolderStructureVisitor {
 	Demolition(CacheMap<String,BrickInfo> bricksByName, Sneer1024 srcFolderHash, boolean isCurrent) {
 		_bricksByName = bricksByName;
 		_isCurrent = isCurrent;
-		my(FileCacheGuide.class).guide(this, srcFolderHash);
+		my(FileMapGuide.class).guide(this, srcFolderHash);
 	}
 
 
