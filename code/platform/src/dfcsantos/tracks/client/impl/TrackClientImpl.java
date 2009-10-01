@@ -16,20 +16,23 @@ import dfcsantos.tracks.endorsements.TrackEndorsement;
 import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
 
 public class TrackClientImpl implements TrackClient {
-	@SuppressWarnings("unused")
-	private final WeakContract _refToAvoidGC;
+	
+	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC;
 
+	
 	{
-		_refToAvoidGC = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>(){@Override public void consume(TrackEndorsement trackEndorsement) {
+		_refToAvoidGC = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement trackEndorsement) {
 			consumeTrackEndorsement(trackEndorsement);
 		}});
 	}
 
+	
 	private void consumeTrackEndorsement(TrackEndorsement track) {
-		if ( my(Seals.class).ownSeal().equals(track.publisher())) return;
+		if (my(Seals.class).ownSeal().equals(track.publisher())) return;
 		
 		my(FileClient.class).fetchToCache(track.hash);
 		try {
+
 			my(FileWriter.class).writeAtomicallyTo(fileToWrite(track), track.lastModified, track.hash);
 
 		} catch (IOException e) {
@@ -37,6 +40,7 @@ public class TrackClientImpl implements TrackClient {
 		}
 	}
 
+	
 	private File fileToWrite(TrackEndorsement track) {
 		String name = new File(track.path).getName();
 		return new File(my(OwnTracksFolderKeeper.class).peerTracksFolder().currentValue(), name);

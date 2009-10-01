@@ -24,7 +24,6 @@ class FileCacheImpl implements FileCache {
 	
 	@Override
 	public Sneer1024 putFileContents(byte[] contents) {
-		
 		Sneer1024 hash = my(Hasher.class).hash(contents);
 		put(hash, contents);
 		return hash; 
