@@ -3,12 +3,13 @@
 
 	<property name="build.dir" location="build" />
 	<property name="bin.dir" location="build/bin" />
+	<property name="own.build.dir" location="${build.dir}/dist/own" />
 	<property name="jnlp.file" location="${build.dir}/dist/sneer.jnlp" />
 	<property name="jnlp.mainClass" value="sneer.installer.Main" />
 
 	<target name="main" depends="compile, copy, log, makeJars, makeJnlp, signJars">
 	</target>
-
+	
 	<target name="copy">
 		<copy todir="${build.dir}/dist">
 			<fileset dir="web">
@@ -71,8 +72,8 @@
 	</target>
 
 	<target name="makeJars">
-		<mkdir dir="${build.dir}/dist/own"/>
-		<copy todir="${build.dir}/dist/own">
+		<mkdir dir="${own.build.dir}"/>
+		<copy todir="${own.build.dir}">
 			<fileset dir="../own-template">
 				<include name='**' />
 				<exclude name='.project.bak'/>
@@ -81,7 +82,7 @@
 			</fileset>
 		</copy>
 		<copy file="../own-template/.project.bak" 
-			  tofile="${build.dir}/dist/own/.project"/>
+			  tofile="${own.build.dir}/.project"/>
 
 		<jar destfile="build/dist/own.jar">
 			<fileset dir="${build.dir}/dist">
@@ -89,7 +90,7 @@
 			</fileset>
 		</jar>
 	
-		<delete dir="${build.dir}/dist/own"/>
+		<delete dir="${own.build.dir}"/>
 		
 		<jar destfile="build/dist/sneer-bootstrap.jar">
 			<fileset dir="${bin.dir}">
@@ -112,8 +113,7 @@
 	<target name="compile">
 		<path id="classpath">
 			<pathelement path="./bin"/>
-		</path>		
-		
+		</path>
 		<javac srcdir="src"
 				destdir="${bin.dir}"
 				listfiles="true"

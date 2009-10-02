@@ -115,7 +115,7 @@
 	</target>
 
 	<target name="copy-bin">
-		<mkdir dir="${sneer.bin}"/>
+		<reset-dir dir="${sneer.bin}"/>
 		<copy todir="${sneer.bin}">
 			<fileset dir="${bin.dir}">
 				<include name='**/*.*'/>
@@ -172,5 +172,13 @@
 			</current>
 		</clover-report>
 	</target>
+	
+	<macrodef name="reset-dir">
+		<attribute name="dir" />
+		<sequential>
+			<delete dir="@{dir}" />
+			<mkdir dir="@{dir}" />
+		</sequential>
+	</macrodef>
 
 </project>
