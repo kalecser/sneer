@@ -1,11 +1,6 @@
 ﻿TASKS
 =========
 
-	- [Bamboo] Hudson
-		- Linux Reboot.
-		- Old code in the webstart jar - Avoid
-	
-
 	- Wusic
 		- Downloads
 			- Simultaneous download limit of 3.
