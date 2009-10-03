@@ -30,7 +30,7 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 	
 	
 	
-	@Test (timeout = 180000)
+	@Test (timeout = 1000 * 60 * 5)
 	public void meToo_TakesACoupleOfMinutesToRunAndRunsOnlyOnHeadlessServer() throws Exception {
 		if (!isHudsonServer()) return;
 		

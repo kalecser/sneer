@@ -21,6 +21,5 @@ public interface FolderConfig {
 	File tmpFolderFor(Class<?> brick);
 
 	Immutable<File> platformCodeStage();
-	Immutable<File> platformCodeBackup();
 
 }

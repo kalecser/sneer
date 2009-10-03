@@ -11,8 +11,7 @@ public class SneerCodeFolders {
 	public static final File PLATFORM_SRC 	      = new File(CODE, "platform/src");
 	public static final File PLATFORM_BIN 	      = new File(CODE, "platform/bin");
 
-	public static final File PLATFORM_CODE_BACKUP = new File(CODE, "backup");
-	public static final File PLATFORM_CODE_STAGE  = new File(CODE, "stage");
+	public static final File PLATFORM_CODE_STAGE  = new File(CODE, "platform/stage");
 
 	
 	private static File sneerHome() {

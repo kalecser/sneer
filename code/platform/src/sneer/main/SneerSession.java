@@ -2,7 +2,6 @@ package sneer.main;
 
 import static sneer.foundation.environments.Environments.my;
 import static sneer.main.SneerCodeFolders.PLATFORM_BIN;
-import static sneer.main.SneerCodeFolders.PLATFORM_CODE_BACKUP;
 import static sneer.main.SneerCodeFolders.PLATFORM_CODE_STAGE;
 import static sneer.main.SneerCodeFolders.PLATFORM_SRC;
 import static sneer.main.SneerFolders.DATA;
@@ -58,7 +57,6 @@ public class SneerSession implements Runnable {
 		createAndSet(dirs.ownBinFolder(), OWN_BIN);
 		createAndSet(dirs.platformSrcFolder(), PLATFORM_SRC);
 		createAndSet(dirs.platformBinFolder(), PLATFORM_BIN);
-		createAndSet(dirs.platformCodeBackup(), PLATFORM_CODE_BACKUP);
 		
 		dirs.platformCodeStage().set(PLATFORM_CODE_STAGE);
 	}

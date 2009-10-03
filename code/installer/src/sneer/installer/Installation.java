@@ -1,6 +1,8 @@
 package sneer.installer;
 
+import static sneer.main.SneerCodeFolders.PLATFORM_BIN;
 import static sneer.main.SneerCodeFolders.PLATFORM_CODE;
+import static sneer.main.SneerCodeFolders.PLATFORM_SRC;
 import static sneer.main.SneerCodeFolders.SNEER_HOME;
 import static sneer.main.SneerFolders.LOG_FILE;
 import static sneer.main.SneerFolders.OWN_CODE;
@@ -31,8 +33,8 @@ class Installation {
 	
 	Installation() throws IOException {
 		showWaitWindow();
-		createDirectories();
-		addBinaries();
+		resetDirectories();
+		updateCode();
 		createOwnProjectIfNecessary();
 		closeWaitWindow();
 	}
@@ -67,12 +69,14 @@ class Installation {
 		extractFiles(file, OWN_CODE.getParentFile());		
 	}
 
-	private void createDirectories() throws IOException {
+	private void resetDirectories() throws IOException {
 		if(!SNEER_HOME.exists())
 			SNEER_HOME.mkdirs();
 		
-		deleteFolder(PLATFORM_CODE);
-		PLATFORM_CODE.mkdirs();
+		deleteFolder(PLATFORM_SRC);
+		deleteFolder(PLATFORM_BIN);
+		PLATFORM_SRC.mkdirs();
+		PLATFORM_BIN.mkdirs();
 	}
 
 	private void deleteFolder(File folder) throws IOException {
@@ -92,7 +96,7 @@ class Installation {
         if (!file.delete())  throw new IOException(("Unable to delete file: " + file));
     }
 	
-	private void addBinaries() throws IOException {
+	private void updateCode() throws IOException {
 		IOUtils.write(LOG_FILE, "jar file url: " + jarFileName.toString());
 		File file = extractJar(jarFileName, "sneer", "jar");
 		extractFiles(file, PLATFORM_CODE);

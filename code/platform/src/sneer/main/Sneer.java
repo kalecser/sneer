@@ -1,7 +1,6 @@
 package sneer.main;
 
 import static sneer.main.SneerCodeFolders.PLATFORM_CODE;
-import static sneer.main.SneerCodeFolders.PLATFORM_CODE_BACKUP;
 import static sneer.main.SneerCodeFolders.PLATFORM_CODE_STAGE;
 
 import java.io.Closeable;
@@ -20,6 +19,9 @@ import java.util.Date;
 import java.util.HashSet;
 
 public class Sneer {
+
+
+	private static final String BACKUP = "backup";
 
 
 	public static void main(String[] argsIgnored) throws Exception {
@@ -53,37 +55,54 @@ public class Sneer {
 
 	
 	private static void installStagedCodeIfNecessary() throws IOException {
-		installStagedCodeIfNecessary(PLATFORM_CODE_STAGE, newBackupFolder(), PLATFORM_CODE);
+		installStagedCodeIfNecessary(PLATFORM_CODE_STAGE, newBackupLabel(), PLATFORM_CODE);
 	}
 
 	
-	private static File newBackupFolder() {
-		String now = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
-		File result = new File(PLATFORM_CODE_BACKUP, now);
+	private static String newBackupLabel() {
+		return new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+	}
+
+
+	public static void installStagedCodeIfNecessary(File stageFolder, String backupLabel, File codeFolder) throws IOException {
+		if (!stageFolder.exists()) return;
+		installStagedCode(stageFolder, backupLabel, codeFolder);
+		deleteAtomically(stageFolder);
+	}
+
+
+	private static void installStagedCode(File stageFolder, String backupLabel, File codeFolder) throws IOException {
+		backup(backupLabel, codeFolder);
+		ExclusionFilter filesToPreserve = exclusionFilter(codeFolder, stageFolder);
+		deleteFolder(codeFolder, filesToPreserve);
+		copyFolder(stageFolder, codeFolder, filesToPreserve);
+	}
+
+	
+	private static void backup(String backupLabel, File codeFolder) throws IOException {
+		File backupFolder = backupFolder(backupLabel, codeFolder);
+		copySubFolder("src", codeFolder, backupFolder);
+		copySubFolder("bin", codeFolder, backupFolder);
+	}
+
+	
+	private static File backupFolder(String backupLabel, File codeFolder) {
+		File result = new File(codeFolder, BACKUP + "/" + backupLabel);
 		if (!result.mkdirs()) throw new IllegalStateException("Unable to mkdirs: " + result);
 		return result;
 	}
 
 
-	public static void installStagedCodeIfNecessary(File stageFolder, File backupFolder, File currentFolder) throws IOException {
-		if (!stageFolder.exists()) return;
-		
-		copyFolder(currentFolder, backupFolder, null);
-		ExclusionFilter filesToPreserve = exclusionFilter(currentFolder);
-		deleteFolder(currentFolder, filesToPreserve);
-		copyFolder(stageFolder, currentFolder, filesToPreserve);
-		deleteAtomically(stageFolder);
-	}
-
-	
-	private static ExclusionFilter exclusionFilter(File currentFolder) {
+	private static ExclusionFilter exclusionFilter(File codeFolder, File stageFolder) {
 		return new ExclusionFilter(
-			existingFile(currentFolder, "src/sneer/main/Sneer.java"),
-			existingFile(currentFolder, "bin/sneer/main/Sneer.class"),
-			existingFile(currentFolder, "bin/sneer/main/Sneer$ExclusionFilter.class"),
+			stageFolder,
+			existingFile(codeFolder, BACKUP),
+			existingFile(codeFolder, "src/sneer/main/Sneer.java"),
+			existingFile(codeFolder, "bin/sneer/main/Sneer.class"),
+			existingFile(codeFolder, "bin/sneer/main/Sneer$ExclusionFilter.class"),
 			
-			existingFile(currentFolder, "src/sneer/main/SneerCodeFolders.java"),
-			existingFile(currentFolder, "bin/sneer/main/SneerCodeFolders.class")
+			existingFile(codeFolder, "src/sneer/main/SneerCodeFolders.java"),
+			existingFile(codeFolder, "bin/sneer/main/SneerCodeFolders.class")
 		);
 	}
 
@@ -98,6 +117,11 @@ public class Sneer {
 		deleteFolder(tmp);
 	}
 
+	
+	private static void copySubFolder(String subFolder, File from, File to) throws IOException {
+		copyFolder(new File(from, subFolder), new File(to, subFolder), null);
+	}
+	
 	
 	private static void copyFolder(File original, File copy, FileFilter filter) throws IOException {
 		if (!copy.exists() && !copy.mkdirs()) throw new IOException("Unable to create: " + copy);
@@ -118,6 +142,7 @@ public class Sneer {
 		copy.setLastModified(original.lastModified());
 	}
 
+	
 	private static void copyFile(File original, File copy)	throws IOException {
 		FileInputStream in = null;
 		FileOutputStream out = null;

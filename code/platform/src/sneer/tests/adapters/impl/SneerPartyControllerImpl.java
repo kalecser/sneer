@@ -60,7 +60,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	private Collection<Object> _refToAvoidGc = new ArrayList<Object>();
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc2;
 	
-	private File _backupFolder;
 	private File _codeFolder;
 
 	
@@ -188,7 +187,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	}
 
 	@Override
-	public void configDirectories(File dataFolder, File tmpFolder, File codeFolder, File platformSrcFolder, File platformBinFolder, File stageFolder, File backupFolder) {
+	public void configDirectories(File dataFolder, File tmpFolder, File codeFolder, File platformSrcFolder, File platformBinFolder, File stageFolder) {
 		my(FolderConfig.class).storageFolder().set(dataFolder);
 		my(FolderConfig.class).tmpFolder().set(tmpFolder);
 		my(FolderConfig.class).platformSrcFolder().set(platformSrcFolder);
@@ -196,7 +195,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		
 		my(FolderConfig.class).platformCodeStage().set(stageFolder);
 		_codeFolder = codeFolder;
-		_backupFolder = backupFolder;
 	}
 
 
@@ -364,7 +362,8 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	private void installStagedCodeIfNecessary() {
 		File stageFolder = my(FolderConfig.class).platformCodeStage().get();
 		try {
-			Sneer.installStagedCodeIfNecessary(stageFolder , _backupFolder, _codeFolder);
+			String backupLabel = "" + System.currentTimeMillis();
+			Sneer.installStagedCodeIfNecessary(stageFolder , backupLabel, _codeFolder);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
