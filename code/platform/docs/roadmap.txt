@@ -6,7 +6,6 @@
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
 			- Do not download files user already has (includes candidates).
-			- Number of Tracks downloaded from peers - In (parenthesis) after "Play Tracks from Peers" option.
 		- [Igor] Redesign according to comment in TrackSourceStartegy.
 		- Wusic Frame -> Instrument
 		- Track Folder Choice - Persist. Use same approach as OwnNameKeeper.
@@ -14,6 +13,8 @@
 		- Play Tracks From Peers
 			- Play from /tracks/candidates
 			- Me Too - Copy to /tracks/
+			- Number of tracks in candidates folder - In (parenthesis) after "Play Tracks from Peers" option.
+			
 		- Buttons
 			- Play/Pause, Skip, Stop, Me Too :), No Way :( - Buttons for Peer Tracks mode.
 			- Play/Pause, Skip, Stop, Delete File! - Buttons for Own Tracks mode.
