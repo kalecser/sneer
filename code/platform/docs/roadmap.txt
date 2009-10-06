@@ -1,7 +1,7 @@
 ﻿TASKS
 =========
 
-	- [Klaus] unignore FileMapTest, LocalBrickDiscoveryTest, BrickInstallerTest, LocalCopyTest, LocalCopyTest
+	- [Klaus] unignore FileMapTest, LocalBrickDiscoveryTest, BrickInstallerTest, LocalCopyTest, LocalCopyTest, Freedom7.meToo
 	
 	- [Humberto] sneer.bricks.hardwaresharing.files.map.tests.FileReaderTest.readFolderToTheCache() uncomment.
 	
