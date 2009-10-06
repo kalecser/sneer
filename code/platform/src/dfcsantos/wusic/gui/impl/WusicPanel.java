@@ -2,6 +2,7 @@ package dfcsantos.wusic.gui.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -31,14 +32,16 @@ class WusicPanel extends JPanel {
     private JCheckBox _shuffleMode;
     private JButton _noWayButton;
     private JButton _pauseButton;
-    private JLabel _playingLabel;
+    private JLabel _trackLabel;
+    private JLabel _trackTime;
     private JButton _skipButton;
     private JButton _stopButton;
     private JRadioButton _tracksFromPeers;
     private ButtonGroup _tracksSource;
 
 	{
-		_playingLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.trackPlayingName()).getMainWidget();
+		_trackLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackName()).getMainWidget();
+		_trackTime = my(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackTime()).getMainWidget();
         _tracksSource = new ButtonGroup();
         _ownTracks = new JRadioButton();
         _shuffleMode = new JCheckBox();
@@ -75,7 +78,8 @@ class WusicPanel extends JPanel {
             }
         });
 
-        _playingLabel.setFont(new java.awt.Font("Tahoma", 2, 14));
+        _trackLabel.setFont(new Font("Tahoma", 2, 14));
+        _trackTime.setFont(new Font("Tahoma", 2, 14));
 
         _pauseButton.setText("> / ||");
         _pauseButton.addActionListener(new ActionListener() {
@@ -120,7 +124,10 @@ class WusicPanel extends JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                    .addComponent(_playingLabel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                	.addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                		.addComponent(_trackLabel)
+                		.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                		.addComponent(_trackTime))
                     .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                     	.addComponent(_ownTracks)
                     	.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
@@ -139,6 +146,7 @@ class WusicPanel extends JPanel {
                         .addComponent(_noWayButton)))
                 .addContainerGap())
         );
+
         layout.setVerticalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -148,7 +156,9 @@ class WusicPanel extends JPanel {
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(_tracksFromPeers)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(_playingLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                	.addComponent(_trackLabel)
+                	.addComponent(_trackTime))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(_pauseButton)

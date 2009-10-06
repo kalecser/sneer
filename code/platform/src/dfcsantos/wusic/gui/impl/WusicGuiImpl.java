@@ -109,7 +109,7 @@ class WusicGuiImpl implements WusicGui {
     }
 
 	private Signal<String> title() {
-		return my(Signals.class).adapt(Wusic.trackPlayingName(), new Functor<String, String>() { @Override public String evaluate(String track) {
+		return my(Signals.class).adapt(Wusic.playingTrackName(), new Functor<String, String>() { @Override public String evaluate(String track) {
 			return "Wusic :: " + track;
 		}});
 	}

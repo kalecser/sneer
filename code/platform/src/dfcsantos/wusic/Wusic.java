@@ -16,7 +16,8 @@ public interface Wusic {
 	void chooseTrackSource(TrackSource source);
 
 	void start();
-	Signal<String> trackPlayingName();
+	Signal<String> playingTrackName();
+	Signal<String> playingTrackTime();
 
 	void pauseResume();
 	void stop();
