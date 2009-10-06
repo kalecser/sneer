@@ -1,9 +1,9 @@
 package sneer.installer;
 
-import static sneer.main.SneerCodeFolders.PLATFORM_BIN;
-import static sneer.main.SneerCodeFolders.PLATFORM_CODE;
-import static sneer.main.SneerCodeFolders.PLATFORM_SRC;
+import static sneer.main.SneerCodeFolders.BIN;
+import static sneer.main.SneerCodeFolders.PLATFORM;
 import static sneer.main.SneerCodeFolders.SNEER_HOME;
+import static sneer.main.SneerCodeFolders.SRC;
 import static sneer.main.SneerFolders.LOG_FILE;
 import static sneer.main.SneerFolders.OWN_CODE;
 
@@ -73,10 +73,10 @@ class Installation {
 		if(!SNEER_HOME.exists())
 			SNEER_HOME.mkdirs();
 		
-		deleteFolder(PLATFORM_SRC);
-		deleteFolder(PLATFORM_BIN);
-		PLATFORM_SRC.mkdirs();
-		PLATFORM_BIN.mkdirs();
+		deleteFolder(SRC);
+		deleteFolder(BIN);
+		SRC.mkdirs();
+		BIN.mkdirs();
 	}
 
 	private void deleteFolder(File folder) throws IOException {
@@ -99,7 +99,7 @@ class Installation {
 	private void updateCode() throws IOException {
 		IOUtils.write(LOG_FILE, "jar file url: " + jarFileName.toString());
 		File file = extractJar(jarFileName, "sneer", "jar");
-		extractFiles(file, PLATFORM_CODE);
+		extractFiles(file, PLATFORM);
 	}
 
 	private File extractJar(URL url, String prefix, String suffix) throws IOException {
