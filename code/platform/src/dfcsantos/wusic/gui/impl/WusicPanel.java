@@ -2,6 +2,7 @@ package dfcsantos.wusic.gui.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -77,8 +78,8 @@ class WusicPanel extends JPanel {
             }
         });
 
-        _trackLabel.setFont(new java.awt.Font("Tahoma", 2, 14));
-        _trackTime.setFont(new java.awt.Font("Tahoma", 2, 14));
+        _trackLabel.setFont(new Font("Tahoma", 2, 14));
+        _trackTime.setFont(new Font("Tahoma", 2, 14));
 
         _pauseButton.setText("> / ||");
         _pauseButton.addActionListener(new ActionListener() {
@@ -145,6 +146,7 @@ class WusicPanel extends JPanel {
                         .addComponent(_noWayButton)))
                 .addContainerGap())
         );
+
         layout.setVerticalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()

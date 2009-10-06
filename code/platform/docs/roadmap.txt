@@ -11,8 +11,6 @@
 			- 15 min timeout per download.
 			- Do not download files user already has (includes candidates).
 		- [Igor] Redesign according to comment in TrackSourceStartegy.
-		- [Igor] Wusic Frame -> Instrument
-		- [Igor] Add music time progress label
 		- Track Folder Choice - Persist. Use same approach as OwnNameKeeper.
 		- Choose subfolder - Button to the right of "Play Own Tracks" option. 
 		- Play Tracks From Peers
