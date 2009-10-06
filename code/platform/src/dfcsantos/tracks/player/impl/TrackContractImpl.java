@@ -52,5 +52,9 @@ class TrackContractImpl implements TrackContract {
 		if (_player != null) _player.close();
 	}
 
+	@Override
+	public int trackElapsedTime() {
+		return _player == null ? 0 : _player.getPosition();
+	}
 
 }

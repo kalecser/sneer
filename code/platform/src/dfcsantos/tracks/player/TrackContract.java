@@ -7,4 +7,6 @@ public interface TrackContract extends Contract {
 
 	void pauseResume();
 
+	int trackElapsedTime();
+
 }

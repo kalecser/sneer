@@ -3,6 +3,9 @@ package dfcsantos.wusic.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
@@ -14,6 +17,8 @@ import dfcsantos.wusic.Wusic;
 
 public class WusicImpl implements Wusic {
 
+	private static final Format TIME_FORMATTER = new SimpleDateFormat("mm:ss");
+
 	private TrackSourceStrategy _trackSource = OwnTracks.INSTANCE;
 
 	private final Register<Track> _trackToPlay = my(Signals.class).newRegister(null);
@@ -21,7 +26,6 @@ public class WusicImpl implements Wusic {
 	private final DJ _dj = new DJ(_trackToPlay.output(), new Runnable() { @Override public void run() {
 		skip();
 	}});
-
 	
 	@Override
 	public void start() {
@@ -68,13 +72,19 @@ public class WusicImpl implements Wusic {
 
 	
 	@Override
-	public Signal<String> trackPlayingName() {
+	public Signal<String> playingTrackName() {
 		return my(Signals.class).adapt(_trackToPlay.output(), new Functor<Track, String>() { @Override public String evaluate(Track track) {
 			return track == null ? "<No track to play>" : track.name();
 		}});
 	}
 
-	
+	@Override
+	public Signal<String> playingTrackTime() {
+		return my(Signals.class).adapt(_dj.trackElapsedTime(), new Functor<Integer, String>() { @Override public String evaluate(Integer timeElapsed) {
+			return TIME_FORMATTER.format(new Date(timeElapsed));
+		}});
+	}
+
 	@Override
 	public void chooseTrackSource(TrackSource source) {
 		_trackSource = source == TrackSource.OWN_TRACKS
