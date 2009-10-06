@@ -1,11 +1,7 @@
 ﻿TASKS
 =========
 
-	- [Klaus] unignore FileMapTest, LocalBrickDiscoveryTest, BrickInstallerTest, LocalCopyTest, LocalCopyTest, Freedom7.meToo
-	
-	- [Humberto] sneer.bricks.hardwaresharing.files.map.tests.FileReaderTest.readFolderToTheCache() uncomment.
-	
-	- [Kalecser] FileReaderBigFilesTest => uncomment.
+	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, LocalCopyTest, LocalCopyTest, Freedom7.meToo
 	
 	- [Igor] "Platform" (Remove this term when referring to the code. "Own" is used to distinguish other code. Exception: Sneer* functional test classes because they use the term to distinguish platform code from their tmp copy of the code)
 		- sneer/code/platform -> sneer/code
@@ -30,7 +26,7 @@
 		- Find another way to solve pause lag (try to use a smaller frame in player)
 
 	- [Kalecser] File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.
-		
+	
 	- SneerJockey - Extract from Sneer so it can be updated (Sneer itself is not updatable).
 
 	- Fix LightType.CONFIRMATION

@@ -1,6 +1,8 @@
 package sneer.foundation.testsupport;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.junit.Assert;
 
@@ -22,6 +24,16 @@ public abstract class AssertUtils extends Assert {
 			i++;
 		}
 		assertEquals("Collections not same size", expected.length, i);
+	}
+
+	public static <T> void assertElementsInAnyOrder(Iterable<T> actual, T... expectedInAnyOrder) {
+		Collection<T> collection = new ArrayList<T>();
+		for (T element : actual) collection.add(element);
+		
+		for (T expected : expectedInAnyOrder)
+			assertTrue("Expected element not found: " + expected, collection.contains(expected));
+		
+		assertEquals("Collections not same size", expectedInAnyOrder.length, collection.size());
 	}
 
 	public static <X extends Throwable> void expect(Class<X> throwable, Closure<X> closure) {

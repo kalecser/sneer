@@ -73,8 +73,9 @@ class FileMapImpl implements FileMap {
 */
 	@Override
 	public Sneer1024 put(File fileOrFolder) throws IOException {
-		return (fileOrFolder.isDirectory()) ? putFolder(fileOrFolder)
-				: putFile(fileOrFolder);
+		return (fileOrFolder.isDirectory())
+			? putFolder(fileOrFolder)
+			: putFile(fileOrFolder);
 	}
 
 	private Sneer1024 putFile(File file) throws IOException {
