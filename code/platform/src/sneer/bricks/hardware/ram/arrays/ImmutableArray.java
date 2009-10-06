@@ -1,6 +1,8 @@
 package sneer.bricks.hardware.ram.arrays;
 
-public interface ImmutableArray<T> extends Iterable<T> {
+import java.util.Collection;
+
+public interface ImmutableArray<T> extends Collection<T> {
 
 	int length();
 
