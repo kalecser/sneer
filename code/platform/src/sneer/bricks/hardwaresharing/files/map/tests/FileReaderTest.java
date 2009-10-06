@@ -1,39 +1,36 @@
-package sneer.bricks.hardwaresharing.files.reader.tests;
+package sneer.bricks.hardwaresharing.files.map.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.jmock.Expectations;
-import org.jmock.Sequence;
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
-import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
-import sneer.bricks.hardwaresharing.files.reader.FileReader;
+import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
-import sneer.foundation.brickness.testsupport.Bind;
 
 public class FileReaderTest extends BrickTest {
 
-	@Bind private final FileMap _cache = mock(FileMap.class); 
-	
-	private final FileReader _subject = my(FileReader.class);
+	private final FileMap _subject = my(FileMap.class);
 
 	
 	@Test (timeout = 3000)
 	public void readSmallFileToTheCache() throws IOException {
-		checking(new Expectations(){{
-			exactly(1).of(_cache).putFileContents(contents("file1.txt"));
-		}});
-		_subject.readIntoTheFileCache(fixture("file1.txt"));
+		File file = fixture("file1.txt");
+		Sneer1024 hash = _subject.put(file);
+		assertEquals(file,_subject.getFile(hash));
 	}
 
 	@Test (timeout = 3000)
-	public void readFolderToTheCache() throws IOException {
+	public void readFolderToTheCache() {
+		
+/*		Sneer1024 hash = _subject.put(fixturesFolder());
+		FolderContents folderContents = _subject.getFolder(hash);
+		folderContents.contents.
+		
 		checking(new Expectations(){{
 			Sequence seq = newSequence("whatever");
 			exactly(1).of(_cache).putFileContents(contents("directory1/file1.txt")); inSequence(seq);
@@ -45,14 +42,14 @@ public class FileReaderTest extends BrickTest {
 			exactly(1).of(_cache).putFileContents(contents("file2.txt")); inSequence(seq);
 			exactly(1).of(_cache).putFileContents(contents("users.png")); inSequence(seq);
 			exactly(1).of(_cache).putFolderContents(with(any(FolderContents.class))); inSequence(seq);
-		}});
-		_subject.readIntoTheFileCache(fixturesFolder());
+		}});*/
+
 	}
 
-	private byte[] contents(String fixtureName) throws IOException {
+/*	private byte[] contents(String fixtureName) throws IOException {
 		return my(IO.class).files().readBytes(fixture(fixtureName));
 	}
-
+*/
 	private File fixture(String fixtureName) {
 		return new File(fixturesFolder(), fixtureName);
 	}

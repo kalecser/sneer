@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -30,6 +31,7 @@ import sneer.foundation.testsupport.AssertUtils;
 
 public class LocalBrickDiscoveryTest extends BrickTest {
 
+	@Ignore
 	@Test (timeout = 4000)
 	public void localBrickDiscoveryWithBricksInSubfolders() throws IOException {
 		generateBrick(tmpFolder());

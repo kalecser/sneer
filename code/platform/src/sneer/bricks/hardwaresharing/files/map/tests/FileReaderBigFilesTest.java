@@ -1,33 +1,21 @@
-package sneer.bricks.hardwaresharing.files.reader.tests;
-
-import static sneer.foundation.environments.Environments.my;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Random;
+package sneer.bricks.hardwaresharing.files.map.tests;
 
 import org.junit.Ignore;
-import org.junit.Test;
 
-import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardware.ram.arrays.ImmutableArray;
-import sneer.bricks.hardwaresharing.files.map.FileMap;
-import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
-import sneer.bricks.hardwaresharing.files.reader.FileReader;
-import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 
+@Ignore
 public class FileReaderBigFilesTest extends BrickTest {
 
+	/*
 	private final FileReader _subject = my(FileReader.class);
 	
 	@Ignore
 	@Test
 	public void readBigFileToTheCache() throws IOException{
-		testReadBigFileToTheCache(FileReader.FILE_BLOCK_SIZE + 1);
-		testReadBigFileToTheCache(FileReader.FILE_BLOCK_SIZE * 200);
-		testReadBigFileToTheCache(FileReader.FILE_BLOCK_SIZE * BigFileBlocks.NUMBER_OF_BLOCKS + 1); 
+		testReadBigFileToTheCache(FileMap.FILE_BLOCK_SIZE + 1);
+		testReadBigFileToTheCache(FileMap.FILE_BLOCK_SIZE * 200);
+		testReadBigFileToTheCache(FileMap.FILE_BLOCK_SIZE * BigFileBlocks.NUMBER_OF_BLOCKS + 1); 
 	}
 	
 
@@ -81,5 +69,5 @@ public class FileReaderBigFilesTest extends BrickTest {
 			}
 		}
 	}
-
+*/
 }

@@ -5,18 +5,20 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardwaresharing.files.reader.FileReader;
+import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 /** Abstract test class names must not end in "Test" or else Hudson will try to instantiate them and fail. :P */
+
 public abstract class FileCopyTestBase extends BrickTest {
 
-	private final FileReader _publisher = my(FileReader.class);
+	private final FileMap _publisher = my(FileMap.class);
 
 	
 	@Test (timeout = 3000)
@@ -32,7 +34,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 
 
 	private void testWith(File fileOrFolder) throws IOException {
-		Sneer1024 hash = _publisher.readIntoTheFileCache(fileOrFolder);
+		Sneer1024 hash = _publisher.put(fileOrFolder);
 		assertNotNull(hash);
 
 		File copy = newTempFile(); 

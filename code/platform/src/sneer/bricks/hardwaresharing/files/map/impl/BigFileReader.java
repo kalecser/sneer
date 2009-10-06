@@ -1,21 +1,9 @@
-package sneer.bricks.hardwaresharing.files.reader.impl;
+package sneer.bricks.hardwaresharing.files.map.impl;
 
-import static sneer.foundation.environments.Environments.my;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-
-import sneer.bricks.hardwaresharing.files.map.FileMap;
-import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
-import sneer.bricks.hardwaresharing.files.reader.FileReader;
-import sneer.bricks.pulp.crypto.Sneer1024;
 
 
 class BigFileReader {
-
+/*
 	static private final FileMap FileCache = my(FileMap.class);
 	
 	
@@ -31,14 +19,14 @@ class BigFileReader {
 
 	
 	private static Sneer1024 sliceAndCache(InputStream stream, long length) throws IOException {
-		int sliceLength = FileReader.FILE_BLOCK_SIZE;
+		int sliceLength = FileMap.FILE_BLOCK_SIZE;
 		int slices = countSlices(sliceLength, length);
 
 		Sneer1024[] hashes = new Sneer1024[slices];
 		int currentSlice = 0;
-		for (int i = 0; i < length; i+=FileReader.FILE_BLOCK_SIZE) {
+		for (int i = 0; i < length; i+=FileMap.FILE_BLOCK_SIZE) {
 			
-			int sliceSize = (int) Math.min(length - i, FileReader.FILE_BLOCK_SIZE);
+			int sliceSize = (int) Math.min(length - i, FileMap.FILE_BLOCK_SIZE);
 			byte[] buffy = new byte[sliceSize];
 			
 			int read = stream.read(buffy);
@@ -80,5 +68,5 @@ class BigFileReader {
 		
 		return (int) slices;
 	}
-	
+*/	
 }

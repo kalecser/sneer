@@ -5,6 +5,8 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.Ignore;
+
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.hardwaresharing.files.server.FileServer;
 import sneer.bricks.pulp.crypto.Sneer1024;
@@ -14,6 +16,7 @@ import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
+@Ignore
 public class RemoteCopyTest extends LocalCopyTest {
 
 	@Override

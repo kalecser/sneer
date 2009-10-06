@@ -14,6 +14,7 @@ import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 class FileClientImpl implements FileClient {
 	
@@ -78,8 +79,10 @@ class FileClientImpl implements FileClient {
 	}
 	
 
-	private void receiveFile(FileContents contents) {
-		my(FileMap.class).putFileContents(contents.bytes.copy());
+	private void receiveFile(@SuppressWarnings("unused") FileContents contents) {
+//		my(FileMap.class).putFileContents(contents.bytes.copy());
+		throw new NotImplementedYet();
+		
 	}
 
 	
@@ -87,7 +90,8 @@ class FileClientImpl implements FileClient {
 		my(FileMap.class).putFolderContents(contents);
 	}
 	
-	protected void receiveBigFileBlocks(BigFileBlocks contents) {
-		my(FileMap.class).putBigFileBlocks(contents);
+	protected void receiveBigFileBlocks(@SuppressWarnings("unused") BigFileBlocks contents) {
+//		my(FileMap.class).putBigFileBlocks(contents);
+		throw new NotImplementedYet();
 	}
 }

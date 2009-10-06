@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -30,7 +31,7 @@ import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.Consumer;
 
-
+@Ignore
 public class BrickInstallerTest extends BrickTest {
 
 	{
