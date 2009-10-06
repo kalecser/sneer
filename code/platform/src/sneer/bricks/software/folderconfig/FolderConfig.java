@@ -11,8 +11,8 @@ public interface FolderConfig {
 	Immutable<File> ownSrcFolder();
 	Immutable<File> ownBinFolder();
 
-	Immutable<File> platformSrcFolder();
-	Immutable<File> platformBinFolder();
+	Immutable<File> srcFolder();
+	Immutable<File> binFolder();
 
 	Immutable<File> storageFolder();
 	File storageFolderFor(Class<?> brick);
@@ -20,6 +20,6 @@ public interface FolderConfig {
 	Immutable<File> tmpFolder();
 	File tmpFolderFor(Class<?> brick);
 
-	Immutable<File> platformCodeStage();
+	Immutable<File> stageFolder();
 
 }

@@ -29,7 +29,7 @@ public class BrickFinderImpl implements BrickFinder {
 		Set<String> result = new HashSet<String>();
 		
 		collectBricks(result, my(FolderConfig.class).ownBinFolder().get());
-		collectBricks(result, my(FolderConfig.class).platformBinFolder().get());
+		collectBricks(result, my(FolderConfig.class).binFolder().get());
 
 		return sorted(result);
 	}

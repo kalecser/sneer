@@ -22,7 +22,7 @@ public class BrickFinderTest extends BrickTest {
 	public void findBricks() throws IOException {
 		File testDir = JarUtils.fileFor(getClass()).getParentFile();
 		my(FolderConfig.class).ownBinFolder().set(testDir);
-		my(FolderConfig.class).platformBinFolder().set(testDir);
+		my(FolderConfig.class).binFolder().set(testDir);
 		
 		Collection<String> bricks = _subject.findBricks();
 

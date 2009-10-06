@@ -23,8 +23,8 @@ import sneer.bricks.softwaresharing.installer.BrickInstaller;
 
 public class BrickInstallerImpl implements BrickInstaller {
 
-	private final File _srcStage  = staged("src");
-	private final File _binStage  = staged("bin");
+	private final File _srcStage = staged("src");
+	private final File _binStage = staged("bin");
 
 
 	@Override
@@ -46,7 +46,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 
 
 	private File stage() {
-		return my(FolderConfig.class).platformCodeStage().get();
+		return my(FolderConfig.class).stageFolder().get();
 	}
 
 
@@ -56,20 +56,23 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 	
 
-	private File platformSrc() {
-		return my(FolderConfig.class).platformSrcFolder().get();
+	private File srcFolder() {
+		return my(FolderConfig.class).srcFolder().get();
 	}
+
 	
 	private void prepareStagedSrc() throws IOException {
-		copyFolder(platformSrc(), _srcStage);		
+		copyFolder(srcFolder(), _srcStage);		
 		
 		for (BrickInfo brickInfo : stagedBricks())
 			prepareStagedSrc(brickInfo);
 	}
 
+
 	private void copyFolder(File from, File to) throws IOException {
 		my(IO.class).files().copyFolder(from, to);
 	}
+
 
 	private List<BrickInfo> stagedBricks() {
 		List<BrickInfo> result = new ArrayList<BrickInfo>();
@@ -82,25 +85,31 @@ public class BrickInstallerImpl implements BrickInstaller {
 		return result;
 	}
 
+
 	private void prepareStagedSrc(BrickInfo brickInfo) throws IOException {
 		prepareStagedSrc(brickSrcFolder(brickInfo), brickInfo.getVersionStagedForInstallation());
 	}
+
 
 	private File brickSrcFolder(BrickInfo brickInfo) {
 		return new File(_srcStage, packageFolder(brickInfo));
 	}
 
+
 	private String packageFolder(BrickInfo brickInfo) {
 		return packageFolder(brickInfo.name());
 	}
+
 
 	private String packageFolder(String brickName) {
 		return packageName(brickName).replace(".", "/");
 	}
 
+
 	private String packageName(String brickName) {
 		return my(Lang.class).strings().substringBeforeLast(brickName, ".");
 	}
+
 
 	private void prepareStagedSrc(File brickSrcFolder, BrickVersion version) throws IOException {
 		if (brickSrcFolder.exists())
@@ -111,12 +120,14 @@ public class BrickInstallerImpl implements BrickInstaller {
 		my(FileWriter.class).mergeOver(brickSrcFolder, version.hash());
 	}
 
+
 	private void cleanStagedBrickFolder(File brickFolder) throws IOException {
 		deleteFilesIn(brickFolder);
 		delete(new File(brickFolder, "impl"));
 		delete(new File(brickFolder, "tests"));
 	}
 
+	
 	private void deleteFilesIn(File brickFolder) {
 		File[] files = brickFolder.listFiles();
 		if (files == null) return;
@@ -132,11 +143,10 @@ public class BrickInstallerImpl implements BrickInstaller {
 			throw new IOException("Unable to create folder: " + folder);
 	}
 
+
 	private void delete(File folder) throws IOException {
 		my(Logger.class).log("Deleting: ", folder);
 		my(IO.class).files().forceDelete(folder);
 	}
-
-	
 
 }

@@ -35,8 +35,8 @@ import sneer.foundation.lang.Consumer;
 public class BrickInstallerTest extends BrickTest {
 
 	{
-		my(FolderConfig.class).platformCodeStage().set(stagingFolder());
-		my(FolderConfig.class).platformSrcFolder().set(srcFolder());
+		my(FolderConfig.class).stageFolder().set(stageFolder());
+		my(FolderConfig.class).srcFolder().set(srcFolder());
 	}
 	
 	final BrickInstaller _subject = my(BrickInstaller.class);
@@ -141,18 +141,18 @@ public class BrickInstallerTest extends BrickTest {
 	
 	
 	private File stagedFile(String fileName) {
-		return new File(stagingFolder(), fileName);
+		return new File(stageFolder(), fileName);
 	}
 
 
-	private File stagingFolder() {
+	private File stageFolder() {
 		return new File(tmpFolder(), "stage");
 	}
 
 	
 	private void copyClassToSrcFolder(final Class<?> clazz) throws IOException {
 		my(IO.class).files().copyFile(
-			platformSrcFileFor(clazz),
+			repositorySrcFileFor(clazz),
 			srcFileFor(clazz));
 	}
 
@@ -162,17 +162,17 @@ public class BrickInstallerTest extends BrickTest {
 	}
 
 	
-	private File platformSrcFileFor(final Class<?> clazz) {
-		return new File(platformSrcFolder(), classUtils().relativeJavaFileName(clazz));
+	private File repositorySrcFileFor(final Class<?> clazz) {
+		return new File(repositorySrcFolder(), classUtils().relativeJavaFileName(clazz));
 	}
 	
 	
-	private File platformSrcFolder() {
-		return new File(platformBin(), "src");
+	private File repositorySrcFolder() {
+		return new File(repositoryBinFolder(), "src");
 	}
 
 	
-	private File platformBin() {
+	private File repositoryBinFolder() {
 		return classUtils().classpathRootFor(Brick.class).getParentFile();
 	}
 
@@ -213,4 +213,5 @@ public class BrickInstallerTest extends BrickTest {
 	private void assertSameContents(File folder1, File folder2)	throws IOException {
 		my(IO.class).files().assertSameContents(folder1, folder2);
 	}
+
 }

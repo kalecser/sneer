@@ -1,7 +1,7 @@
 package sneer.main;
 
-import static sneer.main.SneerCodeFolders.PLATFORM_CODE;
-import static sneer.main.SneerCodeFolders.PLATFORM_CODE_STAGE;
+import static sneer.main.SneerCodeFolders.PLATFORM;
+import static sneer.main.SneerCodeFolders.STAGE;
 
 import java.io.Closeable;
 import java.io.File;
@@ -41,7 +41,7 @@ public class Sneer {
 	private URL[] classpath() {
 		return new URL[] {
 			toURL(SneerFolders.OWN_BIN),
-			toURL(SneerCodeFolders.PLATFORM_BIN)
+			toURL(SneerCodeFolders.BIN)
 		};
 	}
 
@@ -55,7 +55,7 @@ public class Sneer {
 
 	
 	private static void installStagedCodeIfNecessary() throws IOException {
-		installStagedCodeIfNecessary(PLATFORM_CODE_STAGE, newBackupLabel(), PLATFORM_CODE);
+		installStagedCodeIfNecessary(STAGE, newBackupLabel(), PLATFORM);
 	}
 
 	
