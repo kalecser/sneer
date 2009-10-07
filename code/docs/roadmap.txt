@@ -2,11 +2,6 @@
 =========
 
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, LocalCopyTest, LocalCopyTest, Freedom7.meToo
-	
-	- [Igor] Remove the constant SneerCodeFolders.PLATFORM
-		- Move code: sneer/code/platform -> sneer/code in the morning
-		- sneer/code/own -> sneer/code-own (update installer accordingly)
-			- Update .gitignore
 
 	- Wusic
 		- Downloads
