@@ -24,8 +24,6 @@ import sneer.bricks.pulp.events.EventSource;
 
 class FileMapImpl implements FileMap {
 	
-	
-	private final Map<Sneer1024, Object> _contents = new ConcurrentHashMap<Sneer1024, Object>();
 	private final EventNotifier<Sneer1024> _contentsAdded = my(EventNotifiers.class).newInstance();
 	private final Map<Sneer1024, File> _fileMap = new ConcurrentHashMap<Sneer1024, File>();
 	private final Map<Sneer1024, FolderContents> _folderMap = new ConcurrentHashMap<Sneer1024, FolderContents>();	
@@ -35,31 +33,17 @@ class FileMapImpl implements FileMap {
 	public Sneer1024 putFolderContents(FolderContents contents) {
 		Sneer1024 hash = my(Hasher.class).hash(contents);
 		_folderMap.put(hash, contents);
+		_contentsAdded.notifyReceivers(hash);
 		return hash; 
 	}
 
 
-	@Override
-	public Object getContents(Sneer1024 hash) {
-		return _contents.get(hash);
-	}
-	
-	
 	@Override
 	public EventSource<Sneer1024> contentsAdded() {
 		return _contentsAdded.output();
 	}
 
 	
-	@Override
-	public boolean isFolder(FileOrFolder fileOrFolder) {
-		Object contents = getContents(fileOrFolder.hashOfContents);
-		if (contents == null) throw new IllegalArgumentException("Contents not found in FileCache.");
-		return contents instanceof FolderContents;
-	}
-	
-	
-
 /*	@Override
 	public Sneer1024 putBigFileBlocks(BigFileBlocks bigFileBlocks) {
 		
@@ -81,6 +65,7 @@ class FileMapImpl implements FileMap {
 	private Sneer1024 putFile(File file) throws IOException {
 		Sneer1024 hash = my(Hasher.class).hash(file);
 		_fileMap.put(hash, file);
+		_contentsAdded.notifyReceivers(hash);
 		return hash;
 	}
 
@@ -118,13 +103,7 @@ class FileMapImpl implements FileMap {
 		return result;
 	}
 
-	@Override
-	public File getFile(Sneer1024 hash) {
-		return _fileMap.get(hash);
-	}
-
-	@Override
-	public FolderContents getFolder(Sneer1024 hash) {
-		return _folderMap.get(hash);
-	}
+	@Override	public File getFile(Sneer1024 hash) { return _fileMap.get(hash);	}
+	@Override	public FolderContents getFolder(Sneer1024 hash) { return _folderMap.get(hash); }
+	
 }

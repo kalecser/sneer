@@ -15,14 +15,14 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 	Map<K, Thread> _keysByResolver = new HashMap<K, Thread>();
 	
 	
-	public V get(K key, final Producer<V> producerToUseIfAbsent) {
-		return get(key, new Functor<K, V>() { @Override public V evaluate(K ignored) {
+	public <X extends Throwable> V get(K key, final ProducerWithThrowable<V, X> producerToUseIfAbsent) throws X {
+		return get(key, new FunctorWithThrowable<K, V, X>() { @Override public V evaluate(K ignored) throws X {
 			return producerToUseIfAbsent.produce();
 		}});
 	}
 
 	
-	public V get(K key, Functor<K, V> functorToUseIfAbsent) {
+	public <X extends Throwable> V get(K key, FunctorWithThrowable<K, V, X> functorToUseIfAbsent) throws X {
 		boolean thisThreadMustResolve = false;
 		synchronized (_keysByResolver) {
 			V found = get(key);
@@ -32,7 +32,7 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 		}
 
 		if (thisThreadMustResolve) {
-			V resolved = functorToUseIfAbsent.evaluate(key);
+			V resolved = functorToUseIfAbsent.evaluate(key); //Fix: throw the exception in the other threads waiting too.
 			synchronized (_keysByResolver) {
 				put(key, resolved);
 				_keysByResolver.remove(key);

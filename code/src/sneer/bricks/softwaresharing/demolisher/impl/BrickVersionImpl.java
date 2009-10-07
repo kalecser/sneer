@@ -2,6 +2,7 @@ package sneer.bricks.softwaresharing.demolisher.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -21,7 +22,7 @@ class BrickVersionImpl implements BrickVersion {
 	private Status _status;
 	private boolean _stagedForExecution;
 	
-	BrickVersionImpl(Sneer1024 hashOfPackage, boolean isCurrent) {
+	BrickVersionImpl(Sneer1024 hashOfPackage, boolean isCurrent) throws IOException {
 		_hash = BrickFilter.cacheOnlyFilesFromThisBrick(hashOfPackage);
 		_files = findFiles();
 		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
@@ -54,7 +55,7 @@ class BrickVersionImpl implements BrickVersion {
 		_stagedForExecution = value;
 	}
 
-	private List<FileVersion> findFiles() {
+	private List<FileVersion> findFiles() throws IOException {
 		Visitor visitor = new Visitor();
 		my(FileMapGuide.class).guide(visitor, _hash);
 		return visitor._visitedFiles;

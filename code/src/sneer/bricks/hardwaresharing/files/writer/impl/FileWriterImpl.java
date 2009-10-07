@@ -28,13 +28,13 @@ public class FileWriterImpl implements FileWriter {
 
 	
 	@Override
-	public void mergeOver(File existingFolder, Sneer1024 hashOfContents) {
+	public void mergeOver(File existingFolder, Sneer1024 hashOfContents) throws IOException {
 		check(existingFolder);
 		writeTo(existingFolder, hashOfContents);
 	}
 
 
-	private void writeTo(File fileOrFolder, Sneer1024 hashOfContents) {
+	private void writeTo(File fileOrFolder, Sneer1024 hashOfContents) throws IOException {
 		my(FileMapGuide.class).guide(new FileWritingVisitor(fileOrFolder), hashOfContents);
 	}
 

@@ -1,6 +1,9 @@
 package sneer.bricks.hardwaresharing.files.client.impl;
 
 import static sneer.foundation.environments.Environments.my;
+
+import java.io.File;
+
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
@@ -69,7 +72,10 @@ class FileClientImpl implements FileClient {
 	}
 
 	private Object cachedContentsBy(Sneer1024 hashOfContents) {
-		return my(FileMap.class).getContents(hashOfContents);
+		File file = my(FileMap.class).getFile(hashOfContents);
+		return file == null
+			?  my(FileMap.class).getFolder(hashOfContents)
+			: file;
 	}
 	
 	synchronized
