@@ -13,14 +13,22 @@
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
 			- Do not download files user already has (includes candidates).
+		- [Igor] Make ReactiveLabels selectable.
+		- [Igor] Use a Register<OperatingMode> instance variable in WusicImpl.
+		- [Igor] Swap trackLabel and trackTime.
 		- [Igor] Redesign according to comment in TrackSourceStartegy.
-		- Track Folder Choice - Persist. Use same approach as OwnNameKeeper.
-		- Choose subfolder - Button to the right of "Play Own Tracks" option. 
-		- Play Tracks From Peers
-			- Play from /tracks/candidates
-			- Me Too - Copy to /tracks/
-			- Number of tracks in candidates folder - In (parenthesis) after "Play Tracks from Peers" option.
-			
+			- Own:
+				- chooseFolderButton (subfolders will be played too - it's recursive); persist choice
+				- shuffle option
+				- deleteFileButton - activate from menu
+			- Peers:
+				- chooseSharedFolderButton opens JFileChooser (Title: 'Configure Shared Tracks Folder');
+					 - Open automatically when entering peers mode and shared folder not yet configured 
+				- always shuffle
+				- 'candidates' folder is a brick tmp folder
+				- display the number of tracks in the candidates folder in (parenthesis) after "Play Tracks from Peers" option.
+				- meToo move from candidates to sharedFolder
+				- noWay delete from candidates 
 		- Buttons
 			- Play/Pause, Skip, Stop, Me Too :), No Way :( - Buttons for Peer Tracks mode.
 			- Play/Pause - Toggle text: ">" or "||"
