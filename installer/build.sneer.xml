@@ -8,10 +8,10 @@
 	
 	<property name="clover.jar" location="lib/clover.jar" />
 
-	<property name="sneer.home" location="../platform" />
-	<property name="sneer.src" location="../platform/src" />
-	<property name="sneer.lib" location="../platform/src" />
-	<property name="sneer.bin" location="../platform/bin" />
+	<property name="sneer.home" location="../code" />
+	<property name="sneer.src" location="../code/src" />
+	<property name="sneer.lib" location="../code/src" />
+	<property name="sneer.bin" location="../code/bin" />
 
 	<path id="classpath">
 		<pathelement path="${bin.dir}"/>
@@ -45,7 +45,7 @@
 			<classpath refid="pmd.lib" />
 		</taskdef>
 
-		<property name="fdc.src" location="../platform/src"/>
+		<property name="fdc.src" location="../src"/>
 		<property name="output" location="build/duplicate.xml"/>
 		
 		<echo message="${fdc.src} --> ${output}"/>
@@ -154,7 +154,7 @@
 	</target>
 
 	<target name="report-clover">
-		<fileset dir="../platform/src" id="clover.sources">
+		<fileset dir="../src" id="clover.sources">
 			<include name="**/*.java" />
 		</fileset>
 

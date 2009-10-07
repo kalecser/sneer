@@ -2,11 +2,6 @@
 =========
 
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, LocalCopyTest, LocalCopyTest, Freedom7.meToo
-	
-	- [Igor] Remove the constant SneerCodeFolders.PLATFORM
-		- Move code: sneer/code/platform -> sneer/code in the morning
-		- sneer/code/own -> sneer/code-own (update installer accordingly)
-			- Update .gitignore
 
 	- Wusic
 		- Downloads
@@ -15,7 +10,6 @@
 			- Do not download files user already has (includes candidates).
 		- [Igor] Make ReactiveLabels selectable.
 		- [Igor] Use a Register<OperatingMode> instance variable in WusicImpl.
-		- [Igor] Swap trackLabel and trackTime.
 		- [Igor] Redesign according to comment in TrackSourceStartegy.
 			- Own:
 				- chooseFolderButton (subfolders will be played too - it's recursive); persist choice
