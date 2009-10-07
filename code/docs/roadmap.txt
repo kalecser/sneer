@@ -8,7 +8,6 @@
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
 			- Do not download files user already has (includes candidates).
-		- [Igor] Use a Register<OperatingMode> instance variable in WusicImpl.
 		- [Igor] Redesign according to comment in TrackSourceStartegy.
 			- Own:
 				- chooseFolderButton (subfolders will be played too - it's recursive); persist choice
