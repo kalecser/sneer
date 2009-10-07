@@ -7,7 +7,10 @@
 	
 	- [Kalecser] FileReaderBigFilesTest => uncomment.
 	
-	- Remove the constant SneerCodeFolders.PLATFORM
+	- [Igor] Remove the constant SneerCodeFolders.PLATFORM
+		- Move code: sneer/code/platform -> sneer/code in the morning
+		- sneer/code/own -> sneer/code-own (update installer accordingly)
+			- Update .gitignore
 
 	- Wusic
 		- Downloads
