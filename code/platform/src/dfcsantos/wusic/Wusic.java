@@ -12,8 +12,8 @@ public interface Wusic {
 
 	void setMyTracksFolder(File selectedFolder);
 
-	public enum TrackSource { OWN_TRACKS, PEER_TRACKS_STAGING_AREA }
-	void chooseTrackSource(TrackSource source);
+	enum OperatingMode { OWN, PEERS };
+	void setOperatingMode(OperatingMode mode);
 
 	void start();
 	Signal<String> playingTrackName();

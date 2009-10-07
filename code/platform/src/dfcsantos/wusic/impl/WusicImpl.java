@@ -26,6 +26,7 @@ public class WusicImpl implements Wusic {
 	private final DJ _dj = new DJ(_trackToPlay.output(), new Runnable() { @Override public void run() {
 		skip();
 	}});
+
 	
 	@Override
 	public void start() {
@@ -86,10 +87,8 @@ public class WusicImpl implements Wusic {
 	}
 
 	@Override
-	public void chooseTrackSource(TrackSource source) {
-		_trackSource = source == TrackSource.OWN_TRACKS
-			? OwnTracks.INSTANCE
-			: PeerTracks.INSTANCE;
+	public void setOperatingMode(OperatingMode mode) {
+		_trackSource = (mode == OperatingMode.OWN) ? OwnTracks.INSTANCE : PeerTracks.INSTANCE;
 		skip();
 	}
 

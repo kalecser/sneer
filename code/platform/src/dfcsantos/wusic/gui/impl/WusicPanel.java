@@ -1,6 +1,7 @@
 package dfcsantos.wusic.gui.impl;
 
 import static sneer.foundation.environments.Environments.my;
+import static dfcsantos.wusic.Wusic.OperatingMode;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -17,7 +18,6 @@ import javax.swing.LayoutStyle;
 
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import dfcsantos.wusic.Wusic;
-import dfcsantos.wusic.Wusic.TrackSource;
 
 /**
  * 
@@ -125,9 +125,9 @@ class WusicPanel extends JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                 	.addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                		.addComponent(_trackLabel)
-                		.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                		.addComponent(_trackTime))
+                		.addComponent(_trackTime)
+                		.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                		.addComponent(_trackLabel))
                     .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                     	.addComponent(_ownTracks)
                     	.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
@@ -157,8 +157,8 @@ class WusicPanel extends JPanel {
                 .addComponent(_tracksFromPeers)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                	.addComponent(_trackLabel)
-                	.addComponent(_trackTime))
+                    	.addComponent(_trackTime)
+                    	.addComponent(_trackLabel))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(_pauseButton)
@@ -195,11 +195,11 @@ class WusicPanel extends JPanel {
     }
 
     private void myTracksActionPerformed() {
-        Wusic.chooseTrackSource(TrackSource.OWN_TRACKS);
+        Wusic.setOperatingMode(OperatingMode.OWN);
     }
 
     private void tracksFromPeersActionPerformed() {
-        Wusic.chooseTrackSource(TrackSource.PEER_TRACKS_STAGING_AREA);
+        Wusic.setOperatingMode(OperatingMode.PEERS);
     }
 
     private void shuffleModeActionPerformed() {

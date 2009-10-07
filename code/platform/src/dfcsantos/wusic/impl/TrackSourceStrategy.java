@@ -13,34 +13,6 @@ import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
 import dfcsantos.tracks.playlist.Playlist;
 import dfcsantos.tracks.playlist.Playlists;
 
-	/**
-	*		Super
-	*			Manage Playlist
-	*				Use root folder.
-	*				Ignore "deleted" and "candidates" subfolders.
-	*		
-	*			No Way:
-	*				record bad hash
-	*				delete
-	*		
-	*			Shuffle
-	*		
-	*		
-	*		OwnTracks
-	*			root folder: Chosen subfolder of (OwnTracksFolderKeeper.class).ownTracksFolder()
-	*		
-	*			No Way:
-	*				copy to "deleted"
-	*				super.NoWay()
-	*		
-	*		
-	*		PeerTracks
-	*			root folder: (OwnTracksFolderKeeper.class).ownTracksFolder() / candidates
-	*		
-	*			Me Too
-	*				Move from candidates to (OwnTracksFolderKeeper.class).ownTracksFolder()
-	*/
-
 abstract class TrackSourceStrategy {
 	
 	private Playlist _playlist;
