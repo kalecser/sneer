@@ -3,9 +3,10 @@
 
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, LocalCopyTest, LocalCopyTest, Freedom7.meToo
 	
-	- [Igor] "Platform" (Remove this term when referring to the code. "Own" is used to distinguish other code. Exception: Sneer* functional test classes because they use the term to distinguish platform code from their tmp copy of the code)
-		- sneer/code/platform -> sneer/code
-		- sneer/code/own      -> sneer/code-own
+	- [Igor] Remove the constant SneerCodeFolders.PLATFORM
+		- Move code: sneer/code/platform -> sneer/code in the morning
+		- sneer/code/own -> sneer/code-own (update installer accordingly)
+			- Update .gitignore
 
 	- Wusic
 		- Downloads

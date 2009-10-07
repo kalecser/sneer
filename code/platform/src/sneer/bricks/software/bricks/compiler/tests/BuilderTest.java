@@ -179,7 +179,7 @@ public class BuilderTest extends BrickTest {
 	}
 
 	
-	private File platformBin() {
+	private File repositoryBinFolder() {
 		return my(ClassUtils.class).classpathRootFor(Brick.class);
 	}
 	
@@ -210,7 +210,7 @@ public class BuilderTest extends BrickTest {
 	
 	private void copySourceFile(Class<?> clazz) throws IOException {
 		copyFile(
-				platformSourceFileFor(clazz),
+				repositorySourceFileFor(clazz),
 				testSrcFile(relativeJavaFileName(clazz)));
 	}
 
@@ -225,13 +225,13 @@ public class BuilderTest extends BrickTest {
 	}
 
 	
-	private File platformSourceFileFor(Class<?> clazz) {
-		return new File(platformSrcFolder(), relativeJavaFileName(clazz));
+	private File repositorySourceFileFor(Class<?> clazz) {
+		return new File(repositorySrcFolder(), relativeJavaFileName(clazz));
 	}
 
 	
-	private File platformSrcFolder() {
-		return new File(platformBin().getParentFile(), "src");
+	private File repositorySrcFolder() {
+		return new File(repositoryBinFolder().getParentFile(), "src");
 	}
 
 	

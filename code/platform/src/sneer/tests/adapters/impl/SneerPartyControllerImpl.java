@@ -54,15 +54,14 @@ import sneer.tests.adapters.SneerParty;
 import sneer.tests.adapters.SneerPartyController;
 
 class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
-	
+
 	static private final String MOCK_ADDRESS = "localhost";
-	
+
 	private Collection<Object> _refToAvoidGc = new ArrayList<Object>();
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc2;
-	
+
 	private File _codeFolder;
 
-	
 	@Override
 	public void setSneerPort(int port) {
 		try {
@@ -90,7 +89,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 //	private void storePublicKey(Contact contact, PublicKey publicKey) {
 //		_keyManager.addKey(contact, publicKey);
 //	}
-
 
 	@Override
 	public String ownName() {
@@ -151,7 +149,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		throw new NotImplementedYet();
     }
 
-
 	@Override
 	public int sneerPort() {
         return my(PortKeeper.class).port().currentValue();
@@ -187,16 +184,15 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	}
 
 	@Override
-	public void configDirectories(File dataFolder, File tmpFolder, File codeFolder, File platformSrcFolder, File platformBinFolder, File stageFolder) {
+	public void configDirectories(File dataFolder, File tmpFolder, File codeFolder, File srcFolder, File binFolder, File stageFolder) {
 		my(FolderConfig.class).storageFolder().set(dataFolder);
 		my(FolderConfig.class).tmpFolder().set(tmpFolder);
-		my(FolderConfig.class).platformSrcFolder().set(platformSrcFolder);
-		my(FolderConfig.class).platformBinFolder().set(platformBinFolder);
+		my(FolderConfig.class).srcFolder().set(srcFolder);
+		my(FolderConfig.class).binFolder().set(binFolder);
 		
-		my(FolderConfig.class).platformCodeStage().set(stageFolder);
+		my(FolderConfig.class).stageFolder().set(stageFolder);
 		_codeFolder = codeFolder;
 	}
-
 
 	private void startSnapps() {
 		startAndKeep(SocketOriginator.class);
@@ -212,12 +208,11 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		startAndKeep(Stethoscope.class);
 		startAndKeep(Heart.class);
 	}
-	
+
 	private void startAndKeep(Class<?> snapp) {
 		_refToAvoidGc.add(my(snapp));
 	}
 
-	
 	@Override
 	public void loadBrick(String brickName) {
 		try {
@@ -226,8 +221,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 			throw new IllegalStateException(e);
 		}
 	}
-	
-	
+
 	@Override
 	public boolean isOnline(String nickname) {
 		Contact contact = my(ContactManager.class).contactGiven(nickname);
@@ -279,46 +273,44 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	@Override
 	public void enableCodeSharing() {
 		try {
-			tryToCopyPlatformCode();
+			tryToCopyRepositoryCode();
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
 		startAndKeep(BrickSpace.class);
 	}
 
-	private void tryToCopyPlatformCode() throws IOException {
-		my(Logger.class).log("Copying necessary platform code...");
-		copyPlatformSources();
+	private void tryToCopyRepositoryCode() throws IOException {
+		my(Logger.class).log("Copying necessary repository code...");
+		copyRepositorySources();
 		copyUnupdatableBinFiles();
-		my(Logger.class).log("Copying necessary platform code... done.");
+		my(Logger.class).log("Copying necessary repository code... done.");
 	}
 
-	
 	private void copyUnupdatableBinFiles() throws IOException {
-		copyNecessaryPlatformBinFiles(
+		copyNecessaryRepositoryBinFiles(
 			"sneer/main/Sneer.class",
 			"sneer/main/Sneer$ExclusionFilter.class",
 			"sneer/main/SneerCodeFolders.class"
 		);
 	}
 
-	private void copyNecessaryPlatformBinFiles(String... fileNames) throws IOException {
+	private void copyNecessaryRepositoryBinFiles(String... fileNames) throws IOException {
 		for (String fileName : fileNames)
-			copyNecessaryPlatformBinFile(fileName);
+			copyNecessaryRepositoryBinFile(fileName);
 	}
 
-	private void copyNecessaryPlatformBinFile(String fileName) throws IOException {
-		File from = new File(platformBin(), fileName);
-		File to = new File(testPlatfromBin(), fileName);
+	private void copyNecessaryRepositoryBinFile(String fileName) throws IOException {
+		File from = new File(repositoryBinFolder(), fileName);
+		File to = new File(testBinFolder(), fileName);
 		my(IO.class).files().copyFile(from, to);
 	}
 
-
-	private void copyPlatformSources() throws IOException {
-		copyToSourceFolder(new File(platformBin().getParentFile(), "src"));
+	private void copyRepositorySources() throws IOException {
+		copyToSourceFolder(new File(repositoryBinFolder().getParentFile(), "src"));
 	}
 
-	private File platformBin() {
+	private File repositoryBinFolder() {
 		return my(ClassUtils.class).classpathRootFor(getClass());
 	}
 
@@ -341,13 +333,11 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		throw new IllegalArgumentException();
 	}
 
-	
 	@Override
 	public void crash() {
 		my(Threads.class).crashAllThreads();
 	}
 
-	
 	@Override
 	public void start() {
 		throwOnBlinkingErrors();
@@ -358,9 +348,8 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		accelerateHeartbeat();
 	}
 
-	
 	private void installStagedCodeIfNecessary() {
-		File stageFolder = my(FolderConfig.class).platformCodeStage().get();
+		File stageFolder = my(FolderConfig.class).stageFolder().get();
 		try {
 			String backupLabel = "" + System.currentTimeMillis();
 			Sneer.installStagedCodeIfNecessary(stageFolder , backupLabel, _codeFolder);
@@ -369,7 +358,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		}
 	}
 
-	
 	private void throwOnBlinkingErrors() {
 		_refToAvoidGc2 = my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>() { @Override public void consume(CollectionChange<Light> value) {
 			for (Light l : value.elementsAdded())
@@ -378,21 +366,23 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		}});
 	}
 
-
 	@Override
 	public void copyToSourceFolder(File folder) throws IOException {
-		my(IO.class).files().copyFolder(folder, testPlatformSrc());
+		my(IO.class).files().copyFolder(folder, testSrcFolder());
 	}
 
-	
-	private File testPlatfromBin() { return my(FolderConfig.class).platformBinFolder().get(); }
-	private File testPlatformSrc() { return my(FolderConfig.class).platformSrcFolder().get(); }
+	private File testBinFolder() {
+		return my(FolderConfig.class).binFolder().get();
+	}
 
-	
+	private File testSrcFolder() {
+		return my(FolderConfig.class).srcFolder().get();
+	}
+
 	private String print(Seal seal) {
 		return seal.equals(my(Seals.class).ownSeal())
 			? "myself"
 			: my(Seals.class).contactGiven(seal).nickname().toString();
 	}
-}
 
+}

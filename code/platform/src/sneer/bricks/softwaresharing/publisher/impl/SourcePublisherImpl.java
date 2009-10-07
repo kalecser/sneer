@@ -22,11 +22,11 @@ class SourcePublisherImpl implements SourcePublisher {
 	
 	@Override
 	public void publishSourceFolder() {
-		GitWorkaround.standardizeLastModifiedDatesWhileWeStillUseGitBecauseGitDoesNotPreserveThem(platformSrcFolder());
+		GitWorkaround.standardizeLastModifiedDatesWhileWeStillUseGitBecauseGitDoesNotPreserveThem(srcFolder());
 		
 		Sneer1024 hash;
 		try {
-			hash = my(FileMap.class).put(platformSrcFolder());
+			hash = my(FileMap.class).put(srcFolder());
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOnIfNecessary(_errorLight, "Error reading your source folder.", "There was trouble trying to read your source folder in order to publish your bricks for your peers. See log for details.", e);
 			return;
@@ -36,8 +36,8 @@ class SourcePublisherImpl implements SourcePublisher {
 	}
 
 
-	private File platformSrcFolder() {
-		return my(FolderConfig.class).platformSrcFolder().get();
+	private File srcFolder() {
+		return my(FolderConfig.class).srcFolder().get();
 	}
 	
 }

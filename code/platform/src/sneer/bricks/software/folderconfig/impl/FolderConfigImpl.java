@@ -13,22 +13,22 @@ public class FolderConfigImpl implements FolderConfig {
 
 	private final Immutable<File> _ownSrcFolder = immutable();
 	private final Immutable<File> _ownBinFolder = immutable();
-	private final Immutable<File> _platformSrcFolder = immutable();
-	private final Immutable<File> _platformBinFolder = immutable();
-	private final Immutable<File> _plaformCodeStage = immutable();
+
+	private final Immutable<File> _srcFolder = immutable();
+	private final Immutable<File> _binFolder = immutable();
+	private final Immutable<File> _stageFolder = immutable();
 
 	private final Immutable<File> _storageFolder = immutable();
 	private final Immutable<File> _tmpFolder = immutable();
-	
-	
+
 	@Override
 	public Immutable<File> ownBinFolder() {
 		return _ownBinFolder;
 	}
 
 	@Override
-	public Immutable<File> platformBinFolder() {
-		return _platformBinFolder;
+	public Immutable<File> binFolder() {
+		return _binFolder;
 	}
 
 	@Override
@@ -57,8 +57,8 @@ public class FolderConfigImpl implements FolderConfig {
 	}
 
 	@Override
-	public Immutable<File> platformSrcFolder() {
-		return _platformSrcFolder;
+	public Immutable<File> srcFolder() {
+		return _srcFolder;
 	}
 
 	@Override
@@ -72,9 +72,8 @@ public class FolderConfigImpl implements FolderConfig {
 	}
 
 	@Override
-	public Immutable<File> platformCodeStage() {
-		return _plaformCodeStage;
+	public Immutable<File> stageFolder() {
+		return _stageFolder;
 	}
-	
 	
 }

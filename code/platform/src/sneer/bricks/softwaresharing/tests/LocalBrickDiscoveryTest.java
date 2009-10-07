@@ -35,7 +35,7 @@ public class LocalBrickDiscoveryTest extends BrickTest {
 	@Test (timeout = 4000)
 	public void localBrickDiscoveryWithBricksInSubfolders() throws IOException {
 		generateBrick(tmpFolder());
-		my(FolderConfig.class).platformSrcFolder().set(tmpFolder());
+		my(FolderConfig.class).srcFolder().set(tmpFolder());
 
 		my(BrickSpace.class);
 		
