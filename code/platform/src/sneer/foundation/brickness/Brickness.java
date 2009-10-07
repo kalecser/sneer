@@ -8,5 +8,5 @@ public class Brickness {
 	public static Environment newBrickContainer(Object... bindings) {
 		return new BricknessImpl(bindings);
 	}
-
+	
 }

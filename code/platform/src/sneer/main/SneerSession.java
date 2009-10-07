@@ -30,9 +30,12 @@ public class SneerSession implements Runnable {
 
 	
 	public void run() {
+		
+		
 		configure(my(FolderConfig.class));
 
 		startLogging();
+		
 		my(SnappStarter.class).startSnapps();
 		
 		my(Threads.class).waitUntilCrash();
