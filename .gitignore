@@ -3,7 +3,7 @@ build
 .byecycle
 
 #User stuff
-code/own
+code-own
 data
 tmp
 logs
