@@ -195,7 +195,7 @@ class WusicPanel extends JPanel {
     }
 
     private void myTracksActionPerformed() {
-        Wusic.setOperatingMode(OperatingMode.SOLO);
+        Wusic.setOperatingMode(OperatingMode.OWN);
     }
 
     private void tracksFromPeersActionPerformed() {
