@@ -1,5 +1,7 @@
 package sneer.foundation.brickness.impl.tests;
 
+import static sneer.foundation.environments.Environments.my;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -7,9 +9,12 @@ import sneer.foundation.brickness.BrickLoadingException;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.brickness.impl.tests.fixtures.a.BrickA;
 import sneer.foundation.brickness.impl.tests.fixtures.b.BrickB;
+import sneer.foundation.brickness.impl.tests.fixtures.caller.a.A;
+import sneer.foundation.brickness.impl.tests.fixtures.caller.b.B;
 import sneer.foundation.brickness.impl.tests.fixtures.noannotation.InterfaceWithoutBrickAnnotation;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
+import sneer.foundation.environments.Environments;
 
 
 public class BricknessTest extends Assert {
@@ -70,6 +75,28 @@ public class BricknessTest extends Assert {
 	@Test(expected=BrickLoadingException.class)
 	public void noBrickInterfaceFound() throws Exception {
 		loadBrick(InterfaceWithoutBrickAnnotation.class);
+	}
+	
+	@Test
+	public void caller() {
+		
+		Environments.runWith(subject, new Runnable() { public void run() {
+			
+			assertSame(B.class, my(B.class).call());
+			
+		}});
+		
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void callerMustBeBrick() {
+		
+		Environments.runWith(subject, new Runnable() { public void run() {
+			
+			my(A.class).call();
+			
+		}});
+		
 	}
 
 }

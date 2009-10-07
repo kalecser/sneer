@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.lang.reflect.Constructor;
 
 import sneer.foundation.brickness.BrickLoadingException;
+import sneer.foundation.brickness.Caller;
 import sneer.foundation.environments.Bindings;
 import sneer.foundation.environments.CachingEnvironment;
 import sneer.foundation.environments.Environment;
@@ -17,6 +18,7 @@ public class BricknessImpl implements Environment {
 		_bindings = new Bindings();
 		_bindings.bind(this);
 		_bindings.bind(bindings);
+		_bindings.bind(new CallerImpl());
 	
 		_cache = createCachingEnvironment();
 		
@@ -81,6 +83,7 @@ public class BricknessImpl implements Environment {
 		if (brick.getClassLoader() != _classLoader)
 			throw new IllegalStateException("" + brick + " was loaded with " + brick.getClassLoader() + " instead of " + _classLoader + " like previous bricks.");
 	}
+
 
 
 }
