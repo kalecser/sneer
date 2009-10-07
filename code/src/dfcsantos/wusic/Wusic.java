@@ -12,7 +12,7 @@ public interface Wusic {
 
 	void setMyTracksFolder(File selectedFolder);
 
-	enum OperatingMode { OWN, PEERS };
+	enum OperatingMode { SOLO, PEERS };
 	void setOperatingMode(OperatingMode mode);
 
 	void start();
