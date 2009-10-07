@@ -10,7 +10,6 @@
 			- Do not download files user already has (includes candidates).
 		- [Igor] Make ReactiveLabels selectable.
 		- [Igor] Use a Register<OperatingMode> instance variable in WusicImpl.
-		- [Igor] Swap trackLabel and trackTime.
 		- [Igor] Redesign according to comment in TrackSourceStartegy.
 			- Own:
 				- chooseFolderButton (subfolders will be played too - it's recursive); persist choice
