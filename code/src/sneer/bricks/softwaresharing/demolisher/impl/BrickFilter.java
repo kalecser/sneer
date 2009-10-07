@@ -13,7 +13,7 @@ import sneer.bricks.pulp.crypto.Sneer1024;
 
 class BrickFilter {
 
-	private static final FileMap FileCache = my(FileMap.class);
+	private static final FileMap FileMap = my(FileMap.class);
 	
 
 	static Sneer1024 cacheOnlyFilesFromThisBrick(Sneer1024 hashOfPackage) {
@@ -21,7 +21,7 @@ class BrickFilter {
 		FolderContents brickContents = filterOtherBricksOutOf(packageContents);
 		return brickContents.contents.length() == packageContents.contents.length()
 			? hashOfPackage
-			: FileCache.putFolderContents(brickContents);
+			: FileMap.putFolderContents(brickContents);
 	}
 
 
@@ -44,7 +44,9 @@ class BrickFilter {
 
 
 	private static boolean isFolder(FileOrFolder candidate) {
-		return FileCache.isFolder(candidate);
+		if (FileMap.getFolder(candidate.hashOfContents) != null) return true;
+		if (FileMap.getFile(candidate.hashOfContents) != null) return false;
+		throw new IllegalStateException("Unable to find FileMap entry for: " + candidate);
 	}
 
 
@@ -54,7 +56,7 @@ class BrickFilter {
 
 
 	private static FolderContents packageContents(Sneer1024 hashOfPackage) {
-		return (FolderContents)FileCache.getContents(hashOfPackage);
+		return FileMap.getFolder(hashOfPackage);
 	}
 
 }

@@ -1,6 +1,11 @@
 package sneer.bricks.hardwaresharing.files.map.visitors.impl;
 
 import static sneer.foundation.environments.Environments.my;
+
+import java.io.File;
+import java.io.IOException;
+
+import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.map.visitors.FolderStructureVisitor;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
@@ -11,35 +16,40 @@ class GuidedTour {
 	
 	private final FolderStructureVisitor _visitor;
 
-	GuidedTour(Sneer1024 startingPoint, FolderStructureVisitor visitor) {
+	GuidedTour(Sneer1024 startingPoint, FolderStructureVisitor visitor) throws IOException {
 		_visitor = visitor;
 		showContents(startingPoint);
 	}
 
 
-	private void showContents(Sneer1024 hashOfContents) {
-		Object contents = my(FileMap.class).getContents(hashOfContents);
-		if (contents == null) throw new IllegalStateException("Contents not found in " + FileMap.class.getSimpleName());
-		
-		if (contents instanceof FolderContents){
-			showFolder((FolderContents)contents);
+	private void showContents(Sneer1024 hashOfContents) throws IOException {
+		File file = my(FileMap.class).getFile(hashOfContents);
+		if (file != null) {
+			showFile(file);
+			return;
+		}
+
+		FolderContents folder = my(FileMap.class).getFolder(hashOfContents);
+		if (folder != null) {
+			showFolder(folder);
 			return;
 		}
 		
-		if (contents instanceof byte[]){
-			showFile((byte[])contents);
-			return;
-		}
-		
-		throw new IllegalStateException("Can't show contents for type " + contents.getClass());
+		throw new IllegalStateException("Contents not found in " + FileMap.class.getSimpleName() + " for hash: " + hashOfContents);
 	}
+
+	
+	private void showFile(File file) throws IOException {
+		showFile(my(IO.class).files().readBytes(file));
+	}
+
 
 	private void showFile(byte[] contents) {
 		_visitor.visitFileContents(contents);
 	}
 	
 
-	private void showFolder(FolderContents folderContents) {
+	private void showFolder(FolderContents folderContents) throws IOException {
 		_visitor.enterFolder();
 			
 		for (FileOrFolder fileOrFolder : folderContents.contents)
@@ -49,7 +59,7 @@ class GuidedTour {
 	}
 
 
-	private void showFileOrFolder(FileOrFolder fileOrFolder) {
+	private void showFileOrFolder(FileOrFolder fileOrFolder) throws IOException {
 		if (shouldVisit(fileOrFolder))
 			showContents(fileOrFolder.hashOfContents);
 	}

@@ -2,6 +2,7 @@ package sneer.bricks.softwaresharing.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -9,6 +10,8 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.EventSource;
@@ -70,11 +73,15 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	
 	private void fetchIfNecessary(final SrcFolderHash srcFolderHash) {
 		my(FileClient.class).fetchToCache(srcFolderHash.value);
-		accumulateBricks(srcFolderHash);
+		try {
+			accumulateBricks(srcFolderHash);
+		} catch (IOException e) {
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error reading brick sources.", "This might indicate problems with your file device. :(", e, 30000);
+		}
 	}
 
 	
-	private void accumulateBricks(final SrcFolderHash srcFolderHash) {
+	private void accumulateBricks(final SrcFolderHash srcFolderHash) throws IOException {
 		my(Demolisher.class).demolishBuildingInto(
 			_availableBricksByName,
 			srcFolderHash.value,

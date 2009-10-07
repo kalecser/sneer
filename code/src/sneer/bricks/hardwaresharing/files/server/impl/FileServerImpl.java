@@ -33,7 +33,8 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 
 	private void reply(FileRequest request) {
-		final Object response = my(FileMap.class).getContents(request.hashOfContents);
+		Object response = getContents(request);
+		
 		if (response == null) {
 			my(Logger.class).log("FileCache miss.");
 			return;
@@ -46,9 +47,16 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 			my(Logger.class).log("Sending Folder Contents:");
 			for (FileOrFolder fileOrFolder : ((FolderContents)reply).contents)
 				my(Logger.class).log("   FileOrFolder: {} date: {} hash: {}", fileOrFolder.name, fileOrFolder.lastModified, fileOrFolder.hashOfContents);
-				
 		}
 
+	}
+
+
+	private Object getContents(FileRequest request) {
+		Object response = my(FileMap.class).getFile(request.hashOfContents);
+		return response == null
+			? my(FileMap.class).getFolder(request.hashOfContents)
+			: response;
 	}
 
 

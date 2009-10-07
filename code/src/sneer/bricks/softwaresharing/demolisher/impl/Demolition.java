@@ -2,6 +2,7 @@ package sneer.bricks.softwaresharing.demolisher.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -14,7 +15,7 @@ import sneer.bricks.hardwaresharing.files.map.visitors.FolderStructureVisitor;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Producer;
+import sneer.foundation.lang.ProducerWithThrowable;
 
 class Demolition implements FolderStructureVisitor {
 
@@ -26,12 +27,16 @@ class Demolition implements FolderStructureVisitor {
 	private final Deque<Sneer1024> _hashPath = new LinkedList<Sneer1024>();
 
 	private final boolean _isCurrent;
+
+	private IOException _firstExceptionFound;
 	
 
-	Demolition(CacheMap<String,BrickInfo> bricksByName, Sneer1024 srcFolderHash, boolean isCurrent) {
+	Demolition(CacheMap<String,BrickInfo> bricksByName, Sneer1024 srcFolderHash, boolean isCurrent) throws IOException {
 		_bricksByName = bricksByName;
 		_isCurrent = isCurrent;
 		my(FileMapGuide.class).guide(this, srcFolderHash);
+		
+		if (_firstExceptionFound != null) throw _firstExceptionFound;
 	}
 
 
@@ -55,7 +60,12 @@ class Demolition implements FolderStructureVisitor {
 		if (!fileName.endsWith(".java")) return;
 		if (!isBrickDefinition(fileContents)) return;
 		
-		accumulateBrick(fileName);
+		try {
+			accumulateBrick(fileName);
+		} catch (IOException e) {
+			if (_firstExceptionFound == null)
+				_firstExceptionFound = e;
+		}
 	}
 
 
@@ -70,12 +80,12 @@ class Demolition implements FolderStructureVisitor {
 	}
 
 	
-	private void accumulateBrick(String fileName) {
+	private void accumulateBrick(String fileName) throws IOException {
 		String packageName = _strings.join(_namePath, ".");
 		final String brickName = _strings.chomp(packageName + "." + fileName, ".java");
 		final Sneer1024 packageHash = _hashPath.peekLast();
 
-		BrickInfoImpl existingBrick = (BrickInfoImpl) _bricksByName.get(brickName, new Producer<BrickInfo>() { @Override public BrickInfo produce() {
+		BrickInfoImpl existingBrick = (BrickInfoImpl) _bricksByName.get(brickName, new ProducerWithThrowable<BrickInfo, IOException>() { @Override public BrickInfo produce() throws IOException {
 			return new BrickInfoImpl(brickName, packageHash, _isCurrent);
 		}});
 		
