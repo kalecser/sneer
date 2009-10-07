@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -38,9 +37,8 @@ public class FileMapTest extends BrickTest {
 	}
 	
 	
-	@Ignore
 	@Test (timeout = 3000)
-	public void cacheFolderContents() {
+	public void putFolderContentsInTheMap() {
 		final Latch latch = my(Latches.class).produce();
 		
 		@SuppressWarnings("unused")	WeakContract contract =
@@ -57,7 +55,7 @@ public class FileMapTest extends BrickTest {
 		Sneer1024 hash = _subject.putFolderContents(folderContents);
 		
 		latch.waitTillOpen();
-		assertEquals(folderContents, _subject.getContents(hash));
+		assertEquals(folderContents, _subject.getFolder(hash));
 	}
 
 	

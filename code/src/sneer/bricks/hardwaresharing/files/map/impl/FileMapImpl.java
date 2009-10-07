@@ -35,6 +35,7 @@ class FileMapImpl implements FileMap {
 	public Sneer1024 putFolderContents(FolderContents contents) {
 		Sneer1024 hash = my(Hasher.class).hash(contents);
 		_folderMap.put(hash, contents);
+		_contentsAdded.notifyReceivers(hash);
 		return hash; 
 	}
 
@@ -81,6 +82,7 @@ class FileMapImpl implements FileMap {
 	private Sneer1024 putFile(File file) throws IOException {
 		Sneer1024 hash = my(Hasher.class).hash(file);
 		_fileMap.put(hash, file);
+		_contentsAdded.notifyReceivers(hash);
 		return hash;
 	}
 
@@ -118,13 +120,7 @@ class FileMapImpl implements FileMap {
 		return result;
 	}
 
-	@Override
-	public File getFile(Sneer1024 hash) {
-		return _fileMap.get(hash);
-	}
-
-	@Override
-	public FolderContents getFolder(Sneer1024 hash) {
-		return _folderMap.get(hash);
-	}
+	@Override	public File getFile(Sneer1024 hash) { return _fileMap.get(hash);	}
+	@Override	public FolderContents getFolder(Sneer1024 hash) { return _folderMap.get(hash); }
+	
 }
