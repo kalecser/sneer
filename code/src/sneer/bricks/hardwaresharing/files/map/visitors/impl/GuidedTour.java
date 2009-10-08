@@ -16,9 +16,9 @@ class GuidedTour {
 	
 	private final FolderStructureVisitor _visitor;
 
-	GuidedTour(Sneer1024 startingPoint, FolderStructureVisitor visitor) throws IOException {
+	GuidedTour(FolderStructureVisitor visitor, FolderContents contents) throws IOException {
 		_visitor = visitor;
-		showContents(startingPoint);
+		showFolder(contents);
 	}
 
 

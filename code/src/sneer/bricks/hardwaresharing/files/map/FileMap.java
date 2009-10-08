@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.pulp.crypto.Sneer1024;
-import sneer.bricks.pulp.events.EventSource;
 import sneer.foundation.brickness.Brick;
 
 @Brick
@@ -18,7 +17,5 @@ public interface FileMap {
 	
 	File getFile(Sneer1024 hash);
 	FolderContents getFolder(Sneer1024 hash);
-
-	EventSource<Sneer1024> contentsAdded();
 
 }

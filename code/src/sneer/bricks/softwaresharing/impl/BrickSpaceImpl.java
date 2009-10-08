@@ -24,6 +24,7 @@ import sneer.bricks.softwaresharing.publisher.SourcePublisher;
 import sneer.bricks.softwaresharing.publisher.SrcFolderHash;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 
@@ -72,15 +73,26 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 	
 	private void fetchIfNecessary(final SrcFolderHash srcFolderHash) {
-		my(FileClient.class).fetchToCache(srcFolderHash.value);
-		try {
-			accumulateBricks(srcFolderHash);
-		} catch (IOException e) {
-			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error reading brick sources.", "This might indicate problems with your file device. :(", e, 30000);
-		}
+		shield("writing", new Closure<IOException>() { @Override public void run() throws IOException {
+
+			my(FileClient.class).fetch(null, srcFolderHash.value);
+		
+			shield("reading", new Closure<IOException>() { @Override public void run() throws IOException {
+				accumulateBricks(srcFolderHash);
+			}});
+		}});
 	}
 
 	
+	private void shield(String operation, Closure<IOException> closure) {
+		try {
+			closure.run();
+		} catch (IOException e) {
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error " + operation + " brick sources.", "This might indicate problems with your file device (Hard Drive). :(", e, 30000);
+		}
+	}
+
+
 	private void accumulateBricks(final SrcFolderHash srcFolderHash) throws IOException {
 		my(Demolisher.class).demolishBuildingInto(
 			_availableBricksByName,

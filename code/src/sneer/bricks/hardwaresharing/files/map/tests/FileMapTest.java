@@ -9,9 +9,6 @@ import java.util.Collection;
 
 import org.junit.Test;
 
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
@@ -22,7 +19,6 @@ import sneer.bricks.pulp.crypto.Crypto;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
-import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 
 public class FileMapTest extends BrickTest {
@@ -39,13 +35,6 @@ public class FileMapTest extends BrickTest {
 	
 	@Test (timeout = 3000)
 	public void putFolderContentsInTheMap() {
-		final Latch latch = my(Latches.class).produce();
-		
-		@SuppressWarnings("unused")	WeakContract contract =
-			_subject.contentsAdded().addReceiver(new Consumer<Object>() { @Override public void consume(Object contents) {
-				latch.open();
-			}});
-		
 		FolderContents folderContents = new FolderContents(immutable(Arrays.asList(new FileOrFolder[]{
 			new FileOrFolder("readme.txt", anyReasonableDate(), hash(1)),
 			new FileOrFolder("src", anyReasonableDate(), hash(2)),
@@ -53,8 +42,6 @@ public class FileMapTest extends BrickTest {
 		})));
 
 		Sneer1024 hash = _subject.putFolderContents(folderContents);
-		
-		latch.waitTillOpen();
 		assertEquals(folderContents, _subject.getFolder(hash));
 	}
 

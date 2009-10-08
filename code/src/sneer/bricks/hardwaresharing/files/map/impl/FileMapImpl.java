@@ -18,13 +18,9 @@ import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.pulp.crypto.Sneer1024;
-import sneer.bricks.pulp.events.EventNotifier;
-import sneer.bricks.pulp.events.EventNotifiers;
-import sneer.bricks.pulp.events.EventSource;
 
 class FileMapImpl implements FileMap {
 	
-	private final EventNotifier<Sneer1024> _contentsAdded = my(EventNotifiers.class).newInstance();
 	private final Map<Sneer1024, File> _fileMap = new ConcurrentHashMap<Sneer1024, File>();
 	private final Map<Sneer1024, FolderContents> _folderMap = new ConcurrentHashMap<Sneer1024, FolderContents>();	
 	
@@ -33,17 +29,10 @@ class FileMapImpl implements FileMap {
 	public Sneer1024 putFolderContents(FolderContents contents) {
 		Sneer1024 hash = my(Hasher.class).hash(contents);
 		_folderMap.put(hash, contents);
-		_contentsAdded.notifyReceivers(hash);
 		return hash; 
 	}
 
 
-	@Override
-	public EventSource<Sneer1024> contentsAdded() {
-		return _contentsAdded.output();
-	}
-
-	
 /*	@Override
 	public Sneer1024 putBigFileBlocks(BigFileBlocks bigFileBlocks) {
 		
@@ -65,7 +54,6 @@ class FileMapImpl implements FileMap {
 	private Sneer1024 putFile(File file) throws IOException {
 		Sneer1024 hash = my(Hasher.class).hash(file);
 		_fileMap.put(hash, file);
-		_contentsAdded.notifyReceivers(hash);
 		return hash;
 	}
 
