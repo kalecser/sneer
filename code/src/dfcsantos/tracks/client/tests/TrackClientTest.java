@@ -18,7 +18,7 @@ import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
-import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
+import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 public class TrackClientTest extends BrickTest {
 
@@ -27,7 +27,7 @@ public class TrackClientTest extends BrickTest {
 	@Ignore
 	@Test(timeout=4000)
 	public void trackDownload() throws IOException {
-		my(OwnTracksFolderKeeper.class).setOwnTracksFolder(tmpFolder());
+		my(TracksFolderKeeper.class).setOwnTracksFolder(tmpFolder());
 		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[]{1});
 		checking(new Expectations(){{
 			exactly(1).of(_fileClient).fetch(null, hash1);

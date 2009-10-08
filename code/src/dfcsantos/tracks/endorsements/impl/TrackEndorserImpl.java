@@ -17,7 +17,7 @@ import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
 import dfcsantos.tracks.endorsements.TrackEndorser;
-import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
+import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 public class TrackEndorserImpl implements TrackEndorser {
 	
@@ -68,7 +68,7 @@ public class TrackEndorserImpl implements TrackEndorser {
 
 
 	private File ownTracksFolder() {
-		return my(OwnTracksFolderKeeper.class).ownTracksFolder().currentValue();
+		return my(TracksFolderKeeper.class).ownTracksFolder().currentValue();
 	}
 
 
@@ -80,7 +80,7 @@ public class TrackEndorserImpl implements TrackEndorser {
 
 
 	private String ownTracksPath() {
-		return my(OwnTracksFolderKeeper.class).ownTracksFolder().currentValue().getAbsolutePath();
+		return my(TracksFolderKeeper.class).ownTracksFolder().currentValue().getAbsolutePath();
 	}
 
 }

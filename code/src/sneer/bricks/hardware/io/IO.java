@@ -39,6 +39,7 @@ public interface IO {
 		Collection<File> listFiles(File folder, Filter fileFilter, Filter folderFilter);
 		
 		void copyFile(File from, File to) throws IOException;
+		void copyFileToFolder(File srcFile, File destFolder) throws IOException;
 		void copyFolder(File srcFolder, File destFolder) throws IOException;
 		void copyFolder(File srcFolder, File destFolder, Filter fileFilter) throws IOException;
 		void forceDelete(File fileOrFolder) throws IOException;

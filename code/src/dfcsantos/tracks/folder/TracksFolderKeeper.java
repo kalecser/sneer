@@ -6,10 +6,14 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.brickness.Brick;
 
 @Brick
-public interface OwnTracksFolderKeeper {
+public interface TracksFolderKeeper {
 
-	void setOwnTracksFolder(File ownTracksFolder);
 	Signal<File> ownTracksFolder();
+	void setOwnTracksFolder(File ownTracksFolder);
+
 	Signal<File> peerTracksFolder();
-	
+	void setPeerTracksFolder(File peerTracksFolder);
+
+	Signal<File> candidateTracksFolder();
+
 }
