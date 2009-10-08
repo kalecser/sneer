@@ -240,15 +240,15 @@ class WusicPanel extends JPanel {
 				_shuffleMode.setEnabled(true);
 				_choosePeerTracksFolder.setEnabled(false);
 				_meToo.setEnabled(false);
-				_noWay.setEnabled(false);
+				_noWay.setText("Delete File!");
 				break;
 
 			case PEERS:
 				_choosePeerTracksFolder.setEnabled(true);
 				_meToo.setEnabled(true);
-				_noWay.setEnabled(true);
 				_chooseOwnTracksFolder.setEnabled(false);
 				_shuffleMode.setEnabled(false);
+				_noWay.setText("No Way!");
 				break;
 		}
 	}
@@ -282,7 +282,7 @@ class WusicPanel extends JPanel {
     	Wusic.pauseResume();
     }                                           
 
-    private void skipButtonActionPerformed() {
+	private void skipButtonActionPerformed() {
         Wusic.skip();
     }
 

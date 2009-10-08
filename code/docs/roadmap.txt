@@ -8,22 +8,14 @@
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
 			- Do not download files user already has (includes candidates).
-		- [Igor] Redesign according to comment in TrackSourceStartegy.
-			- Own:
-				- chooseFolderButton (subfolders will be played too - it's recursive); persist choice
-				- [done] shuffle option
-				- [done] deleteFileButton - activate from menu
-			- Peers:
-				- chooseSharedFolderButton opens JFileChooser (Title: 'Configure Shared Tracks Folder');
-					- Open automatically when entering peers mode and shared folder not yet configured 
-				- always shuffle
-				- 'candidates' folder is a brick tmp folder
-				- display the number of tracks in the candidates folder in (parenthesis) after "Play Tracks from Peers" option.
-				- meToo move from candidates to sharedFolder
-				- noWay delete from candidates 
-		- Buttons
-			- Play/Pause, Skip, Stop, Me Too :), No Way :( - Buttons for Peer Tracks mode.
-			- Play/Pause - Toggle text: ">" or "||"
+		- [Igor/Daniel] Change Wusic Interface to use one tab to each mode
+		- [Igor/Daniel] Play/Pause - Toggle text: ">" or "||"
+		- [Klaus] Revise and rethink names given to variables and GUI labels related with each mode (ex: "peerTracksFolder", "ownTracksFolder", etc)
+		- Use a brick tmp folder to implement 'candidates'folder (use FolderConfig.tmpFolderFor())
+		- Initialize TrackClientImp.numberOfTracksFetchedFromPeers register with the number of tracks already in the folder
+		- Remove track after meToo is clicked
+			- 1st approach: play a copy of the track's file and move the track when meToo is clicked
+			- 2nd approach: copy the track's file when meToo is clicked and mark track for late deletion
 		- Find another way to solve pause lag (try to use a smaller frame in player)
 
 	- [Kalecser] File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.
