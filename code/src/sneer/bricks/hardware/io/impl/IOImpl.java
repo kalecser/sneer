@@ -113,6 +113,12 @@ class IOImpl implements IO {
 		public void copyFile(File from, File to) throws IOException {
 			FileUtils.copyFile(from, to);
 		}
+
+		@Override
+		public void copyFileToFolder(File srcFile, File destFolder) throws IOException {
+			FileUtils.copyFileToDirectory(srcFile, destFolder, false);
+		}
+
 	};
 	
 	private Streams _streams = new Streams(){
@@ -125,6 +131,7 @@ class IOImpl implements IO {
 				try { input.close(); } catch (Throwable ignore) { }
 			}
 		}
+
 	};
 
 	private FileFilters _fileFilters = new FileFilters(){

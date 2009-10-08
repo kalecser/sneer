@@ -8,14 +8,19 @@ import java.io.IOException;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
 
-public class TrackClientImpl implements TrackClient {
-	
+class TrackClientImpl implements TrackClient {
+
+	private final Register<Integer> _numberOfTracksFetchedFromPeers = my(Signals.class).newRegister(0); 
+
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC;
 
 	
@@ -34,6 +39,8 @@ public class TrackClientImpl implements TrackClient {
 		} catch (IOException e) {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
+
+		_numberOfTracksFetchedFromPeers.setter().consume(_numberOfTracksFetchedFromPeers.output().currentValue() + 1);
 	}
 
 	
@@ -41,4 +48,10 @@ public class TrackClientImpl implements TrackClient {
 		String name = new File(track.path).getName();
 		return new File(my(TracksFolderKeeper.class).candidateTracksFolder().currentValue(), name);
 	}
+
+
+	public Signal<Integer> numberOfTracksFetchedFromPeers() {
+		return _numberOfTracksFetchedFromPeers.output();
+	}
+
 }

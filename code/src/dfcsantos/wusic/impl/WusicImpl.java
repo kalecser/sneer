@@ -14,6 +14,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.Track;
+import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
 
@@ -128,7 +129,7 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void meToo() {
-		((PeerTracks)_trackSource).meToo();
+		((PeerTracks)_trackSource).meToo(_trackToPlay.output().currentValue());
 	}
 
 	
@@ -140,5 +141,13 @@ public class WusicImpl implements Wusic {
 		skip();
 		((PeerTracks)_trackSource).noWay(currentTrack);
 	}
-	
+
+
+	@Override
+	public Signal<String> numberOfTracksFetchedFromPeers() {
+		return my(Signals.class).adapt(my(TrackClient.class).numberOfTracksFetchedFromPeers(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
+			return (numberOfTracks == 0) ? "<No tracks from peers>" : "<" + numberOfTracks + "tracks>";
+		}});
+	}
+
 }

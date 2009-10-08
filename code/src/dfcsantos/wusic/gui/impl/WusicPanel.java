@@ -45,6 +45,8 @@ class WusicPanel extends JPanel {
     private JFileChooser _peerTracksFolderChooser;
     private JButton _choosePeerTracksFolder			= new JButton();
 
+    private JLabel _numberOfTracksFromPeers			= my(ReactiveWidgetFactory.class).newLabel(Wusic.numberOfTracksFetchedFromPeers()).getMainWidget();
+
     private JLabel _trackLabel						= my(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackName()).getMainWidget();
     private JLabel _trackTime						= my(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackTime()).getMainWidget();
 
@@ -114,6 +116,8 @@ class WusicPanel extends JPanel {
             }
         });
 
+        _numberOfTracksFromPeers.setFont(new Font("Tahoma", 2, 14));
+
         _trackLabel.setFont(new Font("Tahoma", 2, 14));
         _trackTime.setFont(new Font("Tahoma", 2, 14));
 
@@ -162,15 +166,17 @@ class WusicPanel extends JPanel {
 	            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
 	            	.addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
 	            		.addComponent(_ownTracks)
-	                	.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-	                	.addComponent(_chooseOwnTracksFolder)
 	                	.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 	                	.addComponent(_shuffleMode)
+	                	.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+	                	.addComponent(_chooseOwnTracksFolder)
 	                	.addContainerGap()
 	                )
 	                .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
 	                	.addComponent(_tracksFromPeers)
-	                	.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+	                	.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+	                	.addComponent(_numberOfTracksFromPeers)
+	                	.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 	                	.addComponent(_choosePeerTracksFolder)
 	                	.addContainerGap()
 	                )
@@ -200,12 +206,13 @@ class WusicPanel extends JPanel {
         	.addGroup(layout.createSequentialGroup()
         		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
         			.addComponent(_ownTracks)
+   					.addComponent(_shuffleMode)
         			.addComponent(_chooseOwnTracksFolder)
-        			.addComponent(_shuffleMode)
         		)
         		.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
         		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
         			.addComponent(_tracksFromPeers)
+        			.addComponent(_numberOfTracksFromPeers)
         			.addComponent(_choosePeerTracksFolder)
         		)
         		.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -265,6 +272,9 @@ class WusicPanel extends JPanel {
     }
 
     private void tracksFromPeersActionPerformed() {
+    	// The fileChooser will open only if a peerTracksFolder's default value is not used (see TracksFolderKeeperImpl) 
+    	if (my(TracksFolderKeeper.class).peerTracksFolder().currentValue() == null)
+    		choosePeerTracksFolderActionPerformed();
     	Wusic.setOperatingMode(OperatingMode.PEERS);
     }
 

@@ -30,4 +30,5 @@ public interface Wusic {
 	void meToo();
 	void noWay();
 
+	Signal<String> numberOfTracksFetchedFromPeers();
 }

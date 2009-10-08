@@ -3,8 +3,10 @@ package dfcsantos.wusic.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.io.IOException;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.io.IO;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Consumer;
@@ -31,13 +33,18 @@ class PeerTracks extends TrackSourceStrategy {
 		return my(Playlists.class).newRandomPlaylist(tracksFolder);
 	}
 
-	void meToo() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	void meToo(Track trackToKeep) {
+		final File destFolder = my(TracksFolderKeeper.class).peerTracksFolder().currentValue();
+		try {
+			my(IO.class).files().copyFileToFolder(trackToKeep.file(), destFolder);
+		} catch (IOException e) {
+			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to copy track", "Unable to copy track: " + trackToKeep.file(), 7000);
+		}
 	}
 
-	void noWay(Track rejected) {
-		if (!rejected.file().delete())
-			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to delete track", "Unable to delete track: " + rejected.file(), 7000);
+	void noWay(Track trackToDiscard) {
+		if (!trackToDiscard.file().delete())
+			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to delete track", "Unable to delete track: " + trackToDiscard.file(), 7000);
 	}
 
 }
