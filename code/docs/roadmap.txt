@@ -1,7 +1,7 @@
 ﻿TASKS
 =========
 
-	- [Klaus] Unignore: LocalBrickDiscoveryTest, BrickInstallerTest, FileCopyTestBase, TrackClientTest, Freedom7.meToo
+	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, FileCopyTestBase, TrackClientTest, Freedom7.meToo
 
 	- Wusic
 		- Downloads
