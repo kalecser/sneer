@@ -1,7 +1,7 @@
 ﻿TASKS
 =========
 
-	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, LocalCopyTest, LocalCopyTest, Freedom7.meToo
+	- [Klaus] Unignore: LocalBrickDiscoveryTest, BrickInstallerTest, FileCopyTestBase, TrackClientTest, Freedom7.meToo
 
 	- Wusic
 		- Downloads
@@ -11,11 +11,11 @@
 		- [Igor] Redesign according to comment in TrackSourceStartegy.
 			- Own:
 				- chooseFolderButton (subfolders will be played too - it's recursive); persist choice
-				- shuffle option
-				- deleteFileButton - activate from menu
+				- [done] shuffle option
+				- [done] deleteFileButton - activate from menu
 			- Peers:
 				- chooseSharedFolderButton opens JFileChooser (Title: 'Configure Shared Tracks Folder');
-					 - Open automatically when entering peers mode and shared folder not yet configured 
+					- Open automatically when entering peers mode and shared folder not yet configured 
 				- always shuffle
 				- 'candidates' folder is a brick tmp folder
 				- display the number of tracks in the candidates folder in (parenthesis) after "Play Tracks from Peers" option.
