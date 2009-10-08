@@ -18,7 +18,7 @@ import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
 import dfcsantos.tracks.endorsements.TrackEndorser;
-import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
+import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 public class TrackEndorsementPublisherTest extends BrickTest {
 
@@ -42,7 +42,7 @@ public class TrackEndorsementPublisherTest extends BrickTest {
 			assertEquals("rocknroll/thunderstruck.mp3", trackEndorsement.path);
 			latch.open();
 		}});
-		my(OwnTracksFolderKeeper.class).setOwnTracksFolder(tmpFolder());
+		my(TracksFolderKeeper.class).setOwnTracksFolder(tmpFolder());
 		my(TrackEndorser.class);
 		latch.waitTillOpen();
 	}

@@ -12,7 +12,7 @@ import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
-import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
+import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 public class TrackClientImpl implements TrackClient {
 	
@@ -39,6 +39,6 @@ public class TrackClientImpl implements TrackClient {
 	
 	private File fileToWrite(TrackEndorsement track) {
 		String name = new File(track.path).getName();
-		return new File(my(OwnTracksFolderKeeper.class).peerTracksFolder().currentValue(), name);
+		return new File(my(TracksFolderKeeper.class).candidateTracksFolder().currentValue(), name);
 	}
 }
