@@ -150,4 +150,10 @@ public class WusicImpl implements Wusic {
 		}});
 	}
 
+
+	@Override
+	public Signal<Boolean> isPlaying() {
+		return _dj.isPlaying();
+	}
+
 }

@@ -59,6 +59,8 @@ class WusicPanel extends JPanel {
 
 	@SuppressWarnings("unused") private WeakContract _toAvoidGC;
 
+	@SuppressWarnings("unused") private WeakContract toAvoidGC2;
+
 	{
 		_toAvoidGC = Wusic.operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode mode) {
 			update(mode);
@@ -121,7 +123,10 @@ class WusicPanel extends JPanel {
         _trackLabel.setFont(new Font("Tahoma", 2, 14));
         _trackTime.setFont(new Font("Tahoma", 2, 14));
 
-        _pauseResume.setText("> / ||");
+        toAvoidGC2 = Wusic.isPlaying().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isPlaying) {
+        	_pauseResume.setText(isPlaying ? "||" : ">");
+		}});
+
         _pauseResume.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 pauseResumeButtonActionPerformed();

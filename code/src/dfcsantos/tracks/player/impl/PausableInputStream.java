@@ -7,11 +7,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Signals;
 
 class PausableInputStream extends BufferedInputStream {
 
 	private final Object _stateMonitor = new Object();
-	private boolean _isPaused;
+	private Register<Boolean> _isPaused = my(Signals.class).newRegister(false);
 	private boolean _isClosed;
 
 	PausableInputStream(InputStream inputStream) {
@@ -21,7 +24,7 @@ class PausableInputStream extends BufferedInputStream {
 	void pauseResume() {
 		synchronized (_stateMonitor) {
 			if (_isClosed) return;
-			_isPaused = !_isPaused;
+			_isPaused.setter().consume(!_isPaused.output().currentValue());
 			_stateMonitor.notify();
 		}
 	}
@@ -34,14 +37,14 @@ class PausableInputStream extends BufferedInputStream {
 
 		synchronized (_stateMonitor) {
 			_isClosed = true;
-			_isPaused = false;
+			_isPaused.setter().consume(false);
 			_stateMonitor.notify();
 		}
 	}
 
 	private void pauseIfNecessary() {
 		synchronized (_stateMonitor) {
-			while (_isPaused)
+			while (_isPaused.output().currentValue())
 				my(Threads.class).waitWithoutInterruptions(_stateMonitor);
 		}
 	}
@@ -62,6 +65,10 @@ class PausableInputStream extends BufferedInputStream {
 	public int read(byte[] b) throws IOException {
 		pauseIfNecessary();
 		return super.read(b);
+	}
+	
+	public Signal<Boolean> isPaused(){
+		return _isPaused.output(); 
 	}
 
 }

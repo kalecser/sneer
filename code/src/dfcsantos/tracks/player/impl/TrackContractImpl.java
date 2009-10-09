@@ -9,6 +9,7 @@ import javazoom.jl.player.Player;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.bricks.pulp.reactive.Signal;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.player.TrackContract;
 
@@ -55,6 +56,11 @@ class TrackContractImpl implements TrackContract {
 	@Override
 	public int trackElapsedTime() {
 		return _player == null ? 0 : _player.getPosition();
+	}
+
+	@Override
+	public Signal<Boolean> isPaused() {
+		return _trackStream.isPaused();
 	}
 
 }

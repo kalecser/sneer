@@ -31,4 +31,7 @@ public interface Wusic {
 	void noWay();
 
 	Signal<String> numberOfTracksFetchedFromPeers();
+	
+	Signal<Boolean> isPlaying();
+
 }

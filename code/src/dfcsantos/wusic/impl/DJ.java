@@ -8,6 +8,7 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.player.TrackContract;
 import dfcsantos.tracks.player.TrackPlayer;
@@ -67,4 +68,14 @@ public class DJ implements Consumer<Track> {
 		return _trackElapsedTime.output(); 
 	}
 
+	Signal<Boolean> isPlaying() {
+		Signal<Boolean> result = my(Signals.class).constant(false); 
+
+		if (_currentTrackContract != null)
+			result = my(Signals.class).adapt(_currentTrackContract.isPaused(), new Functor<Boolean, Boolean>() { @Override public Boolean evaluate(Boolean isPaused) throws RuntimeException {
+				return	!isPaused; 
+			}});
+
+		return result;
+	}
 }

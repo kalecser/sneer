@@ -9,7 +9,7 @@
 			- 15 min timeout per download.
 			- Do not download files user already has (includes candidates).
 		- [Igor/Daniel] Change Wusic Interface to use one tab to each mode
-		- [Igor/Daniel] Play/Pause - Toggle text: ">" or "||"
+		- [Klaus] Revise Play/Pause - Toggle text: ">" or "||" mechanism 
 		- [Klaus] Revise and rethink names given to variables and GUI labels related with each mode (ex: "peerTracksFolder", "ownTracksFolder", etc)
 		- Use a brick tmp folder to implement 'candidates'folder (use FolderConfig.tmpFolderFor())
 		- Initialize TrackClientImp.numberOfTracksFetchedFromPeers register with the number of tracks already in the folder
