@@ -21,15 +21,17 @@ class TrackContractImpl implements TrackContract {
 	private volatile boolean _wasDisposed;
 
 	TrackContractImpl(final Track track, final Runnable toCallWhenFinished) {
+		try {
+			_trackStream = new PausableInputStream(new FileInputStream(track.file()));
+		} catch (FileNotFoundException e) {
+			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to find file " + track.file() , "File might have been deleted manually.", 15000);
+		} 
+		
 		my(Threads.class).startDaemon("Track Player", new Runnable() { @Override public void run() {
 			try {
-				_trackStream = new PausableInputStream(new FileInputStream(track.file()));
 				_player = new Player(_trackStream);
 				_player.play();
-				
-			} catch (FileNotFoundException e) {
-				my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to find file " + track.file() , "File might have been deleted manually.", 15000);
-				
+
 			} catch (Throwable t) {
 				if (!_wasDisposed)
 					my(BlinkingLights.class).turnOn(LightType.WARN, "Error reading track", "Error reading track", t, 30000);

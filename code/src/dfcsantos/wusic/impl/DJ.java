@@ -8,30 +8,38 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.player.TrackContract;
 import dfcsantos.tracks.player.TrackPlayer;
 
 public class DJ implements Consumer<Track> {
 
-	@SuppressWarnings("unused") private final WeakContract _toAvoidGc;
-	@SuppressWarnings("unused") private final WeakContract _timerContract;
-
 	private final Runnable _toCallWhenDonePlayingATrack;
 
 	private TrackContract _currentTrackContract;
-
 	private Register<Integer> _trackElapsedTime = my(Signals.class).newRegister(0);
+	private Register<Boolean> _isPlaying = my(Signals.class).newRegister(false);
+
+	@SuppressWarnings("unused") private final WeakContract _djContract;
+	@SuppressWarnings("unused") private final WeakContract _timerContract;
 
 	DJ(EventSource<Track> trackToPlay, Runnable toCallWhenDonePlayingATrack) {
 		_toCallWhenDonePlayingATrack = toCallWhenDonePlayingATrack;
-		_toAvoidGc = trackToPlay.addReceiver(this);
+		_djContract = trackToPlay.addReceiver(this);
 
-		_timerContract = my(Timer.class).wakeUpEvery(1000, new Runnable() { @Override public void run() {
+		_timerContract = my(Timer.class).wakeUpEvery(300, new Runnable() { @Override public void run() {
+			refreshIsPlaying();
 			if (_currentTrackContract != null)
 				_trackElapsedTime.setter().consume(_currentTrackContract.trackElapsedTime());
 		}});
+	}
+
+
+	private void refreshIsPlaying() {
+		_isPlaying.setter().consume((_currentTrackContract == null)
+			? false
+			: !_currentTrackContract.isPaused().currentValue()
+		);
 	}
 
 
@@ -39,6 +47,7 @@ public class DJ implements Consumer<Track> {
 	synchronized
 	public void consume(Track track) {
 		stop();
+		if (track == null) return;
 		play(track);
 	}
 
@@ -59,7 +68,6 @@ public class DJ implements Consumer<Track> {
 
 
 	private void play(final Track track) {
-		if (track == null) return;
 		_currentTrackContract = my(TrackPlayer.class).startPlaying(track, _toCallWhenDonePlayingATrack);
 	}
 
@@ -69,13 +77,7 @@ public class DJ implements Consumer<Track> {
 	}
 
 	Signal<Boolean> isPlaying() {
-		Signal<Boolean> result = my(Signals.class).constant(false); 
-
-		if (_currentTrackContract != null)
-			result = my(Signals.class).adapt(_currentTrackContract.isPaused(), new Functor<Boolean, Boolean>() { @Override public Boolean evaluate(Boolean isPaused) throws RuntimeException {
-				return	!isPaused; 
-			}});
-
-		return result;
+		return _isPlaying.output();
 	}
+
 }
