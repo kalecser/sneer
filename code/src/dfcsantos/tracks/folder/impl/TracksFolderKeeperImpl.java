@@ -48,11 +48,4 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 		_peerTracksFolder.setter().consume(ownTracksFolder);
 	}
 
-	@Override
-	public Signal<File> candidateTracksFolder() {
-		return my(Signals.class).adapt(ownTracksFolder(), new Functor<File, File>() { @Override public File evaluate(File ownTracksFolder) {
-			return new File(ownTracksFolder, "candidates");
-		}});
-	}
-
 }

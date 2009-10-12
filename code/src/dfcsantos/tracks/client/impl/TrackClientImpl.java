@@ -12,10 +12,10 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
-import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 class TrackClientImpl implements TrackClient {
 
@@ -46,7 +46,7 @@ class TrackClientImpl implements TrackClient {
 	
 	private File fileToWrite(TrackEndorsement track) {
 		String name = new File(track.path).getName();
-		return new File(my(TracksFolderKeeper.class).candidateTracksFolder().currentValue(), name);
+		return new File(my(FolderConfig.class).tmpFolderFor(TrackClient.class), "candidates/" + name);
 	}
 
 
