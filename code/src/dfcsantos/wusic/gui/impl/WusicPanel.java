@@ -15,6 +15,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTabbedPane;
 import javax.swing.LayoutStyle;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -37,6 +38,9 @@ class WusicPanel extends JPanel {
     private JRadioButton _ownTracks					= new JRadioButton();
     private JRadioButton _tracksFromPeers 			= new JRadioButton();
 
+    private JTabbedPane _tabPlayingModes			= new JTabbedPane();
+    
+    
     private JFileChooser _ownTracksFolderChooser;
     private JButton _chooseOwnTracksFolder			= new JButton();
 
