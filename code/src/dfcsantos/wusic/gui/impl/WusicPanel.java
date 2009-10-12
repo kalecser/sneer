@@ -36,7 +36,9 @@ class WusicPanel extends JPanel {
 
     private ButtonGroup _operatingMode				= new ButtonGroup();
     private JRadioButton _ownTracks					= new JRadioButton();
+    
     private JRadioButton _tracksFromPeers 			= new JRadioButton(); 
+
     
     private JFileChooser _ownTracksFolderChooser;
     private JButton _chooseOwnTracksFolder			= new JButton();

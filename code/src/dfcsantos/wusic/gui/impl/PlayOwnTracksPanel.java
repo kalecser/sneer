@@ -1,12 +1,10 @@
 package dfcsantos.wusic.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 
@@ -65,5 +63,4 @@ public class PlayOwnTracksPanel extends JPanel {
         );
 
 	}
-	
 }

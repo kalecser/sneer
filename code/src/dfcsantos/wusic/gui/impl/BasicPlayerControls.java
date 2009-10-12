@@ -71,8 +71,9 @@ public class BasicPlayerControls extends JComponent {
     }
     
     private void stopButtonActionPerformed() {
-    	//FIXMEWusic.stop();
+    	//FIXMEWusic.stop();    
     }
+    
     private void initLayout() {
     	GroupLayout layout = new GroupLayout(this);
     	setLayout(layout);
