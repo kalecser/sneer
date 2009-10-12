@@ -9,7 +9,7 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface FileClient {
 
-	void fetch(File file, long lastModified, Sneer1024 hashOfContents) throws IOException;
-	void fetch(File file, Sneer1024 hashOfContents) throws IOException;
+	void fetch(File fileOrFolder, long lastModified, Sneer1024 hashOfContents) throws IOException;
+	void fetch(File fileOrFolder, Sneer1024 hashOfContents) throws IOException;
 
 }

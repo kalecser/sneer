@@ -8,6 +8,7 @@ import java.io.IOException;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.hardwaresharing.files.writer.FileWriter;
@@ -31,6 +32,7 @@ class Download {
 		_lastModified = lastModified;
 		
 		Object alreadyMapped = FileClientUtils.mappedContentsBy(hashOfContents);
+		my(Logger.class).log("Already mapped: {} hash:", alreadyMapped, hashOfContents);		
 		if (alreadyMapped != null)
 			finish(alreadyMapped);
 	}
@@ -59,8 +61,14 @@ class Download {
 
 
 	private void tryToFinish(Object data) throws IOException {
-		if (data instanceof File)           finishWith((File)data);
-		if (data instanceof FolderContents) finishWith((FolderContents)data);
+		if (data instanceof File) {           
+			finishWith((File)data);
+			return;
+		}
+		if (data instanceof FolderContents) {
+			finishWith((FolderContents)data);
+			return;
+		}
 		finishWith((byte[])data);
 	}
 
@@ -73,6 +81,7 @@ class Download {
 	
 	private void finishWith(byte[] contents) throws IOException {
 		my(FileWriter.class).writeAtomicallyTo(_file, _lastModified, contents);
+		my(FileMap.class).put(_file); //Optimize
 	}
 
 	

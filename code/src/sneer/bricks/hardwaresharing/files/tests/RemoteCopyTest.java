@@ -23,12 +23,8 @@ public class RemoteCopyTest extends FileCopyTestBase {
 		
 		Environment remote = newTestEnvironment(my(TupleSpace.class), my(OwnNameKeeper.class));
 		Environments.runWith(remote, new Closure<IOException>() { @Override public void run() throws IOException {
-			fetch(hashOfContents, destination);
+			my(FileClient.class).fetch(destination, hashOfContents);
 		}});
-	}
-
-	private void fetch(Sneer1024 hashOfContents, File destination) throws IOException {
-		my(FileClient.class).fetch(destination, hashOfContents);
 	}
 
 }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.hardwaresharing.files.hasher.Hasher;
 import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
@@ -53,12 +54,17 @@ class FileClientImpl implements FileClient {
 
 	
 	@Override
-	public void fetch(File file, long lastModified, Sneer1024 hashOfContents) throws IOException {
+	public void fetch(File fileOrFolder, long lastModified, Sneer1024 hashOfContents) throws IOException {
+		my(Logger.class).log("Fetching file or folder: {} hash:", fileOrFolder, hashOfContents);
+		
 		Download download;
 		
 		synchronized (_downloadMonitor) {
-			download = new Download(file, lastModified, hashOfContents);
-			if (download.isFinished()) return;
+			download = new Download(fileOrFolder, lastModified, hashOfContents);
+			if (download.isFinished()) {
+				recurseIfFolder(fileOrFolder, lastModified, hashOfContents);
+				return;
+			}
 			
 			keepTrackOf(hashOfContents, download);
 			FileRequestPublisher.startRequesting(hashOfContents);
@@ -67,7 +73,7 @@ class FileClientImpl implements FileClient {
 		download.waitTillFinished();
 		FileRequestPublisher.stopRequesting(hashOfContents);
 		
-		recurseIfFolder(hashOfContents);
+		recurseIfFolder(fileOrFolder, lastModified, hashOfContents);
 	}
 
 
@@ -79,11 +85,16 @@ class FileClientImpl implements FileClient {
 	}
 
 
-	private void recurseIfFolder(Sneer1024 hashOfContents) throws IOException {
+	private void recurseIfFolder(File fileOrFolder, long lastModified, Sneer1024 hashOfContents) throws IOException {
 		Object contents = FileClientUtils.mappedContentsBy(hashOfContents);
-		if (contents instanceof FolderContents)
-			for (FileOrFolder entry : ((FolderContents)contents).contents)
-				fetch(null, entry.hashOfContents);
+		if (!(contents instanceof FolderContents)) return;
+		
+		if (!fileOrFolder.exists() && !fileOrFolder.mkdir()) throw new IOException("Unable to create folder: " + fileOrFolder);
+		for (FileOrFolder entry : ((FolderContents)contents).contents)
+			fetch(new File(fileOrFolder, entry.name), entry.lastModified, entry.hashOfContents);
+		
+		if (lastModified != -1)
+			fileOrFolder.setLastModified(lastModified);
 	}
 	
 
@@ -92,18 +103,21 @@ class FileClientImpl implements FileClient {
 		if (data == null) throw new IllegalArgumentException();
 		Sneer1024 hash = my(Hasher.class).hash(data);
 		finishDownloads(hash, data);
+		my(Logger.class).log("file received", hash);
 	}
 
 
 	private void receiveFolder(FolderContents contents) {
 		Sneer1024 hash = my(Hasher.class).hash(contents);
 		finishDownloads(hash, contents);
+		my(Logger.class).log("folder received", hash);
 	}
 	
 	
 	private void finishDownloads(Sneer1024 hash, Object data) {
 		synchronized (_downloadMonitor) {
 			List<Download> fulfilled = _downloadsByHash.remove(hash);
+			if (fulfilled.isEmpty()) throw new IllegalStateException();
 			for (Download download : fulfilled)
 				download.finish(data);
 		}
