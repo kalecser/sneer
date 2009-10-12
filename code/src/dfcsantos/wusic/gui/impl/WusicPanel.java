@@ -15,6 +15,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTabbedPane;
 import javax.swing.LayoutStyle;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -35,10 +36,9 @@ class WusicPanel extends JPanel {
 
     private ButtonGroup _operatingMode				= new ButtonGroup();
     private JRadioButton _ownTracks					= new JRadioButton();
-    private JRadioButton _tracksFromPeers 			= new JRadioButton();
-
-//	private JTabbedPane _tabPlayingModes			= new JTabbedPane();
     
+    private JRadioButton _tracksFromPeers 			= new JRadioButton(); 
+
     
     private JFileChooser _ownTracksFolderChooser;
     private JButton _chooseOwnTracksFolder			= new JButton();
@@ -68,7 +68,7 @@ class WusicPanel extends JPanel {
 		_toAvoidGC = Wusic.operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode mode) {
 			update(mode);
 		}});
-
+		
         _operatingMode.add(_ownTracks);
         _ownTracks.setSelected(true);
         _ownTracks.setText("Play Own Tracks");

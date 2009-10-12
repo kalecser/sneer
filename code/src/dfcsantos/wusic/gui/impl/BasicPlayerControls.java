@@ -19,10 +19,10 @@ import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 public class BasicPlayerControls extends JComponent {
 	
-	private static final Wusic Wusic = my(Wusic.class);
+	//FIXME private static final Wusic Wusic = my(Wusic.class);
 
-	private JLabel _trackLabel						= my(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackName()).getMainWidget();
-    private JLabel _trackTime						= my(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackTime()).getMainWidget();
+	private JLabel _trackLabel						= new JLabel("<playing track");//FIXMEmy(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackName()).getMainWidget();
+    private JLabel _trackTime						= new JLabel("00:00");//FIXMEmy(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackTime()).getMainWidget();
 
     private JButton _back							= new JButton(" << ");
     private JButton _pauseResume					= new JButton(" >  || ");
@@ -63,16 +63,17 @@ public class BasicPlayerControls extends JComponent {
     }
     
     private void pauseResumeButtonActionPerformed() {
-    	Wusic.pauseResume();
+    	//FIXMEWusic.pauseResume();
     }
     
     private void skipButtonActionPerformed() {
-    	Wusic.skip();
+    	//FIXMEWusic.skip();
     }
     
     private void stopButtonActionPerformed() {
-    	Wusic.stop();
+    	//FIXMEWusic.stop();    
     }
+    
     private void initLayout() {
     	GroupLayout layout = new GroupLayout(this);
     	setLayout(layout);
