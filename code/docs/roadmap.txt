@@ -2,6 +2,7 @@
 =========
 
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
+		- Uncomment call to BrickSpaceImpl.init()
 
 	- Wusic
 		- Downloads
