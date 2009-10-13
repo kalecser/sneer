@@ -1,7 +1,5 @@
 package dfcsantos.wusic.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
-
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,9 +10,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.LayoutStyle;
 
-import dfcsantos.wusic.Wusic;
-
-import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 public class BasicPlayerControls extends JComponent {

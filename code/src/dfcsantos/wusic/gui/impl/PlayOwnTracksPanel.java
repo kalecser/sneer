@@ -4,7 +4,6 @@ package dfcsantos.wusic.gui.impl;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 
@@ -15,7 +14,7 @@ public class PlayOwnTracksPanel extends JPanel {
 	private JCheckBox _shuffleMode						= new JCheckBox("Shuffle Mode");
 	private JButton _noWay								= new JButton("Delete File!");
 	
-	private JFileChooser _ownTracksFolderChooser;
+	//private JFileChooser _ownTracksFolderChooser;
     private JButton _chooseOwnTracksFolder				= new JButton("Own Tracks");
 
 	{
