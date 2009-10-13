@@ -15,7 +15,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTabbedPane;
 import javax.swing.LayoutStyle;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;

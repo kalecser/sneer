@@ -8,7 +8,6 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 class TracksFolderKeeperImpl implements TracksFolderKeeper {
