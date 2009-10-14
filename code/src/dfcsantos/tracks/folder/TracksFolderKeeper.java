@@ -11,7 +11,7 @@ public interface TracksFolderKeeper {
 	Signal<File> ownTracksFolder();
 	void setOwnTracksFolder(File ownTracksFolder);
 
-	Signal<File> peerTracksFolder();
-	void setPeerTracksFolder(File peerTracksFolder);
+	Signal<File> sharedTracksFolder();
+	void setSharedTracksFolder(File sharedTracksFolder);
 
 }

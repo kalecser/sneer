@@ -26,7 +26,7 @@ public class OwnTracks extends TrackSourceStrategy {
 
 	@Override
 	Playlist createPlaylist(File tracksFolder) {
-		return isShuffleMode() ? my(Playlists.class).newRandomPlaylist(tracksFolder) : my(Playlists.class).newSequentialPlaylist(tracksFolder);
+		return isShuffle() ? my(Playlists.class).newRandomPlaylist(tracksFolder) : my(Playlists.class).newSequentialPlaylist(tracksFolder);
 	}
 
 }

@@ -15,15 +15,15 @@ import dfcsantos.tracks.folder.TracksFolderKeeper;
 import dfcsantos.tracks.playlist.Playlist;
 import dfcsantos.tracks.playlist.Playlists;
 
-class PeerTracks extends TrackSourceStrategy {
+class SharedTracks extends TrackSourceStrategy {
 
-	static final TrackSourceStrategy INSTANCE = new PeerTracks();
+	static final TrackSourceStrategy INSTANCE = new SharedTracks();
 
 	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGC;
 
-	private PeerTracks() {
-		_refToAvoidGC = my(TracksFolderKeeper.class).peerTracksFolder().addReceiver(new Consumer<File>() {@Override public void consume(File peerTracksFolder) {
-			setTracksFolder(peerTracksFolder);
+	private SharedTracks() {
+		_refToAvoidGC = my(TracksFolderKeeper.class).sharedTracksFolder().addReceiver(new Consumer<File>() {@Override public void consume(File sharedTracksFolder) {
+			setTracksFolder(sharedTracksFolder);
 			initPlaylist();
 		}});
 	};
@@ -34,7 +34,7 @@ class PeerTracks extends TrackSourceStrategy {
 	}
 
 	void meToo(Track trackToKeep) {
-		final File destFolder = my(TracksFolderKeeper.class).peerTracksFolder().currentValue();
+		final File destFolder = my(TracksFolderKeeper.class).sharedTracksFolder().currentValue();
 		try {
 			my(IO.class).files().copyFileToFolder(trackToKeep.file(), destFolder);
 		} catch (IOException e) {

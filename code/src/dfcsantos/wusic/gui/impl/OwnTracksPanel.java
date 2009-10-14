@@ -1,4 +1,6 @@
 package dfcsantos.wusic.gui.impl;
+
+
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Font;
@@ -8,6 +10,7 @@ import java.io.File;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,43 +23,48 @@ import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
 
-public class PlayTracksFromPeersPanel extends JPanel {
+public class OwnTracksPanel extends JPanel {
 
-	private static final Wusic Wusic = my(Wusic.class); 
+	private static final Wusic Wusic = my(Wusic.class);
 
-    private JFileChooser _peerTracksFolderChooser;
-    private JButton _choosePeerTracksFolder			= new JButton();
+    private JFileChooser _playingFolderChooser;
+    private JButton _choosePlayingFolder				= new JButton();
 
-    private JLabel _numberOfTracksFromPeers			= my(ReactiveWidgetFactory.class).newLabel(Wusic.numberOfTracksFetchedFromPeers()).getMainWidget();
+    private JCheckBox _shuffle							= new JCheckBox();
 
-    private JLabel _trackLabel						= my(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackName()).getMainWidget();
-    private JLabel _trackTime						= my(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackTime()).getMainWidget();
+    private JLabel _trackLabel							= my(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackName()).getMainWidget();
+    private JLabel _trackTime							= my(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackTime()).getMainWidget();
 
-    private JButton _pauseResume					= new JButton();
-    private JButton _skip							= new JButton();
-    private JButton _stop							= new JButton();
+    private JButton _pauseResume						= new JButton();
+    private JButton _back								= new JButton();
+    private JButton _skip								= new JButton();
+    private JButton _stop								= new JButton();
 
-    private JButton _meToo							= new JButton();
-    private JButton _noWay							= new JButton();
+    private JButton _deleteFile							= new JButton();
 
 	@SuppressWarnings("unused") private WeakContract toAvoidGC;
 
 	{
-        _peerTracksFolderChooser = my(FileChoosers.class).newFileChooser(new Consumer<File>() { @Override public void consume(File chosenFolder) {
-        	if (chosenFolder != null) {
-        		Wusic.setPeerTracksFolder(chosenFolder);
-        	}
+        _playingFolderChooser = my(FileChoosers.class).newFileChooser(new Consumer<File>() { @Override public void consume(File chosenFolder) {
+        	if (chosenFolder != null)
+        		Wusic.setPlayingFolder(chosenFolder);
     	}});
-        _peerTracksFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        _playingFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-        _choosePeerTracksFolder.setText("Peers Tracks");
-        _choosePeerTracksFolder.addActionListener(new ActionListener() {
+        _choosePlayingFolder.setText("Playing Folder");
+        _choosePlayingFolder.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                choosePeerTracksFolderActionPerformed();
+                choosePlayingFolderActionPerformed();
             }
         });
 
-        _numberOfTracksFromPeers.setFont(new Font("Tahoma", 2, 14));
+        _shuffle.setText("Shuffle");
+        _shuffle.setSelected(false);
+        _shuffle.addActionListener(new ActionListener() {
+        	@Override public void actionPerformed(ActionEvent e) {
+				shuffleActionPerformed();
+			}
+		});
 
         _trackLabel.setFont(new Font("Tahoma", 2, 14));
         _trackTime.setFont(new Font("Tahoma", 2, 14));
@@ -67,35 +75,35 @@ public class PlayTracksFromPeersPanel extends JPanel {
 
         _pauseResume.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                pauseResumeButtonActionPerformed();
+                pauseResumeActionPerformed();
+            }
+        });
+
+        _back.setText("<<");
+        _back.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                backActionPerformed();
             }
         });
 
         _skip.setText(">>");
         _skip.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                skipButtonActionPerformed();
+                skipActionPerformed();
             }
         });
 
         _stop.setText("Stop");
         _stop.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                stopButtonActionPerformed();
+                stopActionPerformed();
             }
         });
 
-        _meToo.setText("Me Too :)");
-        _meToo.addActionListener(new ActionListener() {
+        _deleteFile.setText("Delete File!");
+        _deleteFile.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                meTooButtonActionPerformed();
-            }
-        });
-
-        _noWay.setText("No Way :(");
-        _noWay.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                noWayButtonActionPerformed();
+                deleteFileActionPerformed();
             }
         });
 
@@ -106,10 +114,10 @@ public class PlayTracksFromPeersPanel extends JPanel {
             .addGroup(layout.createSequentialGroup()
             	.addContainerGap()
 	            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-	                .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-	                	.addComponent(_numberOfTracksFromPeers)
+	            	.addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+	                	.addComponent(_shuffle)
 	                	.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-	                	.addComponent(_choosePeerTracksFolder)
+	                	.addComponent(_choosePlayingFolder)
 	                	.addContainerGap()
 	                )
 	                .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -120,13 +128,13 @@ public class PlayTracksFromPeersPanel extends JPanel {
 	                .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
 	                	.addComponent(_pauseResume)
 	                	.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+	                	.addComponent(_back)
+	                	.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 	                	.addComponent(_skip)
 	                	.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 	                	.addComponent(_stop)
 	                	.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-	                	.addComponent(_meToo)
-	                	.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-	                	.addComponent(_noWay)
+	                	.addComponent(_deleteFile)
 	                )
 	            )
 	            .addContainerGap()
@@ -137,8 +145,8 @@ public class PlayTracksFromPeersPanel extends JPanel {
         	layout.createParallelGroup(GroupLayout.Alignment.LEADING)
         	.addGroup(layout.createSequentialGroup()
         		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-        			.addComponent(_numberOfTracksFromPeers)
-        			.addComponent(_choosePeerTracksFolder)
+   					.addComponent(_shuffle)
+        			.addComponent(_choosePlayingFolder)
         		)
         		.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
         		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -148,43 +156,43 @@ public class PlayTracksFromPeersPanel extends JPanel {
         		.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
         		.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
         			.addComponent(_pauseResume)
-                    .addComponent(_skip)
+                    .addComponent(_back)
+        			.addComponent(_skip)
                     .addComponent(_stop)
-                    .addComponent(_meToo)
-                    .addComponent(_noWay)
+                    .addComponent(_deleteFile)
         		)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         	)
         );
 	}
 
-    private void choosePeerTracksFolderActionPerformed() {
-    	_peerTracksFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).peerTracksFolder().currentValue());
-    	_peerTracksFolderChooser.showOpenDialog(null);
+    private void choosePlayingFolderActionPerformed() {
+    	_playingFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).ownTracksFolder().currentValue());
+    	_playingFolderChooser.showOpenDialog(null);
     }
 
-	private void pauseResumeButtonActionPerformed() {                                            
+    private void shuffleActionPerformed() {
+    	Wusic.setShuffle(_shuffle.isSelected());
+	}
+
+	private void pauseResumeActionPerformed() {                                            
     	Wusic.pauseResume();
     }                                           
 
-	private void skipButtonActionPerformed() {
+	private void backActionPerformed() {
+        Wusic.back();
+    }
+
+	private void skipActionPerformed() {
         Wusic.skip();
     }
 
-    private void stopButtonActionPerformed() {
+    private void stopActionPerformed() {
         Wusic.stop();
     }
 
-    private void meTooButtonActionPerformed() {
-        Wusic.meToo();
-    }
-
-    private void noWayButtonActionPerformed() {
+    private void deleteFileActionPerformed() {
         Wusic.noWay();
     }
-
-	void enableDeleteFileActionPerformed(boolean enabled) {
-		_noWay.setEnabled(enabled);
-	}
 
 }

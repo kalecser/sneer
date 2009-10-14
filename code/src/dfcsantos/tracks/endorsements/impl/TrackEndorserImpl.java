@@ -68,7 +68,7 @@ public class TrackEndorserImpl implements TrackEndorser {
 
 
 	private File sharedTracksFolder() {
-		return my(TracksFolderKeeper.class).peerTracksFolder().currentValue();
+		return my(TracksFolderKeeper.class).sharedTracksFolder().currentValue();
 	}
 
 
@@ -80,7 +80,7 @@ public class TrackEndorserImpl implements TrackEndorser {
 
 
 	private String sharedTracksPath() {
-		return my(TracksFolderKeeper.class).peerTracksFolder().currentValue().getAbsolutePath();
+		return my(TracksFolderKeeper.class).sharedTracksFolder().currentValue().getAbsolutePath();
 	}
 
 }

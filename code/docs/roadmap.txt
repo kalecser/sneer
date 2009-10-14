@@ -12,16 +12,10 @@
 			- 1st approach: play a copy of the track's file and move the track when meToo is clicked
 			- 2nd approach: copy the track's file when meToo is clicked and mark track for late deletion
 		- [Igor/Daniel] Wusic's Interface:
-			- Change tabs' names to: 'Own Tracks' and 'Shared Tracks <Number>'
-				- Remove 'NumberOfTracksFromPeersLabel'
-			- Change TrackSourceButton's text:
-				- 'Own Tracks' button -> 'Playing Folder'
-				- 'Peer Tracks' button -> 'Shared Folder' 
-			- ShuffleMode --> Shuffle
-			- Add BackButton (<<)
-			- Change StopButton Text to use square icon
-		- [Igor] Revise all names related to "sharedTracksFolder", "ownTracksFolder" (see TracksFolderKeeper, OperatingMode, etc)
-		- Initialize TrackClientImp.numberOfTracksFetchedFromPeers register with the number of tracks already in the folder
+			- Move 'NumberOfSharedTracks' to SharedTracksTab
+			- Change StopButton Text to use square icons
+		- [Klaus] Revise BackButton implementation (it is not working on shuffle mode)
+		- Initialize TrackClientImp.numberOfSharedTracks register with the number of tracks already in the folder
 		- Find another way to solve pause lag (try to use a smaller frame in player)
 
 	- [Kalecser] File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.

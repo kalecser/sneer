@@ -36,7 +36,7 @@ public class WusicImpl implements Wusic {
 
 	{
 		toAvoidGC = operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode mode) {
-			_trackSource = (mode == OperatingMode.OWN) ? OwnTracks.INSTANCE : PeerTracks.INSTANCE;
+			_trackSource = (mode == OperatingMode.OWN) ? OwnTracks.INSTANCE : SharedTracks.INSTANCE;
 			skip();
 		}});
 	}
@@ -54,22 +54,22 @@ public class WusicImpl implements Wusic {
 
 
 	@Override
-	public void setOwnTracksFolder(File ownTracksFolder) {
+	public void setPlayingFolder(File ownTracksFolder) {
 		my(TracksFolderKeeper.class).setOwnTracksFolder(ownTracksFolder);
 		skip();
 	}
 
 
 	@Override
-	public void setPeerTracksFolder(File peerTracksFolder) {
-		my(TracksFolderKeeper.class).setPeerTracksFolder(peerTracksFolder);
+	public void setSharedTracksFolder(File sharedTracksFolder) {
+		my(TracksFolderKeeper.class).setSharedTracksFolder(sharedTracksFolder);
 		skip();
 	}
 
 
 	@Override
-	public void setShuffleMode(boolean shuffle) {
-		_trackSource.setShuffleMode(shuffle);
+	public void setShuffle(boolean shuffle) {
+		_trackSource.setShuffle(shuffle);
 		skip();
 	}
 
@@ -111,6 +111,12 @@ public class WusicImpl implements Wusic {
 
 
 	@Override
+	public void back() {
+		play(_trackSource.previousTrack());
+	}
+
+
+	@Override
 	public void skip() {
 		play(_trackSource.nextTrack());
 	}
@@ -129,7 +135,7 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void meToo() {
-		((PeerTracks)_trackSource).meToo(_trackToPlay.output().currentValue());
+		((SharedTracks)_trackSource).meToo(_trackToPlay.output().currentValue());
 	}
 
 	
@@ -139,13 +145,13 @@ public class WusicImpl implements Wusic {
 		if (currentTrack == null) return;
 
 		skip();
-		((PeerTracks)_trackSource).noWay(currentTrack);
+		((SharedTracks)_trackSource).noWay(currentTrack);
 	}
 
 
 	@Override
-	public Signal<String> numberOfTracksFetchedFromPeers() {
-		return my(Signals.class).adapt(my(TrackClient.class).numberOfTracksFetchedFromPeers(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
+	public Signal<String> numberOfSharedTracks() {
+		return my(Signals.class).adapt(my(TrackClient.class).numberOfSharedTracks(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
 			return (numberOfTracks == 0) ? "<No tracks>" : "<" + numberOfTracks + " tracks>";
 		}});
 	}

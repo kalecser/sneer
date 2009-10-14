@@ -53,7 +53,7 @@ abstract class AbstractPlaylist implements Playlist, Enumeration<Track> {
 
 	@Override
 	public boolean hasMoreElements() {
-		return !_trackFiles.isEmpty();
+		return !trackFiles().isEmpty();
 	}
 
 	private void rescan() {

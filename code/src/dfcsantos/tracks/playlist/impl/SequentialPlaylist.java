@@ -2,6 +2,7 @@ package dfcsantos.tracks.playlist.impl;
 
 import java.io.File;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 import dfcsantos.tracks.Track;
 
@@ -15,10 +16,17 @@ class SequentialPlaylist extends AbstractPlaylist {
 	}
 
 	@Override
+	public Track previousTrack() {
+		try {
+			return new TrackImpl(_tracksIterator.previous());
+		} catch (NoSuchElementException e) {
+			return null;
+		}
+	}
+
+	@Override
 	public Track nextElement() {
-		Track track = new TrackImpl(_tracksIterator.next());
-		_tracksIterator.remove();
-		return track;
+		return new TrackImpl(_tracksIterator.next());
 	}
 
 }

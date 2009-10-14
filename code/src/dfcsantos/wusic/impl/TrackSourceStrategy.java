@@ -9,19 +9,19 @@ abstract class TrackSourceStrategy {
 
 	private Playlist _playlist;
 	private File _tracksFolder;
-	private boolean _isShuffleMode;
+	private boolean _isShuffle;
 
 	protected void setTracksFolder(File tracksFolder) {
 		_tracksFolder = tracksFolder; 
 	}
 
-	void setShuffleMode(boolean isShuffleMode) {
-		_isShuffleMode = isShuffleMode;
+	void setShuffle(boolean shuffle) {
+		_isShuffle = shuffle;
 		initPlaylist();
 	}
 
-	protected boolean isShuffleMode() {
-		return _isShuffleMode;
+	protected boolean isShuffle() {
+		return _isShuffle;
 	}
 
 	protected void initPlaylist() {
@@ -29,6 +29,10 @@ abstract class TrackSourceStrategy {
 	}
 
 	abstract Playlist createPlaylist(File tracksFolder);
+
+	protected Track previousTrack() {
+		return _playlist.previousTrack();
+	}
 
 	protected Track nextTrack() {
 		return _playlist.nextTrack();

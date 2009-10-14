@@ -10,27 +10,28 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface Wusic {
 
-	enum OperatingMode { OWN, PEERS };
+	enum OperatingMode { OWN, SHARED };
 	void setOperatingMode(OperatingMode mode);
 	Signal<OperatingMode> operatingMode();
 
-	void setOwnTracksFolder(File selectedFolder);
-	void setPeerTracksFolder(File selectedFolder);
+	void setPlayingFolder(File selectedFolder);
+	void setSharedTracksFolder(File selectedFolder);
 
-	void setShuffleMode(boolean shuffle);
+	void setShuffle(boolean shuffle);
 
 	void start();
 	Signal<String> playingTrackName();
 	Signal<String> playingTrackTime();
 
 	void pauseResume();
+	void back();
 	void skip();
 	void stop();
 
 	void meToo();
 	void noWay();
 
-	Signal<String> numberOfTracksFetchedFromPeers();
+	Signal<String> numberOfSharedTracks();
 	
 	Signal<Boolean> isPlaying();
 

@@ -9,13 +9,21 @@ class RandomPlaylist extends AbstractPlaylist {
 
 	private static final Random _random = new Random();
 
+	private Track _lastTrack;
+
 	RandomPlaylist(File tracksFolder) {
 		super(tracksFolder);
 	}
 
 	@Override
+	public Track previousTrack() {
+		return _lastTrack;
+	}
+
+	@Override
 	public Track nextElement() {
-		return new TrackImpl(trackFiles().remove(_random.nextInt(trackFiles().size())));
+		_lastTrack = new TrackImpl(trackFiles().remove(_random.nextInt(trackFiles().size())));
+		return _lastTrack;
 	}
 
 }

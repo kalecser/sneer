@@ -8,6 +8,6 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface TrackClient {
 
-	Signal<Integer> numberOfTracksFetchedFromPeers();
+	Signal<Integer> numberOfSharedTracks();
 
 }

@@ -13,7 +13,7 @@ import dfcsantos.tracks.folder.TracksFolderKeeper;
 class TracksFolderKeeperImpl implements TracksFolderKeeper {
 
 	private final Register<File> _ownTracksFolder = my(Signals.class).newRegister(defaultOwnTracksFolder());
-	private final Register<File> _peerTracksFolder = my(Signals.class).newRegister(defaultPeerTracksFolder());
+	private final Register<File> _sharedTracksFolder = my(Signals.class).newRegister(defaultSharedTracksFolder());
 
 	private File defaultOwnTracksFolder() {
 		File result = new File(my(FolderConfig.class).storageFolder().get() ,"media/own_tracks");
@@ -31,20 +31,20 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 		_ownTracksFolder.setter().consume(ownTracksFolder);
 	}
 
-	private File defaultPeerTracksFolder() {
-		File result = new File(my(FolderConfig.class).storageFolder().get() ,"media/peer_tracks");
+	private File defaultSharedTracksFolder() {
+		File result = new File(my(FolderConfig.class).storageFolder().get() ,"media/shared_tracks");
 		result.mkdirs();
 		return result;
 	}
 
 	@Override
-	public Signal<File> peerTracksFolder() {
-		return _peerTracksFolder.output();
+	public Signal<File> sharedTracksFolder() {
+		return _sharedTracksFolder.output();
 	}
 
 	@Override
-	public void setPeerTracksFolder(File ownTracksFolder) {
-		_peerTracksFolder.setter().consume(ownTracksFolder);
+	public void setSharedTracksFolder(File ownTracksFolder) {
+		_sharedTracksFolder.setter().consume(ownTracksFolder);
 	}
 
 }

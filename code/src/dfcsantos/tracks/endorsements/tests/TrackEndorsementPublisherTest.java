@@ -42,7 +42,7 @@ public class TrackEndorsementPublisherTest extends BrickTest {
 			assertEquals("rocknroll/thunderstruck.mp3", trackEndorsement.path);
 			latch.open();
 		}});
-		my(TracksFolderKeeper.class).setPeerTracksFolder(tmpFolder());
+		my(TracksFolderKeeper.class).setSharedTracksFolder(tmpFolder());
 		my(TrackEndorser.class);
 		latch.waitTillOpen();
 	}

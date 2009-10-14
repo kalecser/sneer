@@ -8,7 +8,6 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.main.menu.MainMenu;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
-import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Functor;
 import dfcsantos.wusic.Wusic;
 import dfcsantos.wusic.gui.WusicGui;
@@ -22,12 +21,12 @@ class WusicGuiImpl implements WusicGui {
     private static final Wusic Wusic = my(Wusic.class);
 
     private JFrame _frame;
-    private NewWusicPanel _wusicPanel;
+    private WusicPanel _wusicPanel;
 
     private boolean _isInitialized = false;
 
     {
-		Environments.my(MainMenu.class).addAction("Wusic", new Runnable() { @Override public void run() {
+		my(MainMenu.class).addAction("Wusic", new Runnable() { @Override public void run() {
 			if (!_isInitialized){
 				_isInitialized = true;
 				_frame = initFrame();
@@ -40,11 +39,11 @@ class WusicGuiImpl implements WusicGui {
 	private JFrame initFrame() {
 		JFrame result = my(ReactiveWidgetFactory.class).newFrame(title()).getMainWidget();
 
-		_wusicPanel = new NewWusicPanel();
+		_wusicPanel = new WusicPanel();
 		result.getContentPane().add(_wusicPanel);
 
-		result.pack();
     	result.setResizable(false);
+		result.pack();
 
     	return result;
 	}
