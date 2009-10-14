@@ -14,13 +14,13 @@ class LogFilterImpl implements LogFilter {
 	{
 		_phrases.add("Exception");
 		_phrases.add("thrown");
-		_phrases.add("online");
-		_phrases.add("offline");
+//		_phrases.add("online");
+//		_phrases.add("offline");
 		_phrases.add("Tuple");
-		_phrases.add("Shout");
-		_phrases.add("Stepper");
-		_phrases.add("Sending");
-		_phrases.add("[");
+//		_phrases.add("Shout");
+//		_phrases.add("Stepper");
+//		_phrases.add("Sending");
+//		_phrases.add("[");
 	}
 	
 	@Override

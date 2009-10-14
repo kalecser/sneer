@@ -28,14 +28,14 @@ public class TrackEndorserImpl implements TrackEndorser {
 
 	
 	{
-		_refToAvoidCG = my(Timer.class).wakeUpNowAndEvery(60*1000, new Runnable(){@Override public void run() {
+		_refToAvoidCG = my(Timer.class).wakeUpNowAndEvery(15*1000, new Runnable(){@Override public void run() {
 			endorseRandomTrack();
 		}});
 	}
 
 	
 	private void endorseRandomTrack() {
-		File[] tracks = listMp3Files(ownTracksFolder());
+		File[] tracks = listMp3Files(sharedTracksFolder());
 		if (tracks.length == 0) return;
 		
 		endorseTrack(pickOneAtRandom(tracks));
@@ -67,20 +67,20 @@ public class TrackEndorserImpl implements TrackEndorser {
 	}
 
 
-	private File ownTracksFolder() {
-		return my(TracksFolderKeeper.class).ownTracksFolder().currentValue();
+	private File sharedTracksFolder() {
+		return my(TracksFolderKeeper.class).peerTracksFolder().currentValue();
 	}
 
 
 	private String relativePath(File track) {
-		String prefix = ownTracksPath() + File.separator;
+		String prefix = sharedTracksPath() + File.separator;
 		String result = my(Lang.class).strings().substringAfter(track.getAbsolutePath(), prefix);
 		return result.replace('\\', '/');
 	}
 
 
-	private String ownTracksPath() {
-		return my(TracksFolderKeeper.class).ownTracksFolder().currentValue().getAbsolutePath();
+	private String sharedTracksPath() {
+		return my(TracksFolderKeeper.class).peerTracksFolder().currentValue().getAbsolutePath();
 	}
 
 }

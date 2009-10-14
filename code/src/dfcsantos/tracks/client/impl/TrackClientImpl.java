@@ -44,9 +44,17 @@ class TrackClientImpl implements TrackClient {
 	}
 
 	
-	private File fileToWrite(TrackEndorsement track) {
+	private File fileToWrite(TrackEndorsement track) throws IOException {
 		String name = new File(track.path).getName();
-		return new File(my(FolderConfig.class).tmpFolderFor(TrackClient.class), "candidates/" + name);
+		File candidatesFolder = candidatesFolder();
+		return new File(candidatesFolder, name);
+	}
+
+
+	private File candidatesFolder() throws IOException {
+		File result = new File(my(FolderConfig.class).tmpFolderFor(TrackClient.class), "candidates");
+		if (!result.exists() && !result.mkdir()) throw new IOException("Unable to create track candidates directory:"+result);
+		return result;
 	}
 
 
