@@ -8,12 +8,20 @@
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
 			- Do not download files user already has (includes candidates).
-		- [Igor/Daniel] Change Wusic Interface to use one tab to each mode
-		- [Klaus] Revise and rethink names given to variables and GUI labels related with each mode (ex: "peerTracksFolder", "ownTracksFolder", etc)
-		- Initialize TrackClientImp.numberOfTracksFetchedFromPeers register with the number of tracks already in the folder
-		- Remove track after meToo is clicked
+		- [Igor] Remove track after meToo is clicked
 			- 1st approach: play a copy of the track's file and move the track when meToo is clicked
 			- 2nd approach: copy the track's file when meToo is clicked and mark track for late deletion
+		- [Igor/Daniel] Wusic's Interface:
+			- Change tabs' names to: 'Own Tracks' and 'Shared Tracks <Number>'
+				- Remove 'NumberOfTracksFromPeersLabel'
+			- Change TrackSourceButton's text:
+				- 'Own Tracks' button -> 'Playing Folder'
+				- 'Peer Tracks' button -> 'Shared Folder' 
+			- ShuffleMode --> Shuffle
+			- Add BackButton (<<)
+			- Change StopButton Text to use square icon
+		- [Igor] Revise all names related to "sharedTracksFolder", "ownTracksFolder" (see TracksFolderKeeper, OperatingMode, etc)
+		- Initialize TrackClientImp.numberOfTracksFetchedFromPeers register with the number of tracks already in the folder
 		- Find another way to solve pause lag (try to use a smaller frame in player)
 
 	- [Kalecser] File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.
