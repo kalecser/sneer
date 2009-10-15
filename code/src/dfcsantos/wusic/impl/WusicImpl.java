@@ -7,11 +7,9 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.client.TrackClient;
@@ -22,7 +20,7 @@ public class WusicImpl implements Wusic {
 
 	private static final Format TIME_FORMATTER = new SimpleDateFormat("mm:ss");
 
-	private Register<OperatingMode> _currentOperatingMode = my(Signals.class).newRegister(OperatingMode.OWN); 
+	private OperatingMode _currentOperatingMode = OperatingMode.OWN;
 
 	private TrackSourceStrategy _trackSource = OwnTracks.INSTANCE;
 
@@ -32,24 +30,15 @@ public class WusicImpl implements Wusic {
 		skip();
 	}});
 
-	@SuppressWarnings("unused") private WeakContract toAvoidGC;
-
-	{
-		toAvoidGC = operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode mode) {
-			_trackSource = (mode == OperatingMode.OWN) ? OwnTracks.INSTANCE : SharedTracks.INSTANCE;
-			skip();
-		}});
-	}
-
 	@Override
 	public void setOperatingMode(OperatingMode mode) {
-		_currentOperatingMode.setter().consume(mode);
+		_trackSource = (mode == OperatingMode.OWN) ? OwnTracks.INSTANCE : SharedTracks.INSTANCE;
 	}
 
 
 	@Override
-	public Signal<OperatingMode> operatingMode() {
-		return _currentOperatingMode.output();
+	public OperatingMode operatingMode() {
+		return _currentOperatingMode;
 	}
 
 
@@ -63,14 +52,12 @@ public class WusicImpl implements Wusic {
 	@Override
 	public void setSharedTracksFolder(File sharedTracksFolder) {
 		my(TracksFolderKeeper.class).setSharedTracksFolder(sharedTracksFolder);
-		skip();
 	}
 
 
 	@Override
 	public void setShuffle(boolean shuffle) {
 		_trackSource.setShuffle(shuffle);
-		skip();
 	}
 
 

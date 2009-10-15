@@ -12,7 +12,7 @@ public interface Wusic {
 
 	enum OperatingMode { OWN, SHARED };
 	void setOperatingMode(OperatingMode mode);
-	Signal<OperatingMode> operatingMode();
+	OperatingMode operatingMode();
 
 	void setPlayingFolder(File selectedFolder);
 	void setSharedTracksFolder(File selectedFolder);
