@@ -54,7 +54,7 @@ class ControlPanel extends JPanel {
 	    });
 	    add(_skip);
 	
-	    _stop.setText("Stop");
+	    _stop.setText("\u25A1"); // Unicode for 'square symbol'
 	    _stop.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent evt) {
 	            stopActionPerformed();

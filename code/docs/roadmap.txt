@@ -13,7 +13,6 @@
 			- 2nd approach: copy the track's file when meToo is clicked and mark track for late deletion
 		- [Igor/Daniel] Wusic's Interface:
 			- Move 'NumberOfSharedTracks' to SharedTracksTab
-			- Change StopButton Text to use square icons
 			- Display track label and time only on the panel of the active mode
 			- Set a fixed size for the track label
 		- [Klaus] Revise BackButton implementation (it is not working on shuffle mode)
