@@ -67,6 +67,7 @@ class SharedTracksPanel extends AbstractTabPane {
 	                meTooActionPerformed();
 	            }
 	        });
+	        add(_meToo);
 
 	        _noWay.setText("No Way :(");
 	        _noWay.addActionListener(new ActionListener() {
@@ -74,6 +75,7 @@ class SharedTracksPanel extends AbstractTabPane {
 	                noWayActionPerformed();
 	            }
 	        });
+	        add(_noWay);
 		}
 	}
 
