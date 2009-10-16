@@ -16,6 +16,7 @@
 			- Display track label and time only on the panel of the active mode
 			- Implement toolTip functionality for TrackDisplay._trackLabel to display a track's full name 
 		- [Klaus] Revise BackButton implementation (it is not working on shuffle mode)
+		- Change implementation of DJ to send _isPlaying.setter() down to PausableInputStream 
 		- Initialize TrackClientImp.numberOfSharedTracks register with the number of tracks already in the folder
 		- Find another way to solve pause lag (try to use a smaller frame in player)
 
