@@ -25,8 +25,8 @@ class SharedTracksPanel extends AbstractTabPane {
         	if (chosenFolder != null) {
         		Wusic.setSharedTracksFolder(chosenFolder);
         	}
-    	}});
-        _sharedTracksFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    	}}, JFileChooser.DIRECTORIES_ONLY);
+    	_sharedTracksFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).sharedTracksFolder().currentValue());
 
         _chooseSharedTracksFolder.setText("Shared Folder");
         _chooseSharedTracksFolder.addActionListener(new ActionListener() {
@@ -38,7 +38,6 @@ class SharedTracksPanel extends AbstractTabPane {
 	}
 
     private void chooseSharedTracksFolderActionPerformed() {
-    	_sharedTracksFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).sharedTracksFolder().currentValue());
     	_sharedTracksFolderChooser.showOpenDialog(null);
     }
 

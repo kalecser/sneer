@@ -25,8 +25,8 @@ class OwnTracksPanel extends AbstractTabPane {
 		_playingFolderChooser = my(FileChoosers.class).newFileChooser(new Consumer<File>() { @Override public void consume(File chosenFolder) {
 	    	if (chosenFolder != null)
 	    		Wusic.setPlayingFolder(chosenFolder);
-		}});
-	    _playingFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		}}, JFileChooser.DIRECTORIES_ONLY);
+		_playingFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).ownTracksFolder().currentValue());
 
 	    _choosePlayingFolder.setText("Playing Folder");
 	    _choosePlayingFolder.addActionListener(new ActionListener() {
@@ -47,7 +47,6 @@ class OwnTracksPanel extends AbstractTabPane {
 	}
 
 	private void choosePlayingFolderActionPerformed() {
-    	_playingFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).ownTracksFolder().currentValue());
     	_playingFolderChooser.showOpenDialog(null);
     }
 

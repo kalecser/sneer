@@ -11,5 +11,7 @@ import sneer.foundation.lang.Consumer;
 public interface FileChoosers {
 
 	JFileChooser newFileChooser(Consumer<File> selectedFile);
-	
+
+	JFileChooser newFileChooser(Consumer<File> selectionReceiver, int fileSelectionMode);
+
 }
