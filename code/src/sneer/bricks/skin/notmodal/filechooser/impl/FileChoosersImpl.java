@@ -25,6 +25,11 @@ class FileChoosersImpl implements FileChoosers {
 		return new NotModalFileChooser(selectionReceiver);
 	}
 
+	@Override
+	public JFileChooser newFileChooser(Consumer<File> selectionReceiver, int fileSelectionMode) {
+		return new NotModalFileChooser(selectionReceiver, fileSelectionMode);
+	}
+
 	private static class NotModalFileChooser extends JFileChooser {
 
 		public static final int WAITING_OPTION = 100;
@@ -35,6 +40,11 @@ class FileChoosersImpl implements FileChoosers {
 
 		public NotModalFileChooser(Consumer<File> selectionReceiver) {
 			_selectionReceiver = selectionReceiver;
+		}
+
+		public NotModalFileChooser(Consumer<File> selectionReceiver, int fileSelectionMode) {
+			this(selectionReceiver);
+			setFileSelectionMode(fileSelectionMode);
 		}
 
 		@Override
@@ -88,10 +98,18 @@ class FileChoosersImpl implements FileChoosers {
 		public void approveSelection() {
 	    	fireActionPerformed(APPROVE_SELECTION);
 	    	disposeDialog();
-	    	_selectionReceiver.consume(getSelectedFile());
+	    	File selectedFile = getSelectedFile();
+	    	_selectionReceiver.consume(selectedFile);
+	    	setCurrentDirectory(parentDirectory(selectedFile));
         }
 
-	    @Override
+	    private File parentDirectory(File file) {
+			if (file == null) return null;
+			if (file.isDirectory()) return file;
+			return parentDirectory(file.getParentFile());
+		}
+
+		@Override
        public void cancelSelection() {
 	    	fireActionPerformed(CANCEL_SELECTION);
 	    	_selectionReceiver.consume(null);

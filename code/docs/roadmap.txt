@@ -13,9 +13,8 @@
 			- 2nd approach: copy the track's file when meToo is clicked and mark track for late deletion
 		- [Igor/Daniel] Wusic's Interface:
 			- Move 'NumberOfSharedTracks' to SharedTracksTab
-			- Change StopButton Text to use square icons
 			- Display track label and time only on the panel of the active mode
-			- Set a fixed size for the track label
+			- Implement toolTip functionality for TrackDisplay._trackLabel to display a track's full name 
 		- [Klaus] Revise BackButton implementation (it is not working on shuffle mode)
 		- Initialize TrackClientImp.numberOfSharedTracks register with the number of tracks already in the folder
 		- Find another way to solve pause lag (try to use a smaller frame in player)

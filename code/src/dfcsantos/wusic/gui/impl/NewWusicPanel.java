@@ -10,7 +10,7 @@ import javax.swing.event.ChangeListener;
 import dfcsantos.wusic.Wusic;
 import dfcsantos.wusic.Wusic.OperatingMode;
 
-class WusicPanel extends JPanel {
+public class NewWusicPanel extends JPanel {
 
 	private static final Wusic Wusic = my(Wusic.class);
 
@@ -18,7 +18,7 @@ class WusicPanel extends JPanel {
 	private final AbstractTabPane _ownTracksPanel		= new OwnTracksPanel();
 	private final AbstractTabPane _sharedTracksPanel	= new SharedTracksPanel();
 
-	WusicPanel() {
+	{
 		_tabbedPane.addTab("Own Tracks", null, _ownTracksPanel, "Own Tracks Mode");
 		_tabbedPane.addTab("Shared Tracks", null, _sharedTracksPanel, "Shared Tracks Mode");
 		_tabbedPane.addChangeListener(new ChangeListener() { @Override public void stateChanged(ChangeEvent e) {
