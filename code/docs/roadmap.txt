@@ -18,7 +18,7 @@
 		- [Klaus] Revise BackButton implementation (it is not working on shuffle mode)
 		- Change implementation of DJ to send _isPlaying.setter() down to PausableInputStream 
 		- Initialize TrackClientImp.numberOfSharedTracks register with the number of tracks already in the folder
-		- Add unit tests for Playlist
+		- Add unit tests for Playlist and consider other tests for Wusic's testable functionalities
 		- Find another way to solve pause lag (try to use a smaller frame in player)
 
 	- [Kalecser] File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.
