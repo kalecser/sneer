@@ -8,6 +8,7 @@
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
 			- Do not download files user already has (includes candidates).
+		- [Klaus/Igor/Daniel] Find a way to swap between Wusic's playing modes (see line 18 in WusicPanel)
 		- [Igor] Remove track after meToo is clicked
 			- 1st approach: play a copy of the track's file and move the track when meToo is clicked
 			- 2nd approach: copy the track's file when meToo is clicked and mark track for late deletion
