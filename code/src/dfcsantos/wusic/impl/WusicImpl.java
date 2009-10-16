@@ -72,7 +72,7 @@ public class WusicImpl implements Wusic {
 		return my(Signals.class).adapt(_trackToPlay.output(), new Functor<Track, String>() { @Override public String evaluate(Track track) {
 			return (track == null)
 					? "<No track to play>"
-					: (track.name().length() >= 60) ? track.name().substring(0, 57).concat("...") : track.name();
+					: (track.name().length() >= 54) ? track.name().substring(0, 51).concat("...") : track.name();
 		}});
 	}
 
