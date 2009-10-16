@@ -5,11 +5,9 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
 import dfcsantos.tracks.playlist.Playlist;
@@ -19,13 +17,9 @@ class SharedTracks extends TrackSourceStrategy {
 
 	static final TrackSourceStrategy INSTANCE = new SharedTracks();
 
-	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGC;
-
 	private SharedTracks() {
-		_refToAvoidGC = my(TracksFolderKeeper.class).sharedTracksFolder().addReceiver(new Consumer<File>() {@Override public void consume(File sharedTracksFolder) {
-			setTracksFolder(sharedTracksFolder);
-			initPlaylist();
-		}});
+		setTracksFolder(my(TracksFolderKeeper.class).candidateTracksFolder());
+		initPlaylist();
 	};
 
 	@Override
