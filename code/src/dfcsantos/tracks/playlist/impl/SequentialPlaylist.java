@@ -8,11 +8,15 @@ import dfcsantos.tracks.Track;
 
 class SequentialPlaylist extends AbstractPlaylist {
 
-	private final ListIterator<File> _tracksIterator;
+	private ListIterator<File> _tracksIterator;
 
 	SequentialPlaylist(File tracksFolder) {
 		super(tracksFolder);
-		_tracksIterator = trackFiles().listIterator();
+		initIterator();
+	}
+
+	private void initIterator() {
+		_tracksIterator = trackFiles().listIterator();	
 	}
 
 	@Override
@@ -25,8 +29,18 @@ class SequentialPlaylist extends AbstractPlaylist {
 	}
 
 	@Override
+	public boolean hasMoreElements() {
+		return _tracksIterator.hasNext();
+	}
+
+	@Override
 	public Track nextElement() {
 		return new TrackImpl(_tracksIterator.next());
+	}
+
+	@Override
+	protected void rescan() {
+		initIterator();
 	}
 
 }

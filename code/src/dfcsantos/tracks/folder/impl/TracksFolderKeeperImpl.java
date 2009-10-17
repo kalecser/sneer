@@ -15,6 +15,8 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 	private final Register<File> _ownTracksFolder = my(Signals.class).newRegister(defaultOwnTracksFolder());
 	private final Register<File> _sharedTracksFolder = my(Signals.class).newRegister(defaultSharedTracksFolder());
 
+	private File _candidateTracksFolder;
+
 	private File defaultOwnTracksFolder() {
 		File result = new File(my(FolderConfig.class).storageFolder().get() ,"media/own_tracks");
 		result.mkdirs();
@@ -45,6 +47,16 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 	@Override
 	public void setSharedTracksFolder(File ownTracksFolder) {
 		_sharedTracksFolder.setter().consume(ownTracksFolder);
+	}
+
+	@Override
+	public File candidateTracksFolder() {
+		return _candidateTracksFolder;
+	}
+
+	@Override
+	public void setCandidateTracksFolder(File candidateTracksFolder) {
+		_candidateTracksFolder = candidateTracksFolder;
 	}
 
 }

@@ -27,7 +27,7 @@ public class DJ implements Consumer<Track> {
 		_toCallWhenDonePlayingATrack = toCallWhenDonePlayingATrack;
 		_djContract = trackToPlay.addReceiver(this);
 
-		_timerContract = my(Timer.class).wakeUpEvery(300, new Runnable() { @Override public void run() {
+		_timerContract = my(Timer.class).wakeUpEvery(500, new Runnable() { @Override public void run() {
 			refreshIsPlaying();
 			if (_currentTrackContract != null)
 				_trackElapsedTime.setter().consume(_currentTrackContract.trackElapsedTime());

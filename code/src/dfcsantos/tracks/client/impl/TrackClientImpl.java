@@ -16,6 +16,7 @@ import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
+import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 class TrackClientImpl implements TrackClient {
 
@@ -53,7 +54,8 @@ class TrackClientImpl implements TrackClient {
 
 	private File candidatesFolder() throws IOException {
 		File result = new File(my(FolderConfig.class).tmpFolderFor(TrackClient.class), "candidates");
-		if (!result.exists() && !result.mkdir()) throw new IOException("Unable to create track candidates directory:"+result);
+		if (!result.exists() && !result.mkdir()) throw new IOException("Unable to create track candidates directory:" + result);
+		my(TracksFolderKeeper.class).setCandidateTracksFolder(result);
 		return result;
 	}
 

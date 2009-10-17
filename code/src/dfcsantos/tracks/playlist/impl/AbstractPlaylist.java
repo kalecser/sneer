@@ -56,7 +56,7 @@ abstract class AbstractPlaylist implements Playlist, Enumeration<Track> {
 		return !trackFiles().isEmpty();
 	}
 
-	private void rescan() {
+	protected void rescan() {
 		loadTracks();
 	}
 
