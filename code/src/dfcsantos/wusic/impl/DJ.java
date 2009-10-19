@@ -28,18 +28,9 @@ public class DJ implements Consumer<Track> {
 		_djContract = trackToPlay.addReceiver(this);
 
 		_timerContract = my(Timer.class).wakeUpEvery(500, new Runnable() { @Override public void run() {
-			refreshIsPlaying();
 			if (_currentTrackContract != null)
 				_trackElapsedTime.setter().consume(_currentTrackContract.trackElapsedTime());
 		}});
-	}
-
-
-	private void refreshIsPlaying() {
-		_isPlaying.setter().consume((_currentTrackContract == null)
-			? false
-			: !_currentTrackContract.isPaused().currentValue()
-		);
 	}
 
 
@@ -53,22 +44,29 @@ public class DJ implements Consumer<Track> {
 
 
 	private void stop() {
+		setPlaying(false);
+		_trackElapsedTime.setter().consume(0);
+		
 		if (_currentTrackContract == null)
 			return;
 		_currentTrackContract.dispose();
 		_currentTrackContract = null;
-		_trackElapsedTime.setter().consume(0);
 	}
 
 
 	void pauseResume() {
-		if (_currentTrackContract == null) return;
-		_currentTrackContract.pauseResume();
+		setPlaying(!isPlaying().currentValue());
+	}
+
+
+	private void setPlaying(boolean isPlaying) {
+		_isPlaying.setter().consume(isPlaying);
 	}
 
 
 	private void play(final Track track) {
-		_currentTrackContract = my(TrackPlayer.class).startPlaying(track, _toCallWhenDonePlayingATrack);
+		setPlaying(true);
+		_currentTrackContract = my(TrackPlayer.class).startPlaying(track, isPlaying(), _toCallWhenDonePlayingATrack);
 	}
 
 
