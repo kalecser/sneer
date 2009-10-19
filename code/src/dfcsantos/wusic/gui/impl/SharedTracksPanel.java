@@ -7,16 +7,20 @@ import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
+import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 class SharedTracksPanel extends AbstractTabPane {
 
-	private JFileChooser _sharedTracksFolderChooser;
-    private JButton _chooseSharedTracksFolder = new JButton();
+    private final JLabel _sharedTracksCountTabLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.numberOfSharedTracks()).getMainWidget();
+
+	private final JFileChooser _sharedTracksFolderChooser;
+    private final JButton _chooseSharedTracksFolder = new JButton();
 
 	@SuppressWarnings("unused") private WeakContract toAvoidGC;
 
@@ -47,6 +51,11 @@ class SharedTracksPanel extends AbstractTabPane {
 
     private void noWayActionPerformed() {
         Wusic.noWay();
+    }
+
+    @Override
+    JLabel customTabLabel() {
+    	return _sharedTracksCountTabLabel;
     }
 
     @Override

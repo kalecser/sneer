@@ -13,9 +13,8 @@
 			- 1st approach: play a copy of the track's file and move the track when meToo is clicked
 			- 2nd approach: copy the track's file when meToo is clicked and mark track for late deletion
 		- [Igor/Daniel] Wusic's Interface:
-			- Move 'NumberOfSharedTracks' to SharedTracksTab
 			- Display track label and time only on the panel of the active mode
-			- Implement toolTip functionality for TrackDisplay._trackLabel to display a track's full name 
+			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name 
 		- [Klaus] Revise BackButton implementation (it is not working on shuffle mode)
 		- Change implementation of DJ to send _isPlaying.setter() down to PausableInputStream 
 		- Initialize TrackClientImp.numberOfSharedTracks register with the number of tracks already in the folder

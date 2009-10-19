@@ -10,12 +10,15 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 
 import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 class OwnTracksPanel extends AbstractTabPane {
+
+	private final JLabel _ownTracksTabLabel				= new JLabel("Own Tracks");
 
 	private final JFileChooser _playingFolderChooser;
     private final JButton _choosePlayingFolder			= new JButton();
@@ -57,6 +60,11 @@ class OwnTracksPanel extends AbstractTabPane {
 	private void deleteFileActionPerformed() {
 	    Wusic.noWay();
 	}
+
+	@Override
+    JLabel customTabLabel() {
+    	return _ownTracksTabLabel;
+    }
 
 	@Override
 	protected ControlPanel controlPanel() {

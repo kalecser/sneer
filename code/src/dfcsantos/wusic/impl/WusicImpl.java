@@ -141,7 +141,7 @@ public class WusicImpl implements Wusic {
 	@Override
 	public Signal<String> numberOfSharedTracks() {
 		return my(Signals.class).adapt(my(TrackClient.class).numberOfSharedTracks(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
-			return (numberOfTracks == 0) ? "<No tracks>" : "<" + numberOfTracks + " tracks>";
+			return "Shared Tracks <" + numberOfTracks + ">";
 		}});
 	}
 

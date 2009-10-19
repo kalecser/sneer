@@ -1,5 +1,7 @@
 package dfcsantos.wusic.gui.impl;
 
+import java.awt.event.KeyEvent;
+
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
@@ -12,8 +14,14 @@ class WusicPanel extends JPanel {
 	private final AbstractTabPane _sharedTracksPanel	= new SharedTracksPanel();
 
 	WusicPanel() {
-		_tabbedPane.addTab("Own Tracks", null, _ownTracksPanel, "Own Tracks Mode");
-		_tabbedPane.addTab("Shared Tracks", null, _sharedTracksPanel, "Shared Tracks Mode");
+		_tabbedPane.addTab(null, _ownTracksPanel);
+		_tabbedPane.setTabComponentAt(0, _ownTracksPanel.customTabLabel());
+		_tabbedPane.setMnemonicAt(0, KeyEvent.VK_O);
+
+		_tabbedPane.addTab(null, _sharedTracksPanel);
+		_tabbedPane.setTabComponentAt(1, _sharedTracksPanel.customTabLabel());
+		_tabbedPane.setMnemonicAt(1, KeyEvent.VK_S);
+
 		_tabbedPane.addChangeListener(new ChangeListener() { @Override public void stateChanged(ChangeEvent e) {
 			// Wusic.setOperatingMode(OperatingMode.values()[_tabbedPane.getSelectedIndex()]); Fix: Come up with another strategy to change playing mode
 		}});
