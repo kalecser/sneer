@@ -17,7 +17,7 @@ import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 class SharedTracksPanel extends AbstractTabPane {
 
-    private final JLabel _sharedTracksCountTabLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.numberOfSharedTracks()).getMainWidget();
+    private final JLabel _sharedTracksCountTabLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.numberOfPeerTracks()).getMainWidget();
 
 	private final JFileChooser _sharedTracksFolderChooser;
     private final JButton _chooseSharedTracksFolder = new JButton();

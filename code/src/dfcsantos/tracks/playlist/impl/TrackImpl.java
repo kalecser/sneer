@@ -9,7 +9,7 @@ class TrackImpl implements Track {
 	private final File _file;
 	private final String _info;
 
-	private boolean _disposed;
+	private boolean _ignored;
 
 	TrackImpl(File file){
 		_file = file;
@@ -27,13 +27,13 @@ class TrackImpl implements Track {
 	}
 
 	@Override
-	public void dispose() {
-		_disposed = true;
+	public void ignore() {
+		_ignored = true;
 	}
 
 	@Override
-	public boolean isMarkedForDisposal() {
-		return _disposed;
+	public boolean isIgnored() {
+		return _ignored;
 	}
 
 }

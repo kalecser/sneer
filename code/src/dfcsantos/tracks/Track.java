@@ -8,8 +8,7 @@ public interface Track {
 
 	File file();
 
-	void dispose();
-
-	boolean isMarkedForDisposal();
+	void ignore();
+	boolean isIgnored();
 
 }

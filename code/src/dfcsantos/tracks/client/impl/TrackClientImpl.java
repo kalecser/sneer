@@ -12,7 +12,6 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
@@ -45,22 +44,18 @@ class TrackClientImpl implements TrackClient {
 	}
 
 	
-	private File fileToWrite(TrackEndorsement track) throws IOException {
+	private File fileToWrite(TrackEndorsement track) {
 		String name = new File(track.path).getName();
-		File candidatesFolder = candidatesFolder();
-		return new File(candidatesFolder, name);
+		return new File(candidatesFolder(), name);
 	}
 
 
-	private File candidatesFolder() throws IOException {
-		File result = new File(my(FolderConfig.class).tmpFolderFor(TrackClient.class), "candidates");
-		if (!result.exists() && !result.mkdir()) throw new IOException("Unable to create track candidates directory:" + result);
-		my(TracksFolderKeeper.class).setCandidateTracksFolder(result);
-		return result;
+	private File candidatesFolder() {
+		return my(TracksFolderKeeper.class).peerTracksFolder();
 	}
 
 
-	public Signal<Integer> numberOfSharedTracks() {
+	public Signal<Integer> numberOfPeerTracks() {
 		return _numberOfSharedTracks.output();
 	}
 

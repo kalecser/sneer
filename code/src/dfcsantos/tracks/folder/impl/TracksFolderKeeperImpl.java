@@ -4,6 +4,8 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -12,15 +14,13 @@ import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 class TracksFolderKeeperImpl implements TracksFolderKeeper {
 
-	private final Register<File> _ownTracksFolder = my(Signals.class).newRegister(defaultOwnTracksFolder());
-	private final Register<File> _sharedTracksFolder = my(Signals.class).newRegister(defaultSharedTracksFolder());
+	private final Register<File> _ownTracksFolder = my(Signals.class).newRegister(defaultTracksFolder());
+	private final Register<File> _sharedTracksFolder = my(Signals.class).newRegister(defaultTracksFolder());
 
-	private File _candidateTracksFolder;
+	private File _peerTracksFolder;
 
-	private File defaultOwnTracksFolder() {
-		File result = new File(my(FolderConfig.class).storageFolder().get() ,"media/own_tracks");
-		result.mkdirs();
-		return result;
+	private File defaultTracksFolder() {
+		return mkDirs(new File(my(FolderConfig.class).storageFolder().get() ,"media/tracks"));
 	}
 
 	@Override
@@ -33,11 +33,6 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 		_ownTracksFolder.setter().consume(ownTracksFolder);
 	}
 
-	private File defaultSharedTracksFolder() {
-		File result = new File(my(FolderConfig.class).storageFolder().get() ,"media/shared_tracks");
-		result.mkdirs();
-		return result;
-	}
 
 	@Override
 	public Signal<File> sharedTracksFolder() {
@@ -50,13 +45,19 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 	}
 
 	@Override
-	public File candidateTracksFolder() {
-		return _candidateTracksFolder;
+	public File peerTracksFolder() {
+		if (_peerTracksFolder == null)
+			_peerTracksFolder = mkDirs(new File(my(FolderConfig.class).tmpFolderFor(TracksFolderKeeper.class), "peertracks"));
+				
+		return _peerTracksFolder;
 	}
 
-	@Override
-	public void setCandidateTracksFolder(File candidateTracksFolder) {
-		_candidateTracksFolder = candidateTracksFolder;
+	
+	private File mkDirs(File folder) {
+		if (!folder.exists() && !folder.mkdirs())
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Unable to create folder.", "Unable to create folder: " + folder);
+		return folder;
 	}
+
 
 }

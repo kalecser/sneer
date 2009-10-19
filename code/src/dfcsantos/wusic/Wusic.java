@@ -31,7 +31,7 @@ public interface Wusic {
 	void meToo();
 	void noWay();
 
-	Signal<String> numberOfSharedTracks();
+	Signal<String> numberOfPeerTracks();
 	
 	Signal<Boolean> isPlaying();
 

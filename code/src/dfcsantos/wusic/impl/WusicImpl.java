@@ -57,7 +57,7 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void setShuffle(boolean shuffle) {
-		_trackSource.setShuffle(shuffle);
+		((OwnTracks)_trackSource).setShuffle(shuffle);
 	}
 
 
@@ -134,14 +134,14 @@ public class WusicImpl implements Wusic {
 		if (currentTrack == null) return;
 
 		skip();
-		((SharedTracks)_trackSource).noWay(currentTrack);
+		_trackSource.noWay(currentTrack);
 	}
 
 
 	@Override
-	public Signal<String> numberOfSharedTracks() {
-		return my(Signals.class).adapt(my(TrackClient.class).numberOfSharedTracks(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
-			return "Shared Tracks <" + numberOfTracks + ">";
+	public Signal<String> numberOfPeerTracks() {
+		return my(Signals.class).adapt(my(TrackClient.class).numberOfPeerTracks(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
+			return "Peer Tracks (" + numberOfTracks + ")";
 		}});
 	}
 

@@ -17,6 +17,8 @@ public class OwnTracks extends TrackSourceStrategy {
 	
 	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGC;
 
+	private boolean _isShuffle;
+
 	private OwnTracks() {	
 		_refToAvoidGC = my(TracksFolderKeeper.class).ownTracksFolder().addReceiver(new Consumer<File>() {@Override public void consume(File ownTracksFolder) {
 			setTracksFolder(ownTracksFolder);
@@ -26,7 +28,13 @@ public class OwnTracks extends TrackSourceStrategy {
 
 	@Override
 	Playlist createPlaylist(File tracksFolder) {
-		return isShuffle() ? my(Playlists.class).newRandomPlaylist(tracksFolder) : my(Playlists.class).newSequentialPlaylist(tracksFolder);
+		return _isShuffle ? my(Playlists.class).newRandomPlaylist(tracksFolder) : my(Playlists.class).newSequentialPlaylist(tracksFolder);
 	}
+
+	void setShuffle(boolean shuffle) {
+		_isShuffle = shuffle;
+		initPlaylist();
+	}
+
 
 }

@@ -17,10 +17,8 @@ class SharedTracks extends TrackSourceStrategy {
 
 	static final TrackSourceStrategy INSTANCE = new SharedTracks();
 
-	// private final ListRegister<Track> _tracksToDispose = my(CollectionSignals.class).newListRegister();
-
 	private SharedTracks() {
-		setTracksFolder(my(TracksFolderKeeper.class).candidateTracksFolder());
+		setTracksFolder(my(TracksFolderKeeper.class).peerTracksFolder());
 		initPlaylist();
 	};
 
@@ -40,16 +38,8 @@ class SharedTracks extends TrackSourceStrategy {
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to copy track", "Unable to copy track: " + track.file(), 7000);
 		}
-		disposeTrack(track);
+		markForDisposal(track);
 	}
 
-	private void disposeTrack(Track track) {
-		track.dispose(); // Mark track for late disposal since it might still be playing
-		// _tracksToDispose.add(track);
-	}
-
-	void noWay(Track trackToDispose) {
-		disposeTrack(trackToDispose);		
-	}
 
 }
