@@ -12,7 +12,6 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
@@ -20,7 +19,7 @@ import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 class TrackClientImpl implements TrackClient {
 
-	private final Register<Integer> _numberOfSharedTracks = my(Signals.class).newRegister(0); 
+	private final Register<Integer> _numberOfTracksFetchedFromPeers = my(Signals.class).newRegister(0); 
 
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC;
 
@@ -41,27 +40,23 @@ class TrackClientImpl implements TrackClient {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 
-		_numberOfSharedTracks.setter().consume(_numberOfSharedTracks.output().currentValue() + 1);
+		_numberOfTracksFetchedFromPeers.setter().consume(_numberOfTracksFetchedFromPeers.output().currentValue() + 1);
 	}
 
 	
-	private File fileToWrite(TrackEndorsement track) throws IOException {
+	private File fileToWrite(TrackEndorsement track) {
 		String name = new File(track.path).getName();
-		File candidatesFolder = candidatesFolder();
-		return new File(candidatesFolder, name);
+		return new File(candidatesFolder(), name);
 	}
 
 
-	private File candidatesFolder() throws IOException {
-		File result = new File(my(FolderConfig.class).tmpFolderFor(TrackClient.class), "candidates");
-		if (!result.exists() && !result.mkdir()) throw new IOException("Unable to create track candidates directory:" + result);
-		my(TracksFolderKeeper.class).setCandidateTracksFolder(result);
-		return result;
+	private File candidatesFolder() {
+		return my(TracksFolderKeeper.class).peerTracksFolder();
 	}
 
 
-	public Signal<Integer> numberOfSharedTracks() {
-		return _numberOfSharedTracks.output();
+	public Signal<Integer> numberOfTracksFetchedFromPeers() {
+		return _numberOfTracksFetchedFromPeers.output();
 	}
 
 }

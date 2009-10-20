@@ -6,10 +6,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import javazoom.jl.player.Player;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.player.TrackContract;
 
@@ -19,8 +21,11 @@ class TrackContractImpl implements TrackContract {
 	private Player _player;
 
 	private volatile boolean _wasDisposed;
+	
+	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc;
 
-	TrackContractImpl(final Track track, final Runnable toCallWhenFinished) {
+	
+	TrackContractImpl(final Track track, final Signal<Boolean> isPlaying, final Runnable toCallWhenFinished) {
 		try {
 			_trackStream = new PausableInputStream(new FileInputStream(track.file()));
 		} catch (FileNotFoundException e) {
@@ -28,41 +33,45 @@ class TrackContractImpl implements TrackContract {
 		} 
 		
 		my(Threads.class).startDaemon("Track Player", new Runnable() { @Override public void run() {
-			try {
-				_player = new Player(_trackStream);
-				_player.play();
-
-			} catch (Throwable t) {
-				if (!_wasDisposed)
-					my(BlinkingLights.class).turnOn(LightType.WARN, "Error reading track", "Error reading track", t, 30000);
-				
-			} finally {
-				if (_wasDisposed) return;
-				dispose();
-				toCallWhenFinished.run();
-			}
+			play(isPlaying, toCallWhenFinished);
 		}});
 	}
 
-	@Override
-	public void pauseResume() {
-		_trackStream.pauseResume();
-	}
-
+		
 	@Override
 	public void dispose() {
 		_wasDisposed = true;
 		if (_player != null) _player.close();
 	}
 
+	
 	@Override
 	public int trackElapsedTime() {
 		return _player == null ? 0 : _player.getPosition();
 	}
 
-	@Override
-	public Signal<Boolean> isPaused() {
-		return _trackStream.isPaused();
+	
+	private void play(Signal<Boolean> isPlaying, final Runnable toCallWhenFinished) {
+		try {
+			_player = new Player(_trackStream);
+			controlPause(isPlaying);
+			_player.play();
+		} catch (Throwable t) {
+			if (!_wasDisposed)
+				my(BlinkingLights.class).turnOn(LightType.WARN, "Error reading track", "Error reading track", t, 30000);
+		} finally {
+			if (_wasDisposed) return;
+			dispose();
+			toCallWhenFinished.run();
+		}
 	}
 
+
+	private void controlPause(Signal<Boolean> isPlaying) {
+		_refToAvoidGc = isPlaying.addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean playing) {
+			_trackStream.setPaused(!playing);
+		}});
+	}
+
+	
 }

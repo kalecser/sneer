@@ -4,6 +4,9 @@
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
 	- Wusic
+		- [Igor] Playlist Tests
+		- Back functionality - remove
+		- Ignored Tracks - Playlists must not return them.
 		- Downloads
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
@@ -13,13 +16,11 @@
 			- 1st approach: play a copy of the track's file and move the track when meToo is clicked
 			- 2nd approach: copy the track's file when meToo is clicked and mark track for late deletion
 		- [Igor/Daniel] Wusic's Interface:
-			- Move 'NumberOfSharedTracks' to SharedTracksTab
 			- Display track label and time only on the panel of the active mode
-			- Implement toolTip functionality for TrackDisplay._trackLabel to display a track's full name 
-		- [Klaus] Revise BackButton implementation (it is not working on shuffle mode)
-		- Change implementation of DJ to send _isPlaying.setter() down to PausableInputStream 
+			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name 
+		- Change implementation of DJ to send isPlaying signal down to PausableInputStream 
 		- Initialize TrackClientImp.numberOfSharedTracks register with the number of tracks already in the folder
-		- Add unit tests for Playlist and consider other tests for Wusic's testable functionalities
+		- Back Button 
 		- Find another way to solve pause lag (try to use a smaller frame in player)
 
 	- [Kalecser] File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.

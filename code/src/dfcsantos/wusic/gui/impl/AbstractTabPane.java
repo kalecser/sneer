@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import dfcsantos.wusic.Wusic;
@@ -26,6 +27,8 @@ abstract class AbstractTabPane extends JPanel {
 		add(_customPanel, BorderLayout.NORTH);
 		add(_fixedPanel, BorderLayout.SOUTH);
 	}
+
+	abstract JLabel customTabLabel();
 
 	abstract ControlPanel controlPanel();
 

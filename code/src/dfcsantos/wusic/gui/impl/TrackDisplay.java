@@ -15,8 +15,8 @@ class TrackDisplay extends JPanel {
 
 	private static final Wusic Wusic = my(Wusic.class);
 
-	private final JLabel _trackLabel	= my(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackName()).getMainWidget();
-	private final JLabel _trackTime		= my(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackTime()).getMainWidget();
+	private final JLabel _trackLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackName()).getMainWidget();
+	private final JLabel _trackTime  = my(ReactiveWidgetFactory.class).newLabel(Wusic.playingTrackTime()).getMainWidget();
 
 	TrackDisplay() {
 		super(new FlowLayout(FlowLayout.LEFT, 9, 3));

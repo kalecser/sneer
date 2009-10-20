@@ -7,20 +7,24 @@ import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
+import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
 
-class SharedTracksPanel extends AbstractTabPane {
+class PeerTracksPanel extends AbstractTabPane {
 
-	private JFileChooser _sharedTracksFolderChooser;
-    private JButton _chooseSharedTracksFolder = new JButton();
+    private final JLabel _peerTracksCountTabLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.numberOfPeerTracks()).getMainWidget();
+
+	private final JFileChooser _sharedTracksFolderChooser;
+    private final JButton _chooseSharedTracksFolder = new JButton();
 
 	@SuppressWarnings("unused") private WeakContract toAvoidGC;
 
-	SharedTracksPanel() {
+	PeerTracksPanel() {
         _sharedTracksFolderChooser = my(FileChoosers.class).newFileChooser(new Consumer<File>() { @Override public void consume(File chosenFolder) {
         	if (chosenFolder != null) {
         		Wusic.setSharedTracksFolder(chosenFolder);
@@ -50,16 +54,21 @@ class SharedTracksPanel extends AbstractTabPane {
     }
 
     @Override
-    protected ControlPanel controlPanel() {
-    	return new ShareTracksControlPanel();
+    JLabel customTabLabel() {
+    	return _peerTracksCountTabLabel;
     }
 
-	private class ShareTracksControlPanel extends ControlPanel {
+    @Override
+    protected ControlPanel controlPanel() {
+    	return new PeerTracksControlPanel();
+    }
+
+	private class PeerTracksControlPanel extends ControlPanel {
 
 		private final JButton _meToo = new JButton();
 		private final JButton _noWay = new JButton();
 
-		private ShareTracksControlPanel() {
+		private PeerTracksControlPanel() {
 	        _meToo.setText("Me Too :)");
 	        _meToo.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent evt) {

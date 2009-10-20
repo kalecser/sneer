@@ -32,7 +32,7 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void setOperatingMode(OperatingMode mode) {
-		_trackSource = (mode == OperatingMode.OWN) ? OwnTracks.INSTANCE : SharedTracks.INSTANCE;
+		_trackSource = (mode == OperatingMode.OWN) ? OwnTracks.INSTANCE : PeerTracks.INSTANCE;
 	}
 
 
@@ -43,8 +43,8 @@ public class WusicImpl implements Wusic {
 
 
 	@Override
-	public void setPlayingFolder(File ownTracksFolder) {
-		my(TracksFolderKeeper.class).setOwnTracksFolder(ownTracksFolder);
+	public void setPlayingFolder(File playingFolder) {
+		my(TracksFolderKeeper.class).setPlayingFolder(playingFolder);
 		skip();
 	}
 
@@ -57,7 +57,7 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void setShuffle(boolean shuffle) {
-		_trackSource.setShuffle(shuffle);
+		((OwnTracks)_trackSource).setShuffle(shuffle);
 	}
 
 
@@ -124,7 +124,7 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void meToo() {
-		((SharedTracks)_trackSource).meToo(_trackToPlay.output().currentValue());
+		((PeerTracks)_trackSource).meToo(_trackToPlay.output().currentValue());
 	}
 
 	
@@ -134,14 +134,14 @@ public class WusicImpl implements Wusic {
 		if (currentTrack == null) return;
 
 		skip();
-		((SharedTracks)_trackSource).noWay(currentTrack);
+		_trackSource.noWay(currentTrack);
 	}
 
 
 	@Override
-	public Signal<String> numberOfSharedTracks() {
-		return my(Signals.class).adapt(my(TrackClient.class).numberOfSharedTracks(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
-			return (numberOfTracks == 0) ? "<No tracks>" : "<" + numberOfTracks + " tracks>";
+	public Signal<String> numberOfPeerTracks() {
+		return my(Signals.class).adapt(my(TrackClient.class).numberOfTracksFetchedFromPeers(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
+			return "Peer Tracks (" + numberOfTracks + ")";
 		}});
 	}
 

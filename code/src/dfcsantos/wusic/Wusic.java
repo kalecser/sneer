@@ -10,7 +10,7 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface Wusic {
 
-	enum OperatingMode { OWN, SHARED };
+	enum OperatingMode { OWN, PEERS };
 	void setOperatingMode(OperatingMode mode);
 	OperatingMode operatingMode();
 
@@ -31,7 +31,7 @@ public interface Wusic {
 	void meToo();
 	void noWay();
 
-	Signal<String> numberOfSharedTracks();
+	Signal<String> numberOfPeerTracks();
 	
 	Signal<Boolean> isPlaying();
 
