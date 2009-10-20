@@ -54,7 +54,6 @@ abstract class TrackSourceStrategy {
 
 	
 	void markForDisposal(Track track) {
-		track.ignore();
 		_tracksToDispose.add(track);
 	}
 

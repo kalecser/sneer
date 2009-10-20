@@ -5,7 +5,6 @@
 
 	- Wusic
 		- [Igor] Playlist Tests
-		- Ignored Tracks - Playlists must not return them.
 		- Downloads
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
