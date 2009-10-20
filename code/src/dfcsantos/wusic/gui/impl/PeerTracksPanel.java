@@ -15,16 +15,16 @@ import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
 
-class SharedTracksPanel extends AbstractTabPane {
+class PeerTracksPanel extends AbstractTabPane {
 
-    private final JLabel _sharedTracksCountTabLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.numberOfPeerTracks()).getMainWidget();
+    private final JLabel _peerTracksCountTabLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.numberOfPeerTracks()).getMainWidget();
 
 	private final JFileChooser _sharedTracksFolderChooser;
     private final JButton _chooseSharedTracksFolder = new JButton();
 
 	@SuppressWarnings("unused") private WeakContract toAvoidGC;
 
-	SharedTracksPanel() {
+	PeerTracksPanel() {
         _sharedTracksFolderChooser = my(FileChoosers.class).newFileChooser(new Consumer<File>() { @Override public void consume(File chosenFolder) {
         	if (chosenFolder != null) {
         		Wusic.setSharedTracksFolder(chosenFolder);
@@ -55,20 +55,20 @@ class SharedTracksPanel extends AbstractTabPane {
 
     @Override
     JLabel customTabLabel() {
-    	return _sharedTracksCountTabLabel;
+    	return _peerTracksCountTabLabel;
     }
 
     @Override
     protected ControlPanel controlPanel() {
-    	return new ShareTracksControlPanel();
+    	return new PeerTracksControlPanel();
     }
 
-	private class ShareTracksControlPanel extends ControlPanel {
+	private class PeerTracksControlPanel extends ControlPanel {
 
 		private final JButton _meToo = new JButton();
 		private final JButton _noWay = new JButton();
 
-		private ShareTracksControlPanel() {
+		private PeerTracksControlPanel() {
 	        _meToo.setText("Me Too :)");
 	        _meToo.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent evt) {

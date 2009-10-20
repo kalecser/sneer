@@ -4,8 +4,6 @@
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
 	- Wusic
-		- [Igor] Shared Tracks Mode -> Peer Tracks Mode
-			- candidates -> peertracks
 		- [Igor] Playlist Tests
 		- Back functionality - remove
 		- Ignored Tracks - Playlists must not return them.

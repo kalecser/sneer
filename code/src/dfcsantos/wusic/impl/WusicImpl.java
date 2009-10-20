@@ -32,7 +32,7 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void setOperatingMode(OperatingMode mode) {
-		_trackSource = (mode == OperatingMode.OWN) ? OwnTracks.INSTANCE : SharedTracks.INSTANCE;
+		_trackSource = (mode == OperatingMode.OWN) ? OwnTracks.INSTANCE : PeerTracks.INSTANCE;
 	}
 
 
@@ -43,8 +43,8 @@ public class WusicImpl implements Wusic {
 
 
 	@Override
-	public void setPlayingFolder(File ownTracksFolder) {
-		my(TracksFolderKeeper.class).setOwnTracksFolder(ownTracksFolder);
+	public void setPlayingFolder(File playingFolder) {
+		my(TracksFolderKeeper.class).setPlayingFolder(playingFolder);
 		skip();
 	}
 
@@ -124,7 +124,7 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void meToo() {
-		((SharedTracks)_trackSource).meToo(_trackToPlay.output().currentValue());
+		((PeerTracks)_trackSource).meToo(_trackToPlay.output().currentValue());
 	}
 
 	
@@ -140,7 +140,7 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public Signal<String> numberOfPeerTracks() {
-		return my(Signals.class).adapt(my(TrackClient.class).numberOfPeerTracks(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
+		return my(Signals.class).adapt(my(TrackClient.class).numberOfTracksFetchedFromPeers(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
 			return "Peer Tracks (" + numberOfTracks + ")";
 		}});
 	}

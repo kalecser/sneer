@@ -20,7 +20,7 @@ public class OwnTracks extends TrackSourceStrategy {
 	private boolean _isShuffle;
 
 	private OwnTracks() {	
-		_refToAvoidGC = my(TracksFolderKeeper.class).ownTracksFolder().addReceiver(new Consumer<File>() {@Override public void consume(File ownTracksFolder) {
+		_refToAvoidGC = my(TracksFolderKeeper.class).playingFolder().addReceiver(new Consumer<File>() {@Override public void consume(File ownTracksFolder) {
 			setTracksFolder(ownTracksFolder);
 			initPlaylist();
 		}});

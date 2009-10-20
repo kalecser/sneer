@@ -13,11 +13,11 @@ import dfcsantos.tracks.folder.TracksFolderKeeper;
 import dfcsantos.tracks.playlist.Playlist;
 import dfcsantos.tracks.playlist.Playlists;
 
-class SharedTracks extends TrackSourceStrategy {
+class PeerTracks extends TrackSourceStrategy {
 
-	static final TrackSourceStrategy INSTANCE = new SharedTracks();
+	static final TrackSourceStrategy INSTANCE = new PeerTracks();
 
-	private SharedTracks() {
+	private PeerTracks() {
 		setTracksFolder(my(TracksFolderKeeper.class).peerTracksFolder());
 		initPlaylist();
 	};

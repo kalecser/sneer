@@ -14,7 +14,7 @@ import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 class TracksFolderKeeperImpl implements TracksFolderKeeper {
 
-	private final Register<File> _ownTracksFolder = my(Signals.class).newRegister(defaultTracksFolder());
+	private final Register<File> _playingFolder = my(Signals.class).newRegister(defaultTracksFolder());
 	private final Register<File> _sharedTracksFolder = my(Signals.class).newRegister(defaultTracksFolder());
 
 	private File _peerTracksFolder;
@@ -24,13 +24,13 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 	}
 
 	@Override
-	public Signal<File> ownTracksFolder() {
-		return _ownTracksFolder.output();
+	public Signal<File> playingFolder() {
+		return _playingFolder.output();
 	}
 
 	@Override
-	public void setOwnTracksFolder(File ownTracksFolder) {
-		_ownTracksFolder.setter().consume(ownTracksFolder);
+	public void setPlayingFolder(File playingFolder) {
+		_playingFolder.setter().consume(playingFolder);
 	}
 
 
@@ -40,8 +40,8 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 	}
 
 	@Override
-	public void setSharedTracksFolder(File ownTracksFolder) {
-		_sharedTracksFolder.setter().consume(ownTracksFolder);
+	public void setSharedTracksFolder(File sharedTracksFolder) {
+		_sharedTracksFolder.setter().consume(sharedTracksFolder);
 	}
 
 	@Override

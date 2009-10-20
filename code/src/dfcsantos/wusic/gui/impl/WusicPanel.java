@@ -11,15 +11,15 @@ class WusicPanel extends JPanel {
 
 	private final JTabbedPane _tabbedPane				= new JTabbedPane();
 	private final AbstractTabPane _ownTracksPanel		= new OwnTracksPanel();
-	private final AbstractTabPane _sharedTracksPanel	= new SharedTracksPanel();
+	private final AbstractTabPane _peerTracksPanel		= new PeerTracksPanel();
 
 	WusicPanel() {
 		_tabbedPane.addTab(null, _ownTracksPanel);
 		_tabbedPane.setTabComponentAt(0, _ownTracksPanel.customTabLabel());
 		_tabbedPane.setMnemonicAt(0, KeyEvent.VK_O);
 
-		_tabbedPane.addTab(null, _sharedTracksPanel);
-		_tabbedPane.setTabComponentAt(1, _sharedTracksPanel.customTabLabel());
+		_tabbedPane.addTab(null, _peerTracksPanel);
+		_tabbedPane.setTabComponentAt(1, _peerTracksPanel.customTabLabel());
 		_tabbedPane.setMnemonicAt(1, KeyEvent.VK_S);
 
 		_tabbedPane.addChangeListener(new ChangeListener() { @Override public void stateChanged(ChangeEvent e) {

@@ -10,7 +10,7 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface Wusic {
 
-	enum OperatingMode { OWN, SHARED };
+	enum OperatingMode { OWN, PEERS };
 	void setOperatingMode(OperatingMode mode);
 	OperatingMode operatingMode();
 

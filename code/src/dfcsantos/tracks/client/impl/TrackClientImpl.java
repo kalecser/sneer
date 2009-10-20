@@ -19,7 +19,7 @@ import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 class TrackClientImpl implements TrackClient {
 
-	private final Register<Integer> _numberOfSharedTracks = my(Signals.class).newRegister(0); 
+	private final Register<Integer> _numberOfTracksFetchedFromPeers = my(Signals.class).newRegister(0); 
 
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC;
 
@@ -40,7 +40,7 @@ class TrackClientImpl implements TrackClient {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 
-		_numberOfSharedTracks.setter().consume(_numberOfSharedTracks.output().currentValue() + 1);
+		_numberOfTracksFetchedFromPeers.setter().consume(_numberOfTracksFetchedFromPeers.output().currentValue() + 1);
 	}
 
 	
@@ -55,8 +55,8 @@ class TrackClientImpl implements TrackClient {
 	}
 
 
-	public Signal<Integer> numberOfPeerTracks() {
-		return _numberOfSharedTracks.output();
+	public Signal<Integer> numberOfTracksFetchedFromPeers() {
+		return _numberOfTracksFetchedFromPeers.output();
 	}
 
 }

@@ -11,7 +11,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 class PausableInputStream extends BufferedInputStream {
 
 	private final Object _stateMonitor = new Object();
-	private boolean _isPaused = false;
+	private boolean _isPaused;
 	private boolean _isClosed;
 
 	PausableInputStream(InputStream inputStream) {
@@ -62,10 +62,6 @@ class PausableInputStream extends BufferedInputStream {
 	public int read(byte[] b) throws IOException {
 		pauseIfNecessary();
 		return super.read(b);
-	}
-	
-	public boolean isPaused(){
-		return _isPaused; 
 	}
 
 }

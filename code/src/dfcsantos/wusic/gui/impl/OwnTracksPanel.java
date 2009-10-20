@@ -29,7 +29,7 @@ class OwnTracksPanel extends AbstractTabPane {
 	    	if (chosenFolder != null)
 	    		Wusic.setPlayingFolder(chosenFolder);
 		}}, JFileChooser.DIRECTORIES_ONLY);
-		_playingFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).ownTracksFolder().currentValue());
+		_playingFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).playingFolder().currentValue());
 
 	    _choosePlayingFolder.setText("Playing Folder");
 	    _choosePlayingFolder.addActionListener(new ActionListener() {
