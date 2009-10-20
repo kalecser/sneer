@@ -101,7 +101,7 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void back() {
-		play(_trackSource.previousTrack());
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 

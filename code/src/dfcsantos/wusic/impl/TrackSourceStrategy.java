@@ -15,40 +15,36 @@ import dfcsantos.tracks.playlist.Playlist;
 
 abstract class TrackSourceStrategy {
 
+	private Playlist _playlist;
+
 	private final List<Track> _tracksToDispose = new ArrayList<Track>();
 
-	private Playlist _playlist;
-	private File _tracksFolder;
-	
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
 
 	
-	{
+	TrackSourceStrategy() {
 		_refToAvoidGc = my(Timer.class).wakeUpEvery(5000, new Runnable() { @Override public void run() {
 			disposePendingTracks();
 		}});
-	}
-	
-	
-	void setTracksFolder(File tracksFolder) {
-		_tracksFolder = tracksFolder; 
+
+		initPlaylist();
 	}
 
 	
+	void initPlaylist() {
+		initPlaylist(tracksFolder());
+	}
+
+	
+	void initPlaylist(File tracksFolder) {
+		_playlist = createPlaylist(tracksFolder);
+	}
+
+
 	void disposePendingTracks() {
 		for (Track victim : _tracksToDispose)
 			if (!victim.file().delete())
 				 my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to delete track", "Unable to delete track: " + victim.file(), 15000);
-	}
-
-
-	void initPlaylist() {
-		_playlist = createPlaylist(_tracksFolder);
-	}
-
-	
-	Track previousTrack() {
-		return _playlist.previousTrack();
 	}
 
 	
@@ -70,5 +66,8 @@ abstract class TrackSourceStrategy {
 
 	
 	abstract Playlist createPlaylist(File tracksFolder);
+
 	
+	abstract File tracksFolder();
+
 }

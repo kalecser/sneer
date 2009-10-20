@@ -17,14 +17,16 @@ class PeerTracks extends TrackSourceStrategy {
 
 	static final TrackSourceStrategy INSTANCE = new PeerTracks();
 
-	private PeerTracks() {
-		setTracksFolder(my(TracksFolderKeeper.class).peerTracksFolder());
-		initPlaylist();
-	};
+	private PeerTracks() {}
 
 	@Override
 	Playlist createPlaylist(File tracksFolder) {
 		return my(Playlists.class).newRandomPlaylist(tracksFolder);
+	}
+
+	@Override
+	File tracksFolder() {
+		return my(TracksFolderKeeper.class).peerTracksFolder();
 	}
 
 	void meToo(Track trackToKeep) {
@@ -40,6 +42,5 @@ class PeerTracks extends TrackSourceStrategy {
 		}
 		markForDisposal(track);
 	}
-
 
 }

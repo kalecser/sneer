@@ -5,7 +5,6 @@
 
 	- Wusic
 		- [Igor] Playlist Tests
-		- Back functionality - remove
 		- Ignored Tracks - Playlists must not return them.
 		- Downloads
 			- Simultaneous download limit of 3.
@@ -22,6 +21,7 @@
 		- Initialize TrackClientImp.numberOfSharedTracks register with the number of tracks already in the folder
 		- Back Button 
 		- Find another way to solve pause lag (try to use a smaller frame in player)
+		- Implement backButton
 
 	- [Kalecser] File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.
 	

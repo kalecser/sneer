@@ -21,8 +21,7 @@ public class OwnTracks extends TrackSourceStrategy {
 
 	private OwnTracks() {	
 		_refToAvoidGC = my(TracksFolderKeeper.class).playingFolder().addReceiver(new Consumer<File>() {@Override public void consume(File ownTracksFolder) {
-			setTracksFolder(ownTracksFolder);
-			initPlaylist();
+			initPlaylist(ownTracksFolder);
 		}});
 	}
 
@@ -31,10 +30,14 @@ public class OwnTracks extends TrackSourceStrategy {
 		return _isShuffle ? my(Playlists.class).newRandomPlaylist(tracksFolder) : my(Playlists.class).newSequentialPlaylist(tracksFolder);
 	}
 
+	@Override
+	File tracksFolder() {
+		return my(TracksFolderKeeper.class).playingFolder().currentValue();
+	}
+
 	void setShuffle(boolean shuffle) {
 		_isShuffle = shuffle;
 		initPlaylist();
 	}
-
 
 }

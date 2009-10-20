@@ -18,7 +18,7 @@ class ControlPanel extends JPanel {
 	private static final Wusic Wusic = my(Wusic.class);
 
 	private final JButton _pauseResume	= new JButton();
-	private final JButton _back			= new JButton();
+//	private final JButton _back			= new JButton();
 	private final JButton _skip			= new JButton();
 	private final JButton _stop			= new JButton();
 
@@ -38,13 +38,13 @@ class ControlPanel extends JPanel {
 	    });
 	    add(_pauseResume);
 	
-	    _back.setText("<<");
-	    _back.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent evt) {
-	            backActionPerformed();
-	        }
-	    });
-	    add(_back);
+//	    _back.setText("<<");
+//	    _back.addActionListener(new ActionListener() {
+//	        public void actionPerformed(ActionEvent evt) {
+//	            backActionPerformed();
+//	        }
+//	    });
+//	    add(_back);
 	
 	    _skip.setText(">>");
 	    _skip.addActionListener(new ActionListener() {
@@ -67,9 +67,9 @@ class ControlPanel extends JPanel {
 		Wusic.pauseResume();
 	}
 
-	private void backActionPerformed() {
-	    Wusic.back();
-	}
+//	private void backActionPerformed() {
+//	    Wusic.back();
+//	}
 
 	private void skipActionPerformed() {
 	    Wusic.skip();
