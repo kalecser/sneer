@@ -1,5 +1,6 @@
 package dfcsantos.wusic.gui.impl;
 
+import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
@@ -13,7 +14,7 @@ class WusicPanel extends JPanel {
 	private final AbstractTabPane _ownTracksPanel		= new OwnTracksPanel();
 	private final AbstractTabPane _peerTracksPanel		= new PeerTracksPanel();
 
-	WusicPanel() {
+	WusicPanel(Dimension panelSize) {
 		_tabbedPane.addTab(null, _ownTracksPanel);
 		_tabbedPane.setTabComponentAt(0, _ownTracksPanel.customTabLabel());
 		_tabbedPane.setMnemonicAt(0, KeyEvent.VK_O);
@@ -25,6 +26,9 @@ class WusicPanel extends JPanel {
 		_tabbedPane.addChangeListener(new ChangeListener() { @Override public void stateChanged(ChangeEvent e) {
 			// Wusic.setOperatingMode(OperatingMode.values()[_tabbedPane.getSelectedIndex()]); Fix: Come up with another strategy to change playing mode
 		}});
+
+		_tabbedPane.setPreferredSize(panelSize);
+
 		add(_tabbedPane);
 	}
 

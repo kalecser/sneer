@@ -39,7 +39,7 @@ class WusicGuiImpl implements WusicGui {
 	private JFrame initFrame() {
 		JFrame result = my(ReactiveWidgetFactory.class).newFrame(title()).getMainWidget();
 
-		_wusicPanel = new WusicPanel();
+		_wusicPanel = new WusicPanel(PREFERRED_SIZE);
 		result.getContentPane().add(_wusicPanel);
 
     	result.setResizable(false);
