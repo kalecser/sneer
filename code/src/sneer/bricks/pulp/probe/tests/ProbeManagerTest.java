@@ -2,8 +2,6 @@ package sneer.bricks.pulp.probe.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.OutputStream;
-
 import org.jmock.Expectations;
 import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
@@ -57,7 +55,6 @@ public class ProbeManagerTest extends BrickTest {
 					TupleWithId _tuple = (TupleWithId) invocation.getParameter(0);
 					return new byte[] {(byte)_tuple.id};
 				}});
-			allowing(_serializer).serialize(with(any(OutputStream.class)), with(any(Object.class))); //Refactor: Mock ContacManager and delete this line.
 		}});
 
 		my(ContactManager.class).addContact("Neide");
