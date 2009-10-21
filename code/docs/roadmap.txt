@@ -3,8 +3,7 @@
 
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
-	- Wusic
-		- [Igor] Persist Wusic's folder choices 
+	- Wusic 
 		- [Klaus/Igor/Daniel] Find a way to swap between Wusic's playing modes (see line 18 in WusicPanel)
 		- [Igor/Daniel] Wusic's Interface:
 			- Display track label and time only on the panel of the active mode

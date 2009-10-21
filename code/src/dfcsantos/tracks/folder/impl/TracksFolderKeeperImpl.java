@@ -9,18 +9,25 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.software.bricks.statestore.BrickStateStore;
 import sneer.bricks.software.folderconfig.FolderConfig;
+import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 class TracksFolderKeeperImpl implements TracksFolderKeeper {
 
+	private static final BrickStateStore _store = my(BrickStateStore.class);
+
 	private final Register<File> _playingFolder = my(Signals.class).newRegister(defaultTracksFolder());
+
 	private final Register<File> _sharedTracksFolder = my(Signals.class).newRegister(defaultTracksFolder());
 
 	private File _peerTracksFolder;
 
-	private File defaultTracksFolder() {
-		return mkDirs(new File(my(FolderConfig.class).storageFolder().get() ,"media/tracks"));
+	@SuppressWarnings("unused") private Object _refToAvoidGc;
+
+	TracksFolderKeeperImpl() {
+		takeCareOfPersistence();
 	}
 
 	@Override
@@ -59,5 +66,28 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 		return folder;
 	}
 
+	private File defaultTracksFolder() {
+		return mkDirs(new File(my(FolderConfig.class).storageFolder().get() ,"media/tracks"));
+	}
+
+	private void takeCareOfPersistence() {
+		restore();
+
+		_refToAvoidGc = sharedTracksFolder().addReceiver(new Consumer<File>(){ @Override public void consume(File newFolder) {
+			if (newFolder == null) return;
+			save(newFolder.getPath());
+		}});
+	}
+
+	private void restore() {
+		String restoredFolderPath = (String) _store.readObjectFor(TracksFolderKeeper.class, getClass().getClassLoader());
+		if (restoredFolderPath == null || defaultTracksFolder().getPath().equals(restoredFolderPath)) return;
+
+		setSharedTracksFolder(new File(restoredFolderPath));
+	}
+
+	private void save(String sharedFolderPath) {
+		_store.writeObjectFor(TracksFolderKeeper.class, sharedFolderPath);
+	}
 
 }
