@@ -21,10 +21,10 @@ class TrackDisplay extends JPanel {
 	TrackDisplay() {
 		super(new FlowLayout(FlowLayout.LEFT, 9, 3));
 
-		_trackTime.setFont(new Font("Tahoma", 2, 14));
+		_trackTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
 	    add(_trackTime);
 
-	     _trackLabel.setFont(new Font("Tahoma", 2, 14));
+	     _trackLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 	    add(_trackLabel);;
 	}
 
