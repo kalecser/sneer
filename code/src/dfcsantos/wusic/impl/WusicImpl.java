@@ -26,9 +26,12 @@ public class WusicImpl implements Wusic {
 
 	private final Register<Track> _trackToPlay = my(Signals.class).newRegister(null);
 
+	private Track _lastPlayedTrack;
+
 	private final DJ _dj = new DJ(_trackToPlay.output(), new Runnable() { @Override public void run() {
 		skip();
 	}});
+
 
 	@Override
 	public void setOperatingMode(OperatingMode mode) {
@@ -88,7 +91,7 @@ public class WusicImpl implements Wusic {
 	@Override
 	public void pauseResume() {
 		if (currentTrack() == null)
-			skip();
+			play();
 		else
 			_dj.pauseResume();
 	}
@@ -111,8 +114,17 @@ public class WusicImpl implements Wusic {
 	}
 
 
+	private void play() {
+		if (_lastPlayedTrack == null)
+			skip();
+		else
+			play(_lastPlayedTrack);
+	}
+
+
 	private void play(final Track track) {
 		_trackToPlay.setter().consume(track);
+		if (track != null) _lastPlayedTrack = track;
 	}
 
 
