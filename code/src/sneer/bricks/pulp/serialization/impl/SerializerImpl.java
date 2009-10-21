@@ -16,26 +16,32 @@ import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 class SerializerImpl implements Serializer {
 
 	// XStream instances are not thread-safe.
-    private ThreadLocal<XStream> _xstreams = new ThreadLocal<XStream>() {
-        @Override protected XStream initialValue() {
-            return new XStream();
-        }
-    };
+	private ThreadLocal<XStream> _xstreams = new ThreadLocal<XStream>() { @Override protected XStream initialValue() {
+		return new XStream();
+	}};
 
-    private XStream myXStream() {
-        return _xstreams.get();
-    }
+	
+	private XStream myXStream() {
+		return _xstreams.get();
+	}
 
-    @Override
-    public void serialize(OutputStream stream, Object object) throws IOException {
-    	try {
-    		BinaryStreamWriter writer = new BinaryStreamWriter(stream);
-			myXStream().marshal(object, writer);
+	
+	@Override
+	public void serialize(OutputStream stream, Object object) throws IOException {
+		try {
+			BinaryStreamWriter writer = new BinaryStreamWriter(stream);
+			myXStream().marshal(splitLargeObject(object), writer);
 			writer.flush();
 		} catch (RuntimeException rx) {
 			throw new IOException(rx);
 		}
-    }
+	}
+
+	
+	private Object splitLargeObject(Object object) {
+		return object;
+	}
+
 
 	@Override
 	public byte[] serialize(Object object) {
@@ -45,15 +51,15 @@ class SerializerImpl implements Serializer {
 		} catch (IOException e) {
 			throw new IllegalStateException("Failed to serialize: " + object, e);
 		}
-		return result.toByteArray(); 
+		return result.toByteArray();
 	}
 
+	
 	@Override
-	public Object deserialize(InputStream stream, ClassLoader classloader) throws IOException,	ClassNotFoundException {
+	public Object deserialize(InputStream stream, ClassLoader classloader) throws IOException, ClassNotFoundException {
 		myXStream().setClassLoader(classloader);
 		try {
-			return myXStream().unmarshal(
-				new BinaryStreamReader(stream));
+			return myXStream().unmarshal(new BinaryStreamReader(stream));
 		} catch (CannotResolveClassException e) {
 			throw new ClassNotFoundException(e.getMessage());
 		} catch (RuntimeException rx) {
@@ -61,8 +67,10 @@ class SerializerImpl implements Serializer {
 		}
 	}
 
+	
 	@Override
 	public Object deserialize(byte[] bytes, ClassLoader classloader) throws ClassNotFoundException, IOException {
 		return deserialize(new ByteArrayInputStream(bytes), classloader);
 	}
+
 }
