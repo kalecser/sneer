@@ -117,7 +117,11 @@ class FileClientImpl implements FileClient {
 	private void finishDownloads(Sneer1024 hash, Object data) {
 		synchronized (_downloadMonitor) {
 			List<Download> fulfilled = _downloadsByHash.remove(hash);
-			if (fulfilled.isEmpty()) throw new IllegalStateException();
+			if (fulfilled == null) {
+				my(Logger.class).log("File Contents received and not used: ", hash);
+				return;
+			}
+			
 			for (Download download : fulfilled)
 				download.finish(data);
 		}
