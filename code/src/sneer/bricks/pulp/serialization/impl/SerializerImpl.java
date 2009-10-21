@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import sneer.bricks.hardwaresharing.files.protocol.FileContents;
+import sneer.bricks.pulp.serialization.LargeFileContentsHack;
 import sneer.bricks.pulp.serialization.Serializer;
 
 import com.thoughtworks.xstream.XStream;
@@ -30,7 +32,7 @@ class SerializerImpl implements Serializer {
 	public void serialize(OutputStream stream, Object object) throws IOException {
 		try {
 			BinaryStreamWriter writer = new BinaryStreamWriter(stream);
-			myXStream().marshal(splitLargeObject(object), writer);
+			myXStream().marshal(marshallLargeFileHack(object), writer);
 			writer.flush();
 		} catch (RuntimeException rx) {
 			throw new IOException(rx);
@@ -38,11 +40,6 @@ class SerializerImpl implements Serializer {
 	}
 
 	
-	private Object splitLargeObject(Object object) {
-		return object;
-	}
-
-
 	@Override
 	public byte[] serialize(Object object) {
 		ByteArrayOutputStream result = new ByteArrayOutputStream();
@@ -59,7 +56,8 @@ class SerializerImpl implements Serializer {
 	public Object deserialize(InputStream stream, ClassLoader classloader) throws IOException, ClassNotFoundException {
 		myXStream().setClassLoader(classloader);
 		try {
-			return myXStream().unmarshal(new BinaryStreamReader(stream));
+			Object result = myXStream().unmarshal(new BinaryStreamReader(stream));
+			return unmarshallLargeFileHack(result);
 		} catch (CannotResolveClassException e) {
 			throw new ClassNotFoundException(e.getMessage());
 		} catch (RuntimeException rx) {
@@ -68,6 +66,20 @@ class SerializerImpl implements Serializer {
 	}
 
 	
+	private Object marshallLargeFileHack(Object object) {
+		return object instanceof FileContents
+			? new LargeFileContentsHack((FileContents)object)
+			: object;
+	}
+
+
+	private Object unmarshallLargeFileHack(Object object) {
+		return object instanceof LargeFileContentsHack
+			? ((LargeFileContentsHack)object).unmarshall()
+			: object;
+	}
+
+
 	@Override
 	public Object deserialize(byte[] bytes, ClassLoader classloader) throws ClassNotFoundException, IOException {
 		return deserialize(new ByteArrayInputStream(bytes), classloader);

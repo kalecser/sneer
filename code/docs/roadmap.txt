@@ -20,6 +20,7 @@
 		- Implement backButton
 
 	- [Kalecser] File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.
+		- [Klaus] ByteArraySocketImpl.write(array) and read() clean up hack.
 	
 	- SneerJockey - Extract from Sneer so it can be updated (Sneer itself is not updatable).
 

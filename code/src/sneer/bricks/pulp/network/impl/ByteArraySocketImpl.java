@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.network.ByteArraySocket;
 
 class ByteArraySocketImpl implements ByteArraySocket {
@@ -35,8 +37,13 @@ class ByteArraySocketImpl implements ByteArraySocket {
 	@Override
 	public void write(byte[] array) throws IOException {
 		int length = array.length;
-		if (length > 65535) throw new IllegalArgumentException();
-		_outputStream.writeChar((char)length); //Writes a char as a 2-byte value, high byte first.
+		if (length > 65534) {
+			my(BlinkingLights.class).turnOn(LightType.WARN, "Huge tuple sent.", "Some brick sent a huge Tuple. Size: " + length);
+			_outputStream.writeChar(65535);
+			_outputStream.writeInt(length);
+		} else
+			_outputStream.writeChar((char)length); //Writes a char as a 2-byte value, high byte first.
+
 		_outputStream.write(array);
 		_outputStream.flush();
 		
@@ -44,7 +51,10 @@ class ByteArraySocketImpl implements ByteArraySocket {
 
 	@Override
 	public byte[] read() throws IOException {
-		char length = _inputStream.readChar();
+		int length = _inputStream.readChar();
+		
+		if (length == 65535) length = _inputStream.readInt();
+		
 		byte[] result = new byte[length];
 		_inputStream.readFully(result);
 		return result;
