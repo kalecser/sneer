@@ -130,7 +130,7 @@ public class WusicImpl implements Wusic {
 	
 	@Override
 	public void noWay() {
-		Track currentTrack = currentTrack();
+		final Track currentTrack = currentTrack();
 		if (currentTrack == null) return;
 
 		skip();
