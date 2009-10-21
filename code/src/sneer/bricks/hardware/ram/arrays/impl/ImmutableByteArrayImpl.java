@@ -44,7 +44,9 @@ class ImmutableByteArrayImpl implements ImmutableByteArray {
 
 	
 	private String toStringLarge() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		byte[] result = new byte[10];
+		System.arraycopy(_payload, 0, result, 0, 10);
+		return Arrays.toString(result) + "...";
 	}
 
 	private String toStringSmall() {
