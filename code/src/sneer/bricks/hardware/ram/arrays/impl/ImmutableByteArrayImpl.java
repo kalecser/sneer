@@ -37,9 +37,21 @@ class ImmutableByteArrayImpl implements ImmutableByteArray {
 	
 	@Override
 	public String toString() {
+		return _payload.length <= 10
+			? toStringSmall()
+			: toStringLarge();
+	}
+
+	
+	private String toStringLarge() {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	}
+
+	private String toStringSmall() {
 		return Arrays.toString(_payload);
 	}
 
+	
 	@Override
 	public int hashCode() {
 		if (_hashCode == -1)
