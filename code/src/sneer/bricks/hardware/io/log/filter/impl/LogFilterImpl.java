@@ -16,7 +16,10 @@ class LogFilterImpl implements LogFilter {
 		_phrases.add("thrown");
 //		_phrases.add("online");
 //		_phrases.add("offline");
-		_phrases.add("Tuple");
+//		_phrases.add("Tuple");
+		_phrases.add("Fetch");
+		_phrases.add("Track");
+		_phrases.add("Request");
 //		_phrases.add("Shout");
 //		_phrases.add("Stepper");
 //		_phrases.add("Sending");
