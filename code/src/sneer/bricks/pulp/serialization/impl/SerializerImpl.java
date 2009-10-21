@@ -30,7 +30,7 @@ class SerializerImpl implements Serializer {
 	public void serialize(OutputStream stream, Object object) throws IOException {
 		try {
 			BinaryStreamWriter writer = new BinaryStreamWriter(stream);
-			myXStream().marshal(object, writer);
+			myXStream().marshal(splitLargeObject(object), writer);
 			writer.flush();
 		} catch (RuntimeException rx) {
 			throw new IOException(rx);
@@ -38,6 +38,11 @@ class SerializerImpl implements Serializer {
 	}
 
 	
+	private Object splitLargeObject(Object object) {
+		return object;
+	}
+
+
 	@Override
 	public byte[] serialize(Object object) {
 		ByteArrayOutputStream result = new ByteArrayOutputStream();
