@@ -19,7 +19,7 @@ class FileRequestPublisher {
 
 	
 	static {
-		_timerContract = my(Timer.class).wakeUpNowAndEvery(10000, new Runnable() { @Override public void run() {
+		_timerContract = my(Timer.class).wakeUpNowAndEvery(1000 * 60 * 5, new Runnable() { @Override public void run() {
 			publishPendingRequest();
 		}});
 	}
