@@ -8,7 +8,4 @@ public interface Track {
 
 	File file();
 
-	void ignore();
-	boolean isIgnored();
-
 }
