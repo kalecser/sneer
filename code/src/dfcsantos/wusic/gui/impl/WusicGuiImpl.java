@@ -3,11 +3,7 @@ package dfcsantos.wusic.gui.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
-import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.main.menu.MainMenu;
@@ -36,7 +32,6 @@ class WusicGuiImpl implements WusicGui {
 				_frame = initFrame();
 				Wusic.start();
 			}
-			setLookAndFeel();
 			_frame.setVisible(true);
 		}});
 	}
@@ -51,15 +46,6 @@ class WusicGuiImpl implements WusicGui {
 		result.pack();
 
     	return result;
-	}
-
-	private void setLookAndFeel() {
-		try {
-			UIManager.setLookAndFeel(PREFERRED_LOOK_AND_FEEL);
-			SwingUtilities.updateComponentTreeUI(_frame);
-		} catch (Exception e) {
-			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to change look and feel", "Unable to change look and feel", 5000);
-		}
 	}
 
 	private Signal<String> title() {

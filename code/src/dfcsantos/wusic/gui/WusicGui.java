@@ -11,6 +11,4 @@ public interface WusicGui {
 
 	Dimension PREFERRED_SIZE = new Dimension(460, 130);
 
-	String PREFERRED_LOOK_AND_FEEL = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
-
 }
