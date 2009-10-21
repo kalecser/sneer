@@ -4,7 +4,7 @@
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
 	- Wusic
-		- [Igor] Playlist Tests
+		- [Igor] Persist Wusic's folder choices 
 		- Downloads
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
