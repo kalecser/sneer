@@ -8,13 +8,13 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-class WusicPanel extends JPanel {
+class MainPanel extends JPanel {
 
 	private final JTabbedPane _tabbedPane				= new JTabbedPane();
 	private final AbstractTabPane _ownTracksPanel		= new OwnTracksPanel();
 	private final AbstractTabPane _peerTracksPanel		= new PeerTracksPanel();
 
-	WusicPanel(Dimension panelSize) {
+	MainPanel(Dimension panelSize) {
 		_tabbedPane.addTab(null, _ownTracksPanel);
 		_tabbedPane.setTabComponentAt(0, _ownTracksPanel.customTabLabel());
 		_tabbedPane.setMnemonicAt(0, KeyEvent.VK_O);

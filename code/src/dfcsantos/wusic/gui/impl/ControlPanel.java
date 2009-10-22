@@ -12,10 +12,11 @@ import javax.swing.JPanel;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.wusic.Wusic;
+import dfcsantos.wusic.Wusic.OperatingMode;
 
-class ControlPanel extends JPanel {
+abstract class ControlPanel extends JPanel {
 
-	private static final Wusic Wusic = my(Wusic.class);
+	private static final Wusic _controller = my(Wusic.class);
 
 	private final JButton _pauseResume	= new JButton();
 //	private final JButton _back			= new JButton();
@@ -27,8 +28,11 @@ class ControlPanel extends JPanel {
 	ControlPanel() {
 		super(new FlowLayout(FlowLayout.LEFT, 9, 3));
 
-	    toAvoidGC = Wusic.isPlaying().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isPlaying) {
-	    	_pauseResume.setText(isPlaying ? "||" : ">");
+	    toAvoidGC = _controller.isPlaying().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isPlaying) {
+	    	if (isTheRightOperatingMode())
+	    		_pauseResume.setText(isPlaying ? "||" : ">");
+	    	else
+	    		_pauseResume.setText(">");
 		}});
 
 	    _pauseResume.addActionListener(new ActionListener() {
@@ -64,7 +68,18 @@ class ControlPanel extends JPanel {
 	}
 
 	private void pauseResumeActionPerformed() {
-		Wusic.pauseResume();
+		switchOperatingModeIfNecessary();
+		_controller.pauseResume();
+	}
+
+	private void switchOperatingModeIfNecessary() {
+		if (isTheRightOperatingMode()) return;
+
+		_controller.switchOperatingMode();
+	}
+
+	private boolean isTheRightOperatingMode() {
+		return controlPanelOperatingMode().equals(_controller.operatingMode().currentValue());
 	}
 
 //	private void backActionPerformed() {
@@ -72,11 +87,13 @@ class ControlPanel extends JPanel {
 //	}
 
 	private void skipActionPerformed() {
-	    Wusic.skip();
+	    _controller.skip();
 	}
 
 	private void stopActionPerformed() {
-	    Wusic.stop();
+	    _controller.stop();
 	}
+
+	abstract OperatingMode controlPanelOperatingMode();
 
 }

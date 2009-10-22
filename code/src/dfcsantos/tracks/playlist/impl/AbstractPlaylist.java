@@ -21,16 +21,16 @@ abstract class AbstractPlaylist implements Playlist, Enumeration<Track> {
 
 	private final Light _noTracksFound = my(BlinkingLights.class).prepare(LightType.WARN);
 
-	protected AbstractPlaylist(File tracksFolder) {
+	AbstractPlaylist(File tracksFolder) {
 		_tracksFolder = tracksFolder;
 		loadTracks();
 	}
 
-	protected List<File> trackFiles() {
+	List<File> trackFiles() {
 		return _trackFiles;
 	}
 
-	protected List<File> searchTracks(File folder) {
+	List<File> searchTracks(File folder) {
 		return new ArrayList<File>(my(IO.class).files().listFiles(folder, new String[] {"mp3","MP3"}, true));
 	}
 
@@ -56,7 +56,7 @@ abstract class AbstractPlaylist implements Playlist, Enumeration<Track> {
 		return !trackFiles().isEmpty();
 	}
 
-	protected void rescan() {
+	void rescan() {
 		loadTracks();
 	}
 

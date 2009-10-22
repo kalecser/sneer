@@ -18,10 +18,10 @@ import dfcsantos.wusic.gui.WusicGui;
  */
 class WusicGuiImpl implements WusicGui {
 
-    private static final Wusic Wusic = my(Wusic.class);
+    private static final Wusic _controller = my(Wusic.class);
 
     private JFrame _frame;
-    private WusicPanel _wusicPanel;
+    private MainPanel _mainPanel;
 
     private boolean _isInitialized = false;
 
@@ -30,7 +30,7 @@ class WusicGuiImpl implements WusicGui {
 			if (!_isInitialized){
 				_isInitialized = true;
 				_frame = initFrame();
-				Wusic.start();
+				_controller.start();
 			}
 			_frame.setVisible(true);
 		}});
@@ -39,8 +39,8 @@ class WusicGuiImpl implements WusicGui {
 	private JFrame initFrame() {
 		JFrame result = my(ReactiveWidgetFactory.class).newFrame(title()).getMainWidget();
 
-		_wusicPanel = new WusicPanel(PREFERRED_SIZE);
-		result.getContentPane().add(_wusicPanel);
+		_mainPanel = new MainPanel(PREFERRED_SIZE);
+		result.getContentPane().add(_mainPanel);
 
     	result.setResizable(false);
 		result.pack();
@@ -49,7 +49,7 @@ class WusicGuiImpl implements WusicGui {
 	}
 
 	private Signal<String> title() {
-		return my(Signals.class).adapt(Wusic.playingTrackName(), new Functor<String, String>() { @Override public String evaluate(String track) {
+		return my(Signals.class).adapt(_controller.playingTrackName(), new Functor<String, String>() { @Override public String evaluate(String track) {
 			return "Wusic :: " + track;
 		}});
 	}

@@ -9,25 +9,22 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
+import dfcsantos.wusic.Wusic.OperatingMode;
 
 class PeerTracksPanel extends AbstractTabPane {
 
-    private final JLabel _peerTracksCountTabLabel = my(ReactiveWidgetFactory.class).newLabel(Wusic.numberOfPeerTracks()).getMainWidget();
-
+    private final JLabel _peerTracksCountTabLabel = my(ReactiveWidgetFactory.class).newLabel(_controller.numberOfPeerTracks()).getMainWidget();
 	private final JFileChooser _sharedTracksFolderChooser;
     private final JButton _chooseSharedTracksFolder = new JButton();
-
-	@SuppressWarnings("unused") private WeakContract toAvoidGC;
 
 	PeerTracksPanel() {
         _sharedTracksFolderChooser = my(FileChoosers.class).newFileChooser(new Consumer<File>() { @Override public void consume(File chosenFolder) {
         	if (chosenFolder != null) {
-        		Wusic.setSharedTracksFolder(chosenFolder);
+        		_controller.setSharedTracksFolder(chosenFolder);
         	}
     	}}, JFileChooser.DIRECTORIES_ONLY);
     	_sharedTracksFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).sharedTracksFolder().currentValue());
@@ -41,16 +38,21 @@ class PeerTracksPanel extends AbstractTabPane {
         customPanel().add(_chooseSharedTracksFolder);
 	}
 
+	@Override
+	OperatingMode panelOperatingMode() {
+		return OperatingMode.PEERS;
+	}
+
     private void chooseSharedTracksFolderActionPerformed() {
     	_sharedTracksFolderChooser.showOpenDialog(null);
     }
 
 	private void meTooActionPerformed() {
-        Wusic.meToo();
+        _controller.meToo();
     }
 
     private void noWayActionPerformed() {
-        Wusic.noWay();
+        _controller.noWay();
     }
 
     @Override
@@ -59,7 +61,7 @@ class PeerTracksPanel extends AbstractTabPane {
     }
 
     @Override
-    protected ControlPanel controlPanel() {
+    ControlPanel controlPanel() {
     	return new PeerTracksControlPanel();
     }
 
@@ -85,6 +87,12 @@ class PeerTracksPanel extends AbstractTabPane {
 	        });
 	        add(_noWay);
 		}
+
+		@Override
+		OperatingMode controlPanelOperatingMode() {
+			return panelOperatingMode();
+		}
+
 	}
 
 }

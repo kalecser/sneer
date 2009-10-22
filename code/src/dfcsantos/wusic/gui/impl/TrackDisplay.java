@@ -25,7 +25,7 @@ class TrackDisplay extends JPanel {
 	    add(_trackTime);
 
 	     _trackLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
-	    add(_trackLabel);;
+	    add(_trackLabel);
 	}
 
 }

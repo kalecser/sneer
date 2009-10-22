@@ -11,8 +11,8 @@ import sneer.foundation.brickness.Brick;
 public interface Wusic {
 
 	enum OperatingMode { OWN, PEERS };
-	void setOperatingMode(OperatingMode mode);
-	OperatingMode operatingMode();
+	void switchOperatingMode();
+	Signal<OperatingMode> operatingMode();
 
 	void setPlayingFolder(File selectedFolder);
 	void setSharedTracksFolder(File selectedFolder);

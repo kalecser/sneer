@@ -7,9 +7,11 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.client.TrackClient;
@@ -20,11 +22,11 @@ public class WusicImpl implements Wusic {
 
 	private static final Format TIME_FORMATTER = new SimpleDateFormat("mm:ss");
 
-	private OperatingMode _currentOperatingMode = OperatingMode.OWN;
-
-	private TrackSourceStrategy _trackSource = OwnTracks.INSTANCE;
+	private final Register<OperatingMode> _currentOperatingMode = my(Signals.class).newRegister(OperatingMode.OWN);
 
 	private final Register<Track> _trackToPlay = my(Signals.class).newRegister(null);
+
+	private TrackSourceStrategy _trackSource = OwnTracks.INSTANCE;
 
 	private Track _lastPlayedTrack;
 
@@ -32,16 +34,41 @@ public class WusicImpl implements Wusic {
 		skip();
 	}});
 
+	@SuppressWarnings("unused") private final WeakContract _toAvoidGC;
 
-	@Override
-	public void setOperatingMode(OperatingMode mode) {
-		_trackSource = (mode == OperatingMode.OWN) ? OwnTracks.INSTANCE : PeerTracks.INSTANCE;
+
+	{
+		_toAvoidGC = operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode mode) {
+			reset();
+			_trackSource = (mode.equals(OperatingMode.OWN)) ? OwnTracks.INSTANCE : PeerTracks.INSTANCE;
+		}});
+	}
+
+
+	private void reset() {
+		stop();
+		_lastPlayedTrack = null;
 	}
 
 
 	@Override
-	public OperatingMode operatingMode() {
-		return _currentOperatingMode;
+	public void switchOperatingMode() {
+		setOperatingMode(
+			operatingMode().currentValue().equals(OperatingMode.OWN)
+				? OperatingMode.PEERS
+				: OperatingMode.OWN
+		);
+	}
+
+
+	private void setOperatingMode(OperatingMode mode) {
+		_currentOperatingMode.setter().consume(mode);
+	}
+
+
+	@Override
+	public Signal<OperatingMode> operatingMode() {
+		return _currentOperatingMode.output();
 	}
 
 

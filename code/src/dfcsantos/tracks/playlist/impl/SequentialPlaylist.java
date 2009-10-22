@@ -30,7 +30,7 @@ class SequentialPlaylist extends AbstractPlaylist {
 	}
 
 	@Override
-	protected void rescan() {
+	void rescan() {
 		// One new iterator is used for each iteration sequence 
 		initIterator();
 	}

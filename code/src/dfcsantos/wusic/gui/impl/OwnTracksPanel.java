@@ -15,11 +15,11 @@ import javax.swing.JLabel;
 import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
+import dfcsantos.wusic.Wusic.OperatingMode;
 
 class OwnTracksPanel extends AbstractTabPane {
 
 	private final JLabel _ownTracksTabLabel				= new JLabel("Own Tracks");
-
 	private final JFileChooser _playingFolderChooser;
     private final JButton _choosePlayingFolder			= new JButton();
     private final JCheckBox _shuffle					= new JCheckBox();
@@ -27,7 +27,7 @@ class OwnTracksPanel extends AbstractTabPane {
 	OwnTracksPanel() {
 		_playingFolderChooser = my(FileChoosers.class).newFileChooser(new Consumer<File>() { @Override public void consume(File chosenFolder) {
 	    	if (chosenFolder != null)
-	    		Wusic.setPlayingFolder(chosenFolder);
+	    		_controller.setPlayingFolder(chosenFolder);
 		}}, JFileChooser.DIRECTORIES_ONLY);
 		_playingFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).playingFolder().currentValue());
 
@@ -49,16 +49,21 @@ class OwnTracksPanel extends AbstractTabPane {
 	    customPanel().add(_shuffle);
 	}
 
+	@Override
+	OperatingMode panelOperatingMode() {
+		return OperatingMode.OWN;
+	}
+
 	private void choosePlayingFolderActionPerformed() {
     	_playingFolderChooser.showOpenDialog(null);
     }
 
     private void shuffleActionPerformed() {
-    	Wusic.setShuffle(_shuffle.isSelected());
+    	_controller.setShuffle(_shuffle.isSelected());
 	}
 
 	private void deleteFileActionPerformed() {
-	    Wusic.noWay();
+	    _controller.noWay();
 	}
 
 	@Override
@@ -67,7 +72,7 @@ class OwnTracksPanel extends AbstractTabPane {
     }
 
 	@Override
-	protected ControlPanel controlPanel() {
+	ControlPanel controlPanel() {
 		return new OwnTracksControlPanel();
 	}
 
@@ -76,8 +81,6 @@ class OwnTracksPanel extends AbstractTabPane {
 		private final JButton _deleteFile = new JButton();
 
 		private OwnTracksControlPanel() {
-			setName("Share Tracks' Control Panel");
-
 			_deleteFile.setText("Delete File!");
 			_deleteFile.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
@@ -86,6 +89,12 @@ class OwnTracksPanel extends AbstractTabPane {
 			});
 			add(_deleteFile);
 		}
+
+		@Override
+		OperatingMode controlPanelOperatingMode() {
+			return panelOperatingMode();
+		}
+
 	}
 
 }
