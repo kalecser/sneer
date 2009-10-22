@@ -11,7 +11,6 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.player.TrackContract;
 
@@ -27,13 +26,13 @@ class TrackContractImpl implements TrackContract {
 	
 	TrackContractImpl(final Track track, final Signal<Boolean> isPlaying, final Runnable toCallWhenFinished) {
 		try {
-			_trackStream = new PausableInputStream(new FileInputStream(track.file()));
+			_trackStream = new PausableInputStream(new FileInputStream(track.file()), isPlaying);
 		} catch (FileNotFoundException e) {
 			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to find file " + track.file() , "File might have been deleted manually.", 15000);
 		} 
 		
 		my(Threads.class).startDaemon("Track Player", new Runnable() { @Override public void run() {
-			play(isPlaying, toCallWhenFinished);
+			play(toCallWhenFinished);
 		}});
 	}
 
@@ -51,10 +50,9 @@ class TrackContractImpl implements TrackContract {
 	}
 
 	
-	private void play(Signal<Boolean> isPlaying, final Runnable toCallWhenFinished) {
+	private void play(final Runnable toCallWhenFinished) {
 		try {
 			_player = new Player(_trackStream);
-			controlPause(isPlaying);
 			_player.play();
 		} catch (Throwable t) {
 			if (!_wasDisposed)
@@ -66,12 +64,4 @@ class TrackContractImpl implements TrackContract {
 		}
 	}
 
-
-	private void controlPause(Signal<Boolean> isPlaying) {
-		_refToAvoidGc = isPlaying.addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean playing) {
-			_trackStream.setPaused(!playing);
-		}});
-	}
-
-	
 }
