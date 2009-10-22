@@ -4,7 +4,6 @@
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
 	- Wusic
-		- [Igor] Basic Wusic Functionality: Delete, Me Too, No Way
 		- Downloads
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
