@@ -4,6 +4,10 @@
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
 	- Wusic
+		[Igor]
+		- Do not download tracks already in shared or peertracks folders.
+		- Do not download rejected tracks, which have been marked for disposal using delete or noWay buttons.
+			- Store first 8 bytes from rejected tracks' hash in a list and persist using BrickStateStore.
 		- Downloads
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
