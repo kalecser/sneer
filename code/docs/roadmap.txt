@@ -5,9 +5,6 @@
 
 	- Wusic
 		- [Igor] Basic Wusic Functionality: Delete, Me Too, No Way
-		- [Klaus/Igor/Daniel] Find a way to swap between Wusic's playing modes (see line 18 in WusicPanel)
-		- [Igor/Daniel] Wusic's Interface:
-			- Display track label and time only on the panel of the active mode
 		- Downloads
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
