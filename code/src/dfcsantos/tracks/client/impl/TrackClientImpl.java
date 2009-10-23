@@ -46,11 +46,11 @@ class TrackClientImpl implements TrackClient {
 	
 	private File fileToWrite(TrackEndorsement track) {
 		String name = new File(track.path).getName();
-		return new File(candidatesFolder(), name);
+		return new File(peerTracksFolder(), name);
 	}
 
 
-	private File candidatesFolder() {
+	private File peerTracksFolder() {
 		return my(TracksFolderKeeper.class).peerTracksFolder();
 	}
 

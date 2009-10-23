@@ -5,8 +5,6 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 class MainPanel extends JPanel {
 
@@ -21,11 +19,7 @@ class MainPanel extends JPanel {
 
 		_tabbedPane.addTab(null, _peerTracksPanel);
 		_tabbedPane.setTabComponentAt(1, _peerTracksPanel.customTabLabel());
-		_tabbedPane.setMnemonicAt(1, KeyEvent.VK_S);
-
-		_tabbedPane.addChangeListener(new ChangeListener() { @Override public void stateChanged(ChangeEvent e) {
-			// Wusic.setOperatingMode(OperatingMode.values()[_tabbedPane.getSelectedIndex()]); Fix: Come up with another strategy to change playing mode
-		}});
+		_tabbedPane.setMnemonicAt(1, KeyEvent.VK_P);
 
 		_tabbedPane.setPreferredSize(panelSize);
 
