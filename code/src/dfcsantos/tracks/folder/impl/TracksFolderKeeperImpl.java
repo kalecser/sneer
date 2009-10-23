@@ -3,6 +3,8 @@ package dfcsantos.tracks.folder.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -25,6 +27,8 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 	private File _peerTracksFolder;
 
 	@SuppressWarnings("unused") private Object _refToAvoidGc;
+
+	@SuppressWarnings("unused") private Object _refToAvoidGc2;
 
 	TracksFolderKeeperImpl() {
 		takeCareOfPersistence();
@@ -73,21 +77,31 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 	private void takeCareOfPersistence() {
 		restore();
 
-		_refToAvoidGc = sharedTracksFolder().addReceiver(new Consumer<File>(){ @Override public void consume(File newFolder) {
-			if (newFolder == null) return;
-			save(newFolder.getPath());
+		_refToAvoidGc = playingFolder().addReceiver(new Consumer<File>(){ @Override public void consume(File newPlayingFolder) {
+			if (newPlayingFolder == null) return;
+			save(foldersPathList(newPlayingFolder, sharedTracksFolder().currentValue()));
+		}});
+
+		_refToAvoidGc2 = sharedTracksFolder().addReceiver(new Consumer<File>(){ @Override public void consume(File newSharedTracksFolder) {
+			if (newSharedTracksFolder == null) return;
+			save(foldersPathList(playingFolder().currentValue(), newSharedTracksFolder));
 		}});
 	}
 
-	private void restore() {
-		String restoredFolderPath = (String) _store.readObjectFor(TracksFolderKeeper.class, getClass().getClassLoader());
-		if (restoredFolderPath == null || defaultTracksFolder().getPath().equals(restoredFolderPath)) return;
-
-		setSharedTracksFolder(new File(restoredFolderPath));
+	private List<String> foldersPathList(File playingFolder, File sharedTracksFolder) {
+		return Arrays.asList(playingFolder.getPath(), sharedTracksFolder.getPath());
 	}
 
-	private void save(String sharedFolderPath) {
-		_store.writeObjectFor(TracksFolderKeeper.class, sharedFolderPath);
+	private void restore() {
+		List<String> restoredFoldersPath = (List<String>) _store.readObjectFor(TracksFolderKeeper.class, getClass().getClassLoader());
+		if (restoredFoldersPath == null) return;
+
+		setPlayingFolder(new File(restoredFoldersPath.get(0)));
+		setSharedTracksFolder(new File(restoredFoldersPath.get(1)));
+	}
+
+	private void save(List<String> foldersPathToPersist) {
+		_store.writeObjectFor(TracksFolderKeeper.class, foldersPathToPersist);
 	}
 
 }
