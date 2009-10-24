@@ -55,7 +55,6 @@ final class ProbeImpl implements Consumer<Tuple> {
 
 	@Override
 	public void consume(Tuple tuple) {
-//		System.out.println("PROBE CONSUMING " + my(Seals.class).contactGiven(tuple.publisher()).nickname().currentValue() + " - " + Thread.currentThread());
 		if (!isClearToSend(tuple)) return;
 		
 		synchronized (_isConnectedMonitor) {
