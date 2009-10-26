@@ -9,12 +9,12 @@ import java.util.Random;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
 import dfcsantos.tracks.endorsements.TrackEndorser;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
@@ -62,8 +62,8 @@ public class TrackEndorserImpl implements TrackEndorser {
 	}
 
 
-	private File[] listMp3Files(File a) {
-		return my(IO.class).files().listFiles(a, new String[] {"mp3","MP3"}, true).toArray(FILE_ARRAY);
+	private File[] listMp3Files(File folder) {
+		return my(Tracks.class).listMp3FilesFromFolder(folder).toArray(FILE_ARRAY);
 	}
 
 

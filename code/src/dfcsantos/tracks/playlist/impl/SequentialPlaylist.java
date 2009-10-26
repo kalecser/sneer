@@ -1,9 +1,12 @@
 package dfcsantos.tracks.playlist.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.io.File;
 import java.util.ListIterator;
 
 import dfcsantos.tracks.Track;
+import dfcsantos.tracks.Tracks;
 
 class SequentialPlaylist extends AbstractPlaylist {
 
@@ -26,7 +29,7 @@ class SequentialPlaylist extends AbstractPlaylist {
 	@Override
 	public Track nextElement() {
 		// Note that the returned element is NOT removed from the list like in RandomPlaylist
-		return new TrackImpl(_tracksIterator.next());
+		return my(Tracks.class).newTrack(_tracksIterator.next());
 	}
 
 	@Override

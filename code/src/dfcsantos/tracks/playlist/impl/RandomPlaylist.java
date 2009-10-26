@@ -1,9 +1,12 @@
 package dfcsantos.tracks.playlist.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.io.File;
 import java.util.Random;
 
 import dfcsantos.tracks.Track;
+import dfcsantos.tracks.Tracks;
 
 class RandomPlaylist extends AbstractPlaylist {
 
@@ -16,7 +19,7 @@ class RandomPlaylist extends AbstractPlaylist {
 	@Override
 	public Track nextElement() {
 		 // Note that the returned element is removed from the list
-		return new TrackImpl(trackFiles().remove(_random.nextInt(trackFiles().size())));
+		return my(Tracks.class).newTrack(trackFiles().remove(_random.nextInt(trackFiles().size())));
 	}
 
 }

@@ -3,15 +3,14 @@ package dfcsantos.tracks.playlist.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import sneer.bricks.hardware.io.IO;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import dfcsantos.tracks.Track;
+import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.playlist.Playlist;
 
 abstract class AbstractPlaylist implements Playlist, Enumeration<Track> {
@@ -31,7 +30,7 @@ abstract class AbstractPlaylist implements Playlist, Enumeration<Track> {
 	}
 
 	List<File> searchTracks(File folder) {
-		return new ArrayList<File>(my(IO.class).files().listFiles(folder, new String[] {"mp3","MP3"}, true));
+		return my(Tracks.class).listMp3FilesFromFolder(folder);
 	}
 
 	private void loadTracks() {

@@ -1,4 +1,4 @@
-package dfcsantos.tracks.playlist.impl;
+package dfcsantos.tracks.impl;
 
 import java.io.File;
 
