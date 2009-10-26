@@ -24,6 +24,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.Contracts;
 import sneer.bricks.hardware.cpu.lang.contracts.Disposable;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
@@ -190,8 +191,16 @@ class TupleSpaceImpl implements TupleSpace {
 	public synchronized void acquire(Tuple tuple) {
 		if (isWeird(tuple)) return; //Filter out those weird shouts that appeared in the beginning.
 		
-		if (!_transientTupleCache.add(tuple)) return;
-		capTransientTuples();
+		if (tuple.addressee == null) {
+			if (_transientTupleCache.contains(tuple)) return;
+			_transientTupleCache.add(tuple);
+			capTransientTuples();
+		} else {
+			if (!tuple.addressee.equals(my(Seals.class).ownSeal())) {
+				my(Logger.class).log("Tuple received with incorrect addressee: {} type: ", tuple.addressee, tuple.getClass());
+				return;
+			}
+		}
 		
 		if (isAlreadyKept(tuple)) return;
 		keepIfNecessary(tuple);

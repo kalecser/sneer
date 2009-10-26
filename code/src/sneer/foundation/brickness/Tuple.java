@@ -9,15 +9,26 @@ import java.util.List;
 
 public abstract class Tuple {
 
-	protected Tuple() {}
-	
 	protected Tuple(Seal publisher, long publicationTime) {
+		this();
 		_publisher = publisher;
 		_publicationTime = publicationTime;
 	}
 
+	
+	protected Tuple() {
+		this(null);
+	}
+	
+	
+	protected Tuple(Seal addressee_) {
+		addressee = addressee_;
+	}
+
+	
 	private Seal _publisher;
 	private long _publicationTime;
+	public final Seal addressee;
 	
 	@Override
 	public final int hashCode() {
@@ -85,6 +96,7 @@ public abstract class Tuple {
 	}
 
 	private Object checkForArray(Object object) {
+		if (object == null) return null;
 		if (object.getClass().isArray()) throw new IllegalStateException("Tuples cannot have fields which are arrays. Use ImmutableArrays instead. Class: " + getClass());
 		return object;
 	}

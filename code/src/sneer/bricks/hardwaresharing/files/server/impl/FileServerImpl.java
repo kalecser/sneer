@@ -19,6 +19,7 @@ import sneer.bricks.hardwaresharing.files.server.FileServer;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.foundation.brickness.Seal;
 import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.Consumer;
 
@@ -51,7 +52,7 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 			return;
 		}
 		
-		Tuple reply = asTuple(response);
+		Tuple reply = asTuple(request.publisher(), response);
 		my(TupleSpace.class).publish(reply);
 
 		logFolderActivity(reply);
@@ -76,12 +77,12 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 	}
 
 
-	private Tuple asTuple(Object response) throws IOException {
+	private Tuple asTuple(Seal addressee, Object response) throws IOException {
 		if (response instanceof FolderContents)
 			return new FolderContents(((FolderContents)response).contents);
 		
 		if (response instanceof File)
-			return asFileContents((File)response);
+			return asFileContents(addressee, (File)response);
 		
 		if (response instanceof BigFileBlocks)
 			return new BigFileBlocks(((BigFileBlocks)response)._contents);
@@ -90,9 +91,9 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 	}
 
 
-	private FileContents asFileContents(File file) throws IOException {
+	private FileContents asFileContents(Seal addressee, File file) throws IOException {
 		byte[] bytes = my(IO.class).files().readBytes(file);
-		return new FileContents(my(ImmutableArrays.class).newImmutableByteArray(bytes));
+		return new FileContents(addressee, my(ImmutableArrays.class).newImmutableByteArray(bytes));
 	}
 
 	

@@ -22,7 +22,7 @@ final class ProbeImpl implements Consumer<Tuple> {
 
 	
 	private final Contact _contact;
-	private Seal _contactsPK;
+	private Seal _contactsSeal;
 	
 	private final Object _isConnectedMonitor = new Object();
 	private boolean _isConnected = false;
@@ -65,21 +65,28 @@ final class ProbeImpl implements Consumer<Tuple> {
 
 	private boolean isClearToSend(Tuple tuple) {
 		initContactsPKIfNecessary();
-		if (_contactsPK == null)
-			return false;
+		if (_contactsSeal == null) return false;
 
 		if (!_filter.canBePublished(tuple)) return false;
+		if (!isCorrectAddressee(tuple)) return false;
+		if (isEcho(tuple)) return false;
 		
-		return !isEcho(tuple);
+		return true;
 	}
 
+	
+	private boolean isCorrectAddressee(Tuple tuple) {
+		return (tuple.addressee == null || tuple.addressee.equals(_contactsSeal));
+	}
+
+	
 	private boolean isEcho(Tuple tuple) {
-		return _contactsPK.equals(tuple.publisher());
+		return _contactsSeal.equals(tuple.publisher());
 	}
 
 	private void initContactsPKIfNecessary() {
-		if (_contactsPK != null) return;
-		_contactsPK = _keyManager.sealGiven(_contact);
+		if (_contactsSeal != null) return;
+		_contactsSeal = _keyManager.sealGiven(_contact);
 	}
 
 }

@@ -18,8 +18,10 @@ public class LargeFileContentsHack extends Tuple {
 	
 	private final List<byte[]> _blocks = new ArrayList<byte[]>();
 
+
 	
 	public LargeFileContentsHack(FileContents original) {
+		super(original.addressee);
 		stamp(original.publisher(), original.publicationTime());
 		readBlocks(original);
 	}
@@ -44,7 +46,7 @@ public class LargeFileContentsHack extends Tuple {
 		for (byte[] block : _blocks)
 			write(output, block);
 		
-		FileContents result = new FileContents(my(ImmutableArrays.class).newImmutableByteArray(output.toByteArray()));
+		FileContents result = new FileContents(addressee, my(ImmutableArrays.class).newImmutableByteArray(output.toByteArray()));
 		result.stamp(publisher(), publicationTime());
 		return result;
 	}
