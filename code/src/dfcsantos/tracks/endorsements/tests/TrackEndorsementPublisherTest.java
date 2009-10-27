@@ -12,6 +12,8 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
+import sneer.bricks.pulp.crypto.Crypto;
+import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -27,11 +29,13 @@ public class TrackEndorsementPublisherTest extends BrickTest {
 	
 	@Test(timeout = 4000)
 	public void trackEndorsements() throws IOException {
-		final File subfolder = new File(tmpFolder(),"rocknroll");
-		final File track = new File(subfolder,"thunderstruck.mp3");
 		final File peerTrackFolder = new File(my(FolderConfig.class).tmpFolderFor(TracksFolderKeeper.class), "peertracks");
 		final File defaultSharedTrackFolder = new File(my(FolderConfig.class).storageFolder().get() ,"media/tracks");
-		
+
+		final File subfolder = new File(tmpFolder(),"rocknroll");
+		final File track = new File(subfolder,"thunderstruck.mp3");
+		final Sneer1024 hash = my(Crypto.class).digest(new byte[] { 42 });
+
 		assertTrue(subfolder.mkdir());
 		assertTrue(track.createNewFile());
 
@@ -39,15 +43,17 @@ public class TrackEndorsementPublisherTest extends BrickTest {
 			oneOf(_fileMap).put(peerTrackFolder);
 			oneOf(_fileMap).put(defaultSharedTrackFolder);
 			oneOf(_fileMap).put(tmpFolder());
-			oneOf(_fileMap).put(track);
+			oneOf(_fileMap).getHash(track); will(returnValue(hash));
 		}});
 		
 		final Latch latch = my(Latches.class).produce();
 		@SuppressWarnings("unused")
 		WeakContract refToAvoidGC = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() {@Override public void consume(TrackEndorsement trackEndorsement) {
 			assertEquals("rocknroll/thunderstruck.mp3", trackEndorsement.path);
+			assertEquals(hash, trackEndorsement.hash);
 			latch.open();
 		}});
+
 		my(TracksFolderKeeper.class).setSharedTracksFolder(tmpFolder());
 		my(TrackEndorser.class);
 		latch.waitTillOpen();
