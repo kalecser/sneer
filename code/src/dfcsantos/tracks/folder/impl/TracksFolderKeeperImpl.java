@@ -3,9 +3,11 @@ package dfcsantos.tracks.folder.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Register;
@@ -53,8 +55,27 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 	@Override
 	public void setSharedTracksFolder(File sharedTracksFolder) {
 		_sharedTracksFolder.setter().consume(sharedTracksFolder);
+		mapSharedTracksFolder();
 	}
 
+	private void mapSharedTracksFolder() {
+		try {
+			//System.out.println("mapShared:"+sharedTracksFolder().currentValue());
+			my(FileMap.class).put(sharedTracksFolder().currentValue());
+		} catch (IOException e) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+		}
+	}
+
+	private void mapPeerTracksFolder() {
+		try {
+			//System.out.println("mapPeer");
+			my(FileMap.class).put(peerTracksFolder());
+		} catch (IOException e) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+		}
+	}
+	
 	@Override
 	public File peerTracksFolder() {
 		if (_peerTracksFolder == null)
@@ -93,8 +114,13 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 	}
 
 	private void restore() {
+		
+		mapPeerTracksFolder();
 		List<String> restoredFoldersPath = (List<String>) _store.readObjectFor(TracksFolderKeeper.class, getClass().getClassLoader());
-		if (restoredFoldersPath == null) return;
+		if (restoredFoldersPath == null) {
+			mapSharedTracksFolder();
+			return;
+		}
 
 		setPlayingFolder(new File(restoredFoldersPath.get(0)));
 		setSharedTracksFolder(new File(restoredFoldersPath.get(1)));

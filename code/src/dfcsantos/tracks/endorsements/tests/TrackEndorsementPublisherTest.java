@@ -13,6 +13,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
@@ -26,13 +27,18 @@ public class TrackEndorsementPublisherTest extends BrickTest {
 	
 	@Test(timeout = 4000)
 	public void trackEndorsements() throws IOException {
-		File subfolder = new File(tmpFolder(),"rocknroll");
+		final File subfolder = new File(tmpFolder(),"rocknroll");
 		final File track = new File(subfolder,"thunderstruck.mp3");
-
+		final File peerTrackFolder = new File(my(FolderConfig.class).tmpFolderFor(TracksFolderKeeper.class), "peertracks");
+		final File defaultSharedTrackFolder = new File(my(FolderConfig.class).storageFolder().get() ,"media/tracks");
+		
 		assertTrue(subfolder.mkdir());
 		assertTrue(track.createNewFile());
 
 		checking(new Expectations(){{
+			oneOf(_fileMap).put(peerTrackFolder);
+			oneOf(_fileMap).put(defaultSharedTrackFolder);
+			oneOf(_fileMap).put(tmpFolder());
 			oneOf(_fileMap).put(track);
 		}});
 		

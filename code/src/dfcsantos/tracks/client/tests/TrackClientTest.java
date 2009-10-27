@@ -30,7 +30,7 @@ public class TrackClientTest extends BrickTest {
 		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[]{1});
 		
 		checking(new Expectations(){{
-			exactly(1).of(_fileClient).fetch(new File(candidatesFolder(), "foo.mp3"), 42, hash1);
+			exactly(1).of(_fileClient).fetch(new File(peerTracksFolder(), "foo.mp3"), 42, hash1);
 		}});
 		
 		my(TrackClient.class);
@@ -38,7 +38,7 @@ public class TrackClientTest extends BrickTest {
 		publishEndorsementTuple(hash1, 42, "songs/subfolder/foo.mp3");
 	}
 
-	private File candidatesFolder() {
+	private File peerTracksFolder() {
 		return new File(my(FolderConfig.class).tmpFolderFor(TracksFolderKeeper.class), "peertracks");
 	}
 

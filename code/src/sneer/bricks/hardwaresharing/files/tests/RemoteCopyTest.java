@@ -26,5 +26,18 @@ public class RemoteCopyTest extends FileCopyTestBase {
 			my(FileClient.class).fetch(destination, hashOfContents);
 		}});
 	}
+	
+/*	public void dontRequestIfHasIt() throws IOException {
+		@SuppressWarnings("unused")
+		FileServer server = my(FileServer.class);
+		final Sneer1024 hash = _fileMap.put(anySmallFile());
+		
+		Environment remote = newTestEnvironment(my(TupleSpace.class), my(OwnNameKeeper.class));
+		Environments.runWith(remote, new Closure<IOException>() { @Override public void run() throws IOException {
+			my(FileMap.class).put(anySmallFile());
+			my(FileClient.class).fetch(anySmallFile(), hash);
+		}});
+
+	}*/
 
 }
