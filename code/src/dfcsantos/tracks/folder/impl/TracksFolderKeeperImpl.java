@@ -58,24 +58,6 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 		mapSharedTracksFolder();
 	}
 
-	private void mapSharedTracksFolder() {
-		try {
-			//System.out.println("mapShared:"+sharedTracksFolder().currentValue());
-			my(FileMap.class).put(sharedTracksFolder().currentValue());
-		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		}
-	}
-
-	private void mapPeerTracksFolder() {
-		try {
-			//System.out.println("mapPeer");
-			my(FileMap.class).put(peerTracksFolder());
-		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		}
-	}
-	
 	@Override
 	public File peerTracksFolder() {
 		if (_peerTracksFolder == null)
@@ -84,7 +66,6 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 		return _peerTracksFolder;
 	}
 
-	
 	private File mkDirs(File folder) {
 		if (!folder.exists() && !folder.mkdirs())
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "Unable to create folder.", "Unable to create folder: " + folder);
@@ -109,10 +90,6 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 		}});
 	}
 
-	private List<String> foldersPathList(File playingFolder, File sharedTracksFolder) {
-		return Arrays.asList(playingFolder.getPath(), sharedTracksFolder.getPath());
-	}
-
 	private void restore() {
 		
 		mapPeerTracksFolder();
@@ -124,6 +101,26 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 
 		setPlayingFolder(new File(restoredFoldersPath.get(0)));
 		setSharedTracksFolder(new File(restoredFoldersPath.get(1)));
+	}
+
+	private void mapSharedTracksFolder() {
+		try {
+			my(FileMap.class).put(sharedTracksFolder().currentValue());
+		} catch (IOException e) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+		}
+	}
+
+	private void mapPeerTracksFolder() {
+		try {
+			my(FileMap.class).put(peerTracksFolder());
+		} catch (IOException e) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+		}
+	}
+
+	private List<String> foldersPathList(File playingFolder, File sharedTracksFolder) {
+		return Arrays.asList(playingFolder.getPath(), sharedTracksFolder.getPath());
 	}
 
 	private void save(List<String> foldersPathToPersist) {
