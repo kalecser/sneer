@@ -13,9 +13,12 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
+import dfcsantos.tracks.Track;
+import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
+import dfcsantos.tracks.rejected.RejectedTracksKeeper;
 
 class TrackClientImpl implements TrackClient {
 
@@ -31,11 +34,14 @@ class TrackClientImpl implements TrackClient {
 	}
 
 	
-	private void consumeTrackEndorsement(TrackEndorsement track) {
-		if (my(Seals.class).ownSeal().equals(track.publisher())) return;
-		
+	private void consumeTrackEndorsement(TrackEndorsement endorsement) {
+		if (my(Seals.class).ownSeal().equals(endorsement.publisher())) return;
+
+		final Track endorsedTrack = my(Tracks.class).newTrack(endorsement);
+		if (my(RejectedTracksKeeper.class).isRejected(endorsedTrack)) return;
+
 		try {
-			my(FileClient.class).fetch(fileToWrite(track), track.lastModified, track.hash);
+			my(FileClient.class).fetch(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
 		} catch (IOException e) {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
@@ -43,9 +49,9 @@ class TrackClientImpl implements TrackClient {
 		_numberOfTracksFetchedFromPeers.setter().consume(_numberOfTracksFetchedFromPeers.output().currentValue() + 1);
 	}
 
-	
-	private File fileToWrite(TrackEndorsement track) {
-		String name = new File(track.path).getName();
+
+	private File fileToWrite(TrackEndorsement endorsement) {
+		String name = new File(endorsement.path).getName();
 		return new File(peerTracksFolder(), name);
 	}
 

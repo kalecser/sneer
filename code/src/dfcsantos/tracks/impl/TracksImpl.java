@@ -9,6 +9,7 @@ import java.util.List;
 import sneer.bricks.hardware.io.IO;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.Tracks;
+import dfcsantos.tracks.endorsements.TrackEndorsement;
 
 class TracksImpl implements Tracks {
 
@@ -29,6 +30,11 @@ class TracksImpl implements Tracks {
 	@Override
 	public Track newTrack(File trackFile) {
 		return new TrackImpl(trackFile);
+	}
+
+	@Override
+	public Track newTrack(TrackEndorsement endorsement) {
+		return new TrackImpl(endorsement);
 	}
 
 }
