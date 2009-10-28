@@ -40,7 +40,7 @@ class PeerTracks extends TrackSourceStrategy {
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to copy track", "Unable to copy track: " + track.file(), 7000);
 		}
-		markAsRejected(track);
+		markForDisposal(track);
 	}
 
 }

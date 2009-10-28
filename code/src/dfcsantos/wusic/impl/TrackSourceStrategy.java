@@ -3,6 +3,8 @@ package dfcsantos.wusic.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -16,12 +18,14 @@ abstract class TrackSourceStrategy {
 
 	private Playlist _playlist;
 
+	private final List<Track> _tracksToDispose = new ArrayList<Track>();
+
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
 	
 	
 	TrackSourceStrategy() {
 		_refToAvoidGc = my(Timer.class).wakeUpEvery(5000, new Runnable() { @Override public void run() {
-			disposeRejectedTracks();
+			disposePendingTracks();
 		}});
 
 		initPlaylist();
@@ -38,10 +42,12 @@ abstract class TrackSourceStrategy {
 	}
 
 
-	void disposeRejectedTracks() {
-		for (Track victim : my(RejectedTracksKeeper.class).rejected())
-			if (!victim.file().delete())
-				 my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to delete track", "Unable to delete track: " + victim.file(), 15000);
+	void disposePendingTracks() {
+		for (Track victim : _tracksToDispose)
+			if (victim.file().delete())
+				_tracksToDispose.remove(victim);
+			else
+				my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to delete track", "Unable to delete track: " + victim.file(), 15000);
 	}
 
 	
@@ -50,14 +56,15 @@ abstract class TrackSourceStrategy {
 	}
 
 	
-	void markAsRejected(Track track) {
-		my(RejectedTracksKeeper.class).reject(track);
+	void noWay(Track rejected) {
+		//Implement Create event to notify listeners of track rejection (musical taste matcher, for example).
+		my(RejectedTracksKeeper.class).reject(rejected);
+		markForDisposal(rejected);	
 	}
 
 	
-	void noWay(Track trackToDispose) {
-		//Implement Create event to notify listeners of track rejection (musical taste matcher, for example).
-		markAsRejected(trackToDispose);	
+	void markForDisposal(Track trackToDispose) {
+		_tracksToDispose.add(trackToDispose);
 	}
 
 	
