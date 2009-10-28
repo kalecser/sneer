@@ -7,8 +7,6 @@ import java.io.File;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import dfcsantos.tracks.Track;
-import dfcsantos.tracks.endorsements.TrackEndorsement;
-import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 class TrackImpl implements Track {
 
@@ -19,20 +17,6 @@ class TrackImpl implements Track {
 	TrackImpl(File file){
 		_file = file;
 		_info = file.getName().replaceAll(".mp3", "");
-	}
-
-	TrackImpl(TrackEndorsement endorsement){
-		this(endorsedTrackFile(endorsement));
-		_hash = endorsement.hash;
-	}
-
-	private static File endorsedTrackFile(TrackEndorsement endorsement) {
-		String name = new File(endorsement.path).getName();
-		return new File(sharedTracksFolder(), name);
-	}
-
-	private static File sharedTracksFolder() {
-		return my(TracksFolderKeeper.class).sharedTracksFolder().currentValue();
 	}
 
 	@Override

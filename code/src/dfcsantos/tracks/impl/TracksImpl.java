@@ -10,6 +10,7 @@ import sneer.bricks.hardware.io.IO;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
+import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 class TracksImpl implements Tracks {
 
@@ -34,7 +35,16 @@ class TracksImpl implements Tracks {
 
 	@Override
 	public Track newTrack(TrackEndorsement endorsement) {
-		return new TrackImpl(endorsement);
+		return new TrackImpl(endorsedTrackFile(endorsement));
+	}
+
+	private File endorsedTrackFile(TrackEndorsement endorsement) {
+		String name = new File(endorsement.path).getName();
+		return new File(sharedTracksFolder(), name);
+	}
+
+	private File sharedTracksFolder() {
+		return my(TracksFolderKeeper.class).sharedTracksFolder().currentValue();
 	}
 
 }
