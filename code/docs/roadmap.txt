@@ -5,8 +5,7 @@
 
 	- Wusic
 		- Finish FileClientTest
-		- [Igor] Do not download rejected tracks, which have been marked for disposal using delete or noWay buttons.
-			- Persist using BrickStateStore.
+		- [Igor] Create RejectedTracksKeeperTest
 		- Downloads
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
