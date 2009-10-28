@@ -17,7 +17,7 @@ import dfcsantos.tracks.endorsements.TrackEndorsement;
 import dfcsantos.tracks.endorsements.TrackEndorser;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
 
-public class TrackEndorserImpl implements TrackEndorser {
+class TrackEndorserImpl implements TrackEndorser {
 	
 	private static final File[] FILE_ARRAY = new File[0];
 	
