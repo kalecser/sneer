@@ -1,4 +1,4 @@
-package dfcsantos.tracks.monitor.rejected;
+package dfcsantos.tracks.rejected;
 
 import java.util.List;
 
@@ -8,6 +8,10 @@ import dfcsantos.tracks.Track;
 @Brick
 public interface RejectedTracksKeeper {
 
-	List<Track> rejectedTracks();
+	void reject(Track victim);
+
+	boolean isRejected(Track suspect);
+
+	List<Track> rejected();
 
 }

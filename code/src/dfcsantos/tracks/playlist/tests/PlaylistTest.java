@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -21,16 +20,11 @@ public class PlaylistTest extends BrickTest {
 
 	private Playlist _subject;
 
-	private final List<String> _trackFileNames = Arrays.asList(
-		"track1.mp3", "track2.mp3", "track3.mp3", "track4.mp3", "track5.mp3", "track6.wma"
-	);
-
 	@Before
 	public void createTrackFiles() throws IOException {
-		for (String tracFileName : _trackFileNames) { createTmpFiles(tracFileName); }
+		createTmpFiles("track1.mp3", "track2.mp3", "track3.mp3", "track4.mp3", "track5.mp3", "track6.wma");
 	}
 
-	@Ignore
 	@Test
 	public void testSequentialPlaylist() {
 		_subject = _playlistFactory.newSequentialPlaylist(tmpFolder());
@@ -44,7 +38,6 @@ public class PlaylistTest extends BrickTest {
 		assertEquals("track1", _subject.nextTrack().name());
 	}
 
-	@Ignore
 	@Test
 	public void testRandomPlaylist() {
 		_subject = _playlistFactory.newRandomPlaylist(tmpFolder());

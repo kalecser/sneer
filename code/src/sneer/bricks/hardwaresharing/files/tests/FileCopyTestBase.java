@@ -21,7 +21,7 @@ import sneer.foundation.lang.Consumer;
 
 public abstract class FileCopyTestBase extends BrickTest {
 
-	private final FileMap _fileMap = my(FileMap.class);
+	protected final FileMap _fileMap = my(FileMap.class);
 
 	
 	@Test (timeout = 3000)
@@ -53,7 +53,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 	abstract protected void copyFromFileMap(Sneer1024 hashOfContents, File destination) throws IOException;
 
 
-	private File anySmallFile() {
+	protected File anySmallFile() {
 		return myClassFile();
 	}
 

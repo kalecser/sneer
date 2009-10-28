@@ -4,10 +4,9 @@
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
 	- Wusic
-		[Igor]
-		- Do not download tracks already in shared or peertracks folders.
-		- Do not download rejected tracks, which have been marked for disposal using delete or noWay buttons.
-			- Store first 8 bytes from rejected tracks' hash in a list and persist using BrickStateStore.
+		- Finish FileClientTest
+		- [Igor] Do not download rejected tracks, which have been marked for disposal using delete or noWay buttons.
+			- Persist using BrickStateStore.
 		- Downloads
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
@@ -15,7 +14,6 @@
 		- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
 		- Back Button 
 		- Find another way to solve pause lag (try to use a smaller frame in player)
-		- Implement backButton
 
 	- [Kalecser] File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.
 		- [Klaus] ByteArraySocketImpl.write(array) and read() clean up hack.

@@ -3,9 +3,11 @@ package dfcsantos.tracks.folder.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Register;
@@ -53,6 +55,7 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 	@Override
 	public void setSharedTracksFolder(File sharedTracksFolder) {
 		_sharedTracksFolder.setter().consume(sharedTracksFolder);
+		mapSharedTracksFolder();
 	}
 
 	@Override
@@ -63,7 +66,6 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 		return _peerTracksFolder;
 	}
 
-	
 	private File mkDirs(File folder) {
 		if (!folder.exists() && !folder.mkdirs())
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "Unable to create folder.", "Unable to create folder: " + folder);
@@ -88,16 +90,37 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 		}});
 	}
 
-	private List<String> foldersPathList(File playingFolder, File sharedTracksFolder) {
-		return Arrays.asList(playingFolder.getPath(), sharedTracksFolder.getPath());
-	}
-
 	private void restore() {
+		
+		mapPeerTracksFolder();
 		List<String> restoredFoldersPath = (List<String>) _store.readObjectFor(TracksFolderKeeper.class, getClass().getClassLoader());
-		if (restoredFoldersPath == null) return;
+		if (restoredFoldersPath == null) {
+			mapSharedTracksFolder();
+			return;
+		}
 
 		setPlayingFolder(new File(restoredFoldersPath.get(0)));
 		setSharedTracksFolder(new File(restoredFoldersPath.get(1)));
+	}
+
+	private void mapSharedTracksFolder() {
+		try {
+			my(FileMap.class).put(sharedTracksFolder().currentValue());
+		} catch (IOException e) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+		}
+	}
+
+	private void mapPeerTracksFolder() {
+		try {
+			my(FileMap.class).put(peerTracksFolder());
+		} catch (IOException e) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+		}
+	}
+
+	private List<String> foldersPathList(File playingFolder, File sharedTracksFolder) {
+		return Arrays.asList(playingFolder.getPath(), sharedTracksFolder.getPath());
 	}
 
 	private void save(List<String> foldersPathToPersist) {
