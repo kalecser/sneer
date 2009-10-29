@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -55,7 +56,7 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 	@Override
 	public void setSharedTracksFolder(File sharedTracksFolder) {
 		_sharedTracksFolder.setter().consume(sharedTracksFolder);
-		mapSharedTracksFolder();
+		startSharedTracksFolderMappingDeamon();
 	}
 
 	@Override
@@ -91,32 +92,36 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 	}
 
 	private void restore() {
-		
-		mapPeerTracksFolder();
-		List<String> restoredFoldersPath = (List<String>) _store.readObjectFor(TracksFolderKeeper.class, getClass().getClassLoader());
-		if (restoredFoldersPath == null) {
-			mapSharedTracksFolder();
+		startPeerTracksFolderMapping();
+
+		List<String> restoredFolderPaths = (List<String>) _store.readObjectFor(TracksFolderKeeper.class, getClass().getClassLoader());
+		if (restoredFolderPaths == null) {
+			startSharedTracksFolderMappingDeamon();
 			return;
 		}
 
-		setPlayingFolder(new File(restoredFoldersPath.get(0)));
-		setSharedTracksFolder(new File(restoredFoldersPath.get(1)));
+		setPlayingFolder(new File(restoredFolderPaths.get(0)));
+		setSharedTracksFolder(new File(restoredFolderPaths.get(1)));
 	}
 
-	private void mapSharedTracksFolder() {
-		try {
-			my(FileMap.class).put(sharedTracksFolder().currentValue());
-		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		}
+	private void startSharedTracksFolderMappingDeamon() {
+		my(Threads.class).startDaemon("Shared Tracks Folder Mapping", new Runnable() { @Override public void run() {
+			try {
+				my(FileMap.class).put(sharedTracksFolder().currentValue());
+			} catch (IOException e) {
+				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			}		
+		}});
 	}
 
-	private void mapPeerTracksFolder() {
-		try {
-			my(FileMap.class).put(peerTracksFolder());
-		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		}
+	private void startPeerTracksFolderMapping() {
+		my(Threads.class).startDaemon("Peer Tracks Folder Mapping", new Runnable() { @Override public void run() {
+			try {
+				my(FileMap.class).put(peerTracksFolder());
+			} catch (IOException e) {
+				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			}
+		}});
 	}
 
 	private List<String> foldersPathList(File playingFolder, File sharedTracksFolder) {
