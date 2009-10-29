@@ -123,6 +123,7 @@ public abstract class Tuple {
 		return _publicationTime;
 	}
 
+	
 	public void stamp(Seal publisher, long time) {
 		if (_publisher != null)
 			throw new IllegalStateException("Tuple was already stamped.");
@@ -131,10 +132,22 @@ public abstract class Tuple {
 		_publicationTime = time; 
 	}
 
+	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "-" + _publisher + "-" + hashCode();
+		return getClass().getSimpleName() + fieldsToString();
 	}
-	
+
+
+	private String fieldsToString() {
+		StringBuilder result = new StringBuilder();
+		for (Field field : fields()) {
+			result.append("|");
+			result.append(field.getName());
+			result.append(":");
+			result.append(getFieldValue(field, this));
+		}
+		return result.toString();
+	}
 	
 }
