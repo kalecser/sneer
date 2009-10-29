@@ -21,7 +21,7 @@ public class TupleGcTest extends BrickTest {
 		_garbageCollectedCounter = 0;
 
 		_currentGeneration = "tuplesLimitAmount";
-		int cache = _subject.transientCacheSize();
+		int cache = _subject.floodedCacheSize();
 		publishMyTestTuples(cache + 42);
 		
 		while (_garbageCollectedCounter != 42) {

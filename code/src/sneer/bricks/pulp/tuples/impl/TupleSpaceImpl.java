@@ -114,7 +114,7 @@ class TupleSpaceImpl implements TupleSpace {
 	
 	}
 
-	private static final int TRANSIENT_CACHE_SIZE = 1000;
+	private static final int FLOODED_CACHE_SIZE = 1000;
 	private static final Subscription<?>[] SUBSCRIPTION_ARRAY = new Subscription[0];
 
 	private final Seals _keyManager = my(Seals.class);
@@ -126,7 +126,7 @@ class TupleSpaceImpl implements TupleSpace {
 	private final Object _dispatchCounterMonitor = new Object();
 	private int _dispatchCounter = 0;
 
-	private final Set<Tuple> _transientTupleCache = new LinkedHashSet<Tuple>();
+	private final Set<Tuple> _floodedTupleCache = new LinkedHashSet<Tuple>();
 	private final Set<Class<? extends Tuple>> _typesToKeep = new HashSet<Class<? extends Tuple>>();
 	private final ListRegister<Tuple> _keptTuples;
 
@@ -192,9 +192,9 @@ class TupleSpaceImpl implements TupleSpace {
 		if (isWeird(tuple)) return; //Filter out those weird shouts that appeared in the beginning.
 		
 		if (tuple.addressee == null) {
-			if (_transientTupleCache.contains(tuple)) return;
-			_transientTupleCache.add(tuple);
-			capTransientTuples();
+			if (_floodedTupleCache.contains(tuple)) return;
+			_floodedTupleCache.add(tuple);
+			capFloodedTuples();
 		} else {
 			if (!tuple.addressee.equals(my(Seals.class).ownSeal())) {
 				my(Logger.class).log("Tuple received with incorrect addressee: {} type: ", tuple.addressee, tuple.getClass());
@@ -260,10 +260,10 @@ class TupleSpaceImpl implements TupleSpace {
 		tuple.stamp(_keyManager.ownSeal(), my(Clock.class).time().currentValue());
 	}
 
-	private void capTransientTuples() {
-		if (_transientTupleCache.size() <= TRANSIENT_CACHE_SIZE) return;
+	private void capFloodedTuples() {
+		if (_floodedTupleCache.size() <= FLOODED_CACHE_SIZE) return;
 
-		Iterator<Tuple> tuplesIterator = _transientTupleCache.iterator();
+		Iterator<Tuple> tuplesIterator = _floodedTupleCache.iterator();
 		tuplesIterator.next();
 		tuplesIterator.remove();
 		
@@ -300,8 +300,8 @@ class TupleSpaceImpl implements TupleSpace {
 
 
 	@Override
-	public int transientCacheSize() {
-		return TRANSIENT_CACHE_SIZE;
+	public int floodedCacheSize() {
+		return FLOODED_CACHE_SIZE;
 	}
 
 	@Override	

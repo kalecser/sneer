@@ -17,7 +17,7 @@ public interface TupleSpace {
 	<T extends Tuple> WeakContract addSubscription(Class<T> tupleType, Consumer<? super T> subscriber);
 	<T extends Tuple> WeakContract addSubscription(Class<T> tupleType, Consumer<? super T> subscriber, Predicate<? super T> filter);
 	
-	int transientCacheSize();
+	int floodedCacheSize();
 
 	void keep(Class<? extends Tuple> tupleType);
 	List<Tuple> keptTuples();
