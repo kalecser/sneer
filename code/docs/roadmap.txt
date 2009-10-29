@@ -5,7 +5,6 @@
 
 	- Wusic
 		- Finish FileClientTest
-		- [Igor] Create RejectedTracksKeeperTest
 		- Downloads
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
