@@ -3,6 +3,7 @@ package dfcsantos.tracks.rejected.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import sneer.bricks.pulp.crypto.Sneer1024;
@@ -13,7 +14,7 @@ class RejectedTracksKeeperImpl implements RejectedTracksKeeper {
 
 	private static final BrickStateStore _store = my(BrickStateStore.class);
 
-	private final List<Sneer1024> _rejectedTrackHashes = new ArrayList<Sneer1024>();
+	private final List<Sneer1024> _rejectedTrackHashes = Collections.synchronizedList(new ArrayList<Sneer1024>());
 
 	RejectedTracksKeeperImpl() {
 		restore();
