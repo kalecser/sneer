@@ -67,7 +67,7 @@ class FileClientImpl implements FileClient {
 			}
 			
 			keepTrackOf(hashOfContents, download);
-			FileRequestPublisher.startRequesting(hashOfContents);
+			FileRequestPublisher.startRequesting(hashOfContents, fileOrFolder.getName());
 		}
 		
 		download.waitTillFinished();

@@ -25,7 +25,7 @@ public class SerializerTest extends BrickTest {
 		bytes[bytes.length - 1] = 43;
 		ImmutableByteArray immutableBytes = my(ImmutableArrays.class).newImmutableByteArray(bytes);
 
-		FileContents contents = new FileContents(addressee, immutableBytes);
+		FileContents contents = new FileContents(addressee, immutableBytes, "foo debug info");
 		
 		byte[] serialized = _subject.serialize(contents);
 		FileContents copy = (FileContents) _subject.deserialize(serialized, FileContents.class.getClassLoader());

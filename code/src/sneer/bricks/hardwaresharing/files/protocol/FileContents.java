@@ -7,10 +7,12 @@ import sneer.foundation.brickness.Tuple;
 public class FileContents extends Tuple {
 
 	public final ImmutableByteArray bytes;
+	public final String debugInfo;
 
-	public FileContents(Seal adressee_, ImmutableByteArray bytes_) {
+	public FileContents(Seal adressee_, ImmutableByteArray bytes_, String debugInfo_) {
 		super(adressee_);
 		bytes = bytes_;
+		debugInfo = debugInfo_;
 	}
 
 }

@@ -93,7 +93,8 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 	private FileContents asFileContents(Seal addressee, File file) throws IOException {
 		byte[] bytes = my(IO.class).files().readBytes(file);
-		return new FileContents(addressee, my(ImmutableArrays.class).newImmutableByteArray(bytes));
+		String debugInfo = file.getName();
+		return new FileContents(addressee, my(ImmutableArrays.class).newImmutableByteArray(bytes), debugInfo);
 	}
 
 	

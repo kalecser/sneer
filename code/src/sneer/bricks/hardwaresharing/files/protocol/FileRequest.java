@@ -6,14 +6,12 @@ import sneer.foundation.brickness.Tuple;
 public class FileRequest extends Tuple {
 
 	public final Sneer1024 hashOfContents;
+	public final String debugInfo;
 
-	public FileRequest(Sneer1024 hashOfContents_) {
+	public FileRequest(Sneer1024 hashOfContents_, String debugInfo_) {
 		hashOfContents = hashOfContents_;
+		debugInfo = debugInfo_;
 	}
 	
-	@Override
-	public String toString() {
-		return "FileRequest: " + hashOfContents;
-	}
-	
+
 }
