@@ -9,9 +9,12 @@ import java.util.List;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.bricks.pulp.crypto.Sneer1024;
 import dfcsantos.tracks.Track;
+import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.playlist.Playlist;
 import dfcsantos.tracks.rejected.RejectedTracksKeeper;
 
@@ -25,7 +28,7 @@ abstract class TrackSourceStrategy {
 	
 	
 	TrackSourceStrategy() {
-		_refToAvoidGc = my(Timer.class).wakeUpEvery(10000, new Runnable() { @Override public void run() {
+		_refToAvoidGc = my(Timer.class).wakeUpEvery(5000, new Runnable() { @Override public void run() {
 			disposePendingTracks();
 		}});
 
@@ -59,9 +62,12 @@ abstract class TrackSourceStrategy {
 	}
 
 	
-	void noWay(Track rejected) {
+	void noWay(final Track rejected) {
 		//Implement Create event to notify listeners of track rejection (musical taste matcher, for example).
-		my(RejectedTracksKeeper.class).reject(rejected.hash());
+		my(Threads.class).startDaemon("Calculating Hash to Reject Track", new Runnable() { @Override public void run() {
+			Sneer1024 hash = my(Tracks.class).calculateHashFor(rejected);
+			my(RejectedTracksKeeper.class).reject(hash);
+		}});
 		markForDisposal(rejected);	
 	}
 

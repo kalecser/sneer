@@ -11,7 +11,7 @@ class RandomPlaylist extends AbstractPlaylist {
 	}
 
 	@Override
-	public void setTracksOrder(List<File> tracks) {
+	public void sortTracks(List<File> tracks) {
 		Collections.shuffle(tracks);
 	}
 

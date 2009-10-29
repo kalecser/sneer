@@ -10,6 +10,8 @@ import java.util.List;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.bricks.pulp.crypto.Crypto;
+import sneer.bricks.pulp.crypto.Sneer1024;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.Tracks;
 
@@ -31,14 +33,19 @@ class TracksImpl implements Tracks {
 
 	@Override
 	public Track newTrack(File trackFile) {
-		Track track = null;
+		return new TrackImpl(trackFile);
+	}
+
+	@Override
+	public Sneer1024 calculateHashFor(Track track) {
+		Sneer1024 hash = null;
 		try {
-			track = new TrackImpl(trackFile);
+			hash = my(Crypto.class).digest(track.file());
 		} catch (IOException e) {
-			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error creating track", "Error creating track: " + trackFile, e, 5000);
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error calculating track hash", "Error calculating hash for track: " + track.file(), e, 5000);
 		}
 
-		return track;
+		return hash;
 	}
 
 }

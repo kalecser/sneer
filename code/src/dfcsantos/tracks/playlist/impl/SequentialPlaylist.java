@@ -12,9 +12,9 @@ class SequentialPlaylist extends AbstractPlaylist {
 	}
 
 	@Override
-	void setTracksOrder(List<File> tracks) {
+	void sortTracks(List<File> tracks) {
 		Collections.sort(tracks, new Comparator<File>() { @Override public int compare(File file1, File file2) {
-			return file1.compareTo(file2);
+			return file1.getPath().compareTo(file2.getPath());
 		}});
 	}
 

@@ -31,12 +31,12 @@ abstract class AbstractPlaylist implements Playlist {
 
 	private List<File> trackFiles() {
 		List<File> tracks = my(Tracks.class).listMp3FilesFromFolder(_tracksFolder);
-		setTracksOrder(tracks);
+		sortTracks(tracks);
 
 		return tracks;
 	}
 
-	abstract void setTracksOrder(List<File> tracks);
+	abstract void sortTracks(List<File> tracks);
 
 	@Override
 	public Track nextTrack() {
