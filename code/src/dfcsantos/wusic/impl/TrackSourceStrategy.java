@@ -4,7 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 
 import sneer.bricks.hardware.clock.timer.Timer;
@@ -19,7 +19,7 @@ abstract class TrackSourceStrategy {
 
 	private Playlist _playlist;
 
-	private final List<Track> _tracksToDispose = new ArrayList<Track>();
+	private final List<Track> _tracksToDispose = Collections.synchronizedList(new ArrayList<Track>());
 
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
 	
@@ -44,10 +44,10 @@ abstract class TrackSourceStrategy {
 
 
 	void disposePendingTracks() {
-		for (Iterator<Track> iterator = _tracksToDispose.iterator(); iterator.hasNext();) {
-			Track victim = iterator.next();
+		List<Track> copy = new ArrayList<Track>(_tracksToDispose);
+		for (Track victim : copy) {
 			if (victim.file().delete())
-				iterator.remove();
+				_tracksToDispose.remove(victim);
 			else
 				my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to delete track", "Unable to delete track: " + victim.file(), 15000);
 		}
