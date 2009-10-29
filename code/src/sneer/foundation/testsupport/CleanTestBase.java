@@ -2,6 +2,7 @@ package sneer.foundation.testsupport;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
@@ -237,11 +238,23 @@ public abstract class CleanTestBase extends AssertUtils {
 			createTmpFile(fileName);
 	}
 
-	protected void createTmpFile(String fileName) throws IOException {
+	protected File createTmpFile(String fileName) throws IOException {
 		File file = new File(tmpFolder(), fileName);
 		if (!file.getParentFile().exists())
 			assertTrue("Unable to mkdirs: " + file.getParentFile(), file.getParentFile().mkdirs());
 		file.createNewFile();
+		return file;
+	}
+
+	protected void createTmpFilesWithPathAsContent(String... fileNames) throws IOException {
+		for (String fileName : fileNames)
+			createTmpFileWithPathAsContent(fileName);
+	}
+
+	protected void createTmpFileWithPathAsContent(String fileName) throws IOException {
+		File file = createTmpFile(fileName);
+		FileOutputStream fileOutputStream = new FileOutputStream(file);
+		fileOutputStream.write(file.getPath().getBytes());
 	}
 
 }

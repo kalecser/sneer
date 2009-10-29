@@ -13,8 +13,6 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.Track;
-import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
@@ -37,8 +35,7 @@ class TrackClientImpl implements TrackClient {
 	private void consumeTrackEndorsement(TrackEndorsement endorsement) {
 		if (my(Seals.class).ownSeal().equals(endorsement.publisher())) return;
 
-		final Track endorsedTrack = my(Tracks.class).newTrack(endorsement);
-		if (my(RejectedTracksKeeper.class).isRejected(endorsedTrack)) return;
+		if (my(RejectedTracksKeeper.class).isRejected(endorsement.hash)) return;
 
 		try {
 			my(FileClient.class).fetch(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);

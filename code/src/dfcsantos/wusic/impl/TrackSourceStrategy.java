@@ -58,7 +58,7 @@ abstract class TrackSourceStrategy {
 	
 	void noWay(Track rejected) {
 		//Implement Create event to notify listeners of track rejection (musical taste matcher, for example).
-		my(RejectedTracksKeeper.class).reject(rejected);
+		my(RejectedTracksKeeper.class).reject(rejected.hash());
 		markForDisposal(rejected);	
 	}
 

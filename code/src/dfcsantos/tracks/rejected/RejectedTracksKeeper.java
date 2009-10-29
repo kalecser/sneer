@@ -1,17 +1,13 @@
 package dfcsantos.tracks.rejected;
 
-import java.util.List;
-
+import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.foundation.brickness.Brick;
-import dfcsantos.tracks.Track;
 
 @Brick
 public interface RejectedTracksKeeper {
 
-	void reject(Track victim);
+	void reject(Sneer1024 hash);
 
-	boolean isRejected(Track suspect);
-
-	List<Track> rejected();
+	boolean isRejected(Sneer1024 hash);
 
 }
