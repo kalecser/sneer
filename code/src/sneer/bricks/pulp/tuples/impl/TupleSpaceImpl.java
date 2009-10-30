@@ -196,7 +196,8 @@ class TupleSpaceImpl implements TupleSpace {
 			_floodedTupleCache.add(tuple);
 			capFloodedTuples();
 		} else {
-			if (!tuple.addressee.equals(my(Seals.class).ownSeal())) {
+			Seal me = my(Seals.class).ownSeal();
+			if (!tuple.addressee.equals(me) && !tuple.publisher().equals(me)) {
 				my(Logger.class).log("Tuple received with incorrect addressee: {} type: ", tuple.addressee, tuple.getClass());
 				return;
 			}
