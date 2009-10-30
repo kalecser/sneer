@@ -10,8 +10,6 @@ import java.util.List;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.Tracks;
@@ -51,14 +49,17 @@ abstract class TrackSourceStrategy {
 		for (Track victim : copy) {
 			if (victim.file().delete())
 				_tracksToDispose.remove(victim);
-			else
-				my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to delete track", "Unable to delete track: " + victim.file(), 15000);
 		}
 	}
 
 	
 	Track nextTrack() {
-		return _playlist.nextTrack();
+		Track nextTrack = null;
+		do {
+			nextTrack = _playlist.nextTrack();
+		} while (_tracksToDispose.contains(nextTrack));
+
+		return nextTrack; 
 	}
 
 	
