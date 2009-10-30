@@ -25,6 +25,21 @@ class TrackImpl implements Track {
 	}
 
 	@Override
+	public int hashCode() {
+		return _file.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+
+		TrackImpl other = (TrackImpl) obj;
+		return _file.equals(other._file);
+	}
+
+	@Override
 	public String toString() {
 		return _file.getPath();
 	}
