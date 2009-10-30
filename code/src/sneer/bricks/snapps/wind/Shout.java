@@ -10,4 +10,9 @@ public class Shout extends Tuple {
 		phrase = phrase_;
 	}
 
+	@Override
+	public String toString() {
+		return phrase;
+	}
+
 }
