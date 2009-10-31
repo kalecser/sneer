@@ -15,7 +15,6 @@ import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.crypto.Crypto;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
@@ -29,9 +28,6 @@ public class TrackEndorsementPublisherTest extends BrickTest {
 	
 	@Test(timeout = 4000)
 	public void trackEndorsements() throws IOException {
-		final File peerTrackFolder = new File(my(FolderConfig.class).tmpFolderFor(TracksFolderKeeper.class), "peertracks");
-		final File defaultSharedTrackFolder = new File(my(FolderConfig.class).storageFolder().get() ,"media/tracks");
-
 		final File subfolder = new File(tmpFolder(),"rocknroll");
 		final File track = new File(subfolder,"thunderstruck.mp3");
 		final Sneer1024 hash = my(Crypto.class).digest(new byte[] { 42 });
@@ -40,9 +36,6 @@ public class TrackEndorsementPublisherTest extends BrickTest {
 		assertTrue(track.createNewFile());
 
 		checking(new Expectations(){{
-			oneOf(_fileMap).put(peerTrackFolder);
-			oneOf(_fileMap).put(defaultSharedTrackFolder);
-			oneOf(_fileMap).put(tmpFolder());
 			oneOf(_fileMap).getHash(track); will(returnValue(hash));
 		}});
 		
