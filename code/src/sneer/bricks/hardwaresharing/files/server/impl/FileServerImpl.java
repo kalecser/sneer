@@ -53,7 +53,7 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 			return;
 		}
 
-		Tuple reply = asTuple(request.publisher(), response);
+		Tuple reply = asTupleIfThereIsEnoughMemoryAvailable(request.publisher(), response);
 		if (reply == null) {
 			my(Logger.class).log("FileServer request not answered due to lack of memory: " + request);
 			return;
@@ -72,7 +72,7 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 	}
 
 
-	private Tuple asTuple(Seal addressee, Object response) throws IOException {
+	private Tuple asTupleIfThereIsEnoughMemoryAvailable(Seal addressee, Object response) throws IOException {
 		if (response instanceof FolderContents)
 			return new FolderContents(((FolderContents)response).contents);
 		
