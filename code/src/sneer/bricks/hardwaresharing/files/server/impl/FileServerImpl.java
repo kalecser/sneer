@@ -53,7 +53,7 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 			return;
 		}
 
-		Tuple reply = asTupleIfThereIsEnoughMemoryAvailable(request.publisher(), response);
+		Tuple reply = asTupleIfThereIsEnoughMemory(request.publisher(), response);
 		if (reply == null) {
 			my(Logger.class).log("FileServer request not answered due to lack of memory: " + request);
 			return;
@@ -72,7 +72,7 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 	}
 
 
-	private Tuple asTupleIfThereIsEnoughMemoryAvailable(Seal addressee, Object response) throws IOException {
+	private Tuple asTupleIfThereIsEnoughMemory(Seal addressee, Object response) throws IOException {
 		if (response instanceof FolderContents)
 			return new FolderContents(((FolderContents)response).contents);
 		
@@ -90,17 +90,17 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 
 	private boolean isThereEnoughMemoryFor(File response) {
-		return availableMemory() > safeMemoryLimitFor(response);
-	}
-
-
-	private int availableMemory() {
-		return my(MemoryMeter.class).maxMBs() - my(MemoryMeter.class).usedMBs().currentValue();
+		return my(MemoryMeter.class).availableMBs() > safeMemoryLimitFor(response);
 	}
 
 
 	private int safeMemoryLimitFor(File response) {
-		return (int) (3 * response.length() / (1024 * 1024));
+		return 3 * fileSizeInMB(response.length());
+	}
+
+
+	private int fileSizeInMB(long fileSize) {
+		return  (int) fileSize / (1024 * 1024);
 	}
 
 

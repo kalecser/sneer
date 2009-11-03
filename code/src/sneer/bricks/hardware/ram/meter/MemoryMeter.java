@@ -10,4 +10,6 @@ public interface MemoryMeter {
 	Signal<Integer> usedMBsPeak();
 
 	int maxMBs();
+	int availableMBs();
+
 }
