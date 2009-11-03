@@ -54,12 +54,11 @@ abstract class TrackSourceStrategy {
 
 	
 	Track nextTrack() {
-		Track nextTrack = null;
-		do {
-			nextTrack = _playlist.nextTrack();
-		} while (_tracksToDispose.contains(nextTrack));
+		Track nextTrack = _playlist.nextTrack();
+		if (_tracksToDispose.contains(nextTrack))
+			return null;
 
-		return nextTrack; 
+		return nextTrack;
 	}
 
 	

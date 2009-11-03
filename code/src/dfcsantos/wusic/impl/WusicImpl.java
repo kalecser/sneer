@@ -138,7 +138,8 @@ public class WusicImpl implements Wusic {
 	@Override
 	public void skip() {
 		Track nextTrack = _trackSource.nextTrack();
-		if (nextTrack.equals(_lastPlayedTrack)) stop();
+		if (nextTrack == null || nextTrack.equals(_lastPlayedTrack))
+			stop();
 		play(nextTrack);
 	}
 
@@ -174,8 +175,8 @@ public class WusicImpl implements Wusic {
 		final Track currentTrack = currentTrack();
 		if (currentTrack == null) return;
 
-		skip();
 		_trackSource.noWay(currentTrack);
+		skip();
 	}
 
 
