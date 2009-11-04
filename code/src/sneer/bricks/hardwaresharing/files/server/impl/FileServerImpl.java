@@ -9,6 +9,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
+import sneer.bricks.hardware.ram.meter.MemoryMeter;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
 import sneer.bricks.hardwaresharing.files.protocol.FileContents;
@@ -92,18 +93,18 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 
 	private boolean isThereEnoughMemoryFor(File response) {
-		return response.isFile(); //my(MemoryMeter.class).availableMBs() > safeMemoryLimitFor(response);
+		return my(MemoryMeter.class).availableMBs() > safeMemoryLimitFor(response);
 	}
 
 
-//	private int safeMemoryLimitFor(File response) {
-//		return fileSizeInMB(response);
-//	}
+	private int safeMemoryLimitFor(File response) {
+		return 3 * fileSizeInMB(response);
+	}
 
 
-//	private int fileSizeInMB(File file) {
-//		return  (int) (file.length() / (1024 * 1024));
-//	}
+	private int fileSizeInMB(File file) {
+		return  (int) (file.length() / (1024 * 1024));
+	}
 
 
 	private FileContents asFileContents(Seal addressee, File file) throws IOException {
