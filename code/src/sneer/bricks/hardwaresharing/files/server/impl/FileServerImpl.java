@@ -78,7 +78,10 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 		
 		if (response instanceof File) {
 			File fileToBeSent = (File)response;
-			if (!isThereEnoughMemoryFor(fileToBeSent)) return null;
+			if (!isThereEnoughMemoryFor(fileToBeSent)) {
+				System.gc();
+				return null;
+			}
 			return asFileContents(addressee, fileToBeSent);
 		}
 		
@@ -95,7 +98,7 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 
 	private int safeMemoryLimitFor(File response) {
-		return 3 * fileSizeInMB(response);
+		return 2 * fileSizeInMB(response);
 	}
 
 
