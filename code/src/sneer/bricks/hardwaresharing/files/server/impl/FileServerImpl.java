@@ -95,12 +95,12 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 
 	private int safeMemoryLimitFor(File response) {
-		return 3 * fileSizeInMB(response.length());
+		return 3 * fileSizeInMB(response);
 	}
 
 
-	private int fileSizeInMB(long fileSize) {
-		return  (int) fileSize / (1024 * 1024);
+	private int fileSizeInMB(File file) {
+		return  (int) file.length() / (1024 * 1024);
 	}
 
 
