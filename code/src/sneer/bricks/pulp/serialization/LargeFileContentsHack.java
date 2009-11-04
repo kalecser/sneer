@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
-import sneer.bricks.hardwaresharing.files.protocol.FileContents;
+import sneer.bricks.hardwaresharing.files.protocol.OldFileContents;
 import sneer.foundation.brickness.Tuple;
 
 public class LargeFileContentsHack extends Tuple {
@@ -21,7 +21,7 @@ public class LargeFileContentsHack extends Tuple {
 
 
 	
-	public LargeFileContentsHack(FileContents original) {
+	public LargeFileContentsHack(OldFileContents original) {
 		super(original.addressee);
 		stamp(original.publisher(), original.publicationTime());
 		readBlocks(original);
@@ -29,7 +29,7 @@ public class LargeFileContentsHack extends Tuple {
 	}
 
 
-	private void readBlocks(FileContents original) {
+	private void readBlocks(OldFileContents original) {
 		ByteArrayInputStream input = new ByteArrayInputStream(original.bytes.copy());
 
 		while (true) {
@@ -48,7 +48,7 @@ public class LargeFileContentsHack extends Tuple {
 		for (byte[] block : _blocks)
 			write(output, block);
 		
-		FileContents result = new FileContents(addressee, my(ImmutableArrays.class).newImmutableByteArray(output.toByteArray()), _debugInfo);
+		OldFileContents result = new OldFileContents(addressee, my(ImmutableArrays.class).newImmutableByteArray(output.toByteArray()), _debugInfo);
 		result.stamp(publisher(), publicationTime());
 		return result;
 	}

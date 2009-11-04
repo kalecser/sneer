@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import sneer.bricks.hardwaresharing.files.protocol.FileContents;
+import sneer.bricks.hardwaresharing.files.protocol.OldFileContents;
 import sneer.bricks.pulp.serialization.LargeFileContentsHack;
 import sneer.bricks.pulp.serialization.Serializer;
 
@@ -67,8 +67,8 @@ class SerializerImpl implements Serializer {
 
 	
 	private Object marshallLargeFileHack(Object object) {
-		return object instanceof FileContents
-			? new LargeFileContentsHack((FileContents)object)
+		return object instanceof OldFileContents
+			? new LargeFileContentsHack((OldFileContents)object)
 			: object;
 	}
 

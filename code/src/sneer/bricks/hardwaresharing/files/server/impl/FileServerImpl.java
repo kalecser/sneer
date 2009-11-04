@@ -11,7 +11,7 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
-import sneer.bricks.hardwaresharing.files.protocol.FileContents;
+import sneer.bricks.hardwaresharing.files.protocol.OldFileContents;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
@@ -106,10 +106,10 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 //	}
 
 
-	private FileContents asFileContents(Seal addressee, File file) throws IOException {
+	private OldFileContents asFileContents(Seal addressee, File file) throws IOException {
 		byte[] bytes = my(IO.class).files().readBytes(file);
 		String debugInfo = file.getName();
-		return new FileContents(addressee, my(ImmutableArrays.class).newImmutableByteArray(bytes), debugInfo);
+		return new OldFileContents(addressee, my(ImmutableArrays.class).newImmutableByteArray(bytes), debugInfo);
 	}
 
 	

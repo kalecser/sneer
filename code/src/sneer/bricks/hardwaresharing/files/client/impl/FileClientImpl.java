@@ -12,7 +12,7 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.hardwaresharing.files.hasher.Hasher;
 import sneer.bricks.hardwaresharing.files.protocol.BigFileBlocks;
-import sneer.bricks.hardwaresharing.files.protocol.FileContents;
+import sneer.bricks.hardwaresharing.files.protocol.OldFileContents;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.pulp.crypto.Sneer1024;
@@ -37,7 +37,7 @@ class FileClientImpl implements FileClient {
 			receiveBigFileBlocks(contents);
 		}});
 		
-		_fileContract = my(TupleSpace.class).addSubscription(FileContents.class, new Consumer<FileContents>() { @Override public void consume(FileContents contents) {
+		_fileContract = my(TupleSpace.class).addSubscription(OldFileContents.class, new Consumer<OldFileContents>() { @Override public void consume(OldFileContents contents) {
 			receiveFile(contents);
 		}});
 		
@@ -98,7 +98,7 @@ class FileClientImpl implements FileClient {
 	}
 	
 
-	private void receiveFile(FileContents contents) {
+	private void receiveFile(OldFileContents contents) {
 		byte[] data = contents.bytes.copy();
 		if (data == null) throw new IllegalArgumentException();
 		Sneer1024 hash = my(Hasher.class).hash(data);
