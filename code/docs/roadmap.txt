@@ -7,6 +7,7 @@
 		- [Klaus] Validate and finish FileClientTest
 		- [Igor] Check if tracks are still being downloaded more than once
 			- Create automated test for that
+		- [Igor] Display playing track of each contact
 		- [Igor] Create MusicalTasteMatcher
 		- Downloads
 			- Simultaneous download limit of 3.
