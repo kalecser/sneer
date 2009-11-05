@@ -7,11 +7,10 @@ class BigFileUtils {
 
 	public static byte[] getBytes(BigFileBlocks bigFileBlocks) {
 		byte[][] bigFileBlocksContentsHash = getContentsHashBytes(bigFileBlocks);
-		byte[] mergedBytes = merge(bigFileBlocksContentsHash);
-		return mergedBytes;
+		return concat(bigFileBlocksContentsHash);
 	}
 	
-	private static byte[] merge(byte[]... arrays) {
+	private static byte[] concat(byte[]... arrays) {
 		int totalLength = 0;
 		for (int i = 0; i < arrays.length; i++) {
 			
