@@ -40,7 +40,7 @@ public class TupleKeepingTest extends BrickTest {
 
 
 	private void flushCache() {
-		int cacheSize = subject().transientCacheSize();
+		int cacheSize = subject().floodedCacheSize();
 		publishTestTuples(cacheSize);
 	}
 

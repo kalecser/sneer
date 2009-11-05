@@ -8,8 +8,10 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
+import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.map.visitors.FileMapGuide;
 import sneer.bricks.hardwaresharing.files.map.visitors.FolderStructureVisitor;
+import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
@@ -57,8 +59,13 @@ class BrickVersionImpl implements BrickVersion {
 
 	private List<FileVersion> findFiles() throws IOException {
 		Visitor visitor = new Visitor();
-		my(FileMapGuide.class).guide(visitor, _hash);
+		my(FileMapGuide.class).guide(visitor, folderContents());
 		return visitor._visitedFiles;
+	}
+
+
+	private FolderContents folderContents() {
+		return my(FileMap.class).getFolder(_hash);
 	}
 
 	

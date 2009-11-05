@@ -10,6 +10,8 @@ import java.util.List;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardwaresharing.files.map.FileMap;
+import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.hardwaresharing.files.writer.FileWriter;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -117,7 +119,12 @@ public class BrickInstallerImpl implements BrickInstaller {
 		else
 			brickSrcFolder.mkdirs();
 		
-		my(FileWriter.class).mergeOver(brickSrcFolder, version.hash());
+		my(FileWriter.class).mergeOver(brickSrcFolder, folderContents(version));
+	}
+
+
+	private FolderContents folderContents(BrickVersion version) {
+		return my(FileMap.class).getFolder(version.hash());
 	}
 
 

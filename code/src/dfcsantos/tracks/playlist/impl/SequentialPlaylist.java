@@ -1,24 +1,21 @@
 package dfcsantos.tracks.playlist.impl;
 
 import java.io.File;
-import java.util.ListIterator;
-
-import dfcsantos.tracks.Track;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 class SequentialPlaylist extends AbstractPlaylist {
 
-	private final ListIterator<File> _tracksIterator;
-
 	SequentialPlaylist(File tracksFolder) {
 		super(tracksFolder);
-		_tracksIterator = trackFiles().listIterator();
 	}
 
 	@Override
-	public Track nextElement() {
-		Track track = new TrackImpl(_tracksIterator.next());
-		_tracksIterator.remove();
-		return track;
+	void sortTracks(List<File> tracks) {
+		Collections.sort(tracks, new Comparator<File>() { @Override public int compare(File file1, File file2) {
+			return file1.getPath().compareTo(file2.getPath());
+		}});
 	}
 
 }

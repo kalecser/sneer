@@ -27,7 +27,8 @@ class MemoryMeterImpl implements MemoryMeter {
 	
 	@Override	public Signal<Integer> usedMBs() { return _usedMBs.output(); }
 	@Override	public Signal<Integer> usedMBsPeak() { return _usedMBsPeak.output(); }
-	@Override public int maxMBs() { return toMBs(RUNTIME.maxMemory()); }
+	@Override 	public int availableMBs() { return maxMBs() - usedMBs().currentValue(); }
+	@Override 	public int maxMBs() { return toMBs(RUNTIME.maxMemory()); }
 
 	private void measureMemory() {
 		int used = measureUsedMBs();

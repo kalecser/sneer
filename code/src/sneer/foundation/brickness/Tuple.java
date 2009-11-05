@@ -9,15 +9,26 @@ import java.util.List;
 
 public abstract class Tuple {
 
-	protected Tuple() {}
-	
 	protected Tuple(Seal publisher, long publicationTime) {
+		this();
 		_publisher = publisher;
 		_publicationTime = publicationTime;
 	}
 
+	
+	protected Tuple() {
+		this(null);
+	}
+	
+	
+	protected Tuple(Seal addressee_) {
+		addressee = addressee_;
+	}
+
+	
 	private Seal _publisher;
 	private long _publicationTime;
+	public final Seal addressee;
 	
 	@Override
 	public final int hashCode() {
@@ -85,6 +96,7 @@ public abstract class Tuple {
 	}
 
 	private Object checkForArray(Object object) {
+		if (object == null) return null;
 		if (object.getClass().isArray()) throw new IllegalStateException("Tuples cannot have fields which are arrays. Use ImmutableArrays instead. Class: " + getClass());
 		return object;
 	}
@@ -111,6 +123,7 @@ public abstract class Tuple {
 		return _publicationTime;
 	}
 
+	
 	public void stamp(Seal publisher, long time) {
 		if (_publisher != null)
 			throw new IllegalStateException("Tuple was already stamped.");
@@ -119,10 +132,22 @@ public abstract class Tuple {
 		_publicationTime = time; 
 	}
 
+	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "-" + _publisher + "-" + hashCode();
+		return getClass().getSimpleName() + fieldsToString();
 	}
-	
+
+
+	private String fieldsToString() {
+		StringBuilder result = new StringBuilder();
+		for (Field field : fields()) {
+			result.append("|");
+			result.append(field.getName());
+			result.append(":");
+			result.append(getFieldValue(field, this));
+		}
+		return result.toString();
+	}
 	
 }

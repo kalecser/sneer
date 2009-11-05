@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.foundation.lang.Consumer;
 
 class PausableInputStream extends BufferedInputStream {
 
@@ -14,14 +16,20 @@ class PausableInputStream extends BufferedInputStream {
 	private boolean _isPaused;
 	private boolean _isClosed;
 
-	PausableInputStream(InputStream inputStream) {
+	@SuppressWarnings("unused") private final Object _refToAvoidGc;
+
+	PausableInputStream(InputStream inputStream, Signal<Boolean> isPlaying) {
 		super(inputStream);
+
+		_refToAvoidGc = isPlaying.addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean playing) {
+			setPaused(!playing);
+		}});
 	}
 
-	void pauseResume() {
+	private void setPaused(boolean paused) {
 		synchronized (_stateMonitor) {
 			if (_isClosed) return;
-			_isPaused = !_isPaused;
+			_isPaused = paused;
 			_stateMonitor.notify();
 		}
 	}

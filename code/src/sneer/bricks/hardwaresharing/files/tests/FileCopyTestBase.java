@@ -9,15 +9,19 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.crypto.Sneer1024;
+import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.foundation.lang.Consumer;
 
 /** Abstract test class names must not end in "Test" or else Hudson will try to instantiate them and fail. :P */
 
 public abstract class FileCopyTestBase extends BrickTest {
 
-	private final FileMap _publisher = my(FileMap.class);
+	protected final FileMap _fileMap = my(FileMap.class);
 
 	
 	@Test (timeout = 3000)
@@ -25,7 +29,6 @@ public abstract class FileCopyTestBase extends BrickTest {
 		testWith(anySmallFile());
 	}
 
-	
 	@Test (timeout = 3000)
 	public void testWithAFewFiles() throws IOException {
 		testWith(folderWithAFewFiles());
@@ -33,20 +36,24 @@ public abstract class FileCopyTestBase extends BrickTest {
 
 
 	private void testWith(File fileOrFolder) throws IOException {
-		Sneer1024 hash = _publisher.put(fileOrFolder);
+		Sneer1024 hash = _fileMap.put(fileOrFolder);
 		assertNotNull(hash);
 
-		File copy = newTempFile(); 
-		copyFromFileCache(hash, copy);
+		File copy = newTempFile();
+		my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>(){@Override public void consume(CollectionChange<Light> deltas) {
+			if (!deltas.elementsAdded().isEmpty())
+				throw new IllegalStateException();
+		}});
+		copyFromFileMap(hash, copy);
 		
 		assertSameContents(fileOrFolder, copy);
 	}
 
 
-	abstract protected void copyFromFileCache(Sneer1024 hashOfContents, File destination) throws IOException;
+	abstract protected void copyFromFileMap(Sneer1024 hashOfContents, File destination) throws IOException;
 
 
-	private File anySmallFile() {
+	protected File anySmallFile() {
 		return myClassFile();
 	}
 

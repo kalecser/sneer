@@ -30,7 +30,6 @@ public class Sneer {
 	
 	public Sneer() throws Exception {
 		installStagedCodeIfNecessary();
-		System.out.println("CODE: " + CODE.getAbsolutePath());
 		independentClassLoader().loadClass("sneer.main.SneerSession").newInstance();
 	}
 

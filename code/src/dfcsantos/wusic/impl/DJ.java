@@ -14,20 +14,20 @@ import dfcsantos.tracks.player.TrackPlayer;
 
 public class DJ implements Consumer<Track> {
 
-	@SuppressWarnings("unused") private final WeakContract _toAvoidGc;
-	@SuppressWarnings("unused") private final WeakContract _timerContract;
-
 	private final Runnable _toCallWhenDonePlayingATrack;
 
 	private TrackContract _currentTrackContract;
-
 	private Register<Integer> _trackElapsedTime = my(Signals.class).newRegister(0);
+	private Register<Boolean> _isPlaying = my(Signals.class).newRegister(false);
+
+	@SuppressWarnings("unused") private final WeakContract _djContract;
+	@SuppressWarnings("unused") private final WeakContract _timerContract;
 
 	DJ(EventSource<Track> trackToPlay, Runnable toCallWhenDonePlayingATrack) {
 		_toCallWhenDonePlayingATrack = toCallWhenDonePlayingATrack;
-		_toAvoidGc = trackToPlay.addReceiver(this);
+		_djContract = trackToPlay.addReceiver(this);
 
-		_timerContract = my(Timer.class).wakeUpEvery(1000, new Runnable() { @Override public void run() {
+		_timerContract = my(Timer.class).wakeUpEvery(500, new Runnable() { @Override public void run() {
 			if (_currentTrackContract != null)
 				_trackElapsedTime.setter().consume(_currentTrackContract.trackElapsedTime());
 		}});
@@ -38,33 +38,44 @@ public class DJ implements Consumer<Track> {
 	synchronized
 	public void consume(Track track) {
 		stop();
+		if (track == null) return;
 		play(track);
 	}
 
 
 	private void stop() {
+		setPlaying(false);
+		_trackElapsedTime.setter().consume(0);
+		
 		if (_currentTrackContract == null)
 			return;
 		_currentTrackContract.dispose();
 		_currentTrackContract = null;
-		_trackElapsedTime.setter().consume(0);
 	}
 
 
 	void pauseResume() {
-		if (_currentTrackContract == null) return;
-		_currentTrackContract.pauseResume();
+		setPlaying(!isPlaying().currentValue());
+	}
+
+
+	private void setPlaying(boolean isPlaying) {
+		_isPlaying.setter().consume(isPlaying);
 	}
 
 
 	private void play(final Track track) {
-		if (track == null) return;
-		_currentTrackContract = my(TrackPlayer.class).startPlaying(track, _toCallWhenDonePlayingATrack);
+		setPlaying(true);
+		_currentTrackContract = my(TrackPlayer.class).startPlaying(track, isPlaying(), _toCallWhenDonePlayingATrack);
 	}
 
 
 	Signal<Integer> trackElapsedTime() {
 		return _trackElapsedTime.output(); 
+	}
+
+	Signal<Boolean> isPlaying() {
+		return _isPlaying.output();
 	}
 
 }

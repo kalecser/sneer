@@ -18,32 +18,23 @@ import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.pulp.crypto.Sneer1024;
-import sneer.bricks.pulp.events.EventNotifier;
-import sneer.bricks.pulp.events.EventNotifiers;
-import sneer.bricks.pulp.events.EventSource;
 
 class FileMapImpl implements FileMap {
 	
-	private final EventNotifier<Sneer1024> _contentsAdded = my(EventNotifiers.class).newInstance();
-	private final Map<Sneer1024, File> _fileMap = new ConcurrentHashMap<Sneer1024, File>();
-	private final Map<Sneer1024, FolderContents> _folderMap = new ConcurrentHashMap<Sneer1024, FolderContents>();	
+	private final Map<Sneer1024, File> _filesByHash = new ConcurrentHashMap<Sneer1024, File>();
+	private final Map<File, Sneer1024> _hashesByFile = new ConcurrentHashMap<File, Sneer1024>();
+
+	private final Map<Sneer1024, FolderContents> _foldersByHash = new ConcurrentHashMap<Sneer1024, FolderContents>();	
 	
 
 	@Override
 	public Sneer1024 putFolderContents(FolderContents contents) {
 		Sneer1024 hash = my(Hasher.class).hash(contents);
-		_folderMap.put(hash, contents);
-		_contentsAdded.notifyReceivers(hash);
+		_foldersByHash.put(hash, contents);
 		return hash; 
 	}
 
 
-	@Override
-	public EventSource<Sneer1024> contentsAdded() {
-		return _contentsAdded.output();
-	}
-
-	
 /*	@Override
 	public Sneer1024 putBigFileBlocks(BigFileBlocks bigFileBlocks) {
 		
@@ -64,8 +55,8 @@ class FileMapImpl implements FileMap {
 
 	private Sneer1024 putFile(File file) throws IOException {
 		Sneer1024 hash = my(Hasher.class).hash(file);
-		_fileMap.put(hash, file);
-		_contentsAdded.notifyReceivers(hash);
+		_filesByHash.put(hash, file);
+		_hashesByFile.put(file, hash);
 		return hash;
 	}
 
@@ -103,7 +94,13 @@ class FileMapImpl implements FileMap {
 		return result;
 	}
 
-	@Override	public File getFile(Sneer1024 hash) { return _fileMap.get(hash);	}
-	@Override	public FolderContents getFolder(Sneer1024 hash) { return _folderMap.get(hash); }
-	
+	@Override	public File getFile(Sneer1024 hash) { return _filesByHash.get(hash);	}
+	@Override	public FolderContents getFolder(Sneer1024 hash) { return _foldersByHash.get(hash); }
+
+
+	@Override
+	public Sneer1024 getHash(File file) {
+		return _hashesByFile.get(file); 
+	}
+
 }

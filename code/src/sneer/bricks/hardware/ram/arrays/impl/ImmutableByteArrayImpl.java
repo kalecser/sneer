@@ -37,9 +37,23 @@ class ImmutableByteArrayImpl implements ImmutableByteArray {
 	
 	@Override
 	public String toString() {
+		return _payload.length <= 10
+			? toStringSmall()
+			: toStringLarge();
+	}
+
+	
+	private String toStringLarge() {
+		byte[] result = new byte[10];
+		System.arraycopy(_payload, 0, result, 0, 10);
+		return Arrays.toString(result) + "...";
+	}
+
+	private String toStringSmall() {
 		return Arrays.toString(_payload);
 	}
 
+	
 	@Override
 	public int hashCode() {
 		if (_hashCode == -1)

@@ -3,61 +3,83 @@ package dfcsantos.wusic.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.foundation.lang.Consumer;
+import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.pulp.crypto.Sneer1024;
 import dfcsantos.tracks.Track;
-import dfcsantos.tracks.folder.OwnTracksFolderKeeper;
+import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.playlist.Playlist;
-import dfcsantos.tracks.playlist.Playlists;
+import dfcsantos.tracks.rejected.RejectedTracksKeeper;
 
 abstract class TrackSourceStrategy {
-	
+
 	private Playlist _playlist;
-	private File _tracksFolder;
-	private boolean _isShuffleMode;
 
-	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGC;
+	private final List<Track> _tracksToDispose = Collections.synchronizedList(new ArrayList<Track>());
 
-	{	
-		_refToAvoidGC = my(OwnTracksFolderKeeper.class).ownTracksFolder().addReceiver(new Consumer<File>() {@Override public void consume(File ownTracksFolder) {
-			setTracksFolder(ownTracksFolder);
-			initPlaylist();
+	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
+	
+	
+	TrackSourceStrategy() {
+		_refToAvoidGc = my(Timer.class).wakeUpEvery(5000, new Runnable() { @Override public void run() {
+			disposePendingTracks();
 		}});
-	}
 
-	abstract String tracksSubfolder();
-
-	private void setTracksFolder(File tracksFolder) {
-		_tracksFolder = tracksFolder; 
-	}
-
-	private Playlist createPlaylist(File tracksFolder) {
-		return isShuffleMode() ? my(Playlists.class).newRandomPlaylist(tracksFolder) : my(Playlists.class).newSequentialPlaylist(tracksFolder);
-	}
-
-	private void initPlaylist() {
-		_playlist = createPlaylist(new File(_tracksFolder, tracksSubfolder()));
-	}
-
-	protected void setShuffleMode(boolean isShuffleMode) {
-		_isShuffleMode = isShuffleMode;
 		initPlaylist();
 	}
 
-	protected boolean isShuffleMode() {
-		return _isShuffleMode;
+	
+	void initPlaylist() {
+		initPlaylist(tracksFolder());
 	}
 
-	protected Track nextTrack() {
-		return _playlist.nextTrack();
+	
+	void initPlaylist(File tracksFolder) {
+		_playlist = createPlaylist(tracksFolder);
 	}
 
-	protected void noWay(Track rejected) {
-		if (!rejected.file().delete())
-			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to delete track", "Unable to delete track: " + rejected.file(), 7000);
+
+	void disposePendingTracks() {
+		List<Track> copy = new ArrayList<Track>(_tracksToDispose);
+		for (Track victim : copy) {
+			if (victim.file().delete())
+				_tracksToDispose.remove(victim);
+		}
 	}
+
+	
+	Track nextTrack() {
+		Track nextTrack = _playlist.nextTrack();
+		if (_tracksToDispose.contains(nextTrack))
+			return null;
+
+		return nextTrack;
+	}
+
+	
+	void noWay(final Track rejected) {
+		//Implement Create event to notify listeners of track rejection (musical taste matcher, for example).
+		my(Threads.class).startDaemon("Calculating Hash to Reject Track", new Runnable() { @Override public void run() {
+			Sneer1024 hash = my(Tracks.class).calculateHashFor(rejected);
+			my(RejectedTracksKeeper.class).reject(hash);
+		}});
+		markForDisposal(rejected);	
+	}
+
+	
+	void markForDisposal(Track trackToDispose) {
+		_tracksToDispose.add(trackToDispose);
+	}
+
+	
+	abstract Playlist createPlaylist(File tracksFolder);
+
+	
+	abstract File tracksFolder();
 
 }

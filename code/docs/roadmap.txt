@@ -1,34 +1,24 @@
 ﻿TASKS
 =========
 
-	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, LocalCopyTest, LocalCopyTest, Freedom7.meToo
+	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
 	- Wusic
+		- [Klaus] Validate and finish FileClientTest
+		- [Igor] Check if tracks are still being downloaded more than once
+			- Create automated test for that
+		- [Igor] Create MusicalTasteMatcher
 		- Downloads
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
 			- Do not download files user already has (includes candidates).
-		- [Igor] Make ReactiveLabels selectable.
-		- [Igor] Use a Register<OperatingMode> instance variable in WusicImpl.
-		- [Igor] Redesign according to comment in TrackSourceStartegy.
-			- Own:
-				- chooseFolderButton (subfolders will be played too - it's recursive); persist choice
-				- shuffle option
-				- deleteFileButton - activate from menu
-			- Peers:
-				- chooseSharedFolderButton opens JFileChooser (Title: 'Configure Shared Tracks Folder');
-					 - Open automatically when entering peers mode and shared folder not yet configured 
-				- always shuffle
-				- 'candidates' folder is a brick tmp folder
-				- display the number of tracks in the candidates folder in (parenthesis) after "Play Tracks from Peers" option.
-				- meToo move from candidates to sharedFolder
-				- noWay delete from candidates 
-		- Buttons
-			- Play/Pause, Skip, Stop, Me Too :), No Way :( - Buttons for Peer Tracks mode.
-			- Play/Pause - Toggle text: ">" or "||"
+		- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
+		- Back Button 
 		- Find another way to solve pause lag (try to use a smaller frame in player)
 
 	- [Kalecser] File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.
+		- [Klaus] ByteArraySocketImpl.write(array) and read() clean up hack.
+		- Remove FileServerImpl.isThereEnoughMemoryFor(File response)
 	
 	- SneerJockey - Extract from Sneer so it can be updated (Sneer itself is not updatable).
 

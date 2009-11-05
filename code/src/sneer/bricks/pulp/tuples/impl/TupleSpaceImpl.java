@@ -24,6 +24,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.Contracts;
 import sneer.bricks.hardware.cpu.lang.contracts.Disposable;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
@@ -113,7 +114,7 @@ class TupleSpaceImpl implements TupleSpace {
 	
 	}
 
-	private static final int TRANSIENT_CACHE_SIZE = 1000;
+	private static final int FLOODED_CACHE_SIZE = 1000;
 	private static final Subscription<?>[] SUBSCRIPTION_ARRAY = new Subscription[0];
 
 	private final Seals _keyManager = my(Seals.class);
@@ -125,7 +126,7 @@ class TupleSpaceImpl implements TupleSpace {
 	private final Object _dispatchCounterMonitor = new Object();
 	private int _dispatchCounter = 0;
 
-	private final Set<Tuple> _transientTupleCache = new LinkedHashSet<Tuple>();
+	private final Set<Tuple> _floodedTupleCache = new LinkedHashSet<Tuple>();
 	private final Set<Class<? extends Tuple>> _typesToKeep = new HashSet<Class<? extends Tuple>>();
 	private final ListRegister<Tuple> _keptTuples;
 
@@ -190,8 +191,17 @@ class TupleSpaceImpl implements TupleSpace {
 	public synchronized void acquire(Tuple tuple) {
 		if (isWeird(tuple)) return; //Filter out those weird shouts that appeared in the beginning.
 		
-		if (!_transientTupleCache.add(tuple)) return;
-		capTransientTuples();
+		if (tuple.addressee == null) {
+			if (_floodedTupleCache.contains(tuple)) return;
+			_floodedTupleCache.add(tuple);
+			capFloodedTuples();
+		} else {
+			Seal me = my(Seals.class).ownSeal();
+			if (!tuple.addressee.equals(me) && !tuple.publisher().equals(me)) {
+				my(Logger.class).log("Tuple received with incorrect addressee: {} type: ", tuple.addressee, tuple.getClass());
+				return;
+			}
+		}
 		
 		if (isAlreadyKept(tuple)) return;
 		keepIfNecessary(tuple);
@@ -251,10 +261,10 @@ class TupleSpaceImpl implements TupleSpace {
 		tuple.stamp(_keyManager.ownSeal(), my(Clock.class).time().currentValue());
 	}
 
-	private void capTransientTuples() {
-		if (_transientTupleCache.size() <= TRANSIENT_CACHE_SIZE) return;
+	private void capFloodedTuples() {
+		if (_floodedTupleCache.size() <= FLOODED_CACHE_SIZE) return;
 
-		Iterator<Tuple> tuplesIterator = _transientTupleCache.iterator();
+		Iterator<Tuple> tuplesIterator = _floodedTupleCache.iterator();
 		tuplesIterator.next();
 		tuplesIterator.remove();
 		
@@ -291,8 +301,8 @@ class TupleSpaceImpl implements TupleSpace {
 
 
 	@Override
-	public int transientCacheSize() {
-		return TRANSIENT_CACHE_SIZE;
+	public int floodedCacheSize() {
+		return FLOODED_CACHE_SIZE;
 	}
 
 	@Override	

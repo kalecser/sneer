@@ -7,38 +7,70 @@ import java.io.IOException;
 
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.map.visitors.FileMapGuide;
+import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.hardwaresharing.files.writer.FileWriter;
-import sneer.bricks.pulp.crypto.Sneer1024;
 
 
 public class FileWriterImpl implements FileWriter {
 
 	
 	@Override
-	public void writeAtomicallyTo(File fileOrFolder, final long lastModified, Sneer1024 hashOfContents) throws IOException {
-		if (fileOrFolder.exists()) throw new IOException("File to be written already exists: " + fileOrFolder);
+	public void writeAtomicallyTo(File file, long lastModified, byte[] contents) throws IOException {
+		doWriteAtomicallyTo(file, lastModified, contents);
+	}
+
+
+	@Override
+	public void writeAtomicallyTo(File folder, long lastModified, FolderContents contents) throws IOException {
+		doWriteAtomicallyTo(folder, lastModified, contents);
+	}
+
+	
+	private void doWriteAtomicallyTo(File fileOrFolder, final long lastModified, Object contents) throws IOException {
+		if (fileOrFolder.exists())
+			throw new IOException("File or folder to be written already exists: " + fileOrFolder);
 		
 		final File dotPart = prepareDotPart(fileOrFolder);
 		
-		writeTo(dotPart, hashOfContents);
+		writeTo(dotPart, contents);
 		
-		dotPart.setLastModified(lastModified);
+		if (lastModified != -1)	dotPart.setLastModified(lastModified);
 		rename(dotPart, fileOrFolder);
 	}
 
 	
 	@Override
-	public void mergeOver(File existingFolder, Sneer1024 hashOfContents) throws IOException {
+	public void mergeOver(File existingFolder, FolderContents contents) throws IOException {
 		check(existingFolder);
-		writeTo(existingFolder, hashOfContents);
+		writeToFolder(existingFolder, contents);
 	}
 
 
-	private void writeTo(File fileOrFolder, Sneer1024 hashOfContents) throws IOException {
-		my(FileMapGuide.class).guide(new FileWritingVisitor(fileOrFolder), hashOfContents);
-	}
+	private void writeTo(File fileOrFolder, Object contents) throws IOException {
+		if (contents instanceof FolderContents) {
+			writeToFolder(fileOrFolder, (FolderContents)contents);
+			return;
+		}
 
+		if (contents instanceof byte[]) {
+			writeToFile(fileOrFolder, (byte[])contents);
+			return;
+		}
+		
+		throw new IllegalStateException();
+	}
 	
+	
+	private void writeToFile(File file, byte[] contents) throws IOException {
+		my(IO.class).files().writeByteArrayToFile(file, contents);
+	}
+
+
+	private void writeToFolder(File folder, FolderContents contents) throws IOException {
+		my(FileMapGuide.class).guide(new FileWritingVisitor(folder), contents);
+	}
+
+
 	private void check(final File existingFolder) {
 		if (!existingFolder.isDirectory()) throw new IllegalArgumentException("existingFolder must be a folder: " + existingFolder);
 		if (!existingFolder.exists()) throw new IllegalArgumentException("Folder does not exist: " + existingFolder);
@@ -55,4 +87,5 @@ public class FileWriterImpl implements FileWriter {
 	private void rename(File file, File newName) throws IOException {
 		if (!file.renameTo(newName)) throw new IOException("Unable to rename .part file/folder to actual file/folder: " + file);
 	}
+
 }
