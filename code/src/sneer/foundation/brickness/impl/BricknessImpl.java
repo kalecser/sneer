@@ -5,7 +5,6 @@ import static sneer.foundation.environments.Environments.my;
 import java.lang.reflect.Constructor;
 
 import sneer.foundation.brickness.BrickLoadingException;
-import sneer.foundation.brickness.Caller;
 import sneer.foundation.environments.Bindings;
 import sneer.foundation.environments.CachingEnvironment;
 import sneer.foundation.environments.Environment;
@@ -18,7 +17,7 @@ public class BricknessImpl implements Environment {
 		_bindings = new Bindings();
 		_bindings.bind(this);
 		_bindings.bind(bindings);
-		_bindings.bind(new CallerImpl());
+		_bindings.bind(new RuntimeNatureDispatcherImpl());
 	
 		_cache = createCachingEnvironment();
 		

@@ -9,7 +9,9 @@ import java.util.Collections;
 import java.util.List;
 
 import sneer.foundation.brickness.ClassDefinition;
+import sneer.foundation.brickness.LoadTimeNature;
 import sneer.foundation.brickness.Nature;
+import sneer.foundation.brickness.RuntimeNature;
 
 abstract class ClassLoaderWithNatures extends EagerClassLoader {
 
@@ -52,13 +54,31 @@ abstract class ClassLoaderWithNatures extends EagerClassLoader {
 
 	private List<ClassDefinition> realizeNatures(ClassDefinition originalClassDef) {
 		List<ClassDefinition> classDefs = Collections.singletonList(originalClassDef);
-		for (Nature nature : _natures) {
-			ArrayList<ClassDefinition> realized = new ArrayList<ClassDefinition>();
-			for (ClassDefinition classDef : classDefs)
-				realized.addAll(nature.realize(classDef));
-			classDefs = realized;
-		}
+		for (Nature nature : _natures)
+			classDefs = realizeNature(classDefs, nature);
 		return classDefs;
+	}
+
+	private List<ClassDefinition> realizeNature(
+			List<ClassDefinition> classDefs, Nature nature) {
+		
+		LoadTimeNature loadTimeNature = loadTimeNatureFrom(nature);
+		ArrayList<ClassDefinition> resultingDefs = new ArrayList<ClassDefinition>();
+		for (ClassDefinition classDef : classDefs) {
+			resultingDefs.addAll(loadTimeNature.realize(classDef));
+		}
+		return resultingDefs;
+		
+	}
+
+	private LoadTimeNature loadTimeNatureFrom(Nature nature) {
+		if (nature instanceof LoadTimeNature)
+			return (LoadTimeNature)nature;
+		
+		if (nature instanceof RuntimeNature)
+			return new RuntimeNatureEnhancer();
+		
+		throw new IllegalStateException("Must be either '" + RuntimeNature.class + "' or '" + LoadTimeNature.class + "'! " + nature);
 	}
 
     public byte[] toByteArray(final URL classResource) throws IOException {

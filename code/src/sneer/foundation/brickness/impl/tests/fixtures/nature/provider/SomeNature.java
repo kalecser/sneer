@@ -1,10 +1,10 @@
 package sneer.foundation.brickness.impl.tests.fixtures.nature.provider;
 
 import sneer.foundation.brickness.Brick;
-import sneer.foundation.brickness.Nature;
+import sneer.foundation.brickness.LoadTimeNature;
 
 @Brick
-public interface SomeNature extends Nature {
+public interface SomeNature extends LoadTimeNature {
 
 
 }
