@@ -1,5 +1,6 @@
 package sneer.bricks.pulp.natures.gui;
 
+import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.Nature;
 
@@ -9,15 +10,7 @@ import sneer.foundation.brickness.Nature;
  * The container does not allow GUI Bricks to call methods that throw Hiccup.
  * 
  * All methods of all classes in a brick annotated with @Brick(GUI.class) will be
- * instrumented at the beginning with bytecode to run in the Gui thread
- * if not already running in it. Something similar to:
- * 
- *			if (!EventQueue.isDispatchThread()) {
- *				EventQueue.invokeAndWait(new Runnable(){public void run(){
- *					//recursive call to method with same args.
- *				}})
- *			}
- *			//Original method bytecode
+ * intercepted and directed to {@link GuiThread#invokeAndWaitForWussies(Runnable)} for execution.
  */
 
 @Brick
