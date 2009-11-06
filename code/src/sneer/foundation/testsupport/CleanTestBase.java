@@ -45,7 +45,7 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	protected String tmpFolderName() {
 		if (_tmpFolderName == null)
-			_tmpFolderName = System.getProperty("java.io.tmpdir") + "/" + System.nanoTime();
+			_tmpFolderName = System.getProperty("java.io.tmpdir") + System.nanoTime();
 
 		return _tmpFolderName;
 	}
@@ -246,15 +246,16 @@ public abstract class CleanTestBase extends AssertUtils {
 		return file;
 	}
 
-	protected void createTmpFilesWithPathAsContent(String... fileNames) throws IOException {
+	protected void createTmpFilesWithFileNameAsContent(String... fileNames) throws IOException {
 		for (String fileName : fileNames)
-			createTmpFileWithPathAsContent(fileName);
+			createTmpFileWithFileNameAsContent(fileName);
 	}
 
-	protected void createTmpFileWithPathAsContent(String fileName) throws IOException {
+	protected File createTmpFileWithFileNameAsContent(String fileName) throws IOException {
 		File file = createTmpFile(fileName);
 		FileOutputStream fileOutputStream = new FileOutputStream(file);
-		fileOutputStream.write(file.getPath().getBytes());
+		fileOutputStream.write(fileName.getBytes());
+		return file;
 	}
 
 }

@@ -3,11 +3,16 @@
 
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
-	- Wusic
+	- [Igor] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
+		- Remove FileServerImpl.isThereEnoughMemoryFor(File response)
+		- ByteArraySocketImpl.write(array) and read() clean up hack.
+
+	- Wusic 
 		- [Klaus] Validate and finish FileClientTest
-		- [Igor] Check if tracks are still being downloaded more than once
+		- Check if tracks are still being downloaded more than once
 			- Create automated test for that
-		- [Igor] Create MusicalTasteMatcher
+		- Display playing track of each contact
+		- Create MusicalTasteMatcher
 		- Downloads
 			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
@@ -16,10 +21,6 @@
 		- Back Button 
 		- Find another way to solve pause lag (try to use a smaller frame in player)
 
-	- [Kalecser] File Blocks - Useful for Rapidshare Killer too: Break large files into smaller blocks.
-		- [Klaus] ByteArraySocketImpl.write(array) and read() clean up hack.
-		- Remove FileServerImpl.isThereEnoughMemoryFor(File response)
-	
 	- SneerJockey - Extract from Sneer so it can be updated (Sneer itself is not updatable).
 
 	- Fix LightType.CONFIRMATION

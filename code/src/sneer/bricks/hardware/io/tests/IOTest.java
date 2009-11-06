@@ -3,6 +3,7 @@ package sneer.bricks.hardware.io.tests;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.junit.Test;
 
@@ -23,6 +24,13 @@ public class IOTest extends BrickTest {
 		
 		_subject.files().assertSameContents(new File(tmpFolder(), "a1"), new File(tmpFolder(), "b1"));
 	}
-	
+
+	@Test
+	public void readBlockTest() throws IOException {
+		File tmpFile = createTmpFileWithFileNameAsContent("/1stBlockContent/2ndBlockContent/3rdBlockContent");
+		assertEquals("/1stBlockContent", new String(_subject.files().readBlock(tmpFile, 0, 16)));
+		assertEquals("/2ndBlockContent", new String(_subject.files().readBlock(tmpFile, 1, 16)));
+		assertEquals("/3rdBlockContent", new String(_subject.files().readBlock(tmpFile, 2, 16)));
+	}
 
 }

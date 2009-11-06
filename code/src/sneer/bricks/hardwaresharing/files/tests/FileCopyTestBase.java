@@ -4,6 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 import org.junit.Test;
 
@@ -34,6 +35,24 @@ public abstract class FileCopyTestBase extends BrickTest {
 		testWith(folderWithAFewFiles());
 	}
 
+	@Test (timeout = 3000)
+	public void testWithLargeFile() throws IOException {
+		testWith(createLargeFile());
+	}
+
+
+	private File createLargeFile() throws IOException {
+		File result = newTempFile();
+		my(IO.class).files().writeByteArrayToFile(result, randomBytes(1000000));
+		return result;
+	}
+
+	
+	private byte[] randomBytes(int size) {
+		byte[] result = new byte[size];
+		new Random().nextBytes(result);
+		return result;
+	}
 
 	private void testWith(File fileOrFolder) throws IOException {
 		Sneer1024 hash = _fileMap.put(fileOrFolder);
@@ -70,7 +89,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 	}
 
 	private File newTempFile() {
-		return new File(tmpFolder(), "copy" + System.nanoTime());
+		return new File(tmpFolder(), "tmp" + System.nanoTime());
 	}
 
 }

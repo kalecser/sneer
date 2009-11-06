@@ -27,7 +27,7 @@ public class RejectedTracksKeeperTest extends BrickTest {
 
 	@Before
 	public void createTrackFiles() throws IOException {
-		createTmpFilesWithPathAsContent("track1.mp3", "track2.mp3", "track3.mp3");
+		createTmpFilesWithFileNameAsContent("track1.mp3", "track2.mp3", "track3.mp3");
 	}
 
 	@Test
