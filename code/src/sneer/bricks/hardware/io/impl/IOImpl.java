@@ -6,6 +6,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -50,7 +51,17 @@ class IOImpl implements IO {
 				my(BlinkingLights.class).turnOn(LightType.ERROR, "Error", "Unable to read file: " + file.getAbsolutePath(),  exception, 5*60*1000);
 			}});		
 		}
-		
+
+		@Override
+		public byte[] readBlock(File file, int blockNumber, int blockSize) throws IOException {
+			final byte[] blockBytes = new byte[blockSize];
+			RandomAccessFile randomAccessToFile = new RandomAccessFile(file, "r");
+			randomAccessToFile.seek(blockNumber * blockSize);
+			randomAccessToFile.readFully(blockBytes);
+			randomAccessToFile.close();
+			return blockBytes;
+		}
+
 		@Override public void writeByteArrayToFile(File file, byte[] data) throws IOException { FileUtils.writeByteArrayToFile(file, data); }
 		
 		@Override public void assertSameContents(File file1, File file2) throws IOException {

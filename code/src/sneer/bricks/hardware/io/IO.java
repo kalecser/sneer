@@ -48,6 +48,7 @@ public interface IO {
 		void writeString(File file, String data) throws IOException;
 		
 		byte[] readBytes(File file) throws IOException;
+		byte[] readBlock(File file, int blockNumber, int blockSize) throws IOException; // zero-based
 		void readBytes(File file, Consumer<byte[]> content);
 		void readBytes(File file, Consumer<byte[]> content, Consumer<IOException> exception);
 		
