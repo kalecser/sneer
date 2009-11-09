@@ -27,10 +27,11 @@ public class IOTest extends BrickTest {
 
 	@Test
 	public void readBlockTest() throws IOException {
-		File tmpFile = createTmpFileWithFileNameAsContent("/1stBlockContent/2ndBlockContent/3rdBlockContent");
-		assertEquals("/1stBlockContent", new String(_subject.files().readBlock(tmpFile, 0, 16)));
-		assertEquals("/2ndBlockContent", new String(_subject.files().readBlock(tmpFile, 1, 16)));
-		assertEquals("/3rdBlockContent", new String(_subject.files().readBlock(tmpFile, 2, 16)));
+		File tmpFile = createTmpFileWithFileNameAsContent("A234567890B234567890C234567890D2");
+		assertEquals("A234567890", new String(_subject.files().readBlock(tmpFile, 0, 10)));
+		assertEquals("B234567890", new String(_subject.files().readBlock(tmpFile, 1, 10)));
+		assertEquals("C234567890", new String(_subject.files().readBlock(tmpFile, 2, 10)));
+		assertEquals("D2", new String(_subject.files().readBlock(tmpFile, 3, 10)));
 	}
 
 }

@@ -54,9 +54,10 @@ class IOImpl implements IO {
 
 		@Override
 		public byte[] readBlock(File file, int blockNumber, int blockSize) throws IOException {
-			final byte[] blockBytes = new byte[blockSize];
+			final long position = blockNumber * blockSize;
+			final byte[] blockBytes = new byte[(int) Math.min(blockSize, file.length() - position)];
 			RandomAccessFile randomAccessToFile = new RandomAccessFile(file, "r");
-			randomAccessToFile.seek(blockNumber * blockSize);
+			randomAccessToFile.seek(position);
 			randomAccessToFile.readFully(blockBytes);
 			randomAccessToFile.close();
 			return blockBytes;
