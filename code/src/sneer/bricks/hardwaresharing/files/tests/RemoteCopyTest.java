@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Ignore;
+import org.junit.Test;
 
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.hardwaresharing.files.server.FileServer;
@@ -16,7 +17,6 @@ import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
-@Ignore
 public class RemoteCopyTest extends FileCopyTestBase {
 
 	@Override
@@ -28,6 +28,13 @@ public class RemoteCopyTest extends FileCopyTestBase {
 		Environments.runWith(remote, new Closure<IOException>() { @Override public void run() throws IOException {
 			my(FileClient.class).fetch(destination, hashOfContents);
 		}});
+	}
+
+	@Test
+	@Override
+	@Ignore
+	public void testWithAFewFiles() {
+		// Fix: Remove this stub after fixing the test (refer to superclass for implementation)
 	}
 
 }
