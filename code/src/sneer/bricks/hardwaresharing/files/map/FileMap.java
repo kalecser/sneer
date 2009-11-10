@@ -9,8 +9,6 @@ import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface FileMap {
-
-	static final int FILE_BLOCK_SIZE = Integer.MAX_VALUE;
 	
 	Sneer1024 put(File fileOrFolder) throws IOException;
 	Sneer1024 putFolderContents(FolderContents contents);

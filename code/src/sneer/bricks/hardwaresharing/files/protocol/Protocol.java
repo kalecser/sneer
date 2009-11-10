@@ -6,4 +6,6 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface Protocol {
 
+	int FILE_BLOCK_SIZE = 1024; // Suitable network packet size
+
 }
