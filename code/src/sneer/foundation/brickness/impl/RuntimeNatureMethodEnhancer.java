@@ -13,8 +13,6 @@ import javassist.CtNewMethod;
 import javassist.NotFoundException;
 import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.brickness.RuntimeNature;
-import sneer.foundation.brickness.RuntimeNatureDispatcher;
-import sneer.foundation.environments.Environments;
 
 public class RuntimeNatureMethodEnhancer {
 
@@ -56,9 +54,10 @@ public class RuntimeNatureMethodEnhancer {
 					"{ " + fullyQualifiedContinuationName + " continuation = new " + fullyQualifiedContinuationName + "(this);"
 					+ "Object[] args = " + argumentBoxing() + "; "
 					+ "Object result = " 
-						+ "((" + RuntimeNatureDispatcher.class.getName() + ")" + Environments.class.getName() + ".my(" + RuntimeNatureDispatcher.class.getName() + ".class)"
-							+ ").dispatch("
+						+ RuntimeNatureDispatcher.class.getName()
+							+ ".dispatch("
 								+ RuntimeNatureEnhancer.BRICK_METADATA_CLASS + ".BRICK, "
+								+ RuntimeNatureEnhancer.BRICK_METADATA_CLASS + ".NATURES, "
 								+ "this, "
 								+ "\"" + _method.getName() + "\", "
 								+ "args, "

@@ -60,6 +60,16 @@ public class RuntimeNatureTest extends Assert {
 	}
 	
 	@Test
+	public void environmentIsNotRequired() {
+		checking("add", new Object[] { 1, 2 }, 3, new Runnable() { @Override public void run() {
+			final BrickOfSomeRuntimeNature brick = my(BrickOfSomeRuntimeNature.class);
+			Environments.runWith(null, new Runnable() { @Override public void run() {
+				brick.add(1, 2);
+			}});
+		}});
+	}
+	
+	@Test
 	public void continuationWithParameters() {
 		
 		mockery.checking(new Expectations() {{

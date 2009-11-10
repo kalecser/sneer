@@ -16,7 +16,7 @@ import javassist.NotFoundException;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.brickness.LoadTimeNature;
-import sneer.foundation.environments.Environment;
+import sneer.foundation.brickness.RuntimeNature;
 
 public class RuntimeNatureEnhancer implements LoadTimeNature {
 
@@ -60,8 +60,8 @@ public class RuntimeNatureEnhancer implements LoadTimeNature {
 	private void introduceMetadataInitializer(CtClass brickClass) throws NotFoundException {
 		try {
 			CtConstructor initializer = brickClass.makeClassInitializer();
-			initializer.insertAfter(BRICK_METADATA_CLASS + ".ENVIRONMENT = sneer.foundation.environments.Environments.my(sneer.foundation.environments.Environment.class);");
 			initializer.insertAfter(BRICK_METADATA_CLASS + ".BRICK = " + brickInterface(brickClass).getName() + ".class;");
+			initializer.insertAfter(BRICK_METADATA_CLASS + ".NATURES = " + RuntimeNatureDispatcher.class.getName() + ".runtimeNaturesFor(" + BRICK_METADATA_CLASS + ".BRICK);");
 		} catch (CannotCompileException e) {
 			throw new IllegalStateException(e);
 		}
@@ -78,8 +78,8 @@ public class RuntimeNatureEnhancer implements LoadTimeNature {
 		CtClass metadata = classPool.makeClass(BRICK_METADATA_CLASS);
 		metadata.setModifiers(javassist.Modifier.PUBLIC);
 		try {
-			metadata.addField(CtField.make("public static " + Environment.class.getName() + " ENVIRONMENT;", metadata));
 			metadata.addField(CtField.make("public static " + Class.class.getName() + " BRICK;", metadata));
+			metadata.addField(CtField.make("public static " + RuntimeNature.class.getName() + "[] NATURES;", metadata));
 			
 			return metadata;
 		} catch (CannotCompileException e) {
