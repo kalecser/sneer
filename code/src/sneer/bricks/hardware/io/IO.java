@@ -67,5 +67,6 @@ public interface IO {
 		String toString(InputStream input) throws IOException;
 		byte[] toByteArray(InputStream input) throws IOException;
 		byte[] readBytesAndClose(InputStream input) throws IOException;
+		void closeQuietly(Closeable closeable);
 	}
 }

@@ -22,7 +22,6 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Consumer;
 
-
 class IOImpl implements IO {
 	
 	private Files _files = new Files(){
@@ -143,7 +142,10 @@ class IOImpl implements IO {
 				try { input.close(); } catch (Throwable ignore) { }
 			}
 		}
-
+		@Override public void closeQuietly(Closeable closeable) {
+			if (closeable == null) return;
+			try { closeable.close(); } catch (IOException ignored) {}
+		}
 	};
 
 	private FileFilters _fileFilters = new FileFilters(){
