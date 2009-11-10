@@ -3,9 +3,10 @@
 
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
-	- [Igor] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
+	- [Igor/Klaus] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
 		- Remove FileServerImpl.isThereEnoughMemoryFor(File response)
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
+		- Unignore RemoteCopyTest
 
 	- Wusic 
 		- [Klaus] Validate and finish FileClientTest
