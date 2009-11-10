@@ -45,7 +45,7 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	protected String tmpFolderName() {
 		if (_tmpFolderName == null)
-			_tmpFolderName = System.getProperty("java.io.tmpdir") + System.nanoTime();
+			_tmpFolderName = System.getProperty("java.io.tmpdir") + "/" + System.nanoTime();
 
 		return _tmpFolderName;
 	}
