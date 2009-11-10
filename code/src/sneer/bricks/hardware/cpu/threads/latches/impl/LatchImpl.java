@@ -27,4 +27,9 @@ class LatchImpl implements Latch {
 		_delegate.countDown();
 	}
 
+	@Override
+	public boolean isOpen() {
+		return _delegate.getCount() == 0;
+	}
+	
 }
