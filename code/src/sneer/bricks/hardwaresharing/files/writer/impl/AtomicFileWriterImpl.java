@@ -3,15 +3,17 @@ package sneer.bricks.hardwaresharing.files.writer.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.map.visitors.FileMapGuide;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
-import sneer.bricks.hardwaresharing.files.writer.FileWriter;
+import sneer.bricks.hardwaresharing.files.writer.AtomicFileWriter;
 
 
-public class FileWriterImpl implements FileWriter {
+class AtomicFileWriterImpl implements AtomicFileWriter {
 
 	
 	@Override
@@ -45,6 +47,19 @@ public class FileWriterImpl implements FileWriter {
 		writeToFolder(existingFolder, contents);
 	}
 
+
+	@Override
+	public OutputStream atomicOutputStreamFor(final File file, final long lastModified) throws IOException {
+		final File part = prepareDotPart(file);
+		return new FileOutputStream(part) {
+			@Override
+			public void close() throws IOException {
+				super.close();
+				if (lastModified != -1) part.setLastModified(lastModified);
+				rename(part, file);
+			}
+		};
+	}
 
 	private void writeTo(File fileOrFolder, Object contents) throws IOException {
 		if (contents instanceof FolderContents) {

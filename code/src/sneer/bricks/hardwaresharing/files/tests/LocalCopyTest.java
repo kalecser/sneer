@@ -8,7 +8,7 @@ import java.io.IOException;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
-import sneer.bricks.hardwaresharing.files.writer.FileWriter;
+import sneer.bricks.hardwaresharing.files.writer.AtomicFileWriter;
 import sneer.bricks.pulp.crypto.Sneer1024;
 
 public class LocalCopyTest extends FileCopyTestBase {
@@ -27,12 +27,12 @@ public class LocalCopyTest extends FileCopyTestBase {
 
 	private void copyFolder(Sneer1024 hashOfContents, File destination) throws IOException {
 		FolderContents folder = my(FileMap.class).getFolder(hashOfContents);
-		my(FileWriter.class).writeAtomicallyTo(destination, -1, folder);
+		my(AtomicFileWriter.class).writeAtomicallyTo(destination, -1, folder);
 	}
 
 
 	private void copyFile(File destination, File file) throws IOException {
-		my(FileWriter.class).writeAtomicallyTo(destination, anyReasonableDate(), bytes(file));
+		my(AtomicFileWriter.class).writeAtomicallyTo(destination, anyReasonableDate(), bytes(file));
 	}
 
 
