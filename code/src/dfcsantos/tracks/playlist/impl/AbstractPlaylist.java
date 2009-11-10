@@ -18,7 +18,7 @@ abstract class AbstractPlaylist implements Playlist {
 	private final File _tracksFolder;
 	private ListIterator<File> _trackIterator;
 
-	private final Light _noTracksFound = my(BlinkingLights.class).prepare(LightType.WARN);
+	private final Light _noTracksFound = my(BlinkingLights.class).prepare(LightType.WARNING);
 
 	AbstractPlaylist(File tracksFolder) {
 		_tracksFolder = tracksFolder;

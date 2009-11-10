@@ -60,7 +60,7 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 	BlinkingLightsGuiImpl(){
 		loadImage("good_news.png", LightType.GOOD_NEWS);
 		loadImage("info.png", LightType.INFO);
-		loadImage("warn.png", LightType.WARN);
+		loadImage("warn.png", LightType.WARNING);
 		loadImage("error.png", LightType.ERROR);
 
 		_instrumentManager.registerInstrument(this);

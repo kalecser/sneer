@@ -69,7 +69,7 @@ class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Runnable {
 	private boolean isTooOld(Heartbeat beat) {
 		if (now() - beat.publicationTime() < MAX_BEAT_AGE) return false;
 		
-		my(BlinkingLights.class).turnOn(LightType.WARN, "Time mismatch with " + contact(beat), "You have received an old Heartbeat from " + contact(beat) + ". This can happen if your clock and his are set to different times or to same times but different timezones.");
+		my(BlinkingLights.class).turnOn(LightType.WARNING, "Time mismatch with " + contact(beat), "You have received an old Heartbeat from " + contact(beat) + ". This can happen if your clock and his are set to different times or to same times but different timezones.");
 		return true;
 	}
 

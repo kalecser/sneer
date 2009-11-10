@@ -21,7 +21,7 @@ public class TranslucentSupportImpl implements TranslucentSupport {
 	private boolean _isDisabled = false;
     
     TranslucentSupportImpl(){
-    	_light = my(BlinkingLights.class).prepare(LightType.WARN);
+    	_light = my(BlinkingLights.class).prepare(LightType.WARNING);
 
     	Class<?> awtUtilitiesClass = utilitiesClass();
     	if(awtUtilitiesClass==null) return;

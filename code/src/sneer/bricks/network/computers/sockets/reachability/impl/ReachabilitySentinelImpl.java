@@ -44,7 +44,7 @@ class ReachabilitySentinelImpl implements ReachabilitySentinel {
 
 	private synchronized Light unreachableLight() {
 		if (null == _unreachable)
-			_unreachable = _lights.prepare(LightType.WARN);
+			_unreachable = _lights.prepare(LightType.WARNING);
 		return _unreachable;
 	}
 }

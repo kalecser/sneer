@@ -28,7 +28,7 @@ class TrackContractImpl implements TrackContract {
 		try {
 			_trackStream = new PausableInputStream(new FileInputStream(track.file()), isPlaying);
 		} catch (FileNotFoundException e) {
-			my(BlinkingLights.class).turnOn(LightType.WARN, "Unable to find file " + track.file() , "File might have been deleted manually.", 15000);
+			my(BlinkingLights.class).turnOn(LightType.WARNING, "Unable to find file " + track.file() , "File might have been deleted manually.", 15000);
 		} 
 		
 		my(Threads.class).startDaemon("Track Player", new Runnable() { @Override public void run() {
@@ -56,7 +56,7 @@ class TrackContractImpl implements TrackContract {
 			_player.play();
 		} catch (Throwable t) {
 			if (!_wasDisposed)
-				my(BlinkingLights.class).turnOn(LightType.WARN, "Error reading track", "Error reading track", t, 30000);
+				my(BlinkingLights.class).turnOn(LightType.WARNING, "Error reading track", "Error reading track", t, 30000);
 		} finally {
 			if (_wasDisposed) return;
 			dispose();

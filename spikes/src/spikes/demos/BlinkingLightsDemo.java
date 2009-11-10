@@ -16,7 +16,7 @@ public class BlinkingLightsDemo {
 		BlinkingLights bl = my(BlinkingLights.class);
 		
 		bl.turnOn(LightType.INFO, "Info", "Info - expires in 7000ms", 7000);
-		bl.turnOn(LightType.WARN, "Warning", "Warning - expires in 10000ms", 10000);
+		bl.turnOn(LightType.WARNING, "Warning", "Warning - expires in 10000ms", 10000);
 		bl.turnOn(LightType.ERROR, "Error", "This is an Error!", new NullPointerException());
 	}
 

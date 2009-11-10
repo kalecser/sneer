@@ -41,7 +41,7 @@ class ByteArraySocketImpl implements ByteArraySocket {
 		
 		int length = array.length;
 		if (length > 65534) {
-			hugeTupleLight = my(BlinkingLights.class).turnOn(LightType.WARN, "Huge tuple is being sent.", "Huge tuple is being sent. Size: " + length);
+			hugeTupleLight = my(BlinkingLights.class).turnOn(LightType.WARNING, "Huge tuple is being sent.", "Huge tuple is being sent. Size: " + length);
 			_outputStream.writeChar(65535);
 			_outputStream.writeInt(length);
 		} else
