@@ -60,6 +60,18 @@ public class RuntimeNatureTest extends Assert {
 	}
 	
 	@Test
+	public void overridenMethods() {
+		SomeRuntimeNature passThroughNature = new SomeRuntimeNature() { @Override public Object invoke(Class<?> brick, Object instance, String methodName, Object[] args, Continuation continuation) {
+			return continuation.invoke(args);
+		}};
+		
+		
+		Environments.runWith(Brickness.newBrickContainer(passThroughNature), new Runnable() { @Override public void run() {
+			assertEquals("Hello!!!", my(BrickOfSomeRuntimeNature.class).newGreeter().hello());
+		}});
+	}
+	
+	@Test
 	public void environmentIsNotRequired() {
 		checking("add", new Object[] { 1, 2 }, 3, new Runnable() { @Override public void run() {
 			final BrickOfSomeRuntimeNature brick = my(BrickOfSomeRuntimeNature.class);

@@ -10,6 +10,7 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewConstructor;
 import javassist.CtNewMethod;
+import javassist.Modifier;
 import javassist.NotFoundException;
 import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.brickness.RuntimeNature;
@@ -41,7 +42,20 @@ public class RuntimeNatureMethodEnhancer {
 	}
 
 	private void createDelegate() throws CannotCompileException {
-		_containingClass.addMethod(CtNewMethod.copy(_method, delegateMethodName(), _method.getDeclaringClass(), null));
+		_containingClass.addMethod(
+				privateFinalCopyOf(_method, delegateMethodName()));
+	}
+
+	private CtMethod privateFinalCopyOf(CtMethod method, String copyName)
+			throws CannotCompileException {
+		CtMethod copy = CtNewMethod.copy(method, copyName, method.getDeclaringClass(), null);
+		makePrivateFinal(copy);
+		return copy;
+	}
+
+	private void makePrivateFinal(CtMethod copy) {
+		int modifiers = Modifier.setPrivate(copy.getModifiers()) | Modifier.FINAL;
+		copy.setModifiers(modifiers);
 	}
 
 	private String delegateMethodName() {

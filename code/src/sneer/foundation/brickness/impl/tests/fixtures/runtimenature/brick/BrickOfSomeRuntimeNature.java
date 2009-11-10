@@ -15,5 +15,7 @@ public interface BrickOfSomeRuntimeNature {
 	void foo(String arg);
 
 	int add(int i, int j);
+	
+	Greeter newGreeter();
 
 }
