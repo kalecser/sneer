@@ -17,7 +17,6 @@ public class BricknessImpl implements Environment {
 		_bindings = new Bindings();
 		_bindings.bind(this);
 		_bindings.bind(bindings);
-		_bindings.bind(new RuntimeNatureDispatcherImpl());
 	
 		_cache = createCachingEnvironment();
 		

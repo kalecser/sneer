@@ -10,11 +10,10 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewConstructor;
 import javassist.CtNewMethod;
+import javassist.Modifier;
 import javassist.NotFoundException;
 import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.brickness.RuntimeNature;
-import sneer.foundation.brickness.RuntimeNatureDispatcher;
-import sneer.foundation.environments.Environments;
 
 public class RuntimeNatureMethodEnhancer {
 
@@ -43,7 +42,20 @@ public class RuntimeNatureMethodEnhancer {
 	}
 
 	private void createDelegate() throws CannotCompileException {
-		_containingClass.addMethod(CtNewMethod.copy(_method, delegateMethodName(), _method.getDeclaringClass(), null));
+		_containingClass.addMethod(
+				privateFinalCopyOf(_method, delegateMethodName()));
+	}
+
+	private CtMethod privateFinalCopyOf(CtMethod method, String copyName)
+			throws CannotCompileException {
+		CtMethod copy = CtNewMethod.copy(method, copyName, method.getDeclaringClass(), null);
+		makePrivateFinal(copy);
+		return copy;
+	}
+
+	private void makePrivateFinal(CtMethod copy) {
+		int modifiers = Modifier.setPrivate(copy.getModifiers()) | Modifier.FINAL;
+		copy.setModifiers(modifiers);
 	}
 
 	private String delegateMethodName() {
@@ -56,9 +68,10 @@ public class RuntimeNatureMethodEnhancer {
 					"{ " + fullyQualifiedContinuationName + " continuation = new " + fullyQualifiedContinuationName + "(this);"
 					+ "Object[] args = " + argumentBoxing() + "; "
 					+ "Object result = " 
-						+ "((" + RuntimeNatureDispatcher.class.getName() + ")" + Environments.class.getName() + ".my(" + RuntimeNatureDispatcher.class.getName() + ".class)"
-							+ ").dispatch("
+						+ RuntimeNatureDispatcher.class.getName()
+							+ ".dispatch("
 								+ RuntimeNatureEnhancer.BRICK_METADATA_CLASS + ".BRICK, "
+								+ RuntimeNatureEnhancer.BRICK_METADATA_CLASS + ".NATURES, "
 								+ "this, "
 								+ "\"" + _method.getName() + "\", "
 								+ "args, "
