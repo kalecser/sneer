@@ -32,7 +32,9 @@ import sneer.foundation.lang.Consumer;
 
 class Download {
 
-	private static final int REQUEST_PERIOD = 15000;
+	private static final int REQUEST_INTERVAL = 15000;
+	private static final int BLOCK_RANGE_LIMIT = 10;
+
 	private final File _fileOrFolder;
 	private final long _lastModified;
 	private final Sneer1024 _hashOfContents;
@@ -47,9 +49,9 @@ class Download {
 	private final Latch _isFinished = my(Latches.class).produce();
 	private IOException _exception;
 
-	@SuppressWarnings("unused") private final WeakContract _fileContract;
-	@SuppressWarnings("unused") private final WeakContract _folderContract;
-	@SuppressWarnings("unused") private final WeakContract _timerContract;
+	@SuppressWarnings("unused") private WeakContract _fileContract;
+	@SuppressWarnings("unused") private WeakContract _folderContract;
+	@SuppressWarnings("unused") private WeakContract _timerContract;
 
 
 	Download(File fileOrFolder, long lastModified, Sneer1024 hashOfContents) {
@@ -58,18 +60,14 @@ class Download {
 		_hashOfContents = hashOfContents;
 
 		checkRedundantDownload(fileOrFolder, hashOfContents);
+		publishFileBlockRequestsEvery(REQUEST_INTERVAL);
+		subscribeToFileAndFolderContents();		
+	}
 
-		_fileContract = my(TupleSpace.class).addSubscription(FileContents.class, new Consumer<FileContents>() { @Override public void consume(FileContents contents) {
-			receiveFileBlock(contents);
-		}});
-		
-		_folderContract = my(TupleSpace.class).addSubscription(FolderContents.class, new Consumer<FolderContents>() { @Override public void consume(FolderContents contents) {
-			receiveFolder(contents);
-		}});
-		
-		_timerContract = my(Timer.class).wakeUpNowAndEvery(REQUEST_PERIOD, new Runnable() { @Override public void run() {
-			requestNextBlockIfNecessary();
-		}});
+
+	void waitTillFinished() throws IOException {
+		_isFinished.waitTillOpen();
+		if (_exception != null) throw _exception;
 	}
 
 
@@ -80,9 +78,21 @@ class Download {
 	}
 
 
-	void waitTillFinished() throws IOException {
-		_isFinished.waitTillOpen();
-		if (_exception != null) throw _exception;
+	private void publishFileBlockRequestsEvery(long requestInterval) {
+		_timerContract = my(Timer.class).wakeUpNowAndEvery(requestInterval, new Runnable() { @Override public void run() {
+			requestNextBlockIfNecessary();
+		}});
+	}
+
+
+	private void subscribeToFileAndFolderContents() {
+		_fileContract = my(TupleSpace.class).addSubscription(FileContents.class, new Consumer<FileContents>() { @Override public void consume(FileContents contents) {
+			receiveFileBlock(contents);
+		}});
+		
+		_folderContract = my(TupleSpace.class).addSubscription(FolderContents.class, new Consumer<FolderContents>() { @Override public void consume(FolderContents contents) {
+			receiveFolder(contents);
+		}});
 	}
 
 
@@ -117,6 +127,8 @@ class Download {
 		if (contents instanceof FileContentsFirstBlock)
 			receiveFirstBlock((FileContentsFirstBlock) contents);
 
+		if (contents.blockNumber - _nextBlockToWrite > BLOCK_RANGE_LIMIT) return;
+
 		_blocksToWrite.add(contents);
 
 		tryToWriteBlocksInSequence();
@@ -148,7 +160,7 @@ class Download {
 				writeBlock(block.bytes.copy());
 				written = true;
 			}
-		} while (written); // In case blocks have arrived out of order
+		} while (!written); // In case blocks have arrived out of order
 
 		if (written && !isFinished()) requestNextBlock();
 	}
@@ -156,17 +168,24 @@ class Download {
 
 	private void writeBlock(byte[] bytes) throws IOException {
 		_output.write(bytes);
-		if (_nextBlockToWrite == _fileSizeInBlocks) finishDowload();
+		if (_nextBlockToWrite == _fileSizeInBlocks - 1) finishDowload();
 		++_nextBlockToWrite;
 	}
 
 
 	private void requestNextBlockIfNecessary() {
-		if (_lastRequestTime == -1)
+		if (isFirstRequest()) {
 			requestNextBlock();
+			return;
+		}
 
-		if (my(Clock.class).time().currentValue() - _lastRequestTime >= REQUEST_PERIOD)
+		if (my(Clock.class).time().currentValue() - _lastRequestTime >= REQUEST_INTERVAL)
 			requestNextBlock();
+	}
+
+
+	private boolean isFirstRequest() {
+		return _lastRequestTime == -1;
 	}
 
 

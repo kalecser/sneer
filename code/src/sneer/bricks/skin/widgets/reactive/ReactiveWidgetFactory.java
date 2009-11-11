@@ -15,7 +15,7 @@ import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.PickyConsumer;
 
-@Brick
+@Brick // (GUI.class)
 public interface ReactiveWidgetFactory {
 
 	ImageWidget newImage(Signal<Image> source);

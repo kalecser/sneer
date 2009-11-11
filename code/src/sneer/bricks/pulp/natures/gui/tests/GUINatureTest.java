@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.pulp.natures.gui.tests.fixtures.SomeGuiBrick;
@@ -18,7 +17,6 @@ public class GUINatureTest extends Assert {
 	
 	Environment subject = Brickness.newBrickContainer();
 	
-	
 	@Test
 	public void invocationHappensInTheSwingThread() {
 		Environments.runWith(subject, new Runnable() { @Override public void run() {
@@ -29,11 +27,10 @@ public class GUINatureTest extends Assert {
 	}
 	
 	@Test
-	@Ignore // FIXME: RuntimeNatureDispatcher is not available in the inner most environment
 	public void listenerInvocationHappensInBricknessEnvironment() {
 		Environments.runWith(subject, new Runnable() { @Override public void run() {
 			final ActionListener listener = my(SomeGuiBrick.class).listenerFor(subject);
-			Environments.runWith(emptyEnvironment(), new Runnable() { @Override public void run() {
+			Environments.runWith(null, new Runnable() { @Override public void run() {
 				listener.actionPerformed(new ActionEvent(this, 0, null));
 			}});
 		}});
@@ -57,12 +54,6 @@ public class GUINatureTest extends Assert {
 			}});
 			
 		}});
-	}
-
-	private Environment emptyEnvironment() {
-		return new Environment() { @Override public <T> T provide(Class<T> intrface) {
-			return null;
-		}};
 	}
 
 	private boolean isGuiThread(Thread thread) {

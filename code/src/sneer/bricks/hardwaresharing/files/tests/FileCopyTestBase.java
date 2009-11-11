@@ -25,7 +25,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 	protected final FileMap _fileMap = my(FileMap.class);
 
 	
-	@Test (timeout = 3000)
+	@Test (timeout = 2000)
 	public void testWithSmallFile() throws IOException {
 		testWith(anySmallFile());
 	}
