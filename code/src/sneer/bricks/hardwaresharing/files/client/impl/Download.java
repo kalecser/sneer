@@ -33,7 +33,7 @@ import sneer.foundation.lang.Consumer;
 class Download {
 
 	private static final int REQUEST_INTERVAL = 15000;
-	private static final int BLOCK_RANGE_LIMIT = 10;
+	private static final int MAX_BLOCKS_DOWNLOADED_AHEAD = 100;
 
 	private final File _fileOrFolder;
 	private final long _lastModified;
@@ -127,7 +127,8 @@ class Download {
 		if (contents instanceof FileContentsFirstBlock)
 			receiveFirstBlock((FileContentsFirstBlock) contents);
 
-		if (contents.blockNumber - _nextBlockToWrite > BLOCK_RANGE_LIMIT) return;
+		if (contents.blockNumber < _nextBlockToWrite) return;
+		if (contents.blockNumber - _nextBlockToWrite > MAX_BLOCKS_DOWNLOADED_AHEAD) return;
 
 		_blocksToWrite.add(contents);
 
@@ -136,9 +137,15 @@ class Download {
 
 
 	private void receiveFirstBlock(FileContentsFirstBlock contents) throws IOException {
-		if (_fileSizeInBlocks != -1) return;
+		if (firstBlockWasAlreadyReceived()) return;
+		
 		_fileSizeInBlocks = calculateFileSizeInBlocks(contents.fileSize);
 		_output = my(AtomicFileWriter.class).atomicOutputStreamFor(_fileOrFolder, _lastModified);
+	}
+
+
+	private boolean firstBlockWasAlreadyReceived() {
+		return _fileSizeInBlocks != -1;
 	}
 
 
@@ -168,8 +175,8 @@ class Download {
 
 	private void writeBlock(byte[] bytes) throws IOException {
 		_output.write(bytes);
-		if (_nextBlockToWrite == _fileSizeInBlocks - 1) finishDowload();
 		++_nextBlockToWrite;
+		if (_nextBlockToWrite == _fileSizeInBlocks) finishDowload();
 	}
 
 
