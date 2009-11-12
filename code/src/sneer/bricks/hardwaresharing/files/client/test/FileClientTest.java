@@ -25,8 +25,8 @@ public class FileClientTest extends BrickTest {
 
 		// TODO: Create expectation to check that the file has not been requested twice 
 		my(FileMap.class).put(myClassFile());
-		my(FileClient.class).fetch(myClassFile(), hash);
-		my(FileClient.class).fetch(myClassFile(), hash);
+		my(FileClient.class).fetchFile(myClassFile(), hash);
+		my(FileClient.class).fetchFile(myClassFile(), hash);
 	}
 
 	private File myClassFile() {

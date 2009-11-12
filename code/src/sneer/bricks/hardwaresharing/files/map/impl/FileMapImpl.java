@@ -76,7 +76,7 @@ class FileMapImpl implements FileMap {
 	private FileOrFolder putFolderEntry(File fileOrFolder) throws IOException {
 		Sneer1024 hashOfContents = put(fileOrFolder);
 
-		return new FileOrFolder(fileOrFolder.getName(), fileOrFolder.lastModified(), hashOfContents);
+		return new FileOrFolder(fileOrFolder.getName(), fileOrFolder.lastModified(), hashOfContents, fileOrFolder.isDirectory());
 	}
 	private static ImmutableArray<FileOrFolder> immutable(List<FileOrFolder> entries) {
 		return my(ImmutableArrays.class).newImmutableArray(entries);

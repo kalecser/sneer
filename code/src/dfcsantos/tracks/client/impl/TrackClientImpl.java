@@ -56,7 +56,7 @@ class TrackClientImpl implements TrackClient {
 		if (my(RejectedTracksKeeper.class).isRejected(endorsement.hash)) return;
 
 		try {
-			my(FileClient.class).fetch(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
+			my(FileClient.class).fetchFile(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
 		} catch (IOException e) {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}

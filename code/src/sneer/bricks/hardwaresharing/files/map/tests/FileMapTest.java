@@ -35,10 +35,11 @@ public class FileMapTest extends BrickTest {
 	
 	@Test (timeout = 3000)
 	public void putFolderContentsInTheMap() {
+		final boolean isFolder = true;
 		FolderContents folderContents = new FolderContents(immutable(Arrays.asList(new FileOrFolder[]{
-			new FileOrFolder("readme.txt", anyReasonableDate(), hash(1)),
-			new FileOrFolder("src", anyReasonableDate(), hash(2)),
-			new FileOrFolder("docs", anyReasonableDate(), hash(3))
+			new FileOrFolder("readme.txt", anyReasonableDate(), hash(1), !isFolder),
+			new FileOrFolder("src", anyReasonableDate(), hash(2), isFolder),
+			new FileOrFolder("docs", anyReasonableDate(), hash(3), isFolder)
 		})));
 
 		Sneer1024 hash = _subject.putFolderContents(folderContents);

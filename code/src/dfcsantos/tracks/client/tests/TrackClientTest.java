@@ -34,7 +34,7 @@ public class TrackClientTest extends BrickTest {
 		checking(new Expectations(){{
 			exactly(1).of(_fileMap).put(peerTracksFolder());
 			exactly(1).of(_fileMap).put(shareTracksFolderDefaultValue());
-			exactly(1).of(_fileClient).fetch(new File(peerTracksFolder(), "foo.mp3"), 42, hash1);
+			exactly(1).of(_fileClient).fetchFile(new File(peerTracksFolder(), "foo.mp3"), 42, hash1);
 		}});
 		
 		my(TrackClient.class);

@@ -30,7 +30,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 		testWith(anySmallFile());
 	}
 
-	@Test (timeout = 3000)
+	@Test (timeout = 5000)
 	public void testWithAFewFiles() throws IOException {
 		testWith(folderWithAFewFiles());
 	}
