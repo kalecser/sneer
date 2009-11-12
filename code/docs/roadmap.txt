@@ -6,7 +6,8 @@
 	- [Igor/Klaus] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
 		- Remove FileServerImpl.isThereEnoughMemoryFor(File response)
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
-		- Unignore RemoteCopyTest
+		- Unignore RemoteCopyTest (find out why FolderContent are not being sent by the FileServer to fix #testWithAFewFiles)
+		- Implement .part logic for folders (refer to FolderDownload)
 
 	- Wusic 
 		- [Klaus] Validate and finish FileClientTest

@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardwaresharing.files.client.Download;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.foundation.lang.CacheMap;
@@ -47,7 +46,7 @@ class FileClientImpl implements FileClient {
 		my(Logger.class).log("Fetching folder: {} hash:", folder, hashOfFolder);
 
 		Download download = _downloadsByHash.get(hashOfFolder, new Producer<Download>() { @Override public Download produce() throws RuntimeException {
-			return new FileDownload(folder, lastModified, hashOfFolder); 
+			return new FolderDownload(folder, lastModified, hashOfFolder); 
 		}});
 
 		download.waitTillFinished();

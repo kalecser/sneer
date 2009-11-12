@@ -19,8 +19,6 @@ import sneer.bricks.hardwaresharing.files.protocol.FileContentsFirstBlock;
 import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
 import sneer.bricks.hardwaresharing.files.protocol.Protocol;
 import sneer.bricks.hardwaresharing.files.writer.AtomicFileWriter;
-import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
@@ -29,10 +27,6 @@ class FileDownload extends AbstractDownload {
 
 	private static final int MAX_BLOCKS_DOWNLOADED_AHEAD = 100;
 
-	private final File _file;
-	private final long _lastModified;
-	private final Sneer1024 _hashOfFile;
-
 	private OutputStream _output;
 	private final List<FileContents> _blocksToWrite = new ArrayList<FileContents>();
 	private int _nextBlockToWrite = 0;
@@ -40,23 +34,15 @@ class FileDownload extends AbstractDownload {
 
 	private long _lastRequestTime = -1;
 
-	@SuppressWarnings("unused") private WeakContract _fileBlockConsumerContract;
+	@SuppressWarnings("unused") private WeakContract _fileContentConsumerContract;
 	@SuppressWarnings("unused") private WeakContract _timerContract;
 
 	FileDownload(File file, long lastModified, Sneer1024 hashOfFile) {
-		_file = file;
-		_lastModified = lastModified;
-		_hashOfFile = hashOfFile;
+		super(file, lastModified, hashOfFile);
 
 		checkRedundantDownload(file, hashOfFile);
 		publishFileBlockRequestsEvery(REQUEST_INTERVAL);
 		subscribeToFileContents();		
-	}
-
-	private void checkRedundantDownload(File file, Sneer1024 hash) {
-		Object alreadyMapped = FileClientUtils.mappedContentsBy(hash);
-		if (alreadyMapped != null)
-			my(BlinkingLights.class).turnOn(LightType.WARNING, "Redundant download started", "File: " + file + " already mapped as: " + alreadyMapped + " hash: " + hash, 10000);
 	}
 
 	private void publishFileBlockRequestsEvery(long requestInterval) {
@@ -66,7 +52,7 @@ class FileDownload extends AbstractDownload {
 	}
 
 	private void subscribeToFileContents() {
-		_fileBlockConsumerContract = my(TupleSpace.class).addSubscription(FileContents.class, new Consumer<FileContents>() { @Override public void consume(FileContents contents) {
+		_fileContentConsumerContract = my(TupleSpace.class).addSubscription(FileContents.class, new Consumer<FileContents>() { @Override public void consume(FileContents contents) {
 			receiveFileBlock(contents);
 		}});
 	}
@@ -83,7 +69,7 @@ class FileDownload extends AbstractDownload {
 	}
 
 	private void tryToReceiveFileBlock(FileContents contents) throws IOException {
-		if (!contents.hashOfFile.equals(_hashOfFile)) return;
+		if (!contents.hashOfFile.equals(_hash)) return;
 
 		my(Logger.class).log("File block received. File: {}, Block: ", contents.debugInfo, contents.blockNumber);
 
@@ -93,6 +79,7 @@ class FileDownload extends AbstractDownload {
 		if (contents.blockNumber < _nextBlockToWrite) return;
 		if (contents.blockNumber - _nextBlockToWrite > MAX_BLOCKS_DOWNLOADED_AHEAD) return; 
 
+		System.err.println("Block Received: " + contents.blockNumber + " Next Block to Write: " + _nextBlockToWrite);
 		_blocksToWrite.add(contents);
 
 		tryToWriteBlocksInSequence();
@@ -101,7 +88,7 @@ class FileDownload extends AbstractDownload {
 	private void receiveFirstBlock(FileContentsFirstBlock contents) throws IOException {
 		if (firstBlockWasAlreadyReceived()) return;
 		_fileSizeInBlocks = calculateFileSizeInBlocks(contents.fileSize);
-		_output = my(AtomicFileWriter.class).atomicOutputStreamFor(_file, _lastModified);
+		_output = my(AtomicFileWriter.class).atomicOutputStreamFor(_path, _lastModified);
 	}
 
 	private boolean firstBlockWasAlreadyReceived() {
@@ -131,6 +118,7 @@ class FileDownload extends AbstractDownload {
 	}
 
 	private void writeBlock(byte[] bytes) throws IOException {
+		System.err.println("Block: " + _nextBlockToWrite + " File: " + _path + " Total: " + _fileSizeInBlocks);
 		_output.write(bytes);
 		++_nextBlockToWrite;
 		if (_nextBlockToWrite == _fileSizeInBlocks) finish();
@@ -151,13 +139,13 @@ class FileDownload extends AbstractDownload {
 	}
 
 	private void requestNextBlock() {
-		my(TupleSpace.class).publish(new FileRequest(_hashOfFile, _nextBlockToWrite, _file.getAbsolutePath()));
+		my(TupleSpace.class).publish(new FileRequest(_hash, _nextBlockToWrite, _path.getAbsolutePath()));
 		_lastRequestTime = my(Clock.class).time().currentValue();
 	}
 
 	private void finish() throws IOException {
 		my(IO.class).streams().closeQuietly(_output);
-		finishWith(_file);
+		finishWith(_path);
 	}
 
 }

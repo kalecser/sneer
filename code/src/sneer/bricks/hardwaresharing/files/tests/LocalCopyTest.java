@@ -14,7 +14,18 @@ import sneer.bricks.pulp.crypto.Sneer1024;
 public class LocalCopyTest extends FileCopyTestBase {
 
 	@Override
-	protected void copyFromFileMap(Sneer1024 hashOfContents, File destination) throws IOException {
+	protected void copyFileFromFileMap(Sneer1024 hashOfContents, File destination) throws IOException {
+		copyFromFileMap(hashOfContents, destination);
+	}
+
+
+	@Override
+	protected void copyFolderFromFileMap(Sneer1024 hashOfContents, File destination) throws IOException {
+		copyFromFileMap(hashOfContents, destination);
+	}
+
+
+	private void copyFromFileMap(Sneer1024 hashOfContents, File destination) throws IOException {
 		File file = my(FileMap.class).getFile(hashOfContents);
 		if (file != null) {
 			copyFile(destination, file);
@@ -40,8 +51,10 @@ public class LocalCopyTest extends FileCopyTestBase {
 		return my(IO.class).files().readBytes(file);
 	}
 
-	
+
 	private long anyReasonableDate() {
 		return System.currentTimeMillis();
 	}
+
+
 }

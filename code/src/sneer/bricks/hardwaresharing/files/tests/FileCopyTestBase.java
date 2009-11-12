@@ -23,30 +23,27 @@ import sneer.foundation.lang.Consumer;
 public abstract class FileCopyTestBase extends BrickTest {
 
 	protected final FileMap _fileMap = my(FileMap.class);
-
 	
-	@Test (timeout = 2000)
+	@Test (timeout = 3000)
 	public void testWithSmallFile() throws IOException {
 		testWith(anySmallFile());
 	}
 
-	@Test (timeout = 5000)
+	@Test (timeout = 6000)
 	public void testWithAFewFiles() throws IOException {
 		testWith(folderWithAFewFiles());
 	}
 
-	@Test (timeout = 3000)
+	@Test (timeout = 4000)
 	public void testWithLargeFile() throws IOException {
 		testWith(createLargeFile());
 	}
-
 
 	private File createLargeFile() throws IOException {
 		File result = newTempFile();
 		my(IO.class).files().writeByteArrayToFile(result, randomBytes(1000000));
 		return result;
 	}
-
 	
 	private byte[] randomBytes(int size) {
 		byte[] result = new byte[size];
@@ -63,14 +60,17 @@ public abstract class FileCopyTestBase extends BrickTest {
 			if (!deltas.elementsAdded().isEmpty())
 				throw new IllegalStateException();
 		}});
-		copyFromFileMap(hash, copy);
-		
+		if (fileOrFolder.isFile())
+			copyFileFromFileMap(hash, copy);
+		else
+			copyFolderFromFileMap(hash, copy);
+
 		assertSameContents(fileOrFolder, copy);
 	}
 
+	abstract protected void copyFileFromFileMap(Sneer1024 hashOfContents, File destination) throws IOException;
 
-	abstract protected void copyFromFileMap(Sneer1024 hashOfContents, File destination) throws IOException;
-
+	abstract protected void copyFolderFromFileMap(Sneer1024 hashOfContents, File destination) throws IOException;
 
 	protected File anySmallFile() {
 		return myClassFile();
