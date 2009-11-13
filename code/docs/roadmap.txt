@@ -4,6 +4,7 @@
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
 	- [Igor/Klaus] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
+		- [Igor] FileDownload.tryToWriteBlocksInSequence() - Write test for that. Publish FileContents tuples arriving in wrong order.
 		- Remove FileServerImpl.isThereEnoughMemoryFor(File response)
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
 		- Unignore RemoteCopyTest (find out why FolderContent are not being sent by the FileServer to fix #testWithAFewFiles)
