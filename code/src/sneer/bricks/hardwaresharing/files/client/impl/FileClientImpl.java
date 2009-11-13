@@ -24,14 +24,9 @@ class FileClientImpl implements FileClient {
 
 	@Override
 	public void fetchFile(final File file, final long lastModified, final Sneer1024 hashOfFile) throws IOException {
-		my(Logger.class).log("Fetching file: {} hash:", file, hashOfFile);
-
-		Download download = _downloadsByHash.get(hashOfFile, new Producer<Download>() { @Override public Download produce() throws RuntimeException {
+		fetch("file", file, hashOfFile, new Producer<Download>() { @Override public Download produce() throws RuntimeException {
 			return new FileDownload(file, lastModified, hashOfFile); 
 		}});
-
-		download.waitTillFinished();
-		_downloadsByHash.remove(hashOfFile);
 	}
 
 
@@ -43,14 +38,19 @@ class FileClientImpl implements FileClient {
 
 	@Override
 	public void fetchFolder(final File folder, final long lastModified, final Sneer1024 hashOfFolder) throws IOException {
-		my(Logger.class).log("Fetching folder: {} hash:", folder, hashOfFolder);
-
-		Download download = _downloadsByHash.get(hashOfFolder, new Producer<Download>() { @Override public Download produce() throws RuntimeException {
+		fetch("folder", folder, hashOfFolder, new Producer<Download>() { @Override public Download produce() throws RuntimeException {
 			return new FolderDownload(folder, lastModified, hashOfFolder); 
 		}});
+	}
+
+
+	private void fetch(String type, File fileOrFolder, Sneer1024 hash, Producer<Download> downloadProducer) throws IOException {
+		my(Logger.class).log("Fetching " + type + ": {} hash:", fileOrFolder, hash);
+
+		Download download = _downloadsByHash.get(hash, downloadProducer);
 
 		download.waitTillFinished();
-		_downloadsByHash.remove(hashOfFolder);
+		_downloadsByHash.remove(hash);
 	}
 
 
