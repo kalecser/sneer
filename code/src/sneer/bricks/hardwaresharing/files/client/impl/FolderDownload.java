@@ -4,8 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardwaresharing.files.hasher.Hasher;
@@ -49,12 +47,8 @@ class FolderDownload extends AbstractDownload {
 
 	    if (!_path.exists() && !_path.mkdir()) throw new IOException("Unable to create folder: " + _path);
 
-	    final List<Download> spinoffs = new ArrayList<Download>(folderContents.contents.length());
 	    for (FileOrFolder entry : folderContents.contents)
-	    	spinoffs.add(spinoffDownloadFor(entry));
-
-	    for (Download spinoff : spinoffs)
-	    	spinoff.waitTillFinished();
+	    	startDownload(entry).waitTillFinished();
 
 	    if (_lastModified != -1)
 	      _path.setLastModified(_lastModified);
@@ -62,7 +56,7 @@ class FolderDownload extends AbstractDownload {
 	    finishWith(_path);
 	}
 
-	private Download spinoffDownloadFor(FileOrFolder entry) {
+	private Download startDownload(FileOrFolder entry) {
 		return entry.isFolder
 			? new FolderDownload(new File(_path, entry.name), entry.lastModified, entry.hashOfContents)
 	    	  : new FileDownload(new File(_path, entry.name), entry.lastModified, entry.hashOfContents);	
