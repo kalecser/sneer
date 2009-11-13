@@ -23,7 +23,8 @@ class FolderDownload extends AbstractDownload {
 	
 	FolderDownload(File folder, long lastModified, Sneer1024 hashOfFolder) {
 		super(folder, lastModified, hashOfFolder);
-
+		
+		if (isFinished()) return;
 		subscribeToFolderContents();
 		startSendingRequests();
 	}
@@ -58,10 +59,7 @@ class FolderDownload extends AbstractDownload {
 	    for (FileOrFolder entry : folderContents.contents)
 	    	startDownload(entry).waitTillFinished();
 
-	    if (_lastModified != -1)
-	      _path.setLastModified(_lastModified);
-
-	    finishWith(_path);
+	    finish();
 	}
 
 	
@@ -73,10 +71,17 @@ class FolderDownload extends AbstractDownload {
 
 	
 	@Override
-	Tuple requestToPublishIfNecessary() {
+	protected Tuple requestToPublishIfNecessary() {
 		return _received
 			? null
 			: new FileRequest(_hash, 0, _path.getAbsolutePath());
 	}
+
+
+	@Override
+	protected void copyContents(Object contents) {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	}
+
 
 }

@@ -31,12 +31,12 @@ abstract class AbstractDownload implements Download {
 	private IOException _exception;
 
 	
-	AbstractDownload(File file, long lastModified, Sneer1024 hashOfFile) {
-		_path = file;
+	AbstractDownload(File path, long lastModified, Sneer1024 hashOfFile) {
+		_path = path;
 		_lastModified = lastModified;
 		_hash = hashOfFile;
 		
-		checkRedundantDownload();
+		finishIfRedundant();
 	}
 
 	
@@ -58,8 +58,9 @@ abstract class AbstractDownload implements Download {
 		my(TupleSpace.class).publish(request);
 	}
 	
-		
-	abstract Tuple requestToPublishIfNecessary();
+
+	protected abstract void copyContents(Object contents) throws IOException;
+	protected abstract Tuple requestToPublishIfNecessary();
 
 
 	boolean isFinished() {
@@ -73,17 +74,28 @@ abstract class AbstractDownload implements Download {
 	}
 
 	
-	void finishWith(File fileOrFolder) throws IOException {
-		my(FileMap.class).put(fileOrFolder);
-		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, fileOrFolder.getName() + " downloaded!", fileOrFolder.getAbsolutePath(), 10000);
+	void finish() throws IOException {
+		my(FileMap.class).put(_path);
+		
+		//Implement: .part logic.
+		
+	    if (_lastModified != -1)
+		      _path.setLastModified(_lastModified);
+		
+		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _path.getName() + " downloaded!", _path.getAbsolutePath(), 10000);
 		_isFinished.open();
 	}
 
 	
-	private void checkRedundantDownload() {
+	private void finishIfRedundant() {
 		Object alreadyMapped = FileClientUtils.mappedContentsBy(_hash);
-		if (alreadyMapped != null)
-			my(BlinkingLights.class).turnOn(LightType.WARNING, "Redundant download started", "Path: " + _path + " already mapped as: " + alreadyMapped + " hash: " + _hash, 10000);
+		if (alreadyMapped == null) return;
+		try {
+			copyContents(alreadyMapped);
+			finish();
+		} catch (IOException ioe) {
+			finishWith(ioe);
+		}
 	}
 
 

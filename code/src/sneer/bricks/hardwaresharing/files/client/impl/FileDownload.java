@@ -40,7 +40,8 @@ class FileDownload extends AbstractDownload {
 	
 	FileDownload(File file, long lastModified, Sneer1024 hashOfFile) {
 		super(file, lastModified, hashOfFile);
-
+		
+		if (isFinished()) return; 
 		subscribeToFileContents();
 		startSendingRequests();
 	}
@@ -122,12 +123,15 @@ class FileDownload extends AbstractDownload {
 //		System.err.println("Block: " + _nextBlockToWrite + " File: " + _path + " Total: " + _fileSizeInBlocks);
 		_output.write(bytes);
 		++_nextBlockToWrite;
-		if (_nextBlockToWrite == _fileSizeInBlocks) finish();
+		if (_nextBlockToWrite == _fileSizeInBlocks) {
+			my(IO.class).streams().closeQuietly(_output);
+			finish();
+		}
 	}
 
 	
 	@Override
-	Tuple requestToPublishIfNecessary() {
+	protected Tuple requestToPublishIfNecessary() {
 		if (isFirstRequest())
 			return nextBlockRequest();
 
@@ -148,10 +152,12 @@ class FileDownload extends AbstractDownload {
 		return new FileRequest(_hash, _nextBlockToWrite, _path.getAbsolutePath());
 	}
 
-	
-	private void finish() throws IOException {
-		my(IO.class).streams().closeQuietly(_output);
-		finishWith(_path);
+
+	@Override
+	protected void copyContents(Object contents) throws IOException {
+		if (!(contents instanceof File)) throw new IOException("Wrong type of contents received. Should be File but was " + contents.getClass());
+		my(IO.class).files().copyFile((File)contents, _path);
 	}
+
 
 }

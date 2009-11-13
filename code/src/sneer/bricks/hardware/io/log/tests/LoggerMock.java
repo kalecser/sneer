@@ -18,7 +18,7 @@ class LoggerMock implements Logger {
 	public void log(String message, Object... messageInsets) {
 		String formatted = weaveInsets(message, messageInsets);
 		if (formatted.contains("Heartbeat")) return; ///////////////////// Message to filter out.
-		if (formatted.contains("Tuple")) return; ///////////////////// Message to filter out.
+		//if (formatted.contains("Tuple")) return; ///////////////////// Message to filter out.
 		
 		_messageConsumer.consume(appendCaller(formatted));
 	}
