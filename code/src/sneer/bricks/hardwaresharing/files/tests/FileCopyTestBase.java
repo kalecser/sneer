@@ -24,13 +24,14 @@ public abstract class FileCopyTestBase extends BrickTest {
 
 	protected final FileMap _fileMap = my(FileMap.class);
 	
+	
 	@Test (timeout = 3000)
 	public void testWithSmallFile() throws IOException {
 		testWith(anySmallFile());
 	}
 
 	@Test (timeout = 6000)
-	public void testWithAFolder() throws IOException {
+	public void testWithFolder() throws IOException {
 		testWith(folderWithAFewFiles());
 	}
 

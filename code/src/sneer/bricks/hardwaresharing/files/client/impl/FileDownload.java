@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import sneer.bricks.hardware.clock.Clock;
-import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
@@ -21,12 +20,14 @@ import sneer.bricks.hardwaresharing.files.protocol.Protocol;
 import sneer.bricks.hardwaresharing.files.writer.AtomicFileWriter;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.Consumer;
 
 class FileDownload extends AbstractDownload {
 
 	private static final int MAX_BLOCKS_DOWNLOADED_AHEAD = 100;
 
+	
 	private OutputStream _output;
 	private final List<FileContents> _blocksToWrite = new ArrayList<FileContents>();
 	private int _nextBlockToWrite = 0;
@@ -35,20 +36,15 @@ class FileDownload extends AbstractDownload {
 	private long _lastRequestTime = -1;
 
 	@SuppressWarnings("unused") private WeakContract _fileContentConsumerContract;
-	@SuppressWarnings("unused") private WeakContract _timerContract;
 
+	
 	FileDownload(File file, long lastModified, Sneer1024 hashOfFile) {
 		super(file, lastModified, hashOfFile);
 
-		publishFileBlockRequestsEvery(REQUEST_INTERVAL);
-		subscribeToFileContents();		
+		subscribeToFileContents();
+		startSendingRequests();
 	}
 
-	private void publishFileBlockRequestsEvery(long requestInterval) {
-		_timerContract = my(Timer.class).wakeUpNowAndEvery(requestInterval, new Runnable() { @Override public void run() {
-			requestNextBlockIfNecessary();
-		}});
-	}
 
 	private void subscribeToFileContents() {
 		_fileContentConsumerContract = my(TupleSpace.class).addSubscription(FileContents.class, new Consumer<FileContents>() { @Override public void consume(FileContents contents) {
@@ -56,6 +52,7 @@ class FileDownload extends AbstractDownload {
 		}});
 	}
 
+	
 	synchronized
 	private void receiveFileBlock(FileContents contents) {
 		if (isFinished()) return;
@@ -67,6 +64,7 @@ class FileDownload extends AbstractDownload {
 		}
 	}
 
+	
 	private void tryToReceiveFileBlock(FileContents contents) throws IOException {
 		if (!contents.hashOfFile.equals(_hash)) return;
 
@@ -83,21 +81,25 @@ class FileDownload extends AbstractDownload {
 		tryToWriteBlocksInSequence();
 	}
 
+	
 	private void receiveFirstBlock(FileContentsFirstBlock contents) throws IOException {
 		if (firstBlockWasAlreadyReceived()) return;
 		_fileSizeInBlocks = calculateFileSizeInBlocks(contents.fileSize);
 		_output = my(AtomicFileWriter.class).atomicOutputStreamFor(_path, _lastModified);
 	}
 
+	
 	private boolean firstBlockWasAlreadyReceived() {
 		return _fileSizeInBlocks != -1;
 	} 
 
+	
 	private int calculateFileSizeInBlocks(long fileSizeInBytes) {
 		final int result = (int) fileSizeInBytes / Protocol.FILE_BLOCK_SIZE;
 		return (fileSizeInBytes % Protocol.FILE_BLOCK_SIZE != 0) ? result + 1 : result; 
 	}
 
+	
 	private void tryToWriteBlocksInSequence() throws IOException {
 		boolean written;
 		do {
@@ -112,9 +114,10 @@ class FileDownload extends AbstractDownload {
 			}
 		} while (written); // In case blocks have arrived out of order
 
-		if (!isFinished()) requestNextBlock();
+		if (!isFinished()) publish(nextBlockRequest());
 	}
 
+	
 	private void writeBlock(byte[] bytes) throws IOException {
 //		System.err.println("Block: " + _nextBlockToWrite + " File: " + _path + " Total: " + _fileSizeInBlocks);
 		_output.write(bytes);
@@ -122,25 +125,30 @@ class FileDownload extends AbstractDownload {
 		if (_nextBlockToWrite == _fileSizeInBlocks) finish();
 	}
 
-	private void requestNextBlockIfNecessary() {
-		if (isFirstRequest()) {
-			requestNextBlock();
-			return;
-		}
+	
+	@Override
+	Tuple requestToPublishIfNecessary() {
+		if (isFirstRequest())
+			return nextBlockRequest();
 
-		if (my(Clock.class).time().currentValue() - _lastRequestTime >= REQUEST_INTERVAL)
-			requestNextBlock();
+		if (my(Clock.class).time().currentValue() - _lastRequestTime < REQUEST_INTERVAL)
+			return null;
+		
+		return nextBlockRequest();
 	}
 
+	
 	private boolean isFirstRequest() {
 		return _lastRequestTime == -1;
 	}
 
-	private void requestNextBlock() {
-		my(TupleSpace.class).publish(new FileRequest(_hash, _nextBlockToWrite, _path.getAbsolutePath()));
+	
+	private Tuple nextBlockRequest() {
 		_lastRequestTime = my(Clock.class).time().currentValue();
+		return new FileRequest(_hash, _nextBlockToWrite, _path.getAbsolutePath());
 	}
 
+	
 	private void finish() throws IOException {
 		my(IO.class).streams().closeQuietly(_output);
 		finishWith(_path);
