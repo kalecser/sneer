@@ -20,7 +20,6 @@ class FolderDownload extends AbstractDownload {
 	FolderDownload(File folder, long lastModified, Sneer1024 hashOfFolder) {
 		super(folder, lastModified, hashOfFolder);
 
-		checkRedundantDownload(folder, hashOfFolder);
 		subscribeToFolderContents();
 	}
 
