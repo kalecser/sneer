@@ -9,6 +9,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
+import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FileContents;
 import sneer.bricks.hardwaresharing.files.protocol.FileContentsFirstBlock;
@@ -89,19 +90,19 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 
 	private FileContents newFileContents(File requestedFile, FileRequest request) throws IOException {
-		byte[] bytes = getFileBlockBytes(requestedFile, request.blockNumber);
+		ImmutableByteArray bytes = getFileBlockBytes(requestedFile, request.blockNumber);
 		String debugInfo = requestedFile.getName();
 		return request.blockNumber == 0
 			? new FileContentsFirstBlock(
-				request.addressee, request.hashOfContents, requestedFile.length(), my(ImmutableArrays.class).newImmutableByteArray(bytes), debugInfo)
+				request.addressee, request.hashOfContents, requestedFile.length(), bytes, debugInfo)
 			: new FileContents(
-				request.addressee, request.hashOfContents, request.blockNumber,    my(ImmutableArrays.class).newImmutableByteArray(bytes), debugInfo);
+				request.addressee, request.hashOfContents, request.blockNumber,    bytes, debugInfo);
 	}
 
 
-	private byte[] getFileBlockBytes(File file, int blockNumber) throws IOException {
+	private ImmutableByteArray getFileBlockBytes(File file, int blockNumber) throws IOException {
 		try {
-			return my(IO.class).files().readBlock(file, blockNumber, Protocol.FILE_BLOCK_SIZE);
+			return my(ImmutableArrays.class).newImmutableByteArray(my(IO.class).files().readBlock(file, blockNumber, Protocol.FILE_BLOCK_SIZE));
 		} catch(IOException ioe) {
 			my(Logger.class).log("Error trying to read block from requested file: {}", file.getPath());
 			throw ioe;
