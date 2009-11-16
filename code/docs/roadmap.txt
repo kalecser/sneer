@@ -9,8 +9,7 @@
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
 		- .part logic - Move from FileDownload (AtomicOutputStream no longer necessary) up to AbstractDownload.finish(). Like that it will also work for folders.
 
-	- Wusic 
-		- [Klaus] Validate and finish FileClientTest
+	- Wusic
 		- Check if tracks are still being downloaded more than once
 			- Create automated test for that
 		- Display playing track of each contact
