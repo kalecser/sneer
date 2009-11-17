@@ -1,4 +1,4 @@
-package sneer.bricks.hardwaresharing.files.client.test;
+package sneer.bricks.hardwaresharing.files.client.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
