@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -29,24 +28,25 @@ import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.Consumer;
 
-public class FileDownloadSequencingTest extends BrickTest {
+public class FileDownloadTest extends BrickTest {
 
-	@Ignore
 	@Test (timeout = 2000)
-	public void receiveFileBlocksOutOfSequence() throws IOException {
+	public void receiveFileContentBlocksOutOfSequence() throws IOException {
 		File smallFile = createFileWithRandomContent();
 		Sneer1024 smallFileHash = my(Hasher.class).hash(smallFile);
 
-		final Iterator<FileContents> fileContents = fileContentBlocks(smallFile, smallFileHash).iterator();
+		final Iterator<FileContents> fileContentBlocks = createFileContentBlocks(smallFile, smallFileHash).iterator();
 		@SuppressWarnings("unused")
 		WeakContract toAvoidGC = my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
-			my(TupleSpace.class).publish(fileContents.next());
+			my(TupleSpace.class).publish(fileContentBlocks.next());
 		}});
 
 		File tmpFile = createTmpFile("tmpFile");
 		my(FileClient.class).fetchFile(tmpFile, smallFileHash);
 
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
+		System.err.println("Small File Size: " + smallFile.length() + " Bs");
+		System.err.println("Tmp File Size: " + tmpFile.length() + " Bs");
 		my(IO.class).files().assertSameContents(tmpFile, smallFile);
 	}
 
@@ -59,21 +59,21 @@ public class FileDownloadSequencingTest extends BrickTest {
 		return fileWithRandomContent;
 	}
 
-	private List<FileContents> fileContentBlocks(File file, Sneer1024 fileHash) throws IOException {
-		List<FileContents> contentBlocks = new ArrayList<FileContents>();
+	private List<FileContents> createFileContentBlocks(File file, Sneer1024 fileHash) throws IOException {
+		List<FileContents> blocks = new ArrayList<FileContents>();
 
-		contentBlocks.add(new FileContentsFirstBlock(me(), fileHash, file.length(), fileBlock(file, 0), file.getName()));
-		contentBlocks.add(new FileContents(me(), fileHash, 1, fileBlock(file, 1), file.getName()));
-		contentBlocks.add(new FileContents(me(), fileHash, 2, fileBlock(file, 2), file.getName()));
+		blocks.add(new FileContentsFirstBlock(me(), fileHash, file.length(), getFileBlock(file, 0), file.getName()));
+		blocks.add(new FileContents(me(), fileHash, 1, getFileBlock(file, 1), file.getName()));
+		blocks.add(new FileContents(me(), fileHash, 2, getFileBlock(file, 2), file.getName()));
 
-		return contentBlocks;
+		return blocks;
 	}
 
 	private Seal me() {
 		return my(Seals.class).ownSeal();
 	}
 
-	private ImmutableByteArray fileBlock(File file, int blockNumber) throws IOException {
+	private ImmutableByteArray getFileBlock(File file, int blockNumber) throws IOException {
 		return my(ImmutableArrays.class).newImmutableByteArray(my(IO.class).files().readBlock(file, blockNumber, Protocol.FILE_BLOCK_SIZE));
 	}
 
