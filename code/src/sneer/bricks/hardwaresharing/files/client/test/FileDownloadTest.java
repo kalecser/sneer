@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -30,6 +31,7 @@ import sneer.foundation.lang.Consumer;
 
 public class FileDownloadTest extends BrickTest {
 
+	@Ignore
 	@Test (timeout = 2000)
 	public void receiveFileContentBlocksOutOfSequence() throws IOException {
 		File smallFile = createFileWithRandomContent();
