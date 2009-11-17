@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latch;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.keymanager.Seals;
@@ -23,8 +25,8 @@ import dfcsantos.tracks.rejected.RejectedTracksKeeper;
 class TrackClientImpl implements TrackClient {
 
 	private final Register<Integer> _numberOfTracksFetchedFromPeers = my(Signals.class).newRegister(0);
-	private boolean _hasFinishedSharedTracksFolderMapping;
-	private boolean _hasFinishedPeerTracksFolderMapping;
+	private final Latch _hasFinishedSharedTracksFolderMapping = my(Latches.class).produce();
+	private final Latch _hasFinishedPeerTracksFolderMapping = my(Latches.class).produce();
 
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC;
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC2;
@@ -49,7 +51,8 @@ class TrackClientImpl implements TrackClient {
 
 
 	private void consumeTrackEndorsement(TrackEndorsement endorsement) {
-		if (!_hasFinishedSharedTracksFolderMapping || !_hasFinishedPeerTracksFolderMapping) return;
+		_hasFinishedSharedTracksFolderMapping.waitTillOpen();
+		_hasFinishedPeerTracksFolderMapping.waitTillOpen();
 
 		if (my(Seals.class).ownSeal().equals(endorsement.publisher())) return;
 
@@ -78,21 +81,21 @@ class TrackClientImpl implements TrackClient {
 
 	private void startPeerTracksFolderMapping(final File peerTracksFolder) {
 		my(Threads.class).startDaemon("Peer Tracks Folder Mapping", new Runnable() { @Override public void run() {
-			startMappingOf(peerTracksFolder);
-			_hasFinishedPeerTracksFolderMapping = true;
+			map(peerTracksFolder);
+			_hasFinishedPeerTracksFolderMapping.open();
 		}});			
 	}
 
 
 	private void startSharedTracksFolderMapping(final File sharedTracksFolder) {
 		my(Threads.class).startDaemon("Shared Tracks Folder Mapping", new Runnable() { @Override public void run() {
-			startMappingOf(sharedTracksFolder);
-			_hasFinishedSharedTracksFolderMapping = true;
+			map(sharedTracksFolder);
+			_hasFinishedSharedTracksFolderMapping.open();
 		}});			
 	}
 
 
-	private void startMappingOf(final File tracksFolder) {		
+	private void map(final File tracksFolder) {		
 		try {
 			my(FileMap.class).put(tracksFolder);
 		} catch (IOException e) {
