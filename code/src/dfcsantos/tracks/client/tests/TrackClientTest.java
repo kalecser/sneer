@@ -24,10 +24,10 @@ import dfcsantos.tracks.folder.TracksFolderKeeper;
 
 public class TrackClientTest extends BrickTest {
 
-	@Bind private final FileClient _fileClient = mock(FileClient.class);
 	@Bind private final FileMap _fileMap = mock(FileMap.class);
+	@Bind private final FileClient _fileClient = mock(FileClient.class);
 	
-	@Test(timeout=4000)
+	@Test(timeout = 4000)
 	public void trackDownload() throws IOException {
 		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[]{1});
 		
@@ -39,7 +39,8 @@ public class TrackClientTest extends BrickTest {
 		
 		my(TrackClient.class);
 		
-		publishEndorsementTuple(hash1, 42, "songs/subfolder/foo.mp3");
+		aquireEndorsementTuple(hash1, 42, "songs/subfolder/foo.mp3");
+		my(TupleSpace.class).waitForAllDispatchingToFinish();
 	}
 
 	private File peerTracksFolder() {
@@ -47,18 +48,17 @@ public class TrackClientTest extends BrickTest {
 	}
 
 	private File shareTracksFolderDefaultValue() {
-		return new File(my(FolderConfig.class).storageFolder().get() ,"media/tracks");
+		return new File(my(FolderConfig.class).storageFolder().get(), "media/tracks");
 	}
 
-	private void publishEndorsementTuple(final Sneer1024 hash1, int lastModified, String track) {
+	private void aquireEndorsementTuple(final Sneer1024 hash1, int lastModified, String track) {
 		TrackEndorsement trackEndorsement = new TrackEndorsement(track, lastModified, hash1);
-		stamp(trackEndorsement);
+		stamp(trackEndorsement, "Someone Else");
 		my(TupleSpace.class).acquire(trackEndorsement);
-		my(TupleSpace.class).waitForAllDispatchingToFinish();
 	}
 
-	private void stamp(TrackEndorsement trackEndorsement) {
-		trackEndorsement.stamp(my(Seals.class).sealGiven(my(ContactManager.class).produceContact("Someone Else")), 1234);
+	private void stamp(TrackEndorsement trackEndorsement, String contact) {
+		trackEndorsement.stamp(my(Seals.class).sealGiven(my(ContactManager.class).produceContact(contact)), 1234);
 	}
 
 }
