@@ -34,6 +34,8 @@
 	- Metoo
 		- Unignore Freedom7
 			- Big File Blocks
+			- BrickSpaceImpl.init() uncomment.
+			- LocalBrickDiscoveryTest uncomment.
 		- Brick States - All
 			- Hierarchical View - Consider groups of bricks (brick package at any level, examples: bricks.hardware, bricks.software, bricks.hardware.io, etc) as an optional grouping for versioning and downloading from friends, not only individual bricks.
 				- Do not allow circular dependencies among any level of groups of bricks and voilà: the world is free of cyclic dependencies.
