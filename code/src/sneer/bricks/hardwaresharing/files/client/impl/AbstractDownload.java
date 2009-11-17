@@ -57,8 +57,9 @@ abstract class AbstractDownload implements Download {
 	void publish(Tuple request) {
 		my(TupleSpace.class).publish(request);
 	}
-	
 
+
+	abstract void copyContents(Object contents) throws IOException;
 	abstract Tuple requestToPublishIfNecessary();
 
 
@@ -103,15 +104,6 @@ abstract class AbstractDownload implements Download {
 			publishRequestIfNecessary();
 		}});
 	}
-
-
-	private void copyContents(Object contents) throws IOException {
-		if (!(contents instanceof File)) throw new IOException("Wrong type of contents received. Should be File but was " + contents.getClass());
-		copyContents((File) contents);
-	}
-
-
-	abstract void copyContents(File contents) throws IOException;
 
 
 }

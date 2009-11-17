@@ -154,8 +154,9 @@ class FileDownload extends AbstractDownload {
 
 
 	@Override
-	void copyContents(File file) throws IOException {
-		my(IO.class).files().copyFile(file, _path);
+	void copyContents(Object contents) throws IOException {
+		if (!(contents instanceof File)) throw new IOException("Wrong type of contents received. Should be File but was " + contents.getClass());
+		my(IO.class).files().copyFile((File) contents, _path);
 	}
 
 
