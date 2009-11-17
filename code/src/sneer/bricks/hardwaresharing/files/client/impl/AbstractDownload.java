@@ -59,8 +59,7 @@ abstract class AbstractDownload implements Download {
 	}
 	
 
-	protected abstract void copyContents(Object contents) throws IOException;
-	protected abstract Tuple requestToPublishIfNecessary();
+	abstract Tuple requestToPublishIfNecessary();
 
 
 	boolean isFinished() {
@@ -99,10 +98,20 @@ abstract class AbstractDownload implements Download {
 	}
 
 
-	protected void startSendingRequests() {
+	void startSendingRequests() {
 		_timerContract = my(Timer.class).wakeUpNowAndEvery(REQUEST_INTERVAL, new Runnable() { @Override public void run() {
 			publishRequestIfNecessary();
 		}});
 	}
+
+
+	private void copyContents(Object contents) throws IOException {
+		if (!(contents instanceof File)) throw new IOException("Wrong type of contents received. Should be File but was " + contents.getClass());
+		copyContents((File) contents);
+	}
+
+
+	abstract void copyContents(File contents) throws IOException;
+
 
 }

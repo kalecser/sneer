@@ -131,7 +131,7 @@ class FileDownload extends AbstractDownload {
 
 	
 	@Override
-	protected Tuple requestToPublishIfNecessary() {
+	Tuple requestToPublishIfNecessary() {
 		if (isFirstRequest())
 			return nextBlockRequest();
 
@@ -154,9 +154,8 @@ class FileDownload extends AbstractDownload {
 
 
 	@Override
-	protected void copyContents(Object contents) throws IOException {
-		if (!(contents instanceof File)) throw new IOException("Wrong type of contents received. Should be File but was " + contents.getClass());
-		my(IO.class).files().copyFile((File)contents, _path);
+	void copyContents(File file) throws IOException {
+		my(IO.class).files().copyFile(file, _path);
 	}
 
 

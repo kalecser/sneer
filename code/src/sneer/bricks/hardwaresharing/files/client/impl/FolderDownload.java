@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.hasher.Hasher;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
@@ -71,7 +72,7 @@ class FolderDownload extends AbstractDownload {
 
 	
 	@Override
-	protected Tuple requestToPublishIfNecessary() {
+	Tuple requestToPublishIfNecessary() {
 		return _received
 			? null
 			: new FileRequest(_hash, 0, _path.getAbsolutePath());
@@ -79,8 +80,8 @@ class FolderDownload extends AbstractDownload {
 
 
 	@Override
-	protected void copyContents(Object contents) {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	void copyContents(File folder) throws IOException {
+		my(IO.class).files().copyFolder(folder, _path);
 	}
 
 
