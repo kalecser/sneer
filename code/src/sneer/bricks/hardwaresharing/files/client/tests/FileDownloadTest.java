@@ -9,9 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
+import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
@@ -31,24 +31,23 @@ import sneer.foundation.lang.Consumer;
 
 public class FileDownloadTest extends BrickTest {
 
-	@Ignore
-	@Test (timeout = 2000)
+	@Test (timeout = 4000)
 	public void receiveFileContentBlocksOutOfSequence() throws IOException {
-		File smallFile = createFileWithRandomContent();
-		Sneer1024 smallFileHash = my(Hasher.class).hash(smallFile);
+		final File smallFile = createFileWithRandomContent();
+		final Sneer1024 smallFileHash = my(Hasher.class).hash(smallFile);
 
 		final Iterator<FileContents> fileContentBlocks = createFileContentBlocks(smallFile, smallFileHash).iterator();
 		@SuppressWarnings("unused")
 		WeakContract toAvoidGC = my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
 			my(TupleSpace.class).publish(fileContentBlocks.next());
+			fileContentBlocks.remove();
+			my(Clock.class).advanceTime(1); // To avoid duplicated tuples
 		}});
 
-		File tmpFile = createTmpFile("tmpFile");
+		final File tmpFile = newTempFile();
 		my(FileClient.class).fetchFile(tmpFile, smallFileHash);
 
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
-		System.err.println("Small File Size: " + smallFile.length() + " Bs");
-		System.err.println("Tmp File Size: " + tmpFile.length() + " Bs");
 		my(IO.class).files().assertSameContents(tmpFile, smallFile);
 	}
 
@@ -64,9 +63,9 @@ public class FileDownloadTest extends BrickTest {
 	private List<FileContents> createFileContentBlocks(File file, Sneer1024 fileHash) throws IOException {
 		List<FileContents> blocks = new ArrayList<FileContents>();
 
-		blocks.add(new FileContentsFirstBlock(me(), fileHash, file.length(), getFileBlock(file, 0), file.getName()));
-		blocks.add(new FileContents(me(), fileHash, 1, getFileBlock(file, 1), file.getName()));
-		blocks.add(new FileContents(me(), fileHash, 2, getFileBlock(file, 2), file.getName()));
+		blocks.add(new FileContents(me(), fileHash, 1, getFileBlock(file, 1), file.getName())); // 2nd block
+		blocks.add(new FileContentsFirstBlock(me(), fileHash, file.length(), getFileBlock(file, 0), file.getName())); // 1st block
+		blocks.add(new FileContents(me(), fileHash, 2, getFileBlock(file, 2), file.getName())); // 3rd block
 
 		return blocks;
 	}
@@ -77,6 +76,10 @@ public class FileDownloadTest extends BrickTest {
 
 	private ImmutableByteArray getFileBlock(File file, int blockNumber) throws IOException {
 		return my(ImmutableArrays.class).newImmutableByteArray(my(IO.class).files().readBlock(file, blockNumber, Protocol.FILE_BLOCK_SIZE));
+	}
+
+	private File newTempFile() {
+		return new File(tmpFolder(), "tmp" + System.nanoTime());
 	}
 
 }

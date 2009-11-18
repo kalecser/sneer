@@ -27,7 +27,6 @@ class FileDownload extends AbstractDownload {
 
 	private static final int MAX_BLOCKS_DOWNLOADED_AHEAD = 100;
 
-	
 	private OutputStream _output;
 	private final List<FileContents> _blocksToWrite = new ArrayList<FileContents>();
 	private int _nextBlockToWrite = 0;
@@ -77,7 +76,6 @@ class FileDownload extends AbstractDownload {
 		if (contents.blockNumber < _nextBlockToWrite) return;
 		if (contents.blockNumber - _nextBlockToWrite > MAX_BLOCKS_DOWNLOADED_AHEAD) return; 
 
-//		System.err.println("Block Received: " + contents.blockNumber + " Next Block to Write: " + _nextBlockToWrite);
 		_blocksToWrite.add(contents);
 		tryToWriteBlocksInSequence();
 	}
@@ -120,7 +118,6 @@ class FileDownload extends AbstractDownload {
 
 	
 	private void writeBlock(byte[] bytes) throws IOException {
-//		System.err.println("Block: " + _nextBlockToWrite + " File: " + _path + " Total: " + _fileSizeInBlocks);
 		_output.write(bytes);
 		++_nextBlockToWrite;
 		if (_nextBlockToWrite == _fileSizeInBlocks) {
