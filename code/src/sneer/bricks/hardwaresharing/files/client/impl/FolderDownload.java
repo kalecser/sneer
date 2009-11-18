@@ -6,13 +6,11 @@ import java.io.File;
 import java.io.IOException;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 import sneer.bricks.hardwaresharing.files.hasher.Hasher;
-import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
+import sneer.bricks.hardwaresharing.files.writer.AtomicFileWriter;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.brickness.Tuple;
@@ -84,22 +82,7 @@ class FolderDownload extends AbstractDownload {
 	@Override
 	void copyContents(Object contents) throws IOException {
 		if (!(contents instanceof FolderContents)) throw new IOException("Wrong type of contents received. Should be FolderContents but was " + contents.getClass());
-		copyFolderContents(((FolderContents) contents).contents);
-	}
-
-
-	private void copyFolderContents(ImmutableArray<FileOrFolder> folderEntries) throws IOException {
-		for (FileOrFolder entry : folderEntries) {
-			if (entry.isFolder)
-				copyFolderContents(my(FileMap.class).getFolder(entry.hashOfContents).contents);			
-			else
-				copyFile(my(FileMap.class).getFile(entry.hashOfContents));
-		}
-	}
-
-
-	private void copyFile(File origin) throws IOException {
-		my(IO.class).files().copyFile(origin, new File(_path, origin.getName()));
+		my(AtomicFileWriter.class).writeAtomicallyTo(_path, _lastModified, (FolderContents) contents);
 	}
 
 

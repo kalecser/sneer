@@ -25,17 +25,17 @@ public abstract class FileCopyTestBase extends BrickTest {
 	protected final FileMap _fileMap = my(FileMap.class);
 	
 	
-	@Test (timeout = 3000)
+	@Test (timeout = 4000)
 	public void testWithSmallFile() throws IOException {
 		testWith(anySmallFile());
 	}
 
-	@Test (timeout = 5000)
+	@Test (timeout = 6000)
 	public void testWithFolder() throws IOException {
 		testWith(folderWithAFewFiles());
 	}
 
-	@Test (timeout = 5000)
+	@Test (timeout = 6000)
 	public void testWithLargeFile() throws IOException {
 		testWith(createLargeFile());
 	}
@@ -82,7 +82,21 @@ public abstract class FileCopyTestBase extends BrickTest {
 	}
 
 	private File folderWithAFewFiles() {
-		return new File(myClassFile().getParent(), "fixtures");
+		final File result = new File(myClassFile().getParent(), "fixtures");
+
+		final long now = System.currentTimeMillis();
+		setLastModifiedRecursively(new File(result, "directory1"), now);
+		setLastModifiedRecursively(new File(result, "directory1copy"), now);
+
+		return result;
+	}
+
+	private void setLastModifiedRecursively(File file, long lastModified) {
+		if (file.isDirectory())
+			for (File child : file.listFiles())
+				setLastModifiedRecursively(child, lastModified);
+
+		file.setLastModified(lastModified);
 	}
 
 	private void assertSameContents(File file1, File file2) throws IOException {
