@@ -4,13 +4,10 @@
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
 	- [Igor/Klaus] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
-		- [Igor] FileDownload.tryToWriteBlocksInSequence() - Write test for that. Publish FileContents tuples arriving in wrong order.
-		- ByteArraySocketImpl.write(array) and read() clean up hack.
 		- .part logic - Move from FileDownload (AtomicOutputStream no longer necessary) up to AbstractDownload.finish(). Like that it will also work for folders.
+		- ByteArraySocketImpl.write(array) and read() clean up hack.
 
 	- Wusic
-		- Check if tracks are still being downloaded more than once
-			- Create automated test for that
 		- Display playing track of each contact
 		- MusicalTasteMatcher Kernel
 			- void awardMusicalTastePointsFor(TrackEndorsement, boolean goodOrBad) // Called for endorsements of >known< tracks to give "musical taste" points.
