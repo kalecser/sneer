@@ -7,6 +7,8 @@
 		- .part logic - Move from FileDownload (AtomicOutputStream no longer necessary) up to AbstractDownload.finish(). Like that it will also work for folders.
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
 
+	- [Igor] Make Download "disposable"
+
 	- Wusic
 		- Display playing track of each contact
 		- MusicalTasteMatcher Kernel
