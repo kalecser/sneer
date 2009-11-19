@@ -44,7 +44,7 @@ public class FileDownloadTest extends BrickTest {
 			my(Clock.class).advanceTime(1); // To avoid duplicated tuples
 		}});
 
-		final File tmpFile = newTempFile();
+		final File tmpFile = newTmpFile();
 		my(FileClient.class).fetchFile(tmpFile, smallFileHash);
 
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
@@ -76,10 +76,6 @@ public class FileDownloadTest extends BrickTest {
 
 	private ImmutableByteArray getFileBlock(File file, int blockNumber) throws IOException {
 		return my(ImmutableArrays.class).newImmutableByteArray(my(IO.class).files().readBlock(file, blockNumber, Protocol.FILE_BLOCK_SIZE));
-	}
-
-	private File newTempFile() {
-		return new File(tmpFolder(), "tmp" + System.nanoTime());
 	}
 
 }

@@ -26,7 +26,7 @@ public class FileClientTest extends BrickTest {
 			throw new IllegalStateException();
 		}});
 
-		final File tmpFile = createTmpFile("tmpFile");
+		final File tmpFile = newTmpFile();
 		my(FileClient.class).fetchFile(tmpFile, hash);
 
 		my(TupleSpace.class).waitForAllDispatchingToFinish();

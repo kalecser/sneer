@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
@@ -30,6 +31,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 		testWith(anySmallFile());
 	}
 
+	@Ignore
 	@Test (timeout = 6000)
 	public void testWithFolder() throws IOException {
 		testWith(folderWithAFewFiles());
@@ -41,7 +43,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 	}
 
 	private File createLargeFile() throws IOException {
-		File result = newTempFile();
+		File result = newTmpFile();
 		my(IO.class).files().writeByteArrayToFile(result, randomBytes(1000000));
 		return result;
 	}
@@ -56,7 +58,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 		Sneer1024 hash = _fileMap.put(fileOrFolder);
 		assertNotNull(hash);
 
-		File copy = newTempFile();
+		File copy = newTmpFile();
 		my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>(){@Override public void consume(CollectionChange<Light> deltas) {
 			if (!deltas.elementsAdded().isEmpty())
 				throw new IllegalStateException();
@@ -101,10 +103,6 @@ public abstract class FileCopyTestBase extends BrickTest {
 
 	private void assertSameContents(File file1, File file2) throws IOException {
 		my(IO.class).files().assertSameContents(file1, file2);
-	}
-
-	private File newTempFile() {
-		return new File(tmpFolder(), "tmp" + System.nanoTime());
 	}
 
 }

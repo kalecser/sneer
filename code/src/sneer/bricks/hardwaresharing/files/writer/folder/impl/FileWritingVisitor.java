@@ -1,4 +1,4 @@
-package sneer.bricks.hardwaresharing.files.writer.impl;
+package sneer.bricks.hardwaresharing.files.writer.folder.impl;
 
 import static sneer.foundation.environments.Environments.my;
 

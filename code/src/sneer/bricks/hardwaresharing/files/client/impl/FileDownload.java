@@ -3,6 +3,7 @@ package sneer.bricks.hardwaresharing.files.client.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ import sneer.bricks.hardwaresharing.files.protocol.FileContents;
 import sneer.bricks.hardwaresharing.files.protocol.FileContentsFirstBlock;
 import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
 import sneer.bricks.hardwaresharing.files.protocol.Protocol;
-import sneer.bricks.hardwaresharing.files.writer.AtomicFileWriter;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.brickness.Tuple;
@@ -84,7 +84,7 @@ class FileDownload extends AbstractDownload {
 	private void receiveFirstBlock(FileContentsFirstBlock contents) throws IOException {
 		if (firstBlockWasAlreadyReceived()) return;
 		_fileSizeInBlocks = calculateFileSizeInBlocks(contents.fileSize);
-		_output = my(AtomicFileWriter.class).atomicOutputStreamFor(_path, _lastModified);
+		_output = new FileOutputStream(dotPart());
 	}
 
 	
@@ -153,7 +153,7 @@ class FileDownload extends AbstractDownload {
 	@Override
 	void copyContents(Object contents) throws IOException {
 		if (!(contents instanceof File)) throw new IOException("Wrong type of contents received. Should be File but was " + contents.getClass());
-		my(IO.class).files().copyFile((File) contents, _path);
+		my(IO.class).files().copyFile((File) contents, dotPart());
 	}
 
 

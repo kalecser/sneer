@@ -10,7 +10,7 @@ import sneer.bricks.hardwaresharing.files.hasher.Hasher;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
-import sneer.bricks.hardwaresharing.files.writer.AtomicFileWriter;
+import sneer.bricks.hardwaresharing.files.writer.folder.FolderContentsWriter;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.brickness.Tuple;
@@ -82,7 +82,7 @@ class FolderDownload extends AbstractDownload {
 	@Override
 	void copyContents(Object contents) throws IOException {
 		if (!(contents instanceof FolderContents)) throw new IOException("Wrong type of contents received. Should be FolderContents but was " + contents.getClass());
-		my(AtomicFileWriter.class).writeAtomicallyTo(_path, _lastModified, (FolderContents) contents);
+		my(FolderContentsWriter.class).writeToFolder(dotPart(), (FolderContents) contents);
 	}
 
 

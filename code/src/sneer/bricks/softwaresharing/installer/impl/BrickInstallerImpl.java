@@ -12,7 +12,7 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
-import sneer.bricks.hardwaresharing.files.writer.AtomicFileWriter;
+import sneer.bricks.hardwaresharing.files.writer.folder.FolderContentsWriter;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.software.bricks.compiler.BrickCompilerException;
@@ -119,7 +119,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 		else
 			brickSrcFolder.mkdirs();
 		
-		my(AtomicFileWriter.class).mergeOver(brickSrcFolder, folderContents(version));
+		my(FolderContentsWriter.class).mergeOver(brickSrcFolder, folderContents(version));
 	}
 
 

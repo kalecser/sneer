@@ -239,11 +239,19 @@ public abstract class CleanTestBase extends AssertUtils {
 	}
 
 	protected File createTmpFile(String fileName) throws IOException {
-		File file = new File(tmpFolder(), fileName);
+		File file = newTmpFile(fileName);
 		if (!file.getParentFile().exists())
 			assertTrue("Unable to mkdirs: " + file.getParentFile(), file.getParentFile().mkdirs());
 		file.createNewFile();
 		return file;
+	}
+
+	protected File newTmpFile(String fileName) {
+		return new File(tmpFolder(), fileName);
+	}
+
+	protected File newTmpFile() {
+		return new File(tmpFolder(), "tmp" + System.nanoTime());
 	}
 
 	protected void createTmpFilesWithFileNameAsContent(String... fileNames) throws IOException {

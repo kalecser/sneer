@@ -8,7 +8,7 @@ import java.io.IOException;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
-import sneer.bricks.hardwaresharing.files.writer.AtomicFileWriter;
+import sneer.bricks.hardwaresharing.files.writer.atomic.AtomicFileWriter;
 import sneer.bricks.pulp.crypto.Sneer1024;
 
 public class LocalCopyTest extends FileCopyTestBase {
