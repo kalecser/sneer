@@ -4,6 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
@@ -27,6 +28,8 @@ class TrackClientImpl implements TrackClient {
 	private final Register<Integer> _numberOfTracksFetchedFromPeers = my(Signals.class).newRegister(0);
 	private final Latch _hasFinishedSharedTracksFolderMapping = my(Latches.class).produce();
 	private final Latch _hasFinishedPeerTracksFolderMapping = my(Latches.class).produce();
+
+	private AtomicInteger _downloadCount = new AtomicInteger();
 
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC;
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC2;
@@ -54,6 +57,12 @@ class TrackClientImpl implements TrackClient {
 		_hasFinishedSharedTracksFolderMapping.waitTillOpen();
 		_hasFinishedPeerTracksFolderMapping.waitTillOpen();
 
+		if (_downloadCount.incrementAndGet() > 3) {
+			_downloadCount.decrementAndGet();
+			return;
+		}
+
+		
 		if (my(Seals.class).ownSeal().equals(endorsement.publisher())) return;
 
 		if (my(RejectedTracksKeeper.class).isRejected(endorsement.hash)) return;
@@ -62,6 +71,8 @@ class TrackClientImpl implements TrackClient {
 			my(FileClient.class).fetchFile(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
 		} catch (IOException e) {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+		} finally {
+			_downloadCount.decrementAndGet();
 		}
 
 		_numberOfTracksFetchedFromPeers.setter().consume(_numberOfTracksFetchedFromPeers.output().currentValue() + 1);
