@@ -102,7 +102,7 @@ abstract class AbstractDownload implements Download {
 
 
 	private void finishIfRedundant() {
-		Object alreadyMapped = my(FileMap.class).getMappedObject(_hash);
+		Object alreadyMapped = mappedContentsBy(_hash);
 		if (alreadyMapped == null) return;
 		try {
 			copyContents(alreadyMapped);
@@ -111,6 +111,9 @@ abstract class AbstractDownload implements Download {
 			finishWith(ioe);
 		}
 	}
+
+
+	abstract Object mappedContentsBy(Sneer1024 hashOfContents);
 
 
 	void startSendingRequests() {

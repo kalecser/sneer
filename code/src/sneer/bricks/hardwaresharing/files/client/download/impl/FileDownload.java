@@ -14,6 +14,7 @@ import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FileContents;
 import sneer.bricks.hardwaresharing.files.protocol.FileContentsFirstBlock;
 import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
@@ -154,6 +155,12 @@ class FileDownload extends AbstractDownload {
 	void copyContents(Object contents) throws IOException {
 		if (!(contents instanceof File)) throw new IOException("Wrong type of contents received. Should be File but was " + contents.getClass());
 		my(IO.class).files().copyFile((File) contents, _path);
+	}
+
+
+	@Override
+	Object mappedContentsBy(Sneer1024 hashOfContents) {
+		return my(FileMap.class).getFile(hashOfContents);
 	}
 
 

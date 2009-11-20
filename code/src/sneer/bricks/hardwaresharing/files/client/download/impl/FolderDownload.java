@@ -8,6 +8,7 @@ import java.io.IOException;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardwaresharing.files.client.download.Download;
 import sneer.bricks.hardwaresharing.files.hasher.Hasher;
+import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
@@ -84,6 +85,12 @@ class FolderDownload extends AbstractDownload {
 	void copyContents(Object contents) throws IOException {
 		if (!(contents instanceof FolderContents)) throw new IOException("Wrong type of contents received. Should be FolderContents but was " + contents.getClass());
 		my(FolderContentsWriter.class).writeToFolder(_path, (FolderContents) contents);
+	}
+
+
+	@Override
+	Object mappedContentsBy(Sneer1024 hashOfContents) {
+		return my(FileMap.class).getFolder(hashOfContents);
 	}
 
 

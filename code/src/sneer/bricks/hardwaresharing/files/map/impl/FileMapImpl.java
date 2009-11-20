@@ -103,12 +103,6 @@ class FileMapImpl implements FileMap {
 	}
 
 	@Override
-	public Object getMappedObject(Sneer1024 hashOfContents) {
-		File file = getFile(hashOfContents);
-		return file == null ?  my(FileMap.class).getFolder(hashOfContents) : file;
-	}
-
-	@Override
 	public Sneer1024 getHash(File file) {
 		return _hashesByFile.get(file); 
 	}
