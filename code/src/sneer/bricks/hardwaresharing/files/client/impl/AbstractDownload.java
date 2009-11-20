@@ -51,13 +51,11 @@ abstract class AbstractDownload implements Download {
 
 
 	private File dotPartFor(File path) {
-		if (path.getPath().endsWith(".part")) return path;
-
 		File dotPart = null;
 		try {
 			dotPart = my(DotParts.class).openDotPartFor(path);
 		} catch (IOException e) {
-			
+			finishWith(e);
 		}
 
 		return dotPart;
