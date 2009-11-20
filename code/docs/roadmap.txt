@@ -4,12 +4,12 @@
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
 	- [Igor/Klaus] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
-		- Unignore FileCopyTestBase.testWithFolder()
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
 
 	- [Igor] Make Download "disposable"
 
 	- Wusic
+		- Fix downloaded tracks counter
 		- Display playing track of each contact
 		- MusicalTasteMatcher Kernel
 			- void awardMusicalTastePointsFor(TrackEndorsement, boolean goodOrBad) // Called for endorsements of >known< tracks to give "musical taste" points.
