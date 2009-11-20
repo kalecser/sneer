@@ -25,7 +25,7 @@ abstract class AbstractDownload implements Download {
 	final long _lastModified;
 	final Sneer1024 _hash;
 
-	File _dotPart;
+	private File _actualPath;
 
 	@SuppressWarnings("unused") private WeakContract _timerContract;
 
@@ -34,10 +34,12 @@ abstract class AbstractDownload implements Download {
 
 
 	AbstractDownload(File path, long lastModified, Sneer1024 hashOfFile) {
-		_path = path;
+		_path = dotPartFor(path);
 		_lastModified = lastModified;
 		_hash = hashOfFile;
-		
+
+		_actualPath = path;
+
 		finishIfRedundant();
 	}
 
@@ -48,12 +50,17 @@ abstract class AbstractDownload implements Download {
 	}
 
 
-	File dotPart() throws IOException {
-		if (_dotPart == null) {
-			_dotPart = my(DotParts.class).openDotPartFor(_path);			
+	private File dotPartFor(File path) {
+		if (path.getPath().endsWith(".part")) return path;
+
+		File dotPart = null;
+		try {
+			dotPart = my(DotParts.class).openDotPartFor(path);
+		} catch (IOException e) {
+			
 		}
 
-		return _dotPart;
+		return dotPart;
 	}
 
 
@@ -86,11 +93,11 @@ abstract class AbstractDownload implements Download {
 
 
 	void finish() throws IOException {
-		my(DotParts.class).closeDotPart(dotPart(), _lastModified);
+		my(DotParts.class).closeDotPart(_path, _lastModified);
 
-		my(FileMap.class).put(_path);
+		my(FileMap.class).put(_actualPath);
 
-		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _path.getName() + " downloaded!", _path.getAbsolutePath(), 10000);
+		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
 		_isFinished.open();
 	}
 
@@ -112,6 +119,5 @@ abstract class AbstractDownload implements Download {
 			publishRequestIfNecessary();
 		}});
 	}
-
 
 }

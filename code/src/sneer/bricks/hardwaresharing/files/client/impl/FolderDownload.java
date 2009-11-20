@@ -50,11 +50,11 @@ class FolderDownload extends AbstractDownload {
 	
 	private void tryToReceiveFolder(FolderContents folderContents) throws IOException {
 		if (isFinished()) return;
-		
+
 	    Sneer1024 hashOfFolder = my(Hasher.class).hash(folderContents);
 	    if (!_hash.equals(hashOfFolder)) return;
 	    _received = true;
-	    
+
 	    if (!_path.exists() && !_path.mkdir()) throw new IOException("Unable to create folder: " + _path);
 
 	    for (FileOrFolder entry : folderContents.contents)
@@ -70,7 +70,7 @@ class FolderDownload extends AbstractDownload {
 	    	  : new FileDownload(new File(_path, entry.name), entry.lastModified, entry.hashOfContents);	
 	}
 
-	
+
 	@Override
 	Tuple requestToPublishIfNecessary() {
 		return _received
@@ -82,7 +82,7 @@ class FolderDownload extends AbstractDownload {
 	@Override
 	void copyContents(Object contents) throws IOException {
 		if (!(contents instanceof FolderContents)) throw new IOException("Wrong type of contents received. Should be FolderContents but was " + contents.getClass());
-		my(FolderContentsWriter.class).writeToFolder(dotPart(), (FolderContents) contents);
+		my(FolderContentsWriter.class).writeToFolder(_path, (FolderContents) contents);
 	}
 
 

@@ -20,7 +20,7 @@ class DotPartsImpl implements DotParts {
 		return result;
 	}
 
-	
+
 	@Override
 	public void closeDotPart(File dotPartFile, long lastModified) throws IOException {
 		if (lastModified != -1)
@@ -29,7 +29,7 @@ class DotPartsImpl implements DotParts {
 		if (!dotPartFile.renameTo(actualFile(dotPartFile)))
 			throw new IOException("Unable to rename .part file/folder to actual file/folder: " + actualFile(dotPartFile));
 	}
-	
+
 
 	private File actualFile(File dotPartFile) {
 		return new File(my(Lang.class).strings().chomp(dotPartFile.getAbsolutePath(), ".part"));

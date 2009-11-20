@@ -84,7 +84,7 @@ class FileDownload extends AbstractDownload {
 	private void receiveFirstBlock(FileContentsFirstBlock contents) throws IOException {
 		if (firstBlockWasAlreadyReceived()) return;
 		_fileSizeInBlocks = calculateFileSizeInBlocks(contents.fileSize);
-		_output = new FileOutputStream(dotPart());
+		_output = new FileOutputStream(_path);
 	}
 
 	
@@ -153,7 +153,7 @@ class FileDownload extends AbstractDownload {
 	@Override
 	void copyContents(Object contents) throws IOException {
 		if (!(contents instanceof File)) throw new IOException("Wrong type of contents received. Should be File but was " + contents.getClass());
-		my(IO.class).files().copyFile((File) contents, dotPart());
+		my(IO.class).files().copyFile((File) contents, _path);
 	}
 
 
