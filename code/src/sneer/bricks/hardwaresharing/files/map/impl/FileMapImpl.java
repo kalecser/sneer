@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardwaresharing.files.hasher.Hasher;
@@ -48,6 +49,7 @@ class FileMapImpl implements FileMap {
 */
 	@Override
 	public Sneer1024 put(File fileOrFolder) throws IOException {
+		my(Logger.class).log("Mapping " + fileOrFolder);
 		return (fileOrFolder.isDirectory())
 			? putFolder(fileOrFolder)
 			: putFile(fileOrFolder);
