@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
+import sneer.bricks.hardwaresharing.files.client.download.Download;
+import sneer.bricks.hardwaresharing.files.client.download.Downloads;
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
@@ -25,7 +27,7 @@ class FileClientImpl implements FileClient {
 	@Override
 	public void fetchFile(final File file, final long lastModified, final Sneer1024 hashOfFile) throws IOException {
 		fetch("file", file, hashOfFile, new Producer<Download>() { @Override public Download produce() throws RuntimeException {
-			return new FileDownload(file, lastModified, hashOfFile); 
+			 return my(Downloads.class).newFileDownload(file, lastModified, hashOfFile);
 		}});
 	}
 
@@ -39,7 +41,7 @@ class FileClientImpl implements FileClient {
 	@Override
 	public void fetchFolder(final File folder, final long lastModified, final Sneer1024 hashOfFolder) throws IOException {
 		fetch("folder", folder, hashOfFolder, new Producer<Download>() { @Override public Download produce() throws RuntimeException {
-			return new FolderDownload(folder, lastModified, hashOfFolder); 
+			return my(Downloads.class).newFolderDownload(folder, lastModified, hashOfFolder);
 		}});
 	}
 

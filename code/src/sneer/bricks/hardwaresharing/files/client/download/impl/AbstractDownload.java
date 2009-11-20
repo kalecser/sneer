@@ -1,4 +1,4 @@
-package sneer.bricks.hardwaresharing.files.client.impl;
+package sneer.bricks.hardwaresharing.files.client.download.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -10,6 +10,8 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.file.atomic.dotpart.DotParts;
+import sneer.bricks.hardwaresharing.files.client.download.Download;
+import sneer.bricks.hardwaresharing.files.client.impl.FileClientUtils;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;

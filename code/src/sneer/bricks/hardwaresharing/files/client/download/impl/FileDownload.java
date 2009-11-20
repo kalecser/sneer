@@ -1,4 +1,4 @@
-package sneer.bricks.hardwaresharing.files.client.impl;
+package sneer.bricks.hardwaresharing.files.client.download.impl;
 
 import static sneer.foundation.environments.Environments.my;
 

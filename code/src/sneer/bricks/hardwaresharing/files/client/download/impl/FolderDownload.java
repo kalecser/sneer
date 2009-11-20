@@ -1,4 +1,4 @@
-package sneer.bricks.hardwaresharing.files.client.impl;
+package sneer.bricks.hardwaresharing.files.client.download.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardwaresharing.files.client.download.Download;
 import sneer.bricks.hardwaresharing.files.hasher.Hasher;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
