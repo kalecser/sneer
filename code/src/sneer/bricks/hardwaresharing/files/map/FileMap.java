@@ -15,6 +15,7 @@ public interface FileMap {
 	
 	File getFile(Sneer1024 hash);
 	FolderContents getFolder(Sneer1024 hash);
+	Object getMappedObject(Sneer1024 hashOfContents);
 
 	Sneer1024 getHash(File file);
 

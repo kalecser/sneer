@@ -11,7 +11,6 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.file.atomic.dotpart.DotParts;
 import sneer.bricks.hardwaresharing.files.client.download.Download;
-import sneer.bricks.hardwaresharing.files.client.impl.FileClientUtils;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -103,7 +102,7 @@ abstract class AbstractDownload implements Download {
 
 
 	private void finishIfRedundant() {
-		Object alreadyMapped = FileClientUtils.mappedContentsBy(_hash);
+		Object alreadyMapped = my(FileMap.class).getMappedObject(_hash);
 		if (alreadyMapped == null) return;
 		try {
 			copyContents(alreadyMapped);

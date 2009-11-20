@@ -94,9 +94,19 @@ class FileMapImpl implements FileMap {
 		return result;
 	}
 
-	@Override	public File getFile(Sneer1024 hash) { return _filesByHash.get(hash);	}
-	@Override	public FolderContents getFolder(Sneer1024 hash) { return _foldersByHash.get(hash); }
+	@Override public File getFile(Sneer1024 hash) {
+		return _filesByHash.get(hash);
+	}
 
+	@Override public FolderContents getFolder(Sneer1024 hash) {
+		return _foldersByHash.get(hash);
+	}
+
+	@Override
+	public Object getMappedObject(Sneer1024 hashOfContents) {
+		File file = getFile(hashOfContents);
+		return file == null ?  my(FileMap.class).getFolder(hashOfContents) : file;
+	}
 
 	@Override
 	public Sneer1024 getHash(File file) {
