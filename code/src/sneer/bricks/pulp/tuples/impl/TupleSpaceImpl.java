@@ -91,7 +91,7 @@ class TupleSpaceImpl implements TupleSpace {
 		
 		private Tuple waitToPopTuple() {
 			synchronized (_tuplesToNotify) {
-				if (_tuplesToNotify.isEmpty())
+				while (_tuplesToNotify.isEmpty()) //This used to be an "if" instead of a "while" and we did get a rare IndexOutOfBoundsException when doing remove(0) below. I don't know how this can happen since only one thread removes elements and it is only notified when an element is added. Can someone explain that? Klaus
 					my(Threads.class).waitWithoutInterruptions(_tuplesToNotify);
 				
 				return _tuplesToNotify.remove(0);
