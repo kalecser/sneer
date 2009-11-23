@@ -2,7 +2,6 @@ package sneer.bricks.hardware.clock.timer.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.lang.ref.WeakReference;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -53,7 +52,7 @@ class TimerImpl implements Timer {
 	public WeakContract wakeUpNowAndEvery(long period, final Runnable stepper) {
 		Alarm alarm = new Alarm(stepper, period, true);
 		alarm.wakeUp();
-		return my(Contracts.class).weakContractFor(alarm, stepper);
+		return my(Contracts.class).weakContractFor(alarm);
 	}
 
 	@Override
@@ -65,7 +64,7 @@ class TimerImpl implements Timer {
 	private WeakContract wakeUp(long period, Runnable stepper, boolean isPeriodic) {
 		Alarm alarm = new Alarm(stepper, period, isPeriodic);
 		_alarms.add(alarm);
-		return my(Contracts.class).weakContractFor(alarm, stepper);
+		return my(Contracts.class).weakContractFor(alarm);
 	}
 
 	@Override
@@ -77,13 +76,6 @@ class TimerImpl implements Timer {
 	
 	synchronized
 	private void wakeUpAlarmsIfNecessary() {
-//		while (!_alarms.isEmpty()) {
-//			Alarm first = _alarms.first();
-//			if (!first.isTimeToWakeUp()) break;
-//			
-//			first.wakeUp();
-//		}
-
 		for (Alarm alarm : _alarms.toArray(ALARM_ARRAY_TYPE)) {
 			if (!alarm.isTimeToWakeUp()) return;
 			alarm.wakeUp();
@@ -95,7 +87,7 @@ class TimerImpl implements Timer {
 
 	private class Alarm implements Comparable<Alarm>, Disposable {
 
-		private final WeakReference<Runnable> _stepper;
+		private final Runnable _stepper;
 
 		private final boolean _isPeriodic;
 		private final long _period;
@@ -111,7 +103,7 @@ class TimerImpl implements Timer {
 		
 		public Alarm(Runnable stepper, long period, boolean isPeriodic) {
 			if (period < 0) throw new IllegalArgumentException("" + period);
-			_stepper = new WeakReference<Runnable>(stepper);
+			_stepper = stepper;
 			_period = period;
 			_wakeUpTime = currentTime() + period;
 			_isPeriodic = isPeriodic;
@@ -120,12 +112,9 @@ class TimerImpl implements Timer {
 		
 		void wakeUp() {
 			_alarms.remove(this);
-
-			Runnable stepper = _stepper.get();
-			if (stepper == null) return;
 			if (_isDisposed) return;
 			
-			step(stepper);
+			step(_stepper);
 
 			if (!_isPeriodic) return;
 			_wakeUpTime = currentTime() + _period;

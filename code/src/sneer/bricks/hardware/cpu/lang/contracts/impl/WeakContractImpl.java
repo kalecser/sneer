@@ -4,15 +4,17 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.Disposable;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.foundation.environments.Environment;
+import sneer.foundation.environments.Environments;
 
 class WeakContractImpl implements WeakContract {
 
-	@SuppressWarnings("unused")	private final Object _annexToAvoidGc;
 	private Disposable _service;
+	private final Environment _environment;
 
-	WeakContractImpl(Disposable service, Object annexToAvoidGc) {
-		_annexToAvoidGc = annexToAvoidGc;
+	WeakContractImpl(Disposable service) {
 		_service = service;
+		_environment = my(Environment.class);
 	}
 
 	@Override
@@ -26,7 +28,10 @@ class WeakContractImpl implements WeakContract {
 	@Override
 	protected void finalize() throws Throwable {
 		if (_service != null)
-			my(Logger.class).log("Weak Contract gc'd: " + _service);
+			Environments.runWith(_environment, new Runnable() { @Override public void run() {
+				my(Logger.class).log("Weak Contract gc'd: " + _service);
+			}});
+		
 		dispose();
 	}
 

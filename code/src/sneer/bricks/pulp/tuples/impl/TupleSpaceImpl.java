@@ -5,7 +5,6 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -45,16 +44,17 @@ class TupleSpaceImpl implements TupleSpace {
 	//Refactor The synchronization will no longer be necessary when the container guarantees synchronization of model bricks.
 	class Subscription<T extends Tuple> implements Disposable {
 
-		private final WeakReference<Consumer<? super Tuple>> _subscriber;
+		private final Consumer<? super Tuple> _subscriber;
 		private final Class<? extends Tuple> _tupleType;
 		private final Predicate<? super T> _filter;
 		private final Environment _environment;
 		private final List<Tuple> _tuplesToNotify = new LinkedList<Tuple>(); 
 
 		private final Contract _stepperContract;
+		private boolean _isDisposed = false;
 		
 		Subscription(Consumer<? super T> subscriber, Class<T> tupleType, Predicate<? super T> filter) {
-			_subscriber = new WeakReference<Consumer<? super Tuple>>((Consumer<? super Tuple>)subscriber);
+			_subscriber = (Consumer<? super Tuple>)subscriber;
 			_tupleType = tupleType;
 			_filter = filter;
 			_environment = my(Environment.class);
@@ -65,13 +65,15 @@ class TupleSpaceImpl implements TupleSpace {
 		private Runnable notifier() {
 			return new Runnable() { @Override public void run() {
 				Tuple nextTuple = waitToPopTuple();
+				if (_isDisposed) return;
+				
 				notifySubscriber(nextTuple);
 				dispatchCounterDecrement();
 			}};
 		}
 
 		private void notifySubscriber(final Tuple tuple) {
-			final Consumer<? super Tuple> subscriber = _subscriber.get();
+			final Consumer<? super Tuple> subscriber = _subscriber;
 			if (subscriber == null) return;
 			
 			_exceptionHandler.shield(new Runnable() { @Override public void run() {
@@ -91,8 +93,10 @@ class TupleSpaceImpl implements TupleSpace {
 		
 		private Tuple waitToPopTuple() {
 			synchronized (_tuplesToNotify) {
-				while (_tuplesToNotify.isEmpty()) //This used to be an "if" instead of a "while" and we did get a rare IndexOutOfBoundsException when doing remove(0) below. I don't know how this can happen since only one thread removes elements and it is only notified when an element is added. Can someone explain that? Klaus
+				while (_tuplesToNotify.isEmpty()) { //This used to be an "if" instead of a "while" and we did get a rare IndexOutOfBoundsException when doing remove(0) below. I don't know how this can happen since only one thread removes elements and it is only notified when an element is added. Can someone explain that? Klaus
 					my(Threads.class).waitWithoutInterruptions(_tuplesToNotify);
+					if (_isDisposed) return null;
+				}
 				
 				return _tuplesToNotify.remove(0);
 			}
@@ -110,6 +114,10 @@ class TupleSpaceImpl implements TupleSpace {
 		public void dispose() {
 			_stepperContract.dispose();
 			_subscriptions.remove(this);
+			synchronized(_tuplesToNotify) {
+				_isDisposed = true;
+				_tuplesToNotify.notify();
+			}
 		}
 	
 	}
@@ -285,7 +293,7 @@ class TupleSpaceImpl implements TupleSpace {
 			subscription.filterAndNotify(kept);
 
 		_subscriptions.add(subscription);
-		return my(Contracts.class).weakContractFor(subscription, subscriber);
+		return my(Contracts.class).weakContractFor(subscription);
 	}
 	
 	
