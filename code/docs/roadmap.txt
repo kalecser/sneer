@@ -3,7 +3,7 @@
 
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
-	- [Igor/Klaus] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
+	- [Klaus] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
 
 	- [Igor] Make Download "disposable"
