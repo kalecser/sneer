@@ -36,17 +36,6 @@ class FileMapImpl implements FileMap {
 	}
 
 
-/*	@Override
-	public Sneer1024 putBigFileBlocks(BigFileBlocks bigFileBlocks) {
-		
-		byte[] mergedBytes = BigFileUtils.getBytes(bigFileBlocks);
-		
-		Sneer1024 hash = my(Hasher.class).hash(mergedBytes);
-		put(hash, bigFileBlocks);
-		return hash;
-	}
-
-*/
 	@Override
 	public Sneer1024 put(File fileOrFolder) throws IOException {
 		my(Logger.class).log("Mapping " + fileOrFolder);
