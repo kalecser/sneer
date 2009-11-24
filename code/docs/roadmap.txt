@@ -1,6 +1,5 @@
 ﻿TASKS
 =========
-	- [Klaus] Check EventNotifierImpl.addReceiver()
 
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
