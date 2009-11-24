@@ -1,4 +1,4 @@
-package sneer.bricks.hardwaresharing.files.client.download.impl;
+package sneer.bricks.hardwaresharing.files.client.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -10,7 +10,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.file.atomic.dotpart.DotParts;
-import sneer.bricks.hardwaresharing.files.client.download.Download;
+import sneer.bricks.hardwaresharing.files.client.Download;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -33,13 +33,17 @@ abstract class AbstractDownload implements Download {
 	final Latch _isFinished = my(Latches.class).produce();
 	private IOException _exception;
 
+	private final Runnable _toCallWhenFinished;
 
-	AbstractDownload(File path, long lastModified, Sneer1024 hashOfFile) {
+
+	AbstractDownload(File path, long lastModified, Sneer1024 hashOfFile, Runnable toCallWhenFinished) {
 		_path = dotPartFor(path);
 		_lastModified = lastModified;
 		_hash = hashOfFile;
 
 		_actualPath = path;
+
+		_toCallWhenFinished = toCallWhenFinished;
 
 		finishIfRedundant();
 	}
@@ -48,6 +52,12 @@ abstract class AbstractDownload implements Download {
 	public void waitTillFinished() throws IOException {
 		_isFinished.waitTillOpen();
 		if (_exception != null) throw _exception;
+	}
+
+
+	@Override
+	public void dispose() {
+		finishWith(new IOException("Download disposed: " + _actualPath));
 	}
 
 
@@ -87,16 +97,22 @@ abstract class AbstractDownload implements Download {
 
 	void finishWith(IOException ioe) {
 		_exception = ioe;
-		_isFinished.open();
+		finish();
 	}
 
 
-	void finish() throws IOException {
+	void finishWithSuccess() throws IOException {
 		my(DotParts.class).closeDotPart(_path, _lastModified);
 
 		my(FileMap.class).put(_actualPath);
 
 		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
+		finish();
+	}
+
+
+	private void finish() {
+		if (_toCallWhenFinished != null) _toCallWhenFinished.run();
 		_isFinished.open();
 	}
 
@@ -106,7 +122,7 @@ abstract class AbstractDownload implements Download {
 		if (alreadyMapped == null) return;
 		try {
 			copyContents(alreadyMapped);
-			finish();
+			finishWithSuccess();
 		} catch (IOException ioe) {
 			finishWith(ioe);
 		}
@@ -121,5 +137,6 @@ abstract class AbstractDownload implements Download {
 			publishRequestIfNecessary();
 		}});
 	}
+
 
 }

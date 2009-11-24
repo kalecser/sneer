@@ -182,7 +182,7 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public Signal<String> numberOfPeerTracks() {
-		return my(Signals.class).adapt(my(TrackClient.class).numberOfTracksFetchedFromPeers(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
+		return my(Signals.class).adapt(my(TrackClient.class).numberOfDownloadedTracks(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
 			return "Peer Tracks (" + numberOfTracks + ")";
 		}});
 	}

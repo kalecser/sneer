@@ -12,7 +12,7 @@ class UmbrellaContract implements WeakContract {
 	private final List<WeakContract> _subContracts;
 
 	
-	<T> UmbrellaContract(Runnable receiver, PulseSource... sources) {
+	UmbrellaContract(Runnable receiver, PulseSource... sources) {
 		_subContracts = new ArrayList<WeakContract>(sources.length);
 		
 		for (PulseSource source : sources)
@@ -25,5 +25,6 @@ class UmbrellaContract implements WeakContract {
 		for (WeakContract subContract : _subContracts)
 			subContract.dispose();
 	}
+
 	
 }

@@ -4,12 +4,15 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
+import sneer.bricks.hardwaresharing.files.client.Download;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.keymanager.Seals;
@@ -25,11 +28,11 @@ import dfcsantos.tracks.rejected.RejectedTracksKeeper;
 
 class TrackClientImpl implements TrackClient {
 
-	private final Register<Integer> _numberOfTracksFetchedFromPeers = my(Signals.class).newRegister(0);
+	private final Register<Integer> _numberOfDownloadedTracks = my(Signals.class).newRegister(0);
 	private final Latch _hasFinishedSharedTracksFolderMapping = my(Latches.class).produce();
 	private final Latch _hasFinishedPeerTracksFolderMapping = my(Latches.class).produce();
 
-	private AtomicInteger _downloadCount = new AtomicInteger();
+	private List<Download> _downloads = Collections.synchronizedList(new ArrayList<Download>());
 
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC;
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC2;
@@ -48,8 +51,8 @@ class TrackClientImpl implements TrackClient {
 	}
 
 
-	public Signal<Integer> numberOfTracksFetchedFromPeers() {
-		return _numberOfTracksFetchedFromPeers.output();
+	public Signal<Integer> numberOfDownloadedTracks() {
+		return _numberOfDownloadedTracks.output();
 	}
 
 
@@ -57,25 +60,23 @@ class TrackClientImpl implements TrackClient {
 		_hasFinishedSharedTracksFolderMapping.waitTillOpen();
 		_hasFinishedPeerTracksFolderMapping.waitTillOpen();
 
-		if (_downloadCount.incrementAndGet() > 3) {
-			_downloadCount.decrementAndGet();
-			return;
-		}
-
-		
 		if (my(Seals.class).ownSeal().equals(endorsement.publisher())) return;
-
 		if (my(RejectedTracksKeeper.class).isRejected(endorsement.hash)) return;
 
-		try {
-			my(FileClient.class).fetchFile(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
-		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		} finally {
-			_downloadCount.decrementAndGet();
-		}
+		if (_downloads.size() >= 3) return;
+		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
+		_downloads.add(download);
 
-		_numberOfTracksFetchedFromPeers.setter().consume(_numberOfTracksFetchedFromPeers.output().currentValue() + 1);
+		my(Threads.class).startDaemon("Waiting for Download", new Runnable() { @Override public void run() {
+			try {
+				download.waitTillFinished();
+				_numberOfDownloadedTracks.setter().consume(_numberOfDownloadedTracks.output().currentValue() + 1);
+			} catch (IOException e) {
+				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			} finally {
+				_downloads.remove(download);
+			}
+		}});
 	}
 
 

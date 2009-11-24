@@ -45,7 +45,7 @@ public class FileDownloadTest extends BrickTest {
 		}});
 
 		final File tmpFile = newTmpFile();
-		my(FileClient.class).fetchFile(tmpFile, smallFileHash);
+		my(FileClient.class).startFileDownload(tmpFile, smallFileHash).waitTillFinished();
 
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 		my(IO.class).files().assertSameContents(tmpFile, smallFile);

@@ -1,4 +1,4 @@
-package sneer.bricks.hardwaresharing.files.client.download.impl;
+package sneer.bricks.hardwaresharing.files.client.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardwaresharing.files.client.download.Download;
+import sneer.bricks.hardwaresharing.files.client.Download;
 import sneer.bricks.hardwaresharing.files.hasher.Hasher;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
@@ -23,10 +23,15 @@ class FolderDownload extends AbstractDownload {
 	@SuppressWarnings("unused") private WeakContract _folderContentConsumerContract;
 	private boolean _received = false;
 
-	
+
 	FolderDownload(File folder, long lastModified, Sneer1024 hashOfFolder) {
-		super(folder, lastModified, hashOfFolder);
-		
+		this(folder, lastModified, hashOfFolder, null);
+	}
+
+
+	FolderDownload(File folder, long lastModified, Sneer1024 hashOfFolder, Runnable toCallWhenFinished) {
+		super(folder, lastModified, hashOfFolder, toCallWhenFinished);
+
 		if (isFinished()) return;
 		subscribeToFolderContents();
 		startSendingRequests();
@@ -62,7 +67,7 @@ class FolderDownload extends AbstractDownload {
 	    for (FileOrFolder entry : folderContents.contents)
 	    	startDownload(entry).waitTillFinished();
 
-	    finish();
+	    finishWithSuccess();
 	}
 
 	

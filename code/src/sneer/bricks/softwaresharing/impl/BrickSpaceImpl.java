@@ -74,9 +74,9 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 	
 	private void fetchIfNecessary(final SrcFolderHash srcFolderHash) {
-		shield("writing", new Closure<IOException>() { @Override public void run() throws IOException {
+		shield("writing", new Closure<IOException>() { @Override public void run() {
 
-			my(FileClient.class).fetchFolder(null, srcFolderHash.value);
+			my(FileClient.class).startFolderDownload(null, srcFolderHash.value);
 		
 			shield("reading", new Closure<IOException>() { @Override public void run() throws IOException {
 				accumulateBricks(srcFolderHash);

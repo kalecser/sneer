@@ -1,4 +1,4 @@
-package sneer.bricks.hardwaresharing.files.client.download.impl;
+package sneer.bricks.hardwaresharing.files.client.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -37,10 +37,15 @@ class FileDownload extends AbstractDownload {
 
 	@SuppressWarnings("unused") private WeakContract _fileContentConsumerContract;
 
-	
+
 	FileDownload(File file, long lastModified, Sneer1024 hashOfFile) {
-		super(file, lastModified, hashOfFile);
-		
+		this(file, lastModified, hashOfFile, null);
+	}
+
+
+	FileDownload(File file, long lastModified, Sneer1024 hashOfFile, Runnable toCallWhenFinished) {
+		super(file, lastModified, hashOfFile, toCallWhenFinished);
+
 		if (isFinished()) return; 
 		subscribeToFileContents();
 		startSendingRequests();
@@ -123,7 +128,7 @@ class FileDownload extends AbstractDownload {
 		++_nextBlockToWrite;
 		if (_nextBlockToWrite == _fileSizeInBlocks) {
 			my(IO.class).streams().closeQuietly(_output);
-			finish();
+			finishWithSuccess();
 		}
 	}
 

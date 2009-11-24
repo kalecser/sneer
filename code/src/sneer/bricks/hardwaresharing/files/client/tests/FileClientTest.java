@@ -27,7 +27,7 @@ public class FileClientTest extends BrickTest {
 		}});
 
 		final File tmpFile = newTmpFile();
-		my(FileClient.class).fetchFile(tmpFile, hash);
+		my(FileClient.class).startFileDownload(tmpFile, hash);
 
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 		my(IO.class).files().assertSameContents(tmpFile, myClassFile());

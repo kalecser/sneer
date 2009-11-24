@@ -19,14 +19,14 @@ public class RemoteCopyTest extends FileCopyTestBase {
 	@Override
 	protected void copyFileFromFileMap(final Sneer1024 hashOfContents, final File destination) throws IOException {
 		copyFromFileMap(new Closure<IOException>() { @Override public void run() throws IOException {
-			my(FileClient.class).fetchFile(destination, hashOfContents);
+			my(FileClient.class).startFileDownload(destination, hashOfContents).waitTillFinished();
 		}});
 	}
 
 	@Override
 	protected void copyFolderFromFileMap(final Sneer1024 hashOfContents, final File destination) throws IOException {
 		copyFromFileMap(new Closure<IOException>() { @Override public void run() throws IOException {
-			my(FileClient.class).fetchFolder(destination, hashOfContents);
+			my(FileClient.class).startFolderDownload(destination, hashOfContents).waitTillFinished();
 		}});
 	}
 
