@@ -26,5 +26,9 @@ class UmbrellaContract implements WeakContract {
 			subContract.dispose();
 	}
 
+	@Override
+	protected void finalize() {
+		dispose();
+	}
 	
 }
