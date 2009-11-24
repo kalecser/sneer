@@ -35,7 +35,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 		testWith(folderWithAFewFiles());
 	}
 
-	@Test (timeout = 6000)
+	@Test (timeout = 7000)
 	public void testWithLargeFile() throws IOException {
 		testWith(createLargeFile());
 	}
