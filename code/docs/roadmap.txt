@@ -7,7 +7,8 @@
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
 
 	- Wusic
-		- Fix downloaded tracks counter
+		- [Igor] Create mechanism to allow user to say when he wants to download tracks
+		- [Igor] Check if downloaded tracks counter is working properly
 		- Display playing track of each contact
 		- MusicalTasteMatcher Kernel
 			- void awardMusicalTastePointsFor(TrackEndorsement, boolean goodOrBad) // Called for endorsements of >known< tracks to give "musical taste" points.
