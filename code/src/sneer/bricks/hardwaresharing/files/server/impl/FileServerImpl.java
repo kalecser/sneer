@@ -94,9 +94,9 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 		String debugInfo = requestedFile.getName();
 		return request.blockNumber == 0
 			? new FileContentsFirstBlock(
-				request.addressee, request.hashOfContents, requestedFile.length(), bytes, debugInfo)
+				request.publisher(), request.hashOfContents, requestedFile.length(), bytes, debugInfo)
 			: new FileContents(
-				request.addressee, request.hashOfContents, request.blockNumber,    bytes, debugInfo);
+				request.publisher(), request.hashOfContents, request.blockNumber,    bytes, debugInfo);
 	}
 
 

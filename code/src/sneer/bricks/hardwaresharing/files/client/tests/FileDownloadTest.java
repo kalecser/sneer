@@ -31,7 +31,7 @@ import sneer.foundation.lang.Consumer;
 
 public class FileDownloadTest extends BrickTest {
 
-	@Test (timeout = 4000)
+	@Test (timeout = 5000)
 	public void receiveFileContentBlocksOutOfSequence() throws IOException {
 		final File smallFile = createFileWithRandomContent();
 		final Sneer1024 smallFileHash = my(Hasher.class).hash(smallFile);
