@@ -12,6 +12,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
@@ -23,6 +24,8 @@ class OwnTracksPanel extends AbstractTabPane {
 	private final JFileChooser _playingFolderChooser;
     private final JButton _choosePlayingFolder			= new JButton();
     private final JCheckBox _shuffle					= new JCheckBox();
+
+	@SuppressWarnings("unused") private final WeakContract _toAvoidGC;
 
 	OwnTracksPanel() {
 		_playingFolderChooser = my(FileChoosers.class).newFileChooser(new Consumer<File>() { @Override public void consume(File chosenFolder) {
@@ -47,11 +50,15 @@ class OwnTracksPanel extends AbstractTabPane {
 			}
 		});
 	    customPanel().add(_shuffle);
+
+		_toAvoidGC = _controller.operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode operatingMode) {
+			updateComponents(operatingMode);
+		}});
 	}
 
 	@Override
-	OperatingMode panelOperatingMode() {
-		return OperatingMode.OWN;
+	boolean isMyOperatingMode(OperatingMode operatingMode) {
+		return OperatingMode.OWN.equals(operatingMode);
 	}
 
 	private void choosePlayingFolderActionPerformed() {
@@ -72,7 +79,16 @@ class OwnTracksPanel extends AbstractTabPane {
     }
 
 	@Override
-	ControlPanel controlPanel() {
+	void updateComponents(OperatingMode operatingMode) {
+		super.updateComponents(operatingMode);
+		if (isMyOperatingMode(operatingMode))
+			_shuffle.setEnabled(true);
+		else
+			_shuffle.setEnabled(false);
+	}
+
+	@Override
+	ControlPanel newControlPanel() {
 		return new OwnTracksControlPanel();
 	}
 
@@ -91,8 +107,20 @@ class OwnTracksPanel extends AbstractTabPane {
 		}
 
 		@Override
-		OperatingMode controlPanelOperatingMode() {
-			return panelOperatingMode();
+		boolean isMyOperatingMode(OperatingMode operatingMode) {
+			return OwnTracksPanel.this.isMyOperatingMode(operatingMode);
+		}
+
+		@Override
+		void enableButtons() {
+			super.enableButtons();
+			_deleteFile.setEnabled(true);
+		}
+
+		@Override
+		void disableButtons() {
+			super.disableButtons();
+			_deleteFile.setEnabled(false);
 		}
 
 	}

@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.lang.Consumer;
@@ -20,6 +21,8 @@ class PeerTracksPanel extends AbstractTabPane {
     private final JLabel _peerTracksCountTabLabel = my(ReactiveWidgetFactory.class).newLabel(_controller.numberOfPeerTracks()).getMainWidget();
 	private final JFileChooser _sharedTracksFolderChooser;
     private final JButton _chooseSharedTracksFolder = new JButton();
+
+    @SuppressWarnings("unused")	private final WeakContract _toAvoidGC;
 
 	PeerTracksPanel() {
         _sharedTracksFolderChooser = my(FileChoosers.class).newFileChooser(new Consumer<File>() { @Override public void consume(File chosenFolder) {
@@ -36,11 +39,15 @@ class PeerTracksPanel extends AbstractTabPane {
             }
         });
         customPanel().add(_chooseSharedTracksFolder);
+
+		_toAvoidGC = _controller.operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode operatingMode) {
+			updateComponents(operatingMode);
+		}});
 	}
 
 	@Override
-	OperatingMode panelOperatingMode() {
-		return OperatingMode.PEERS;
+	boolean isMyOperatingMode(OperatingMode operatingMode) {
+		return OperatingMode.PEERS.equals(operatingMode);
 	}
 
     private void chooseSharedTracksFolderActionPerformed() {
@@ -61,7 +68,7 @@ class PeerTracksPanel extends AbstractTabPane {
     }
 
     @Override
-    ControlPanel controlPanel() {
+    ControlPanel newControlPanel() {
     	return new PeerTracksControlPanel();
     }
 
@@ -89,8 +96,22 @@ class PeerTracksPanel extends AbstractTabPane {
 		}
 
 		@Override
-		OperatingMode controlPanelOperatingMode() {
-			return panelOperatingMode();
+		boolean isMyOperatingMode(OperatingMode operatingMode) {
+			return PeerTracksPanel.this.isMyOperatingMode(operatingMode);
+		}
+
+		@Override
+		void enableButtons() {
+			super.enableButtons();
+			_meToo.setEnabled(true);
+			_noWay.setEnabled(true);
+		}
+
+		@Override
+		void disableButtons() {
+			super.disableButtons();
+			_meToo.setEnabled(false);
+			_noWay.setEnabled(false);
 		}
 
 	}

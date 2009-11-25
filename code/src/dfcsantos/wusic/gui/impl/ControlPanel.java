@@ -29,7 +29,7 @@ abstract class ControlPanel extends JPanel {
 		super(new FlowLayout(FlowLayout.LEFT, 9, 3));
 
 	    toAvoidGC = _controller.isPlaying().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isPlaying) {
-	    	if (isTheRightOperatingMode())
+	    	if (isMyOperatingMode())
 	    		_pauseResume.setText(isPlaying ? "||" : ">");
 	    	else
 	    		_pauseResume.setText(">");
@@ -67,19 +67,32 @@ abstract class ControlPanel extends JPanel {
 	    add(_stop);
 	}
 
+	void update(OperatingMode operatingMode) {
+		if (isMyOperatingMode(operatingMode))
+			enableButtons();
+		else
+			disableButtons();
+	}
+
+	void enableButtons() {
+		_skip.setEnabled(true);
+		_stop.setEnabled(true);
+	}
+
+	void disableButtons() {
+		_skip.setEnabled(false);
+		_stop.setEnabled(false);
+	}
+
 	private void pauseResumeActionPerformed() {
 		switchOperatingModeIfNecessary();
 		_controller.pauseResume();
 	}
 
 	private void switchOperatingModeIfNecessary() {
-		if (isTheRightOperatingMode()) return;
+		if (isMyOperatingMode()) return;
 
 		_controller.switchOperatingMode();
-	}
-
-	private boolean isTheRightOperatingMode() {
-		return controlPanelOperatingMode().equals(_controller.operatingMode().currentValue());
 	}
 
 //	private void backActionPerformed() {
@@ -94,6 +107,10 @@ abstract class ControlPanel extends JPanel {
 	    _controller.stop();
 	}
 
-	abstract OperatingMode controlPanelOperatingMode();
+	private boolean isMyOperatingMode() {
+		return isMyOperatingMode(_controller.operatingMode().currentValue());
+	}
+
+	abstract boolean isMyOperatingMode(OperatingMode operatingMode);
 
 }

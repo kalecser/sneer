@@ -9,9 +9,6 @@ import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.foundation.lang.Consumer;
-
 import dfcsantos.wusic.Wusic;
 import dfcsantos.wusic.Wusic.OperatingMode;
 
@@ -23,24 +20,28 @@ abstract class AbstractTabPane extends JPanel {
 	private final JPanel _fixedPanel	= new JPanel(new GridLayout(2,1));
 
 	private final JPanel _trackDisplay	= new TrackDisplay();
-
-	@SuppressWarnings("unused") private final WeakContract _toAvoidGC;
+    private ControlPanel _controlPanel = newControlPanel();
 
 	AbstractTabPane() {
 		super(new BorderLayout(3, 3));
 
 		_fixedPanel.add(_trackDisplay);
-		_fixedPanel.add(controlPanel());
+		_fixedPanel.add(_controlPanel);
 
 		add(_customPanel, BorderLayout.NORTH);
 		add(_fixedPanel, BorderLayout.SOUTH);
+	}
 
-		_toAvoidGC = _controller.operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode operatingMode) {
-			if (operatingMode.equals(panelOperatingMode()))
-				showTrackDisplay();
-			else
-				hideTrackDisplay();
-		}});
+	void updateComponents(OperatingMode operatingMode) {
+		updateTrackDisplay(operatingMode);
+		updateControlPanel(operatingMode);
+	}
+
+	private void updateTrackDisplay(OperatingMode operatingMode) {
+		if (isMyOperatingMode(operatingMode))
+			showTrackDisplay();
+		else
+			hideTrackDisplay();
 	}
 
 	private void showTrackDisplay() {
@@ -51,14 +52,18 @@ abstract class AbstractTabPane extends JPanel {
 		_trackDisplay.setVisible(false);
 	}
 
+	private void updateControlPanel(OperatingMode operatingMode) {
+		_controlPanel.update(operatingMode);
+	}
+
 	JPanel customPanel() {
 		return _customPanel;
 	}
 
-	abstract OperatingMode panelOperatingMode();
+	abstract boolean isMyOperatingMode(OperatingMode operatingMode);
 
 	abstract JLabel customTabLabel();
 
-	abstract ControlPanel controlPanel();
+	abstract ControlPanel newControlPanel();
 
 }
