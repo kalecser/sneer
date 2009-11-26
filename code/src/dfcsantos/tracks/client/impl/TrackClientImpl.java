@@ -20,18 +20,22 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
 import dfcsantos.tracks.rejected.RejectedTracksKeeper;
+import dfcsantos.wusic.Wusic;
 
 class TrackClientImpl implements TrackClient {
 
 	private final Register<Integer> _numberOfDownloadedTracks = my(Signals.class).newRegister(0);
+
 	private final Latch _hasFinishedSharedTracksFolderMapping = my(Latches.class).produce();
 	private final Latch _hasFinishedPeerTracksFolderMapping = my(Latches.class).produce();
 
+	private ByRef<Boolean> _isTracksDowloadAllowed = ByRef.newInstance(false);
 	private List<Download> _downloads = Collections.synchronizedList(new ArrayList<Download>());
 
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC;
@@ -39,6 +43,13 @@ class TrackClientImpl implements TrackClient {
 
 
 	{
+		my(Wusic.class).tracksDownloadAllowance().addReceiver(new Consumer<String>() { @Override public void consume(String allowanceInMBs) {
+			if (Integer.parseInt(allowanceInMBs) > 0)
+				_isTracksDowloadAllowed.value = true;
+			else
+				_isTracksDowloadAllowed.value = false;
+		}});
+
 		_refToAvoidGC = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement trackEndorsement) {
 			consumeTrackEndorsement(trackEndorsement);
 		}});
@@ -60,6 +71,7 @@ class TrackClientImpl implements TrackClient {
 		_hasFinishedSharedTracksFolderMapping.waitTillOpen();
 		_hasFinishedPeerTracksFolderMapping.waitTillOpen();
 
+		if (!_isTracksDowloadAllowed.value) return;
 		if (my(Seals.class).ownSeal().equals(endorsement.publisher())) return;
 		if (my(RejectedTracksKeeper.class).isRejected(endorsement.hash)) return;
 

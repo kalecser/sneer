@@ -9,6 +9,6 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface WusicGui {
 
-	Dimension PREFERRED_SIZE = new Dimension(460, 130);
+	Dimension PREFERRED_SIZE = new Dimension(480, 140);
 
 }

@@ -13,6 +13,8 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
+import sneer.foundation.lang.PickyConsumer;
+import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
@@ -30,9 +32,9 @@ public class WusicImpl implements Wusic {
 
 	private Track _lastPlayedTrack;
 
-	private final DJ _dj = new DJ(_trackToPlay.output(), new Runnable() { @Override public void run() {
-		skip();
-	}});
+	private final DJ _dj = new DJ(_trackToPlay.output(), new Runnable() { @Override public void run() { skip(); } } );
+
+	private Register<String> _tracksDownloadAllowance = my(Signals.class).newRegister("0"); // tracks download are disabled by default  
 
 	@SuppressWarnings("unused") private final WeakContract _toAvoidGC;
 
@@ -191,6 +193,45 @@ public class WusicImpl implements Wusic {
 	@Override
 	public Signal<Boolean> isPlaying() {
 		return _dj.isPlaying();
+	}
+
+	@Override
+	public void enableTracksDownload() {
+		setTracksDownloadAllowance(DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE);
+	}
+
+	@Override
+	public void disableTracksDownload() {
+		setTracksDownloadAllowance("0");
+	}
+
+	private void setTracksDownloadAllowance(String allowanceInMBs) {
+		_tracksDownloadAllowance.setter().consume(allowanceInMBs);
+	}
+
+	@Override
+	public Signal<String> tracksDownloadAllowance() {
+		return _tracksDownloadAllowance.output();
+	}
+
+	@Override
+	public PickyConsumer<String> tracksDownloadAllowanceSetter() {
+		return new PickyConsumer<String>() { @Override public void consume(String allowanceInMBs) throws Refusal {
+			validateDownloadAllowance(allowanceInMBs);
+			_tracksDownloadAllowance.setter();
+		}};
+	}
+
+	private void validateDownloadAllowance(String allowanceInMBs) throws Refusal {
+		int downloadAllowance = -1;
+
+		try {
+			downloadAllowance = Integer.parseInt(allowanceInMBs);
+		} catch (NumberFormatException nfe) {
+			throw new Refusal("Invalid tracks download allowance: it must be positive integer");
+		}
+
+		if (downloadAllowance < 0) throw new Refusal("Invalid tracks download allowance: it cannot be negative");
 	}
 
 }

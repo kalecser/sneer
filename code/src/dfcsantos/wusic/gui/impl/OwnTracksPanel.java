@@ -35,20 +35,16 @@ class OwnTracksPanel extends AbstractTabPane {
 		_playingFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).playingFolder().currentValue());
 
 	    _choosePlayingFolder.setText("Playing Folder");
-	    _choosePlayingFolder.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent evt) {
-	            choosePlayingFolderActionPerformed();
-	        }
-	    });
+	    _choosePlayingFolder.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent evt) {
+	    	choosePlayingFolderActionPerformed();
+	    }});
 	    customPanel().add(_choosePlayingFolder);
 
 	    _shuffle.setText("Shuffle");
 	    _shuffle.setSelected(false);
-	    _shuffle.addActionListener(new ActionListener() {
-	    	@Override public void actionPerformed(ActionEvent e) {
-				shuffleActionPerformed();
-			}
-		});
+	    _shuffle.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) {
+	    	shuffleActionPerformed();
+	    }});
 	    customPanel().add(_shuffle);
 
 		_toAvoidGC = _controller.operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode operatingMode) {

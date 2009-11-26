@@ -5,6 +5,7 @@ import java.io.File;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.foundation.brickness.Brick;
+import sneer.foundation.lang.PickyConsumer;
 
 @Snapp
 @Brick
@@ -34,5 +35,11 @@ public interface Wusic {
 	Signal<String> numberOfPeerTracks();
 	
 	Signal<Boolean> isPlaying();
+
+	String DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE = "100"; // in MBs
+	void enableTracksDownload();
+	void disableTracksDownload();
+	Signal<String> tracksDownloadAllowance();
+	PickyConsumer<String> tracksDownloadAllowanceSetter();
 
 }

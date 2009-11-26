@@ -1,16 +1,20 @@
 package dfcsantos.wusic.gui.impl;
 import static sneer.foundation.environments.Environments.my;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
+import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
@@ -18,9 +22,13 @@ import dfcsantos.wusic.Wusic.OperatingMode;
 
 class PeerTracksPanel extends AbstractTabPane {
 
-    private final JLabel _peerTracksCountTabLabel = my(ReactiveWidgetFactory.class).newLabel(_controller.numberOfPeerTracks()).getMainWidget();
+    private final JLabel _peerTracksCountTabLabel			= my(ReactiveWidgetFactory.class).newLabel(_controller.numberOfPeerTracks()).getMainWidget();
 	private final JFileChooser _sharedTracksFolderChooser;
-    private final JButton _chooseSharedTracksFolder = new JButton();
+    private final JButton _chooseSharedTracksFolder			= new JButton();
+    private final JCheckBox _enableTracksDownload			= new JCheckBox();
+    private final JLabel _tracksDownloadAllowanceLabel		= new JLabel();
+    private final JTextField _tracksDownloadAllowance		= my(ReactiveWidgetFactory.class).newTextField(_controller.tracksDownloadAllowance(), _controller.tracksDownloadAllowanceSetter(), NotificationPolicy.OnEnterPressedOrLostFocus).getMainWidget();
+    
 
     @SuppressWarnings("unused")	private final WeakContract _toAvoidGC;
 
@@ -33,12 +41,25 @@ class PeerTracksPanel extends AbstractTabPane {
     	_sharedTracksFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).sharedTracksFolder().currentValue());
 
         _chooseSharedTracksFolder.setText("Shared Folder");
-        _chooseSharedTracksFolder.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
+        _chooseSharedTracksFolder.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent evt) {
                 chooseSharedTracksFolderActionPerformed();
-            }
-        });
+        }});
         customPanel().add(_chooseSharedTracksFolder);
+
+        _enableTracksDownload.setText("Enable Tracks Download");
+        _enableTracksDownload.setSelected(false);
+        _enableTracksDownload.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) {
+        	enableTracksDownloadActionPerformed();
+		}});
+        customPanel().add(_enableTracksDownload);
+
+        _tracksDownloadAllowanceLabel.setText("-   Allowance (MBs):");
+        _tracksDownloadAllowanceLabel.setVisible(false);
+        customPanel().add(_tracksDownloadAllowanceLabel);
+
+        _tracksDownloadAllowance.setPreferredSize(new Dimension(42, 18));
+        _tracksDownloadAllowance.setVisible(false);
+        customPanel().add(_tracksDownloadAllowance);
 
 		_toAvoidGC = _controller.operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode operatingMode) {
 			updateComponents(operatingMode);
@@ -61,6 +82,18 @@ class PeerTracksPanel extends AbstractTabPane {
     private void noWayActionPerformed() {
         _controller.noWay();
     }
+
+	private void enableTracksDownloadActionPerformed() {
+		if (_enableTracksDownload.isSelected()) {
+			_controller.enableTracksDownload();
+			_tracksDownloadAllowanceLabel.setVisible(true);
+			_tracksDownloadAllowance.setVisible(true);
+		} else {
+			_controller.disableTracksDownload();
+			_tracksDownloadAllowanceLabel.setVisible(false);
+			_tracksDownloadAllowance.setVisible(false);			
+		}
+	}
 
     @Override
     JLabel customTabLabel() {

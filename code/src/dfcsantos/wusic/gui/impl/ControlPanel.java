@@ -35,11 +35,9 @@ abstract class ControlPanel extends JPanel {
 	    		_pauseResume.setText(">");
 		}});
 
-	    _pauseResume.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent evt) {
-	            pauseResumeActionPerformed();
-	        }
-	    });
+	    _pauseResume.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent evt) {
+	    	pauseResumeActionPerformed();
+        }});
 	    add(_pauseResume);
 	
 //	    _back.setText("<<");
@@ -51,19 +49,15 @@ abstract class ControlPanel extends JPanel {
 //	    add(_back);
 	
 	    _skip.setText(">>");
-	    _skip.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent evt) {
-	        	skipActionPerformed();
-	        }
-	    });
+	    _skip.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent evt) {
+	    	skipActionPerformed();
+	    }});
 	    add(_skip);
 	
 	    _stop.setText("\u25A1"); // Unicode for 'square symbol'
-	    _stop.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent evt) {
-	            stopActionPerformed();
-	        }
-	    });
+	    _stop.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent evt) {
+	    	stopActionPerformed();
+	    }});
 	    add(_stop);
 	}
 
