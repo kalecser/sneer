@@ -7,8 +7,6 @@
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
 
 	- Wusic
-		- [Igor] Peer Files - Keep track of them so they are not downloaded redundantly. They will no longer be put in the FileMap.
-		- [Igor] Create mechanism to allow user to say when he wants to download tracks
 		- [Igor] Check if downloaded tracks counter is working properly
 		- Display playing track of each contact
 		- MusicalTasteMatcher Kernel
