@@ -22,7 +22,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.client.TrackClient;
-import dfcsantos.tracks.endorsements.TrackEndorsement;
+import dfcsantos.tracks.client.TrackEndorsement;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
 import dfcsantos.tracks.rejected.RejectedTracksKeeper;
 

@@ -1,4 +1,4 @@
-package dfcsantos.tracks.endorsements;
+package dfcsantos.tracks.client;
 
 import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.foundation.brickness.Tuple;
