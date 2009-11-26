@@ -22,9 +22,7 @@ import sneer.bricks.pulp.crypto.Sneer1024;
 
 class FileMapImpl implements FileMap {
 	
-	private final Map<Sneer1024, File> _filesByHash = new ConcurrentHashMap<Sneer1024, File>();
-	private final Map<File, Sneer1024> _hashesByFile = new ConcurrentHashMap<File, Sneer1024>();
-
+	private final Map<Sneer1024, File>           _filesByHash   = new ConcurrentHashMap<Sneer1024, File>();
 	private final Map<Sneer1024, FolderContents> _foldersByHash = new ConcurrentHashMap<Sneer1024, FolderContents>();	
 	
 
@@ -45,10 +43,9 @@ class FileMapImpl implements FileMap {
 	}
 
 	private Sneer1024 putFile(File file) throws IOException {
-		Sneer1024 hash = my(Hasher.class).hash(file);
-		_filesByHash.put(hash, file);
-		_hashesByFile.put(file, hash);
-		return hash;
+		Sneer1024 result = my(Hasher.class).hash(file);
+		_filesByHash.put(result, file);
+		return result;
 	}
 
 	private Sneer1024 putFolder(File folder) throws IOException {
@@ -91,11 +88,6 @@ class FileMapImpl implements FileMap {
 
 	@Override public FolderContents getFolder(Sneer1024 hash) {
 		return _foldersByHash.get(hash);
-	}
-
-	@Override
-	public Sneer1024 getHash(File file) {
-		return _hashesByFile.get(file); 
 	}
 
 }
