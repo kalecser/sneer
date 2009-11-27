@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
@@ -31,7 +30,6 @@ public abstract class FileCopyTestBase extends BrickTest {
 		testWith(anySmallFile());
 	}
 
-	@Ignore
 	@Test (timeout = 6000)
 	public void testWithFolder() throws IOException {
 		testWith(folderWithAFewFiles());

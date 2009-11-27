@@ -7,8 +7,11 @@ import java.io.File;
 import org.jmock.Expectations;
 import org.junit.Test;
 
+import sneer.bricks.hardware.cpu.threads.latches.Latch;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
+import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
 import sneer.bricks.network.social.ContactManager;
 import sneer.bricks.pulp.crypto.Crypto;
 import sneer.bricks.pulp.crypto.Sneer1024;
@@ -17,6 +20,7 @@ import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
+import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.client.TrackEndorsement;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
@@ -26,8 +30,8 @@ public class TrackClientTest extends BrickTest {
 
 	@Bind private final FileMap _fileMap = mock(FileMap.class);
 	@Bind private final FileClient _fileClient = mock(FileClient.class);
-	
-	@Test(timeout = 4000)
+
+	@Test(timeout = 2000)
 	public void trackDownload() throws Exception {
 		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[]{1});
 
@@ -37,11 +41,31 @@ public class TrackClientTest extends BrickTest {
 			exactly(1).of(_fileClient).startFileDownload(new File(peerTracksFolder(), "foo.mp3"), 42, hash1);
 		}});
 
-		my(Wusic.class).tracksDownloadAllowanceSetter().consume("1"); // Allowing 1 MB is enough, since peerTracksFolder is empty
+		// Allowing 1 MB is enough, since peerTracksFolder is empty
+		my(Wusic.class).tracksDownloadAllowanceSetter().consume("1");
+
 		my(TrackClient.class);
 
 		aquireEndorsementTuple(hash1, 42, "songs/subfolder/foo.mp3");
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
+	}
+
+	@Test (timeout = 2000)
+	public void tryToDowloadTrackWithoutSettingAllowance() throws Exception {
+		final Latch timeoutLatch = my(Latches.class).produce();
+		my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
+			timeoutLatch.waitTillOpen();
+		}});
+
+		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[]{1});
+		checking(new Expectations(){{
+			exactly(1).of(_fileMap).put(peerTracksFolder());
+			exactly(1).of(_fileMap).put(shareTracksFolderDefaultValue());
+		}});
+
+		my(TrackClient.class);
+
+		aquireEndorsementTuple(hash1, 42, "songs/subfolder/foo.mp3");
 	}
 
 	private File peerTracksFolder() {
