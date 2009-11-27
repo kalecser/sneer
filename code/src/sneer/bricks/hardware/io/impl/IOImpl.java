@@ -25,7 +25,8 @@ import sneer.foundation.lang.Consumer;
 class IOImpl implements IO {
 	
 	private Files _files = new Files(){
-		
+		@Override public long sizeOfFolder(File folder) { return FileUtils.sizeOfDirectory(folder); }
+
 		@Override public void copyFolder(File srcFolder, File destFolder, Filter fileFilter) throws IOException { FolderCopierToWorkaroundCommonsIoBug.copyDirectory(srcFolder, destFolder, asIOFileFilter(fileFilter), true); }
 		@Override public void copyFolder(File srcFolder, File destFolder) throws IOException { FolderCopierToWorkaroundCommonsIoBug.copyDirectory(srcFolder, destFolder, null, true); }
 		@Override public Collection<File> listFiles(File folder, String[] extensions, boolean recursive) { return FileUtils.listFiles(folder, extensions, recursive); }

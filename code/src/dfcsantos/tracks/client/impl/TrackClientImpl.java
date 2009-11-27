@@ -12,6 +12,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
+import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.client.Download;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
@@ -38,25 +39,29 @@ class TrackClientImpl implements TrackClient {
 	private ByRef<Boolean> _isTracksDowloadAllowed = ByRef.newInstance(false);
 	private List<Download> _downloads = Collections.synchronizedList(new ArrayList<Download>());
 
-	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC;
-	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC2;
+	@SuppressWarnings("unused") private final WeakContract _trackEndorsementConsumerContract;
+	@SuppressWarnings("unused") private final WeakContract _sharedTracksFolderConsumerContract;
+	@SuppressWarnings("unused") private final WeakContract _downloadAllowanceConsumerContract;
 
 
 	{
-		my(Wusic.class).tracksDownloadAllowance().addReceiver(new Consumer<String>() { @Override public void consume(String allowanceInMBs) {
-			if (Integer.parseInt(allowanceInMBs) > 0)
+		_downloadAllowanceConsumerContract = my(Wusic.class).tracksDownloadAllowance().addReceiver(new Consumer<String>() { @Override public void consume(String downloadAllowanceInMBs) {
+			long downloadAllowanceInBytes = 1024 * 1024 * Integer.parseInt(downloadAllowanceInMBs);
+			long peerTracksFolderSize = my(IO.class).files().sizeOfFolder(peerTracksFolder());
+
+			if (downloadAllowanceInBytes - peerTracksFolderSize > 0)
 				_isTracksDowloadAllowed.value = true;
 			else
 				_isTracksDowloadAllowed.value = false;
 		}});
 
-		_refToAvoidGC = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement trackEndorsement) {
+		_trackEndorsementConsumerContract = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement trackEndorsement) {
 			consumeTrackEndorsement(trackEndorsement);
 		}});
 
-		startPeerTracksFolderMapping(my(TracksFolderKeeper.class).peerTracksFolder());
+		startPeerTracksFolderMapping(peerTracksFolder());
 
-		_refToAvoidGC2 = my(TracksFolderKeeper.class).sharedTracksFolder().addReceiver(new Consumer<File>() { @Override public void consume(File sharedTracksFolder) {
+		_sharedTracksFolderConsumerContract = my(TracksFolderKeeper.class).sharedTracksFolder().addReceiver(new Consumer<File>() { @Override public void consume(File sharedTracksFolder) {
 			startSharedTracksFolderMapping(sharedTracksFolder);
 		}});
 	}

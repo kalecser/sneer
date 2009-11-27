@@ -35,6 +35,8 @@ public interface IO {
 	}
 	
 	interface Files{
+		long sizeOfFolder(File Folder);
+
 		Collection<File> listFiles(File folder, String[] extensions, boolean recursive);
 		Collection<File> listFiles(File folder, Filter fileFilter, Filter folderFilter);
 		

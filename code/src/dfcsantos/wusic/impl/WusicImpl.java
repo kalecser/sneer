@@ -34,7 +34,7 @@ public class WusicImpl implements Wusic {
 
 	private final DJ _dj = new DJ(_trackToPlay.output(), new Runnable() { @Override public void run() { skip(); } } );
 
-	private Register<String> _tracksDownloadAllowance = my(Signals.class).newRegister("0"); // tracks download are disabled by default  
+	private final Register<String> _tracksDownloadAllowance = my(Signals.class).newRegister("0"); // tracks download are disabled by default  
 
 	@SuppressWarnings("unused") private final WeakContract _toAvoidGC;
 
@@ -218,7 +218,7 @@ public class WusicImpl implements Wusic {
 	public PickyConsumer<String> tracksDownloadAllowanceSetter() {
 		return new PickyConsumer<String>() { @Override public void consume(String allowanceInMBs) throws Refusal {
 			validateDownloadAllowance(allowanceInMBs);
-			_tracksDownloadAllowance.setter();
+			_tracksDownloadAllowance.setter().consume(allowanceInMBs);
 		}};
 	}
 
