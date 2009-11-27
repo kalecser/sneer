@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
+import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
@@ -33,7 +34,7 @@ public class TrackClientTest extends BrickTest {
 
 	@Test(timeout = 2000)
 	public void trackDownload() throws Exception {
-		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[]{1});
+		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[] { 1 });
 
 		checking(new Expectations(){{
 			exactly(1).of(_fileMap).put(peerTracksFolder());
@@ -57,11 +58,33 @@ public class TrackClientTest extends BrickTest {
 			timeoutLatch.waitTillOpen();
 		}});
 
-		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[]{1});
+		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[] { 1 });
 		checking(new Expectations(){{
 			exactly(1).of(_fileMap).put(peerTracksFolder());
 			exactly(1).of(_fileMap).put(shareTracksFolderDefaultValue());
 		}});
+
+		my(TrackClient.class);
+
+		aquireEndorsementTuple(hash1, 42, "songs/subfolder/foo.mp3");
+	}
+
+	@Test (timeout = 2000)
+	public void tryToDownloadTrackWithAllowanceAlreadyReached() throws Exception {
+		final Latch timeoutLatch = my(Latches.class).produce();
+		my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
+			timeoutLatch.waitTillOpen();
+		}});
+
+		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[] { 1 });
+		checking(new Expectations(){{
+			exactly(1).of(_fileMap).put(peerTracksFolder());
+			exactly(1).of(_fileMap).put(shareTracksFolderDefaultValue());
+		}});
+
+		final File fileWith1MB = createTmpFileWithRandomContent(1048576);
+		my(IO.class).files().copyFileToFolder(fileWith1MB, peerTracksFolder());
+		my(Wusic.class).tracksDownloadAllowanceSetter().consume("1"); // 1 MB
 
 		my(TrackClient.class);
 

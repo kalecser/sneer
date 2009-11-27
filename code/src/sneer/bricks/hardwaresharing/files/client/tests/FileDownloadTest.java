@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import org.junit.Test;
 
@@ -33,7 +32,7 @@ public class FileDownloadTest extends BrickTest {
 
 	@Test (timeout = 5000)
 	public void receiveFileContentBlocksOutOfSequence() throws IOException {
-		final File smallFile = createFileWithRandomContent();
+		final File smallFile = createTmpFileWithRandomContent(3 * Protocol.FILE_BLOCK_SIZE);
 		final Sneer1024 smallFileHash = my(Hasher.class).hash(smallFile);
 
 		final Iterator<FileContents> fileContentBlocks = createFileContentBlocks(smallFile, smallFileHash).iterator();
@@ -49,15 +48,6 @@ public class FileDownloadTest extends BrickTest {
 
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 		my(IO.class).files().assertSameContents(tmpFile, smallFile);
-	}
-
-	private File createFileWithRandomContent() throws IOException {
-		final File fileWithRandomContent = createTmpFile("fileWithRandomContent");
-		final byte[] randomBytes = new byte[3 * Protocol.FILE_BLOCK_SIZE];
-		new Random().nextBytes(randomBytes);
-		my(IO.class).files().writeByteArrayToFile(fileWithRandomContent, randomBytes);
-
-		return fileWithRandomContent;
 	}
 
 	private List<FileContents> createFileContentBlocks(File file, Sneer1024 fileHash) throws IOException {
