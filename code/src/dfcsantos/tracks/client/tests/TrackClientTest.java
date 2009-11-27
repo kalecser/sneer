@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 
 import org.jmock.Expectations;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
@@ -51,6 +52,7 @@ public class TrackClientTest extends BrickTest {
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 	}
 
+	@Ignore
 	@Test (timeout = 2000)
 	public void tryToDowloadTrackWithoutSettingAllowance() throws Exception {
 		final Latch timeoutLatch = my(Latches.class).produce();
@@ -69,6 +71,7 @@ public class TrackClientTest extends BrickTest {
 		aquireEndorsementTuple(hash1, 42, "songs/subfolder/foo.mp3");
 	}
 
+	@Ignore
 	@Test (timeout = 2000)
 	public void tryToDownloadTrackWithAllowanceAlreadyReached() throws Exception {
 		final Latch timeoutLatch = my(Latches.class).produce();
