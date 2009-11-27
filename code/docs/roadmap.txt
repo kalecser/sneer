@@ -7,7 +7,7 @@
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
 
 	- Wusic
-		- [Igor] Unignore FileCopyTestBase.testWithFolder and solve the problem. It is happening because download no longer maps downloaded files automatically, so duplicate FileRequest tuples are being produced in the same clock tick.
+		- [Igor] Unignore FileCopyTestBase.testWithFolder and find a way to solve the problem. It is happening because download no longer maps downloaded files automatically, so duplicate FileRequest tuples are being produced in the same clock tick.
 		- [Igor] Check if downloaded tracks counter is working properly
 		- Display playing track of each contact
 		- MusicalTasteMatcher Kernel
