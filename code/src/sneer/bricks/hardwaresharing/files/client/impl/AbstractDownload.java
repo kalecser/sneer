@@ -45,7 +45,7 @@ abstract class AbstractDownload implements Download {
 
 		_toCallWhenFinished = toCallWhenFinished;
 
-		finishIfRedundant();
+		finishIfLocallyAvailable();
 	}
 
 
@@ -104,8 +104,6 @@ abstract class AbstractDownload implements Download {
 	void finishWithSuccess() throws IOException {
 		my(DotParts.class).closeDotPart(_path, _lastModified);
 
-		my(FileMap.class).put(_actualPath);
-
 		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
 		finish();
 	}
@@ -117,7 +115,7 @@ abstract class AbstractDownload implements Download {
 	}
 
 
-	private void finishIfRedundant() {
+	private void finishIfLocallyAvailable() {
 		Object alreadyMapped = mappedContentsBy(_hash);
 		if (alreadyMapped == null) return;
 		try {
