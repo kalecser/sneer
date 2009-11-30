@@ -7,8 +7,10 @@
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
 
 	- Wusic
-		- [Igor] Unignore TrackClientTest
-		- [Igor] Unignore FileCopyTestBase.testWithFolder and find a way to solve the problem. It is happening because download no longer maps downloaded files automatically, so duplicate FileRequest tuples are being produced in the same clock tick.
+		- [Igor] Persist Wusic.isTracksDownloadsEnabled and Wusic.tracksDownloadAllowance
+		- [Klaus/Igor] Revise TrackClientTest
+		- Unignore FileCopyTestBase.testWithFolder and find a way to solve the problem. It is happening because download no longer maps downloaded files automatically, so duplicate FileRequest tuples are being produced in the same clock tick.
+			- [Igor] Make new implementation of ClockTicker interface that allows the clock pace to be configured
 		- [Igor] Check if downloaded tracks counter is working properly
 		- Display playing track of each contact
 		- MusicalTasteMatcher Kernel
