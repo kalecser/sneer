@@ -6,6 +6,8 @@
 	- [Klaus] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
 
+	- [Igor] Filter files put into the FileMap (allow only .mp3)
+
 	- Wusic
 		- [Igor] Persist Wusic.isTracksDownloadsEnabled and Wusic.tracksDownloadAllowance
 		- [Klaus/Igor] Revise TrackClientTest
