@@ -46,7 +46,7 @@ class TrackClientImpl implements TrackClient {
 
 	{
 		_downloadAllowanceConsumerContract = my(Wusic.class).tracksDownloadAllowance().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer downloadAllowanceInMBs) {
-			if (!my(Wusic.class).isTracksDownloadEnabled()) {
+			if (!my(Wusic.class).isTracksDownloadEnabled().currentValue()) {
 				_isTracksDowloadAllowed.value = false;
 				return;
 			}

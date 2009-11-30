@@ -55,7 +55,6 @@ public class TrackClientTest extends BrickTest {
 		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[] { 1 });
 		checking(new Expectations(){{
 			exactly(1).of(_fileMap).put(peerTracksFolder());
-			exactly(1).of(_fileMap).put(shareTracksFolderDefaultValue());
 		}});
 
 		my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
@@ -72,7 +71,6 @@ public class TrackClientTest extends BrickTest {
 		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[] { 1 });
 		checking(new Expectations(){{
 			exactly(1).of(_fileMap).put(peerTracksFolder());
-			exactly(1).of(_fileMap).put(shareTracksFolderDefaultValue());
 		}});
 
 		final File fileWith1MB = createTmpFileWithRandomContent(1048576);

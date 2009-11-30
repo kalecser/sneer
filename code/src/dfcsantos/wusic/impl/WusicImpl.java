@@ -5,12 +5,17 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.software.bricks.statestore.BrickStateStore;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.PickyConsumer;
@@ -21,6 +26,8 @@ import dfcsantos.tracks.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
 
 public class WusicImpl implements Wusic {
+
+	private static final BrickStateStore _store = my(BrickStateStore.class);
 
 	private static final Format TIME_FORMATTER = new SimpleDateFormat("mm:ss");
 
@@ -34,14 +41,20 @@ public class WusicImpl implements Wusic {
 
 	private final DJ _dj = new DJ(_trackToPlay.output(), new Runnable() { @Override public void run() { skip(); } } );
 
-	private boolean _isTracksDownloadEnabled;
+	private Register<Boolean> _isTracksDownloadEnabled = my(Signals.class).newRegister(false);
 	private final Register<Integer> _tracksDownloadAllowance = my(Signals.class).newRegister(DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE);  
 
-	@SuppressWarnings("unused") private final WeakContract _toAvoidGC;
+	@SuppressWarnings("unused") private WeakContract _downloadAllowanceConsumerContract;
+	@SuppressWarnings("unused") private WeakContract _isDownloadEnabledConsumerContract;
+
+	@SuppressWarnings("unused") private final WeakContract _operatingModeConsumerContract;
 
 
-	{
-		_toAvoidGC = operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode mode) {
+
+	WusicImpl() {
+		takeCareOfPersistence();
+
+		_operatingModeConsumerContract = operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode mode) {
 			reset();
 			_trackSource = (mode.equals(OperatingMode.OWN)) ? OwnTracks.INSTANCE : PeerTracks.INSTANCE;
 		}});
@@ -197,18 +210,18 @@ public class WusicImpl implements Wusic {
 	}
 
 	@Override
-	public boolean isTracksDownloadEnabled() {
-		return _isTracksDownloadEnabled;
+	public Signal<Boolean> isTracksDownloadEnabled() {
+		return _isTracksDownloadEnabled.output();
 	}
 
 	@Override
 	public void enableTracksDownload() {
-		_isTracksDownloadEnabled = true;
+		_isTracksDownloadEnabled.setter().consume(true);
 	}
 
 	@Override
 	public void disableTracksDownload() {
-		_isTracksDownloadEnabled = false;
+		_isTracksDownloadEnabled.setter().consume(false);
 	}
 
 	@Override
@@ -225,7 +238,45 @@ public class WusicImpl implements Wusic {
 	}
 
 	private void validateDownloadAllowance(Integer allowanceInMBs) throws Refusal {
-		if (allowanceInMBs < 0) throw new Refusal("Invalid tracks' download allowance: it must be positive integer");
+		if (allowanceInMBs == null || allowanceInMBs < 0) throw new Refusal("Invalid tracks' download allowance: it must be positive integer");
+	}
+
+	private void takeCareOfPersistence() {
+		restore();
+
+		_isDownloadEnabledConsumerContract =  isTracksDownloadEnabled().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isTracksDownloadEnabled) {
+			save(asListOfStrings(isTracksDownloadEnabled().currentValue(), tracksDownloadAllowance().currentValue()));			
+		}});
+
+		_downloadAllowanceConsumerContract = tracksDownloadAllowance().addReceiver(new Consumer<Integer>(){ @Override public void consume(Integer downloadAllowanceInMBs) {
+			save(asListOfStrings(isTracksDownloadEnabled().currentValue(), downloadAllowanceInMBs));
+		}});
+	}
+
+	private void restore() {
+		List<String> restoredDownloadAllowanceState = (List<String>) _store.readObjectFor(Wusic.class, getClass().getClassLoader());
+		if (restoredDownloadAllowanceState == null)
+			return;
+
+		if (Boolean.parseBoolean(restoredDownloadAllowanceState.get(0)))
+			enableTracksDownload();
+		else
+			disableTracksDownload();
+
+		final String allowanceValue = restoredDownloadAllowanceState.get(1);
+		try {
+			tracksDownloadAllowanceSetter().consume(Integer.parseInt(allowanceValue));
+		} catch (Exception e) {
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error trying to restore Wusic State", "Invalid value for tracks download allowance: " + allowanceValue, e, 20000);
+		}
+	}
+
+	private List<String> asListOfStrings(boolean isTracksDownloadEnabled, int tracksDownloadAllowance) {
+		return Arrays.asList(String.valueOf(isTracksDownloadEnabled), String.valueOf(tracksDownloadAllowance));
+	}
+
+	private void save(List<String> downloadAllowanceState) {
+		_store.writeObjectFor(Wusic.class, downloadAllowanceState);
 	}
 
 }
