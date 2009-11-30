@@ -34,7 +34,8 @@ public class WusicImpl implements Wusic {
 
 	private final DJ _dj = new DJ(_trackToPlay.output(), new Runnable() { @Override public void run() { skip(); } } );
 
-	private final Register<String> _tracksDownloadAllowance = my(Signals.class).newRegister("0"); // tracks download are disabled by default  
+	private boolean _isTracksDownloadEnabled;
+	private final Register<Integer> _tracksDownloadAllowance = my(Signals.class).newRegister(DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE);  
 
 	@SuppressWarnings("unused") private final WeakContract _toAvoidGC;
 
@@ -196,42 +197,35 @@ public class WusicImpl implements Wusic {
 	}
 
 	@Override
+	public boolean isTracksDownloadEnabled() {
+		return _isTracksDownloadEnabled;
+	}
+
+	@Override
 	public void enableTracksDownload() {
-		setTracksDownloadAllowance(DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE);
+		_isTracksDownloadEnabled = true;
 	}
 
 	@Override
 	public void disableTracksDownload() {
-		setTracksDownloadAllowance("0");
-	}
-
-	private void setTracksDownloadAllowance(String allowanceInMBs) {
-		_tracksDownloadAllowance.setter().consume(allowanceInMBs);
+		_isTracksDownloadEnabled = false;
 	}
 
 	@Override
-	public Signal<String> tracksDownloadAllowance() {
+	public Signal<Integer> tracksDownloadAllowance() {
 		return _tracksDownloadAllowance.output();
 	}
 
 	@Override
-	public PickyConsumer<String> tracksDownloadAllowanceSetter() {
-		return new PickyConsumer<String>() { @Override public void consume(String allowanceInMBs) throws Refusal {
+	public PickyConsumer<Integer> tracksDownloadAllowanceSetter() {
+		return new PickyConsumer<Integer>() { @Override public void consume(Integer allowanceInMBs) throws Refusal {
 			validateDownloadAllowance(allowanceInMBs);
 			_tracksDownloadAllowance.setter().consume(allowanceInMBs);
 		}};
 	}
 
-	private void validateDownloadAllowance(String allowanceInMBs) throws Refusal {
-		int downloadAllowance = -1;
-
-		try {
-			downloadAllowance = Integer.parseInt(allowanceInMBs);
-		} catch (NumberFormatException nfe) {
-			throw new Refusal("Invalid tracks download allowance: it must be positive integer");
-		}
-
-		if (downloadAllowance < 0) throw new Refusal("Invalid tracks download allowance: it cannot be negative");
+	private void validateDownloadAllowance(Integer allowanceInMBs) throws Refusal {
+		if (allowanceInMBs < 0) throw new Refusal("Invalid tracks' download allowance: it must be positive integer");
 	}
 
 }

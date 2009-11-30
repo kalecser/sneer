@@ -45,9 +45,14 @@ class TrackClientImpl implements TrackClient {
 
 
 	{
-		_downloadAllowanceConsumerContract = my(Wusic.class).tracksDownloadAllowance().addReceiver(new Consumer<String>() { @Override public void consume(String downloadAllowanceInMBs) {
-			long downloadAllowanceInBytes = 1024 * 1024 * Integer.parseInt(downloadAllowanceInMBs);
-			long peerTracksFolderSize = my(IO.class).files().sizeOfFolder(peerTracksFolder());
+		_downloadAllowanceConsumerContract = my(Wusic.class).tracksDownloadAllowance().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer downloadAllowanceInMBs) {
+			if (!my(Wusic.class).isTracksDownloadEnabled()) {
+				_isTracksDowloadAllowed.value = false;
+				return;
+			}
+
+			final long downloadAllowanceInBytes = 1024 * 1024 * downloadAllowanceInMBs;
+			final long peerTracksFolderSize = my(IO.class).files().sizeOfFolder(peerTracksFolder());
 
 			if (downloadAllowanceInBytes - peerTracksFolderSize > 0)
 				_isTracksDowloadAllowed.value = true;
