@@ -62,7 +62,9 @@ class ProbeManagerImpl implements ProbeManager {
 	
 	private Consumer<byte[]> createReceiver() {
 		return new Consumer<byte[]>(){ @Override public void consume(byte[] packet) {
-			TupleSpace.acquire((Tuple)desserialize(packet));
+			final Object tuple = desserialize(packet);
+			if (tuple == null) return;
+			TupleSpace.acquire((Tuple) tuple);
 		}};
 	}
 
@@ -71,7 +73,7 @@ class ProbeManagerImpl implements ProbeManager {
 		try {
 			return Serializer.deserialize(packet, CLASSLOADER_FOR_TUPLES);
 		} catch (ClassNotFoundException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			return null;
 		} catch (IOException e) {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
