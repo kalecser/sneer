@@ -21,7 +21,6 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.client.TrackEndorsement;
@@ -36,30 +35,14 @@ class TrackClientImpl implements TrackClient {
 	private final Latch _hasFinishedSharedTracksFolderMapping = my(Latches.class).produce();
 	private final Latch _hasFinishedPeerTracksFolderMapping = my(Latches.class).produce();
 
-	private ByRef<Boolean> _isTracksDowloadAllowed = ByRef.newInstance(false);
 	private List<Download> _downloads = Collections.synchronizedList(new ArrayList<Download>());
 
 	@SuppressWarnings("unused") private final WeakContract _trackEndorsementConsumerContract;
+
 	@SuppressWarnings("unused") private final WeakContract _sharedTracksFolderConsumerContract;
-	@SuppressWarnings("unused") private final WeakContract _downloadAllowanceConsumerContract;
 
 
 	{
-		_downloadAllowanceConsumerContract = my(Wusic.class).tracksDownloadAllowance().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer downloadAllowanceInMBs) {
-			if (!my(Wusic.class).isTracksDownloadEnabled().currentValue()) {
-				_isTracksDowloadAllowed.value = false;
-				return;
-			}
-
-			final long downloadAllowanceInBytes = 1024 * 1024 * downloadAllowanceInMBs;
-			final long peerTracksFolderSize = my(IO.class).files().sizeOfFolder(peerTracksFolder());
-
-			if (downloadAllowanceInBytes - peerTracksFolderSize > 0)
-				_isTracksDowloadAllowed.value = true;
-			else
-				_isTracksDowloadAllowed.value = false;
-		}});
-
 		_trackEndorsementConsumerContract = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement trackEndorsement) {
 			consumeTrackEndorsement(trackEndorsement);
 		}});
@@ -81,7 +64,7 @@ class TrackClientImpl implements TrackClient {
 		_hasFinishedSharedTracksFolderMapping.waitTillOpen();
 		_hasFinishedPeerTracksFolderMapping.waitTillOpen();
 
-		if (!_isTracksDowloadAllowed.value) return;
+		if (!isTracksDownloadAllowed()) return;
 		if (my(Seals.class).ownSeal().equals(endorsement.publisher())) return;
 		if (my(RejectedTracksKeeper.class).isRejected(endorsement.hash)) return;
 
@@ -99,6 +82,22 @@ class TrackClientImpl implements TrackClient {
 				_downloads.remove(download);
 			}
 		}});
+	}
+
+
+	private boolean isTracksDownloadAllowed() {
+		if (!my(Wusic.class).isTracksDownloadEnabled().currentValue()) return false;
+		return peerTracksFolderSize() < downloadAllowanceInBytes();
+	}
+
+
+	private long peerTracksFolderSize() {
+		return my(IO.class).files().sizeOfFolder(peerTracksFolder());
+	}
+
+
+	private int downloadAllowanceInBytes() {
+		return 1024 * 1024 * my(Wusic.class).tracksDownloadAllowance().currentValue();
 	}
 
 

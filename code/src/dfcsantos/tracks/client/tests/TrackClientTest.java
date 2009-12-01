@@ -3,15 +3,14 @@ package dfcsantos.tracks.client.tests;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.jmock.Expectations;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
-import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
 import sneer.bricks.network.social.ContactManager;
 import sneer.bricks.pulp.crypto.Crypto;
 import sneer.bricks.pulp.crypto.Sneer1024;
@@ -20,7 +19,6 @@ import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.client.TrackEndorsement;
 import dfcsantos.tracks.folder.TracksFolderKeeper;
@@ -34,63 +32,33 @@ public class TrackClientTest extends BrickTest {
 	@Test(timeout = 2000)
 	public void trackDownload() throws Exception {
 		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[] { 1 });
+		final Sneer1024 hash2 = my(Crypto.class).digest(new byte[] { 2 });
+		final Sneer1024 hash3 = my(Crypto.class).digest(new byte[] { 3 });
 
 		checking(new Expectations(){{
 			exactly(1).of(_fileMap).put(peerTracksFolder());
 			exactly(1).of(_fileMap).put(shareTracksFolderDefaultValue());
-			exactly(1).of(_fileClient).startFileDownload(new File(peerTracksFolder(), "foo.mp3"), 42, hash1);
+			exactly(1).of(_fileClient).startFileDownload(new File(peerTracksFolder(), "ok.mp3"), 41, hash1);
 		}});
 
-		// Allowing 1 MB is enough, since peerTracksFolder is empty
 		my(Wusic.class).enableTracksDownload();
 		my(Wusic.class).tracksDownloadAllowanceSetter().consume(1);
 
 		my(TrackClient.class);
 
-		aquireEndorsementTuple(hash1, 42, "songs/subfolder/foo.mp3");
-		my(TupleSpace.class).waitForAllDispatchingToFinish();
-	}
+		aquireEndorsementTuple(hash1, 41, "songs/subfolder/ok.mp3");
 
-	@Ignore
-	@Test (timeout = 2000)
-	public void tryToDowloadTrackWithoutSettingAllowance() throws Exception {
-		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[] { 1 });
-		checking(new Expectations(){{
-			exactly(1).of(_fileMap).put(peerTracksFolder());
-			exactly(1).of(_fileMap).put(shareTracksFolderDefaultValue());
-		}});
-
-		my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
-			fail();
-		}});
-
-		my(TrackClient.class);
-
-		aquireEndorsementTuple(hash1, 42, "songs/subfolder/foo.mp3");
-	}
-
-	@Ignore
-	@Test (timeout = 2000)
-	public void tryToDownloadTrackWithAllowanceAlreadyReached() throws Exception {
-		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[] { 1 });
-		checking(new Expectations(){{
-			exactly(1).of(_fileMap).put(peerTracksFolder());
-			exactly(1).of(_fileMap).put(shareTracksFolderDefaultValue());
-		}});
-
-		final File fileWith1MB = createTmpFileWithRandomContent(1048576);
-		my(IO.class).files().copyFileToFolder(fileWith1MB, peerTracksFolder());
+		my(Wusic.class).disableTracksDownload();
+		aquireEndorsementTuple(hash2, 42, "songs/subfolder/notOk1.mp3");
 
 		my(Wusic.class).enableTracksDownload();
-		my(Wusic.class).tracksDownloadAllowanceSetter().consume(1); // 1 MB
+		useUpAllowance();
+		aquireEndorsementTuple(hash3, 43, "songs/subfolder/notOk2.mp3");
+	}
 
-		my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
-			fail();
-		}});
-
-		my(TrackClient.class);
-
-		aquireEndorsementTuple(hash1, 42, "songs/subfolder/foo.mp3");
+	private void useUpAllowance() throws IOException {
+		final File fileWith1MB = createTmpFileWithRandomContent(1048576);
+		my(IO.class).files().copyFileToFolder(fileWith1MB, peerTracksFolder());
 	}
 
 	private File peerTracksFolder() {
@@ -105,6 +73,7 @@ public class TrackClientTest extends BrickTest {
 		TrackEndorsement trackEndorsement = new TrackEndorsement(track, lastModified, hash1);
 		stamp(trackEndorsement, "Someone Else");
 		my(TupleSpace.class).acquire(trackEndorsement);
+		my(TupleSpace.class).waitForAllDispatchingToFinish();
 	}
 
 	private void stamp(TrackEndorsement trackEndorsement, String contact) {
