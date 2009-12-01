@@ -86,7 +86,7 @@ class TrackClientImpl implements TrackClient {
 
 
 	private boolean isTracksDownloadAllowed() {
-		if (!my(Wusic.class).isTracksDownloadEnabled().currentValue()) return false;
+		if (!my(Wusic.class).isTracksDownloadAllowed().currentValue()) return false;
 		return peerTracksFolderSize() < downloadAllowanceInBytes();
 	}
 

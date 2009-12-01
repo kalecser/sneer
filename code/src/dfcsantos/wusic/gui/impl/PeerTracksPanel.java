@@ -27,7 +27,7 @@ class PeerTracksPanel extends AbstractTabPane {
 	private final JFileChooser _sharedTracksFolderChooser;
     private final JButton _chooseSharedTracksFolder			= new JButton();
 
-    private final JCheckBox _enableTracksDownload			= new JCheckBox();
+    private final JCheckBox _allowTracksDownload			= new JCheckBox();
     private final JLabel _tracksDownloadAllowanceLabel		= new JLabel();
     private final JTextField _tracksDownloadAllowance		= my(ReactiveWidgetFactory.class).newTextField(
     	_controller.tracksDownloadAllowance(), my(IntegerParsers.class).newIntegerParser(_controller.tracksDownloadAllowanceSetter()), NotificationPolicy.OnEnterPressedOrLostFocus
@@ -50,14 +50,14 @@ class PeerTracksPanel extends AbstractTabPane {
         }});
         customPanel().add(_chooseSharedTracksFolder);
 
-        _enableTracksDownload.setText("Download Tracks");
-        _enableTracksDownload.setSelected(false);
-        _enableTracksDownload.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) {
-        	enableTracksDownloadActionPerformed();
+        _allowTracksDownload.setText("Allow Tracks Download");
+        _allowTracksDownload.setSelected(false);
+        _allowTracksDownload.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) {
+        	allowTracksDownloadActionPerformed();
 		}});
-        customPanel().add(_enableTracksDownload);
+        customPanel().add(_allowTracksDownload);
 
-        _tracksDownloadAllowanceLabel.setText("-   Allowance (MBs):");
+        _tracksDownloadAllowanceLabel.setText("-   Limit (MBs):");
         _tracksDownloadAllowanceLabel.setEnabled(false);
         customPanel().add(_tracksDownloadAllowanceLabel);
 
@@ -87,13 +87,13 @@ class PeerTracksPanel extends AbstractTabPane {
         _controller.noWay();
     }
 
-	private void enableTracksDownloadActionPerformed() {
-		if (_enableTracksDownload.isSelected()) {
-			_controller.enableTracksDownload();
+	private void allowTracksDownloadActionPerformed() {
+		if (_allowTracksDownload.isSelected()) {
+			_controller.allowTracksDownload(true);
 			_tracksDownloadAllowanceLabel.setEnabled(true);
 			_tracksDownloadAllowance.setEnabled(true);
 		} else {
-			_controller.disableTracksDownload();
+			_controller.allowTracksDownload(false);
 			_tracksDownloadAllowanceLabel.setEnabled(false);
 			_tracksDownloadAllowance.setEnabled(false);			
 		}

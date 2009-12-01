@@ -41,17 +41,17 @@ public class TrackClientTest extends BrickTest {
 			exactly(1).of(_fileClient).startFileDownload(new File(peerTracksFolder(), "ok.mp3"), 41, hash1);
 		}});
 
-		my(Wusic.class).enableTracksDownload();
+		my(Wusic.class).allowTracksDownload(true);
 		my(Wusic.class).tracksDownloadAllowanceSetter().consume(1);
 
 		my(TrackClient.class);
 
 		aquireEndorsementTuple(hash1, 41, "songs/subfolder/ok.mp3");
 
-		my(Wusic.class).disableTracksDownload();
+		my(Wusic.class).allowTracksDownload(false);
 		aquireEndorsementTuple(hash2, 42, "songs/subfolder/notOk1.mp3");
 
-		my(Wusic.class).enableTracksDownload();
+		my(Wusic.class).allowTracksDownload(true);
 		useUpAllowance();
 		aquireEndorsementTuple(hash3, 43, "songs/subfolder/notOk2.mp3");
 	}

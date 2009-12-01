@@ -37,9 +37,8 @@ public interface Wusic {
 	Signal<Boolean> isPlaying();
 
 	int DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE = 100; // MBs
-	Signal<Boolean> isTracksDownloadEnabled();
-	void enableTracksDownload();
-	void disableTracksDownload();
+	Signal<Boolean> isTracksDownloadAllowed();
+	void allowTracksDownload(boolean b);
 	Signal<Integer> tracksDownloadAllowance();
 	PickyConsumer<Integer> tracksDownloadAllowanceSetter();
 
