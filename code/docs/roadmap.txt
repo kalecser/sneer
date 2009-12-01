@@ -1,17 +1,18 @@
 ﻿TASKS
 =========
 
+	- [Klaus] ProbeManager.desserialize - treat exceptions 
+
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
 	- [Klaus] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
 
-	- [Igor] Filter files put into the FileMap (allow only .mp3)
+	- Check if TrackClient is downloading files that are not .mp3
 
 	- Wusic
 		- [Igor] Persist Wusic.isTracksDownloadsEnabled
 			- Implement new reactive component for JCheckBox or add consumer for 'Wusic.isTracksDownloadEnabled()' at 'PeerTracksPanel' 
-		- [Klaus/Igor] Revise TrackClientTest
 		- Unignore FileCopyTestBase.testWithFolder and find a way to solve the problem. It is happening because download no longer maps downloaded files automatically, so duplicate FileRequest tuples are being produced in the same clock tick.
 			- [Igor] Make new implementation of ClockTicker interface that allows the clock pace to be configured
 		- [Igor] Check if downloaded tracks counter is working properly
