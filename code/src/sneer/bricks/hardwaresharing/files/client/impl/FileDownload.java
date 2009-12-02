@@ -101,7 +101,7 @@ class FileDownload extends AbstractDownload {
 	
 	private int calculateFileSizeInBlocks(long fileSizeInBytes) {
 		final int result = (int) fileSizeInBytes / Protocol.FILE_BLOCK_SIZE;
-		return (fileSizeInBytes % Protocol.FILE_BLOCK_SIZE != 0) ? result + 1 : result; 
+		return (result != 0 && fileSizeInBytes % Protocol.FILE_BLOCK_SIZE != 0) ? result + 1 : result; 
 	}
 
 	
@@ -126,7 +126,7 @@ class FileDownload extends AbstractDownload {
 	private void writeBlock(byte[] bytes) throws IOException {
 		_output.write(bytes);
 		++_nextBlockToWrite;
-		if (_nextBlockToWrite == _fileSizeInBlocks) {
+		if (_nextBlockToWrite >= _fileSizeInBlocks) {
 			my(IO.class).streams().closeQuietly(_output);
 			finishWithSuccess();
 		}
@@ -137,6 +137,8 @@ class FileDownload extends AbstractDownload {
 	Tuple requestToPublishIfNecessary() {
 		if (isFirstRequest())
 			return nextBlockRequest();
+
+		if (_nextBlockToWrite >= _fileSizeInBlocks) return null; // Fix: Remove this line
 
 		if (my(Clock.class).time().currentValue() - _lastRequestTime < REQUEST_INTERVAL)
 			return null;
@@ -167,6 +169,5 @@ class FileDownload extends AbstractDownload {
 	Object mappedContentsBy(Sneer1024 hashOfContents) {
 		return my(FileMap.class).getFile(hashOfContents);
 	}
-
 
 }
