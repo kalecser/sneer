@@ -1,6 +1,8 @@
 ﻿TASKS
 =========
 
+	- [Igor] Create CustomClockTickerTest
+
 	- [Klaus] ProbeManager.desserialize - treat exceptions 
 
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
