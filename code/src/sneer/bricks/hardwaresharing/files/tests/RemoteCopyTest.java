@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import sneer.bricks.hardware.clock.Clock;
-import sneer.bricks.hardware.clock.ticker.ClockTicker;
+import sneer.bricks.hardware.clock.ticker.custom.CustomClockTicker;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.hardwaresharing.files.server.FileServer;
 import sneer.bricks.pulp.crypto.Sneer1024;
@@ -42,7 +42,7 @@ public class RemoteCopyTest extends FileCopyTestBase {
 
 	private void copyFromFileMap(Closure<IOException> closure) throws IOException {
 		@SuppressWarnings("unused") FileServer server = my(FileServer.class);
-		my(ClockTicker.class);
+		my(CustomClockTicker.class).start(100);
 		Environment remote = newTestEnvironment(my(TupleSpace.class), my(OwnNameKeeper.class), my(Clock.class));
 		Environments.runWith(remote, closure);
 	}

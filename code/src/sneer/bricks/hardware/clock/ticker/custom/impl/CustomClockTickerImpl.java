@@ -12,6 +12,7 @@ class CustomClockTickerImpl implements CustomClockTicker {
 
 	@Override
 	public void start(final int millisToSleep) {
+		tick(millisToSleep);
 		_threads.startStepping(new Runnable() { @Override public void run() {
 			tick(millisToSleep);
 		}});
@@ -19,6 +20,7 @@ class CustomClockTickerImpl implements CustomClockTicker {
 
 	@Override
 	public void start(final int millisToSleep, final float acceleration) {
+		tick(millisToSleep, acceleration);
 		_threads.startStepping(new Runnable() { @Override public void run() {
 			tick(millisToSleep, acceleration);
 		}});
