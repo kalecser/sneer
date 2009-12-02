@@ -1,25 +1,13 @@
 package sneer.bricks.hardware.clock.ticker.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.ticker.ClockTicker;
-import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.clock.ticker.custom.CustomClockTicker;
 
 class ClockTickerImpl implements ClockTicker {
 
-	private final Threads _threads = my(Threads.class);
-	private final Clock _clock = my(Clock.class);
-
 	ClockTickerImpl() {
-		tick();
-		_threads.startStepping(new Runnable() { @Override public void run() {
-			tick();
-		}});
-	}
-
-	private void tick() {
-		_clock.advanceTimeTo(System.currentTimeMillis());
-		_threads.sleepWithoutInterruptions(10); //Precision of 100 times per second is OK for now.
+		my(CustomClockTicker.class).start(10); //Precision of 100 times per second is OK for now.
 	}
 
 }
