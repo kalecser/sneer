@@ -2,6 +2,7 @@ package sneer.bricks.skin.widgets.reactive;
 
 import java.awt.Image;
 
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -13,6 +14,7 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.foundation.brickness.Brick;
+import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;
 
 @Brick // (GUI.class)
@@ -23,7 +25,10 @@ public interface ReactiveWidgetFactory {
 	
 	TextWidget<JLabel> newLabel(Signal<?> source);
 	TextWidget<JLabel> newLabel(Signal<String> source, String synthName);
-	
+
+	ToggleButtonWidget<JCheckBox> newCheckBox(Signal<Boolean> source, Consumer<Boolean> setter);
+	ToggleButtonWidget<JCheckBox> newCheckBox(Signal<Boolean> source, Consumer<Boolean> setter, Runnable cascadeRefreshOperations);
+
 	TextWidget<JTextField> newEditableLabel(Signal<?> source, PickyConsumer<? super String> setter);
 	TextWidget<JTextField> newEditableLabel(Signal<?> source, PickyConsumer<? super String> setter, NotificationPolicy notificationPolicy);
 	

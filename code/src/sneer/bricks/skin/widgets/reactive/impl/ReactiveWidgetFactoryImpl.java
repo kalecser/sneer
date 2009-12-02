@@ -4,6 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Image;
 
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -22,7 +23,9 @@ import sneer.bricks.skin.widgets.reactive.ListWidget;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
+import sneer.bricks.skin.widgets.reactive.ToggleButtonWidget;
 import sneer.bricks.skin.widgets.reactive.Widget;
+import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;
 
 class ReactiveWidgetFactoryImpl implements ReactiveWidgetFactory {
@@ -37,6 +40,18 @@ class ReactiveWidgetFactoryImpl implements ReactiveWidgetFactory {
 	public TextWidget<JLabel> newLabel(Signal<String> source, String synthName) {
 		my(GuiThread.class).assertInGuiThread();
 		return new RLabelImpl(source, synthName);
+	}
+
+	@Override
+	public ToggleButtonWidget<JCheckBox> newCheckBox(Signal<Boolean> source, Consumer<Boolean> setter) {
+		my(GuiThread.class).assertInGuiThread();
+		return new RCheckBoxImpl(source, setter, null);
+	}
+
+	@Override
+	public ToggleButtonWidget<JCheckBox> newCheckBox(Signal<Boolean> source, Consumer<Boolean> setter, Runnable cascadeRefreshOperations) {
+		my(GuiThread.class).assertInGuiThread();
+		return new RCheckBoxImpl(source, setter, cascadeRefreshOperations);
 	}
 
 	@Override
@@ -96,4 +111,5 @@ class ReactiveWidgetFactoryImpl implements ReactiveWidgetFactory {
 		return new RListImpl<T>(source, provider, cellRenderer);
 	}
 	@Override public <T> ListWidget<T> newList(ListSignal<T> source, LabelProvider<T> provider) { return newList(source, provider, null); }
+
 }

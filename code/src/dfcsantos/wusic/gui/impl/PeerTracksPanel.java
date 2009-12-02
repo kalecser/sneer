@@ -23,16 +23,13 @@ import dfcsantos.wusic.Wusic.OperatingMode;
 
 class PeerTracksPanel extends AbstractTabPane {
 
-    private final JLabel _peerTracksCountTabLabel			= my(ReactiveWidgetFactory.class).newLabel(_controller.numberOfPeerTracks()).getMainWidget();
+    private final JLabel _peerTracksCountTabLabel			= newReactiveLabel();
 	private final JFileChooser _sharedTracksFolderChooser;
     private final JButton _chooseSharedTracksFolder			= new JButton();
 
-    private final JCheckBox _allowTracksDownload			= new JCheckBox();
     private final JLabel _tracksDownloadAllowanceLabel		= new JLabel();
-    private final JTextField _tracksDownloadAllowance		= my(ReactiveWidgetFactory.class).newTextField(
-    	_controller.tracksDownloadAllowance(), my(IntegerParsers.class).newIntegerParser(_controller.tracksDownloadAllowanceSetter()), NotificationPolicy.OnEnterPressedOrLostFocus
-    ).getMainWidget();
-    
+    private final JTextField _tracksDownloadAllowance		= newReactiveTextField();
+    private final JCheckBox _allowTracksDownload			= newReactiveCheckBox();
 
     @SuppressWarnings("unused")	private final WeakContract _toAvoidGC;
 
@@ -51,18 +48,12 @@ class PeerTracksPanel extends AbstractTabPane {
         customPanel().add(_chooseSharedTracksFolder);
 
         _allowTracksDownload.setText("Allow Tracks Download");
-        _allowTracksDownload.setSelected(false);
-        _allowTracksDownload.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) {
-        	allowTracksDownloadActionPerformed();
-		}});
         customPanel().add(_allowTracksDownload);
 
         _tracksDownloadAllowanceLabel.setText("-   Limit (MBs):");
-        _tracksDownloadAllowanceLabel.setEnabled(false);
         customPanel().add(_tracksDownloadAllowanceLabel);
 
         _tracksDownloadAllowance.setPreferredSize(new Dimension(42, 18));
-        _tracksDownloadAllowance.setEnabled(false);
         customPanel().add(_tracksDownloadAllowance);
 
 		_toAvoidGC = _controller.operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode operatingMode) {
@@ -73,6 +64,24 @@ class PeerTracksPanel extends AbstractTabPane {
 	@Override
 	boolean isMyOperatingMode(OperatingMode operatingMode) {
 		return OperatingMode.PEERS.equals(operatingMode);
+	}
+
+	private JLabel newReactiveLabel() {
+		return my(ReactiveWidgetFactory.class).newLabel(_controller.numberOfPeerTracks()).getMainWidget();
+	}
+
+	private JCheckBox newReactiveCheckBox() {
+		return my(ReactiveWidgetFactory.class).newCheckBox(
+			_controller.isTracksDownloadAllowed(),
+			new Consumer<Boolean>() { @Override public void consume(Boolean isTracksDownloadAllowed) { _controller.allowTracksDownload(isTracksDownloadAllowed); } },
+			new Runnable() { @Override public void run() { allowTracksDownloadActionPerformed(_controller.isTracksDownloadAllowed().currentValue()); } }
+		).getMainWidget();
+	}
+
+	private JTextField newReactiveTextField() {
+		return my(ReactiveWidgetFactory.class).newTextField(
+			_controller.tracksDownloadAllowance(), my(IntegerParsers.class).newIntegerParser(_controller.tracksDownloadAllowanceSetter()), NotificationPolicy.OnEnterPressedOrLostFocus
+		).getMainWidget();
 	}
 
     private void chooseSharedTracksFolderActionPerformed() {
@@ -87,13 +96,11 @@ class PeerTracksPanel extends AbstractTabPane {
         _controller.noWay();
     }
 
-	private void allowTracksDownloadActionPerformed() {
-		if (_allowTracksDownload.isSelected()) {
-			_controller.allowTracksDownload(true);
+	private void allowTracksDownloadActionPerformed(boolean isSelected) {
+		if (isSelected) {
 			_tracksDownloadAllowanceLabel.setEnabled(true);
 			_tracksDownloadAllowance.setEnabled(true);
 		} else {
-			_controller.allowTracksDownload(false);
 			_tracksDownloadAllowanceLabel.setEnabled(false);
 			_tracksDownloadAllowance.setEnabled(false);			
 		}
