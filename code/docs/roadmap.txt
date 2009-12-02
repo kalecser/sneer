@@ -11,8 +11,6 @@
 	- Check if TrackClient is downloading files that are not .mp3
 
 	- Wusic
-		- Unignore FileCopyTestBase.testWithFolder and find a way to solve the problem. It is happening because download no longer maps downloaded files automatically, so duplicate FileRequest tuples are being produced in the same clock tick.
-			- [Igor] Make new implementation of ClockTicker interface that allows the clock pace to be configured
 		- [Igor] Check if downloaded tracks counter is working properly
 		- Display playing track of each contact
 		- MusicalTasteMatcher Kernel
