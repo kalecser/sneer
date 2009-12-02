@@ -7,6 +7,6 @@ public interface CustomClockTicker {
 
 	void start(int millisToSleep);
 
-	void start(int millisToSleep, float acceleration);
+	void start(int millisToSleep, long timeIncrement);
 
 }

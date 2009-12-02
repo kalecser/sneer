@@ -42,7 +42,7 @@ public class RemoteCopyTest extends FileCopyTestBase {
 
 	private void copyFromFileMap(Closure<IOException> closure) throws IOException {
 		@SuppressWarnings("unused") FileServer server = my(FileServer.class);
-		my(CustomClockTicker.class).start(100);
+		my(CustomClockTicker.class).start(10, 15000);
 		Environment remote = newTestEnvironment(my(TupleSpace.class), my(OwnNameKeeper.class), my(Clock.class));
 		Environments.runWith(remote, closure);
 	}

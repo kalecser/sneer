@@ -19,20 +19,20 @@ class CustomClockTickerImpl implements CustomClockTicker {
 	}
 
 	@Override
-	public void start(final int millisToSleep, final float acceleration) {
-		tick(millisToSleep, acceleration);
+	public void start(final int millisToSleep, final long timeIncrement) {
+		tick(millisToSleep, timeIncrement);
 		_threads.startStepping(new Runnable() { @Override public void run() {
-			tick(millisToSleep, acceleration);
+			tick(millisToSleep, timeIncrement);
 		}});
 	}
 
 	private void tick(int millisToSleep) {
-		_clock.advanceTimeTo(System.currentTimeMillis());
+		_clock.advanceTime(System.currentTimeMillis());
 		_threads.sleepWithoutInterruptions(millisToSleep);
 	}
 
-	private void tick(int millisToSleep, float customPaceFactor) {
-		_clock.advanceTimeTo((long) (customPaceFactor * System.currentTimeMillis()));
+	private void tick(int millisToSleep, long timeIncrement) {
+		_clock.advanceTime(System.currentTimeMillis() + timeIncrement);
 		_threads.sleepWithoutInterruptions(millisToSleep);
 	}
 
