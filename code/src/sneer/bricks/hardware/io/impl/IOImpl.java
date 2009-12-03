@@ -56,7 +56,7 @@ class IOImpl implements IO {
 		public byte[] readBlock(File file, int blockNumber, int blockSize) throws IOException {
 			final long position = blockNumber * blockSize;
 			int bytesToRead = (int) Math.min(blockSize, file.length() - position);
-			if (bytesToRead < 1) throw new IllegalArgumentException("Illegal attempt to read position: " + position + ", beyond file length: " + file.length());
+			if (bytesToRead < 1) throw new IOException("Illegal attempt to read position: " + position + ", beyond file length: " + file.length());
 			
 			final byte[] result = new byte[bytesToRead];
 			RandomAccessFile rFile = new RandomAccessFile(file, "r");

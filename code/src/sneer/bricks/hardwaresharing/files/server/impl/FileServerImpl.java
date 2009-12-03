@@ -37,14 +37,14 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 	@Override
 	public void consume(FileRequest request) {
 		try {
-			reply(request);
+			tryToReply(request);
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error trying to reply FileServer request: " + request, "This might indicate a problem with your file device.", e, 30000);
 		}
 	}
 
 
-	private void reply(FileRequest request) throws IOException {
+	private void tryToReply(FileRequest request) throws IOException {
 		Tuple response = createResponseFor(request);
 		if (response == null) return;
 		my(TupleSpace.class).publish(response);
@@ -102,10 +102,10 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 	private ImmutableByteArray getFileBlockBytes(File file, int blockNumber) throws IOException {
 		try {
-			return my(ImmutableArrays.class).newImmutableByteArray(my(IO.class).files().readBlock(file, blockNumber, Protocol.FILE_BLOCK_SIZE));
+			byte[] result = my(IO.class).files().readBlock(file, blockNumber, Protocol.FILE_BLOCK_SIZE);
+			return my(ImmutableArrays.class).newImmutableByteArray(result);
 		} catch(IOException ioe) {
-			my(Logger.class).log("Error trying to read block from requested file: {}", file.getPath());
-			throw ioe;
+			throw new IOException("Error trying to read block " + blockNumber + " from requested file: " + file, ioe);
 		}
 	}
 
