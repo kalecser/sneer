@@ -126,10 +126,15 @@ class FileDownload extends AbstractDownload {
 	private void writeBlock(byte[] bytes) throws IOException {
 		_output.write(bytes);
 		++_nextBlockToWrite;
-		if (_nextBlockToWrite >= _fileSizeInBlocks) {
+		if (readyToFinish()) {
 			my(IO.class).streams().closeQuietly(_output);
 			finishWithSuccess();
 		}
+	}
+
+
+	private boolean readyToFinish() {
+		return _nextBlockToWrite >= _fileSizeInBlocks;
 	}
 
 	
@@ -138,7 +143,7 @@ class FileDownload extends AbstractDownload {
 		if (isFirstRequest())
 			return nextBlockRequest();
 
-		if (_nextBlockToWrite >= _fileSizeInBlocks) return null; // Fix: Remove this line
+		if (readyToFinish()) return null; //Might not have been finished yet.
 
 		if (my(Clock.class).time().currentValue() - _lastRequestTime < REQUEST_INTERVAL)
 			return null;
