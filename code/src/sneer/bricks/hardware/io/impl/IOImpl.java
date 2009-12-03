@@ -55,12 +55,18 @@ class IOImpl implements IO {
 		@Override
 		public byte[] readBlock(File file, int blockNumber, int blockSize) throws IOException {
 			final long position = blockNumber * blockSize;
-			final byte[] blockBytes = new byte[(int) Math.min(blockSize, file.length() - position)];
-			RandomAccessFile randomAccessToFile = new RandomAccessFile(file, "r");
-			randomAccessToFile.seek(position);
-			randomAccessToFile.readFully(blockBytes);
-			randomAccessToFile.close();
-			return blockBytes;
+			int bytesToRead = (int) Math.min(blockSize, file.length() - position);
+			if (bytesToRead < 1) throw new IllegalArgumentException("Illegal attempt to read position: " + position + ", beyond file length: " + file.length());
+			
+			final byte[] result = new byte[bytesToRead];
+			RandomAccessFile rFile = new RandomAccessFile(file, "r");
+			try {
+				rFile.seek(position);
+				rFile.readFully(result);
+				return result;
+			} finally {
+				rFile.close();
+			}
 		}
 
 		@Override public void writeByteArrayToFile(File file, byte[] data) throws IOException { FileUtils.writeByteArrayToFile(file, data); }
