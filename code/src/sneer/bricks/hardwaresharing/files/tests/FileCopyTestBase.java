@@ -8,6 +8,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -57,10 +58,13 @@ public abstract class FileCopyTestBase extends BrickTest {
 		assertNotNull(hash);
 
 		File copy = newTmpFile();
-		my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>(){@Override public void consume(CollectionChange<Light> deltas) {
-			if (!deltas.elementsAdded().isEmpty())
-				throw new IllegalStateException();
-		}});
+		
+		@SuppressWarnings("unused")	WeakContract refToAvoidGc =
+			my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>(){@Override public void consume(CollectionChange<Light> deltas) {
+				if (!deltas.elementsAdded().isEmpty())
+					fail();
+			}});
+		
 		if (fileOrFolder.isFile())
 			copyFileFromFileMap(hash, copy);
 		else
