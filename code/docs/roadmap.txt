@@ -1,7 +1,9 @@
 ﻿TASKS
 =========
 
-	- [Igor] Create CustomClockTickerTest
+	- [Igor] Create CustomClockTickerTest - Not necessary. Klaus.
+	
+	- [Igor] FileCopyTestBase.testWithZeroLengthFile - create this test.
 
 	- [Klaus] ProbeManager.desserialize - treat exceptions 
 
