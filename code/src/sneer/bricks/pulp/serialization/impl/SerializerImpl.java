@@ -81,8 +81,12 @@ class SerializerImpl implements Serializer {
 
 
 	@Override
-	public Object deserialize(byte[] bytes, ClassLoader classloader) throws ClassNotFoundException, IOException {
-		return deserialize(new ByteArrayInputStream(bytes), classloader);
+	public Object deserialize(byte[] bytes, ClassLoader classloader) throws ClassNotFoundException {
+		try {
+			return deserialize(new ByteArrayInputStream(bytes), classloader);
+		} catch (IOException ioe) {
+			throw new IllegalStateException(ioe);
+		}
 	}
 
 }

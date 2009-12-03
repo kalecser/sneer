@@ -5,8 +5,6 @@
 	
 	- [Igor] FileCopyTestBase.testWithZeroLengthFile - create this test.
 
-	- [Klaus] ProbeManager.desserialize - treat exceptions 
-
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
 	- [Klaus] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).

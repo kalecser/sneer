@@ -32,5 +32,5 @@ public interface Serializer {
 	 */
 	Object deserialize(InputStream stream, ClassLoader classloader) throws IOException, ClassNotFoundException;
 
-	Object deserialize(byte[] bytes, ClassLoader classloader) throws ClassNotFoundException, IOException;
+	Object deserialize(byte[] bytes, ClassLoader classloader) throws ClassNotFoundException;
 }

@@ -2,7 +2,6 @@ package sneer.bricks.pulp.probe.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +10,8 @@ import sneer.bricks.network.computers.sockets.connections.ByteConnection;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.probe.ProbeManager;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.serialization.Serializer;
@@ -43,7 +44,7 @@ class ProbeManagerImpl implements ProbeManager {
 	private void startProbeFor(Contact contact) {
 		ByteConnection connection = ConnectionManager.connectionFor(contact);
 		ProbeImpl probe = createProbe(contact, connection);
-		connection.initCommunications(probe._scheduler, createReceiver());
+		connection.initCommunications(probe._scheduler, createReceiver(contact));
 	}
 
 	
@@ -60,22 +61,21 @@ class ProbeManagerImpl implements ProbeManager {
 	}
 
 	
-	private Consumer<byte[]> createReceiver() {
+	private Consumer<byte[]> createReceiver(final Contact contact) {
 		return new Consumer<byte[]>(){ @Override public void consume(byte[] packet) {
-			final Object tuple = desserialize(packet);
+			final Object tuple = desserialize(packet, contact);
 			if (tuple == null) return;
 			TupleSpace.acquire((Tuple) tuple);
 		}};
 	}
 
 	
-	private Object desserialize(byte[] packet) {
+	private Object desserialize(byte[] packet, Contact contact) {
 		try {
 			return Serializer.deserialize(packet, CLASSLOADER_FOR_TUPLES);
 		} catch (ClassNotFoundException e) {
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Unknown Tuple class received from " + contact, "Your peer might be running a brick version you don't have.", e, 30000);
 			return null;
-		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 	}
 
