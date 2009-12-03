@@ -59,7 +59,6 @@ class FileDownload extends AbstractDownload {
 	}
 
 	
-	synchronized
 	private void receiveFileBlock(FileContents contents) {
 		if (isFinished()) return;
 
@@ -76,8 +75,10 @@ class FileDownload extends AbstractDownload {
 
 		my(Logger.class).log("File block received. File: {}, Block: ", contents.debugInfo, contents.blockNumber);
 
-		if (contents instanceof FileContentsFirstBlock)
+		if (contents instanceof FileContentsFirstBlock) {
 			receiveFirstBlock((FileContentsFirstBlock) contents);
+			if (isFinished()) return;  //Empty file case.
+		}
 
 		if (contents.blockNumber < _nextBlockToWrite) return;
 		if (contents.blockNumber - _nextBlockToWrite > MAX_BLOCKS_DOWNLOADED_AHEAD) return; 
@@ -91,6 +92,8 @@ class FileDownload extends AbstractDownload {
 		if (firstBlockWasAlreadyReceived()) return;
 		_fileSizeInBlocks = calculateFileSizeInBlocks(contents.fileSize);
 		_output = new FileOutputStream(_path);
+		
+		if (_fileSizeInBlocks == 0) finishWithSuccess();  //Empty file case.
 	}
 
 	
@@ -100,8 +103,9 @@ class FileDownload extends AbstractDownload {
 
 	
 	private int calculateFileSizeInBlocks(long fileSizeInBytes) {
-		final int result = (int) fileSizeInBytes / Protocol.FILE_BLOCK_SIZE;
-		return (result != 0 && fileSizeInBytes % Protocol.FILE_BLOCK_SIZE != 0) ? result + 1 : result; 
+		return fileSizeInBytes == 0
+			? 0
+			: (int) ((fileSizeInBytes - 1) / Protocol.FILE_BLOCK_SIZE) + 1;
 	}
 
 	
