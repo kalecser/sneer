@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -24,7 +25,12 @@ import sneer.foundation.lang.Consumer;
 public abstract class FileCopyTestBase extends BrickTest {
 
 	protected final FileMap _fileMap = my(FileMap.class);
-	
+
+	@Ignore
+	@Test (timeout = 2000)
+	public void testWithZeroLengthFile() throws IOException {
+		testWith(zeroLengthFile());
+	}
 	
 	@Test (timeout = 4000)
 	public void testWithSmallFile() throws IOException {
@@ -77,7 +83,11 @@ public abstract class FileCopyTestBase extends BrickTest {
 
 	abstract protected void copyFolderFromFileMap(Sneer1024 hashOfContents, File destination) throws IOException;
 
-	protected File anySmallFile() {
+	private File zeroLengthFile() throws IOException {
+		return createTmpFile("tmp" + System.nanoTime());
+	}
+
+	private File anySmallFile() {
 		return myClassFile();
 	}
 
