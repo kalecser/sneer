@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -26,7 +25,6 @@ public abstract class FileCopyTestBase extends BrickTest {
 
 	protected final FileMap _fileMap = my(FileMap.class);
 
-	@Ignore
 	@Test (timeout = 2000)
 	public void testWithZeroLengthFile() throws IOException {
 		testWith(zeroLengthFile());

@@ -90,7 +90,10 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 
 	private FileContents newFileContents(File requestedFile, FileRequest request) throws IOException {
-		ImmutableByteArray bytes = getFileBlockBytes(requestedFile, request.blockNumber);
+		ImmutableByteArray bytes = null;
+		if (requestedFile.length() > 0)
+			bytes = getFileBlockBytes(requestedFile, request.blockNumber);
+		
 		String debugInfo = requestedFile.getName();
 		return request.blockNumber == 0
 			? new FileContentsFirstBlock(

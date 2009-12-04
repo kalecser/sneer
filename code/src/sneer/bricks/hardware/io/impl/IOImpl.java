@@ -3,6 +3,7 @@ package sneer.bricks.hardware.io.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.Closeable;
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,7 +57,7 @@ class IOImpl implements IO {
 		public byte[] readBlock(File file, int blockNumber, int blockSize) throws IOException {
 			final long position = blockNumber * blockSize;
 			int bytesToRead = (int) Math.min(blockSize, file.length() - position);
-			if (bytesToRead < 1) throw new IOException("Illegal attempt to read position: " + position + ", beyond file length: " + file.length());
+			if (bytesToRead < 1) throw new EOFException("Attempt to read position: " + position + ", File length: " + file.length());
 			
 			final byte[] result = new byte[bytesToRead];
 			RandomAccessFile rFile = new RandomAccessFile(file, "r");
