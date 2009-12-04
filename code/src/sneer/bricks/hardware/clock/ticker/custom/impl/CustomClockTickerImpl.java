@@ -27,12 +27,12 @@ class CustomClockTickerImpl implements CustomClockTicker {
 	}
 
 	private void tick(int millisToSleep) {
-		_clock.advanceTime(System.currentTimeMillis());
+		_clock.advanceTimeTo(System.currentTimeMillis());
 		_threads.sleepWithoutInterruptions(millisToSleep);
 	}
 
 	private void tick(int millisToSleep, long timeIncrement) {
-		_clock.advanceTime(System.currentTimeMillis() + timeIncrement);
+		_clock.advanceTime(timeIncrement);
 		_threads.sleepWithoutInterruptions(millisToSleep);
 	}
 
