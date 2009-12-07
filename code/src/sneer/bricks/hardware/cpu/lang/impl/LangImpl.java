@@ -34,7 +34,7 @@ class LangImpl implements Lang {
 		@Override public String trimToNull(String str) {return StringUtils.trimToNull(str);}
 		@Override public String chomp(String str, String separator) { return StringUtils.chomp(str, separator);}
 		@Override public String substringBeforeLast(String str, String separator) {	return StringUtils.substringBeforeLast(str, separator); }
-		@Override public String substringAfter(String str, String separator) {	return StringUtils.substringAfter(str, separator); }
+		@Override public String substringAfterLast(String str, String separator) {	return StringUtils.substringAfterLast(str, separator); }
 
 		@Override public String deleteWhitespace(String str) {return StringUtils.deleteWhitespace(str);}
 		

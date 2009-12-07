@@ -32,7 +32,7 @@ public interface Lang {
 		List<String> readLines(String input);
 		byte[] toByteArray(String string);
 		String[] splitRight(String line, char separator, int maxParts);
-		String substringAfter(String str, String separator);
+		String substringAfterLast(String str, String separator);
 	}
 }
 

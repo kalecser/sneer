@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
@@ -75,7 +76,7 @@ class FileMapImpl implements FileMap {
 		File[] result = (fileTypes.length > 0)
 			? folder.listFiles(new FileFilter() { @Override public boolean accept(File fileToBeAdded) {
 				if (fileToBeAdded.isDirectory()) return true;
-				final String fileExtension = fileToBeAdded.getName().substring(fileToBeAdded.getName().length() - 3).toLowerCase();
+				final String fileExtension = my(Lang.class).strings().substringAfterLast(fileToBeAdded.getName(), ".").toLowerCase();
 				if (Arrays.asList(fileTypes).contains(fileExtension)) return true;
 				return false;
 			}})
