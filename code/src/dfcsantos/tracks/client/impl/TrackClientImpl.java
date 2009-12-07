@@ -130,7 +130,7 @@ class TrackClientImpl implements TrackClient {
 
 	private void map(final File tracksFolder) {		
 		try {
-			my(FileMap.class).put(tracksFolder);
+			my(FileMap.class).put(tracksFolder, "mp3");
 		} catch (IOException e) {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}

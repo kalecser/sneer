@@ -36,8 +36,8 @@ public class TrackClientTest extends BrickTest {
 		final Sneer1024 hash3 = my(Crypto.class).digest(new byte[] { 3 });
 
 		checking(new Expectations(){{
-			exactly(1).of(_fileMap).put(peerTracksFolder());
-			exactly(1).of(_fileMap).put(shareTracksFolderDefaultValue());
+			exactly(1).of(_fileMap).put(peerTracksFolder(), "mp3");
+			exactly(1).of(_fileMap).put(shareTracksFolderDefaultValue(), "mp3");
 			exactly(1).of(_fileClient).startFileDownload(new File(peerTracksFolder(), "ok.mp3"), 41, hash1);
 		}});
 

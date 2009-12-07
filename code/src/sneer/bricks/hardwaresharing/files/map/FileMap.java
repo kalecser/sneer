@@ -10,7 +10,7 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface FileMap {
 	
-	Sneer1024 put(File fileOrFolder) throws IOException;
+	Sneer1024 put(File fileOrFolder, String... acceptedFileExtensions) throws IOException;
 	Sneer1024 putFolderContents(FolderContents contents);
 	
 	File getFile(Sneer1024 hash);

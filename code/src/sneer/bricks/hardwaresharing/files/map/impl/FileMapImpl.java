@@ -3,6 +3,7 @@ package sneer.bricks.hardwaresharing.files.map.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,10 +36,10 @@ class FileMapImpl implements FileMap {
 
 
 	@Override
-	public Sneer1024 put(File fileOrFolder) throws IOException {
+	public Sneer1024 put(File fileOrFolder, String... acceptedExtensions) throws IOException {
 		my(Logger.class).log("Mapping " + fileOrFolder);
 		return (fileOrFolder.isDirectory())
-			? putFolder(fileOrFolder)
+			? putFolder(fileOrFolder, acceptedExtensions)
 			: putFile(fileOrFolder);
 	}
 
@@ -48,21 +49,21 @@ class FileMapImpl implements FileMap {
 		return result;
 	}
 
-	private Sneer1024 putFolder(File folder) throws IOException {
-		return putFolderContents(new FolderContents(immutable(putEachFolderEntry(folder))));
+	private Sneer1024 putFolder(File folder, String... fileTypes) throws IOException {
+		return putFolderContents(new FolderContents(immutable(putEachFolderEntry(folder, fileTypes))));
 	}
 
-	private List<FileOrFolder> putEachFolderEntry(File folder) throws IOException {
+	private List<FileOrFolder> putEachFolderEntry(File folder, String... fileTypes) throws IOException {
 		List<FileOrFolder> result = new ArrayList<FileOrFolder>();
 
-		for (File fileOrFolder : sortedFiles(folder))
-			result.add(putFolderEntry(fileOrFolder));
+		for (File fileOrFolder : sortedFiles(folder, fileTypes))
+			result.add(putFolderEntry(fileOrFolder, fileTypes));
 
 		return result;
 	}
 
-	private FileOrFolder putFolderEntry(File fileOrFolder) throws IOException {
-		Sneer1024 hashOfContents = put(fileOrFolder);
+	private FileOrFolder putFolderEntry(File fileOrFolder, String... fileTypes) throws IOException {
+		Sneer1024 hashOfContents = put(fileOrFolder, fileTypes);
 
 		return new FileOrFolder(fileOrFolder.getName(), fileOrFolder.lastModified(), hashOfContents, fileOrFolder.isDirectory());
 	}
@@ -70,9 +71,16 @@ class FileMapImpl implements FileMap {
 		return my(ImmutableArrays.class).newImmutableArray(entries);
 	}
 	
-	private static File[] sortedFiles(File folder) {
+	private static File[] sortedFiles(File folder, final String... fileTypes) {
+		File[] result = (fileTypes.length > 0)
+			? folder.listFiles(new FileFilter() { @Override public boolean accept(File fileToBeAdded) {
+				if (fileToBeAdded.isDirectory()) return true;
+				final String fileExtension = fileToBeAdded.getName().substring(fileToBeAdded.getName().length() - 3).toLowerCase();
+				if (Arrays.asList(fileTypes).contains(fileExtension)) return true;
+				return false;
+			}})
+			: folder.listFiles();
 
-		File[] result = folder.listFiles();
 		if (result == null)	return new File[0];
 
 		Arrays.sort(result, new Comparator<File>() { @Override public int compare(File file1, File file2) {
