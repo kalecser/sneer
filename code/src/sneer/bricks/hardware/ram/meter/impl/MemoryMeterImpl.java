@@ -4,8 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.meter.MemoryMeter;
-import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -35,19 +33,7 @@ class MemoryMeterImpl implements MemoryMeter {
 	private void measureMemory() {
 		int used = measureUsedMBs();
 		setUsed(used);
-		recycleMemoryIfNecessary();
 		if (used > peak()) setPeak(used);
-	}
-
-	private void recycleMemoryIfNecessary() {
-		if (availableMBs() < availableMemorySafeLimit()) {
-			my(BlinkingLights.class).turnOn(LightType.WARNING, "Recycling memory", "Total Memory: " + maxMBs() + " MB\nSafe Limit: " + availableMemorySafeLimit() + " MB\nAvailable Memory: " + availableMBs() + " MB", 5000);
-			System.gc();  
-		}
-	}
-
-	private double availableMemorySafeLimit() {
-		return 0.3 * maxMBs();
 	}
 
 	private int measureUsedMBs() {
