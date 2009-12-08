@@ -27,7 +27,7 @@ class MemoryMeterGuiImpl implements MemoryMeterGui {
 	private final InstrumentRegistry _instruments = my(InstrumentRegistry.class);
 	private final ReactiveWidgetFactory _factory = my(ReactiveWidgetFactory.class);
 	private final MemoryMeter _meter = my(MemoryMeter.class);
-	private final JButton gc = new JButton();
+	private final JButton _gc = new JButton();
 	private final Synth _synth = my(Synth.class);
 	
 	private final JLabel _totalMemory = new JLabel();
@@ -41,7 +41,7 @@ class MemoryMeterGuiImpl implements MemoryMeterGui {
 
 	private void initSynth() {
 		_synth.notInGuiThreadLoad(this.getClass());
-		_synth.notInGuiThreadAttach(gc, "GCButton");
+		_synth.notInGuiThreadAttach(_gc, "GCButton");
 		_synth.notInGuiThreadAttach(_totalMemory, "TotalMemoryLabel");
 	}
 	
@@ -52,12 +52,12 @@ class MemoryMeterGuiImpl implements MemoryMeterGui {
 		_totalMemory.setText("(Max " + _meter.maxMBs() + ")");
 		container.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-		gc.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
+		_gc.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
 			System.gc();
 		}});
 		
 		container.add(_currentMemory.getComponent());
-		container.add(gc);
+		container.add(_gc);
 		container.add(_maxUsedMemory.getComponent());
 		container.add(_totalMemory);
 	}
