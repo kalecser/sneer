@@ -1,17 +1,16 @@
 package sneer.bricks.pulp.crypto.impl;
 
-import static sneer.foundation.environments.Environments.my;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.Security;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 
-import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardwaresharing.files.protocol.Protocol;
 import sneer.bricks.pulp.crypto.Crypto;
 import sneer.bricks.pulp.crypto.Digester;
 import sneer.bricks.pulp.crypto.Sneer1024;
@@ -51,13 +50,23 @@ class CryptoImpl implements Crypto {
 
 	@Override
 	public Sneer1024 digest(File file) throws IOException {
-		FileInputStream input = null;
+		FileInputStream input = new FileInputStream(file);
+
+		Digester digester = newDigester();
+		digester.update(file.getName().getBytes("UTF-8"));
+		digester.update(BigInteger.valueOf(file.lastModified()).toByteArray());
 		try {
-			input = new FileInputStream(file);
-			return digest(my(IO.class).streams().toByteArray(input));
+			int result = -1;
+			byte[] block = new byte[Protocol.FILE_BLOCK_SIZE];
+			do {
+				result = input.read(block);
+				digester.update(block);			
+			} while(result != -1);
 		} finally {
 			try { input.close(); } catch (Throwable ignore) { }
 		}
+
+		return digester.digest();
 	}
 
 	@Override
