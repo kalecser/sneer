@@ -38,11 +38,17 @@ class FileMapImpl implements FileMap {
 
 	@Override
 	public Sneer1024 put(File fileOrFolder, String... acceptedExtensions) throws IOException {
-		my(Logger.class).log("Mapping " + fileOrFolder);
+		my(Logger.class).log("Mapping " + fileOrFolder + fileSize(fileOrFolder));
 		return (fileOrFolder.isDirectory())
 			? putFolder(fileOrFolder, acceptedExtensions)
 			: putFile(fileOrFolder);
 	}
+
+
+	private String fileSize(File fileOrFolder) {
+		return fileOrFolder.isDirectory() ? "" : "(" + fileOrFolder.length() / 1024 + " KB)";
+	}
+
 
 	private Sneer1024 putFile(File file) throws IOException {
 		Sneer1024 result = my(Hasher.class).hash(file);
