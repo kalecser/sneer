@@ -3,19 +3,19 @@ package sneer.bricks.pulp.crypto.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.Security;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 
-import sneer.bricks.hardwaresharing.files.protocol.Protocol;
 import sneer.bricks.pulp.crypto.Crypto;
 import sneer.bricks.pulp.crypto.Digester;
 import sneer.bricks.pulp.crypto.Sneer1024;
 
 class CryptoImpl implements Crypto {
+
+	private static final int FILE_BLOCK_SIZE = 10240;
 
 	static {
 		Security.addProvider(new BouncyCastleProvider()); //Optimize: remove this static dependency. Use Bouncycastle classes directly
@@ -50,14 +50,13 @@ class CryptoImpl implements Crypto {
 
 	@Override
 	public Sneer1024 digest(File file) throws IOException {
-		FileInputStream input = new FileInputStream(file);
-
-		Digester digester = newDigester();
-		digester.update(file.getName().getBytes("UTF-8"));
-		digester.update(BigInteger.valueOf(file.lastModified()).toByteArray());
+		FileInputStream input = null;
+		Digester digester = null;
 		try {
+			input = new FileInputStream(file);
+			digester = newDigester();
 			int result = -1;
-			byte[] block = new byte[Protocol.FILE_BLOCK_SIZE];
+			byte[] block = new byte[FILE_BLOCK_SIZE];
 			do {
 				result = input.read(block);
 				digester.update(block);			
