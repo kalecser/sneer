@@ -38,6 +38,11 @@ class FileMapImpl implements FileMap {
 
 	@Override
 	public Sneer1024 put(File fileOrFolder, String... acceptedExtensions) throws IOException {
+		return transientPut(fileOrFolder, acceptedExtensions);
+	}
+
+
+	private Sneer1024 transientPut(File fileOrFolder, String... acceptedExtensions) throws IOException {
 		my(Logger.class).log("Mapping " + fileOrFolder + fileSize(fileOrFolder));
 		return (fileOrFolder.isDirectory())
 			? putFolder(fileOrFolder, acceptedExtensions)
@@ -56,10 +61,12 @@ class FileMapImpl implements FileMap {
 		return result;
 	}
 
+	
 	private Sneer1024 putFolder(File folder, String... fileTypes) throws IOException {
 		return putFolderContents(new FolderContents(immutable(putEachFolderEntry(folder, fileTypes))));
 	}
 
+	
 	private List<FileOrFolder> putEachFolderEntry(File folder, String... fileTypes) throws IOException {
 		List<FileOrFolder> result = new ArrayList<FileOrFolder>();
 
@@ -69,14 +76,18 @@ class FileMapImpl implements FileMap {
 		return result;
 	}
 
+	
 	private FileOrFolder putFolderEntry(File fileOrFolder, String... fileTypes) throws IOException {
-		Sneer1024 hashOfContents = put(fileOrFolder, fileTypes);
+		Sneer1024 hashOfContents = transientPut(fileOrFolder, fileTypes);
 
 		return new FileOrFolder(fileOrFolder.getName(), fileOrFolder.lastModified(), hashOfContents, fileOrFolder.isDirectory());
 	}
+	
+	
 	private static ImmutableArray<FileOrFolder> immutable(List<FileOrFolder> entries) {
 		return my(ImmutableArrays.class).newImmutableArray(entries);
 	}
+	
 	
 	private static File[] sortedFiles(File folder, final String... fileTypes) {
 		File[] result = (fileTypes.length > 0)
@@ -97,10 +108,12 @@ class FileMapImpl implements FileMap {
 		return result;
 	}
 
+	
 	@Override public File getFile(Sneer1024 hash) {
 		return _filesByHash.get(hash);
 	}
 
+	
 	@Override public FolderContents getFolder(Sneer1024 hash) {
 		return _foldersByHash.get(hash);
 	}
