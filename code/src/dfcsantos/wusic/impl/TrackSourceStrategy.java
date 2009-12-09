@@ -8,9 +8,9 @@ import java.util.Collections;
 import java.util.List;
 
 import sneer.bricks.hardware.clock.timer.Timer;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.pulp.crypto.Sneer1024;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.playlist.Playlist;

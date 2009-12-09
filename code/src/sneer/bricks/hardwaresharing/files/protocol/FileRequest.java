@@ -1,6 +1,6 @@
 package sneer.bricks.hardwaresharing.files.protocol;
 
-import sneer.bricks.pulp.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.foundation.brickness.Tuple;
 
 public class FileRequest extends Tuple {

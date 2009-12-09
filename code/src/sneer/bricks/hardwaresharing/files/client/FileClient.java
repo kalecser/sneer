@@ -2,7 +2,7 @@ package sneer.bricks.hardwaresharing.files.client;
 
 import java.io.File;
 
-import sneer.bricks.pulp.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.foundation.brickness.Brick;
 
 @Brick

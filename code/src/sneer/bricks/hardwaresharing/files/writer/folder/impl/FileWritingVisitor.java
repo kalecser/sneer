@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.util.Deque;
 import java.util.LinkedList;
 
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.map.visitors.FolderStructureVisitor;
-import sneer.bricks.pulp.crypto.Sneer1024;
 
 final class FileWritingVisitor implements FolderStructureVisitor {
 	

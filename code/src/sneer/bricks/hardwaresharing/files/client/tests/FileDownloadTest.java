@@ -11,17 +11,17 @@ import java.util.List;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
-import sneer.bricks.hardwaresharing.files.hasher.Hasher;
 import sneer.bricks.hardwaresharing.files.protocol.FileContents;
 import sneer.bricks.hardwaresharing.files.protocol.FileContentsFirstBlock;
 import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
 import sneer.bricks.hardwaresharing.files.protocol.Protocol;
-import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -33,7 +33,7 @@ public class FileDownloadTest extends BrickTest {
 	@Test (timeout = 5000)
 	public void receiveFileContentBlocksOutOfSequence() throws IOException {
 		final File smallFile = createTmpFileWithRandomContent(3 * Protocol.FILE_BLOCK_SIZE);
-		final Sneer1024 smallFileHash = my(Hasher.class).hash(smallFile);
+		final Sneer1024 smallFileHash = my(Crypto.class).digest(smallFile);
 
 		final Iterator<FileContents> fileContentBlocks = createFileContentBlocks(smallFile, smallFileHash).iterator();
 		@SuppressWarnings("unused")

@@ -4,10 +4,10 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardwaresharing.files.client.Download;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
-import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
 

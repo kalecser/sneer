@@ -12,15 +12,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
-import sneer.bricks.hardwaresharing.files.hasher.Hasher;
+import sneer.bricks.hardwaresharing.files.hasher.FolderContentsHasher;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
-import sneer.bricks.pulp.crypto.Sneer1024;
 
 class FileMapImpl implements FileMap {
 	
@@ -30,7 +31,7 @@ class FileMapImpl implements FileMap {
 
 	@Override
 	public Sneer1024 putFolderContents(FolderContents contents) {
-		Sneer1024 hash = my(Hasher.class).hash(contents);
+		Sneer1024 hash = my(FolderContentsHasher.class).hash(contents);
 		_foldersByHash.put(hash, contents);
 		return hash; 
 	}
@@ -56,7 +57,7 @@ class FileMapImpl implements FileMap {
 
 
 	private Sneer1024 putFile(File file) throws IOException {
-		Sneer1024 result = my(Hasher.class).hash(file);
+		Sneer1024 result = my(Crypto.class).digest(file);
 		_filesByHash.put(result, file);
 		return result;
 	}

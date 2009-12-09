@@ -1,6 +1,6 @@
 package dfcsantos.tracks.rejected;
 
-import sneer.bricks.pulp.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.foundation.brickness.Brick;
 
 @Brick

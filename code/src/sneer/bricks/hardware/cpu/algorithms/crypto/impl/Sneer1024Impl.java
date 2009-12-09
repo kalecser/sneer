@@ -1,9 +1,9 @@
-package sneer.bricks.pulp.crypto.impl;
+package sneer.bricks.hardware.cpu.algorithms.crypto.impl;
 
 import java.util.Arrays;
 
-import sneer.bricks.pulp.crypto.Crypto;
-import sneer.bricks.pulp.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import static sneer.foundation.environments.Environments.my;
 
 class Sneer1024Impl implements Sneer1024 {

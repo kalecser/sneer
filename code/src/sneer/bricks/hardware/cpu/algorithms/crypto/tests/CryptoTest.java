@@ -1,10 +1,10 @@
-package sneer.bricks.pulp.crypto.tests;
+package sneer.bricks.hardware.cpu.algorithms.crypto.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
-import sneer.bricks.pulp.crypto.Crypto;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class CryptoTest extends BrickTest {

@@ -7,9 +7,9 @@ import java.io.IOException;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.ticker.custom.CustomClockTicker;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
 import sneer.bricks.hardwaresharing.files.server.FileServer;
-import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.own.name.OwnNameKeeper;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.environments.Environment;

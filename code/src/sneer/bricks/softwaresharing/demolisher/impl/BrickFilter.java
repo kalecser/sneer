@@ -5,11 +5,11 @@ import static sneer.foundation.environments.Environments.my;
 import java.util.ArrayList;
 import java.util.List;
 
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
-import sneer.bricks.pulp.crypto.Sneer1024;
 
 class BrickFilter {
 

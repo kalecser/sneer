@@ -8,11 +8,11 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.map.visitors.FileMapGuide;
 import sneer.bricks.hardwaresharing.files.map.visitors.FolderStructureVisitor;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
-import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
 

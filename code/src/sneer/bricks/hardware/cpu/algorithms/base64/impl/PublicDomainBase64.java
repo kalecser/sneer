@@ -1,4 +1,4 @@
-package sneer.bricks.hardware.io.codecs.base64.impl;
+package sneer.bricks.hardware.cpu.algorithms.base64.impl;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

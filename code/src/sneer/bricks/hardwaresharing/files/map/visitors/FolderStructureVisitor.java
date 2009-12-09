@@ -1,6 +1,6 @@
 package sneer.bricks.hardwaresharing.files.map.visitors;
 
-import sneer.bricks.pulp.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 
 public interface FolderStructureVisitor {
 

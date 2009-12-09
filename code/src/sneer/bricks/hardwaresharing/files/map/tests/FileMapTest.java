@@ -9,14 +9,14 @@ import java.util.Collection;
 
 import org.junit.Test;
 
+import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
-import sneer.bricks.pulp.crypto.Crypto;
-import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Functor;

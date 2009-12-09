@@ -5,15 +5,15 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardwaresharing.files.client.Download;
-import sneer.bricks.hardwaresharing.files.hasher.Hasher;
+import sneer.bricks.hardwaresharing.files.hasher.FolderContentsHasher;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FileRequest;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.hardwaresharing.files.writer.folder.FolderContentsWriter;
-import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.Consumer;
@@ -58,7 +58,7 @@ class FolderDownload extends AbstractDownload {
 	private void tryToReceiveFolder(FolderContents folderContents) throws IOException {
 		if (isFinished()) return;
 
-	    Sneer1024 hashOfFolder = my(Hasher.class).hash(folderContents);
+	    Sneer1024 hashOfFolder = my(FolderContentsHasher.class).hash(folderContents);
 	    if (!_hash.equals(hashOfFolder)) return;
 	    _received = true;
 

@@ -1,4 +1,4 @@
-package sneer.bricks.pulp.crypto;
+package sneer.bricks.hardware.cpu.algorithms.crypto;
 
 import java.io.Serializable;
 

@@ -1,6 +1,6 @@
 package dfcsantos.tracks.client;
 
-import sneer.bricks.pulp.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.foundation.brickness.Tuple;
 
 public class TrackEndorsement extends Tuple {

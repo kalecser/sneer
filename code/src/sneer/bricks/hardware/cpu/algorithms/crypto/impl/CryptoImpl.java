@@ -1,4 +1,4 @@
-package sneer.bricks.pulp.crypto.impl;
+package sneer.bricks.hardware.cpu.algorithms.crypto.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,9 +9,9 @@ import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 
-import sneer.bricks.pulp.crypto.Crypto;
-import sneer.bricks.pulp.crypto.Digester;
-import sneer.bricks.pulp.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Digester;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 
 class CryptoImpl implements Crypto {
 

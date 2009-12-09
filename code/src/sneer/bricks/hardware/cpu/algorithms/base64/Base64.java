@@ -1,4 +1,4 @@
-package sneer.bricks.hardware.io.codecs.base64;
+package sneer.bricks.hardware.cpu.algorithms.base64;
 
 import sneer.foundation.brickness.Brick;
 

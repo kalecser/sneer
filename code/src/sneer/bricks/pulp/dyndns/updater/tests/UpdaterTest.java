@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.jmock.Expectations;
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.codecs.base64.Base64;
+import sneer.bricks.hardware.cpu.algorithms.base64.Base64;
 import sneer.bricks.pulp.dyndns.updater.BadAuthException;
 import sneer.bricks.pulp.dyndns.updater.InvalidHostException;
 import sneer.bricks.pulp.dyndns.updater.RedundantUpdateException;

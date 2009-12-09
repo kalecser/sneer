@@ -2,26 +2,18 @@ package sneer.bricks.hardwaresharing.files.hasher.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 
-import sneer.bricks.hardwaresharing.files.hasher.Hasher;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Digester;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
+import sneer.bricks.hardwaresharing.files.hasher.FolderContentsHasher;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
-import sneer.bricks.pulp.crypto.Crypto;
-import sneer.bricks.pulp.crypto.Digester;
-import sneer.bricks.pulp.crypto.Sneer1024;
 
-class HasherImpl implements Hasher {
+class FolderContentsHasherImpl implements FolderContentsHasher {
 
-	@Override
-	public Sneer1024 hash(byte[] contents) {
-		return my(Crypto.class).digest(contents);
-	}
-	
-	
 	@Override
 	public Sneer1024 hash(FolderContents folder) {
 		Digester digester = my(Crypto.class).newDigester();
@@ -30,13 +22,6 @@ class HasherImpl implements Hasher {
 		return digester.digest();
 	}
 
-	
-	@Override
-	public Sneer1024 hash(File file) throws IOException {
-		return my(Crypto.class).digest(file);
-	}
-
-	
 	private static Sneer1024 hash(FileOrFolder entry) {
 		Digester digester = my(Crypto.class).newDigester();
 		digester.update(bytesUtf8(entry.name));

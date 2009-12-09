@@ -1,7 +1,7 @@
 package sneer.bricks.hardwaresharing.files.protocol;
 
+import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
-import sneer.bricks.pulp.crypto.Sneer1024;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.brickness.Tuple;
 
