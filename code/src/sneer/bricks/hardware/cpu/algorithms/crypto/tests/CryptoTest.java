@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Random;
 
 import org.junit.Test;
 
@@ -12,9 +13,7 @@ import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 
-public class CryptoTest extends BrickTest {
-
-	private static final String INPUT = "The quick brown fox jumps over the lazy dog"; 
+public class CryptoTest extends BrickTest { 
 
 	/** See http://en.wikipedia.org/wiki/SHA1 and http://en.wikipedia.org/wiki/WHIRLPOOL */
 	private static final String SHA512    = "07e547d9586f6a73f73fbac0435ed76951218fb7d0c8d788a309d785436bbb642e93a252a954f23912547d1e8a3b5ed6e1bfd7097821233fa0538f3db854fee6";
@@ -23,7 +22,9 @@ public class CryptoTest extends BrickTest {
 	private final Crypto _subject = my(Crypto.class);
 
 	@Test
-	public void testSneer1024() throws Exception {
+	public void testSneer1024WithSmallString() throws Exception {
+		final String INPUT = "The quick brown fox jumps over the lazy dog";
+
 		Sneer1024 hashOfString = _subject.digest(INPUT.getBytes());
 		assertEquals(1024, hashOfString.bytes().length * 8);
 		assertHexa(SHA512 + WHIRLPOOL, hashOfString.bytes());
@@ -31,6 +32,17 @@ public class CryptoTest extends BrickTest {
 		File file = createFileWithContent(INPUT.getBytes());
 		Sneer1024 hashOfFile = _subject.digest(file);
 		assertEquals(hashOfString, hashOfFile);
+	}
+
+	@Test
+	public void testSneer1024WithLargeArray() throws Exception {
+		final byte[] INPUT = new byte[30720]; // 20 KB
+		new Random().nextBytes(INPUT);
+		Sneer1024 hashOfArray = _subject.digest(INPUT);
+
+		File file = createFileWithContent(INPUT);
+		Sneer1024 hashOfFile = _subject.digest(file);
+		assertEquals(hashOfArray, hashOfFile);
 	}
 
 	private File createFileWithContent(byte[] content) throws IOException {

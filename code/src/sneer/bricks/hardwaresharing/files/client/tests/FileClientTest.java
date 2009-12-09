@@ -19,7 +19,7 @@ import sneer.foundation.lang.Consumer;
 
 public class FileClientTest extends BrickTest {
 
-	@Test (timeout = 2000)
+	@Test (timeout = 3000)
 	public void fileAlreadyMappedIsNotDownloaded() throws IOException {
 		final Sneer1024 hash = my(FileMap.class).put(myClassFile());
 		my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
