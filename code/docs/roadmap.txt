@@ -1,7 +1,7 @@
 ﻿TASKS
 =========
 
-	- [Igor] Unigore CriptoTest.testSneer1024() and RemoteCopyTest.testWithZeroLengthFile()
+	- [Igor] Unigore RemoteCopyTest.testWithZeroLengthFile()
 
 	- [Igor/Klaus] Make track mapping work properly in the shared-tracks-folder-change scenario
 

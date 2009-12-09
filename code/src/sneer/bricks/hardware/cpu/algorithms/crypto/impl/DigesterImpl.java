@@ -30,6 +30,12 @@ class DigesterImpl implements Digester {
 		_whirlPool.update(bytes);
 	}
 
+	@Override
+	public void update(byte[] bytes, int offset, int length) {
+		_sha512.update(bytes, offset, length);
+		_whirlPool.update(bytes, offset, length);
+	}
+
 	MessageDigest whirlPool() {
 		return _whirlPool;
 	}

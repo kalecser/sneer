@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
@@ -23,7 +22,6 @@ public class CryptoTest extends BrickTest {
 
 	private final Crypto _subject = my(Crypto.class);
 
-	@Ignore
 	@Test
 	public void testSneer1024() throws Exception {
 		Sneer1024 hashOfString = _subject.digest(INPUT.getBytes());
