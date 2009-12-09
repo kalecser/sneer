@@ -10,21 +10,21 @@ import sneer.foundation.lang.Consumer;
 
 class MemoryRecyclerImpl implements MemoryRecycler {
 
-	private final MemoryMeter _memoryMeter = my(MemoryMeter.class);
+	private static final MemoryMeter MemoryMeter = my(MemoryMeter.class);
 
 	@SuppressWarnings("unused") private WeakContract _usedMemoryConsumerContract;
 
 	{
-		_usedMemoryConsumerContract = _memoryMeter.usedMBs().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer usedMemory) {
+		_usedMemoryConsumerContract = MemoryMeter.usedMBs().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer usedMemory) {
 			recycleUsedMemoryIfNecessary(usedMemory);
 		}});
 	}
 
 	private void recycleUsedMemoryIfNecessary(int usedMemory) {
-		if (usedMemory > usedMemorySafeLimit()) {
-			my(BlinkingLights.class).turnOn(LightType.WARNING, "Recycling memory", "Total Memory: " + _memoryMeter.maxMBs() + " MB\nSafe Limit: " + usedMemorySafeLimit() + " MB\nAvailable Memory: " + _memoryMeter.availableMBs() + " MB", 7000);
-			System.gc();  
-		}
+		if (usedMemory <= usedMemorySafeLimit()) return;
+
+		my(BlinkingLights.class).turnOn(LightType.WARNING, "Recycling memory", "Total Memory: " + MemoryMeter.maxMBs() + " MB\nSafe Limit: " + usedMemorySafeLimit() + " MB\nAvailable Memory: " + MemoryMeter.availableMBs() + " MB", 7000);
+		System.gc();  
 	}
 
 	private int usedMemorySafeLimit() {
