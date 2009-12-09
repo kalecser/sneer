@@ -28,7 +28,7 @@ class MemoryRecyclerImpl implements MemoryRecycler {
 	}
 
 	private int usedMemorySafeLimit() {
-		return (int) (0.6 * _memoryMeter.maxMBs()) + 1;
+		return (int) (0.8 * MemoryMeter.maxMBs()) + 1;
 	}
 
 }
