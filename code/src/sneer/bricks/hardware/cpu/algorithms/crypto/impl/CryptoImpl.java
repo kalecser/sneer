@@ -51,21 +51,19 @@ class CryptoImpl implements Crypto {
 	@Override
 	public Sneer1024 digest(File file) throws IOException {
 		FileInputStream input = null;
-		Digester digester = null;
 		try {
 			input = new FileInputStream(file);
-			digester = newDigester();
 			int result = -1;
 			byte[] block = new byte[FILE_BLOCK_SIZE];
 			do {
 				result = input.read(block);
-				digester.update(block);			
+				_digester.update(block);
 			} while(result != -1);
 		} finally {
 			try { input.close(); } catch (Throwable ignore) { }
 		}
 
-		return digester.digest();
+		return _digester.digest();
 	}
 
 	@Override
