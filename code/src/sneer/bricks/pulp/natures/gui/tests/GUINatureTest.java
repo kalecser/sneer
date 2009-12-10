@@ -18,6 +18,15 @@ public class GUINatureTest extends Assert {
 	Environment subject = Brickness.newBrickContainer();
 	
 	@Test
+	public void instantiationHappensInTheSwingThread() {
+		Environments.runWith(subject, new Runnable() { @Override public void run() {
+			
+			assertTrue(isGuiThread(my(SomeGuiBrick.class).constructorThread()));
+			
+		}});
+	}
+	
+	@Test
 	public void invocationHappensInTheSwingThread() {
 		Environments.runWith(subject, new Runnable() { @Override public void run() {
 			

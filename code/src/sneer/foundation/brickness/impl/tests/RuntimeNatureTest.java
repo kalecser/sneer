@@ -17,6 +17,7 @@ import sneer.foundation.brickness.impl.tests.fixtures.runtimenature.brick.BrickO
 import sneer.foundation.brickness.impl.tests.fixtures.runtimenature.nature.SomeRuntimeNature;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Producer;
 
 public class RuntimeNatureTest extends Assert {
 	
@@ -63,6 +64,12 @@ public class RuntimeNatureTest extends Assert {
 	public void overridenMethods() {
 		SomeRuntimeNature passThroughNature = new SomeRuntimeNature() { @Override public Object invoke(Class<?> brick, Object instance, String methodName, Object[] args, Continuation continuation) {
 			return continuation.invoke(args);
+		}
+
+		@Override
+		public <T> T instantiate(Class<T> brick, Class<?> implClass,
+				Producer<T> producer) {
+			return producer.produce();
 		}};
 		
 		
@@ -84,13 +91,17 @@ public class RuntimeNatureTest extends Assert {
 	@Test
 	public void continuationWithParameters() {
 		
+		checkingInstantiate();
+			
 		mockery.checking(new Expectations() {{
+				
 			oneOf(runtimeNatureMock).invoke(
 					with(BrickOfSomeRuntimeNature.class),
 					with(any(BrickOfSomeRuntimeNature.class)),
 					with("add"),
 					with(new Object[] { 1, 2 }),
 					with(any(RuntimeNature.Continuation.class)));
+			
 			will(new CustomAction("validate continuation") { @Override public Object invoke(Invocation invocation) throws Throwable {
 				RuntimeNature.Continuation continuation = (Continuation) invocation.getParameter(4);
 				Object returnValue = continuation.invoke(new Object[] { 1, 2 });
@@ -105,10 +116,30 @@ public class RuntimeNatureTest extends Assert {
 		}});
 		mockery.assertIsSatisfied();
 	}
+	
+	private void checkingInstantiate() {
+		mockery.checking(new Expectations() {{
+			
+			oneOf(runtimeNatureMock).instantiate(
+					with(BrickOfSomeRuntimeNature.class),
+					with(any(Class.class)),
+					with(any(Producer.class)));
+			
+			will(new CustomAction("producer") { @Override public Object invoke(Invocation invocation) throws Throwable {
+				Producer<?> producer = (Producer<?>) invocation.getParameter(2);
+				return producer.produce();
+			}});
+			
+		}});
+	}
 
 	private void checking(final String expectedMethodName,
 			final Object[] expectedArgs, final Object expectedReturnValue, Runnable invocationBlock) {
+		
+		checkingInstantiate();
+		
 		mockery.checking(new Expectations() {{
+			
 			oneOf(runtimeNatureMock).invoke(
 					with(BrickOfSomeRuntimeNature.class),
 					with(any(BrickOfSomeRuntimeNature.class)),

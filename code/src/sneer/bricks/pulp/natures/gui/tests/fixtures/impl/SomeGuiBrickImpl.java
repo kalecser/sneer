@@ -10,6 +10,13 @@ import sneer.bricks.pulp.natures.gui.tests.fixtures.*;
 import sneer.foundation.environments.*;
 
 class SomeGuiBrickImpl implements SomeGuiBrick {
+	
+	private Thread _constructorThread = Thread.currentThread();
+
+	@Override
+	public Thread constructorThread() {
+		return _constructorThread;
+	}
 
 	@Override
 	public Thread currentThread() {

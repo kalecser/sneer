@@ -8,6 +8,7 @@ import sneer.foundation.brickness.Brickness;
 import sneer.foundation.brickness.impl.tests.fixtures.runtimenature.brick.BrickOfSomeRuntimeNature;
 import sneer.foundation.brickness.impl.tests.fixtures.runtimenature.nature.SomeRuntimeNature;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Producer;
 
 public class ContinuationBenchmark {
 	
@@ -19,9 +20,15 @@ public class ContinuationBenchmark {
 			return continuation.invoke(args);
 			
 		}
+
+		@Override
+		public <T> T instantiate(Class<T> brick, Class<?> implClass,
+				Producer<T> producer) {
+			return producer.produce();
+		}
 	}
 
-	public static class ReflectionRuntimeNature implements SomeRuntimeNature {
+	public static class ReflectionRuntimeNature extends NullRuntimeNature {
 
 		@Override
 		public Object invoke(Class<?> brick, Object instance,

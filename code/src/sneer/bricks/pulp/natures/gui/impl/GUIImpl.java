@@ -7,6 +7,7 @@ import sneer.foundation.brickness.RuntimeNature;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.ByRef;
+import sneer.foundation.lang.Producer;
 
 class GUIImpl implements GUI, RuntimeNature {
 	
@@ -17,13 +18,26 @@ class GUIImpl implements GUI, RuntimeNature {
 			final Object[] args, final Continuation continuation) {
 		
 		final ByRef<Object> result = ByRef.newInstance();
-		Environments.runWith(_environment, new Runnable() { @Override public void run() {
-			my(GuiThread.class).invokeAndWaitForWussies(new Runnable() { @Override public void run() {
-				result.value = continuation.invoke(args);
-			}});
+		invokeInGuiThread(new Runnable() { @Override public void run() {
+			result.value = continuation.invoke(args);
 		}});
-		
 		return result.value;
+	}
+
+	@Override
+	public <T> T instantiate(Class<T> brick, Class<?> implClass, final Producer<T> producer) {
+		
+		final ByRef<T> result = ByRef.newInstance();
+		invokeInGuiThread(new Runnable() { @Override public void run() {
+			result.value = producer.produce();
+		}});
+		return result.value;
+	}
+	
+	private void invokeInGuiThread(final Runnable runnable) {
+		Environments.runWith(_environment, new Runnable() { @Override public void run() {
+			my(GuiThread.class).invokeAndWaitForWussies(runnable);
+		}});
 	}
 	
 }

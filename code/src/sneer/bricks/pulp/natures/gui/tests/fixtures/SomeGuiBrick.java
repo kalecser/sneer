@@ -16,10 +16,13 @@ public interface SomeGuiBrick {
 
 	Thread currentThread();
 
+	Thread constructorThread();
+	
 	Environment currentEnvironment();
 
 	void run(Runnable runnable);
 
 	ActionListener listenerFor(Environment expectedEnvironment);
+
 
 }
