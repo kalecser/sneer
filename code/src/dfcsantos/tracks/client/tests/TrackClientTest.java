@@ -21,7 +21,7 @@ import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.client.TrackEndorsement;
-import dfcsantos.tracks.folder.TracksFolderKeeper;
+import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
 
 public class TrackClientTest extends BrickTest {

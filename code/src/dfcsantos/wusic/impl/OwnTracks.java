@@ -6,7 +6,7 @@ import java.io.File;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.folder.TracksFolderKeeper;
+import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
 import dfcsantos.tracks.playlist.Playlist;
 import dfcsantos.tracks.playlist.Playlists;
 

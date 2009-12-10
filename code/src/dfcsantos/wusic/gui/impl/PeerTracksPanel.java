@@ -18,7 +18,7 @@ import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.folder.TracksFolderKeeper;
+import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic.OperatingMode;
 
 class PeerTracksPanel extends AbstractTabPane {

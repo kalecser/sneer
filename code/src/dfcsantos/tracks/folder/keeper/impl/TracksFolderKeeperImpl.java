@@ -1,4 +1,4 @@
-package dfcsantos.tracks.folder.impl;
+package dfcsantos.tracks.folder.keeper.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -14,7 +14,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.bricks.statestore.BrickStateStore;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.folder.TracksFolderKeeper;
+import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
 
 class TracksFolderKeeperImpl implements TracksFolderKeeper {
 
