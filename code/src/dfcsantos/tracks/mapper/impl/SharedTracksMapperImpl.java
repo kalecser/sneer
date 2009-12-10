@@ -1,42 +1,31 @@
-package dfcsantos.tracks.folder.mapper.impl;
+package dfcsantos.tracks.mapper.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
-import dfcsantos.tracks.folder.mapper.TracksFolderMapper;
+import dfcsantos.tracks.mapper.SharedTracksMapper;
 
-class TracksFolderMapperImpl implements TracksFolderMapper {
+class SharedTracksMapperImpl implements SharedTracksMapper {
 
 	private Latch _sharedTracksMapping = my(Latches.class).produce();
-	private Latch _peerTracksMapping = my(Latches.class).produce();
 
-	@SuppressWarnings("unused") private Object _sharedTracksFolderConsumerContract;
+	@SuppressWarnings("unused") private WeakContract _toAvoidGC;
 
-	@Override
-	public void startMapping() {
-		startPeerTracksMapping();
-		_sharedTracksFolderConsumerContract = my(TracksFolderKeeper.class).sharedTracksFolder().addReceiver(new Consumer<File>() { @Override public void consume(File sharedTracksFolder) {
+	{
+		_toAvoidGC = my(TracksFolderKeeper.class).sharedTracksFolder().addReceiver(new Consumer<File>() { @Override public void consume(File sharedTracksFolder) {
+			if (_sharedTracksMapping.isOpen())
+				_sharedTracksMapping = my(Latches.class).produce(); 
 			startSharedTracksMapping();
 		}});
-	}
-
-	private void startPeerTracksMapping() {
-		my(Threads.class).startDaemon("Peer Tracks Folder Mapping", new Runnable() { @Override public void run() {
-			map(peerTracksFolder());
-			_peerTracksMapping.open();
-		}});
-	}
-
-	private File peerTracksFolder() {
-		return my(TracksFolderKeeper.class).peerTracksFolder();
 	}
 
 	private void startSharedTracksMapping() {
@@ -59,8 +48,7 @@ class TracksFolderMapperImpl implements TracksFolderMapper {
 	}
 
 	@Override
-	public void waitMapping() {
-		_peerTracksMapping.waitTillOpen();
+	public void waitTillMappingIsFinished() {
 		_sharedTracksMapping.waitTillOpen();
 	}
 
