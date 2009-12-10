@@ -22,7 +22,7 @@ import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.client.TrackEndorsement;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
-import dfcsantos.tracks.folder.mapper.TracksFolderMapper;
+import dfcsantos.tracks.mapper.SharedTracksMapper;
 import dfcsantos.tracks.rejected.RejectedTracksKeeper;
 import dfcsantos.wusic.Wusic;
 
@@ -37,8 +37,6 @@ class TrackClientImpl implements TrackClient {
 		_trackEndorsementConsumerContract = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement trackEndorsement) {
 			consumeTrackEndorsement(trackEndorsement);
 		}});
-
-		my(TracksFolderMapper.class).startMapping();
 	}
 
 	public Signal<Integer> numberOfDownloadedTracks() {
@@ -46,7 +44,7 @@ class TrackClientImpl implements TrackClient {
 	}
 
 	private void consumeTrackEndorsement(TrackEndorsement endorsement) {
-		my(TracksFolderMapper.class).waitMapping();
+		my(SharedTracksMapper.class).waitTillMappingIsFinished();
 
 		if (!isTracksDownloadAllowed()) return;
 		if (my(Seals.class).ownSeal().equals(endorsement.publisher())) return;
