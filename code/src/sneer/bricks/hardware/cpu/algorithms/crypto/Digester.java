@@ -8,4 +8,8 @@ public interface Digester {
 
 	Sneer1024 digest();
 
+	Sneer1024 digest(byte[] bytes);
+
+	void reset();
+
 }
