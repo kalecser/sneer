@@ -47,14 +47,15 @@ class CryptoImpl implements Crypto {
 		try {
 			input = new FileInputStream(file);
 			byte[] block = new byte[FILE_BLOCK_SIZE];
-			for (int numOfBytes = input.read(block); numOfBytes != -1; numOfBytes = input.read(block)) {
+			for (int numOfBytes = input.read(block); numOfBytes != -1; numOfBytes = input.read(block))
 				_digester.update(block, 0, numOfBytes);
-			}
+			return _digester.digest();
 		} finally {
-			try { input.close(); } catch (Throwable ignore) {}
+			try {
+				input.close();
+				_digester.reset();
+			} catch (Throwable ignore) {}
 		}
-
-		return _digester.digest();
 	}
 
 	@Override
