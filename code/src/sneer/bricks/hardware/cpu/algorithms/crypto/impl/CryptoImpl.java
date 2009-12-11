@@ -35,23 +35,24 @@ class CryptoImpl implements Crypto {
 		try {
 			return MessageDigest.getInstance(algorithm, provider);
 		} catch (Exception e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Implement Handle this exception.
+			throw new IllegalStateException(e);
 		}
 	}
 
 	@Override
 	public Sneer1024 digest(File file) throws IOException {
-		FileInputStream input = null;
+		Digester digester = newDigester();
+		FileInputStream input = new FileInputStream(file);
+
 		try {
-			input = new FileInputStream(file);
-			Digester digester = newDigester();
 			byte[] block = new byte[FILE_BLOCK_SIZE];
 			for (int numOfBytes = input.read(block); numOfBytes != -1; numOfBytes = input.read(block))
 				digester.update(block, 0, numOfBytes);
-			return digester.digest();
 		} finally {
 			try { input.close(); } catch (Throwable ignore) {}
 		}
+		
+		return digester.digest();
 	}
 
 	@Override
