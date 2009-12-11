@@ -12,7 +12,6 @@ import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
-import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.network.social.ContactManager;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.tuples.TupleSpace;
@@ -22,11 +21,12 @@ import sneer.foundation.brickness.testsupport.Bind;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.client.TrackEndorsement;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
+import dfcsantos.tracks.mapper.SharedTracksMapper;
 import dfcsantos.wusic.Wusic;
 
 public class TrackClientTest extends BrickTest {
 
-	@Bind private final FileMap _fileMap = mock(FileMap.class);
+	@Bind private final SharedTracksMapper _mapper = mock(SharedTracksMapper.class);
 	@Bind private final FileClient _fileClient = mock(FileClient.class);
 
 	@Test(timeout = 2000)
@@ -36,8 +36,9 @@ public class TrackClientTest extends BrickTest {
 		final Sneer1024 hash3 = my(Crypto.class).digest(new byte[] { 3 });
 
 		checking(new Expectations(){{
-			exactly(1).of(_fileMap).put(shareTracksFolderDefaultValue(), "mp3");
+			exactly(1).of(_mapper).waitTillMappingIsFinished();
 			exactly(1).of(_fileClient).startFileDownload(new File(peerTracksFolder(), "ok.mp3"), 41, hash1);
+			exactly(2).of(_mapper).waitTillMappingIsFinished();
 		}});
 
 		my(Wusic.class).allowTracksDownload(true);
@@ -62,10 +63,6 @@ public class TrackClientTest extends BrickTest {
 
 	private File peerTracksFolder() {
 		return new File(my(FolderConfig.class).tmpFolderFor(TracksFolderKeeper.class), "peertracks");
-	}
-
-	private File shareTracksFolderDefaultValue() {
-		return new File(my(FolderConfig.class).storageFolder().get(), "media/tracks");
 	}
 
 	private void aquireEndorsementTuple(final Sneer1024 hash1, int lastModified, String track) {

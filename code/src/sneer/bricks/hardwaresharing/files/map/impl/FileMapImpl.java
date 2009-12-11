@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
@@ -27,7 +28,6 @@ class FileMapImpl implements FileMap {
 	
 	private final Map<Sneer1024, File>           _filesByHash   = new ConcurrentHashMap<Sneer1024, File>();
 	private final Map<Sneer1024, FolderContents> _foldersByHash = new ConcurrentHashMap<Sneer1024, FolderContents>();	
-	
 
 	@Override
 	public Sneer1024 putFolderContents(FolderContents contents) {
@@ -39,14 +39,20 @@ class FileMapImpl implements FileMap {
 
 	@Override
 	public Sneer1024 put(File fileOrFolder, String... acceptedExtensions) throws IOException {
-		return transientPut(fileOrFolder, acceptedExtensions);
+		return put(fileOrFolder, null, acceptedExtensions);
 	}
 
 
-	private Sneer1024 transientPut(File fileOrFolder, String... acceptedExtensions) throws IOException {
+	@Override
+	public Sneer1024 put(File fileOrFolder, AtomicBoolean stopOperation, String... acceptedExtensions) throws IOException {
+		return transientPut(fileOrFolder, stopOperation, acceptedExtensions);
+	}
+
+
+	private Sneer1024 transientPut(File fileOrFolder, AtomicBoolean stopOperation, String... acceptedExtensions) throws IOException {
 		my(Logger.class).log("Mapping " + fileOrFolder + fileSize(fileOrFolder));
 		return (fileOrFolder.isDirectory())
-			? putFolder(fileOrFolder, acceptedExtensions)
+			? putFolder(fileOrFolder, stopOperation, acceptedExtensions)
 			: putFile(fileOrFolder);
 	}
 
@@ -56,6 +62,7 @@ class FileMapImpl implements FileMap {
 	}
 
 
+	synchronized
 	private Sneer1024 putFile(File file) throws IOException {
 		Sneer1024 result = my(Crypto.class).digest(file);
 		_filesByHash.put(result, file);
@@ -63,24 +70,25 @@ class FileMapImpl implements FileMap {
 	}
 
 	
-	private Sneer1024 putFolder(File folder, String... fileTypes) throws IOException {
-		return putFolderContents(new FolderContents(immutable(putEachFolderEntry(folder, fileTypes))));
+	private Sneer1024 putFolder(File folder, AtomicBoolean stopOperation, String... fileTypes) throws IOException {
+		return putFolderContents(new FolderContents(immutable(putEachFolderEntry(folder, stopOperation, fileTypes))));
 	}
 
 	
-	private List<FileOrFolder> putEachFolderEntry(File folder, String... fileTypes) throws IOException {
+	private List<FileOrFolder> putEachFolderEntry(File folder, AtomicBoolean stopOperation, String... fileTypes) throws IOException {
 		List<FileOrFolder> result = new ArrayList<FileOrFolder>();
 
-		for (File fileOrFolder : sortedFiles(folder, fileTypes))
-			result.add(putFolderEntry(fileOrFolder, fileTypes));
+		for (File fileOrFolder : sortedFiles(folder, fileTypes)) {
+			if (stopOperation != null && stopOperation.get()) break;
+			result.add(putFolderEntry(fileOrFolder, stopOperation, fileTypes));
+		}
 
 		return result;
 	}
 
 	
-	private FileOrFolder putFolderEntry(File fileOrFolder, String... fileTypes) throws IOException {
-		Sneer1024 hashOfContents = transientPut(fileOrFolder, fileTypes);
-
+	private FileOrFolder putFolderEntry(File fileOrFolder, AtomicBoolean stopOperation, String... fileTypes) throws IOException {
+		Sneer1024 hashOfContents = transientPut(fileOrFolder, stopOperation, fileTypes);
 		return new FileOrFolder(fileOrFolder.getName(), fileOrFolder.lastModified(), hashOfContents, fileOrFolder.isDirectory());
 	}
 	
