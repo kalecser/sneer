@@ -1,14 +1,12 @@
 ﻿TASKS
 =========
 
-	- [Igor] Unigore RemoteCopyTest.testWithZeroLengthFile()
-
-	- [Igor/Klaus] Make track mapping work properly in the shared-tracks-folder-change scenario
-
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
 	- [Klaus] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
+
+	- [Igor] Unigore RemoteCopyTest.testWithZeroLengthFile()
 
 	- Wusic
 		- [Igor] Check if downloaded tracks counter is working properly
