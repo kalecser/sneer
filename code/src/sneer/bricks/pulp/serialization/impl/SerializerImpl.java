@@ -58,10 +58,15 @@ class SerializerImpl implements Serializer {
 		try {
 			Object result = myXStream().unmarshal(new BinaryStreamReader(stream));
 			return unmarshallLargeFileHack(result);
-		} catch (CannotResolveClassException e) {
-			throw new ClassNotFoundException(e.getMessage());
 		} catch (RuntimeException rx) {
-			throw new IOException(rx.getMessage());
+			Throwable cause = rx;
+			while (cause != null) {
+				if (cause instanceof CannotResolveClassException)
+					throw new ClassNotFoundException(cause.getMessage());
+				cause = cause.getCause();
+			}
+			
+			throw new IOException(rx);
 		}
 	}
 
