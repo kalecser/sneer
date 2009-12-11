@@ -19,7 +19,7 @@ class TrackContractImpl implements TrackContract {
 	private PausableInputStream _trackStream;
 	private Player _player;
 
-	private volatile boolean _wasDisposed;
+	private volatile boolean _isDisposed;
 	
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc;
 
@@ -39,11 +39,11 @@ class TrackContractImpl implements TrackContract {
 		
 	@Override
 	public void dispose() {
-		_wasDisposed = true;
+		_isDisposed = true;
 		if (_player != null) _player.close();
 	}
 
-	
+
 	@Override
 	public int trackElapsedTime() {
 		return _player == null ? 0 : _player.getPosition();
@@ -55,10 +55,10 @@ class TrackContractImpl implements TrackContract {
 			_player = new Player(_trackStream);
 			_player.play();
 		} catch (Throwable t) {
-			if (!_wasDisposed)
+			if (!_isDisposed)
 				my(BlinkingLights.class).turnOn(LightType.WARNING, "Error reading track", "Error reading track", t, 30000);
 		} finally {
-			if (_wasDisposed) return;
+			if (_isDisposed) return;
 			dispose();
 			toCallWhenFinished.run();
 		}
