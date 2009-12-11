@@ -51,10 +51,7 @@ class CryptoImpl implements Crypto {
 				_digester.update(block, 0, numOfBytes);
 			}
 		} finally {
-			try {
-				input.close();
-				_digester.reset();
-			} catch (Throwable ignore) {}
+			try { input.close(); } catch (Throwable ignore) {}
 		}
 
 		return _digester.digest();
