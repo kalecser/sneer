@@ -21,11 +21,9 @@ class CryptoImpl implements Crypto {
 		Security.addProvider(new BouncyCastleProvider()); //Optimize: remove this static dependency. Use Bouncycastle classes directly
 	}
 
-	private final Digester _digester = new DigesterImpl(messageDigest("SHA-512", "SUN"), messageDigest("WHIRLPOOL", "BC"));
-	
 	@Override
-	public synchronized Sneer1024 digest(byte[] input) {
-		return _digester.digest(input);
+	public Sneer1024 digest(byte[] input) {
+		return newDigester().digest(input);
 	}
 
 	@Override
@@ -46,15 +44,13 @@ class CryptoImpl implements Crypto {
 		FileInputStream input = null;
 		try {
 			input = new FileInputStream(file);
+			Digester digester = newDigester();
 			byte[] block = new byte[FILE_BLOCK_SIZE];
 			for (int numOfBytes = input.read(block); numOfBytes != -1; numOfBytes = input.read(block))
-				_digester.update(block, 0, numOfBytes);
-			return _digester.digest();
+				digester.update(block, 0, numOfBytes);
+			return digester.digest();
 		} finally {
-			try {
-				input.close();
-				_digester.reset();
-			} catch (Throwable ignore) {}
+			try { input.close(); } catch (Throwable ignore) {}
 		}
 	}
 
