@@ -68,10 +68,10 @@ public class BricknessImpl implements Environment {
 		RuntimeNature runtimeNature = firstRuntimeNatureOf(brick);
 		if (runtimeNature != null)
 			return runtimeNature.instantiate(brick, brickImpl, new Producer<T>() { @Override public T produce() throws RuntimeException {
-				return newInstance(brickImpl);
+				return (T)newInstance(brickImpl);
 			}});
 		
-		return newInstance(brickImpl);
+		return (T)newInstance(brickImpl);
 	}
 
 
