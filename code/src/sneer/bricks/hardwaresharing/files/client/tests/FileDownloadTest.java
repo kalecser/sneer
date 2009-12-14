@@ -30,16 +30,16 @@ import sneer.foundation.lang.Consumer;
 
 public class FileDownloadTest extends BrickTest {
 
-	@Test (timeout = 5000)
+	@Test (timeout = 6000)
 	public void receiveFileContentBlocksOutOfSequence() throws IOException {
 		final File smallFile = createTmpFileWithRandomContent(3 * Protocol.FILE_BLOCK_SIZE);
 		final Sneer1024 smallFileHash = my(Crypto.class).digest(smallFile);
 
-		final Iterator<FileContents> fileContentBlocks = createFileContentBlocks(smallFile, smallFileHash).iterator();
+		final Iterator<FileContents> blocksOutOfSequence = createFileContentBlocks(smallFile, smallFileHash).iterator();
 		@SuppressWarnings("unused")
 		WeakContract toAvoidGC = my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
-			my(TupleSpace.class).publish(fileContentBlocks.next());
-			fileContentBlocks.remove();
+			my(TupleSpace.class).publish(blocksOutOfSequence.next());
+			blocksOutOfSequence.remove();
 			my(Clock.class).advanceTime(1); // To avoid duplicated tuples
 		}});
 
