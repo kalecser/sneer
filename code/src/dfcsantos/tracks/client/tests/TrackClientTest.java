@@ -19,7 +19,7 @@ import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import dfcsantos.tracks.client.TrackClient;
-import dfcsantos.tracks.client.TrackEndorsement;
+import dfcsantos.tracks.endorsements.TrackEndorsement;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
 import dfcsantos.tracks.mapper.SharedTracksMapper;
 import dfcsantos.wusic.Wusic;
