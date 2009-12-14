@@ -9,6 +9,6 @@ public interface BandwidthCounter {
 	void sent(int byteCount);
 	void received(int byteCount);
 
-	Signal<Integer> uploadSpeed();
-	Signal<Integer> downloadSpeed();
+	Signal<Integer> uploadSpeedInKBperSecond();
+	Signal<Integer> downloadSpeedInKBperSecond();
 }

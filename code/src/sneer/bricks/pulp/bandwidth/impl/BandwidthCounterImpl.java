@@ -11,7 +11,7 @@ import sneer.bricks.pulp.reactive.Signals;
 
 class BandwidthCounterImpl implements BandwidthCounter {
 
-	static private final int CONSOLIDATION_TIME = 3000;
+	static private final int CONSOLIDATION_TIME = 1000;
 	
 	static private final Clock Clock = my(Clock.class);
 	private long _lastConsolidationTime = Clock.time().currentValue();
@@ -32,8 +32,8 @@ class BandwidthCounterImpl implements BandwidthCounter {
 	}
 	
 	
-	@Override public Signal<Integer> uploadSpeed()   { return _upSpeed.output(); }
-	@Override public Signal<Integer> downloadSpeed() { return _dnSpeed.output(); }
+	@Override public Signal<Integer> uploadSpeedInKBperSecond()   { return _upSpeed.output(); }
+	@Override public Signal<Integer> downloadSpeedInKBperSecond() { return _dnSpeed.output(); }
 	
 	@Override synchronized public void sent    (int byteCount) { _upCounter += byteCount; }
 	@Override synchronized public void received(int byteCount) { _dnCounter += byteCount; }

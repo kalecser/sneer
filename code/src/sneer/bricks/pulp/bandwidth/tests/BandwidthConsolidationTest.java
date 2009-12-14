@@ -42,10 +42,10 @@ public class BandwidthConsolidationTest extends BrickTest {
 	}
 
 	private void assertDownloadSpeed(int expected) {
-		my(SignalUtils.class).waitForValue(_subject.downloadSpeed(), expected);
+		my(SignalUtils.class).waitForValue(_subject.downloadSpeedInKBperSecond(), expected);
 	}
 
 	private void assertUploadSpeed(int expected) {
-		my(SignalUtils.class).waitForValue(_subject.uploadSpeed(), expected);
+		my(SignalUtils.class).waitForValue(_subject.uploadSpeedInKBperSecond(), expected);
 	}
 }

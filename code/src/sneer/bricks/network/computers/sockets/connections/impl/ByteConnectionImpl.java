@@ -16,6 +16,7 @@ class ByteConnectionImpl implements ByteConnection {
 
 	static private final Threads Threads = my(Threads.class);
 	private final BandwidthCounter _bandwidthCounter = my(BandwidthCounter.class);
+	private int _uploadPause;
 
 	private final SocketHolder _socketHolder = new SocketHolder();
 	
@@ -58,6 +59,7 @@ class ByteConnectionImpl implements ByteConnection {
 	
 	
 	private void send(ByteArraySocket socket) {
+		throttleUpload();
 		if (tryToSend(_scheduler.highestPriorityPacketToSend(), socket))
 			_scheduler.previousPacketWasSent();
 	}
@@ -90,6 +92,21 @@ class ByteConnectionImpl implements ByteConnection {
 	}
 
 	
+	private void throttleUpload() {
+		int delta = uploadSpeed() > 50 ? 10 : -10;
+		_uploadPause = _uploadPause + delta;
+		if (_uploadPause < 0) _uploadPause = 0;
+		if (_uploadPause == 0) return;
+		
+		my(Threads.class).sleepWithoutInterruptions(_uploadPause);
+	}
+
+
+	private Integer uploadSpeed() {
+		return _bandwidthCounter.uploadSpeedInKBperSecond().currentValue();
+	}
+
+
 	void close() {
 		if (_contractToSend != null) _contractToSend.dispose();
 		if (_contractToReceive != null) _contractToReceive.dispose();

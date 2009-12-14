@@ -50,8 +50,8 @@ class BandwidthMeterGuiImpl implements BandwidthMeterGui {
 	public void init(InstrumentPanel window) {
 		Container container = window.contentPane();
 		
-		TextWidget<JLabel> _uploadText = newLabel(my(BandwidthCounter.class).uploadSpeed(), "UploadText");
-		TextWidget<JLabel> _downloadText = newLabel(my(BandwidthCounter.class).downloadSpeed(), "DownloadText");
+		TextWidget<JLabel> _uploadText = newLabel(my(BandwidthCounter.class).uploadSpeedInKBperSecond(), "UploadText");
+		TextWidget<JLabel> _downloadText = newLabel(my(BandwidthCounter.class).downloadSpeedInKBperSecond(), "DownloadText");
 		
 		container.add(_bpsPeakLabel);
 		container.add(_uploadIcon);
