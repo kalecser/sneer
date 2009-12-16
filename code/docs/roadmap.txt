@@ -6,7 +6,23 @@
 	- [Klaus] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
 
-	- [Igor] Unigore RemoteCopyTest.testWithZeroLengthFile()
+	- [Igor/Klaus] Redesign FileMap
+		- Change all methods of the FileMap's interface to pass the hash as a parameter
+		- Add a new #removeTree method to FileMap's interface
+		- Remove 'stopOperation' and filter options from FileMap's put method
+			- Create a FileMappingVisitor to be used by the FileMap.putFolderContents()
+
+	- [Igor/Klaus] Analyse the following performance issues:
+		- IncomingHandShaker.identifyContact(ByteArraySocket) is very time consuming
+		- FileRequest recycling during intensive file exchange with another user
+
+	- [Igor] Find a way to make shared tracks mapping less aggressive to the user's experience. Options:
+		- Change the way hash is calculated to improve mapping performance
+		- Throttle CPU usage by the mapping
+		- Display a dialog box with the mapping progress (warning: modal dialogs don't work in Sneer) 
+		- Increase JLayer's sample buffer during the mapping
+
+	- [Igor] Unigore RemoteCopyTest.testWithZeroLengthFile() and FileDownloadTest.receiveFileContentBlocksOutOfSequence()
 
 	- Wusic
 		- Display playing track of each contact
