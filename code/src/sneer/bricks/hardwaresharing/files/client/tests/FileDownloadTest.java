@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
@@ -30,7 +31,8 @@ import sneer.foundation.lang.Consumer;
 
 public class FileDownloadTest extends BrickTest {
 
-	@Test (timeout = 6000)
+	@Ignore
+	@Test (timeout = 4000)
 	public void receiveFileContentBlocksOutOfSequence() throws IOException {
 		final File smallFile = createTmpFileWithRandomContent(3 * Protocol.FILE_BLOCK_SIZE);
 		final Sneer1024 smallFileHash = my(Crypto.class).digest(smallFile);
