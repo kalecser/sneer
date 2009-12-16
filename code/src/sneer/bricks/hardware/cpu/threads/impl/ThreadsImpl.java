@@ -16,8 +16,7 @@ class ThreadsImpl implements Threads {
 
 	private static final Latches Latches = my(Latches.class);
 	private static final ExceptionHandler ExceptionHandler = my(ExceptionHandler.class);
-;
-	
+
 	private final Latch _crash = Latches.produce();
 	private final Pulser _crashingPulser = my(Pulsers.class).newInstance();
 	static private boolean _isCrashing = false;
