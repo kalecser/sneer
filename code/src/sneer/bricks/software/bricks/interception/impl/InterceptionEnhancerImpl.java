@@ -1,4 +1,4 @@
-package sneer.foundation.brickness.impl;
+package sneer.bricks.software.bricks.interception.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -12,24 +12,27 @@ import javassist.CtClass;
 import javassist.CtConstructor;
 import javassist.CtField;
 import javassist.CtMethod;
+import javassist.LoaderClassPath;
 import javassist.NotFoundException;
+import sneer.bricks.software.bricks.interception.InterceptionEnhancer;
+import sneer.bricks.software.bricks.interception.Interceptor;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.ClassDefinition;
-import sneer.foundation.brickness.LoadTimeNature;
-import sneer.foundation.brickness.RuntimeNature;
+import sneer.foundation.environments.Environments;
 
-public class RuntimeNatureEnhancer implements LoadTimeNature {
+class InterceptionEnhancerImpl implements InterceptionEnhancer {
 
 	public static final String BRICK_METADATA_CLASS = "natures.runtime.BrickMetadata";
-	private final ClassPool classPool = new ClassPool(true);
+	private final ClassPool classPool;
 	private int _continuations;
 
-	public RuntimeNatureEnhancer() {
+	public InterceptionEnhancerImpl() {
+		classPool  = new ClassPool(false);
+		classPool.appendClassPath(new LoaderClassPath(InterceptionEnhancer.class.getClassLoader()));
 	}
 
 	@Override
-	public List<ClassDefinition> realize(final ClassDefinition classDef) {
-		
+	public List<ClassDefinition> realize(Class<? extends Interceptor> interceptorClass, final ClassDefinition classDef) {
 		final ArrayList<ClassDefinition> result = new ArrayList<ClassDefinition>();
 		try {
 			final CtClass ctClass = classPool.makeClass(new ByteArrayInputStream(classDef.bytes));
@@ -38,7 +41,7 @@ public class RuntimeNatureEnhancer implements LoadTimeNature {
 				metadata = defineBrickMetadata(ctClass);
 				if (isBrickImplementation(ctClass)) {
 					result.add(toClassDefinition(metadata));
-					introduceMetadataInitializer(ctClass);
+					introduceMetadataInitializer(interceptorClass, ctClass);
 				}
 				enhanceMethods(ctClass, result);
 				result.add(toClassDefinition(ctClass));
@@ -57,18 +60,18 @@ public class RuntimeNatureEnhancer implements LoadTimeNature {
 		}
 	}
 
-	private void introduceMetadataInitializer(CtClass brickClass) throws NotFoundException {
+	private void introduceMetadataInitializer(Class<? extends Interceptor> interceptorClass, CtClass brickClass) throws NotFoundException {
 		try {
 			CtConstructor initializer = brickClass.makeClassInitializer();
 			initializer.insertAfter(BRICK_METADATA_CLASS + ".BRICK = " + brickInterface(brickClass).getName() + ".class;");
-			initializer.insertAfter(BRICK_METADATA_CLASS + ".NATURES = " + RuntimeNatureDispatcher.class.getName() + ".runtimeNaturesFor(" + BRICK_METADATA_CLASS + ".BRICK);");
+			initializer.insertAfter(BRICK_METADATA_CLASS + ".NATURE = " + Environments.class.getName() + ".my(" + interceptorClass.getName() + ".class);");
 		} catch (CannotCompileException e) {
 			throw new IllegalStateException(e);
 		}
 	}
 
-	private CtClass brickInterface(CtClass ctClass) throws NotFoundException {
-		for (CtClass intrface : ctClass.getInterfaces())
+	private CtClass brickInterface(CtClass implClass) throws NotFoundException {
+		for (CtClass intrface : implClass.getInterfaces())
 			if (isBrickInterface(intrface))
 				return intrface;
 		return null;
@@ -79,7 +82,7 @@ public class RuntimeNatureEnhancer implements LoadTimeNature {
 		metadata.setModifiers(javassist.Modifier.PUBLIC);
 		try {
 			metadata.addField(CtField.make("public static " + Class.class.getName() + " BRICK;", metadata));
-			metadata.addField(CtField.make("public static " + RuntimeNature.class.getName() + "[] NATURES;", metadata));
+			metadata.addField(CtField.make("public static " + Interceptor.class.getName() + " NATURE;", metadata));
 			
 			return metadata;
 		} catch (CannotCompileException e) {
@@ -103,7 +106,7 @@ public class RuntimeNatureEnhancer implements LoadTimeNature {
 		for (CtMethod m : ctClass.getDeclaredMethods()) {
 			if (Modifier.isStatic(m.getModifiers()))
 				continue;
-			new RuntimeNatureMethodEnhancer(continuationNameFor(m), classPool, ctClass, m, result).run();
+			new MethodEnhancer(continuationNameFor(m), classPool, ctClass, m, result).run();
 		}
 	}
 

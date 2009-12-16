@@ -1,4 +1,4 @@
-package sneer.foundation.brickness.impl;
+package sneer.bricks.software.bricks.interception.impl;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,10 +12,12 @@ import javassist.CtNewConstructor;
 import javassist.CtNewMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
+import sneer.bricks.software.bricks.interception.Interceptor;
 import sneer.foundation.brickness.ClassDefinition;
-import sneer.foundation.brickness.RuntimeNature;
+import sneer.foundation.brickness.impl.Boxing;
+import sneer.foundation.brickness.impl.RuntimeNatureDispatcher;
 
-public class RuntimeNatureMethodEnhancer {
+class MethodEnhancer {
 
 	private final String _continuationName;
 	private final List<ClassDefinition> _resultingClasses;
@@ -23,7 +25,7 @@ public class RuntimeNatureMethodEnhancer {
 	private final ClassPool _classPool;
 	private final CtClass _containingClass;
 
-	public RuntimeNatureMethodEnhancer(String continuationName, ClassPool classPool, CtClass containingClass, CtMethod method, List<ClassDefinition> resultingClasses) {
+	public MethodEnhancer(String continuationName, ClassPool classPool, CtClass containingClass, CtMethod method, List<ClassDefinition> resultingClasses) {
 		_classPool = classPool;
 		_containingClass = containingClass;
 		_resultingClasses = resultingClasses;
@@ -70,8 +72,8 @@ public class RuntimeNatureMethodEnhancer {
 					+ "Object result = " 
 						+ RuntimeNatureDispatcher.class.getName()
 							+ ".dispatch("
-								+ RuntimeNatureEnhancer.BRICK_METADATA_CLASS + ".BRICK, "
-								+ RuntimeNatureEnhancer.BRICK_METADATA_CLASS + ".NATURES, "
+								+ InterceptionEnhancerImpl.BRICK_METADATA_CLASS + ".BRICK, "
+								+ InterceptionEnhancerImpl.BRICK_METADATA_CLASS + ".NATURE, "
 								+ "this, "
 								+ "\"" + _method.getName() + "\", "
 								+ "args, "
@@ -118,7 +120,7 @@ public class RuntimeNatureMethodEnhancer {
 	private ClassDefinition createContinuation() throws NotFoundException,
 			CannotCompileException, IOException {
 		final CtClass thunkClass = _containingClass.makeNestedClass(_continuationName, true);
-		thunkClass.addInterface(ctClassFor(RuntimeNature.Continuation.class));
+		thunkClass.addInterface(ctClassFor(Interceptor.Continuation.class));
 		
 		thunkClass.addField(CtField.make("private final " + declaringClassName() + " _target;", thunkClass));
 		

@@ -1,18 +1,22 @@
-package sneer.foundation.brickness.impl.tests;
+package sneer.bricks.software.bricks.interception.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.util.List;
+
 import org.apache.commons.lang.time.StopWatch;
 
+import sneer.bricks.software.bricks.interception.InterceptionEnhancer;
+import sneer.bricks.software.bricks.interception.tests.fixtures.brick.BrickOfSomeInterceptingNature;
+import sneer.bricks.software.bricks.interception.tests.fixtures.nature.SomeInterceptingNature;
 import sneer.foundation.brickness.Brickness;
-import sneer.foundation.brickness.impl.tests.fixtures.runtimenature.brick.BrickOfSomeRuntimeNature;
-import sneer.foundation.brickness.impl.tests.fixtures.runtimenature.nature.SomeRuntimeNature;
+import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Producer;
 
 public class ContinuationBenchmark {
 	
-	public static class NullRuntimeNature implements SomeRuntimeNature {
+	public static class NullRuntimeNature implements SomeInterceptingNature {
 
 		@Override
 		public Object invoke(Class<?> brick, Object instance,
@@ -20,12 +24,18 @@ public class ContinuationBenchmark {
 			return continuation.invoke(args);
 			
 		}
-
+		
 		@Override
 		public <T> T instantiate(Class<T> brick, Class<?> implClass,
 				Producer<T> producer) {
 			return producer.produce();
 		}
+		
+		@Override
+		public List<ClassDefinition> realize(ClassDefinition classDef) {
+			return my(InterceptionEnhancer.class).realize(SomeInterceptingNature.class, classDef);
+		}
+		
 	}
 
 	public static class ReflectionRuntimeNature extends NullRuntimeNature {
@@ -63,7 +73,7 @@ public class ContinuationBenchmark {
 	}
 
 	private static void benchmark(String label,
-			SomeRuntimeNature runtimeNature) {
+			SomeInterceptingNature runtimeNature) {
 		
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
@@ -72,7 +82,7 @@ public class ContinuationBenchmark {
 			@Override
 			public void run() {
 				
-				BrickOfSomeRuntimeNature brick = my(BrickOfSomeRuntimeNature.class);
+				BrickOfSomeInterceptingNature brick = my(BrickOfSomeInterceptingNature.class);
 				for (int i=0; i<1000000; ++i)
 					brick.add(1, 2);
 

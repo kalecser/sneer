@@ -9,9 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import sneer.foundation.brickness.ClassDefinition;
-import sneer.foundation.brickness.LoadTimeNature;
 import sneer.foundation.brickness.Nature;
-import sneer.foundation.brickness.RuntimeNature;
 
 abstract class ClassLoaderWithNatures extends EagerClassLoader {
 
@@ -62,26 +60,14 @@ abstract class ClassLoaderWithNatures extends EagerClassLoader {
 	private List<ClassDefinition> realizeNature(
 			List<ClassDefinition> classDefs, Nature nature) {
 		
-		LoadTimeNature loadTimeNature = loadTimeNatureFrom(nature);
 		ArrayList<ClassDefinition> resultingDefs = new ArrayList<ClassDefinition>();
-		for (ClassDefinition classDef : classDefs) {
-			resultingDefs.addAll(loadTimeNature.realize(classDef));
-		}
+		for (ClassDefinition classDef : classDefs)
+			resultingDefs.addAll(nature.realize(classDef));
 		return resultingDefs;
 		
 	}
 
-	private LoadTimeNature loadTimeNatureFrom(Nature nature) {
-		if (nature instanceof LoadTimeNature)
-			return (LoadTimeNature)nature;
-		
-		if (nature instanceof RuntimeNature)
-			return new RuntimeNatureEnhancer();
-		
-		throw new IllegalStateException("Must be either '" + RuntimeNature.class + "' or '" + LoadTimeNature.class + "'! " + nature);
-	}
-
-    public byte[] toByteArray(final URL classResource) throws IOException {
+	public byte[] toByteArray(final URL classResource) throws IOException {
     	InputStream input = classResource.openStream();
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024*4];

@@ -1,9 +1,9 @@
-package sneer.foundation.brickness.impl.tests.fixtures.runtimenature.brick.impl;
+package sneer.bricks.software.bricks.interception.tests.fixtures.brick.impl;
 
-import sneer.foundation.brickness.impl.tests.fixtures.runtimenature.brick.BrickOfSomeRuntimeNature;
-import sneer.foundation.brickness.impl.tests.fixtures.runtimenature.brick.Greeter;
+import sneer.bricks.software.bricks.interception.tests.fixtures.brick.BrickOfSomeInterceptingNature;
+import sneer.bricks.software.bricks.interception.tests.fixtures.brick.Greeter;
 
-public class BrickOfSomeRuntimeNatureImpl implements BrickOfSomeRuntimeNature {
+public class BrickOfSomeInterceptingNatureImpl implements BrickOfSomeInterceptingNature {
 
 	@Override
 	public void foo() {

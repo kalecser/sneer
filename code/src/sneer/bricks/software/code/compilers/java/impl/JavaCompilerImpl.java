@@ -27,7 +27,6 @@ class JavaCompilerImpl implements JavaCompiler {
 	@Override
 	public void compile(File srcFolder, File destinationFolder,	File... classpath) throws JavaCompilerException, IOException {
 		List<File> srcFiles = new ArrayList<File>(my(IO.class).files().listFiles(srcFolder, new String[]{"java"}, true));
-
 		compile(srcFiles, destinationFolder, classpath);
 	}
 
@@ -36,17 +35,13 @@ class JavaCompilerImpl implements JavaCompiler {
 		
 		File tmpFile = createArgsFileForJavac(sourceFiles);
 		my(Logger.class).log("Compiling {} files to {}", sourceFiles.size(), destination);
-
-		String[] parameters = {
-				"-classpath", asJavacArgument(classpath),
-				"-d", destination.getAbsolutePath(),
-				"-encoding","UTF-8",
-				"@"+tmpFile.getAbsolutePath()
-		};
-		my(Logger.class).log("Compiler command line: ", my(Lang.class).strings().join(Arrays.asList(parameters), " "));
+		
+		List<String> args = asJavacArguments(destination, tmpFile, classpath);
+		
+		my(Logger.class).log("Compiler command line: ", my(Lang.class).strings().join(args, " "));
 
 		StringWriter writer = new StringWriter();
-		int code = Main.compile(parameters, new PrintWriter(writer));
+		int code = Main.compile(args.toArray(new String[0]), new PrintWriter(writer));
 		tmpFile.delete();
 		Result result = new CompilationResult(code, destination);
 		if (code != 0) {
@@ -54,6 +49,22 @@ class JavaCompilerImpl implements JavaCompiler {
 			throw new JavaCompilerException(result);
 		}
 		return result;
+	}
+
+	private List<String> asJavacArguments(File destination, File tmpFile,
+			File... classpath) {
+		List<String> parameters = new ArrayList<String>();
+		if (classpath.length > 0) {
+			parameters.add("-classpath");
+			parameters.add(asJavacArgument(classpath));
+		}
+		
+		parameters.add("-d");
+		parameters.add(destination.getAbsolutePath());
+		parameters.add("-encoding");
+		parameters.add("UTF-8");
+		parameters.add("@"+tmpFile.getAbsolutePath());
+		return parameters;
 	}
 
 	

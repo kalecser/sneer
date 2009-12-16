@@ -38,9 +38,7 @@ class Build {
 
 	
 	private void buildFoundation() throws IOException, BrickCompilerException {
-		File foundationSrc = foundationSrcFolder();
-		File[] fileArray = toFileArray(jarsIn(foundationSrc));
-		compile(foundationSrc, _destFolder, fileArray);
+		compile(foundationSrcFolder(), _destFolder);
 	}
 
 
