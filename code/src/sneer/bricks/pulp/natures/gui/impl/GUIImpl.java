@@ -1,15 +1,19 @@
 package sneer.bricks.pulp.natures.gui.impl;
 
 import static sneer.foundation.environments.Environments.my;
+
+import java.util.List;
+
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.pulp.natures.gui.GUI;
-import sneer.foundation.brickness.RuntimeNature;
+import sneer.bricks.software.bricks.interception.InterceptionEnhancer;
+import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Producer;
 
-class GUIImpl implements GUI, RuntimeNature {
+class GUIImpl implements GUI {
 	
 	private final Environment _environment = my(Environment.class);
 
@@ -38,6 +42,11 @@ class GUIImpl implements GUI, RuntimeNature {
 		Environments.runWith(_environment, new Runnable() { @Override public void run() {
 			my(GuiThread.class).invokeAndWaitForWussies(runnable);
 		}});
+	}
+
+	@Override
+	public List<ClassDefinition> realize(ClassDefinition classDef) {
+		return my(InterceptionEnhancer.class).realize(GUI.class, classDef);
 	}
 	
 }

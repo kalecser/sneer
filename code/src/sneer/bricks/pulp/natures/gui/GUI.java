@@ -1,6 +1,7 @@
 package sneer.bricks.pulp.natures.gui;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
+import sneer.bricks.software.bricks.interception.Interceptor;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.Nature;
 
@@ -14,6 +15,6 @@ import sneer.foundation.brickness.Nature;
  */
 
 @Brick
-public interface GUI extends Nature {
+public interface GUI extends Nature, Interceptor {
 
 }

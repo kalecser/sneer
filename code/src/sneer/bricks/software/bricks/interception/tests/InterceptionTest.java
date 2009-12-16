@@ -1,6 +1,8 @@
-package sneer.foundation.brickness.impl.tests;
+package sneer.bricks.software.bricks.interception.tests;
 
 import static sneer.foundation.environments.Environments.my;
+
+import java.util.List;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -10,59 +12,61 @@ import org.jmock.lib.action.CustomAction;
 import org.junit.Assert;
 import org.junit.Test;
 
+import sneer.bricks.software.bricks.interception.InterceptionEnhancer;
+import sneer.bricks.software.bricks.interception.Interceptor;
+import sneer.bricks.software.bricks.interception.Interceptor.Continuation;
+import sneer.bricks.software.bricks.interception.tests.fixtures.brick.BrickOfSomeInterceptingNature;
+import sneer.bricks.software.bricks.interception.tests.fixtures.nature.SomeInterceptingNature;
 import sneer.foundation.brickness.Brickness;
-import sneer.foundation.brickness.RuntimeNature;
-import sneer.foundation.brickness.RuntimeNature.Continuation;
-import sneer.foundation.brickness.impl.tests.fixtures.runtimenature.brick.BrickOfSomeRuntimeNature;
-import sneer.foundation.brickness.impl.tests.fixtures.runtimenature.nature.SomeRuntimeNature;
+import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Producer;
 
-public class RuntimeNatureTest extends Assert {
+public class InterceptionTest extends Assert {
 	
 	final Mockery mockery = new JUnit4Mockery();
 	
-	final SomeRuntimeNature runtimeNatureMock = mockery.mock(SomeRuntimeNature.class);
+	final SomeInterceptingNature interceptingNatureMock = mockery.mock(SomeInterceptingNature.class);
 	
 	@Test
 	public void runtimeNatureInterceptsInvocations() {
 		checking("foo", new Object[0], null, new Runnable() { @Override public void run() {
-			my(BrickOfSomeRuntimeNature.class).foo();
+			my(BrickOfSomeInterceptingNature.class).foo();
 		}});
 	}
 	
 	@Test
 	public void referenceReturnValue() {
 		checking("bar", new Object[0], "42", new Runnable() { @Override public void run() {
-			assertEquals("42", my(BrickOfSomeRuntimeNature.class).bar());
+			assertEquals("42", my(BrickOfSomeInterceptingNature.class).bar());
 		}});
 	}
 	
 	@Test
 	public void primitiveReturnValue() {
 		checking("baz", new Object[0], 42, new Runnable() { @Override public void run() {
-			assertEquals(42, my(BrickOfSomeRuntimeNature.class).baz());
+			assertEquals(42, my(BrickOfSomeInterceptingNature.class).baz());
 		}});
 	}
 	
 	@Test
 	public void referenceParameters() {
 		checking("foo", new Object[] { "42" }, null, new Runnable() { @Override public void run() {
-			my(BrickOfSomeRuntimeNature.class).foo("42");
+			my(BrickOfSomeInterceptingNature.class).foo("42");
 		}});
 	}
 	
 	@Test
 	public void primitiveParameters() {
 		checking("add", new Object[] { 1, 2 }, 3, new Runnable() { @Override public void run() {
-			my(BrickOfSomeRuntimeNature.class).add(1, 2);
+			my(BrickOfSomeInterceptingNature.class).add(1, 2);
 		}});
 	}
 	
 	@Test
 	public void overridenMethods() {
-		SomeRuntimeNature passThroughNature = new SomeRuntimeNature() { @Override public Object invoke(Class<?> brick, Object instance, String methodName, Object[] args, Continuation continuation) {
+		SomeInterceptingNature passThroughNature = new SomeInterceptingNature() { @Override public Object invoke(Class<?> brick, Object instance, String methodName, Object[] args, Continuation continuation) {
 			return continuation.invoke(args);
 		}
 
@@ -70,18 +74,23 @@ public class RuntimeNatureTest extends Assert {
 		public <T> T instantiate(Class<T> brick, Class<?> implClass,
 				Producer<T> producer) {
 			return producer.produce();
+		}
+		
+		@Override
+		public List<ClassDefinition> realize(ClassDefinition classDef) {
+			return my(InterceptionEnhancer.class).realize(SomeInterceptingNature.class, classDef);
 		}};
 		
 		
 		Environments.runWith(Brickness.newBrickContainer(passThroughNature), new Runnable() { @Override public void run() {
-			assertEquals("Hello!!!", my(BrickOfSomeRuntimeNature.class).newGreeter().hello());
+			assertEquals("Hello!!!", my(BrickOfSomeInterceptingNature.class).newGreeter().hello());
 		}});
 	}
 	
 	@Test
 	public void environmentIsNotRequired() {
 		checking("add", new Object[] { 1, 2 }, 3, new Runnable() { @Override public void run() {
-			final BrickOfSomeRuntimeNature brick = my(BrickOfSomeRuntimeNature.class);
+			final BrickOfSomeInterceptingNature brick = my(BrickOfSomeInterceptingNature.class);
 			Environments.runWith(null, new Runnable() { @Override public void run() {
 				brick.add(1, 2);
 			}});
@@ -91,37 +100,43 @@ public class RuntimeNatureTest extends Assert {
 	@Test
 	public void continuationWithParameters() {
 		
-		checkingInstantiate();
+		checkingRealizeInstantiate();
 			
 		mockery.checking(new Expectations() {{
 				
-			oneOf(runtimeNatureMock).invoke(
-					with(BrickOfSomeRuntimeNature.class),
-					with(any(BrickOfSomeRuntimeNature.class)),
+			oneOf(interceptingNatureMock).invoke(
+					with(BrickOfSomeInterceptingNature.class),
+					with(any(BrickOfSomeInterceptingNature.class)),
 					with("add"),
 					with(new Object[] { 1, 2 }),
-					with(any(RuntimeNature.Continuation.class)));
+					with(any(Interceptor.Continuation.class)));
 			
 			will(new CustomAction("validate continuation") { @Override public Object invoke(Invocation invocation) throws Throwable {
-				RuntimeNature.Continuation continuation = (Continuation) invocation.getParameter(4);
+				Interceptor.Continuation continuation = (Continuation) invocation.getParameter(4);
 				Object returnValue = continuation.invoke(new Object[] { 1, 2 });
 				assertEquals(3, returnValue);
 				return returnValue;
 			}});
 		}});
 		
-		Environment subject = Brickness.newBrickContainer(runtimeNatureMock);
+		Environment subject = Brickness.newBrickContainer(interceptingNatureMock);
 		Environments.runWith(subject, new Runnable() { @Override public void run() {
-			my(BrickOfSomeRuntimeNature.class).add(1, 2);
+			my(BrickOfSomeInterceptingNature.class).add(1, 2);
 		}});
 		mockery.assertIsSatisfied();
 	}
 	
-	private void checkingInstantiate() {
+	private void checkingRealizeInstantiate() {
 		mockery.checking(new Expectations() {{
 			
-			oneOf(runtimeNatureMock).instantiate(
-					with(BrickOfSomeRuntimeNature.class),
+			oneOf(interceptingNatureMock).realize(with(any(ClassDefinition.class)));
+			will(new CustomAction("realize") { @Override public Object invoke(Invocation invocation) throws Throwable {
+				ClassDefinition classDef = (ClassDefinition) invocation.getParameter(0);
+				return my(InterceptionEnhancer.class).realize(SomeInterceptingNature.class, classDef);
+			}});
+			
+			oneOf(interceptingNatureMock).instantiate(
+					with(BrickOfSomeInterceptingNature.class),
 					with(any(Class.class)),
 					with(any(Producer.class)));
 			
@@ -136,20 +151,20 @@ public class RuntimeNatureTest extends Assert {
 	private void checking(final String expectedMethodName,
 			final Object[] expectedArgs, final Object expectedReturnValue, Runnable invocationBlock) {
 		
-		checkingInstantiate();
+		checkingRealizeInstantiate();
 		
 		mockery.checking(new Expectations() {{
 			
-			oneOf(runtimeNatureMock).invoke(
-					with(BrickOfSomeRuntimeNature.class),
-					with(any(BrickOfSomeRuntimeNature.class)),
+			oneOf(interceptingNatureMock).invoke(
+					with(BrickOfSomeInterceptingNature.class),
+					with(any(BrickOfSomeInterceptingNature.class)),
 					with(expectedMethodName),
 					with(expectedArgs),
-					with(any(RuntimeNature.Continuation.class)));
+					with(any(Interceptor.Continuation.class)));
 			will(returnValue(expectedReturnValue));
 		}});
 		
-		Environment subject = Brickness.newBrickContainer(runtimeNatureMock);
+		Environment subject = Brickness.newBrickContainer(interceptingNatureMock);
 		
 		Environments.runWith(subject, invocationBlock);
 		

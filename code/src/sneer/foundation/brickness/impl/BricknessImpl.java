@@ -7,13 +7,11 @@ import java.util.List;
 
 import sneer.foundation.brickness.BrickLoadingException;
 import sneer.foundation.brickness.Nature;
-import sneer.foundation.brickness.RuntimeNature;
 import sneer.foundation.environments.Bindings;
 import sneer.foundation.environments.CachingEnvironment;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.lang.Producer;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 
 public class BricknessImpl implements Environment {
@@ -64,31 +62,15 @@ public class BricknessImpl implements Environment {
 	}
 	
 	private <T> T instantiate(Class<T> brick, final Class<?> brickImpl) {
-		
-		RuntimeNature runtimeNature = firstRuntimeNatureOf(brick);
-		if (runtimeNature != null)
-			return runtimeNature.instantiate(brick, brickImpl, new Producer<T>() { @Override public T produce() throws RuntimeException {
-				return (T)newInstance(brickImpl);
-			}});
-		
-		return (T)newInstance(brickImpl);
-	}
-
-
-	private RuntimeNature firstRuntimeNatureOf(Class<?> brick) {
 		List<Nature> natures = BrickImplLoader.naturesFor(brick);
+		if (natures.isEmpty())
+			return (T)newInstance(brickImpl);
 		
-		RuntimeNature found = null;
-		for (Nature nature : natures) {
-			if (nature instanceof RuntimeNature) {
-				if (null != found)
-					throw new NotImplementedYet("Multiple runtime natures");
-				found = (RuntimeNature) nature;
-			}
-		}
-		return found;
+		Nature nature = natures.get(0);
+		return nature.instantiate(brick, brickImpl, new Producer<T>() { @Override public T produce() throws RuntimeException {
+			return (T)newInstance(brickImpl);
+		}});
 	}
-
 
 	private <T> T newInstance(Class<?> brickImpl) {
 		try {

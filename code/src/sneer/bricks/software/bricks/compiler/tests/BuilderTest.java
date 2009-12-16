@@ -27,55 +27,12 @@ public class BuilderTest extends BrickTest {
 	
 	private final Builder _subject = my(Builder.class);
 	
-	
 	@Before
 	public void prepareFolders() throws Exception {
 		testSrcFolder().mkdirs();
 		testBinFolder().mkdirs();
 		
 		copyRequiredFoundationFiles();
-	}
-	
-	
-	@Test
-	public void foundationLibs() throws Exception {
-		writeSourceFile("sneer/foundation/Bar.java",
-				"package sneer.foundation;" +
-				"class Bar {" +
-					"{ " + Foo.class.getName() + ".bar(); }" +
-				"}");
-		
-		writeLib("sneer/foundation/foo.jar", Foo.class);
-		
-		_subject.build(testSrcFolder(), testBinFolder());
-		
-		assertBinFilesExist(
-			"sneer/foundation/Bar.class",
-			"sneer/foundation/foo.jar");
-	}
-	
-	
-	@Test
-	public void testsCanDependOnFoundationLibs() throws Exception {
-		writeSourceFile("bricks/a/A.java",
-			"package bricks.a;" +
-			"@" + Brick.class.getName() + " " +
-			"public interface A {}");
-			
-		writeSourceFile("bricks/a/tests/ATest.java",
-			"package bricks.a.tests;" +
-			"class ATest {" +
-				"{ " + Foo.class.getName() + ".bar(); }" +
-			"}");
-		
-		writeLib("sneer/foundation/foo.jar", Foo.class);
-		
-		_subject.build(testSrcFolder(), testBinFolder());
-		
-		assertBinFilesExist(
-			"bricks/a/A.class",
-			"bricks/a/tests/ATest.class",
-			"sneer/foundation/foo.jar");
 	}
 	
 	

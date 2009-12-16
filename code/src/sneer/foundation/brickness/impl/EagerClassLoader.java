@@ -15,7 +15,6 @@ public abstract class EagerClassLoader extends URLClassLoader {
 
 	protected abstract boolean isEagerToLoad(String className);
 
-
 	@Override
 	synchronized protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
 		if (resolve) throw new UnsupportedOperationException();

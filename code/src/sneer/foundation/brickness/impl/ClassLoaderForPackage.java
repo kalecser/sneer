@@ -14,10 +14,8 @@ class ClassLoaderForPackage extends ClassLoaderWithNatures {
 		super(toURLs(classpath), next, natures);
 		_package = packageName;
 	}
-
 	
 	private final String _package;
-
 		
 	@Override
 	protected boolean isEagerToLoad(String className) {

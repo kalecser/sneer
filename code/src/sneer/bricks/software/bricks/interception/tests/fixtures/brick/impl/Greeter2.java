@@ -1,4 +1,4 @@
-package sneer.foundation.brickness.impl.tests.fixtures.runtimenature.brick.impl;
+package sneer.bricks.software.bricks.interception.tests.fixtures.brick.impl;
 
 
 public class Greeter2 extends GreeterBase {
