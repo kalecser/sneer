@@ -13,9 +13,9 @@ import javassist.CtNewMethod;
 import javassist.Modifier;
 import javassist.NotFoundException;
 import sneer.bricks.software.bricks.interception.Interceptor;
+import sneer.bricks.software.bricks.interception.InterceptionRuntime;
 import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.brickness.impl.Boxing;
-import sneer.foundation.brickness.impl.RuntimeNatureDispatcher;
 
 class MethodEnhancer {
 
@@ -70,7 +70,7 @@ class MethodEnhancer {
 					"{ " + fullyQualifiedContinuationName + " continuation = new " + fullyQualifiedContinuationName + "(this);"
 					+ "Object[] args = " + argumentBoxing() + "; "
 					+ "Object result = " 
-						+ RuntimeNatureDispatcher.class.getName()
+						+ InterceptionRuntime.class.getName()
 							+ ".dispatch("
 								+ InterceptionEnhancerImpl.BRICK_METADATA_CLASS + ".BRICK, "
 								+ InterceptionEnhancerImpl.BRICK_METADATA_CLASS + ".NATURE, "

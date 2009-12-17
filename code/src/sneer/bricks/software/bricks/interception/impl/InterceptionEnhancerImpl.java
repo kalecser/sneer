@@ -104,10 +104,18 @@ class InterceptionEnhancerImpl implements InterceptionEnhancer {
 	private void enhanceMethods(final CtClass ctClass,
 			final ArrayList<ClassDefinition> result) {
 		for (CtMethod m : ctClass.getDeclaredMethods()) {
-			if (Modifier.isStatic(m.getModifiers()))
+			if (!isAccessibleInstanceMethod(m))
 				continue;
 			new MethodEnhancer(continuationNameFor(m), classPool, ctClass, m, result).run();
 		}
+	}
+
+	private boolean isAccessibleInstanceMethod(CtMethod m) {
+		int modifiers = m.getModifiers();
+		if (Modifier.isStatic(modifiers)) return false;
+		if (Modifier.isPublic(modifiers)) return true;
+		if (Modifier.isProtected(modifiers)) return true;
+		return false;
 	}
 
 	private String continuationNameFor(CtMethod m) {

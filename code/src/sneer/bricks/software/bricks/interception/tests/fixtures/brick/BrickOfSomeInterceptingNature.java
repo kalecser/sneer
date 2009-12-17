@@ -18,4 +18,6 @@ public interface BrickOfSomeInterceptingNature {
 	
 	Greeter newGreeter();
 
+	void intraBrickMethod();
+
 }

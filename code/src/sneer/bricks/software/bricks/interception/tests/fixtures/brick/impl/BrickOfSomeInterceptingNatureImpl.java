@@ -7,12 +7,10 @@ public class BrickOfSomeInterceptingNatureImpl implements BrickOfSomeInterceptin
 
 	@Override
 	public void foo() {
-		throw new IllegalStateException();
 	}
 	
 	@Override
 	public void foo(String arg) {
-		throw new IllegalStateException();
 	}
 	
 	@Override
@@ -22,17 +20,35 @@ public class BrickOfSomeInterceptingNatureImpl implements BrickOfSomeInterceptin
 
 	@Override
 	public String bar() {
-		throw new IllegalStateException();
+		return "42";
 	}
 	
 	@Override
 	public int baz() {
-		throw new IllegalStateException();
+		return 42;
 	}
 
 	@Override
 	public Greeter newGreeter() {
 		return new Greeter2();
+	}
+	
+	@SuppressWarnings("unused")
+	private void privateMethod() {
+		
+	}
+	
+	void packageMethod() {
+		
+	}
+	
+	protected void protectedMethod() {
+		
+	}
+
+	@Override
+	public void intraBrickMethod() {
+		add(1, 1);
 	}
 
 }
