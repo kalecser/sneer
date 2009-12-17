@@ -23,8 +23,7 @@ import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 
 public class SneerSession implements Runnable {
-
-
+	
 	public SneerSession() {
 		Environments.runWith(container(), this);
 	}
@@ -32,6 +31,7 @@ public class SneerSession implements Runnable {
 	
 	public void run() {
 		
+		setContextClassLoader();
 		
 		configure(my(FolderConfig.class));
 
@@ -40,6 +40,11 @@ public class SneerSession implements Runnable {
 		my(SnappStarter.class).startSnapps();
 		
 		my(Threads.class).waitUntilCrash();
+	}
+
+
+	private void setContextClassLoader() {
+		Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 	}
 
 	
