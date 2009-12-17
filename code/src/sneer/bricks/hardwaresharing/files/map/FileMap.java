@@ -11,12 +11,17 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface FileMap {
 
-	//void put(File file, Sneer1024 hash)
-	//void putFolderContents(File folder, FolderContents contents, hash)
-	//void removeTree(File fileOrFolder)
+//	FileMapper
+//		startMappingFolder(File folder) - Call FileMap.put... recursively for files and folders.
+//		stopMappingFolder(File folder) - Abort mapping and call FileMap.removeTree().
+
+//	FileMap	
+//		void put(File file, Sneer1024 hash)
+//		void putFolderContents(File folder, FolderContents contents, hash)
+//		void removeTree(File fileOrFolder)
 	
-	//File getFile(Sneer1024 hash);
-	//FolderContents getFolder(Sneer1024 hash);
+//		File getFile(Sneer1024 hash);
+//		FolderContents getFolder(Sneer1024 hash);
 	
 	
 	Sneer1024 put(File fileOrFolder, String... acceptedFileExtensions) throws IOException;
