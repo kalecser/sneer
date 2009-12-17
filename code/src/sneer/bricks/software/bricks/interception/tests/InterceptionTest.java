@@ -17,6 +17,7 @@ import sneer.bricks.software.bricks.interception.InterceptionEnhancer;
 import sneer.bricks.software.bricks.interception.Interceptor;
 import sneer.bricks.software.bricks.interception.Interceptor.Continuation;
 import sneer.bricks.software.bricks.interception.tests.fixtures.brick.BrickOfSomeInterceptingNature;
+import sneer.bricks.software.bricks.interception.tests.fixtures.brickwithlib.BrickWithLib;
 import sneer.bricks.software.bricks.interception.tests.fixtures.nature.SomeInterceptingNature;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.brickness.ClassDefinition;
@@ -143,6 +144,13 @@ public class InterceptionTest extends Assert {
 			my(BrickOfSomeInterceptingNature.class).add(1, 2);
 		}});
 	}
+	
+	@Test
+	public void brickWithLib() throws Exception {
+		checkingMethodIsInvoked(BrickWithLib.class, "fooBar", new Object[0], new Closure<RuntimeException>() { @Override public void run() {
+			my(BrickWithLib.class).fooBar();
+		}});
+	}
 
 	private void invokeMethod(final String methodName) throws Exception {
 		BrickOfSomeInterceptingNature brick = my(BrickOfSomeInterceptingNature.class);
@@ -158,16 +166,21 @@ public class InterceptionTest extends Assert {
 	}
 	
 	private void allowingRealizeAndInstantiate() {
+		allowingRealizeAndInstantiate(BrickOfSomeInterceptingNature.class);
+	}
+
+	private void allowingRealizeAndInstantiate(final Class<?> brickClass) {
+		
 		mockery.checking(new Expectations() {{
 			
-			oneOf(interceptingNatureMock).realize(with(any(ClassDefinition.class)));
+			allowing(interceptingNatureMock).realize(with(any(ClassDefinition.class)));
 			will(new CustomAction("realize") { @Override public Object invoke(Invocation invocation) throws Throwable {
 				ClassDefinition classDef = (ClassDefinition) invocation.getParameter(0);
 				return my(InterceptionEnhancer.class).realize(SomeInterceptingNature.class, classDef);
 			}});
 			
 			oneOf(interceptingNatureMock).instantiate(
-					with(BrickOfSomeInterceptingNature.class),
+					with(brickClass),
 					with(any(Class.class)),
 					with(any(Producer.class)));
 			
@@ -182,13 +195,24 @@ public class InterceptionTest extends Assert {
 	private  <X extends Exception> void checkingMethodIsInvoked(final String expectedMethodName,
 			final Object[] expectedArgs, Closure<X> invocationBlock) throws X {
 		
-		allowingRealizeAndInstantiate();
+		checkingMethodIsInvoked(BrickOfSomeInterceptingNature.class,
+				expectedMethodName,
+				expectedArgs,
+				invocationBlock);
+	}
+
+	private <X extends Exception> void checkingMethodIsInvoked(
+			final Class<?> brick,
+			final String expectedMethodName, final Object[] expectedArgs,
+			Closure<X> invocationBlock) throws X {
+		
+		allowingRealizeAndInstantiate(brick);
 		
 		mockery.checking(new Expectations() {{
 			
 			oneOf(interceptingNatureMock).invoke(
-					with(BrickOfSomeInterceptingNature.class),
-					with(any(BrickOfSomeInterceptingNature.class)),
+					with(brick),
+					with(any(brick)),
 					with(expectedMethodName),
 					with(expectedArgs),
 					with(any(Interceptor.Continuation.class)));
