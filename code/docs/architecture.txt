@@ -27,9 +27,9 @@
 
                   NETWORK.COMPUTERS (FREEDOM 2)
                  (Mesh, Connections, Discovery)
-
-                       IDENTITY (FREEDOM 1)
-                        (Name, Public Key)
+                                                     THE WORLD
+          -------------IDENTITY (FREEDOM 1)-------------------
+                        (Name, Public Key)           ME
 
                      OWN SOFTWARE (FREEDOM 7)
                  (Bricks: Install/Update/Remove)
