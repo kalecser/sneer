@@ -6,9 +6,15 @@
 	- [Klaus] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
 
-	- [Igor] Redesign FileMap according to comments
+	- [Klaus] Revise FileMap new design. Main items:
+		- FileMapper architecture
+		- SharedTracksMapper changes
+		- IO.fileFilter().extensions(String...) implementation (there are two versions - one commented)
+		- FileMap.remove(File) implementation
+		- FileMapperTest implementation (it needs more tests)
+		- BrickFilter.cacheOnlyFilesFromThisBrick(Sneer1024) change (hash of the filtered contents is not being put in the FileMap)
 
-	- [Igor/Klaus] Analyse the following performance issues:
+	- [Igor/Klaus] Analyze the following performance issues:
 		- IncomingHandShaker.identifyContact(ByteArraySocket) is very time consuming
 		- FileRequest surplus - Confirm it is not a leak
 
