@@ -13,7 +13,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
 import sneer.bricks.hardware.gui.Action;
-import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.ContactManager;
@@ -37,7 +36,6 @@ import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.bricks.snapps.contacts.gui.comparator.ContactComparator;
-import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 
@@ -45,7 +43,7 @@ class ContactsGuiImpl implements ContactsGui {
 	
 	private final Synth _synth = my(Synth.class);
 	
-	{_synth.notInGuiThreadLoad(this.getClass());}
+	{_synth.load(this.getClass());}
 	private final Image ONLINE = getImage("ContactsGuiImpl.onlineIconName");
 	private final Image OFFLINE = getImage("ContactsGuiImpl.offlineIconName");
 	
@@ -54,13 +52,7 @@ class ContactsGuiImpl implements ContactsGui {
 	}};
 
 	private final ListSignal<Contact> _sortedList = my(ListSorter.class).sort( my(ContactManager.class).contacts() , my(ContactComparator.class), _chooser);
-	private final ListWidget<Contact> _contactList;{
-		final ByRef<ListWidget<Contact>> ref = ByRef.newInstance();
-		my(GuiThread.class).invokeAndWait(new Runnable(){ @Override public void run() {
-			ref.value = my(ReactiveWidgetFactory.class).newList(_sortedList, new ContactLabelProvider(), new ContactsGuiCellRenderer(new ContactLabelProvider()));
-		}});
-		_contactList = ref.value;
-	}
+	private final ListWidget<Contact> _contactList = my(ReactiveWidgetFactory.class).newList(_sortedList, new ContactLabelProvider(), new ContactsGuiCellRenderer(new ContactLabelProvider()));
 
 	private Container _container;
 	

@@ -42,7 +42,7 @@ import sneer.foundation.lang.Functor;
 class DashboardImpl implements Dashboard {
 
 	private final Synth _synth = my(Synth.class);
-	{ _synth.notInGuiThreadLoad(this.getClass()); }
+	{ _synth.load(this.getClass()); }
 	
 	private final int WIDTH = (Integer) synthValue("Dashboard.WIDTH");
 	private final int OFFSET = (Integer) synthValue("Dashboard.OFFSET");
@@ -74,7 +74,7 @@ class DashboardImpl implements Dashboard {
 				return size;
 			}
 		};
-		my(Synth.class).notInGuiThreadAttach(_scrollBar, "DashboardScrollBar");
+		my(Synth.class).attach(_scrollBar, "DashboardScrollBar");
 	}
 	
 	private final DashboardPanel _dashboardPanel = new DashboardPanel(_scrollBar);
