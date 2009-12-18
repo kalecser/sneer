@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
@@ -21,20 +22,20 @@ public class FileClientTest extends BrickTest {
 
 	@Test (timeout = 3000)
 	public void fileAlreadyMappedIsNotDownloaded() throws IOException {
-		final Sneer1024 hash = my(FileMap.class).put(myClassFile());
+		File myClassFile = my(ClassUtils.class).classFile(getClass());
+		Sneer1024 hash = my(Crypto.class).digest(myClassFile); 
+
+		my(FileMap.class).put(myClassFile, hash);
+
 		my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
 			throw new IllegalStateException();
 		}});
 
-		final File tmpFile = newTmpFile();
+		File tmpFile = newTmpFile();
 		my(FileClient.class).startFileDownload(tmpFile, hash);
 
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
-		my(IO.class).files().assertSameContents(tmpFile, myClassFile());
-	}
-
-	private File myClassFile() {
-		return my(ClassUtils.class).classFile(getClass());
+		my(IO.class).files().assertSameContents(tmpFile, my(ClassUtils.class).classFile(getClass()));
 	}
 
 }

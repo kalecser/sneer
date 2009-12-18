@@ -7,6 +7,7 @@ import java.util.List;
 
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
+import sneer.bricks.hardwaresharing.files.hasher.FolderContentsHasher;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
@@ -21,7 +22,7 @@ class BrickFilter {
 		FolderContents brickContents = filterOtherBricksOutOf(packageContents);
 		return brickContents.contents.length() == packageContents.contents.length()
 			? hashOfPackage
-			: FileMap.putFolderContents(brickContents);
+			: my(FolderContentsHasher.class).hash(brickContents);
 	}
 
 

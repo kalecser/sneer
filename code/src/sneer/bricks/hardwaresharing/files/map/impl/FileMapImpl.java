@@ -3,128 +3,85 @@ package sneer.bricks.hardwaresharing.files.map.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
-import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardware.ram.arrays.ImmutableArray;
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
-import sneer.bricks.hardwaresharing.files.hasher.FolderContentsHasher;
 import sneer.bricks.hardwaresharing.files.map.FileMap;
-import sneer.bricks.hardwaresharing.files.protocol.FileOrFolder;
 import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 
 class FileMapImpl implements FileMap {
-	
-	private final Map<Sneer1024, File>           _filesByHash   = new ConcurrentHashMap<Sneer1024, File>();
-	private final Map<Sneer1024, FolderContents> _foldersByHash = new ConcurrentHashMap<Sneer1024, FolderContents>();	
+
+	private final Map<Sneer1024, File>           _filesByHash			= new ConcurrentHashMap<Sneer1024, File>();
+	private final Map<Sneer1024, FolderContents> _folderContentsByHash	= new ConcurrentHashMap<Sneer1024, FolderContents>();
+	private final Map<File, Sneer1024> _hashesByFolder 					= new ConcurrentHashMap<File, Sneer1024>();
 
 	@Override
-	public Sneer1024 putFolderContents(FolderContents contents) {
-		Sneer1024 hash = my(FolderContentsHasher.class).hash(contents);
-		_foldersByHash.put(hash, contents);
-		return hash; 
+	synchronized
+	public void putFolderContents(File folder, FolderContents contents, Sneer1024 hash) {
+		_hashesByFolder.put(folder, hash);
+		_folderContentsByHash.put(hash, contents); 
 	}
-
 
 	@Override
-	public Sneer1024 put(File fileOrFolder, String... acceptedExtensions) throws IOException {
-		return put(fileOrFolder, null, acceptedExtensions);
+	synchronized
+	public void put(File file, Sneer1024 hash) {
+		transientPut(file, hash);
 	}
 
-
-	@Override
-	public Sneer1024 put(File fileOrFolder, AtomicBoolean stopOperation, String... acceptedExtensions) throws IOException {
-		return transientPut(fileOrFolder, stopOperation, acceptedExtensions);
+	private void transientPut(File file, Sneer1024 hash) {
+		my(Logger.class).log("Mapping " + file + fileSizeInKB(file));
+		_filesByHash.put(hash, file);
 	}
 
-
-	private Sneer1024 transientPut(File fileOrFolder, AtomicBoolean stopOperation, String... acceptedExtensions) throws IOException {
-		my(Logger.class).log("Mapping " + fileOrFolder + fileSize(fileOrFolder));
-		return (fileOrFolder.isDirectory())
-			? putFolder(fileOrFolder, stopOperation, acceptedExtensions)
-			: putFile(fileOrFolder);
-	}
-
-
-	private String fileSize(File fileOrFolder) {
+	private String fileSizeInKB(File fileOrFolder) {
 		return fileOrFolder.isDirectory() ? "" : "(" + fileOrFolder.length() / 1024 + " KB)";
 	}
 
-
+	@Override
 	synchronized
-	private Sneer1024 putFile(File file) throws IOException {
-		Sneer1024 result = my(Crypto.class).digest(file);
-		_filesByHash.put(result, file);
-		return result;
+	public void remove(File fileOrFolderToBeRemoved) {
+		if (fileOrFolderToBeRemoved.isDirectory()) {
+			removeFolder(fileOrFolderToBeRemoved);
+		} else {
+			removeFile(fileOrFolderToBeRemoved);
+		}
 	}
 
-	
-	private Sneer1024 putFolder(File folder, AtomicBoolean stopOperation, String... fileTypes) throws IOException {
-		return putFolderContents(new FolderContents(immutable(putEachFolderEntry(folder, stopOperation, fileTypes))));
-	}
-
-	
-	private List<FileOrFolder> putEachFolderEntry(File folder, AtomicBoolean stopOperation, String... fileTypes) throws IOException {
-		List<FileOrFolder> result = new ArrayList<FileOrFolder>();
-
-		for (File fileOrFolder : sortedFiles(folder, fileTypes)) {
-			if (stopOperation != null && stopOperation.get()) break;
-			result.add(putFolderEntry(fileOrFolder, stopOperation, fileTypes));
+	private void removeFolder(File folderToBeRemoved) {
+		Iterator<Entry<Sneer1024, File>> filesByHashIterator = _filesByHash.entrySet().iterator();
+		while (filesByHashIterator.hasNext()) {
+			if (filesByHashIterator.next().getValue().getAbsolutePath().startsWith(folderToBeRemoved.getAbsolutePath()))
+				filesByHashIterator.remove();
 		}
 
-		return result;
+		Iterator<Entry<File, Sneer1024>> hashesByFolderIterator = _hashesByFolder.entrySet().iterator();
+		while (hashesByFolderIterator.hasNext()) {
+			Entry<File, Sneer1024> hashByFolder = hashesByFolderIterator.next();
+			if (hashByFolder.getKey().getAbsolutePath().startsWith(folderToBeRemoved.getAbsolutePath())) {
+				_folderContentsByHash.remove(hashByFolder.getValue());
+				filesByHashIterator.remove();
+			}
+		}
 	}
 
-	
-	private FileOrFolder putFolderEntry(File fileOrFolder, AtomicBoolean stopOperation, String... fileTypes) throws IOException {
-		Sneer1024 hashOfContents = transientPut(fileOrFolder, stopOperation, fileTypes);
-		return new FileOrFolder(fileOrFolder.getName(), fileOrFolder.lastModified(), hashOfContents, fileOrFolder.isDirectory());
-	}
-	
-	
-	private static ImmutableArray<FileOrFolder> immutable(List<FileOrFolder> entries) {
-		return my(ImmutableArrays.class).newImmutableArray(entries);
-	}
-	
-	
-	private static File[] sortedFiles(File folder, final String... fileTypes) {
-		File[] result = (fileTypes.length > 0)
-			? folder.listFiles(new FileFilter() { @Override public boolean accept(File fileToBeAdded) {
-				if (fileToBeAdded.isDirectory()) return true;
-				final String fileExtension = my(Lang.class).strings().substringAfterLast(fileToBeAdded.getName(), ".").toLowerCase();
-				if (Arrays.asList(fileTypes).contains(fileExtension)) return true;
-				return false;
-			}})
-			: folder.listFiles();
-
-		if (result == null)	return new File[0];
-
-		Arrays.sort(result, new Comparator<File>() { @Override public int compare(File file1, File file2) {
-			return file1.getName().compareTo(file2.getName());
-		}});
-
-		return result;
+	private void removeFile(File fileToBeRemoved) {
+		_filesByHash.remove(fileToBeRemoved);
 	}
 
-	
-	@Override public File getFile(Sneer1024 hash) {
+	@Override
+	synchronized
+	public File getFile(Sneer1024 hash) {
 		return _filesByHash.get(hash);
 	}
 
-	
-	@Override public FolderContents getFolder(Sneer1024 hash) {
-		return _foldersByHash.get(hash);
+	@Override
+	synchronized
+	public FolderContents getFolder(Sneer1024 hash) {
+		return _folderContentsByHash.get(hash);
 	}
 
 }

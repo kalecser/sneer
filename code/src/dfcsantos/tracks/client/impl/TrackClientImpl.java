@@ -13,6 +13,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.files.client.Download;
 import sneer.bricks.hardwaresharing.files.client.FileClient;
+import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
@@ -48,7 +49,8 @@ class TrackClientImpl implements TrackClient {
 
 		if (!isTracksDownloadAllowed()) return;
 		if (my(Seals.class).ownSeal().equals(endorsement.publisher())) return;
-		if (my(RejectedTracksKeeper.class).isRejected(endorsement.hash)) return;
+		if (isDuplicated(endorsement)) return;
+		if (isRejected(endorsement)) return;
 
 		if (_downloads.size() >= 3) return;
 		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
@@ -64,6 +66,14 @@ class TrackClientImpl implements TrackClient {
 				_downloads.remove(download);
 			}
 		}});
+	}
+
+	private boolean isRejected(TrackEndorsement endorsement) {
+		return my(RejectedTracksKeeper.class).isRejected(endorsement.hash);
+	}
+
+	private boolean isDuplicated(TrackEndorsement endorsement) {
+		return my(FileMap.class).getFile(endorsement.hash) != null;
 	}
 
 	private boolean isTracksDownloadAllowed() {

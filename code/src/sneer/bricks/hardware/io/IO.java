@@ -2,6 +2,7 @@ package sneer.bricks.hardware.io;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -25,12 +26,12 @@ public interface IO {
 		Filter or(Filter... filters);
 		Filter suffix(String sulfix);
 		Filter name(String name);
-		
+		FileFilter extensions(String... validFileTypes);
+
 		Collection<File> listFiles(File folder, Filter fileFilter, Filter folderFilter);
 	}
 	
-	interface Filter{
-		public boolean accept(File file);
+	interface Filter extends FileFilter {
 		public boolean accept(File folder, String name);
 	}
 	

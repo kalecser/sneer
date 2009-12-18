@@ -12,7 +12,7 @@ import org.junit.Test;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardwaresharing.files.map.FileMap;
+import sneer.bricks.hardwaresharing.files.map.mapper.FileMapper;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
@@ -24,7 +24,7 @@ import sneer.foundation.lang.Consumer;
 
 public abstract class FileCopyTestBase extends BrickTest {
 
-	protected final FileMap _fileMap = my(FileMap.class);
+	protected final FileMapper _fileMapper = my(FileMapper.class);
 
 	@Ignore
 	@Test (timeout = 3000)
@@ -60,7 +60,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 	}
 
 	private void testWith(File fileOrFolder) throws IOException {
-		Sneer1024 hash = _fileMap.put(fileOrFolder);
+		Sneer1024 hash = _fileMapper.map(fileOrFolder);
 		assertNotNull(hash);
 
 		File copy = newTmpFile();

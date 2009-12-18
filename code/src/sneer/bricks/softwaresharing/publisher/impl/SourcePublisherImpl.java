@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
-import sneer.bricks.hardwaresharing.files.map.FileMap;
+import sneer.bricks.hardwaresharing.files.map.mapper.FileMapper;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -26,7 +26,7 @@ class SourcePublisherImpl implements SourcePublisher {
 		
 		Sneer1024 hash;
 		try {
-			hash = my(FileMap.class).put(srcFolder());
+			hash = my(FileMapper.class).map(srcFolder());
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOnIfNecessary(_errorLight, "Error reading your source folder.", "There was trouble trying to read your source folder in order to publish your bricks for your peers. See log for details.", e);
 			return;
