@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import sneer.bricks.expression.files.client.Download;
+import sneer.bricks.expression.files.client.FileClient;
+import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardwaresharing.files.client.Download;
-import sneer.bricks.hardwaresharing.files.client.FileClient;
-import sneer.bricks.hardwaresharing.files.map.FileMap;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;

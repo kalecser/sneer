@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import sneer.bricks.hardwaresharing.files.protocol.OldFileContents;
+import sneer.bricks.expression.files.protocol.OldFileContents;
 import sneer.bricks.pulp.serialization.LargeFileContentsHack;
 import sneer.bricks.pulp.serialization.Serializer;
 

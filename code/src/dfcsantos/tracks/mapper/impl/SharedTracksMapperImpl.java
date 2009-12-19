@@ -4,8 +4,8 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 
+import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardwaresharing.files.map.mapper.FileMapper;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
 import dfcsantos.tracks.mapper.SharedTracksMapper;

@@ -4,9 +4,9 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
+import sneer.bricks.expression.files.protocol.OldFileContents;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
-import sneer.bricks.hardwaresharing.files.protocol.OldFileContents;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.Seal;

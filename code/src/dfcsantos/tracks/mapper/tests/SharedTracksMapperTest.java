@@ -6,7 +6,7 @@ import org.jmock.Expectations;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.hardwaresharing.files.map.mapper.FileMapper;
+import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;

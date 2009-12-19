@@ -7,14 +7,14 @@ import java.io.UnsupportedEncodingException;
 import java.util.Deque;
 import java.util.LinkedList;
 
+import sneer.bricks.expression.files.map.FileMap;
+import sneer.bricks.expression.files.map.visitors.FileMapGuide;
+import sneer.bricks.expression.files.map.visitors.FolderStructureVisitor;
+import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.Lang.Strings;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardwaresharing.files.map.FileMap;
-import sneer.bricks.hardwaresharing.files.map.visitors.FileMapGuide;
-import sneer.bricks.hardwaresharing.files.map.visitors.FolderStructureVisitor;
-import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.ProducerWithThrowable;

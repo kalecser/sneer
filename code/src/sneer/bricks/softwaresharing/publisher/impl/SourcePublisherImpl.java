@@ -5,8 +5,8 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 
+import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
-import sneer.bricks.hardwaresharing.files.map.mapper.FileMapper;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;

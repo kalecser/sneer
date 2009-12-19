@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import sneer.bricks.expression.files.protocol.OldFileContents;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
-import sneer.bricks.hardwaresharing.files.protocol.OldFileContents;
 import sneer.foundation.brickness.Tuple;
 
 public class LargeFileContentsHack extends Tuple {
