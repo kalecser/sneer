@@ -12,6 +12,7 @@ import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
+import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.software.code.classutils.ClassUtils;
@@ -21,11 +22,13 @@ import sneer.foundation.lang.Functor;
 public class FileMapperTest extends BrickTest {
 
 	private final FileMapper _subject = my(FileMapper.class);
+	private final FileMap _fileMap = my(FileMap.class);
+	private File _fixtureFolder;
 
 	@Test (timeout = 3000)
 	public void mapFolder() throws IOException {
 		Sneer1024 hash = _subject.map(fixturesFolder(), "txt");
-		FolderContents folderContents = my(FileMap.class).getFolder(hash);
+		FolderContents folderContents = my(FileMap.class).getFolderContents(hash);
 
 		Collection<String> names = my(CollectionUtils.class).map(folderContents.contents, new Functor<FileOrFolder, String>() { @Override public String evaluate(FileOrFolder fileOrFolder) {
 			return fileOrFolder.name;
@@ -34,8 +37,28 @@ public class FileMapperTest extends BrickTest {
 		assertElementsInAnyOrder(names, "directory1", "directory2", "track4.txt", "track5.txt");
 	}
 
+	@Test
+	public void clearFolderMapping() throws IOException {
+		final Sneer1024 hashOfFolder = _subject.map(fixturesFolder());
+		assertNotNull(_fileMap.getFolderContents(hashOfFolder));
+
+		final Sneer1024 hashOfFile = my(Crypto.class).digest(fixture("directory1/track1.txt"));
+		assertNotNull(_fileMap.getFile(hashOfFile));
+
+		// Fix: It should test that all the files and folderContents were removed from the FileMap (see fixtures folder's structure)
+		_fileMap.remove(fixturesFolder());
+		assertNull(_fileMap.getFolderContents(hashOfFolder));
+		assertNull(_fileMap.getFile(hashOfFile));
+	}
+
+	private File fixture(String name) {
+		return new File(fixturesFolder(), name);
+	}
+
 	private File fixturesFolder() {
-		return new File(myClassFile().getParent(), "fixtures");
+		if (_fixtureFolder == null)
+			_fixtureFolder = new File(myClassFile().getParent(), "fixtures");
+		return _fixtureFolder;
 	}
 
 	private File myClassFile() {

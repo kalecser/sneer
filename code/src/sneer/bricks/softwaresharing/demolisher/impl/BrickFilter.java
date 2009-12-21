@@ -45,7 +45,7 @@ class BrickFilter {
 
 
 	private static boolean isFolder(FileOrFolder candidate) {
-		if (FileMap.getFolder(candidate.hashOfContents) != null) return true;
+		if (FileMap.getFolderContents(candidate.hashOfContents) != null) return true;
 		if (FileMap.getFile(candidate.hashOfContents) != null) return false;
 		throw new IllegalStateException("Unable to find FileMap entry for: " + candidate);
 	}
@@ -57,7 +57,7 @@ class BrickFilter {
 
 
 	private static FolderContents packageContents(Sneer1024 hashOfPackage) {
-		return FileMap.getFolder(hashOfPackage);
+		return FileMap.getFolderContents(hashOfPackage);
 	}
 
 }

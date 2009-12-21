@@ -40,7 +40,7 @@ class FileMapperImpl implements FileMapper {
 
 	private static Sneer1024 mapFile(File file) throws IOException {
 		Sneer1024 hash = my(Crypto.class).digest(file);
-		my(FileMap.class).put(file, hash);
+		my(FileMap.class).putFile(file, hash);
 		return hash;
 	}
 

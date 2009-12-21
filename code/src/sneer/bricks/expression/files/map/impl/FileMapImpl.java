@@ -15,20 +15,14 @@ import sneer.bricks.hardware.io.log.Logger;
 
 class FileMapImpl implements FileMap {
 
-	private final Map<Sneer1024, File>           _filesByHash			= new ConcurrentHashMap<Sneer1024, File>();
-	private final Map<Sneer1024, FolderContents> _folderContentsByHash	= new ConcurrentHashMap<Sneer1024, FolderContents>();
-	private final Map<File, Sneer1024> _hashesByFolder 					= new ConcurrentHashMap<File, Sneer1024>();
+	private final Map<Sneer1024, File>           	_filesByHash			= new ConcurrentHashMap<Sneer1024, File>();
+	private final Map<Sneer1024, FolderContents>	_folderContentsByHash	= new ConcurrentHashMap<Sneer1024, FolderContents>();
+	private final Map<File, Sneer1024>				_hashesByFolder			= new ConcurrentHashMap<File, Sneer1024>();
 
 	@Override
 	synchronized
-	public void putFolderContents(File folder, FolderContents contents, Sneer1024 hash) {
-		_hashesByFolder.put(folder, hash);
-		_folderContentsByHash.put(hash, contents); 
-	}
-
-	@Override
-	synchronized
-	public void put(File file, Sneer1024 hash) {
+	public void putFile(File file, Sneer1024 hash) {
+		if (file.isDirectory()) throw new IllegalArgumentException("Parameter 'file' cannot be a directory");
 		transientPut(file, hash);
 	}
 
@@ -43,6 +37,25 @@ class FileMapImpl implements FileMap {
 
 	@Override
 	synchronized
+	public File getFile(Sneer1024 hash) {
+		return _filesByHash.get(hash);
+	}
+
+	@Override
+	synchronized
+	public void putFolderContents(File folder, FolderContents contents, Sneer1024 hash) {
+		_hashesByFolder.put(folder, hash);
+		_folderContentsByHash.put(hash, contents); 
+	}
+
+	@Override
+	synchronized
+	public FolderContents getFolderContents(Sneer1024 hash) {
+		return _folderContentsByHash.get(hash);
+	}
+
+	@Override
+	synchronized
 	public void remove(File fileOrFolderToBeRemoved) {
 		if (fileOrFolderToBeRemoved.isDirectory()) {
 			removeFolder(fileOrFolderToBeRemoved);
@@ -51,37 +64,31 @@ class FileMapImpl implements FileMap {
 		}
 	}
 
-	private void removeFolder(File folderToBeRemoved) {
-		Iterator<Entry<Sneer1024, File>> filesByHashIterator = _filesByHash.entrySet().iterator();
-		while (filesByHashIterator.hasNext()) {
-			if (filesByHashIterator.next().getValue().getAbsolutePath().startsWith(folderToBeRemoved.getAbsolutePath()))
-				filesByHashIterator.remove();
-		}
-
-		Iterator<Entry<File, Sneer1024>> hashesByFolderIterator = _hashesByFolder.entrySet().iterator();
-		while (hashesByFolderIterator.hasNext()) {
-			Entry<File, Sneer1024> hashByFolder = hashesByFolderIterator.next();
-			if (hashByFolder.getKey().getAbsolutePath().startsWith(folderToBeRemoved.getAbsolutePath())) {
-				_folderContentsByHash.remove(hashByFolder.getValue());
-				filesByHashIterator.remove();
+	private void removeFile(File fileToBeRemoved) {
+		Iterator<File> filesInTheMap = _filesByHash.values().iterator();
+		while (filesInTheMap.hasNext()) {
+			if (filesInTheMap.next().equals(fileToBeRemoved)) {
+				filesInTheMap.remove();
+				break;
 			}
 		}
 	}
 
-	private void removeFile(File fileToBeRemoved) {
-		_filesByHash.remove(fileToBeRemoved);
-	}
+	private void removeFolder(File folderToBeRemoved) {
+		Iterator<File> filesInTheMap = _filesByHash.values().iterator();
+		while (filesInTheMap.hasNext()) {
+			if (filesInTheMap.next().getAbsolutePath().startsWith(folderToBeRemoved.getAbsolutePath()))
+				filesInTheMap.remove();
+		}
 
-	@Override
-	synchronized
-	public File getFile(Sneer1024 hash) {
-		return _filesByHash.get(hash);
-	}
-
-	@Override
-	synchronized
-	public FolderContents getFolder(Sneer1024 hash) {
-		return _folderContentsByHash.get(hash);
+		Iterator<Entry<File, Sneer1024>> hashesByFolder = _hashesByFolder.entrySet().iterator();
+		while (hashesByFolder.hasNext()) {
+			Entry<File, Sneer1024> hashByFolder = hashesByFolder.next();
+			if (hashByFolder.getKey().getAbsolutePath().startsWith(folderToBeRemoved.getAbsolutePath())) {
+				hashesByFolder.remove();
+				_folderContentsByHash.remove(hashByFolder.getValue());
+			}
+		}
 	}
 
 }

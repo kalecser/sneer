@@ -9,11 +9,12 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface FileMap {
 
-	void put(File file, Sneer1024 hash);
-	void putFolderContents(File folder, FolderContents contents, Sneer1024 hash);
-	void remove(File fileOrFolder);
-
+	void putFile(File file, Sneer1024 hash);
 	File getFile(Sneer1024 hash);
-	FolderContents getFolder(Sneer1024 hash);
+
+	void putFolderContents(File folder, FolderContents contents, Sneer1024 hash);
+	FolderContents getFolderContents(Sneer1024 hash);
+
+	void remove(File fileOrFolder);
 
 }

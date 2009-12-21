@@ -43,7 +43,7 @@ class Demolition implements FolderStructureVisitor {
 
 
 	private FolderContents folderContents(Sneer1024 srcFolderHash) {
-		return my(FileMap.class).getFolder(srcFolderHash);
+		return my(FileMap.class).getFolderContents(srcFolderHash);
 	}
 
 

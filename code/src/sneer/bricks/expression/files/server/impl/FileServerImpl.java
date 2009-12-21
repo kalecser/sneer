@@ -67,7 +67,7 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 	private Object getContents(FileRequest request) {
 		Object response = my(FileMap.class).getFile(request.hashOfContents);
 		return response == null
-			? my(FileMap.class).getFolder(request.hashOfContents)
+			? my(FileMap.class).getFolderContents(request.hashOfContents)
 			: response;
 	}
 

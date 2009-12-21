@@ -65,7 +65,7 @@ class BrickVersionImpl implements BrickVersion {
 
 
 	private FolderContents folderContents() {
-		return my(FileMap.class).getFolder(_hash);
+		return my(FileMap.class).getFolderContents(_hash);
 	}
 
 	

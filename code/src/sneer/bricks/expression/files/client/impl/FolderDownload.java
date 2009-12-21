@@ -95,7 +95,7 @@ class FolderDownload extends AbstractDownload {
 
 	@Override
 	Object mappedContentsBy(Sneer1024 hashOfContents) {
-		return my(FileMap.class).getFolder(hashOfContents);
+		return my(FileMap.class).getFolderContents(hashOfContents);
 	}
 
 

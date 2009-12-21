@@ -25,7 +25,7 @@ public class FileClientTest extends BrickTest {
 		File myClassFile = my(ClassUtils.class).classFile(getClass());
 		Sneer1024 hash = my(Crypto.class).digest(myClassFile); 
 
-		my(FileMap.class).put(myClassFile, hash);
+		my(FileMap.class).putFile(myClassFile, hash);
 
 		my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
 			throw new IllegalStateException();

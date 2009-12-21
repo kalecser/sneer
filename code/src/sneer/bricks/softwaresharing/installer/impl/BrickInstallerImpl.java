@@ -124,7 +124,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 
 
 	private FolderContents folderContents(BrickVersion version) {
-		return my(FileMap.class).getFolder(version.hash());
+		return my(FileMap.class).getFolderContents(version.hash());
 	}
 
 

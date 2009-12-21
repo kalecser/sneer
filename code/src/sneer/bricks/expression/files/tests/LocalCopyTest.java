@@ -37,7 +37,7 @@ public class LocalCopyTest extends FileCopyTestBase {
 
 
 	private void copyFolder(Sneer1024 hashOfContents, File destination) throws IOException {
-		FolderContents folder = my(FileMap.class).getFolder(hashOfContents);
+		FolderContents folder = my(FileMap.class).getFolderContents(hashOfContents);
 		my(AtomicFileWriter.class).writeAtomicallyTo(destination, -1, folder);
 	}
 

@@ -29,7 +29,7 @@ class GuidedTour {
 			return;
 		}
 
-		FolderContents folder = my(FileMap.class).getFolder(hashOfContents);
+		FolderContents folder = my(FileMap.class).getFolderContents(hashOfContents);
 		if (folder != null) {
 			showFolder(folder);
 			return;
