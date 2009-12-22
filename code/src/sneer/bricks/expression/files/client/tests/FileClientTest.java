@@ -12,6 +12,7 @@ import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FileRequest;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.code.classutils.ClassUtils;
@@ -22,12 +23,11 @@ public class FileClientTest extends BrickTest {
 
 	@Test (timeout = 3000)
 	public void fileAlreadyMappedIsNotDownloaded() throws IOException {
-		File myClassFile = my(ClassUtils.class).classFile(getClass());
-		Sneer1024 hash = my(Crypto.class).digest(myClassFile); 
+		Sneer1024 hash = my(Crypto.class).digest(new byte[]{42}); 
+		my(FileMap.class).putFile(anySmallFile(), hash);
 
-		my(FileMap.class).putFile(myClassFile, hash);
-
-		my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
+		@SuppressWarnings("unused")
+		WeakContract contractToAvoidGc = my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
 			throw new IllegalStateException();
 		}});
 
@@ -35,7 +35,11 @@ public class FileClientTest extends BrickTest {
 		my(FileClient.class).startFileDownload(tmpFile, hash);
 
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
-		my(IO.class).files().assertSameContents(tmpFile, my(ClassUtils.class).classFile(getClass()));
+		my(IO.class).files().assertSameContents(tmpFile, anySmallFile());
+	}
+
+	private File anySmallFile() {
+		return my(ClassUtils.class).classFile(getClass());
 	}
 
 }
