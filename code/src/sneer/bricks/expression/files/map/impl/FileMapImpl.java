@@ -34,7 +34,9 @@ class FileMapImpl implements FileMap {
 	@Override
 	synchronized
 	public File getFile(Sneer1024 hash) {
-		return _filesByHash.get(hash);
+		return _folderContentsByHash.get(hash) != null
+			? null
+			: _filesByHash.get(hash);
 	}
 
 	@Override
