@@ -17,26 +17,17 @@ public class FileMapTest extends BrickTest {
 	private final FileMap _subject = my(FileMap.class);
 
 	@Test
-	public void putFileInTheMap() {
-		File file = myClassFile();
+	public void fileMapping() {
+		File file = anySmallFile();
 		Sneer1024 hash = my(Crypto.class).digest(new byte[] { 42 }); 
 		_subject.putFile(file, hash);
 		assertEquals(file,_subject.getFile(hash));
-	}
-
-	@Test
-	public void removeFileFromTheMap() {
-		File file = myClassFile();
-		Sneer1024 hash = my(Crypto.class).digest(new byte[] { 42 }); 
-
-		_subject.putFile(file, hash);
-		assertEquals(file, _subject.getFile(hash));
 
 		_subject.remove(file);
 		assertNull(_subject.getFile(hash));
 	}
 
-	private File myClassFile() {
+	private File anySmallFile() {
 		return my(ClassUtils.class).classFile(getClass());
 	}
 

@@ -17,16 +17,12 @@ class FileMapImpl implements FileMap {
 
 	private final Map<Sneer1024, File>           	_filesByHash			= new ConcurrentHashMap<Sneer1024, File>();
 	private final Map<Sneer1024, FolderContents>	_folderContentsByHash	= new ConcurrentHashMap<Sneer1024, FolderContents>();
-	private final Map<File, Sneer1024>				_hashesByFolder			= new ConcurrentHashMap<File, Sneer1024>();
 
 	@Override
 	synchronized
 	public void putFile(File file, Sneer1024 hash) {
 		if (file.isDirectory()) throw new IllegalArgumentException("Parameter 'file' cannot be a directory");
-		transientPut(file, hash);
-	}
 
-	private void transientPut(File file, Sneer1024 hash) {
 		my(Logger.class).log("Mapping " + file + fileSizeInKB(file));
 		_filesByHash.put(hash, file);
 	}
@@ -44,8 +40,8 @@ class FileMapImpl implements FileMap {
 	@Override
 	synchronized
 	public void putFolderContents(File folder, FolderContents contents, Sneer1024 hash) {
-		_hashesByFolder.put(folder, hash);
 		_folderContentsByHash.put(hash, contents); 
+		_filesByHash.put(hash, folder);
 	}
 
 	@Override
@@ -75,19 +71,16 @@ class FileMapImpl implements FileMap {
 	}
 
 	private void removeFolder(File folderToBeRemoved) {
-		Iterator<File> filesInTheMap = _filesByHash.values().iterator();
-		while (filesInTheMap.hasNext()) {
-			if (filesInTheMap.next().getAbsolutePath().startsWith(folderToBeRemoved.getAbsolutePath()))
-				filesInTheMap.remove();
-		}
-
-		Iterator<Entry<File, Sneer1024>> hashesByFolder = _hashesByFolder.entrySet().iterator();
-		while (hashesByFolder.hasNext()) {
-			Entry<File, Sneer1024> hashByFolder = hashesByFolder.next();
-			if (hashByFolder.getKey().getAbsolutePath().startsWith(folderToBeRemoved.getAbsolutePath())) {
-				hashesByFolder.remove();
-				_folderContentsByHash.remove(hashByFolder.getValue());
-			}
+		final String pathToBeRemoved = folderToBeRemoved.getAbsolutePath();
+		
+		Iterator<Entry<Sneer1024, File>> entries = _filesByHash.entrySet().iterator();
+		while (entries.hasNext()) {
+			final Entry<Sneer1024, File> hashAndFile = entries.next();
+			if (!hashAndFile.getValue().getAbsolutePath().startsWith(pathToBeRemoved))
+				continue;
+			
+			entries.remove();
+			_folderContentsByHash.remove(hashAndFile.getKey());
 		}
 	}
 

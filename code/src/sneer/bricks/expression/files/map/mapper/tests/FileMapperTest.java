@@ -45,7 +45,6 @@ public class FileMapperTest extends BrickTest {
 		final Sneer1024 hashOfFile = my(Crypto.class).digest(fixture("directory1/track1.txt"));
 		assertNotNull(_fileMap.getFile(hashOfFile));
 
-		// Fix: It should test that all the files and folderContents were removed from the FileMap (see fixtures folder's structure)
 		_fileMap.remove(fixturesFolder());
 		assertNull(_fileMap.getFolderContents(hashOfFolder));
 		assertNull(_fileMap.getFile(hashOfFile));
