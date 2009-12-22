@@ -29,7 +29,7 @@ public class TrackClientTest extends BrickTest {
 	@Bind private final SharedTracksMapper _mapper = mock(SharedTracksMapper.class);
 	@Bind private final FileClient _fileClient = mock(FileClient.class);
 
-	@Test(timeout = 2000)
+	@Test(timeout = 6000)
 	public void trackDownload() throws Exception {
 		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[] { 1 });
 		final Sneer1024 hash2 = my(Crypto.class).digest(new byte[] { 2 });
