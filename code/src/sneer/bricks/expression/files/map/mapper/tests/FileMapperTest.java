@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.mapper.FileMapper;
+import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
@@ -26,7 +27,7 @@ public class FileMapperTest extends BrickTest {
 	private File _fixtureFolder;
 
 	@Test (timeout = 3000)
-	public void mapFolder() throws IOException {
+	public void mapFolder() throws IOException, MappingStopped {
 		Sneer1024 hash = _subject.map(fixturesFolder(), "txt");
 		FolderContents folderContents = my(FileMap.class).getFolderContents(hash);
 
@@ -38,7 +39,7 @@ public class FileMapperTest extends BrickTest {
 	}
 
 	@Test
-	public void clearFolderMapping() throws IOException {
+	public void clearFolderMapping() throws IOException, MappingStopped {
 		final Sneer1024 hashOfFolder = _subject.map(fixturesFolder());
 		assertNotNull(_fileMap.getFolderContents(hashOfFolder));
 

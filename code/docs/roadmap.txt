@@ -7,15 +7,12 @@
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
 
 	- [Klaus] Revise FileMap new design. Main items:
-		- FileMapper architecture
-		- SharedTracksMapper changes
 		- IO.fileFilter().extensions(String...) implementation (there are two versions - one commented)
-		- FileMap.remove(File) implementation
-		- FileMapperTest implementation (it needs more tests)
+		- FileMapperTest's methods implementation (add test for #stopFolderMapping)
 		- BrickFilter.cacheOnlyFilesFromThisBrick(Sneer1024) change (hash of the filtered contents is not being put in the FileMap)
 
 	- [Igor/Klaus] Analyze the following performance issues:
-		- IncomingHandShaker.identifyContact(ByteArraySocket) is very time consuming
+		- IncomingHandShaker.identifyContact(ByteArraySocket) is very time-consuming
 		- FileRequest surplus - Confirm it is not a leak
 
 	- [Klaus] Find a way to make shared tracks mapping less aggressive to the user's experience. Options:

@@ -10,6 +10,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.map.mapper.FileMapper;
+import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
@@ -28,22 +29,22 @@ public abstract class FileCopyTestBase extends BrickTest {
 
 	@Ignore
 	@Test (timeout = 3000)
-	public void testWithZeroLengthFile() throws IOException {
+	public void testWithZeroLengthFile() throws IOException, MappingStopped {
 		testWith(zeroLengthFile());
 	}
 	
 	@Test (timeout = 4000)
-	public void testWithSmallFile() throws IOException {
+	public void testWithSmallFile() throws IOException, MappingStopped {
 		testWith(anySmallFile());
 	}
 
 	@Test (timeout = 6000)
-	public void testWithFolder() throws IOException {
+	public void testWithFolder() throws IOException, MappingStopped {
 		testWith(folderWithAFewFiles());
 	}
 
 	@Test (timeout = 7000)
-	public void testWithLargeFile() throws IOException {
+	public void testWithLargeFile() throws IOException, MappingStopped {
 		testWith(createLargeFile());
 	}
 
@@ -59,7 +60,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 		return result;
 	}
 
-	private void testWith(File fileOrFolder) throws IOException {
+	private void testWith(File fileOrFolder) throws IOException, MappingStopped {
 		Sneer1024 hash = _fileMapper.map(fileOrFolder);
 		assertNotNull(hash);
 

@@ -4,98 +4,58 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-import sneer.bricks.expression.files.client.Download;
-import sneer.bricks.expression.files.client.FileClient;
-import sneer.bricks.expression.files.map.FileMap;
+import sneer.bricks.expression.files.map.mapper.FileMapper;
+import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.io.IO;
-import sneer.bricks.pulp.keymanager.Seals;
-import sneer.bricks.pulp.reactive.Register;
-import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.bricks.hardware.cpu.threads.latches.Latch;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.client.TrackClient;
-import dfcsantos.tracks.endorsements.TrackEndorsement;
+import dfcsantos.tracks.downloads.TrackDownloader;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
-import dfcsantos.tracks.mapper.SharedTracksMapper;
-import dfcsantos.tracks.rejected.RejectedTracksKeeper;
-import dfcsantos.wusic.Wusic;
 
 class TrackClientImpl implements TrackClient {
 
-	private final List<Download> _downloads = Collections.synchronizedList(new ArrayList<Download>());
-	private final Register<Integer> _numberOfDownloadedTracks = my(Signals.class).newRegister(0);
+	private static final FileMapper _fileMapper = my(FileMapper.class);
 
-	@SuppressWarnings("unused") private final WeakContract _trackEndorsementConsumerContract;
+	private File _lastSharedTracksFolder;
+
+	@SuppressWarnings("unused") private WeakContract _toAvoidGC;
+
+	private Latch _busy;
 
 	{
-		_trackEndorsementConsumerContract = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement trackEndorsement) {
-			consumeTrackEndorsement(trackEndorsement);
+		_toAvoidGC = my(TracksFolderKeeper.class).sharedTracksFolder().addReceiver(new Consumer<File>() { @Override public void consume(File newSharedTracksFolder) {
+			consumeNewSharedFolder(newSharedTracksFolder);
 		}});
 	}
 
-	public Signal<Integer> numberOfDownloadedTracks() {
-		return _numberOfDownloadedTracks.output();
-	}
+	private void consumeNewSharedFolder(final File newSharedTracksFolder) {
+		if (_lastSharedTracksFolder != null)
+			_fileMapper.stopFolderMapping(_lastSharedTracksFolder);
+		_lastSharedTracksFolder = newSharedTracksFolder;
 
-	private void consumeTrackEndorsement(TrackEndorsement endorsement) {
-		my(SharedTracksMapper.class).waitTillMappingIsFinished();
-
-		if (!isTracksDownloadAllowed()) return;
-		if (my(Seals.class).ownSeal().equals(endorsement.publisher())) return;
-		if (isDuplicated(endorsement)) return;
-		if (isRejected(endorsement)) return;
-
-		if (_downloads.size() >= 3) return;
-		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
-		_downloads.add(download);
-
-		my(Threads.class).startDaemon("Waiting for Download", new Runnable() { @Override public void run() {
-			try {
-				download.waitTillFinished();
-				_numberOfDownloadedTracks.setter().consume(_numberOfDownloadedTracks.output().currentValue() + 1);
-			} catch (IOException e) {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-			} finally {
-				_downloads.remove(download);
-			}
+		if (_busy != null) _busy.waitTillOpen();
+		_busy = my(Latches.class).produce();
+		my(Threads.class).startDaemon("Track Mapping", new Runnable() { @Override public void run() {
+			mapSharedTracksFolder(newSharedTracksFolder);
+			_busy.open();
 		}});
 	}
 
-	private boolean isRejected(TrackEndorsement endorsement) {
-		return my(RejectedTracksKeeper.class).isRejected(endorsement.hash);
-	}
+	private void mapSharedTracksFolder(File newSharedTracksFolder) {
+		try {
+			_fileMapper.map(newSharedTracksFolder, "mp3");
+			my(TrackDownloader.class).setActive(true);
 
-	private boolean isDuplicated(TrackEndorsement endorsement) {
-		return my(FileMap.class).getFile(endorsement.hash) != null;
-	}
-
-	private boolean isTracksDownloadAllowed() {
-		if (!my(Wusic.class).isTracksDownloadAllowed().currentValue()) return false;
-		return peerTracksFolderSize() < downloadAllowanceInBytes();
-	}
-
-	private long peerTracksFolderSize() {
-		return my(IO.class).files().sizeOfFolder(peerTracksFolder());
-	}
-
-	private int downloadAllowanceInBytes() {
-		return 1024 * 1024 * my(Wusic.class).tracksDownloadAllowance().currentValue();
-	}
-
-	private File fileToWrite(TrackEndorsement endorsement) {
-		String name = new File(endorsement.path).getName();
-		return new File(peerTracksFolder(), name);
-	}
-
-	private File peerTracksFolder() {
-		return my(TracksFolderKeeper.class).peerTracksFolder();
+		} catch (MappingStopped e) {
+			my(TrackDownloader.class).setActive(false);
+		} catch (IOException e) {
+			my(TrackDownloader.class).setActive(false);
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+		}
 	}
 
 }

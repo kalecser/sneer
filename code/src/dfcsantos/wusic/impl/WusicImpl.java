@@ -16,7 +16,7 @@ import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.Track;
-import dfcsantos.tracks.client.TrackClient;
+import dfcsantos.tracks.downloads.TrackDownloader;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
 
@@ -185,7 +185,7 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public Signal<String> numberOfPeerTracks() {
-		return my(Signals.class).adapt(my(TrackClient.class).numberOfDownloadedTracks(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
+		return my(Signals.class).adapt(my(TrackDownloader.class).numberOfDownloadedTracks(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
 			return "Peer Tracks (" + numberOfTracks + ")";
 		}});
 	}

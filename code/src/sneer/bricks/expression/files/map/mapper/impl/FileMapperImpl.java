@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import sneer.bricks.expression.files.hasher.FolderContentsHasher;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.mapper.FileMapper;
+import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
@@ -32,9 +33,9 @@ class FileMapperImpl implements FileMapper {
 	private final CacheMap<File, FolderMapping> _mappingsByFolder = CacheMap.newInstance();
 
 	@Override
-	public Sneer1024 map(File fileOrFolder, String... acceptedFileExtensions) throws IOException {
+	public Sneer1024 map(File fileOrFolder, String... acceptedFileExtensions) throws IOException, MappingStopped {
 		return (fileOrFolder.isDirectory())
-			? new FolderMapping(fileOrFolder).mapFolder(fileOrFolder, acceptedFileExtensions) // simulates a static call
+			? newFolderMapping(fileOrFolder, acceptedFileExtensions).run()
 			: mapFile(fileOrFolder);
 	}
 
@@ -42,18 +43,6 @@ class FileMapperImpl implements FileMapper {
 		Sneer1024 hash = my(Crypto.class).digest(file);
 		my(FileMap.class).putFile(file, hash);
 		return hash;
-	}
-
-	@Override
-	public void startFolderMapping(final File folder, final String... acceptedFileExtensions) {
-		my(Threads.class).startDaemon("Mapping \'" + folder.getName() + "\' folder...", newFolderMapping(folder, acceptedFileExtensions));
-	}
-
-	@Override
-	public void waitTillFolderMappingIsFinished(File folder) {
-		FolderMapping folderMapping = _mappingsByFolder.get(folder);
-		if (folderMapping != null)
-			folderMapping.waitTillFinished();
 	}
 
 	@Override
@@ -65,13 +54,13 @@ class FileMapperImpl implements FileMapper {
 		}});
 	}
 
-	private FolderMapping newFolderMapping(final File folder, final String... acceptedFileExtensions) throws RuntimeException {
-		return _mappingsByFolder.get(folder, new Producer<FolderMapping>() { @Override public FolderMapping produce() throws RuntimeException {
+	private FolderMapping newFolderMapping(final File folder, final String... acceptedFileExtensions) {
+		return _mappingsByFolder.get(folder, new Producer<FolderMapping>() { @Override public FolderMapping produce() {
 			return new FolderMapping(folder, acceptedFileExtensions);
 		}});
 	}
 
-	private static class FolderMapping implements Runnable {
+	private class FolderMapping {
 
 		private final File _folder;
 		private final String[] _acceptedFileExtensions;
@@ -86,31 +75,32 @@ class FileMapperImpl implements FileMapper {
 			_acceptedFileExtensions = acceptedFileExtensions;
 		}
 
-		@Override
-		public void run() {
-			mapFolder(_folder, _acceptedFileExtensions);
+		Sneer1024 run() throws MappingStopped {
+			Sneer1024 hash = mapFolder(_folder, _acceptedFileExtensions);
+			finish();
+			return hash;
+		}
+
+		private void finish() {
+			_mappingsByFolder.remove(_folder);
 			_isFinished.open();
 		}
 
-		private void waitTillFinished() {
-			_isFinished.waitTillOpen();
-		}
-
-		private void stop() {
+		void stop() {
 			_stop.set(true);
 		}
 
-		private Sneer1024 mapFolder(File folder, String... acceptedFileExtensions) {
+		private Sneer1024 mapFolder(File folder, String... acceptedFileExtensions) throws MappingStopped {
 			FolderContents contents = new FolderContents(immutable(mapFolderEntries(folder, acceptedFileExtensions)));
 			Sneer1024 hash = my(FolderContentsHasher.class).hash(contents);
 			my(FileMap.class).putFolderContents(folder, contents, hash);
 			return hash;
 		}
 
-		private List<FileOrFolder> mapFolderEntries(File folder, String... acceptedExtensions){
+		private List<FileOrFolder> mapFolderEntries(File folder, String... acceptedExtensions) throws MappingStopped{
 			List<FileOrFolder> folderEntries = new ArrayList<FileOrFolder>();
 			for (File fileOrFolder : sortedFiles(folder, acceptedExtensions)) {
-				if (_stop.get()) break;
+				if (_stop.get()) throw new MappingStopped();
 				try {
 					folderEntries.add(mapFolderEntry(fileOrFolder, acceptedExtensions));
 				} catch (IOException e) {
@@ -120,12 +110,12 @@ class FileMapperImpl implements FileMapper {
 			return folderEntries;
 		}
 
-		private FileOrFolder mapFolderEntry(File fileOrFolder, String... acceptedExtensions) throws IOException {
+		private FileOrFolder mapFolderEntry(File fileOrFolder, String... acceptedExtensions) throws IOException, MappingStopped {
 			Sneer1024 hash = (fileOrFolder.isDirectory()) ? mapFolder(fileOrFolder, acceptedExtensions) : mapFile(fileOrFolder);
 			return new FileOrFolder(fileOrFolder.getName(), fileOrFolder.lastModified(), hash, fileOrFolder.isDirectory());
 		}
 
-		private static File[] sortedFiles(File folder, final String... acceptedExtensions) {
+		private File[] sortedFiles(File folder, final String... acceptedExtensions) {
 			File[] result = folder.listFiles(my(IO.class).fileFilters().extensions(acceptedExtensions));
 			if (result == null)	return new File[0];
 			Arrays.sort(result, new Comparator<File>() { @Override public int compare(File file1, File file2) {
@@ -134,7 +124,7 @@ class FileMapperImpl implements FileMapper {
 			return result;
 		}
 
-		private static ImmutableArray<FileOrFolder> immutable(List<FileOrFolder> entries) {
+		private ImmutableArray<FileOrFolder> immutable(List<FileOrFolder> entries) {
 			return my(ImmutableArrays.class).newImmutableArray(entries);
 		}
 

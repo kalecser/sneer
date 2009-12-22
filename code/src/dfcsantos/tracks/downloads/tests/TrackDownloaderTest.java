@@ -1,4 +1,4 @@
-package dfcsantos.tracks.client.tests;
+package dfcsantos.tracks.downloads.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -18,15 +18,13 @@ import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
-import dfcsantos.tracks.client.TrackClient;
+import dfcsantos.tracks.downloads.TrackDownloader;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
-import dfcsantos.tracks.mapper.SharedTracksMapper;
 import dfcsantos.wusic.Wusic;
 
-public class TrackClientTest extends BrickTest {
+public class TrackDownloaderTest extends BrickTest {
 
-	@Bind private final SharedTracksMapper _mapper = mock(SharedTracksMapper.class);
 	@Bind private final FileClient _fileClient = mock(FileClient.class);
 
 	@Test(timeout = 6000)
@@ -36,15 +34,13 @@ public class TrackClientTest extends BrickTest {
 		final Sneer1024 hash3 = my(Crypto.class).digest(new byte[] { 3 });
 
 		checking(new Expectations(){{
-			exactly(1).of(_mapper).waitTillMappingIsFinished();
 			exactly(1).of(_fileClient).startFileDownload(new File(peerTracksFolder(), "ok.mp3"), 41, hash1);
-			exactly(2).of(_mapper).waitTillMappingIsFinished();
 		}});
 
 		my(Wusic.class).allowTracksDownload(true);
 		my(Wusic.class).tracksDownloadAllowanceSetter().consume(1);
 
-		my(TrackClient.class);
+		my(TrackDownloader.class).setActive(true);
 
 		aquireEndorsementTuple(hash1, 41, "songs/subfolder/ok.mp3");
 
