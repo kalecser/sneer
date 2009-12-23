@@ -6,9 +6,11 @@
 	- [Klaus] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
 		- ByteArraySocketImpl.write(array) and read() clean up hack.
 
-	- [Klaus] Revise FileMap new design. Main items:
+	- [Klaus] Revise items:
+		- FileMapper interface (methods' signatures)
+		_ FileMapperImpl.stopFolderMapping (does it need to start a daemon?)
 		- IO.fileFilter().extensions(String...) implementation (there are two versions - one commented)
-		- FileMapperTest's methods implementation (add test for #stopFolderMapping)
+		- FileMapperTest's methods implementation (test for #stopFolderMapping not implemented yet)
 		- BrickFilter.cacheOnlyFilesFromThisBrick(Sneer1024) change (hash of the filtered contents is not being put in the FileMap)
 
 	- [Igor/Klaus] Analyze the following performance issues:
@@ -19,6 +21,8 @@
 		- Throttle CPU usage
 
 	- [Igor] Unigore RemoteCopyTest.testWithZeroLengthFile() and FileDownloadTest.receiveFileContentBlocksOutOfSequence()
+
+	- Refactor FileCopyTestBase.testWith()
 
 	- Wusic
 		- Display playing track of each contact

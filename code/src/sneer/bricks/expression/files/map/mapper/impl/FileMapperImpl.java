@@ -33,16 +33,18 @@ class FileMapperImpl implements FileMapper {
 	private final CacheMap<File, FolderMapping> _mappingsByFolder = CacheMap.newInstance();
 
 	@Override
-	public Sneer1024 map(File fileOrFolder, String... acceptedFileExtensions) throws IOException, MappingStopped {
-		return (fileOrFolder.isDirectory())
-			? newFolderMapping(fileOrFolder, acceptedFileExtensions).run()
-			: mapFile(fileOrFolder);
-	}
-
-	private static Sneer1024 mapFile(File file) throws IOException {
+	public Sneer1024 mapFile(File file) throws IOException {
 		Sneer1024 hash = my(Crypto.class).digest(file);
 		my(FileMap.class).putFile(file, hash);
 		return hash;
+	}
+
+	@Override
+	public Sneer1024 mapFolder(final File folder, final String... acceptedFileExtensions) throws MappingStopped {
+		FolderMapping folderMapping = _mappingsByFolder.get(folder, new Producer<FolderMapping>() { @Override public FolderMapping produce() {
+			return new FolderMapping(folder, acceptedFileExtensions);
+		}});
+		return folderMapping.run();
 	}
 
 	@Override
@@ -51,12 +53,6 @@ class FileMapperImpl implements FileMapper {
 		_mappingsByFolder.remove(folder).stop();
 		my(Threads.class).startDaemon("Removing \'" + folder.getName() + "\' folder from FileMap...", new Runnable() { @Override public void run() {
 			my(FileMap.class).remove(folder);
-		}});
-	}
-
-	private FolderMapping newFolderMapping(final File folder, final String... acceptedFileExtensions) {
-		return _mappingsByFolder.get(folder, new Producer<FolderMapping>() { @Override public FolderMapping produce() {
-			return new FolderMapping(folder, acceptedFileExtensions);
 		}});
 	}
 

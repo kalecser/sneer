@@ -27,8 +27,8 @@ public class FileMapperTest extends BrickTest {
 	private File _fixtureFolder;
 
 	@Test (timeout = 3000)
-	public void mapFolder() throws IOException, MappingStopped {
-		Sneer1024 hash = _subject.map(fixturesFolder(), "txt");
+	public void mapFolder() throws MappingStopped {
+		Sneer1024 hash = _subject.mapFolder(fixturesFolder(), "txt");
 		FolderContents folderContents = my(FileMap.class).getFolderContents(hash);
 
 		Collection<String> names = my(CollectionUtils.class).map(folderContents.contents, new Functor<FileOrFolder, String>() { @Override public String evaluate(FileOrFolder fileOrFolder) {
@@ -40,7 +40,7 @@ public class FileMapperTest extends BrickTest {
 
 	@Test
 	public void clearFolderMapping() throws IOException, MappingStopped {
-		final Sneer1024 hashOfFolder = _subject.map(fixturesFolder());
+		final Sneer1024 hashOfFolder = _subject.mapFolder(fixturesFolder());
 		assertNotNull(_fileMap.getFolderContents(hashOfFolder));
 
 		final Sneer1024 hashOfFile = my(Crypto.class).digest(fixture("directory1/track1.txt"));

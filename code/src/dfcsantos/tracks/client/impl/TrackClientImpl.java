@@ -3,7 +3,6 @@ package dfcsantos.tracks.client.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
-import java.io.IOException;
 
 import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.map.mapper.MappingStopped;
@@ -47,14 +46,10 @@ class TrackClientImpl implements TrackClient {
 
 	private void mapSharedTracksFolder(File newSharedTracksFolder) {
 		try {
-			_fileMapper.map(newSharedTracksFolder, "mp3");
+			_fileMapper.mapFolder(newSharedTracksFolder, "mp3");
 			my(TrackDownloader.class).setActive(true);
-
 		} catch (MappingStopped e) {
 			my(TrackDownloader.class).setActive(false);
-		} catch (IOException e) {
-			my(TrackDownloader.class).setActive(false);
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 	}
 

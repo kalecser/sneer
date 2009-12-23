@@ -9,7 +9,9 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface FileMapper {
 
-	Sneer1024 map(File fileOrFolder, String... acceptedFileExtensions) throws MappingStopped, IOException;
+	Sneer1024 mapFile(File file) throws MappingStopped, IOException;
+
+	Sneer1024 mapFolder(File folder, String... acceptedFileExtensions) throws MappingStopped;
 
 	void stopFolderMapping(File folder);
 
