@@ -21,12 +21,14 @@ import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
+import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
+import sneer.foundation.lang.ProducerWithThrowable;
 
 class FileMapperImpl implements FileMapper {
 
@@ -76,9 +78,11 @@ class FileMapperImpl implements FileMapper {
 		}
 
 		Sneer1024 run() throws MappingStopped {
-			Sneer1024 hash = mapFolder(_folder, _acceptedFileExtensions);
-			finish();
-			return hash;
+			return my(CpuThrottle.class).limitMaxCpuUsage(15, new ProducerWithThrowable<Sneer1024, MappingStopped>() { @Override public Sneer1024 produce() throws MappingStopped {
+				Sneer1024 result = mapFolder(_folder, _acceptedFileExtensions);
+				finish();
+				return result;
+			}});
 		}
 
 		private void finish() {

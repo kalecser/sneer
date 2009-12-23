@@ -1,6 +1,12 @@
 ﻿TASKS
 =========
 
+	- Lighter Track Mapping
+		- [Igor] Read CpuThrottle and Threads.startStepping() javadocs. Run CpuThrottleDemo to see how it works.
+		- [Igor] Implement Crypto.hash(File) as a stepper. It will automatically use the CpuThrottle. 
+			- Notice CpuThrottle max usage is already being limited in FolderMapping.run().
+		- [Igor] Test mapping of folder with several track before and after doing the above, to see if CPU consumption is actually reduced.
+			
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
 	- [Klaus] Big File Blocks: break large files into smaller blocks (useful for Rapidshare Killer too).
@@ -14,9 +20,6 @@
 	- [Igor/Klaus] Analyze the following performance issues:
 		- IncomingHandShaker.identifyContact(ByteArraySocket) is very time-consuming
 		- FileRequest surplus - Confirm it is not a leak
-
-	- [Klaus] Find a way to make shared tracks mapping less aggressive to the user's experience. Options:
-		- Throttle CPU usage
 
 	- [Igor] Unigore RemoteCopyTest.testWithZeroLengthFile() and FileDownloadTest.receiveFileContentBlocksOutOfSequence()
 
