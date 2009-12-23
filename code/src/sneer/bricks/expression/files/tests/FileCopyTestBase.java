@@ -68,17 +68,12 @@ public abstract class FileCopyTestBase extends BrickTest {
 			}});
 
 		File copy = newTmpFile();
-		Sneer1024 hash = null;
+		Sneer1024 hash = fileOrFolder.isDirectory()
+			? _fileMapper.mapFolder(fileOrFolder)
+			: _fileMapper.mapFile(fileOrFolder);
 
-		if (fileOrFolder.isDirectory()) {
-			hash = _fileMapper.mapFolder(fileOrFolder);
-			assertNotNull(hash);
-			copyFolderFromFileMap(hash, copy);
-		} else {
-			hash = _fileMapper.mapFile(fileOrFolder);
-			assertNotNull(hash);
-			copyFileFromFileMap(hash, copy);
-		}
+		assertNotNull(hash);
+		copyFolderFromFileMap(hash, copy);
 
 		assertSameContents(fileOrFolder, copy);
 	}
