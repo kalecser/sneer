@@ -61,21 +61,24 @@ public abstract class FileCopyTestBase extends BrickTest {
 	}
 
 	private void testWith(File fileOrFolder) throws IOException, MappingStopped {
-		Sneer1024 hash = _fileMapper.map(fileOrFolder);
-		assertNotNull(hash);
-
-		File copy = newTmpFile();
-		
 		@SuppressWarnings("unused")	WeakContract refToAvoidGc =
 			my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>(){@Override public void consume(CollectionChange<Light> deltas) {
 				if (!deltas.elementsAdded().isEmpty())
 					fail();
 			}});
-		
-		if (fileOrFolder.isFile())
-			copyFileFromFileMap(hash, copy);
-		else
+
+		File copy = newTmpFile();
+		Sneer1024 hash = null;
+
+		if (fileOrFolder.isDirectory()) {
+			hash = _fileMapper.mapFolder(fileOrFolder);
+			assertNotNull(hash);
 			copyFolderFromFileMap(hash, copy);
+		} else {
+			hash = _fileMapper.mapFile(fileOrFolder);
+			assertNotNull(hash);
+			copyFileFromFileMap(hash, copy);
+		}
 
 		assertSameContents(fileOrFolder, copy);
 	}
