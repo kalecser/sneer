@@ -17,10 +17,9 @@ class GUIImpl implements GUI {
 	
 	private final Environment _environment = my(Environment.class);
 
+	
 	@Override
-	public Object invoke(Class<?> brick, Object instance, String methodName,
-			final Object[] args, final Continuation continuation) {
-		
+	public Object invoke(Class<?> brick, Object instance, String methodName,	final Object[] args, final Continuation continuation) {
 		final ByRef<Object> result = ByRef.newInstance();
 		invokeInGuiThread(new Runnable() { @Override public void run() {
 			result.value = continuation.invoke(args);
@@ -28,6 +27,7 @@ class GUIImpl implements GUI {
 		return result.value;
 	}
 
+	
 	@Override
 	public <T> T instantiate(Class<T> brick, Class<T> implClass, final Producer<T> producer) {
 		
@@ -38,15 +38,16 @@ class GUIImpl implements GUI {
 		return result.value;
 	}
 	
+	
+	@Override
+	public List<ClassDefinition> realize(ClassDefinition classDef) {
+		return my(InterceptionEnhancer.class).realize(GUI.class, classDef);
+	}
+
+	
 	private void invokeInGuiThread(final Runnable runnable) {
 		Environments.runWith(_environment, new Runnable() { @Override public void run() {
 			my(GuiThread.class).invokeAndWaitForWussies(runnable);
 		}});
 	}
-
-	@Override
-	public List<ClassDefinition> realize(ClassDefinition classDef) {
-		return my(InterceptionEnhancer.class).realize(GUI.class, classDef);
-	}
-	
 }
