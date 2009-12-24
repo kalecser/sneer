@@ -74,7 +74,7 @@ public class InterceptionTest extends Assert {
 		}
 
 		@Override
-		public <T> T instantiate(Class<T> brick, Class<?> implClass,
+		public <T> T instantiate(Class<T> brick, Class<T> implClass,
 				Producer<T> producer) {
 			return producer.produce();
 		}

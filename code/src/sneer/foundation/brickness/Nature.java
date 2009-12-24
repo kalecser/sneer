@@ -8,6 +8,6 @@ public interface Nature {
 
 	List<ClassDefinition> realize(ClassDefinition classDef);
 	
-	<T> T instantiate(Class<T> brick, Class<?> implClass, Producer<T> producer);
+	<T> T instantiate(Class<T> brick, Class<T> implClass, Producer<T> producer);
 
 }

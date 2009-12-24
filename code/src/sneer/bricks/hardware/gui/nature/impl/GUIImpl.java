@@ -29,7 +29,7 @@ class GUIImpl implements GUI {
 	}
 
 	@Override
-	public <T> T instantiate(Class<T> brick, Class<?> implClass, final Producer<T> producer) {
+	public <T> T instantiate(Class<T> brick, Class<T> implClass, final Producer<T> producer) {
 		
 		final ByRef<T> result = ByRef.newInstance();
 		invokeInGuiThread(new Runnable() { @Override public void run() {
