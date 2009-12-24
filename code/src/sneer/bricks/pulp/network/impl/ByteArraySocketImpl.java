@@ -13,12 +13,13 @@ import java.net.Socket;
 
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.network.ByteArraySocket;
 
 class ByteArraySocketImpl implements ByteArraySocket {
 
+	private static final int MAX_ARRAY_SIZE = 1024 * 20;
+	
 	private final Socket _socket;
 	private final DataOutputStream _outputStream;
 	private final DataInputStream _inputStream;
@@ -37,28 +38,20 @@ class ByteArraySocketImpl implements ByteArraySocket {
 
 	@Override
 	public void write(byte[] array) throws IOException {
-		Light hugeTupleLight = null;
-		
 		int length = array.length;
-		if (length > 65534) {
-			hugeTupleLight = my(BlinkingLights.class).turnOn(LightType.WARNING, "Huge tuple is being sent.", "Huge tuple is being sent. Size: " + length);
-			_outputStream.writeChar(65535);
-			_outputStream.writeInt(length);
-		} else
-			_outputStream.writeChar((char)length); //Writes a char as a 2-byte value, high byte first.
-
+		if (length > MAX_ARRAY_SIZE) {
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Packet greater than " + MAX_ARRAY_SIZE + " bytes cannot be sent.", "Size: " + length);
+			return;
+		}
+		_outputStream.writeChar((char)length); //Writes a char as a 2-byte value, high byte first.
+		
 		_outputStream.write(array);
 		_outputStream.flush();
-		
-		if (hugeTupleLight != null)
-			my(BlinkingLights.class).turnOffIfNecessary(hugeTupleLight);
 	}
 
 	@Override
 	public byte[] read() throws IOException {
 		int length = _inputStream.readChar();
-		
-		if (length == 65535) length = _inputStream.readInt();
 		
 		byte[] result = new byte[length];
 		_inputStream.readFully(result);

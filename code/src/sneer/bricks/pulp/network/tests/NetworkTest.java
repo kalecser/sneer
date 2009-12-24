@@ -17,7 +17,7 @@ public class NetworkTest extends BrickTest {
 	
 	private final Threads _threads = my(Threads.class);
 	
-	@Test
+	@Test(timeout = 2000)
 	public void testNetworkMessages() throws Exception {
 		
 		final Network network = my(Network.class);

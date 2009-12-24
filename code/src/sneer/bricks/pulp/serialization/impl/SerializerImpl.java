@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import sneer.bricks.expression.files.protocol.OldFileContents;
-import sneer.bricks.pulp.serialization.LargeFileContentsHack;
 import sneer.bricks.pulp.serialization.Serializer;
 
 import com.thoughtworks.xstream.XStream;
@@ -32,7 +30,7 @@ class SerializerImpl implements Serializer {
 	public void serialize(OutputStream stream, Object object) throws IOException {
 		try {
 			BinaryStreamWriter writer = new BinaryStreamWriter(stream);
-			myXStream().marshal(marshallLargeFileHack(object), writer);
+			myXStream().marshal(object, writer);
 			writer.flush();
 		} catch (RuntimeException rx) {
 			throw new IOException(rx);
@@ -56,8 +54,7 @@ class SerializerImpl implements Serializer {
 	public Object deserialize(InputStream stream, ClassLoader classloader) throws IOException, ClassNotFoundException {
 		myXStream().setClassLoader(classloader);
 		try {
-			Object result = myXStream().unmarshal(new BinaryStreamReader(stream));
-			return unmarshallLargeFileHack(result);
+			return myXStream().unmarshal(new BinaryStreamReader(stream));
 		} catch (RuntimeException rx) {
 			Throwable cause = rx;
 			while (cause != null) {
@@ -68,20 +65,6 @@ class SerializerImpl implements Serializer {
 			
 			throw new IOException(rx);
 		}
-	}
-
-	
-	private Object marshallLargeFileHack(Object object) {
-		return object instanceof OldFileContents
-			? new LargeFileContentsHack((OldFileContents)object)
-			: object;
-	}
-
-
-	private Object unmarshallLargeFileHack(Object object) {
-		return object instanceof LargeFileContentsHack
-			? ((LargeFileContentsHack)object).unmarshall()
-			: object;
 	}
 
 
