@@ -10,7 +10,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
-import sneer.bricks.hardware.gui.Action;
+import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.skin.main.synth.menu.SynthMenus;
 import sneer.bricks.skin.menu.MenuGroup;
 

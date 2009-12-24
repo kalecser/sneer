@@ -15,7 +15,7 @@ import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.security.InvalidParameterException;
 
-import sneer.bricks.hardware.gui.Action;
+import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.hardware.gui.trayicon.SystemTrayNotSupported;
 import sneer.bricks.hardware.gui.trayicon.TrayIcon;

@@ -1,5 +1,5 @@
 
-package sneer.bricks.hardware.gui;
+package sneer.bricks.hardware.gui.actions;
 
 public interface Action {
 	String caption();

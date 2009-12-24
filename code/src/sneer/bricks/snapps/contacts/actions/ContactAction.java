@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.contacts.actions;
 
-import sneer.bricks.hardware.gui.Action;
+import sneer.bricks.hardware.gui.actions.Action;
 
 public interface ContactAction extends Action {
 	boolean isVisible();

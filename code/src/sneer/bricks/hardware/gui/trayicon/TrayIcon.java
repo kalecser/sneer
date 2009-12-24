@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.gui.trayicon;
 
-import sneer.bricks.hardware.gui.Action;
+import sneer.bricks.hardware.gui.actions.Action;
 
 public interface TrayIcon {
 
