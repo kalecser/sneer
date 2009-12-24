@@ -1,4 +1,4 @@
-package sneer.bricks.pulp.natures.gui.tests;
+package sneer.bricks.hardware.gui.nature.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import org.junit.Assert;
 import org.junit.Test;
 
-import sneer.bricks.pulp.natures.gui.tests.fixtures.SomeGuiBrick;
+import sneer.bricks.hardware.gui.nature.tests.fixtures.SomeGuiBrick;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;

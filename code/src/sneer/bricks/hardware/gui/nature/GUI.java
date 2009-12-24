@@ -1,4 +1,4 @@
-package sneer.bricks.pulp.natures.gui;
+package sneer.bricks.hardware.gui.nature;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.software.bricks.interception.Interceptor;

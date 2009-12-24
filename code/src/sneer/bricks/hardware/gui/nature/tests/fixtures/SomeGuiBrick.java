@@ -1,8 +1,8 @@
-package sneer.bricks.pulp.natures.gui.tests.fixtures;
+package sneer.bricks.hardware.gui.nature.tests.fixtures;
 
 import java.awt.event.*;
 
-import sneer.bricks.pulp.natures.gui.GUI;
+import sneer.bricks.hardware.gui.nature.GUI;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.environments.Environment;
 

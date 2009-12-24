@@ -1,4 +1,4 @@
-package sneer.bricks.pulp.natures.gui.tests.fixtures.impl;
+package sneer.bricks.hardware.gui.nature.tests.fixtures.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -6,7 +6,7 @@ import java.awt.event.*;
 
 import org.junit.*;
 
-import sneer.bricks.pulp.natures.gui.tests.fixtures.*;
+import sneer.bricks.hardware.gui.nature.tests.fixtures.*;
 import sneer.foundation.environments.*;
 
 class SomeGuiBrickImpl implements SomeGuiBrick {

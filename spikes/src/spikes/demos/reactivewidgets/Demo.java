@@ -1,6 +1,6 @@
 package spikes.demos.reactivewidgets;
 
-import sneer.bricks.pulp.natures.gui.GUI;
+import sneer.bricks.hardware.gui.nature.GUI;
 import sneer.foundation.brickness.Brick;
 
 @Brick(GUI.class)

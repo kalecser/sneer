@@ -1,11 +1,11 @@
-package sneer.bricks.pulp.natures.gui.impl;
+package sneer.bricks.hardware.gui.nature.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
 import java.util.List;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
-import sneer.bricks.pulp.natures.gui.GUI;
+import sneer.bricks.hardware.gui.nature.GUI;
 import sneer.bricks.software.bricks.interception.InterceptionEnhancer;
 import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.environments.Environment;
