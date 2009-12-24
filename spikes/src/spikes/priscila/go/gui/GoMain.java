@@ -14,7 +14,9 @@ public class GoMain {
 	
 	public GoMain() {
 		Environments.runWith(Brickness.newBrickContainer(), new Runnable() { @Override public void run() {
-			init();
+			my(GuiThread.class).invokeAndWaitForWussies(new Runnable(){@Override public void run() {
+				init();
+			}});
 		}});
 	}
 	
@@ -25,9 +27,7 @@ public class GoMain {
 	}
 
 	public static void main(String[] args){
-		my(GuiThread.class).invokeAndWaitForWussies(new Runnable(){@Override public void run() {
-			new GoMain();
-		}});
+		new GoMain();
 	}
 	
 }
