@@ -6,6 +6,6 @@ public interface Interceptor {
 		Object invoke(Object[] args);
 	}
 	
-	Object invoke(Class<?> brick, Object instance, String methodName, Object[] args, Continuation continuation);
+	Object invoke(Class<?> brick, Object instance, String methodName, Object[] args, Continuation defaultInvocation);
 	
 }
