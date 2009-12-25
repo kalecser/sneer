@@ -13,6 +13,4 @@ import sneer.foundation.brickness.Nature;
  */
 
 @Brick
-public interface GUI extends Nature, Interceptor {
-
-}
+public interface GUI extends Nature, Interceptor {}
