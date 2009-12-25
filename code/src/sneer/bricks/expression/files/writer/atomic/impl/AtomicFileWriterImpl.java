@@ -9,7 +9,7 @@ import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.expression.files.writer.atomic.AtomicFileWriter;
 import sneer.bricks.expression.files.writer.folder.FolderContentsWriter;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardware.io.file.atomic.dotpart.DotParts;
+import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
 
 
 class AtomicFileWriterImpl implements AtomicFileWriter {

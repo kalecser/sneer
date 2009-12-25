@@ -11,7 +11,7 @@ import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.bricks.hardware.io.file.atomic.dotpart.DotParts;
+import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.tuples.TupleSpace;

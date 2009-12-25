@@ -1,4 +1,4 @@
-package sneer.bricks.hardware.io.file.atomic.dotpart;
+package sneer.bricks.hardware.io.files.atomic.dotpart;
 
 import java.io.File;
 import java.io.IOException;

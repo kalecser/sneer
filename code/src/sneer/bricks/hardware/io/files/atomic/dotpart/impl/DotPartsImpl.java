@@ -1,4 +1,4 @@
-package sneer.bricks.hardware.io.file.atomic.dotpart.impl;
+package sneer.bricks.hardware.io.files.atomic.dotpart.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardware.io.file.atomic.dotpart.DotParts;
+import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
 
 class DotPartsImpl implements DotParts {
 
