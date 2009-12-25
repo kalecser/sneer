@@ -13,6 +13,8 @@ import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 
+//TODO: nature inheritance (annotation Instrument interface for instance)
+//TODO: methods declaring checked exceptions
 public class GUINatureTest extends Assert {
 	
 	Environment subject = Brickness.newBrickContainer();
