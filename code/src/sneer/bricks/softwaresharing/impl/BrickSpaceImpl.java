@@ -30,7 +30,7 @@ import sneer.foundation.lang.Consumer;
 
 class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
-	private final CacheMap<String, BrickInfo> _availableBricksByName = new CacheMap<String, BrickInfo>();
+	private final CacheMap<String, BrickInfo> _availableBricksByName = CacheMap.newInstance();
 
 	private final EventNotifier<Seal> _newBuildingFound = my(EventNotifiers.class).newInstance();
 	

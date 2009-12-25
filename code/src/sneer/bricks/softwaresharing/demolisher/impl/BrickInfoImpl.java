@@ -17,7 +17,7 @@ class BrickInfoImpl implements BrickInfo {
 
 	
 	private final String _brickName;
-	private final CacheMap<Sneer1024, BrickVersionImpl> _versionsByHash = new CacheMap<Sneer1024, BrickVersionImpl>();
+	private final CacheMap<Sneer1024, BrickVersionImpl> _versionsByHash = CacheMap.newInstance();
 
 	
 	public BrickInfoImpl(String brickName, Sneer1024 packageHash, boolean isCurrent) throws IOException {

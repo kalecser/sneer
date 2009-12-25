@@ -11,6 +11,7 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 		return new CacheMap<K, V>();
 	}
 	
+	private CacheMap() {}
 	
 	Map<K, Thread> _keysByResolver = new HashMap<K, Thread>();
 	
