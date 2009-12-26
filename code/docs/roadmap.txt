@@ -2,10 +2,9 @@
 =========
 
 	- Lighter Track Mapping
-		- [Igor] Read CpuThrottle and Threads.startStepping() javadocs. Run CpuThrottleDemo to see how it works.
-		- [Igor] Implement Crypto.hash(File) as a stepper. It will automatically use the CpuThrottle. 
+		- [Igor] Implement Crypto.digest(File) as a stepper. It will automatically use the CpuThrottle. 
 			- Notice CpuThrottle max usage is already being limited in FolderMapping.run().
-		- [Igor] Test mapping of folder with several track before and after doing the above, to see if CPU consumption is actually reduced.
+		- [Igor] Test mapping of folder with several tracks before and after doing the above, to see if CPU consumption is actually reduced.
 			
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 
