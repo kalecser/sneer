@@ -7,27 +7,34 @@ import java.net.URL;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.network.httpgateway.HttpGateway;
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Consumer;
 
 public class HttpGatewayImpl implements HttpGateway {
 
 	@Override
-	public void get(final String httpUrl, final Consumer<byte[]> response, final Consumer<IOException> exception) {
+	public void get(final String httpUrl, final Consumer<byte[]> client, final Consumer<IOException> exceptionHandler) {
 		my(Threads.class).startDaemon(httpUrl, new Runnable(){ @Override public void run() {
 				try {
-					response.consume(my(IO.class).streams().readBytesAndClose(new URL(httpUrl).openStream()));
+					client.consume(getResponse(httpUrl));
 				} catch (IOException e) {
-					exception.consume(e);
+					exceptionHandler.consume(e);
 				}
 		}});
 	}
 
+	
 	@Override
-	public void get(String httpUrl, Consumer<byte[]> response) {
-		get(httpUrl, response, new Consumer<IOException>(){ @Override public void consume(IOException exception) {
-			my(ExceptionLogger.class).log(exception);
+	public void get(final String httpUrl, Consumer<byte[]> client) {
+		get(httpUrl, client, new Consumer<IOException>(){ @Override public void consume(IOException exception) {
+			my(BlinkingLights.class).turnOn(LightType.WARNING, "Http request failed: " + httpUrl, "", exception, 15000);
 		}});
+	}
+
+	
+	private byte[] getResponse(final String httpUrl) throws IOException {
+		return my(IO.class).streams().readBytesAndClose(new URL(httpUrl).openStream());
 	}
 }
