@@ -11,7 +11,7 @@
 
 	- [Klaus] Revise items:
 		- FileMapper interface (methods' signatures)
-		_ FileMapperImpl.stopFolderMapping (does it need to start a daemon?)
+		- FileMapperImpl.stopFolderMapping (does it need to start a daemon?)
 		- IO.fileFilter().extensions(String...) implementation (there are two versions - one commented)
 		- FileMapperTest's methods implementation (test for #stopFolderMapping not implemented yet)
 		- BrickFilter.cacheOnlyFilesFromThisBrick(Sneer1024) change (hash of the filtered contents is not being put in the FileMap)
