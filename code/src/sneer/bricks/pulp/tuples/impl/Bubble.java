@@ -75,7 +75,7 @@ class Bubble {
 		if (PickyConsumer.class.isAssignableFrom(type))
 			return new PickyConsumerBubble(_prevayler, pathToObject);
 		
-		if (type == Void.class) throw new UnsupportedOperationException("Void methods such as " + method + " are not supported.");
+		if (type == Void.TYPE) throw new UnsupportedOperationException("Void methods such as " + method + " are not supported.");
 		
 		return wrap(object, _prevayler, pathToObject);
 	}
