@@ -1,5 +1,6 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
+import java.io.File;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.prevayler.Prevayler;
+
+import sneer.foundation.brickness.Tuple;
 
 
 class Bubble {
@@ -94,6 +97,9 @@ class Bubble {
 		if (type.isPrimitive()) return true;
 		if (type == String.class) return true;
 		if (type == Date.class) return true;
+		if (type == File.class) return true;
+		if (Tuple.class.isAssignableFrom(type)) return true;
+		
 		return false;
 	}
 
