@@ -8,19 +8,18 @@ public class CpuThrottleImpl implements CpuThrottle {
 	private final ThreadLocal<Integer> _maxCpuUsage = new ThreadLocal<Integer>();
 
 	private void setMaxCpuUsage(int percentage) {
-		if (percentage < 1  ) throw new IllegalArgumentException();
-		if (percentage > 100) throw new IllegalArgumentException();
+		if (percentage < 1  || percentage > 100)
+			throw new IllegalArgumentException("Parameter must be an integer between 1 and 100");
 		_maxCpuUsage.set(percentage);
 	}
-	
+
 
 	@Override
 	public int maxCpuUsage() {
 		Integer result = _maxCpuUsage.get();
-		return result == null
-			? 100
-			: result;
+		return (result == null) ? 100 : result;
 	}
+
 
 	@Override
 	public <T, X extends Throwable> T limitMaxCpuUsage(int percentage, ProducerWithThrowable<T, X> context) throws X {
@@ -32,5 +31,6 @@ public class CpuThrottleImpl implements CpuThrottle {
 			setMaxCpuUsage(previous);
 		}
 	}
+
 
 }
