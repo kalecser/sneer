@@ -13,7 +13,7 @@ import sneer.foundation.brickness.Nature;
 /** To be implemented.*/
 class ClassLoaderForBrickLibs extends ClassLoaderWithNatures {
 
-	public static ClassLoader newInstanceIfNecessary(File classpath, String implPackage, List<Nature> natures, ClassLoader apiClassLoader) {
+	static ClassLoader newInstanceIfNecessary(File classpath, String implPackage, List<Nature> natures, ClassLoader apiClassLoader) {
 		URL[] jars = jars(classpath, implPackage);
 		return jars.length == 0
 			? null
