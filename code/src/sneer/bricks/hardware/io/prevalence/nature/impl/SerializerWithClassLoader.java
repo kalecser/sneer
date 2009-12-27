@@ -5,10 +5,12 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 
+import org.prevayler.TransactionWithQuery;
 import org.prevayler.foundation.serialization.Serializer;
 
-import sneer.foundation.lang.exceptions.NotImplementedYet;
+import sneer.bricks.hardware.io.log.Logger;
 
 
 class SerializerWithClassLoader implements Serializer {
@@ -31,8 +33,15 @@ class SerializerWithClassLoader implements Serializer {
 		try {
 			return Serializer.deserialize(stream, _classLoader);
 		} catch (ClassNotFoundException e) {
-			return new NotImplementedYet(e);
+			my(Logger.class).log("Transaction skipped. Class not found: ", e.getMessage());
+			return transactionSkip();
 		}
 	}
 
+
+	private Object transactionSkip() {
+		return new TransactionWithQuery() {	@Override public Object executeAndQuery(Object prevalentSystem, Date executionTime) {
+			return null;
+		}};
+	}
 }
