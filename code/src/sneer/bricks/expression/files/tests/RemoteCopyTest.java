@@ -14,13 +14,13 @@ import sneer.bricks.pulp.own.name.OwnNameKeeper;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.ClosureX;
 
 public class RemoteCopyTest extends FileCopyTestBase {
 
 	@Override
 	protected void copyFileFromFileMap(final Sneer1024 hashOfContents, final File destination) throws IOException {
-		copyFromFileMap(new Closure<IOException>() { @Override public void run() throws IOException {
+		copyFromFileMap(new ClosureX<IOException>() { @Override public void run() throws IOException {
 			my(FileClient.class).startFileDownload(destination, hashOfContents).waitTillFinished();
 		}});
 	}
@@ -35,12 +35,12 @@ public class RemoteCopyTest extends FileCopyTestBase {
 	}
 
 	private void tryToCopyFolderFromFileMap(final Sneer1024 hashOfContents,	final File destination) throws IOException {
-		copyFromFileMap(new Closure<IOException>() { @Override public void run() throws IOException {
+		copyFromFileMap(new ClosureX<IOException>() { @Override public void run() throws IOException {
 			my(FileClient.class).startFolderDownload(destination, hashOfContents).waitTillFinished();
 		}});
 	}
 
-	private void copyFromFileMap(Closure<IOException> closure) throws IOException {
+	private void copyFromFileMap(ClosureX<IOException> closure) throws IOException {
 		@SuppressWarnings("unused") FileServer server = my(FileServer.class);
 		my(CustomClockTicker.class).start(10, 15000);
 		Environment remote = newTestEnvironment(my(TupleSpace.class), my(OwnNameKeeper.class), my(Clock.class));

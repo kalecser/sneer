@@ -17,7 +17,7 @@ import sneer.bricks.hardware.cpu.lang.Lang.Strings;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.ProducerWithThrowable;
+import sneer.foundation.lang.ProducerX;
 
 class Demolition implements FolderStructureVisitor {
 
@@ -92,7 +92,7 @@ class Demolition implements FolderStructureVisitor {
 		final String brickName = _strings.chomp(packageName + "." + fileName, ".java");
 		final Sneer1024 packageHash = _hashPath.peekLast();
 
-		BrickInfoImpl existingBrick = (BrickInfoImpl) _bricksByName.get(brickName, new ProducerWithThrowable<BrickInfo, IOException>() { @Override public BrickInfo produce() throws IOException {
+		BrickInfoImpl existingBrick = (BrickInfoImpl) _bricksByName.get(brickName, new ProducerX<BrickInfo, IOException>() { @Override public BrickInfo produce() throws IOException {
 			return new BrickInfoImpl(brickName, packageHash, _isCurrent);
 		}});
 		

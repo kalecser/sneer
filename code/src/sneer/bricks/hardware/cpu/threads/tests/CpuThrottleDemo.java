@@ -10,7 +10,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.ProducerWithThrowable;
+import sneer.foundation.lang.ClosureX;
 
 public class CpuThrottleDemo {
 
@@ -29,9 +29,8 @@ public class CpuThrottleDemo {
 
 	
 	private static void startChartingWithThrottle(final int maxCpuUsage) {
-		my(CpuThrottle.class).limitMaxCpuUsage(maxCpuUsage, new ProducerWithThrowable<Object, RuntimeException>(){ @Override public Object produce() throws RuntimeException {
+		my(CpuThrottle.class).limitMaxCpuUsage(maxCpuUsage, new ClosureX<RuntimeException>(){ @Override public void run() throws RuntimeException {
 			startCharting("" + maxCpuUsage + "%");
-			return null;
 		}});
 	}
 

@@ -10,7 +10,7 @@ import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.foundation.brickness.Seal;
-import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.ClosureX;
 
 class ConnectionManagerImpl implements ConnectionManager {
 
@@ -28,7 +28,7 @@ class ConnectionManagerImpl implements ConnectionManager {
 	
 	@Override
 	public void manageIncomingSocket(final ByteArraySocket socket) {
-		SocketCloser.closeIfUnsuccessful(socket, "Incoming socket closed.", new Closure<IOException>() { @Override public void run() throws IOException {
+		SocketCloser.closeIfUnsuccessful(socket, "Incoming socket closed.", new ClosureX<IOException>() { @Override public void run() throws IOException {
 			Seal contactsSeal = IncomingHandShaker.greet(socket);
 			TieBreaker.manageIncomingSocket(socket, contactsSeal);
 		}});
@@ -37,7 +37,7 @@ class ConnectionManagerImpl implements ConnectionManager {
 
 	@Override
 	public void manageOutgoingSocket(final ByteArraySocket socket, final Contact contact) {
-		SocketCloser.closeIfUnsuccessful(socket, "Outgoing socket closed.", new Closure<IOException>() { @Override public void run() throws IOException {
+		SocketCloser.closeIfUnsuccessful(socket, "Outgoing socket closed.", new ClosureX<IOException>() { @Override public void run() throws IOException {
 			OutgoingHandShaker.greet(socket);
 			TieBreaker.manageOutgoingSocket(socket, contact);
 		}});

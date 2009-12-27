@@ -1,7 +1,7 @@
 package sneer.bricks.hardware.cpu.threads.throttle.impl;
 
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
-import sneer.foundation.lang.ProducerWithThrowable;
+import sneer.foundation.lang.ClosureX;
 
 public class CpuThrottleImpl implements CpuThrottle {
 
@@ -23,11 +23,11 @@ public class CpuThrottleImpl implements CpuThrottle {
 	}
 
 	@Override
-	public <T, X extends Throwable> T limitMaxCpuUsage(int percentage, ProducerWithThrowable<T, X> context) throws X {
+	public <X extends Throwable> void limitMaxCpuUsage(int percentage, ClosureX<X> context) throws X {
 		int previous = maxCpuUsage();
 		setMaxCpuUsage(percentage);
 		try {
-			return context.produce();
+			context.run();
 		} finally {
 			setMaxCpuUsage(previous);
 		}

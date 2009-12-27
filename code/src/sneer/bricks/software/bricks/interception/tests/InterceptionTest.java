@@ -24,6 +24,7 @@ import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.Producer;
 
 public class InterceptionTest extends Assert {
@@ -35,7 +36,7 @@ public class InterceptionTest extends Assert {
 	
 	@Test
 	public void runtimeNatureInterceptsInvocations() {
-		checkingMethodIsInvoked("foo", new Object[0], new Closure<RuntimeException>() { @Override public void run() {
+		checkingMethodIsInvoked("foo", new Object[0], new Closure() { @Override public void run() {
 			my(BrickOfSomeInterceptingNature.class).foo();
 		}});
 	}
@@ -43,7 +44,7 @@ public class InterceptionTest extends Assert {
 	
 	@Test
 	public void referenceReturnValue() {
-		checkingMethodIsInvoked("bar", new Object[0], new Closure<RuntimeException>() { @Override public void run() {
+		checkingMethodIsInvoked("bar", new Object[0], new Closure() { @Override public void run() {
 			assertEquals("42", my(BrickOfSomeInterceptingNature.class).bar());
 		}});
 	}
@@ -51,7 +52,7 @@ public class InterceptionTest extends Assert {
 	
 	@Test
 	public void primitiveReturnValue() {
-		checkingMethodIsInvoked("baz", new Object[0], new Closure<RuntimeException>() { @Override public void run() {
+		checkingMethodIsInvoked("baz", new Object[0], new Closure() { @Override public void run() {
 			assertEquals(42, my(BrickOfSomeInterceptingNature.class).baz());
 		}});
 	}
@@ -59,7 +60,7 @@ public class InterceptionTest extends Assert {
 	
 	@Test
 	public void referenceParameters() {
-		checkingMethodIsInvoked("foo", new Object[] { "42" }, new Closure<RuntimeException>() { @Override public void run() {
+		checkingMethodIsInvoked("foo", new Object[] { "42" }, new Closure() { @Override public void run() {
 			my(BrickOfSomeInterceptingNature.class).foo("42");
 		}});
 	}
@@ -67,7 +68,7 @@ public class InterceptionTest extends Assert {
 	
 	@Test
 	public void primitiveParameters() {
-		checkingMethodIsInvoked("add", new Object[] { 1, 2 }, new Closure<RuntimeException>() { @Override public void run() {
+		checkingMethodIsInvoked("add", new Object[] { 1, 2 }, new Closure() { @Override public void run() {
 			my(BrickOfSomeInterceptingNature.class).add(1, 2);
 		}});
 	}
@@ -100,7 +101,7 @@ public class InterceptionTest extends Assert {
 	
 	@Test
 	public void environmentIsNotRequired() {
-		checkingMethodIsInvoked("add", new Object[] { 1, 2 }, new Closure<RuntimeException>() { @Override public void run() {
+		checkingMethodIsInvoked("add", new Object[] { 1, 2 }, new Closure() { @Override public void run() {
 			final BrickOfSomeInterceptingNature brick = my(BrickOfSomeInterceptingNature.class);
 			Environments.runWith(null, new Runnable() { @Override public void run() {
 				brick.add(1, 2);
@@ -113,7 +114,7 @@ public class InterceptionTest extends Assert {
 	public void unaccessibleMethodsAreNotIntercepted() throws Exception {
 		allowingRealizeAndInstantiate();
 		
-		runCheckingMockery(new Closure<Exception>() { @Override public void run() throws Exception {
+		runCheckingMockery(new ClosureX<Exception>() { @Override public void run() throws Exception {
 			invokeMethod("privateMethod");
 			invokeMethod("packageMethod");
 		}});
@@ -122,7 +123,7 @@ public class InterceptionTest extends Assert {
 	
 	@Test
 	public void protectedMethodsAreIntercepted() throws Exception {
-		checkingMethodIsInvoked("protectedMethod", new Object[0], new Closure<Exception>() { @Override public void run() throws Exception {
+		checkingMethodIsInvoked("protectedMethod", new Object[0], new ClosureX<Exception>() { @Override public void run() throws Exception {
 			invokeMethod("protectedMethod");
 		}});
 	}
@@ -148,7 +149,7 @@ public class InterceptionTest extends Assert {
 			}});
 		}});
 		
-		runCheckingMockery(new Closure<RuntimeException>() { @Override public void run() {
+		runCheckingMockery(new Closure() { @Override public void run() {
 			my(BrickOfSomeInterceptingNature.class).add(1, 2);
 		}});
 	}
@@ -156,7 +157,7 @@ public class InterceptionTest extends Assert {
 	
 	@Test
 	public void brickWithLib() throws Exception {
-		checkingMethodIsInvoked(BrickWithLib.class, "fooBar", new Object[0], new Closure<RuntimeException>() { @Override public void run() {
+		checkingMethodIsInvoked(BrickWithLib.class, "fooBar", new Object[0], new Closure() { @Override public void run() {
 			my(BrickWithLib.class).fooBar();
 		}});
 	}
@@ -170,7 +171,7 @@ public class InterceptionTest extends Assert {
 	}
 	
 	
-	private <X extends Exception> void runCheckingMockery(Closure<X> block) throws X {
+	private <X extends Exception> void runCheckingMockery(ClosureX<X> block) throws X {
 		Environment subject = Brickness.newBrickContainer(interceptingNatureMock);
 		Environments.runWith(subject, block);
 		mockery.assertIsSatisfied();
@@ -206,7 +207,7 @@ public class InterceptionTest extends Assert {
 	private  <X extends Exception> void checkingMethodIsInvoked(
 			final String expectedMethodName,
 			final Object[] expectedArgs,
-			Closure<X> invocationBlock) throws X {
+			ClosureX<X> invocationBlock) throws X {
 		
 		checkingMethodIsInvoked(BrickOfSomeInterceptingNature.class,
 				expectedMethodName,
@@ -218,7 +219,7 @@ public class InterceptionTest extends Assert {
 	private <X extends Exception> void checkingMethodIsInvoked(
 			final Class<?> brick,
 			final String expectedMethodName, final Object[] expectedArgs,
-			Closure<X> invocationBlock) throws X {
+			ClosureX<X> invocationBlock) throws X {
 		
 		allowingRealizeAndInstantiate(brick);
 		

@@ -24,7 +24,7 @@ import sneer.bricks.softwaresharing.publisher.SourcePublisher;
 import sneer.bricks.softwaresharing.publisher.SrcFolderHash;
 import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.Consumer;
 
 
@@ -74,18 +74,18 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 	
 	private void fetchIfNecessary(final SrcFolderHash srcFolderHash) {
-		shield("writing", new Closure<IOException>() { @Override public void run() {
+		shield("writing", new ClosureX<IOException>() { @Override public void run() {
 
 			my(FileClient.class).startFolderDownload(null, srcFolderHash.value);
 		
-			shield("reading", new Closure<IOException>() { @Override public void run() throws IOException {
+			shield("reading", new ClosureX<IOException>() { @Override public void run() throws IOException {
 				accumulateBricks(srcFolderHash);
 			}});
 		}});
 	}
 
 	
-	private void shield(String operation, Closure<IOException> closure) {
+	private void shield(String operation, ClosureX<IOException> closure) {
 		try {
 			closure.run();
 		} catch (IOException e) {

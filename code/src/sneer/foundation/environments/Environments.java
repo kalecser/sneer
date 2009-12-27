@@ -1,6 +1,6 @@
 package sneer.foundation.environments;
 
-import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.ClosureX;
 
 public class Environments {
 	
@@ -16,7 +16,7 @@ public class Environments {
 		}
 	}
 
-	public static <X extends Throwable> void runWith(Environment environment, Closure<X> closure) throws X {
+	public static <X extends Throwable> void runWith(Environment environment, ClosureX<X> closure) throws X {
 		final Environment previous = current();
 		_environment.set(environment);
 		try {

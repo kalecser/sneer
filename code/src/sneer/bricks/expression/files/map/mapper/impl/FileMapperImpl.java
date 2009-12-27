@@ -25,9 +25,10 @@ import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
+import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.Producer;
-import sneer.foundation.lang.ProducerWithThrowable;
 
 class FileMapperImpl implements FileMapper {
 
@@ -91,11 +92,12 @@ class FileMapperImpl implements FileMapper {
 
 
 		private Sneer1024 runWithCpuThrottle() throws Exception {
-			return my(CpuThrottle.class).limitMaxCpuUsage(15, new ProducerWithThrowable<Sneer1024, Exception>() { @Override public Sneer1024 produce() throws Exception {
-				Sneer1024 result = mapFolder(_folder, _acceptedFileExtensions);
+			final ByRef<Sneer1024> result = ByRef.newInstance();
+			my(CpuThrottle.class).limitMaxCpuUsage(15, new ClosureX<Exception>() { @Override public void run() throws Exception {
+				result.value = mapFolder(_folder, _acceptedFileExtensions);
 				finish();
-				return result;
 			}});
+			return result.value;
 		}
 
 		

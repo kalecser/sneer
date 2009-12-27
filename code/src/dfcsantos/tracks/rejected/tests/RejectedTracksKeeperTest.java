@@ -13,7 +13,7 @@ import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.ClosureX;
 import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.playlist.Playlist;
 import dfcsantos.tracks.playlist.Playlists;
@@ -62,7 +62,7 @@ public class RejectedTracksKeeperTest extends BrickTest {
 		Environment newTestEnvironment = newTestEnvironment(my(FolderConfig.class));
 		_subject = EnvironmentUtils.retrieveFrom(newTestEnvironment, RejectedTracksKeeper.class);
 
-		Environments.runWith(newTestEnvironment, new Closure<IOException>() { @Override public void run() {
+		Environments.runWith(newTestEnvironment, new ClosureX<IOException>() { @Override public void run() {
 			assertTrue(_subject.isRejected(firstTrackHash));
 			assertTrue(_subject.isRejected(secondTrackHash));
 			assertTrue(_subject.isRejected(thirdTrackHash));

@@ -1,7 +1,8 @@
 package sneer.foundation.lang;
 
-public interface Closure<X extends Throwable> {
+/** A Runnable that can be used polimorphically in places that use a ClosureX.*/
+public interface Closure extends ClosureX<RuntimeException>, Runnable {
 	
-	void run() throws X;
+	void run();
 
 }
