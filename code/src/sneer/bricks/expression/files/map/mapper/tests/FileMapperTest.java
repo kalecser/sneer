@@ -27,7 +27,7 @@ public class FileMapperTest extends BrickTest {
 	private File _fixtureFolder;
 
 	@Test (timeout = 3000)
-	public void mapFolder() throws MappingStopped {
+	public void mapFolder() throws Exception {
 		Sneer1024 hash = _subject.mapFolder(fixturesFolder(), "txt");
 		FolderContents folderContents = my(FileMap.class).getFolderContents(hash);
 
