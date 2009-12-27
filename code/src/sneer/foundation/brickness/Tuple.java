@@ -9,13 +9,6 @@ import java.util.List;
 
 public abstract class Tuple {
 
-	protected Tuple(Seal publisher, long publicationTime) {
-		this();
-		_publisher = publisher;
-		_publicationTime = publicationTime;
-	}
-
-	
 	protected Tuple() {
 		this(null);
 	}

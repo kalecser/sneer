@@ -115,7 +115,9 @@ public class SpeexTuplesTest extends BrickTest {
 	}
 
 	private Tuple speexPacketFrom(Seal contactKey, byte[][] bs, String channel, short sequence) {
-		return new SpeexPacket(contactKey, immutable(bs), channel, sequence);
+		SpeexPacket result = new SpeexPacket(immutable(bs), channel, sequence);
+		result.stamp(contactKey, 0);
+		return result;
 	}
 
 	private ImmutableByteArray2D immutable(byte[][] array2D) {
@@ -144,7 +146,9 @@ public class SpeexTuplesTest extends BrickTest {
 	}
 	
 	private PcmSoundPacket pcmSoundPacketFor(Seal publicKey, final byte[] pcmPayload) {
-		return new PcmSoundPacket(publicKey, _clock.time().currentValue(), my(ImmutableArrays.class).newImmutableByteArray(pcmPayload));
+		PcmSoundPacket result = new PcmSoundPacket(my(ImmutableArrays.class).newImmutableByteArray(pcmPayload));
+		result.stamp(publicKey, _clock.time().currentValue());
+		return result;
 	}
 	
 	private byte[][] frames() {
