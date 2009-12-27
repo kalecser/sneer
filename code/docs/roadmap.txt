@@ -2,10 +2,9 @@
 =========
 
 	- Lighter Track Mapping
-		- [Igor] Read CpuThrottle and Threads.startStepping() javadocs. Run CpuThrottleDemo to see how it works.
-		- [Igor] Implement Crypto.hash(File) as a stepper. It will automatically use the CpuThrottle. 
+		- [Igor] Implement Crypto.digest(File) as a stepper. It will automatically use the CpuThrottle. 
 			- Notice CpuThrottle max usage is already being limited in FolderMapping.run().
-		- [Igor] Test mapping of folder with several track before and after doing the above, to see if CPU consumption is actually reduced.
+		- [Igor] Test mapping of folder with several tracks before and after doing the above, to see if CPU consumption is actually reduced.
 			
 	- [Igor] Runnable -> ClosureX - Find all places in foundation and in all our brick APIs that accept Runnable and change them to accept ClosureX.
 		- Example: Delete Environments.runWith(Environment environment, Runnable runnable) because there already is the version with ClosureX.

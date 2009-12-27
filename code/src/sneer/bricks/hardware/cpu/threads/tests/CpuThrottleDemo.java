@@ -16,7 +16,7 @@ public class CpuThrottleDemo {
 
 	private static final Map<String, AtomicInteger> _countersByLabel = new HashMap<String, AtomicInteger>();
 
-	
+
 	public static void main(String[] ignored) {
 		Environments.runWith(Brickness.newBrickContainer(), new Runnable() { @Override public void run() {
 			startChartingWithThrottle(5);
@@ -27,15 +27,14 @@ public class CpuThrottleDemo {
 		}});
 	}
 
-	
+
 	private static void startChartingWithThrottle(final int maxCpuUsage) {
 		my(CpuThrottle.class).limitMaxCpuUsage(maxCpuUsage, new ClosureX<RuntimeException>(){ @Override public void run() throws RuntimeException {
 			startCharting("" + maxCpuUsage + "%");
 		}});
 	}
 
-	
-	synchronized
+
 	private static void startCharting(final String label) {
 		_countersByLabel.put(label, new AtomicInteger());
 		my(Threads.class).startStepping(new Runnable(){ @Override public void run() {
@@ -51,5 +50,6 @@ public class CpuThrottleDemo {
 		for (Map.Entry<String, AtomicInteger> entry : _countersByLabel.entrySet())
 			System.out.println("Stepper with CPU throttle at " + entry.getKey() + " ran " + entry.getValue() + " times.");
 	}
+
 
 }
