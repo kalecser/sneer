@@ -17,12 +17,20 @@
 			- Delete all other java files from the TupleSpaceImpl package.
 			- Delete the lib folder from the TupleSpaceImpl package. 
 
-	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
-
 	- [Klaus] Revise items:
 		- IO.fileFilter().extensions(String...) implementation (there are two versions - one commented)
 		- FileMapperTest's methods implementation (test for #stopFolderMapping not implemented yet)
 		- BrickFilter.cacheOnlyFilesFromThisBrick(Sneer1024) change (hash of the filtered contents is not being put in the FileMap)
+
+	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
+		- Unignore Freedom7
+			- Big File Blocks
+			- BrickSpaceImpl.init() uncomment.
+			- LocalBrickDiscoveryTest uncomment.
+		- Brick States - All
+			- Hierarchical View - Consider groups of bricks (brick package at any level, examples: bricks.hardware, bricks.software, bricks.hardware.io, etc) as an optional grouping for versioning and downloading from friends, not only individual bricks.
+				- Do not allow circular dependencies among any level of groups of bricks and voilà: the world is free of cyclic dependencies.
+	
 
 	- [Igor/Klaus] Analyze the following performance issues:
 		- IncomingHandShaker.identifyContact(ByteArraySocket) is very time-consuming
@@ -55,15 +63,6 @@
 	- Revise entire package structure.
 		- Remove all calls to sleep() including indirect.
 
-	- Metoo
-		- Unignore Freedom7
-			- Big File Blocks
-			- BrickSpaceImpl.init() uncomment.
-			- LocalBrickDiscoveryTest uncomment.
-		- Brick States - All
-			- Hierarchical View - Consider groups of bricks (brick package at any level, examples: bricks.hardware, bricks.software, bricks.hardware.io, etc) as an optional grouping for versioning and downloading from friends, not only individual bricks.
-				- Do not allow circular dependencies among any level of groups of bricks and voilà: the world is free of cyclic dependencies.
-	
 	- Sneer Responsiveness - Find a way to avoid snapp starter thread from waiting for gui thread.
 
 	- RapidShare Killer
