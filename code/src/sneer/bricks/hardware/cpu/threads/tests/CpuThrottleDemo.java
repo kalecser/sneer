@@ -34,7 +34,7 @@ public class CpuThrottleDemo {
 		}});
 	}
 
-
+	synchronized
 	private static void startCharting(final String label) {
 		_countersByLabel.put(label, new AtomicInteger());
 		my(Threads.class).startStepping(new Runnable(){ @Override public void run() {
