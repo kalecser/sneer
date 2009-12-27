@@ -26,7 +26,7 @@ class PrevalentImpl implements Prevalent {
 	@Override
 	public <T> T instantiate(Class<T> brick, Class<T> implClass,	Producer<T> producer) {
 		Prevayler prevayler = createPrevayler(producer.produce(), prevalenceBase(brick));
-		return Bubble.wrapStateMachine(prevayler);
+		return (T)Bubble.wrapStateMachine(prevayler);
 	}
 
 
