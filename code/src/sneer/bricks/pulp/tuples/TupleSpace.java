@@ -10,8 +10,7 @@ import sneer.foundation.lang.Predicate;
 @Brick
 public interface TupleSpace {
 
-	void publish(Tuple newOrignalTupleByTheKing);
-	void acquire(Tuple someTupleThatCameFromAContact);
+	void acquire(Tuple tuple);
 
 	<T extends Tuple> WeakContract addSubscription(Class<T> tupleType, Consumer<? super T> subscriber);
 	<T extends Tuple> WeakContract addSubscription(Class<T> tupleType, Consumer<? super T> subscriber, Predicate<? super T> filter);

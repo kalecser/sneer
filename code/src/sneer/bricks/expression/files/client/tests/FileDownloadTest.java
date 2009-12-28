@@ -40,7 +40,7 @@ public class FileDownloadTest extends BrickTest {
 		final Iterator<FileContents> blocksOutOfSequence = createFileContentBlocks(smallFile, smallFileHash).iterator();
 		@SuppressWarnings("unused")
 		WeakContract toAvoidGC = my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
-			my(TupleSpace.class).publish(blocksOutOfSequence.next());
+			my(TupleSpace.class).acquire(blocksOutOfSequence.next());
 			blocksOutOfSequence.remove();
 			my(Clock.class).advanceTime(1); // To avoid duplicated tuples
 		}});

@@ -185,11 +185,6 @@ class TupleSpaceImpl implements TupleSpace {
 
 	
 	@Override
-	public void publish(Tuple tuple) {
-		acquire(tuple);
-	}
-
-	@Override
 	public synchronized void acquire(Tuple tuple) {
 		if (isWeird(tuple)) return; //Filter out those weird shouts that appeared in the beginning.
 		

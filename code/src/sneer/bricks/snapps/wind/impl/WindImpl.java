@@ -49,6 +49,6 @@ class WindImpl implements Wind, Consumer<Shout> {
 	}
 
 	private void shout(String phrase) {
-		my(TupleSpace.class).publish(new Shout(phrase));
+		my(TupleSpace.class).acquire(new Shout(phrase));
 	}
 }

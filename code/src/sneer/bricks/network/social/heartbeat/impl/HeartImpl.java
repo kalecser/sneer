@@ -19,7 +19,7 @@ public class HeartImpl implements Heart {
 	}
 
 	private void beat() {
-		my(TupleSpace.class).publish(new Heartbeat());
+		my(TupleSpace.class).acquire(new Heartbeat());
 	}
 	
 }

@@ -31,7 +31,7 @@ class SourcePublisherImpl implements SourcePublisher {
 			return;
 		}
 
-		my(TupleSpace.class).publish(new SrcFolderHash(hash));
+		my(TupleSpace.class).acquire(new SrcFolderHash(hash));
 	}
 
 	private File srcFolder() {

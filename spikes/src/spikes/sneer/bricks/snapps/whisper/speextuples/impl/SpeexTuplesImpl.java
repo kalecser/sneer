@@ -97,7 +97,7 @@ class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the en
 	}
 
 	private void flush() {
-		_tupleSpace.publish(new SpeexPacket(immutable(_frames), _room.currentValue(), nextShort()));
+		_tupleSpace.acquire(new SpeexPacket(immutable(_frames), _room.currentValue(), nextShort()));
 		_frames = newFramesArray();
 		_frameIndex = 0;
 	}

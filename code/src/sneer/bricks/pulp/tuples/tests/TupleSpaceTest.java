@@ -26,12 +26,12 @@ public class TupleSpaceTest extends BrickTest {
 		}});
 		
 		final TestTuple tuple = new TestTuple(42);
-		_subject.publish(tuple);
+		_subject.acquire(tuple);
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 
 		contract.dispose();
 		
-		_subject.publish(new TestTuple(-1));
+		_subject.acquire(new TestTuple(-1));
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 		assertArrayEquals(new Object[] { tuple }, tuples.toArray());
 	}

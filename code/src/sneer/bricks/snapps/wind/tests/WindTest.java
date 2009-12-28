@@ -20,10 +20,10 @@ public class WindTest extends BrickTest {
 		Shout ahhh = new Shout("AHHH!!!");
 
 		my(Clock.class).advanceTimeTo(YEAR_ONE);
-		tupleSpace().publish(ahhh);
+		tupleSpace().acquire(ahhh);
 
 		Shout choo = new Shout("CHOOO!!!");
-		tupleSpace().publish(choo);
+		tupleSpace().acquire(choo);
 
 		tupleSpace().waitForAllDispatchingToFinish();
 
@@ -35,16 +35,16 @@ public class WindTest extends BrickTest {
 	@Test(timeout = 4000)
 	public void testSortedShoutsHeard() {
 		my(Clock.class).advanceTimeTo(15);
-		tupleSpace().publish(new Shout(""+15));
+		tupleSpace().acquire(new Shout(""+15));
 
 		for (int i = 30; i > 20; i--) {
 			my(Clock.class).advanceTimeTo(i);
-			tupleSpace().publish(new Shout(""+i));
+			tupleSpace().acquire(new Shout(""+i));
 		}
 		
 		for (int i = 10; i > 0; i--) {
 			my(Clock.class).advanceTimeTo(i);
-			tupleSpace().publish(new Shout(""+i));
+			tupleSpace().acquire(new Shout(""+i));
 		}
 
 		tupleSpace().waitForAllDispatchingToFinish();

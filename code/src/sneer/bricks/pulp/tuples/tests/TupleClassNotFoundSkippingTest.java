@@ -46,7 +46,7 @@ public class TupleClassNotFoundSkippingTest extends BrickTest {
 		runInNewEnvironment(new Runnable() { @Override public void run() {
 			TupleSpace subject1 = createSubject();
 			subject1.keep(TestTuple.class);
-			subject1.publish(new TestTuple(0));
+			subject1.acquire(new TestTuple(0));
 		}});
 		
 		runInNewEnvironment(new Runnable() { @Override public void run() {

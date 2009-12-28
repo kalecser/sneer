@@ -32,7 +32,7 @@ public class HeartTest extends BrickTest {
 				_timerSteppable.value = (Runnable)invocation.getParameter(1); return null;
 			}});
 
-			exactly(2).of(_tupleSpace).publish(with(any(Heartbeat.class)));
+			exactly(2).of(_tupleSpace).acquire(with(any(Heartbeat.class)));
 		}});
 
 		my(Heart.class);
