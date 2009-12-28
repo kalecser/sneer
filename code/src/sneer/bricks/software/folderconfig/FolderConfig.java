@@ -2,24 +2,24 @@ package sneer.bricks.software.folderconfig;
 
 import java.io.File;
 
-import sneer.bricks.hardware.ram.ref.immutable.Immutable;
+import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface FolderConfig {
 
-	Immutable<File> ownSrcFolder();
-	Immutable<File> ownBinFolder();
+	ImmutableReference<File> ownSrcFolder();
+	ImmutableReference<File> ownBinFolder();
 
-	Immutable<File> srcFolder();
-	Immutable<File> binFolder();
+	ImmutableReference<File> srcFolder();
+	ImmutableReference<File> binFolder();
 
-	Immutable<File> storageFolder();
+	ImmutableReference<File> storageFolder();
 	File storageFolderFor(Class<?> brick);
 
-	Immutable<File> tmpFolder();
+	ImmutableReference<File> tmpFolder();
 	File tmpFolderFor(Class<?> brick);
 
-	Immutable<File> stageFolder();
+	ImmutableReference<File> stageFolder();
 
 }

@@ -17,7 +17,6 @@ import java.util.Set;
 import org.prevayler.Prevayler;
 import org.prevayler.PrevaylerFactory;
 
-import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.lang.contracts.Contracts;
 import sneer.bricks.hardware.cpu.lang.contracts.Disposable;
@@ -125,7 +124,6 @@ class TupleSpaceImpl implements TupleSpace {
 	private static final int FLOODED_CACHE_SIZE = 1000;
 	private static final Subscription<?>[] SUBSCRIPTION_ARRAY = new Subscription[0];
 
-	private final Seals _keyManager = my(Seals.class);
 	private final Threads _threads = my(Threads.class);
 	private final ExceptionHandler _exceptionHandler = my(ExceptionHandler.class);
 
@@ -138,7 +136,6 @@ class TupleSpaceImpl implements TupleSpace {
 	private final Set<Class<? extends Tuple>> _typesToKeep = new HashSet<Class<? extends Tuple>>();
 	private final ListRegister<Tuple> _keptTuples;
 
-	private final Object _publicationMonitor = new Object();
 
 	final Prevayler _prevayler = prevayler(my(CollectionSignals.class).newListRegister());
 	volatile boolean _isPrevaylerClosed = false;
@@ -189,10 +186,7 @@ class TupleSpaceImpl implements TupleSpace {
 	
 	@Override
 	public void publish(Tuple tuple) {
-		synchronized (_publicationMonitor ) {
-			stamp(tuple);
-			acquire(tuple);
-		}
+		acquire(tuple);
 	}
 
 	@Override
@@ -205,7 +199,7 @@ class TupleSpaceImpl implements TupleSpace {
 			capFloodedTuples();
 		} else {
 			Seal me = my(Seals.class).ownSeal();
-			if (!tuple.addressee.equals(me) && !tuple.publisher().equals(me)) {
+			if (!tuple.addressee.equals(me) && !tuple.publisher.equals(me)) {
 				my(Logger.class).log("Tuple received with incorrect addressee: {} type: ", tuple.addressee, tuple.getClass());
 				return;
 			}
@@ -219,7 +213,7 @@ class TupleSpaceImpl implements TupleSpace {
 
 
 	private boolean isWeird(Tuple tuple) {
-		if (nameFor(tuple.publisher()).length() < 60) return false;
+		if (nameFor(tuple.publisher).length() < 60) return false;
 		
 		my(BlinkingLights.class).turnOn(LightType.ERROR, "Weird Tuple", "Tuples with weird publishers are being filtered out.", 30000);
 		return true;
@@ -265,10 +259,6 @@ class TupleSpaceImpl implements TupleSpace {
 	}
 
 	
-	private void stamp(Tuple tuple) {
-		tuple.stamp(_keyManager.ownSeal(), my(Clock.class).time().currentValue());
-	}
-
 	private void capFloodedTuples() {
 		if (_floodedTupleCache.size() <= FLOODED_CACHE_SIZE) return;
 

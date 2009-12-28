@@ -3,12 +3,12 @@ package sneer.bricks.hardware.ram.ref.immutable;
 import sneer.foundation.brickness.Brick;
 
 @Brick
-public interface Immutables {
+public interface ImmutableReferences {
 
 	/** @return an immutable that has not been set yet. It must be set before getting its value.*/
-	<T> Immutable<T> newInstance();
+	<T> ImmutableReference<T> newInstance();
 
 	/** @return an immutable set to value.*/
-	<T> Immutable<T> newInstance(T value);
+	<T> ImmutableReference<T> newInstance(T value);
 
 }

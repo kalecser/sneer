@@ -74,7 +74,7 @@ class WatchMeImpl implements WatchMe {
 		final Cache<ImmutableByteArray> cache = _cacheFactory.createWithCapacity(CACHE_CAPACITY);
 		
 		return new Consumer<ImageDeltaPacket>(){@Override public void consume(ImageDeltaPacket delta) {
-			if (!delta.publisher().equals(publisher))
+			if (!delta.publisher.equals(publisher))
 				return;
 			
 			ImmutableByteArray imageData = delta.imageData != null

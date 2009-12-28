@@ -81,7 +81,7 @@ final class ProbeImpl implements Consumer<Tuple> {
 
 	
 	private boolean isEcho(Tuple tuple) {
-		return _contactsSeal.equals(tuple.publisher());
+		return _contactsSeal.equals(tuple.publisher);
 	}
 
 	private void initContactsPKIfNecessary() {

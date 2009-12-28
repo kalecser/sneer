@@ -13,7 +13,7 @@ import java.io.File;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.robust.RobustExceptionLogging;
-import sneer.bricks.hardware.ram.ref.immutable.Immutable;
+import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.snapps.system.log.file.LogToFile;
 import sneer.bricks.snapps.system.log.sysout.LogToSysout;
 import sneer.bricks.software.bricks.snappstarter.SnappStarter;
@@ -71,7 +71,7 @@ public class SneerSession implements Runnable {
 	}
 
 	
-	private static void createAndSet(Immutable<File> property, File folder) {
+	private static void createAndSet(ImmutableReference<File> property, File folder) {
 		if (!folder.exists() && !folder.mkdirs()) throw new IllegalStateException("Unable to create folder " + property);
 		property.set(folder);
 	}

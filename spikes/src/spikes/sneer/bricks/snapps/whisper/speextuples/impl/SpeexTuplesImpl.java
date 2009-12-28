@@ -68,7 +68,7 @@ class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the en
 	
 	
 	private void playInSequence(SpeexPacket packet) {
-		Sequencer<SpeexPacket> sequencer = _sequencersByPublisher.get(packet.publisher(), _sequencerProducer);
+		Sequencer<SpeexPacket> sequencer = _sequencersByPublisher.get(packet.publisher, _sequencerProducer);
 		sequencer.produceInSequence(packet, packet.sequence);
 	}
 	
@@ -89,7 +89,7 @@ class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the en
 	}
 	
 	private boolean isMine(Tuple packet) {
-		return _keyManager.ownSeal().equals(packet.publisher());
+		return _keyManager.ownSeal().equals(packet.publisher);
 	}
 	
 	private static byte[][] newFramesArray() {

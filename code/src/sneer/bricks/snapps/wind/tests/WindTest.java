@@ -13,17 +13,16 @@ import sneer.bricks.software.folderconfig.tests.BrickTest;
 public class WindTest extends BrickTest {
 
 	private static final int YEAR_ONE = 1000 * 60 * 60 * 24 * 356;
-	private final Wind _subject =  my(Wind.class);
+	private final Wind _subject = my(Wind.class);
 	
 	@Test(timeout = 4000)
 	public void oldShoutsAreNotHeard() {
-		
+		Shout ahhh = new Shout("AHHH!!!");
+
 		my(Clock.class).advanceTimeTo(YEAR_ONE);
-
-		ShoutMock ahhh = new ShoutMock("AHHH!!!", 0);
-		ShoutMock choo = new ShoutMock("CHOOO!!!", YEAR_ONE);
-
 		tupleSpace().publish(ahhh);
+
+		Shout choo = new Shout("CHOOO!!!");
 		tupleSpace().publish(choo);
 
 		tupleSpace().waitForAllDispatchingToFinish();
@@ -35,29 +34,30 @@ public class WindTest extends BrickTest {
 	
 	@Test(timeout = 4000)
 	public void testSortedShoutsHeard() {
-		tupleSpace().publish(new ShoutMock(""+15, 15));
+		my(Clock.class).advanceTimeTo(15);
+		tupleSpace().publish(new Shout(""+15));
 
 		for (int i = 30; i > 20; i--) {
-			ShoutMock shout = new ShoutMock(""+i, i);
-			tupleSpace().publish(shout);
+			my(Clock.class).advanceTimeTo(i);
+			tupleSpace().publish(new Shout(""+i));
 		}
 		
 		for (int i = 10; i > 0; i--) {
-			ShoutMock shout = new ShoutMock(""+i, i);
-			tupleSpace().publish(shout);
+			my(Clock.class).advanceTimeTo(i);
+			tupleSpace().publish(new Shout(""+i));
 		}
 
 		tupleSpace().waitForAllDispatchingToFinish();
 		Shout previousShout = null;
-		for (Shout _shout : _subject.shoutsHeard()) {
+		for (Shout shout : _subject.shoutsHeard()) {
 			
-			if(previousShout==null){
-				previousShout = _shout;
+			if (previousShout == null) {
+				previousShout = shout;
 				continue;
 			}
 			
-			assertTrue(previousShout.publicationTime() < _shout.publicationTime());
-			previousShout = _shout;
+			assertTrue(previousShout.publicationTime < shout.publicationTime);
+			previousShout = shout;
 		}
 
 		assertEquals(21, _subject.shoutsHeard().size().currentValue().intValue());

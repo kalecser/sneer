@@ -1,14 +1,14 @@
 package sneer.bricks.hardware.ram.ref.immutable.impl;
 
-import sneer.bricks.hardware.ram.ref.immutable.Immutable;
+import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 
-class ImmutableImpl<T> implements Immutable<T> {
+class ImmutableReferenceImpl<T> implements ImmutableReference<T> {
 
 	private T _value;
 	private boolean _isAlreadySet; //This is necessary because _value can be set to null;
 	
-	ImmutableImpl() {}
-	ImmutableImpl(T value) { set(value); }
+	ImmutableReferenceImpl() {}
+	ImmutableReferenceImpl(T value) { set(value); }
 
 	@Override
 	public T get() {

@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.prevayler.Prevayler;
 
-import sneer.bricks.pulp.tuples.Tuple;
+import sneer.foundation.brickness.Immutable;
 
 
 class Bubble {
@@ -98,7 +98,7 @@ class Bubble {
 		if (type == String.class) return true;
 		if (type == Date.class) return true;
 		if (type == File.class) return true;
-		if (Tuple.class.isAssignableFrom(type)) return true;
+		if (Immutable.class.isAssignableFrom(type)) return true;
 		
 		return false;
 	}

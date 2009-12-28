@@ -1,6 +1,8 @@
 ﻿TASKS
 =========
 
+	- [Igor] TrackDownloaderTest - Unignore and run. 
+
 	- Lighter Track Mapping
 		- [Igor] Implement Crypto.digest(File) as a stepper. It will automatically use the CpuThrottle. 
 			- Notice CpuThrottle max usage is already being limited in FolderMapping.run().

@@ -53,7 +53,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 		if (!_isActive ) return;
 
 		if (!isTracksDownloadAllowed()) return;
-		if (my(Seals.class).ownSeal().equals(endorsement.publisher())) return;
+		if (my(Seals.class).ownSeal().equals(endorsement.publisher)) return;
 		if (isDuplicated(endorsement)) return;
 		if (isRejected(endorsement)) return;
 
