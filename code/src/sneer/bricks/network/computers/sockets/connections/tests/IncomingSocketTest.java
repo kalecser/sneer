@@ -11,10 +11,10 @@ import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
-import sneer.foundation.brickness.Seal;
 import sneer.foundation.brickness.testsupport.Bind;
 
 public class IncomingSocketTest extends BrickTest {

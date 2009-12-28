@@ -1,4 +1,4 @@
-package sneer.foundation.brickness;
+package sneer.bricks.pulp.keymanager;
 
 import java.util.Arrays;
 

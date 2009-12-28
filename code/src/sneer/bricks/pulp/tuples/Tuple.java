@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import sneer.foundation.brickness.Seal;
+import sneer.bricks.pulp.keymanager.Seal;
 
 
 public abstract class Tuple {

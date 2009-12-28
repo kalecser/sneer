@@ -17,6 +17,7 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
+import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.software.code.classutils.ClassUtils;
@@ -28,7 +29,6 @@ import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
 import sneer.foundation.brickness.Brick;
-import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.Consumer;
 
 @Ignore

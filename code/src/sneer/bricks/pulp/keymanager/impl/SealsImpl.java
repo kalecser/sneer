@@ -6,9 +6,9 @@ import java.io.UnsupportedEncodingException;
 
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.own.name.OwnNameKeeper;
-import sneer.foundation.brickness.Seal;
 
 class SealsImpl implements Seals {
 
