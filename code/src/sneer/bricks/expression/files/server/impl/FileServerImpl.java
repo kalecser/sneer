@@ -20,8 +20,8 @@ import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.Consumer;
 
 public class FileServerImpl implements FileServer, Consumer<FileRequest> {

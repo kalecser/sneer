@@ -1,10 +1,12 @@
-package sneer.foundation.brickness;
+package sneer.bricks.pulp.tuples;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+
+import sneer.foundation.brickness.Seal;
 
 
 public abstract class Tuple {

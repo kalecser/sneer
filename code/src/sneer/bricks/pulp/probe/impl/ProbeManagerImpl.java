@@ -15,8 +15,8 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.probe.ProbeManager;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.serialization.Serializer;
+import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.Consumer;
 
 class ProbeManagerImpl implements ProbeManager {

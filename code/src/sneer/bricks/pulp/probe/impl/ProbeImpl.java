@@ -9,9 +9,9 @@ import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.brickness.Seal;
-import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.Consumer;
 
 final class ProbeImpl implements Consumer<Tuple> {

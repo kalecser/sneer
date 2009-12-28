@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.prevayler.Prevayler;
 
-import sneer.foundation.brickness.Tuple;
+import sneer.bricks.pulp.tuples.Tuple;
 
 
 class Bubble {

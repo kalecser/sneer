@@ -1,7 +1,7 @@
 package spikes.sneer.bricks.snapps.whisper.speextuples;
 
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray2D;
-import sneer.foundation.brickness.Tuple;
+import sneer.bricks.pulp.tuples.Tuple;
 
 public class SpeexPacket extends Tuple {
 	

@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.own.name;
 
-import sneer.foundation.brickness.Tuple;
+import sneer.bricks.pulp.tuples.Tuple;
 
 public class OwnName extends Tuple {
 

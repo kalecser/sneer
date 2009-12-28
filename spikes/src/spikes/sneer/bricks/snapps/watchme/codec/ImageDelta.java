@@ -1,7 +1,7 @@
 package spikes.sneer.bricks.snapps.watchme.codec;
 
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
-import sneer.foundation.brickness.Tuple;
+import sneer.bricks.pulp.tuples.Tuple;
 
 public class ImageDelta extends Tuple {
 

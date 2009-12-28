@@ -10,7 +10,7 @@ import sneer.bricks.network.computers.sockets.connections.ByteConnection.PacketS
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.serialization.Serializer;
-import sneer.foundation.brickness.Tuple;
+import sneer.bricks.pulp.tuples.Tuple;
 
 class SchedulerImpl implements PacketScheduler {
 

@@ -4,8 +4,8 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
+import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.kept.KeptTuples;
-import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.Consumer;
 
 public class KeptTuplesImpl implements KeptTuples {

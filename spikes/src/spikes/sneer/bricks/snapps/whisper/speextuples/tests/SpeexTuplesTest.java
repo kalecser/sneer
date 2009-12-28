@@ -11,11 +11,11 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray2D;
 import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.skin.rooms.ActiveRoomKeeper;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.Seal;
-import sneer.foundation.brickness.Tuple;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Consumer;
@@ -138,14 +138,14 @@ public class SpeexTuplesTest extends BrickTest {
 	}
 	
 	private PcmSoundPacket myPacket(byte[] pcm) {
-		return pcmSoundPacketFor(ownPublicKey(), pcm);
+		return pcmSoundPacketFrom(ownPublicKey(), pcm);
 	}
 
 	private Seal ownPublicKey() {
 		return _keyManager.ownSeal();
 	}
 	
-	private PcmSoundPacket pcmSoundPacketFor(Seal publicKey, final byte[] pcmPayload) {
+	private PcmSoundPacket pcmSoundPacketFrom(Seal publicKey, final byte[] pcmPayload) {
 		PcmSoundPacket result = new PcmSoundPacket(my(ImmutableArrays.class).newImmutableByteArray(pcmPayload));
 		result.stamp(publicKey, _clock.time().currentValue());
 		return result;

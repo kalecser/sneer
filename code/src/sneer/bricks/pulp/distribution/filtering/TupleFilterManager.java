@@ -1,7 +1,7 @@
 package sneer.bricks.pulp.distribution.filtering;
 
+import sneer.bricks.pulp.tuples.Tuple;
 import sneer.foundation.brickness.Brick;
-import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.Predicate;
 
 @Brick

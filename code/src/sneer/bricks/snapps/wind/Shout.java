@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.wind;
 
-import sneer.foundation.brickness.Tuple;
+import sneer.bricks.pulp.tuples.Tuple;
 
 public class Shout extends Tuple {
 

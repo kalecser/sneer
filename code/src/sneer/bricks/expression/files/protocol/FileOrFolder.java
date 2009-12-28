@@ -1,7 +1,7 @@
 package sneer.bricks.expression.files.protocol;
 
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
-import sneer.foundation.brickness.Tuple;
+import sneer.bricks.pulp.tuples.Tuple;
 
 public class FileOrFolder extends Tuple {
 

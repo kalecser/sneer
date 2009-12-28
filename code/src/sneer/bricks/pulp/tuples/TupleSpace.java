@@ -4,7 +4,6 @@ import java.util.List;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.foundation.brickness.Brick;
-import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Predicate;
 

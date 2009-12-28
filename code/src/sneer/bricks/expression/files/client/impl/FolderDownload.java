@@ -14,8 +14,8 @@ import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.expression.files.writer.folder.FolderContentsWriter;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.Consumer;
 
 class FolderDownload extends AbstractDownload {
