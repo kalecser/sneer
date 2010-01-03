@@ -4,6 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.UnsupportedEncodingException;
 
+import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.ContactManager;
 import sneer.bricks.pulp.keymanager.Seal;
@@ -53,7 +54,7 @@ class SealsImpl implements Seals {
 
 	private String nameFor(Seal seal) {
 		try {
-			return new String(seal.bytes(), UTF_8);
+			return new String(seal.bytes.copy(), UTF_8);
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalStateException(e);
 		}
@@ -61,9 +62,10 @@ class SealsImpl implements Seals {
 
 	@Override
 	public Seal unmarshall(byte[] bytes) {
-		return new Seal(bytes);
+		return new Seal(new ImmutableByteArray(bytes));
 	}
 
+	
 	private Seal generateMickeyMouseKey(String name) {
 //		Sneer1024 sneer1024 = _crypto.digest(string.getBytes());
 //		return new PublicKey(sneer1024.bytes());

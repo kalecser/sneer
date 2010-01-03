@@ -14,7 +14,7 @@ public class TupleKeepingTest extends BrickTest {
 	private int _notificationCounter;
 	
 	
-	@Test (timeout = 5000)
+	@Test //(timeout = 5000)
 	public void tuplesLimitAmount() {
 
 		@SuppressWarnings("unused")
@@ -23,9 +23,10 @@ public class TupleKeepingTest extends BrickTest {
 		}});
 		
 		subject().keep(KeptTuple.class);
-		subject().acquire(new KeptTuple(1));
+		KeptTuple tuple = new KeptTuple(1);
+		subject().acquire(tuple);
 		flushCache();
-		subject().acquire(new KeptTuple(1));
+		subject().acquire(tuple);
 		
 		subject().waitForAllDispatchingToFinish();
 

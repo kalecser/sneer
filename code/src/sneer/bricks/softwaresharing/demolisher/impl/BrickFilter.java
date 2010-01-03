@@ -11,7 +11,7 @@ import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
+import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 
 class BrickFilter {
 
@@ -58,7 +58,7 @@ class BrickFilter {
 
 
 	private static FolderContents asTuple(List<FileOrFolder> result) {
-		return new FolderContents(my(ImmutableArrays.class).newImmutableArray(result));
+		return new FolderContents(new ImmutableArray<FileOrFolder>(result));
 	}
 
 

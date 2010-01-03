@@ -130,7 +130,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	private Contact waitForContactGiven(byte[] publicKey) {
 		while (true) {
-			Contact contact = my(Seals.class).contactGiven(new Seal(publicKey));
+			Contact contact = my(Seals.class).contactGiven(my(Seals.class).unmarshall(publicKey));
 			if (contact != null) return contact;
 			my(Threads.class).sleepWithoutInterruptions(10);
 			my(Clock.class).advanceTime(60 * 1000);
@@ -139,7 +139,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	@Override
     public byte[] seal() {
-		return my(Seals.class).ownSeal().bytes();
+		return my(Seals.class).ownSeal().bytes.copy();
 	}
 
 	@Override

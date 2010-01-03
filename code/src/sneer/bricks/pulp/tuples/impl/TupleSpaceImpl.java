@@ -216,7 +216,7 @@ class TupleSpaceImpl implements TupleSpace {
 
 	private String nameFor(Seal seal) {
 		try {
-			return new String(seal.bytes(), "UTF-8");
+			return new String(seal.bytes.copy(), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalStateException(e);
 		}

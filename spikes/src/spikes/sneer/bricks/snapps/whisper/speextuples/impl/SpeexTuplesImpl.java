@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.sound.sampled.LineUnavailableException;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray2D;
 import sneer.bricks.pulp.keymanager.Seal;
@@ -103,7 +102,7 @@ class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the en
 	}
 
 	private ImmutableByteArray2D immutable(byte[][] array2D) {
-		return my(ImmutableArrays.class).newImmutableByteArray2D(array2D);
+		return new ImmutableByteArray2D(array2D);
 	}
 
 	private boolean encode(final byte[] pcmBuffer) {

@@ -7,6 +7,7 @@ import org.jmock.Sequence;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
@@ -19,18 +20,19 @@ import sneer.foundation.brickness.testsupport.Bind;
 
 public class IncomingSocketTest extends BrickTest {
 
+	@Bind private final Seals _seals = mock(Seals.class);
+
 	private ConnectionManager _subject = my(ConnectionManager.class);
 
 	private final ByteArraySocket _socketA = mock("socketA", ByteArraySocket.class);
 	private final ByteArraySocket _socketB = mock("socketB", ByteArraySocket.class);
 
-	private final Seal _smallerSeal = new Seal(new byte[]{1, 1, 1});
-	private final Seal _ownSeal     = new Seal(new byte[]{2, 2, 2});
-	private final Seal _greaterSeal = new Seal(new byte[]{3, 3, 3});
 
-	@Bind private final Seals _seals = mock(Seals.class);
-	
-	
+	private final Seal _smallerSeal = newSeal(new byte[]{1, 1, 1});
+	private final Seal _ownSeal     = newSeal(new byte[]{2, 2, 2});
+	private final Seal _greaterSeal = newSeal(new byte[]{3, 3, 3});
+
+		
 	@Test (timeout = 2000)
 	public void tieBreak() throws Exception {
 		
@@ -66,4 +68,10 @@ public class IncomingSocketTest extends BrickTest {
 		
 		my(Threads.class).crashAllThreads();
 	}
+
+	
+	private Seal newSeal(byte[] bytes) {
+		return new Seal(new ImmutableByteArray(bytes));
+	}
+
 }

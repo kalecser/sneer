@@ -78,14 +78,14 @@ public abstract class Immutable {
 		try {
 			return checkForArray(field.get(object));
 		} catch (IllegalAccessException e) {
-			throw new IllegalStateException("Tuple classes should be public and all of their fields should be public and not static. This was not the case with: " + object.getClass() + "." + field.getName() + " Also, tuple classes declared as inner classes dont work.", e);
+			throw new IllegalStateException("Immutable classes should be public and all of their fields should be public and not static. This was not the case with: " + object.getClass() + "." + field.getName() + " Also, tuple classes declared as inner classes dont work.", e);
 		}
 	}
 
 	
 	private Object checkForArray(Object object) {
 		if (object == null) return null;
-		if (object.getClass().isArray()) throw new IllegalStateException("Tuples cannot have fields which are arrays. Use ImmutableArrays instead. Class: " + getClass());
+		if (object.getClass().isArray()) throw new IllegalStateException("Immutable cannot have fields which are arrays. Use ImmutableArrays instead. Class: " + getClass());
 		return object;
 	}
 

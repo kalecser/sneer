@@ -24,7 +24,6 @@ import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.ClosureX;
@@ -142,7 +141,7 @@ class FileMapperImpl implements FileMapper {
 		}
 
 		private ImmutableArray<FileOrFolder> immutable(List<FileOrFolder> entries) {
-			return my(ImmutableArrays.class).newImmutableArray(entries);
+			return new ImmutableArray<FileOrFolder>(entries);
 		}
 
 	}

@@ -21,7 +21,6 @@ import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
@@ -67,7 +66,7 @@ public class FileDownloadTest extends BrickTest {
 	}
 
 	private ImmutableByteArray getFileBlock(File file, int blockNumber) throws IOException {
-		return my(ImmutableArrays.class).newImmutableByteArray(my(IO.class).files().readBlock(file, blockNumber, Protocol.FILE_BLOCK_SIZE));
+		return new ImmutableByteArray(my(IO.class).files().readBlock(file, blockNumber, Protocol.FILE_BLOCK_SIZE));
 	}
 
 }

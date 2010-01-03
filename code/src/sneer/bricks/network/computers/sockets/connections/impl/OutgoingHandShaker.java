@@ -15,7 +15,7 @@ class OutgoingHandShaker {
 	
 	static void greet(ByteArraySocket socket) throws IOException {
 		socket.write(ProtocolTokens.SNEER_WIRE_PROTOCOL_1);
-		socket.write(Seals.ownSeal().bytes());
+		socket.write(Seals.ownSeal().bytes.copy());
 		
 		//Implement: accept and pass pk challenge.
 	}
