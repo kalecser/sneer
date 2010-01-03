@@ -14,7 +14,7 @@
 	- [Igor] Runnable -> ClosureX - Find all places in foundation and in all our brick APIs that accept Runnable and change them to accept ClosureX.
 		- Example: Delete Environments.runWith(Environment environment, Runnable runnable) because there already is the version with ClosureX.
 		- Code that calls these APIs and needs to throw a checked throwable will call using ClosureX, code that does not throw a checked throwable will call using Closure.
-		
+
 	- [Igor] @Brick(Prevalent.class)
 		- FileMap - Add the prevalent nature and see if it works.
 		- TupleSpaceImpl._keptTuples -> my(KeptTuples.class). See if it works.
@@ -22,7 +22,6 @@
 			- Delete the lib folder from the TupleSpaceImpl package. 
 
 	- [Klaus] Revise items:
-		- FileMapperTest's methods implementation (test for #stopFolderMapping not implemented yet)
 		- BrickFilter.cacheOnlyFilesFromThisBrick(Sneer1024) change (hash of the filtered contents is not being put in the FileMap)
 
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
