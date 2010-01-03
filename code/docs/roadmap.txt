@@ -3,6 +3,9 @@
 
 	- [Igor] TrackDownloaderTest - Unignore and run. 
 
+	- [Igor] IO.fileFilter().extensions(String...) implementation (there are two versions - one commented)
+		- Do whatever you think is best. But null argument is not supported and empty array means NO files, not ANY files. Change caller because of that.
+
 	- Lighter Track Mapping
 		- [Igor] Implement Crypto.digest(File) as a stepper. It will automatically use the CpuThrottle. 
 			- Notice CpuThrottle max usage is already being limited in FolderMapping.run().
@@ -19,7 +22,6 @@
 			- Delete the lib folder from the TupleSpaceImpl package. 
 
 	- [Klaus] Revise items:
-		- IO.fileFilter().extensions(String...) implementation (there are two versions - one commented)
 		- FileMapperTest's methods implementation (test for #stopFolderMapping not implemented yet)
 		- BrickFilter.cacheOnlyFilesFromThisBrick(Sneer1024) change (hash of the filtered contents is not being put in the FileMap)
 
