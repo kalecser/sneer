@@ -21,6 +21,11 @@
 			- Delete all other java files from the TupleSpaceImpl package.
 			- Delete the lib folder from the TupleSpaceImpl package. 
 
+	- [Klaus] Improve networking experience so Wusic can be used
+		- Tuple Routing for unreachable users
+			- Real PK authentication
+		
+
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 		- Unignore Freedom7
 			- Big File Blocks
