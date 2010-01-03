@@ -24,7 +24,6 @@ public class FileMapperTest extends BrickTest {
 
 	private final FileMapper _subject = my(FileMapper.class);
 	private final FileMap _fileMap = my(FileMap.class);
-	private File _fixtureFolder;
 
 	@Test (timeout = 3000)
 	public void mapFolder() throws Exception {
@@ -56,9 +55,7 @@ public class FileMapperTest extends BrickTest {
 	}
 
 	private File fixturesFolder() {
-		if (_fixtureFolder == null)
-			_fixtureFolder = new File(myClassFile().getParent(), "fixtures");
-		return _fixtureFolder;
+		return new File(myClassFile().getParent(), "fixtures");
 	}
 
 	private File myClassFile() {
