@@ -22,7 +22,8 @@
 			- Delete the lib folder from the TupleSpaceImpl package. 
 
 	- [Klaus] Improve networking experience so Wusic can be used
-		- Tuple Routing for unreachable users
+		- Sneer DNS
+		- Routing for unreachable users
 			- Real PK authentication
 		
 
