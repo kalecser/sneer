@@ -21,9 +21,6 @@
 			- Delete all other java files from the TupleSpaceImpl package.
 			- Delete the lib folder from the TupleSpaceImpl package. 
 
-	- [Klaus] Revise items:
-		- BrickFilter.cacheOnlyFilesFromThisBrick(Sneer1024) change (hash of the filtered contents is not being put in the FileMap)
-
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
 		- Unignore Freedom7
 			- Big File Blocks

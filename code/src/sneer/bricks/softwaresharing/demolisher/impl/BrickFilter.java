@@ -2,6 +2,7 @@ package sneer.bricks.softwaresharing.demolisher.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,12 +18,17 @@ class BrickFilter {
 	private static final FileMap FileMap = my(FileMap.class);
 	
 
-	static Sneer1024 cacheOnlyFilesFromThisBrick(Sneer1024 hashOfPackage) {
+	static Sneer1024 mapOnlyFilesFromThisBrick(Sneer1024 hashOfPackage) {
 		FolderContents packageContents = packageContents(hashOfPackage);
 		FolderContents brickContents = filterOtherBricksOutOf(packageContents);
-		return brickContents.contents.length() == packageContents.contents.length()
+		
+		Sneer1024 result = brickContents.contents.length() == packageContents.contents.length()
 			? hashOfPackage
 			: my(FolderContentsHasher.class).hash(brickContents);
+		
+		FileMap.putFolderContents(new File("BogusFileBecauseBrickMappingRemovalIsNotImplementedYet"), brickContents, result);
+
+		return result;
 	}
 
 

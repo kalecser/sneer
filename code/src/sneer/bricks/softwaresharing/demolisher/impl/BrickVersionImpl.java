@@ -25,7 +25,7 @@ class BrickVersionImpl implements BrickVersion {
 	private boolean _stagedForExecution;
 	
 	BrickVersionImpl(Sneer1024 hashOfPackage, boolean isCurrent) throws IOException {
-		_hash = BrickFilter.cacheOnlyFilesFromThisBrick(hashOfPackage);
+		_hash = BrickFilter.mapOnlyFilesFromThisBrick(hashOfPackage);
 		_files = findFiles();
 		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
 	}
