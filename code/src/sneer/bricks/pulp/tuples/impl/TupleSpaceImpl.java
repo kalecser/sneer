@@ -32,6 +32,7 @@ import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Predicate;
 
@@ -73,7 +74,7 @@ class TupleSpaceImpl implements TupleSpace {
 			if (subscriber == null) return;
 			
 			_exceptionHandler.shield(new Runnable() { @Override public void run() {
-				Environments.runWith(_environment, new Runnable() { @Override public void run() {
+				Environments.runWith(_environment, new Closure() { @Override public void run() {
 					subscriber.consume(tuple);
 				}});
 			}});

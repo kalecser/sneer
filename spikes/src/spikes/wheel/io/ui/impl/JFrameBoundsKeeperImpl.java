@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
+import sneer.foundation.lang.Closure;
 import spikes.wheel.io.ui.BoundsPersistence;
 import spikes.wheel.io.ui.JFrameBoundsKeeper;
 import static sneer.foundation.environments.Environments.my;
@@ -21,7 +22,7 @@ public class JFrameBoundsKeeperImpl implements JFrameBoundsKeeper {
 	}
 	
 	public void keepBoundsFor(final JFrame frame, final String id){
-		Runnable keepBoundsRunnable = keepBoundsRunnable(frame, id);
+		Closure keepBoundsRunnable = keepBoundsClosure(frame, id);
 		
 		if (SwingUtilities.isEventDispatchThread()){
 			keepBoundsRunnable.run();
@@ -31,16 +32,11 @@ public class JFrameBoundsKeeperImpl implements JFrameBoundsKeeper {
 		my(GuiThread.class).invokeAndWait(keepBoundsRunnable);
 	}
 
-	private Runnable keepBoundsRunnable(final JFrame frame, final String id) {
-		return new Runnable() {
-		
-			@Override
-			public void run() {
-				restorePreviousBounds(id, frame);
-				startKeepingBounds(id, frame);		
-			}
-		
-		};
+	private Closure keepBoundsClosure(final JFrame frame, final String id) {
+		return new Closure() { @Override public void run() {
+			restorePreviousBounds(id, frame);
+			startKeepingBounds(id, frame);		
+		}};
 	}
 
 	private void restorePreviousBounds(String id, JFrame frame) {
@@ -52,8 +48,7 @@ public class JFrameBoundsKeeperImpl implements JFrameBoundsKeeper {
 		}
 	}
 
-	private void startKeepingBounds(final String id, final JFrame frame) {
-		
+	private void startKeepingBounds(final String id, final JFrame frame) {		
 		frame.addComponentListener(new ComponentAdapter() {
 		
 			@Override
@@ -81,8 +76,5 @@ public class JFrameBoundsKeeperImpl implements JFrameBoundsKeeper {
 		
 		});
 	}
-	
-	
-	
 
 }

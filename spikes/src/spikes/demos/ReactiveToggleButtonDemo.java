@@ -19,6 +19,8 @@ import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.bricks.skin.widgets.reactive.ToggleButtonWidget;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.Consumer;
 
 public class ReactiveToggleButtonDemo {
@@ -26,7 +28,7 @@ public class ReactiveToggleButtonDemo {
 	private ReactiveToggleButtonDemo() {
 		my(TimeboxedEventQueue.class).startQueueing(500000);
 
-		my(GuiThread.class).invokeAndWait(new Runnable() { @Override public void run() {
+		my(GuiThread.class).invokeAndWait(new Closure() { @Override public void run() {
 			final ReactiveWidgetFactory rfactory = my(ReactiveWidgetFactory.class);
 			JFrame frame = new JFrame("Reactive Check Box Demo");
 
@@ -50,13 +52,9 @@ public class ReactiveToggleButtonDemo {
 		}});
 	}
 
-	public static void main(String[] args) {
-		Environments.runWith(Brickness.newBrickContainer(), new Runnable(){ @Override public void run() {
-			try {
-				new ReactiveToggleButtonDemo();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+	public static void main(String[] args) throws Exception {
+		Environments.runWith(Brickness.newBrickContainer(), new ClosureX<Exception>(){ @Override public void run() throws Exception {
+			new ReactiveToggleButtonDemo();
 		}});
 	}
 

@@ -8,6 +8,7 @@ import java.lang.reflect.Proxy;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.ByRef;
+import sneer.foundation.lang.Closure;
 
 final class ProxyInEnvironment implements InvocationHandler {
 
@@ -29,7 +30,7 @@ final class ProxyInEnvironment implements InvocationHandler {
 	public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
 		final ByRef<Object> result = ByRef.newInstance();
 
-		Environments.runWith(_environment, new Runnable() { @Override public void run() {
+		Environments.runWith(_environment, new Closure() { @Override public void run() {
 			try {
 				result.value = method.invoke(_delegate, args);
 			} catch (IllegalArgumentException e) {

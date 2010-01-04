@@ -53,6 +53,7 @@ import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.menu.MenuFactory;
 import sneer.bricks.skin.menu.MenuGroup;
 import sneer.bricks.software.bricks.introspection.Introspector;
+import sneer.foundation.lang.Closure;
 
 class DashboardPanel extends JPanel {
 
@@ -185,7 +186,7 @@ class DashboardPanel extends JPanel {
 
 		private void repaintInstruments() {
 			resizeInstrumentPanel();
-			my(GuiThread.class).invokeLater(new Runnable(){ @Override public void run() {
+			my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
 				hideAllToolbars();
 				_toolbar.setVisible(true);
 			}});
@@ -424,7 +425,7 @@ class DashboardPanel extends JPanel {
 			
 			final InstrumentPanelImpl instrumentPanel = new InstrumentPanelImpl(instrument);
 			
-			my(GuiThread.class).invokeAndWait(new Runnable(){	
+			my(GuiThread.class).invokeAndWait(new Closure(){	
 				@Override 
 				public void run() {
 					instrument.init(instrumentPanel);

@@ -13,6 +13,7 @@ import javax.swing.plaf.synth.SynthLookAndFeel;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.skin.main.synth.Synth;
+import sneer.foundation.lang.Closure;
 
 class SynthImpl implements Synth {
 	
@@ -20,7 +21,7 @@ class SynthImpl implements Synth {
 	private final MetalLookAndFeel _default = new MetalLookAndFeel();
 	
 	SynthImpl(){
-		my(GuiThread.class).invokeAndWait(new Runnable(){ @Override public void run() {
+		my(GuiThread.class).invokeAndWait(new Closure(){ @Override public void run() {
 			try {
 				UIManager.setLookAndFeel(_synth);
 				load(SynthImpl.class);
@@ -39,14 +40,14 @@ class SynthImpl implements Synth {
 	@Override
 	public void notInGuiThreadLoad(final Class<?> resourceBase){
 		my(GuiThread.class).assertNotInGuiThread();
-		my(GuiThread.class).invokeAndWaitForWussies(new Runnable(){ @Override public void run() {
+		my(GuiThread.class).invokeAndWaitForWussies(new Closure(){ @Override public void run() {
 			load(resourceBase);
 		}});		
 	}
 
 	@Override
 	public void loadForWussies(final Class<?> resourceBase){
-		my(GuiThread.class).invokeAndWaitForWussies(new Runnable(){ @Override public void run() {
+		my(GuiThread.class).invokeAndWaitForWussies(new Closure(){ @Override public void run() {
 			load(resourceBase);
 		}});	
 	}
@@ -86,7 +87,7 @@ class SynthImpl implements Synth {
 	@Override
 	public void notInGuiThreadAttach(final JComponent component) {
 		my(GuiThread.class).assertNotInGuiThread();
-		my(GuiThread.class).invokeAndWait(new Runnable(){ @Override public void run() {
+		my(GuiThread.class).invokeAndWait(new Closure(){ @Override public void run() {
 			attach(component);
 		}});
 	}
@@ -94,7 +95,7 @@ class SynthImpl implements Synth {
 	@Override
 	public void notInGuiThreadAttach(final JComponent component, final String synthName) {
 		my(GuiThread.class).assertNotInGuiThread();
-		my(GuiThread.class).invokeAndWait(new Runnable(){ @Override public void run() {
+		my(GuiThread.class).invokeAndWait(new Closure(){ @Override public void run() {
 			attach(component);
 			component.setName(synthName);
 		}});		
@@ -102,14 +103,14 @@ class SynthImpl implements Synth {
 
 	@Override
 	public void attachForWussies(final JComponent component) {
-		my(GuiThread.class).invokeAndWaitForWussies(new Runnable(){ @Override public void run() {
+		my(GuiThread.class).invokeAndWaitForWussies(new Closure(){ @Override public void run() {
 			attach(component);
 		}});
 	}
 
 	@Override
 	public void attachForWussies(final JComponent component, final String synthName) {
-		my(GuiThread.class).invokeAndWaitForWussies(new Runnable(){ @Override public void run() {
+		my(GuiThread.class).invokeAndWaitForWussies(new Closure(){ @Override public void run() {
 			attach(component, synthName);
 		}});
 	}

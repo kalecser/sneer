@@ -28,6 +28,7 @@ import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.ByRef;
+import sneer.foundation.lang.ClosureX;
 import spikes.wheel.reactive.impl.mocks.RandomBoolean;
 
 public class SortTest {
@@ -38,7 +39,7 @@ public class SortTest {
 
 	public static void main(String[] args) throws Exception {
 		
-		Environments.runWith(Brickness.newBrickContainer(), new Runnable(){ @Override public void run() {
+		Environments.runWith(Brickness.newBrickContainer(), new ClosureX<Exception>(){ @Override public void run() {
 			try {
 				start();
 			} catch (Exception e) {

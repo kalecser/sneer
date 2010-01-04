@@ -17,6 +17,8 @@ import sneer.bricks.skin.widgets.reactive.ImageWidget;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.Functor;
 import spikes.wheel.reactive.impl.mocks.RandomBoolean;
 
@@ -28,7 +30,7 @@ public class ReactiveImageDemo {
 	private ReactiveImageDemo(){
 		my(TimeboxedEventQueue.class).startQueueing(5000);
 		
-		my(GuiThread.class).invokeAndWait(new Runnable(){@Override public void run() {
+		my(GuiThread.class).invokeAndWait(new Closure(){@Override public void run() {
 			ReactiveWidgetFactory rfactory = Environments.my(ReactiveWidgetFactory.class);
 			
 			Signal<Boolean> isOnline = new RandomBoolean().output();
@@ -56,12 +58,8 @@ public class ReactiveImageDemo {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		Environments.runWith(Brickness.newBrickContainer(), new Runnable(){ @Override public void run() {
-			try {
-				new ReactiveImageDemo();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		Environments.runWith(Brickness.newBrickContainer(), new ClosureX<Exception>(){ @Override public void run() throws Exception {
+			new ReactiveImageDemo();
 		}});
 	}
 }

@@ -16,13 +16,14 @@ import sneer.foundation.environments.CachingEnvironment;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.testsupport.CleanTestRunner;
 
 public class BrickTestRunner extends CleanTestRunner {
 
 	@Override
 	protected void invokeTestMethod(final Method method, final RunNotifier notifier) {
-		Environments.runWith(createTestEnvironment(), new Runnable() { @Override public void run() {
+		Environments.runWith(createTestEnvironment(), new Closure() { @Override public void run() {
 			BrickTestRunner.super.invokeTestMethod(method, notifier);
 		}});
 	}

@@ -9,6 +9,7 @@ import org.junit.internal.runners.TestMethod;
 
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.ClosureX;
 
 public class Mocotoh extends JUnit4ClassRunner {
 	
@@ -21,21 +22,16 @@ public class Mocotoh extends JUnit4ClassRunner {
 		return new TestMethod(method, this.getTestClass()) {
 			@Override
 			public void invoke(final Object test) {
-				Environments.runWith(Brickness.newBrickContainer(), new Runnable() { @Override public void run() {
-					try {
+				try {
+					Environments.runWith(Brickness.newBrickContainer(), new ClosureX<Exception>() { @Override public void run() throws Exception {
 						superInvoke(test);
-					} catch (IllegalArgumentException e) {
-						throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-					} catch (IllegalAccessException e) {
-						throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-					} catch (InvocationTargetException e) {
-						throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-					}
-				}});
+					}});
+				} catch (Exception e) {
+					throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+				}
 			}
 			
-			private void superInvoke(Object test) throws IllegalArgumentException,
-			IllegalAccessException, InvocationTargetException {
+			private void superInvoke(Object test) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 				super.invoke(test);
 			}
 		};

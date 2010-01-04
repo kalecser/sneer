@@ -36,6 +36,7 @@ import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.Widget;
 import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 
@@ -116,7 +117,7 @@ class DashboardImpl implements Dashboard {
 	
 	
 	private void initGui() {
-		my(GuiThread.class).invokeLater(new Runnable() { @Override public void run() {
+		my(GuiThread.class).invokeLater(new Closure() { @Override public void run() {
 			WindowSupport windowSupport = new WindowSupport();
 			windowSupport.open();
 			new TrayIconSupport(windowSupport);

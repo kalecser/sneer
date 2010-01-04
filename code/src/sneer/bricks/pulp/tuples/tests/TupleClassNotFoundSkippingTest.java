@@ -19,6 +19,7 @@ import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 
 
 public class TupleClassNotFoundSkippingTest extends BrickTest {
@@ -43,22 +44,22 @@ public class TupleClassNotFoundSkippingTest extends BrickTest {
 
 		}});
 		
-		runInNewEnvironment(new Runnable() { @Override public void run() {
+		runInNewEnvironment(new Closure() { @Override public void run() {
 			TupleSpace subject1 = createSubject();
 			subject1.keep(TestTuple.class);
 			subject1.acquire(new TestTuple(0));
 		}});
 		
-		runInNewEnvironment(new Runnable() { @Override public void run() {
+		runInNewEnvironment(new Closure() { @Override public void run() {
 			TupleSpace subject2 = createSubject();
 			assertTrue(subject2.keptTuples().isEmpty());
 		}});
 	}
 
 	
-	private void runInNewEnvironment(Runnable runnable) {
+	private void runInNewEnvironment(Closure closure) {
 		Environment newEnvironment = newTestEnvironment(my(FolderConfig.class));
-		Environments.runWith(newEnvironment, runnable);
+		Environments.runWith(newEnvironment, closure);
 	}
 	
 	

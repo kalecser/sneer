@@ -7,6 +7,7 @@ import javax.swing.JScrollPane;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.skin.widgets.autoscroll.AutoScroll;
+import sneer.foundation.lang.Closure;
 
 public class AutoScrollImpl implements AutoScroll {
 
@@ -17,7 +18,7 @@ public class AutoScrollImpl implements AutoScroll {
 		
 		runnable.run();
 		
-		my(GuiThread.class).invokeLater(new Runnable() { @Override public void run() {
+		my(GuiThread.class).invokeLater(new Closure() { @Override public void run() {
 			if (wasAtEnd)
 				placeAtEnd(scrollPane);
 			

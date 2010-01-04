@@ -21,8 +21,9 @@ import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 
-public class SneerSession implements Runnable {
+public class SneerSession implements Closure {
 	
 	public SneerSession() {
 		Environments.runWith(container(), this);

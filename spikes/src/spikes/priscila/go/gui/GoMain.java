@@ -6,6 +6,7 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 import spikes.priscila.go.Move;
 import spikes.priscila.go.GoBoard.StoneColor;
 
@@ -13,8 +14,8 @@ public class GoMain {
 	
 	
 	public GoMain() {
-		Environments.runWith(Brickness.newBrickContainer(), new Runnable() { @Override public void run() {
-			my(GuiThread.class).invokeAndWaitForWussies(new Runnable(){@Override public void run() {
+		Environments.runWith(Brickness.newBrickContainer(), new Closure() { @Override public void run() {
+			my(GuiThread.class).invokeAndWaitForWussies(new Closure(){@Override public void run() {
 				init();
 			}});
 		}});

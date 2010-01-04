@@ -11,6 +11,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.foundation.lang.Closure;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.player.TrackContract;
 
@@ -31,7 +32,7 @@ class TrackContractImpl implements TrackContract {
 			my(BlinkingLights.class).turnOn(LightType.WARNING, "Unable to find file " + track.file() , "File might have been deleted manually.", 15000);
 		} 
 		
-		my(Threads.class).startDaemon("Track Player", new Runnable() { @Override public void run() {
+		my(Threads.class).startDaemon("Track Player", new Closure() { @Override public void run() {
 			play(toCallWhenFinished);
 		}});
 	}

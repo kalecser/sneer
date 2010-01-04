@@ -10,6 +10,7 @@ import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 
 public class PrevalentNatureTest extends BrickTest {
 	
@@ -18,11 +19,11 @@ public class PrevalentNatureTest extends BrickTest {
 	@Test (timeout = 2000)
 	public void stateIsPreserved() {
 		
-		Environments.runWith(newTestEnvironment(my(FolderConfig.class)), new Runnable() { @Override public void run() {
+		Environments.runWith(newTestEnvironment(my(FolderConfig.class)), new Closure() { @Override public void run() {
 			my(SomePrevalentBrick.class).set("foo");
 		}});
 
-		Environments.runWith(newTestEnvironment(my(FolderConfig.class)), new Runnable() { @Override public void run() {
+		Environments.runWith(newTestEnvironment(my(FolderConfig.class)), new Closure() { @Override public void run() {
 			assertEquals("foo", my(SomePrevalentBrick.class).get());
 		}});
 	}

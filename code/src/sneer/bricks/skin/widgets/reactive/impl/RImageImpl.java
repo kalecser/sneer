@@ -17,6 +17,7 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.image.ImageFactory;
 import sneer.bricks.skin.widgets.reactive.ImageWidget;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;
 
@@ -45,7 +46,7 @@ class RImageImpl extends JPanel implements ImageWidget{
 		_referenceToAvoidGc = signal.addReceiver(new Consumer<Image>() { @Override public void consume(final Image image) {
 			_image.setter().consume(image);
 		
-			my(GuiThread.class).invokeAndWait(new Runnable() { @Override public void run() {
+			my(GuiThread.class).invokeAndWait(new Closure() { @Override public void run() {
 				revalidate();
 				repaint();
 			}});

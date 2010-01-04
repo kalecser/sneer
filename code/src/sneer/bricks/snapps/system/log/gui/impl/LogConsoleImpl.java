@@ -48,6 +48,7 @@ import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.system.log.gui.LogConsole;
 import sneer.bricks.software.timing.Animator;
 import sneer.bricks.software.timing.TimingFramework;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class LogConsoleImpl extends JFrame implements LogConsole {
@@ -73,7 +74,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		super(SNEER_LOG_CONSOLE);
 		my(Dashboard.class);
 		addMenuAction();
-		my(GuiThread.class).invokeLater(new Runnable(){ @Override public void run() {
+		my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
 			initGui();
 			initTranslucentWindow();
 			initWindowListener();
