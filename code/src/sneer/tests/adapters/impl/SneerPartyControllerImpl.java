@@ -194,7 +194,9 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		_codeFolder = codeFolder;
 	}
 
+	
 	private void startSnapps() {
+
 		startAndKeep(SocketOriginator.class);
 		startAndKeep(SocketReceiver.class);
 		startAndKeep(ProbeManager.class);
@@ -205,13 +207,14 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 		startAndKeep(FileServer.class);
 
-		startAndKeep(Stethoscope.class);
 		startAndKeep(Heart.class);
 	}
 
+	
 	private void startAndKeep(Class<?> snapp) {
 		_refToAvoidGc.add(my(snapp));
 	}
+
 
 	@Override
 	public void loadBrick(String brickName) {
@@ -222,12 +225,14 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		}
 	}
 
+	
 	@Override
 	public boolean isOnline(String nickname) {
 		Contact contact = my(ContactManager.class).contactGiven(nickname);
 		return isAlive(contact).currentValue();
 	}
 
+	
 	private void accelerateHeartbeat() {
 		my(Threads.class).startStepping(new Runnable() { @Override public void run() {
 			my(Clock.class).advanceTime(1000);
@@ -235,6 +240,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		}});
 	}
 
+	
 	@Override
 	public void waitForAvailableBrick(final String brickName, final String brickStatus) {
 		my(Logger.class).log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Waiting for brick: " + brickName + " status: " + brickStatus);
