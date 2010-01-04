@@ -115,7 +115,7 @@ class BlinkingLightsImpl implements BlinkingLights {
 		light._error = t;
 		light._helpMessage = helpMessage == null ? "If this problem doesn't go away on its own, get an expert sovereign friend to help you. ;)" : helpMessage;
 		
-		log(caption);
+		log(light_.type(), caption);
 		
 		_lights.add(light);
 		
@@ -131,8 +131,15 @@ class BlinkingLightsImpl implements BlinkingLights {
 		turnOnIfNecessary(light, caption, helpMessage);
 	}
 
-	private void log(String caption) {
-		my(Logger.class).log("Blinking light turned on: {}", caption);
+	private void log(LightType lightType, String caption) {
+		my(Logger.class).log(severityTag(lightType), caption);
+	}
+
+	
+	private String severityTag(LightType lightType) {
+		if (lightType == LightType.ERROR) return "> > > > > > ERROR: ";
+		if (lightType == LightType.WARNING) return "> > > WARNING: ";
+		return "   ";
 	}
 
 }
