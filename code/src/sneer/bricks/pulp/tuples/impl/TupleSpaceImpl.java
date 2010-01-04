@@ -4,7 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,8 +22,6 @@ import sneer.bricks.hardware.cpu.lang.contracts.Disposable;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
@@ -150,9 +147,6 @@ class TupleSpaceImpl implements TupleSpace {
 	
 	TupleSpaceImpl() {
 		_keptTuples = Bubble.wrapStateMachine(_prevayler);
-		
-		for (Tuple tuple : _keptTuples.output().currentElements())
-			if (isWeird(tuple)) _keptTuples.remover().consume(tuple);
 	}
 
 
@@ -186,8 +180,6 @@ class TupleSpaceImpl implements TupleSpace {
 	
 	@Override
 	public synchronized void acquire(Tuple tuple) {
-		if (isWeird(tuple)) return; //Filter out those weird shouts that appeared in the beginning.
-		
 		if (tuple.addressee == null) {
 			if (_floodedTupleCache.contains(tuple)) return;
 			_floodedTupleCache.add(tuple);
@@ -204,22 +196,6 @@ class TupleSpaceImpl implements TupleSpace {
 		keepIfNecessary(tuple);
 				
 		notifySubscriptions(tuple);
-	}
-
-
-	private boolean isWeird(Tuple tuple) {
-		if (nameFor(tuple.publisher).length() < 60) return false;
-		
-		my(BlinkingLights.class).turnOn(LightType.ERROR, "Weird Tuple", "Tuples with weird publishers are being filtered out.", 30000);
-		return true;
-	}
-
-	private String nameFor(Seal seal) {
-		try {
-			return new String(seal.bytes.copy(), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalStateException(e);
-		}
 	}
 
 
