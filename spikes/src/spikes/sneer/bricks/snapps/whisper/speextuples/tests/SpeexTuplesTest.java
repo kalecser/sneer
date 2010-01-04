@@ -135,7 +135,7 @@ public class SpeexTuplesTest extends BrickTest {
 	}
 	
 	private Seal contactKey() {
-		return my(Seals.class).unmarshall("anything".getBytes());
+		return new Seal(new ImmutableByteArray("anything".getBytes()));
 	}
 
 	private PcmSoundPacket myPacket(byte[] pcm) {
