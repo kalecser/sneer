@@ -6,15 +6,27 @@
 	- [Igor] IO.fileFilter().extensions(String...) implementation (there are two versions - one commented)
 		- Do whatever you think is best. But null argument is not supported and empty array means NO files, not ANY files. Change caller because of that.
 
+	- [Igor] Runnable -> ClosureX - Find all places in foundation and in all our brick APIs that accept Runnable and change them to accept ClosureX.
+		- Example: Delete Environments.runWith(Environment environment, Runnable runnable) because there already is the version with ClosureX.
+		- Code that calls these APIs and needs to throw a checked throwable will call using ClosureX, code that does not throw a checked throwable will call using Closure.
+
+	- [Igor] @Snapp - Delete this annotation.
+		- Detect snapps not by the fact that they have the annotation but by the fact that they have no methods! ;)
+			- Revise for all bricks: Is is a snapp
+				- no: does it have no methods? Does a non-snapp brick with no methods make sense? Discuss with Klaus. 
+				- yes: does it really have to be a snapp? Is the @Snapp annotation really necessary?
+					- no: remove the annotation
+					- yes: does it have methods?
+						- no: ok.
+						- yes: can the methods be removed?
+							- yes: remove the methods.
+							- no: discuss with Klaus.
+
 	- Lighter Track Mapping
 		- [Igor] Implement Crypto.digest(File) as a stepper. It will automatically use the CpuThrottle. 
 			- Notice CpuThrottle max usage is already being limited in FolderMapping.run().
 		- [Igor] Test mapping of folder with several tracks before and after doing the above, to see if CPU consumption is actually reduced.
 			
-	- [Igor] Runnable -> ClosureX - Find all places in foundation and in all our brick APIs that accept Runnable and change them to accept ClosureX.
-		- Example: Delete Environments.runWith(Environment environment, Runnable runnable) because there already is the version with ClosureX.
-		- Code that calls these APIs and needs to throw a checked throwable will call using ClosureX, code that does not throw a checked throwable will call using Closure.
-
 	- [Igor] @Brick(Prevalent.class)
 		- FileMap - Add the prevalent nature and see if it works.
 		- TupleSpaceImpl._keptTuples -> my(KeptTuples.class). See if it works.
@@ -24,7 +36,8 @@
 	- [Klaus] Improve networking experience so Wusic can be used
 		- Sneer DNS
 		- Routing for unreachable users
-			- Unique Seal generation
+			- PK generation
+				- Unique Seal generation
 		
 
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
