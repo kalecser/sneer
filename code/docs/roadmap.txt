@@ -24,7 +24,7 @@
 	- [Klaus] Improve networking experience so Wusic can be used
 		- Sneer DNS
 		- Routing for unreachable users
-			- Real PK authentication
+			- Unique Seal generation
 		
 
 	- [Klaus] LocalBrickDiscoveryTest, BrickInstallerTest, Freedom7.meToo
