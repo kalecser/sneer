@@ -200,10 +200,11 @@ class Build {
 	private Collection<File> brickApiFiles() {
 		return listJavaFiles(
 			_srcFolder,
-			fileFilters().not(fileFilters().or(
+			fileFilters().not(fileFilters().or(new Filter[] {
 				fileFilters().name("impl"),
 				fileFilters().name("tests"),
-				fileFilters().name("foundation"))));
+				fileFilters().name("foundation")
+			})));
 	}
 
 	

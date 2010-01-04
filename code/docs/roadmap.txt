@@ -3,9 +3,6 @@
 
 	- [Igor] TrackDownloaderTest - Unignore and run. 
 
-	- [Igor] IO.fileFilter().extensions(String...) implementation (there are two versions - one commented)
-		- Do whatever you think is best. But null argument is not supported and empty array means NO files, not ANY files. Change caller because of that.
-
 	- [Igor] Runnable -> ClosureX - Find all places in foundation and in all our brick APIs that accept Runnable and change them to accept ClosureX.
 		- Code that calls these APIs and needs to throw a checked throwable will call using ClosureX, code that does not throw a checked throwable will call using Closure.
 

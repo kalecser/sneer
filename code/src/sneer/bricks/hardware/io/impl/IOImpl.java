@@ -5,26 +5,24 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.Closeable;
 import java.io.EOFException;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 
-import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Functor;
 
 class IOImpl implements IO {
 	
@@ -160,12 +158,13 @@ class IOImpl implements IO {
 	};
 
 	private FileFilters _fileFilters = new FileFilters(){
-		@Override public Filter name(String name) { return adapt(FileFilterUtils.nameFileFilter(name)); }
+		@Override public Filter any() { return adapt(FileFilterUtils.trueFileFilter()); }
+		@Override public Filter none() { return adapt(FileFilterUtils.falseFileFilter()); }
 		@Override public Filter not(Filter filter) { return adapt(FileFilterUtils.notFileFilter(asIOFileFilter(filter))); }
+		@Override public Filter name(String name) { return adapt(FileFilterUtils.nameFileFilter(name)); }
 		@Override public Filter suffix(String sulfix) { return adapt(FileFilterUtils.suffixFileFilter(sulfix)); }
-		@Override public Filter any() { return adapt(TrueFileFilter.INSTANCE); }
-		@Override public Filter or(Filter... filters) {
-			if (filters.length < 2) throw new IllegalArgumentException("At least two filters must be specified.");
+		@Override public Filter or(Filter[] filters) {
+			if (filters.length < 1) throw new IllegalArgumentException("The array of filters cannot be empty");
 			
 			IOFileFilter current = asIOFileFilter(filters[0]);
 			for (int i = 1; i < filters.length; i++) {
@@ -186,34 +185,14 @@ class IOImpl implements IO {
 			@Override public boolean accept(File dir, String name) { return _delegate.accept(dir, name); }
 		}
 
-		// Fix: Uncomment this method and remove the implementation below 
-//		@Override public Filter extensions(String... acceptedExtensions) {
-//			if (acceptedExtensions.length <= 0) return any();
-//
-//			Collection<Filter> fileExtensionFilters = my(CollectionUtils.class).map(Arrays.asList(acceptedExtensions), new Functor<String, Filter>() { @Override public Filter evaluate(String acceptedExtension) throws RuntimeException {
-//				return adapt(FileFilterUtils.suffixFileFilter(acceptedExtension));
-//			}});
-//			fileExtensionFilters.add(adapt(FileFilterUtils.directoryFileFilter()));
-//
-//			return or(fileExtensionFilters.toArray(new Filter[0]));  
-//		}
+		@Override public Filter extensions(String... acceptedExtensions) {
+			Collection<Filter> fileExtensionFilters = my(CollectionUtils.class).map(Arrays.asList(acceptedExtensions), new Functor<String, Filter>() { @Override public Filter evaluate(String acceptedExtension) throws RuntimeException {
+				return adapt(FileFilterUtils.suffixFileFilter(acceptedExtension));
+			}});
+			fileExtensionFilters.add(adapt(FileFilterUtils.directoryFileFilter()));
 
-		// This method doens't use Apache Commons' FileFilterUtils, but performs better than the one above 
-		@Override public FileFilter extensions(final String... acceptedExtensions) {
-			return new FileFilter() {
-				@Override
-				public boolean accept(File fileToBeAdded) {
-					List<String> listOfExtensions = Arrays.asList(acceptedExtensions);
-					if (listOfExtensions == null || listOfExtensions.isEmpty()) return true;
-
-					if (fileToBeAdded.isDirectory()) return true;
-
-					final String fileExtension = my(Lang.class).strings().substringAfterLast(fileToBeAdded.getName(), ".").toLowerCase();
-					if (listOfExtensions.contains(fileExtension)) return true;
-
-					return false;
-				}};
-			}
+			return or(fileExtensionFilters.toArray(new Filter[0]));  
+		}
 
 	};
 	
