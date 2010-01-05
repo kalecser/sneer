@@ -1,8 +1,20 @@
 ﻿TASKS
 =========
 
-	- [Igor] ContactManager -> Contacts
+	- [Bamboo] .Prevalence
+		- Use a single prevayler for all bricks inside PrevalentImpl so that transactions are properly synchronized among all prevalent bricks.
+		
+	- Lighter Track Mapping
+		- [Igor] Implement Crypto.digest(File) as a stepper. It will automatically use the CpuThrottle. 
+			- Notice CpuThrottle max usage is already being limited in FolderMapping.run().
+		- [Igor] Test mapping of folder with several tracks before and after doing the above, to see if CPU consumption is actually reduced.
 
+	- [Igor] @Brick(Prevalent.class)
+		- FileMap - Add the prevalent nature and see if it works.
+		- TupleSpaceImpl._keptTuples -> my(KeptTuples.class). See if it works.
+			- Delete all other java files from the TupleSpaceImpl package.
+			- Delete the lib folder from the TupleSpaceImpl package. 
+			
 	- [Igor] TrackDownloaderTest - Unignore and run. 
 
 	- [Igor] IO.fileFilter().extensions(String...) implementation (there are two versions - one commented)
@@ -24,16 +36,16 @@
 							- yes: remove the methods.
 							- no: discuss with Klaus.
 
-	- Lighter Track Mapping
-		- [Igor] Implement Crypto.digest(File) as a stepper. It will automatically use the CpuThrottle. 
-			- Notice CpuThrottle max usage is already being limited in FolderMapping.run().
-		- [Igor] Test mapping of folder with several tracks before and after doing the above, to see if CPU consumption is actually reduced.
-			
-	- [Igor] @Brick(Prevalent.class)
-		- FileMap - Add the prevalent nature and see if it works.
-		- TupleSpaceImpl._keptTuples -> my(KeptTuples.class). See if it works.
-			- Delete all other java files from the TupleSpaceImpl package.
-			- Delete the lib folder from the TupleSpaceImpl package. 
+	- [Igor] ContactInfoWindowImpl - Add a field for the Contact's Seal: 128 bytes represented in hexadecimal that can be >entered< any old way like a copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< IN COURIER like this:
+		12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
+		12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
+		12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
+		12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
+		12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
+		12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
+		12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
+		12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f
+		- [Klaus] Glue the gui to the Seals brick.  
 
 	- [Klaus] Improve networking experience so Wusic can be used
 		- Sneer DNS
