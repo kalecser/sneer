@@ -18,7 +18,7 @@ import sneer.foundation.environments.Environments;
 
 public class TuplePersistenceTest extends BrickTest {
 
-	@Test
+	@Test (timeout = 2000)
 	public void tuplePersistence() {
 		runInNewEnvironment(new Runnable() { @Override public void run() {
 			TupleSpace subject1 = createSubject();
@@ -44,7 +44,7 @@ public class TuplePersistenceTest extends BrickTest {
 	}
 
 	
-	@Test
+	@Test (timeout = 2000)
 	public void filesAreClosedUponCrash() throws IOException {
 		
 		my(TupleSpace.class).keep(TestTuple.class);
