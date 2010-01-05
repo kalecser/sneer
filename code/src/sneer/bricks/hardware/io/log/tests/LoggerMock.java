@@ -32,7 +32,15 @@ class LoggerMock implements Logger {
 
 	
 	private String caller() {
-		return "" + Thread.currentThread().getStackTrace()[4];
+		//return "" + Thread.currentThread().getStackTrace()[4];
+		//Refactor: With the unification of Logger and BlinkingLights, this below will no longer be necessary and the above can be used.
+		int frame = 4;
+		while (true) {
+			String candidate = "" + Thread.currentThread().getStackTrace()[frame];
+			if (candidate.indexOf("BlinkingLights") == -1)
+				return candidate;
+			frame++;
+		}
 	}
 
 
