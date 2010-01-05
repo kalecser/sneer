@@ -2,14 +2,14 @@ package sneer.bricks.network.social.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.exceptions.Refusal;
 
-class ContactManagerImpl implements ContactManager {
+class ContactsImpl implements Contacts {
     
     private final SetRegister<Contact> _contacts = my(CollectionSignals.class).newSetRegister();
     

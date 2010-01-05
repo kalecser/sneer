@@ -12,7 +12,7 @@ import sneer.bricks.network.computers.sockets.connections.ByteConnection;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection.PacketScheduler;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
 import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
@@ -54,7 +54,7 @@ public class ProbeManagerTest extends BrickTest {
 				}});
 		}});
 
-		my(ContactManager.class).addContact("Neide");
+		my(Contacts.class).addContact("Neide");
 		my(Seals.class).put("Neide", newSeal(new byte[]{1}));
 
 		_tuples.acquire(new TupleTypeA(1));

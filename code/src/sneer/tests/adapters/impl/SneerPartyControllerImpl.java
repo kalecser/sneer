@@ -22,7 +22,7 @@ import sneer.bricks.hardware.ram.iterables.Iterables;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
 import sneer.bricks.network.computers.sockets.connections.receiver.SocketReceiver;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.heartbeat.Heart;
 import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.network.social.loggers.tuples.TupleLogger;
@@ -109,7 +109,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private Contact produceContact(String contactName) {
-		return my(ContactManager.class).produceContact(contactName);
+		return my(Contacts.class).produceContact(contactName);
 	}
 
 	
@@ -131,7 +131,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		Contact contact = waitForContactGiven(publicKey);
 
 		try {
-			my(ContactManager.class).nicknameSetterFor(contact).consume(newNickname);
+			my(Contacts.class).nicknameSetterFor(contact).consume(newNickname);
 		} catch (Refusal e) {
 			throw new IllegalStateException(e);
 		}
@@ -251,7 +251,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	@Override
 	public boolean isOnline(String nickname) {
-		Contact contact = my(ContactManager.class).contactGiven(nickname);
+		Contact contact = my(Contacts.class).contactGiven(nickname);
 		return isAlive(contact).currentValue();
 	}
 

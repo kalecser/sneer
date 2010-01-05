@@ -9,7 +9,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.probe.ProbeManager;
@@ -21,7 +21,7 @@ import sneer.foundation.lang.Consumer;
 
 class ProbeManagerImpl implements ProbeManager {
 	
-	private static final ContactManager ContactManager = my(ContactManager.class);
+	private static final Contacts ContactManager = my(Contacts.class);
 	private static final ConnectionManager ConnectionManager = my(ConnectionManager.class);
 	private static final Serializer Serializer = my(Serializer.class);
 	private static final TupleSpace TupleSpace = my(TupleSpace.class);

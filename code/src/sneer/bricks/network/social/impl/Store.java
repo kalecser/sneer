@@ -7,13 +7,13 @@ import java.util.Collection;
 import java.util.List;
 
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.software.bricks.statestore.BrickStateStore;
 
 abstract class Store {
 
 	static Collection<String> restore() {
-		Object result = my(BrickStateStore.class).readObjectFor(ContactManager.class, ContactManagerImpl.class.getClassLoader());
+		Object result = my(BrickStateStore.class).readObjectFor(Contacts.class, ContactsImpl.class.getClassLoader());
 		return result == null
 			? new ArrayList<String>()
 			: (Collection<String>) result;
@@ -24,6 +24,6 @@ abstract class Store {
 		for (Contact contact : currentNicks) 
 			nicks.add(contact.nickname().currentValue());
 
-		my(BrickStateStore.class).writeObjectFor(ContactManager.class, nicks);
+		my(BrickStateStore.class).writeObjectFor(Contacts.class, nicks);
 	 }
 }

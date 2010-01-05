@@ -8,7 +8,7 @@ import java.util.Random;
 
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.keymanager.generator.OwnSealKeeper;
@@ -55,7 +55,7 @@ class SealsImpl implements Seals {
 
 	@Override
 	public synchronized void put(String nick, Seal seal) {
-		Contact contact = my(ContactManager.class).contactGiven(nick);
+		Contact contact = my(Contacts.class).contactGiven(nick);
 		if(sealGiven(contact) != null) throw new IllegalArgumentException("There already was a seal registered for contact: " + contact.nickname().currentValue());
 		if(contactGiven(seal) != null) throw new IllegalArgumentException("There already was a contact registered with seal: " + seal);
 		_sealsByContact.put(contact, seal);

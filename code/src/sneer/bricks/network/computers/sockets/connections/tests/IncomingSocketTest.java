@@ -11,7 +11,7 @@ import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.network.ByteArraySocket;
@@ -36,8 +36,8 @@ public class IncomingSocketTest extends BrickTest {
 	@Test (timeout = 2000)
 	public void tieBreak() throws Exception {
 		
-		final Contact a = my(ContactManager.class).produceContact("Contact A");
-		final Contact b = my(ContactManager.class).produceContact("Contact B");
+		final Contact a = my(Contacts.class).produceContact("Contact A");
+		final Contact b = my(Contacts.class).produceContact("Contact B");
 		
 		checking(new Expectations() {{
 			Sequence sequence = newSequence("main");

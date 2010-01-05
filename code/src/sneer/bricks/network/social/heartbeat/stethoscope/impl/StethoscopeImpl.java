@@ -91,6 +91,7 @@ class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Runnable {
 		if (isTooOld(beat)) return;
 		
 		Contact contact = contact(beat);
+		if (contact == null) return;
 		_lastBeatTimesByContact.put(contact, now());
 
 		setAlive(contact);

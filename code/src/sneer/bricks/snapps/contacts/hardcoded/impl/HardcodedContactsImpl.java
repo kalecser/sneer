@@ -2,13 +2,13 @@ package sneer.bricks.snapps.contacts.hardcoded.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
 import sneer.bricks.snapps.contacts.hardcoded.HardcodedContacts;
 
 public class HardcodedContactsImpl implements HardcodedContacts {
 
-	private final ContactManager _contactManager = my(ContactManager.class);
+	private final Contacts _contactManager = my(Contacts.class);
 
 	HardcodedContactsImpl(){
 		if(!_contactManager.contacts().currentElements().isEmpty()) 

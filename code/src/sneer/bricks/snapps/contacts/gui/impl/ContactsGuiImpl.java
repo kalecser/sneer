@@ -16,7 +16,7 @@ import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -53,7 +53,7 @@ class ContactsGuiImpl implements ContactsGui {
 		return new Signal<?>[]{my(Stethoscope.class).isAlive(contact), contact.nickname()};
 	}};
 
-	private final ListSignal<Contact> _sortedList = my(ListSorter.class).sort( my(ContactManager.class).contacts() , my(ContactComparator.class), _chooser);
+	private final ListSignal<Contact> _sortedList = my(ListSorter.class).sort( my(Contacts.class).contacts() , my(ContactComparator.class), _chooser);
 	private final ListWidget<Contact> _contactList;{
 		final ByRef<ListWidget<Contact>> ref = ByRef.newInstance();
 		my(GuiThread.class).invokeAndWait(new Runnable(){ @Override public void run() {
@@ -123,7 +123,7 @@ class ContactsGuiImpl implements ContactsGui {
 	}
 	
 	private Contact newContact() {
-		return my(ContactManager.class).produceContact("<New Contact>");
+		return my(Contacts.class).produceContact("<New Contact>");
 	}
 
 	private JList contactList() {

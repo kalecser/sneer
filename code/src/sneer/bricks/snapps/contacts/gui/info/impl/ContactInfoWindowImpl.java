@@ -23,7 +23,7 @@ import javax.swing.event.ListSelectionListener;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddress;
@@ -112,7 +112,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 				}});
 		
 		PickyConsumer<String> setter = new PickyConsumer<String>(){@Override public void consume(String value) throws Refusal {
-			my(ContactManager.class).nicknameSetterFor(contact()).consume(value);
+			my(Contacts.class).nicknameSetterFor(contact()).consume(value);
 		}};
 		
 		_txtNickname = my(ReactiveWidgetFactory.class).newTextField(nickname, setter, NotificationPolicy.OnEnterPressedOrLostFocus);

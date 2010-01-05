@@ -6,7 +6,7 @@ import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.exceptions.Refusal;
 
 @Brick
-public interface ContactManager {
+public interface Contacts {
     
 	SetSignal<Contact> contacts();
 

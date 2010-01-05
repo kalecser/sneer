@@ -15,7 +15,7 @@ import sneer.bricks.network.computers.sockets.connections.ByteConnection;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
 import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
@@ -42,7 +42,7 @@ public class SocketOriginatorTest extends BrickTest {
 	@Test (timeout = 2000)
 	public void openConnection() throws Exception {
 		final Latch _ready = my(Latches.class).produce();
-		final Contact neide = my(ContactManager.class).produceContact("Neide");
+		final Contact neide = my(Contacts.class).produceContact("Neide");
 		my(Seals.class).put("Neide", newSeal(new byte[]{42}));
 
 		checking(new Expectations() {{
