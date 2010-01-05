@@ -3,6 +3,9 @@
 
 	- [Bamboo] .Prevalence
 		- Use a single prevayler for all bricks inside PrevalentImpl so that transactions are properly synchronized among all prevalent bricks.
+			- Ignore method calls that are already inside a transaction context.
+		- Make the Contacts brick prevalent. Discuss with Klaus.
+		- Make Seals.put() accept a Contact instead of a nickname string.
 		
 	- Lighter Track Mapping
 		- [Igor] Implement Crypto.digest(File) as a stepper. It will automatically use the CpuThrottle. 
