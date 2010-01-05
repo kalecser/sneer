@@ -15,6 +15,7 @@ import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.ClosureX;
 
 public class RemoteCopyTest extends FileCopyTestBase {
@@ -57,14 +58,14 @@ public class RemoteCopyTest extends FileCopyTestBase {
 
 	
 	private void configureStorageFolder(Environment remote) {
-		Environments.runWith(remote, new Runnable() { @Override public void run() {
+		Environments.runWith(remote, new Closure() { @Override public void run() {
 			my(FolderConfig.class).storageFolder().set(newTmpFile("remote"));
 		}});
 	}
 
 	
 	private void crash(Environment remote) {
-		Environments.runWith(remote, new Runnable() { @Override public void run() {
+		Environments.runWith(remote, new Closure() { @Override public void run() {
 			my(Threads.class).crashAllThreads();
 		}});
 	}
