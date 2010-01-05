@@ -172,17 +172,20 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		contract.dispose();
 	}
 
+	
 	private void openLatchIfShoutsHeard( String shoutsExpected, Latch latch) {
 		String shoutsHeard = concat(my(Wind.class).shoutsHeard());
 		if (shoutsHeard.equals(shoutsExpected))
 			latch.open();
 	}
 
+	
 	private String concat(Iterable<Shout> shouts) {
 		List<Shout> sorted = my(Iterables.class).sortByToString(shouts);
 		return my(Lang.class).strings().join(sorted, ", ");
 	}
 
+	
 	@Override
 	public void configDirectories(File dataFolder, File tmpFolder, File codeFolder, File srcFolder, File binFolder, File stageFolder) {
 		my(FolderConfig.class).storageFolder().set(dataFolder);
@@ -196,7 +199,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private void startSnapps() {
-
 		startAndKeep(SocketOriginator.class);
 		startAndKeep(SocketReceiver.class);
 		startAndKeep(ProbeManager.class);
@@ -257,6 +259,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		contract.dispose();
 	}
 
+	
 	private boolean isBrickAvailable(final String brickName, final String brickStatus) {
 		for (BrickInfo brickInfo : my(BrickSpace.class).availableBricks()) {
 			my(Logger.class).log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Brick found: " + brickInfo.name() + " status: " + brickInfo.status().name());
@@ -266,6 +269,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		};
 		return false;
 	}
+	
 	
 	@Override
 	public void stageBricksForInstallation(String... brickNames) {
@@ -286,6 +290,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		startAndKeep(BrickSpace.class);
 	}
 
+	
 	private void tryToCopyRepositoryCode() throws IOException {
 		my(Logger.class).log("Copying necessary repository code...");
 		copyRepositorySources();
@@ -293,6 +298,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		my(Logger.class).log("Copying necessary repository code... done.");
 	}
 
+	
 	private void copyUnupdatableBinFiles() throws IOException {
 		copyNecessaryRepositoryBinFiles(
 			"sneer/main/Sneer.class",
@@ -301,37 +307,44 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		);
 	}
 
+	
 	private void copyNecessaryRepositoryBinFiles(String... fileNames) throws IOException {
 		for (String fileName : fileNames)
 			copyNecessaryRepositoryBinFile(fileName);
 	}
 
+	
 	private void copyNecessaryRepositoryBinFile(String fileName) throws IOException {
 		File from = new File(repositoryBinFolder(), fileName);
 		File to = new File(testBinFolder(), fileName);
 		my(IO.class).files().copyFile(from, to);
 	}
 
+	
 	private void copyRepositorySources() throws IOException {
 		copyToSourceFolder(new File(repositoryBinFolder().getParentFile(), "src"));
 	}
 
+	
 	private File repositoryBinFolder() {
 		return my(ClassUtils.class).classpathRootFor(getClass());
 	}
 
+	
 	private void setStagedForInstallation(String brickName) {
 		final BrickInfo brick = availableBrick(brickName);
 		final BrickVersion singleVersion = singleVersionOf(brick);
 		brick.setStagedForInstallation(singleVersion, true);
 	}
 
+	
 	private BrickVersion singleVersionOf(BrickInfo brick) {
 		if (brick.versions().size() != 1)
 			throw new IllegalStateException();
 		return brick.versions().get(0);
 	}
 
+	
 	private BrickInfo availableBrick(String brickName) {
 		for (BrickInfo brick : my(BrickSpace.class).availableBricks())
 			if (brick.name().equals(brickName))
@@ -339,11 +352,13 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		throw new IllegalArgumentException();
 	}
 
+	
 	@Override
 	public void crash() {
 		my(Threads.class).crashAllThreads();
 	}
 
+	
 	@Override
 	public void start() {
 		throwOnBlinkingErrors();
@@ -354,6 +369,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		accelerateHeartbeat();
 	}
 
+	
 	private void installStagedCodeIfNecessary() {
 		File stageFolder = my(FolderConfig.class).stageFolder().get();
 		try {
@@ -364,6 +380,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		}
 	}
 
+	
 	private void throwOnBlinkingErrors() {
 		_refToAvoidGc2 = my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>() { @Override public void consume(CollectionChange<Light> value) {
 			for (Light l : value.elementsAdded())
@@ -372,23 +389,26 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		}});
 	}
 
+	
 	@Override
 	public void copyToSourceFolder(File folder) throws IOException {
 		my(IO.class).files().copyFolder(folder, testSrcFolder());
 	}
 
+	
 	private File testBinFolder() {
 		return my(FolderConfig.class).binFolder().get();
 	}
 
+	
 	private File testSrcFolder() {
 		return my(FolderConfig.class).srcFolder().get();
 	}
 
+	
 	private String print(Seal seal) {
 		return seal.equals(my(Seals.class).ownSeal())
 			? "myself"
 			: my(Seals.class).contactGiven(seal).nickname().toString();
 	}
-
 }
