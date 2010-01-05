@@ -1,6 +1,8 @@
 ﻿TASKS
 =========
 
+	- [Igor] ContactManager -> Contacts
+
 	- [Igor] TrackDownloaderTest - Unignore and run. 
 
 	- [Igor] IO.fileFilter().extensions(String...) implementation (there are two versions - one commented)
