@@ -64,7 +64,7 @@ final class ProbeImpl implements Consumer<Tuple> {
 	}
 
 	private boolean isClearToSend(Tuple tuple) {
-		initContactsPKIfNecessary();
+		initContactsSealIfNecessary();
 		if (_contactsSeal == null) return false;
 
 		if (!_filter.canBePublished(tuple)) return false;
@@ -84,7 +84,7 @@ final class ProbeImpl implements Consumer<Tuple> {
 		return _contactsSeal.equals(tuple.publisher);
 	}
 
-	private void initContactsPKIfNecessary() {
+	private void initContactsSealIfNecessary() {
 		if (_contactsSeal != null) return;
 		_contactsSeal = _keyManager.sealGiven(_contact);
 	}
