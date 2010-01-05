@@ -5,4 +5,6 @@ public interface ImmutableReference<T> {
 	void set(T value);
 	T get();
 	
+	boolean isAlreadySet();
+	
 }
