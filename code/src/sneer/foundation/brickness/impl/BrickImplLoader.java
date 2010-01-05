@@ -6,7 +6,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.BrickConventions;
@@ -52,7 +51,7 @@ class BrickImplLoader {
 
 	private void logMethodlessBrick(Class<?> brick) {
 		if (isSnapp(brick) || hasMethods(brick)) return;
-		my(Logger.class).log(">>> I'm a brick with no methods and my name is: ", brick.getName());
+//		my(Logger.class).log(">>> I'm a brick with no methods and my name is: ", brick.getName());
 //		throw new BrickLoadingException("Methodless Brick: " + brick.getName());
 	}
 
