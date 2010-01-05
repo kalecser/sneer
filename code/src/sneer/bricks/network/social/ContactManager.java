@@ -10,19 +10,15 @@ public interface ContactManager {
     
 	SetSignal<Contact> contacts();
 
+	Contact contactGiven(String nickname);
 	boolean isNicknameAlreadyUsed(String nickname);
 	
-	Contact contactGiven(String nickname);
-
 	/** @throws Refusal if there already is a Contact with that nickname.*/
 	Contact addContact(String nickname) throws Refusal;
-
 	/** Returns a contact with the given nickname. Creates a new one if there was no contact with that nickname before. */
 	Contact produceContact(String nickname);
-
 	PickyConsumer<String> nicknameSetterFor(Contact contact);
 	
 	void removeContact(Contact contact);
-
 
 }
