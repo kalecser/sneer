@@ -5,7 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
-import sneer.foundation.brickness.Immutable;
+import sneer.foundation.lang.Immutable;
 
 public abstract class Tuple extends Immutable {
 

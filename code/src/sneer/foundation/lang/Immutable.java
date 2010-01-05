@@ -1,4 +1,4 @@
-package sneer.foundation.brickness;
+package sneer.foundation.lang;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class Immutable {
+public abstract class Immutable implements ReadOnly {
 
 	@Override
 	public final int hashCode() {

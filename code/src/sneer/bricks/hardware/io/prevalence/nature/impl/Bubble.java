@@ -11,8 +11,7 @@ import java.util.List;
 
 import org.prevayler.Prevayler;
 
-import sneer.bricks.pulp.events.pulsers.PulseSource;
-import sneer.foundation.brickness.Immutable;
+import sneer.foundation.lang.ReadOnly;
 
 
 class Bubble {
@@ -84,7 +83,7 @@ class Bubble {
 		if (methodName.equals("output")) return object;
 		
 		Class<?> type = method.getReturnType();
-		if (isImmutable(type)) return object;
+		if (isReadOnly(type)) return object;
 
 		List<String> pathToObject = new ArrayList<String>(_getterMethodPath.size() + 1);
 		pathToObject.addAll(_getterMethodPath);
@@ -94,13 +93,12 @@ class Bubble {
 	}
 
 
-	private boolean isImmutable(Class<?> type) {
+	private boolean isReadOnly(Class<?> type) {
 		if (type.isPrimitive()) return true;
 		if (type == String.class) return true;
 		if (type == Date.class) return true;
 		if (type == File.class) return true;
-		if (Immutable.class.isAssignableFrom(type)) return true;
-		if (PulseSource.class.isAssignableFrom(type)) return true;
+		if (ReadOnly.class.isAssignableFrom(type)) return true;
 			
 		return false;
 	}
