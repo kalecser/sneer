@@ -11,6 +11,7 @@ import sneer.bricks.pulp.events.pulsers.Pulsers;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 
 class ThreadsImpl implements Threads {
 
@@ -60,7 +61,7 @@ class ThreadsImpl implements Threads {
 
 		new Daemon(threadName) { @Override public void run() {
 			hasStarted.open();
-			Environments.runWith(environment, new Runnable() { @Override public void run() {
+			Environments.runWith(environment, new Closure() { @Override public void run() {
 				ExceptionHandler.shield(runnable);
 			}});
 		}};

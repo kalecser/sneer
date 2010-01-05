@@ -25,6 +25,7 @@ import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.exceptions.Refusal;
@@ -90,13 +91,13 @@ abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDG
 	private void addKeyListenerToCommitOnKeyTyped() {
 		_textComponent.addKeyListener(new KeyAdapter() { @Override public void keyTyped(KeyEvent e) {
 			setNotified(_notificationPolicy == NotificationPolicy.OnTyping,  getText());
-			Environments.runWith(_environment, new Runnable() { @Override public void run() {
+			Environments.runWith(_environment, new Closure() { @Override public void run() {
 				commitIfNecessary();
 			}});
 		}
 
 		private void commitIfNecessary() {
-			my(GuiThread.class).invokeLater(new Runnable(){ @Override public void run() {
+			my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
 				_textComponent.invalidate();
 				_textComponent.getParent().validate();
 				if ( _notificationPolicy == NotificationPolicy.OnTyping ) commitTextChanges();
@@ -119,7 +120,7 @@ abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDG
 		} catch (Exception ex) {
 			_textComponent.addKeyListener(new KeyAdapter() { @Override public void keyTyped(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER)
-					my(GuiThread.class).invokeLater(new Runnable(){ @Override public void run() {
+					my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
 						commitTextChanges();		
 					}});
 			}});
@@ -214,7 +215,7 @@ abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDG
 	
 	private void startReceiving() {
 		_referenceToAvoidGc = _source.addReceiver(new Consumer<Object>() {@Override public void consume(final Object text) {
-			my(GuiThread.class).invokeAndWaitForWussies(new Runnable(){ @Override public void run() {
+			my(GuiThread.class).invokeAndWaitForWussies(new Closure(){ @Override public void run() {
 				if (!_notified) return;
 				setText(valueToString(text));
 			}});

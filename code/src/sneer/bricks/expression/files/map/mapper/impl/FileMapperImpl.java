@@ -132,12 +132,18 @@ class FileMapperImpl implements FileMapper {
 		}
 
 		private File[] sortedFiles(File folder, final String... acceptedExtensions) {
-			File[] result = folder.listFiles(my(IO.class).fileFilters().extensions(acceptedExtensions));
+			File[] result = listFiles(folder, acceptedExtensions);
 			if (result == null)	return new File[0];
 			Arrays.sort(result, new Comparator<File>() { @Override public int compare(File file1, File file2) {
 				return file1.getName().compareTo(file2.getName());
 			}});
 			return result;
+		}
+
+		private File[] listFiles(File folder, final String... acceptedExtensions) {
+			return acceptedExtensions.length > 0
+					? folder.listFiles(my(IO.class).fileFilters().extensions(acceptedExtensions))
+					: folder.listFiles();
 		}
 
 		private ImmutableArray<FileOrFolder> immutable(List<FileOrFolder> entries) {

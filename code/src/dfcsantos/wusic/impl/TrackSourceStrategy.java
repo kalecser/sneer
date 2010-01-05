@@ -11,6 +11,7 @@ import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.foundation.lang.Closure;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.playlist.Playlist;
@@ -64,7 +65,7 @@ abstract class TrackSourceStrategy {
 	
 	void noWay(final Track rejected) {
 		//Implement Create event to notify listeners of track rejection (musical taste matcher, for example).
-		my(Threads.class).startDaemon("Calculating Hash to Reject Track", new Runnable() { @Override public void run() {
+		my(Threads.class).startDaemon("Calculating Hash to Reject Track", new Closure() { @Override public void run() {
 			Sneer1024 hash = my(Tracks.class).calculateHashFor(rejected);
 			my(RejectedTracksKeeper.class).reject(hash);
 		}});

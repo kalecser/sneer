@@ -38,6 +38,7 @@ import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.bricks.snapps.contacts.gui.comparator.ContactComparator;
 import sneer.foundation.lang.ByRef;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 
@@ -56,7 +57,7 @@ class ContactsGuiImpl implements ContactsGui {
 	private final ListSignal<Contact> _sortedList = my(ListSorter.class).sort( my(Contacts.class).contacts() , my(ContactComparator.class), _chooser);
 	private final ListWidget<Contact> _contactList;{
 		final ByRef<ListWidget<Contact>> ref = ByRef.newInstance();
-		my(GuiThread.class).invokeAndWait(new Runnable(){ @Override public void run() {
+		my(GuiThread.class).invokeAndWait(new Closure(){ @Override public void run() {
 			ref.value = my(ReactiveWidgetFactory.class).newList(_sortedList, new ContactLabelProvider(), new ContactsGuiCellRenderer(new ContactLabelProvider()));
 		}});
 		_contactList = ref.value;

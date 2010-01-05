@@ -22,8 +22,9 @@ public interface IO {
 	
 	interface FileFilters{
 		Filter any();
+		Filter none();
 		Filter not(Filter filter);
-		Filter or(Filter... filters);
+		Filter or(Filter[] filters);
 		Filter suffix(String sulfix);
 		Filter name(String name);
 		FileFilter extensions(String... validFileTypes);

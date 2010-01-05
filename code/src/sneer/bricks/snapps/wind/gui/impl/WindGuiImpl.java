@@ -41,6 +41,7 @@ import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
 import sneer.bricks.snapps.wind.Shout;
 import sneer.bricks.snapps.wind.Wind;
 import sneer.bricks.snapps.wind.gui.WindGui;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class WindGuiImpl implements WindGui {
@@ -57,7 +58,7 @@ class WindGuiImpl implements WindGui {
 
 	private final TextWidget<JTextPane> _myShout; {
 		final Object ref[] = new Object[1];
-		my(GuiThread.class).invokeAndWait(new Runnable(){ @Override public void run() {//Fix Use GUI Nature
+		my(GuiThread.class).invokeAndWait(new Closure(){ @Override public void run() {//Fix Use GUI Nature
 			ref[0] = _rfactory.newTextPane(my(Signals.class).newRegister("").output(),  _wind.megaphone(), NotificationPolicy.OnEnterPressed);
 		}});
 		_myShout = (TextWidget<JTextPane>) ref[0];

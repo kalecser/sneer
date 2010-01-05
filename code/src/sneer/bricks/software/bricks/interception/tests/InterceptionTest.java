@@ -93,7 +93,7 @@ public class InterceptionTest extends Assert {
 			}
 		};
 			
-		Environments.runWith(Brickness.newBrickContainer(passThroughNature), new Runnable() { @Override public void run() {
+		Environments.runWith(Brickness.newBrickContainer(passThroughNature), new Closure() { @Override public void run() {
 			assertEquals("Hello!!!", my(BrickOfSomeInterceptingNature.class).newGreeter().hello());
 		}});
 	}
@@ -103,7 +103,7 @@ public class InterceptionTest extends Assert {
 	public void environmentIsNotRequired() {
 		checkingMethodIsInvoked("add", new Object[] { 1, 2 }, new Closure() { @Override public void run() {
 			final BrickOfSomeInterceptingNature brick = my(BrickOfSomeInterceptingNature.class);
-			Environments.runWith(null, new Runnable() { @Override public void run() {
+			Environments.runWith(null, new Closure() { @Override public void run() {
 				brick.add(1, 2);
 			}});
 		}});

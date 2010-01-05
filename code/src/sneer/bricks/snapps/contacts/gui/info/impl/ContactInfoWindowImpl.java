@@ -41,6 +41,7 @@ import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.bricks.snapps.contacts.gui.info.ContactInfoWindow;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.exceptions.Refusal;
@@ -51,7 +52,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 	
 	private final ListWidget<InternetAddress> _lstAddresses; {
 		final Object ref[] = new Object[1];
-		my(GuiThread.class).invokeAndWait(new Runnable(){ @Override public void run() {//Fix Use GUI Nature
+		my(GuiThread.class).invokeAndWait(new Closure(){ @Override public void run() {//Fix Use GUI Nature
 			ref[0] = my(ReactiveWidgetFactory.class).newList(_contactAddresses.addresses(), 
 			new LabelProvider<InternetAddress>(){
 				@Override public Signal<? extends Image> imageFor(InternetAddress element) {

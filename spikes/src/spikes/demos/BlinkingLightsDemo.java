@@ -7,6 +7,7 @@ import sneer.bricks.skin.main.dashboard.Dashboard;
 import sneer.bricks.snapps.system.blinkinglights.gui.BlinkingLightsGui;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.ClosureX;
 
 public class BlinkingLightsDemo {
 
@@ -21,13 +22,9 @@ public class BlinkingLightsDemo {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Environments.runWith(Brickness.newBrickContainer(), new Runnable(){
-			@Override public void run() {
-				try {
-					new BlinkingLightsDemo();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}});
+		Environments.runWith(Brickness.newBrickContainer(), new ClosureX<Exception>() { @Override public void run() throws Exception {
+			new BlinkingLightsDemo();
+		}});
 	}
+
 }

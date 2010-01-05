@@ -8,7 +8,7 @@ import org.junit.Test;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.environments.Environments;
-
+import sneer.foundation.lang.Closure;
 
 public class EnvironmentsTest extends Assert {
 	
@@ -18,7 +18,7 @@ public class EnvironmentsTest extends Assert {
 	@Test
 	public void testMyEnvironment() {
 		final Environment environment = environment();
-		Environments.runWith(environment, new Runnable() { @Override public void run() {
+		Environments.runWith(environment, new Closure() { @Override public void run() {
 			assertSame(environment, my(Environment.class));
 		}});
 	}
@@ -33,13 +33,13 @@ public class EnvironmentsTest extends Assert {
 	
 	@Test
 	public void testRunWith() {
-		Environments.runWith(environment(), runnable());
+		Environments.runWith(environment(), closure());
 		assertTrue(_ran);
 	}
 	
 	
-	private Runnable runnable() {
-		return new Runnable() { @Override public void run() {
+	private Closure closure() {
+		return new Closure() { @Override public void run() {
 			assertEquals(_binding, Environments.my(Object.class));
 			_ran = true;
 		}};

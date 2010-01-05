@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.BrickConventions;
 import sneer.foundation.brickness.BrickLoadingException;
@@ -15,6 +16,8 @@ import sneer.foundation.brickness.Nature;
 class BrickImplLoader {
 
 	<T> Class<T> loadImplClassFor(Class<T> brick) throws ClassNotFoundException {
+		logMethodlessBrick(brick);
+
 		File path = ClassFiles.classpathRootFor(brick);
 		String implPackage = BrickConventions.implPackageFor(brick.getName());
 		List<Nature> natures = naturesFor(brick);
@@ -45,5 +48,20 @@ class BrickImplLoader {
 	private static String implNameFor(final String brickInterfaceName) {
 		return BrickConventions.implClassNameFor(brickInterfaceName);
 	}
-	
+
+	private void logMethodlessBrick(Class<?> brick) {
+		if (isSnapp(brick) || hasMethods(brick)) return;
+//		my(Logger.class).log(">>> I'm a brick with no methods and my name is: ", brick.getName());
+//		throw new BrickLoadingException("Methodless Brick: " + brick.getName());
+	}
+
+	private boolean hasMethods(Class<?> brick) {
+		return brick.getDeclaredMethods().length > 0;
+	}
+
+	private boolean isSnapp(Class<?> brick) {
+		return brick.getAnnotation(Snapp.class) != null;
+	}
+
 }
+

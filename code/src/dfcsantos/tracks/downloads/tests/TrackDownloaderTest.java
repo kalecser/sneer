@@ -6,36 +6,40 @@ import java.io.File;
 import java.io.IOException;
 
 import org.jmock.Expectations;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.pulp.keymanager.Seal;
+import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 import dfcsantos.tracks.downloads.TrackDownloader;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
 
-@Ignore
 public class TrackDownloaderTest extends BrickTest {
 
 	@Bind private final FileClient _fileClient = mock(FileClient.class);
+	@Bind private final Seals _seals = mock(Seals.class);
 
-	@Test(timeout = 6000)
+	@Test(timeout = 3000)
 	public void trackDownload() throws Exception {
 		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[] { 1 });
 		final Sneer1024 hash2 = my(Crypto.class).digest(new byte[] { 2 });
 		final Sneer1024 hash3 = my(Crypto.class).digest(new byte[] { 3 });
 
 		checking(new Expectations(){{
+			oneOf(_seals).ownSeal(); will(returnValue(newSeal(1)));
+			oneOf(_seals).ownSeal(); will(returnValue(newSeal(2)));
 			exactly(1).of(_fileClient).startFileDownload(new File(peerTracksFolder(), "ok.mp3"), 41, hash1);
+			allowing(_seals).ownSeal();
 		}});
 
 		my(Wusic.class).allowTracksDownload(true);
@@ -63,13 +67,12 @@ public class TrackDownloaderTest extends BrickTest {
 	}
 
 	private void aquireEndorsementTuple(final Sneer1024 hash1, int lastModified, String track) {
-		if ("1".equals("1")) throw new NotImplementedYet("Look at how the Tuple.publisher field is initialized. Mock the Seals.ownSeal() method to generate tuples with a different publisher. The Tuple.stamp() method no longer exists.");
-		TrackEndorsement trackEndorsement = new TrackEndorsement(track, lastModified, hash1);
-		//trackEndorsement.stamp(...);
-		
-		my(TupleSpace.class).acquire(trackEndorsement);
+		my(TupleSpace.class).acquire(new TrackEndorsement(track, lastModified, hash1));
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 	}
 
+	private Seal newSeal(int b) {
+		return new Seal(new ImmutableByteArray(new byte[] { (byte) b }));
+	}
 
 }

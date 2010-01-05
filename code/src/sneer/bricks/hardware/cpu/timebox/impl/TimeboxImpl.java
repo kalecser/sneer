@@ -1,12 +1,13 @@
 package sneer.bricks.hardware.cpu.timebox.impl;
 
 import sneer.bricks.hardware.cpu.timebox.Timebox;
+import sneer.foundation.lang.Closure;
 
 class TimeboxImpl implements Timebox {
 
 	@Override
-	public Runnable prepare(final int durationInMillis, final Runnable toRun, final Runnable toCallWhenBlocked) {
-		return new Runnable() { @Override public void run() {
+	public Closure prepare(final int durationInMillis, final Runnable toRun, final Runnable toCallWhenBlocked) {
+		return new Closure() { @Override public void run() {
 			TimeboxImpl.this.run(durationInMillis, toRun, toCallWhenBlocked);
 		}};
 	}

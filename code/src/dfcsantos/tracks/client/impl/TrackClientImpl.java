@@ -13,6 +13,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.client.TrackClient;
 import dfcsantos.tracks.downloads.TrackDownloader;
@@ -41,7 +42,7 @@ class TrackClientImpl implements TrackClient {
 
 		if (_busy != null) _busy.waitTillOpen();
 		_busy = my(Latches.class).produce();
-		my(Threads.class).startDaemon("Track Mapping", new Runnable() { @Override public void run() {
+		my(Threads.class).startDaemon("Track Mapping", new Closure() { @Override public void run() {
 			mapSharedTracksFolder(newSharedTracksFolder);
 			_busy.open();
 		}});

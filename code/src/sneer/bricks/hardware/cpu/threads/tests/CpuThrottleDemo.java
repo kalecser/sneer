@@ -10,6 +10,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.ClosureX;
 
 public class CpuThrottleDemo {
@@ -18,7 +19,7 @@ public class CpuThrottleDemo {
 
 
 	public static void main(String[] ignored) {
-		Environments.runWith(Brickness.newBrickContainer(), new Runnable() { @Override public void run() {
+		Environments.runWith(Brickness.newBrickContainer(), new Closure() { @Override public void run() {
 			startChartingWithThrottle(5);
 			startChartingWithThrottle(10);
 			startChartingWithThrottle(20);
@@ -37,7 +38,7 @@ public class CpuThrottleDemo {
 	synchronized
 	private static void startCharting(final String label) {
 		_countersByLabel.put(label, new AtomicInteger());
-		my(Threads.class).startStepping(new Runnable(){ @Override public void run() {
+		my(Threads.class).startStepping(new Closure(){ @Override public void run() {
 			_countersByLabel.get(label).incrementAndGet();
 			chart();
 		}});

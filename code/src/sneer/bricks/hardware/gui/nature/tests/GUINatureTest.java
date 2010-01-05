@@ -12,6 +12,7 @@ import sneer.bricks.hardware.gui.nature.tests.fixtures.SomeGuiBrick;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 
 //TODO: nature inheritance (annotation Instrument interface for instance)
 //TODO: methods declaring checked exceptions
@@ -21,27 +22,23 @@ public class GUINatureTest extends Assert {
 	
 	@Test
 	public void instantiationHappensInTheSwingThread() {
-		Environments.runWith(subject, new Runnable() { @Override public void run() {
-			
-			assertTrue(isGuiThread(my(SomeGuiBrick.class).constructorThread()));
-			
+		Environments.runWith(subject, new Closure() { @Override public void run() {
+			assertTrue(isGuiThread(my(SomeGuiBrick.class).constructorThread()));		
 		}});
 	}
 	
 	@Test
 	public void invocationHappensInTheSwingThread() {
-		Environments.runWith(subject, new Runnable() { @Override public void run() {
-			
+		Environments.runWith(subject, new Closure() { @Override public void run() {
 			assertTrue(isGuiThread(my(SomeGuiBrick.class).currentThread()));
-			
 		}});
 	}
 	
 	@Test
 	public void listenerInvocationHappensInBricknessEnvironment() {
-		Environments.runWith(subject, new Runnable() { @Override public void run() {
+		Environments.runWith(subject, new Closure() { @Override public void run() {
 			final ActionListener listener = my(SomeGuiBrick.class).listenerFor(subject);
-			Environments.runWith(null, new Runnable() { @Override public void run() {
+			Environments.runWith(null, new Closure() { @Override public void run() {
 				listener.actionPerformed(new ActionEvent(this, 0, null));
 			}});
 		}});
@@ -49,21 +46,18 @@ public class GUINatureTest extends Assert {
 	
 	@Test
 	public void invocationHappensInBricknessEnvironment() {
-		Environments.runWith(subject, new Runnable() { @Override public void run() {
-			
+		Environments.runWith(subject, new Closure() { @Override public void run() {
 			assertSame(subject, my(SomeGuiBrick.class).currentEnvironment());
-			
 		}});
 	}
 	
 	@Test
 	public void invocationInTheSwingThreadForVoidMethod() {
-		Environments.runWith(subject, new Runnable() { @Override public void run() {
+		Environments.runWith(subject, new Closure() { @Override public void run() {
 			assertFalse(isGuiThread(Thread.currentThread()));
-			my(SomeGuiBrick.class).run(new Runnable() { @Override public void run() {
+			my(SomeGuiBrick.class).run(new Closure() { @Override public void run() {
 				assertTrue(isGuiThread(Thread.currentThread()));
 			}});
-			
 		}});
 	}
 

@@ -11,6 +11,7 @@ import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.ByRef;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Producer;
 
 class GUIImpl implements GUI {
@@ -21,7 +22,7 @@ class GUIImpl implements GUI {
 	@Override
 	public Object invoke(Class<?> brick, Object instance, String methodName,	final Object[] args, final Continuation continuation) {
 		final ByRef<Object> result = ByRef.newInstance();
-		invokeInGuiThread(new Runnable() { @Override public void run() {
+		invokeInGuiThread(new Closure() { @Override public void run() {
 			result.value = continuation.invoke(args);
 		}});
 		return result.value;
@@ -32,7 +33,7 @@ class GUIImpl implements GUI {
 	public <T> T instantiate(Class<T> brick, Class<T> implClass, final Producer<T> producer) {
 		
 		final ByRef<T> result = ByRef.newInstance();
-		invokeInGuiThread(new Runnable() { @Override public void run() {
+		invokeInGuiThread(new Closure() { @Override public void run() {
 			result.value = producer.produce();
 		}});
 		return result.value;
@@ -45,9 +46,9 @@ class GUIImpl implements GUI {
 	}
 
 	
-	private void invokeInGuiThread(final Runnable runnable) {
-		Environments.runWith(_environment, new Runnable() { @Override public void run() {
-			my(GuiThread.class).invokeAndWaitForWussies(runnable);
+	private void invokeInGuiThread(final Closure closure) {
+		Environments.runWith(_environment, new Closure() { @Override public void run() {
+			my(GuiThread.class).invokeAndWaitForWussies(closure);
 		}});
 	}
 }

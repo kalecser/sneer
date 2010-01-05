@@ -1,5 +1,7 @@
 package spikes.wheel.i18n;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -30,7 +32,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
-import static sneer.foundation.environments.Environments.my;
+import sneer.foundation.lang.Closure;
 
 //Refactor: Break this into several classes.
 public class Language {
@@ -121,7 +123,7 @@ public class Language {
 	// Fix: the code below is responsible for translation file creation... *maybe* should be moved to an utility class
 
 	public static void main(String[] args) {
-		my(GuiThread.class).invokeAndWait(new Runnable() {	public void run() {
+		my(GuiThread.class).invokeAndWait(new Closure() { @Override public void run() {
 			createAndShowGUI();
 		}});
 	}

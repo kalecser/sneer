@@ -10,6 +10,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 
 public class ThreadsTest extends BrickTestWithThreads {
 
@@ -20,7 +21,7 @@ public class ThreadsTest extends BrickTestWithThreads {
 		final Environment environment = my(Environment.class);
 		final Latch latch = my(Latches.class).produce();
 
-		_subject.startStepping(new Runnable() { @Override public void run() {
+		_subject.startStepping(new Closure() { @Override public void run() {
 			assertSame(environment, Environments.my(Environment.class));
 			latch.open();
 		}});
@@ -39,7 +40,7 @@ public class ThreadsTest extends BrickTestWithThreads {
 		final Environment environment = my(Environment.class);
 		
 		Thread thread = new Thread() { @Override public void run(){
-			Environments.runWith(environment, new Runnable()  { @Override public void run() {
+			Environments.runWith(environment, new Closure()  { @Override public void run() {
 				_subject.crashAllThreads();
 			}});
 		}};

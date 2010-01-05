@@ -11,6 +11,7 @@ import javax.swing.JPopupMenu;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.main.synth.menu.SynthMenus;
+import sneer.foundation.lang.Closure;
 
 class SynthMenusImpl implements SynthMenus {
 	
@@ -24,7 +25,7 @@ class SynthMenusImpl implements SynthMenus {
 	@Override public JPopupMenu createMenuPopup() { return attach(new JPopupMenu()); }
 
 	private <T extends JComponent> T attach(final T component) {
-		my(GuiThread.class).invokeAndWaitForWussies(new Runnable(){ @Override public void run() {
+		my(GuiThread.class).invokeAndWaitForWussies(new Closure(){ @Override public void run() {
 			my(Synth.class).attach(component);
 		}});
 		return component;

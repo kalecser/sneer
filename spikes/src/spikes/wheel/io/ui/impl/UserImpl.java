@@ -16,6 +16,7 @@ import javax.swing.filechooser.FileFilter;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.exceptions.FriendlyException;
 import spikes.wheel.io.ui.CancelledByUser;
@@ -29,9 +30,11 @@ public class UserImpl implements User {
 	private String _title;
 	private Consumer<Notification> _briefNotifier;
 
+
 	public UserImpl() {
 		//used by SimpleContainer
 	} 
+
 
 	public UserImpl(String title, Consumer<Notification> briefNotifier) { 
 		//Fix: receive the parent component instead of passing null to the JOptionPane in order not to be application modal.
@@ -39,9 +42,7 @@ public class UserImpl implements User {
 		_briefNotifier = briefNotifier;
 	}
 
-	
 
-	
 	@Override
 	public Object choose(String proposition, Object... options) throws CancelledByUser {
 		int chosen = showOptionDialog(null, proposition, _title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
@@ -222,7 +223,7 @@ public class UserImpl implements User {
 
 	@Override
 	public void saveAs(final String title, final String buttonTitle, final String[] suffixes, final String description, final Consumer<File> callback) {
-		my(GuiThread.class).invokeLater(new Runnable(){ public void run(){
+		my(GuiThread.class).invokeLater(new Closure() { @Override public void run(){
 			final JFileChooser fc = new JFileChooser(); 
 			fc.setDialogTitle(title);
 			fc.setApproveButtonText(buttonTitle);
@@ -247,7 +248,7 @@ public class UserImpl implements User {
 	
 	@Override
 	public void chooseFolder(final String title, final String buttonTitle, final Consumer<File> callback) {
-		my(GuiThread.class).invokeLater(new Runnable(){ public void run(){
+		my(GuiThread.class).invokeLater(new Closure() { @Override public void run(){
 			final JFileChooser fc = new JFileChooser();
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			fc.setApproveButtonText(buttonTitle);
@@ -259,7 +260,7 @@ public class UserImpl implements User {
 					acknowledgeNotification("This is not a valid folder:\n\n%1$s\n\nTry again.", result.getPath());
 				else
 					callback.consume(result);
-			}else{
+			} else {
 				callback.consume(null); //callback must check for null and consider it as user cancelation
 			}
 		}});

@@ -35,6 +35,7 @@ import sneer.bricks.snapps.owninfo.OwnInfo;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.ByRef;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.PickyConsumer;
 
 class OwnInfoImpl extends JFrame implements OwnInfo {
@@ -140,14 +141,14 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 
 	private TextWidget<JTextField> newTextField(final Signal<?> signal, final PickyConsumer<String> setter) {
 		final ByRef<TextWidget<JTextField>> result = ByRef.newInstance();
-		my(GuiThread.class).invokeAndWait(new Runnable() { @Override public void run() {
+		my(GuiThread.class).invokeAndWait(new Closure() { @Override public void run() {
 			result.value = my(ReactiveWidgetFactory.class).newTextField(signal, setter, NotificationPolicy.OnEnterPressedOrLostFocus);
 		}});
 		return result.value;
 	}
 
 	private void submit() {
-		Environments.runWith(_environment, new Runnable(){ @Override public void run() {
+		Environments.runWith(_environment, new Closure(){ @Override public void run() {
 			try {
 				storeFieldData();
 			} catch (Exception ex) {

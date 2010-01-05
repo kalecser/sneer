@@ -48,6 +48,7 @@ import sneer.bricks.skin.widgets.reactive.ListWidget;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.system.blinkinglights.gui.BlinkingLightsGui;
+import sneer.foundation.lang.Closure;
 
 class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 	
@@ -206,7 +207,7 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 		}
 
 		private void placeScrollAtTheBegining() {
-			my(GuiThread.class).invokeLater(new Runnable(){ @Override public void run() {
+			my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
 				scrollModel().setValue(scrollModel().getMinimum()-scrollModel().getExtent());
 			}});
 		}

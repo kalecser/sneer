@@ -4,11 +4,16 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.foundation.lang.Functor;
 
 public class IOTest extends BrickTest {
 	
@@ -32,6 +37,33 @@ public class IOTest extends BrickTest {
 		assertEquals("B234567890", new String(_subject.files().readBlock(tmpFile, 1, 10)));
 		assertEquals("C234567890", new String(_subject.files().readBlock(tmpFile, 2, 10)));
 		assertEquals("D2", new String(_subject.files().readBlock(tmpFile, 3, 10)));
+	}
+
+	
+	@Test
+	public void fileExtensionFilterTest() throws IOException {
+		createTmpSubfolder();
+		createTmpFiles("file1.txt", "file2.rtf", "file3.doc", "file4.htm", "file5.txt");
+
+		assertSameContents(listFileNames(tmpFolder()), "subdirectory");
+		assertElementsInAnyOrder(listFileNames(tmpFolder(), "rtf"), "subdirectory", "file2.rtf");
+		assertElementsInAnyOrder(listFileNames(tmpFolder(), "doc"), "subdirectory", "file3.doc");
+		assertElementsInAnyOrder(listFileNames(tmpFolder(), "htm"), "subdirectory", "file4.htm");
+		assertElementsInAnyOrder(listFileNames(tmpFolder(), "txt"), "subdirectory", "file1.txt", "file5.txt");
+	}
+
+	private void createTmpSubfolder() {
+		new File(tmpFolder(), "subdirectory").mkdir();
+	}
+
+	private Collection<String> listFileNames(File folder, String... fileExtensions) {
+		return my(CollectionUtils.class).map(listFiles(folder, fileExtensions), new Functor<File, String> () { @Override public String evaluate(File file) throws RuntimeException {
+			return file.getName();
+		}});
+	}
+
+	private List<File> listFiles(File folder, String... fileExtensions) {
+		return Arrays.asList(folder.listFiles(_subject.fileFilters().extensions(fileExtensions)));
 	}
 
 }

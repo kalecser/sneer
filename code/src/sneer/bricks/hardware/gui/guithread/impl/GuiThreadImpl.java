@@ -11,24 +11,25 @@ import javax.swing.SwingUtilities;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 
 class GuiThreadImpl implements GuiThread {
 	
 	private Set<Thread> _threadsThatShouldNotWaitForGui = new HashSet<Thread>();
 
 	@Override
-	public void invokeAndWaitForWussies(final Runnable runnable) { //Fix This method is called sometimes from swing's thread and other times from aplication's thread. Split the caller method (if it is possible), and delete this method.
+	public void invokeAndWaitForWussies(final Closure closure) { //Fix This method is called sometimes from swing's thread and other times from aplication's thread. Split the caller method (if it is possible), and delete this method.
 		if(SwingUtilities.isEventDispatchThread())
-			runnable.run();
+			closure.run();
 		else
-			invokeAndWait(runnable);
+			invokeAndWait(closure);
 	}
 
-	private void invokeAndWait(final Environment environment, final Runnable runnable) { //Fix Calling this from brick code is no longer necessary after the container is calling gui brick code only in the Swing thread.
+	private void invokeAndWait(final Environment environment, final Closure closure) { //Fix Calling this from brick code is no longer necessary after the container is calling gui brick code only in the Swing thread.
 		assertNotInGuiThread();
 		assertThreadCanWaitForGui();
 		try {
-			SwingUtilities.invokeAndWait(envolve(environment, runnable));
+			SwingUtilities.invokeAndWait(envolve(environment, closure));
 		} catch (InterruptedException e) {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		} catch (InvocationTargetException e) {
@@ -37,13 +38,13 @@ class GuiThreadImpl implements GuiThread {
 	}
 	
 	@Override
-	public void invokeAndWait(final Runnable runnable) { //Fix Calling this from brick code is no longer necessary after the container is calling gui brick code only in the Swing thread.
-		invokeAndWait(my(Environment.class), runnable);
+	public void invokeAndWait(final Closure closure) { //Fix Calling this from brick code is no longer necessary after the container is calling gui brick code only in the Swing thread.
+		invokeAndWait(my(Environment.class), closure);
 	}
 
 	@Override
-	public void invokeLater(Runnable runnable) {
-		SwingUtilities.invokeLater(envolve(runnable));
+	public void invokeLater(Closure closure) {
+		SwingUtilities.invokeLater(envolve(closure));
 	}
 
 	@Override
@@ -56,12 +57,12 @@ class GuiThreadImpl implements GuiThread {
 		if (SwingUtilities.isEventDispatchThread()) throw new IllegalStateException("Should NOT be running in the GUI thread."); 
 	}
 	
-	private Runnable envolve(final Runnable delegate) {
+	private Closure envolve(final Closure delegate) {
 		return envolve(my(Environment.class), delegate);
 	}
 
-	private Runnable envolve(final Environment environment, final Runnable delegate) {
-		return new Runnable() { @Override public void run() {
+	private Closure envolve(final Environment environment, final Closure delegate) {
+		return new Closure() { @Override public void run() {
 			Environments.runWith(environment, delegate);
 		}};
 	}

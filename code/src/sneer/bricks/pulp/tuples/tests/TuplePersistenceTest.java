@@ -15,12 +15,13 @@ import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 
 public class TuplePersistenceTest extends BrickTest {
 
 	@Test (timeout = 2000)
 	public void tuplePersistence() {
-		runInNewEnvironment(new Runnable() { @Override public void run() {
+		runInNewEnvironment(new Closure() { @Override public void run() {
 			TupleSpace subject1 = createSubject();
 	
 			assertEquals(0, subject1.keptTuples().size());
@@ -31,7 +32,7 @@ public class TuplePersistenceTest extends BrickTest {
 			subject1.acquire(tuple(2));
 		}});
 		
-		runInNewEnvironment(new Runnable() { @Override public void run() {
+		runInNewEnvironment(new Closure() { @Override public void run() {
 			
 			TupleSpace subject2 = createSubject();
 			List<Tuple> kept = subject2.keptTuples();
@@ -60,9 +61,9 @@ public class TuplePersistenceTest extends BrickTest {
 		return new TestTuple(i);
 	}
 	
-	private void runInNewEnvironment(Runnable runnable) {
+	private void runInNewEnvironment(Closure closure) {
 		Environment newEnvironment = newTestEnvironment(my(FolderConfig.class));
-		Environments.runWith(newEnvironment, runnable);
+		Environments.runWith(newEnvironment, closure);
 	}
 	
 	private TupleSpace createSubject() {
