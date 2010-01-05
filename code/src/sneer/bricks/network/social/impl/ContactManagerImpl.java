@@ -86,6 +86,7 @@ class ContactManagerImpl implements ContactManager {
 
 	
 	@Override
+	synchronized
 	public void removeContact(Contact contact) {
 		_contacts.remove(contact);
 		save();
