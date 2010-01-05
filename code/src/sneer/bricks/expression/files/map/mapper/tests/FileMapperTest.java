@@ -37,7 +37,7 @@ public class FileMapperTest extends BrickTest {
 		assertElementsInAnyOrder(names, "directory1", "directory2", "track4.txt", "track5.txt");
 	}
 
-	@Test
+	@Test (timeout = 3000)
 	public void clearFolderMapping() throws IOException, MappingStopped {
 		final Sneer1024 hashOfFolder = _subject.mapFolder(fixturesFolder());
 		assertNotNull(_fileMap.getFolderContents(hashOfFolder));

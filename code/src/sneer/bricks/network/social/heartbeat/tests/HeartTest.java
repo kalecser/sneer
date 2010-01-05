@@ -20,7 +20,7 @@ public class HeartTest extends BrickTest {
 	@Bind TupleSpace _tupleSpace = mock(TupleSpace.class);
 	@Bind Timer _timer = mock(Timer.class);
 
-	@Test
+	@Test (timeout = 2000)
 	public void heartIsBeating() {
 		
 		final ByRef<Runnable> _timerSteppable = ByRef.newInstance();
