@@ -17,6 +17,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.hardware.ram.iterables.Iterables;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
 import sneer.bricks.network.computers.sockets.connections.receiver.SocketReceiver;
@@ -57,11 +58,13 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	static private final String MOCK_ADDRESS = "localhost";
 
+	
 	private Collection<Object> _refToAvoidGc = new ArrayList<Object>();
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc2;
 
 	private File _codeFolder;
 
+	
 	@Override
 	public void setSneerPort(int port) {
 		try {
@@ -71,34 +74,56 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		}
 	}
 
+	
 	@Override
-	public void connectTo(SneerParty party) {
-		Contact contact = produceContact(party.ownName());
+	public void startConnectingTo(SneerParty other) {
+		Contact contact = produceContact(other.ownName());
 
-		SneerParty sneerParty = party;
-		//storePublicKey(contact, new PublicKey(sneerParty.publicKey()));
+		SneerParty sneerParty = other;
+		my(Seals.class).put(contact.nickname().currentValue(), newSeal(other.seal()));
 		my(InternetAddressKeeper.class).add(contact, MOCK_ADDRESS, sneerParty.sneerPort());
+	}
 
+	
+	@Override
+	public void waitUntilOnline(SneerParty other) {
+		Contact contact = produceContact(other.ownName());
 		waitUntilOnline(contact);
 	}
 
+    
+    @Override
+    public void waitUntilOnline(String nickname) {
+    	waitUntilOnline(produceContact(nickname));
+    }
+
+	
+    private void waitUntilOnline(Contact contact) {
+		my(SignalUtils.class).waitForValue(isAlive(contact), true);
+	}
+
+    
+	private Seal newSeal(byte[] bytes) {
+		return new Seal(new ImmutableByteArray(bytes));
+	}
+
+	
 	private Contact produceContact(String contactName) {
 		return my(ContactManager.class).produceContact(contactName);
 	}
 
-//	private void storePublicKey(Contact contact, PublicKey publicKey) {
-//		_keyManager.addKey(contact, publicKey);
-//	}
-
+	
 	@Override
 	public String ownName() {
 		return my(OwnNameKeeper.class).name().currentValue();
 	}
 
+	
 	@Override
 	public void setOwnName(String newName) {
 		my(OwnNameKeeper.class).nameSetter().consume(newName);
 	}
+	
 	
     @Override
     public void giveNicknameTo(SovereignParty peer, String newNickname) {
@@ -114,34 +139,27 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		waitUntilOnline(contact);
     }
     
-    @Override
-    public void waitUntilOnline(String nickname) {
-    	waitUntilOnline(produceContact(nickname));
-    }
-
-	private void waitUntilOnline(Contact contact) {
-		//System.out.println("WAITING FOR ONLINE: " + contact.nickname().currentValue() + " " + contact);
-		my(SignalUtils.class).waitForValue(isAlive(contact), true);
-	}
-
 	private Signal<Boolean> isAlive(Contact contact) {
 		return my(Stethoscope.class).isAlive(contact);
 	}
 
-	private Contact waitForContactGiven(byte[] publicKey) {
+	
+	private Contact waitForContactGiven(byte[] seal) {
 		while (true) {
-			Contact contact = my(Seals.class).contactGiven(my(Seals.class).unmarshall(publicKey));
+			Contact contact = my(Seals.class).contactGiven(new Seal(new ImmutableByteArray(seal)));
 			if (contact != null) return contact;
 			my(Threads.class).sleepWithoutInterruptions(10);
 			my(Clock.class).advanceTime(60 * 1000);
 		}
 	}
 
+	
 	@Override
     public byte[] seal() {
 		return my(Seals.class).ownSeal().bytes.copy();
 	}
 
+	
 	@Override
     public void navigateAndWaitForName(String nicknamePath, String expectedName) {
 		//nicknamePath.split("/")
@@ -149,16 +167,19 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		throw new NotImplementedYet();
     }
 
+	
 	@Override
 	public int sneerPort() {
         return my(PortKeeper.class).port().currentValue();
     }
 
+	
 	@Override
 	public void shout(String phrase) {
 		my(Wind.class).megaphone().consume(phrase);
 	}
 
+	
 	@Override
 	public void waitForShouts(final String shoutsExpected) {
 		final Latch latch = my(Latches.class).produce();

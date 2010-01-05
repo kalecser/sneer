@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.IOException;
 import java.util.Arrays;
 
+import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
@@ -17,14 +18,20 @@ class IncomingHandShaker {
 
 
 	static Seal greet(ByteArraySocket socket) throws IOException {
-		byte[] contactsSealBytes = identifyContact(socket);
-		Seal contactsSeal = Seals.unmarshall(contactsSealBytes);
+		byte[] contactsSealBytes = identifyContactsSeal(socket);
+		Seal contactsSeal = new Seal(new ImmutableByteArray(contactsSealBytes));
 
 		rejectLoopback(contactsSeal);
-		
+		rejectUnknownSeal(contactsSeal);
 		//Implement: Challenge pk.
 
 		return contactsSeal;
+	}
+
+
+	private static void rejectUnknownSeal(Seal contactsSeal) throws IOException {
+		if (Seals.contactGiven(contactsSeal) == null)
+			throw new IOException("Incoming connection from unknown party. Seal: " + contactsSeal);
 	}
 
 
@@ -34,7 +41,7 @@ class IncomingHandShaker {
 	}
 
 
-	static private byte[] identifyContact(ByteArraySocket socket) throws IOException {
+	static private byte[] identifyContactsSeal(ByteArraySocket socket) throws IOException {
 		while (true) {
 			byte[] header = socket.read();
 			byte[] sealBytes = socket.read();

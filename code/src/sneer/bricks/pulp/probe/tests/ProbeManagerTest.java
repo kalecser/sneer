@@ -7,12 +7,15 @@ import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
+import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection.PacketScheduler;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.ContactManager;
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
+import sneer.bricks.pulp.keymanager.Seal;
+import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.probe.ProbeManager;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.serialization.Serializer;
@@ -26,7 +29,6 @@ import sneer.foundation.lang.Consumer;
 public class ProbeManagerTest extends BrickTest {
 
 	@Bind private final ConnectionManager _connectionManager = mock(ConnectionManager.class);
-	@Bind private final Serializer _serializer = mock(Serializer.class);
 	@SuppressWarnings("unused")
 	@Bind private final BrickStateStore _store = new BrickStateStoreMock();
 
@@ -50,14 +52,10 @@ public class ProbeManagerTest extends BrickTest {
 					_scheduler = (PacketScheduler) invocation.getParameter(0);
 					return null;
 				}});
-			allowing(_serializer).serialize(with(aNonNull(TupleWithId.class)));
-				will(new CustomAction("serializing tuple id") { @Override public Object invoke(Invocation invocation) throws Throwable {
-					TupleWithId _tuple = (TupleWithId) invocation.getParameter(0);
-					return new byte[] {(byte)_tuple.id};
-				}});
 		}});
 
 		my(ContactManager.class).addContact("Neide");
+		my(Seals.class).put("Neide", newSeal(new byte[]{1}));
 
 		_tuples.acquire(new TupleTypeA(1));
 		assertPacketToSend(1);
@@ -74,10 +72,22 @@ public class ProbeManagerTest extends BrickTest {
 	}
 
 
-	private void assertPacketToSend(int id) {
+	private void assertPacketToSend(int id) throws Exception {
+		_tuples.waitForAllDispatchingToFinish();
 		byte[] packet = _scheduler.highestPriorityPacketToSend();
 		_scheduler.previousPacketWasSent();
-		assertEquals(id, packet[0]);
+		
+		assertEquals(id, desserialize(packet).id);
+	}
+
+
+	private TupleWithId desserialize(byte[] packet) throws Exception {
+		return (TupleWithId)my(Serializer.class).deserialize(packet, TupleWithId.class.getClassLoader());
+	}
+
+	
+	private Seal newSeal(byte[] bytes) {
+		return new Seal(new ImmutableByteArray(bytes));
 	}
 
 }

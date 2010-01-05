@@ -10,8 +10,9 @@ import sneer.bricks.expression.files.server.FileServer;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.ticker.custom.CustomClockTicker;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
-import sneer.bricks.pulp.own.name.OwnNameKeeper;
+import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.ClosureX;
@@ -25,6 +26,7 @@ public class RemoteCopyTest extends FileCopyTestBase {
 		}});
 	}
 
+	
 	@Override
 	protected void copyFolderFromFileMap(final Sneer1024 hashOfContents, final File destination) throws IOException {
 		try {
@@ -34,17 +36,36 @@ public class RemoteCopyTest extends FileCopyTestBase {
 		}
 	}
 
+	
 	private void tryToCopyFolderFromFileMap(final Sneer1024 hashOfContents,	final File destination) throws IOException {
 		copyFromFileMap(new ClosureX<IOException>() { @Override public void run() throws IOException {
 			my(FileClient.class).startFolderDownload(destination, hashOfContents).waitTillFinished();
 		}});
 	}
 
+	
 	private void copyFromFileMap(ClosureX<IOException> closure) throws IOException {
 		@SuppressWarnings("unused") FileServer server = my(FileServer.class);
 		my(CustomClockTicker.class).start(10, 15000);
-		Environment remote = newTestEnvironment(my(TupleSpace.class), my(OwnNameKeeper.class), my(Clock.class));
+		Environment remote = newTestEnvironment(my(TupleSpace.class), my(Clock.class));
+		configureStorageFolder(remote);
+		
 		Environments.runWith(remote, closure);
+		
+		crash(remote);
 	}
 
+	
+	private void configureStorageFolder(Environment remote) {
+		Environments.runWith(remote, new Runnable() { @Override public void run() {
+			my(FolderConfig.class).storageFolder().set(newTmpFile("remote"));
+		}});
+	}
+
+	
+	private void crash(Environment remote) {
+		Environments.runWith(remote, new Runnable() { @Override public void run() {
+			my(Threads.class).crashAllThreads();
+		}});
+	}
 }

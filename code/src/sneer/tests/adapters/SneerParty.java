@@ -10,7 +10,8 @@ public interface SneerParty extends SovereignParty {
 	void setSneerPort(int port);
 	int sneerPort();
 
-	void connectTo(SneerParty b);
+	void startConnectingTo(SneerParty other);
+	void waitUntilOnline(SneerParty other);
 	
 	void start();
 	void crash();
