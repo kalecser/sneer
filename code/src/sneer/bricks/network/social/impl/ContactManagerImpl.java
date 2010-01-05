@@ -13,34 +13,32 @@ class ContactManagerImpl implements ContactManager {
     
     private final SetRegister<Contact> _contacts = my(CollectionSignals.class).newSetRegister();
     
-    ContactManagerImpl(){
+    
+    {
 		restore();
     }
 
-	private void restore() {
-			for (String nick : Store.restore())
-				if (!isWeird(nick)) //Filter out those weird nicknames that appeared in the beginning.
-					produceContact(nick);
-	}
     
-	private boolean isWeird(String nick) {
-		return nick.length() > 60;
+	private void restore() {
+		for (String nick : Store.restore())
+			produceContact(nick);
 	}
 
 	
 	@Override
-	synchronized public Contact addContact(String nickname) throws Refusal {
+	synchronized
+	public Contact addContact(String nickname) throws Refusal {
 		nickname.toString();
-		
 		checkAvailability(nickname);
-		
 		return doAddContact(nickname);
 	}
 
+	
 	private void save() {
 		Store.save(_contacts.output().currentElements());
 	}
 
+	
 	private Contact doAddContact(String nickname) {
 		Contact result = new ContactImpl(nickname); 
 		_contacts.add(result);
@@ -48,23 +46,29 @@ class ContactManagerImpl implements ContactManager {
 		return result;
 	}
 
+	
 	private void checkAvailability(String nickname) throws Refusal {
 		if (isNicknameAlreadyUsed(nickname))
 			throw new Refusal("Nickname " + nickname + " is already being used.");
 	}
 
+	
 	@Override
 	public SetSignal<Contact> contacts() {
 		return _contacts.output();
 	}
 
+	
 	@Override
-	synchronized public boolean isNicknameAlreadyUsed(String nickname) {
+	synchronized
+	public boolean isNicknameAlreadyUsed(String nickname) {
 		return contactGiven(nickname) != null;
 	}
 
+	
 	@Override
-	synchronized public Contact contactGiven(String nickname) {
+	synchronized
+	public Contact contactGiven(String nickname) {
 		for (Contact candidate : contacts())
 			if (candidate.nickname().currentValue().equals(nickname))
 				return candidate;
@@ -72,17 +76,21 @@ class ContactManagerImpl implements ContactManager {
 		return null;
 	}
 
-	synchronized private void changeNickname(Contact contact, String newNickname) throws Refusal {
+	
+	synchronized
+	private void changeNickname(Contact contact, String newNickname) throws Refusal {
 		checkAvailability(newNickname);
 		((ContactImpl)contact).nickname(newNickname);
 		save();
 	}
 
+	
 	@Override
 	public void removeContact(Contact contact) {
 		_contacts.remove(contact);
 		save();
 	}
+	
 	
 	@Override
 	public PickyConsumer<String> nicknameSetterFor(final Contact contact) {
@@ -91,8 +99,10 @@ class ContactManagerImpl implements ContactManager {
 		}};
 	}
 
+	
 	@Override
-	public synchronized Contact produceContact(String nickname) {
+	synchronized
+	public Contact produceContact(String nickname) {
 		if (contactGiven(nickname) == null) doAddContact(nickname);
 		return contactGiven(nickname);
 	}
