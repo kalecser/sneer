@@ -87,7 +87,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 	}
 
 	private long peerTracksFolderSize() {
-		return my(IO.class).files().sizeOfFolder(peerTracksFolder());
+		return my(IO.class).files().folderSize(peerTracksFolder());
 	}
 
 	private int downloadAllowanceInBytes() {

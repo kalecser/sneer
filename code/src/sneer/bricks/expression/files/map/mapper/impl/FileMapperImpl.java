@@ -92,7 +92,7 @@ class FileMapperImpl implements FileMapper {
 
 		private Sneer1024 runWithCpuThrottle() throws Exception {
 			final ByRef<Sneer1024> result = ByRef.newInstance();
-			my(CpuThrottle.class).limitMaxCpuUsage(15, new ClosureX<Exception>() { @Override public void run() throws Exception {
+			my(CpuThrottle.class).limitMaxCpuUsage(10, new ClosureX<Exception>() { @Override public void run() throws Exception {
 				result.value = mapFolder(_folder, _acceptedFileExtensions);
 				finish();
 			}});
