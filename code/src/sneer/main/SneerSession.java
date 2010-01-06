@@ -23,23 +23,20 @@ import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
-public class SneerSession implements Closure {
+public class SneerSession {
 	
 	public SneerSession() {
-		Environments.runWith(container(), this);
+		Environments.runWith(container(), new Closure() { @Override public void run() {  //Who said Java doesn't have closures? XD
+			start();
+		}});
 	}
 
 	
-	public void run() {
-		
+	private void start() {
 		setContextClassLoader();
-		
 		configure(my(FolderConfig.class));
-
 		startLogging();
-		
 		my(SnappStarter.class).startSnapps();
-		
 		my(Threads.class).waitUntilCrash();
 	}
 
