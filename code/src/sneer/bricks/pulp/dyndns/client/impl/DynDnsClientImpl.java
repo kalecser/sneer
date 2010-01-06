@@ -232,4 +232,9 @@ class DynDnsClientImpl implements DynDnsClient {
 		if (currentAccount() == null) return null;
 		return currentAccount().host;
 	}
+
+	
+	@Override
+	public void dummyMethodSoThisSnappIsntStarted() {}
+	
 }
