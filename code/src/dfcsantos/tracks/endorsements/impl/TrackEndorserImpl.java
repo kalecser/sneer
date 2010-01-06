@@ -26,7 +26,7 @@ class TrackEndorserImpl implements TrackEndorser {
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidCG;
 
 	{
-		_refToAvoidCG = my(Timer.class).wakeUpNowAndEvery(15*1000, new Runnable(){@Override public void run() {
+		_refToAvoidCG = my(Timer.class).wakeUpNowAndEvery(60*1000, new Runnable(){@Override public void run() {
 			endorseRandomTrack();
 		}});
 	}
