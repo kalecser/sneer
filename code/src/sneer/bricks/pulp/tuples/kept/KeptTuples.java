@@ -6,6 +6,4 @@ import sneer.bricks.pulp.tuples.Tuple;
 import sneer.foundation.brickness.Brick;
 
 @Brick(Prevalent.class)
-public interface KeptTuples extends ListRegister<Tuple> {
-
-}
+public interface KeptTuples extends ListRegister<Tuple> {}
