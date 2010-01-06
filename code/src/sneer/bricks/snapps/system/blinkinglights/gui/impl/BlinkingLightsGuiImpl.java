@@ -4,10 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.FlowLayout;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.ByteArrayOutputStream;
@@ -16,11 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.BoundedRangeModel;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
@@ -114,15 +109,9 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 		private JTextPane _textPane;
 		private JScrollPane _scroll;
 
-		private JPanel _confirmationPanel;
-		
-		private ActionListener _yesListener;
-		private ActionListener _noListener;
-
 		protected Light _light;
 		
 		private AlertWindowSupport(){
-			initConfirmationListener();
 			initGui();
 			initMouseListener();
 		}
@@ -143,46 +132,13 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 			panel.setLayout(new BorderLayout());		
 			panel.add(_scroll, BorderLayout.CENTER);
 			_scroll.setBorder(new EmptyBorder(5,5,5,5));
-
-			_confirmationPanel = new JPanel();
-			_confirmationPanel.setLayout(new FlowLayout());
-			panel.add(_confirmationPanel, BorderLayout.SOUTH);
-
-			JButton btnNo = new JButton("Cancel");
-			JButton btnYes = new JButton("Ok");
-
-			_confirmationPanel.add(btnYes);
-			_confirmationPanel.add(btnNo);
-
-			btnYes.addActionListener(_yesListener);
-			btnNo.addActionListener(_noListener);
 		}
 
-		private void initConfirmationListener() {
-			_yesListener = new ActionListener(){ @Override public void actionPerformed(ActionEvent arg0) {
-				if(_light==null) return;
-				if(!_light.hasConfirmation()) return;
-				
-				_window.setVisible(false);
-				my(BlinkingLights.class).turnOffIfNecessary(_light);
-				_light.sayYes();
-			}};
-
-			_noListener = new ActionListener(){ @Override public void actionPerformed(ActionEvent arg0) {
-				if(_light==null) return;
-				if(!_light.hasConfirmation()) return;
-				
-				_window.setVisible(false);
-				my(BlinkingLights.class).turnOffIfNecessary(_light);
-				_light.sayNo();
-			}};
-		}
-		
 		private void initMouseListener() {
 			_lightsList.getComponent().addMouseListener(new MouseAdapter(){ @Override public void mouseReleased(final MouseEvent event) {
 				_light = getClickedLight(event);
 				
-				if(_light!=null)	
+				if(_light != null)	
 					show(_light);
 			}});
 		}		
@@ -194,16 +150,11 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 		}
 		
 		private void show(final Light light){
-			checkForConfirmations(light);
 			setWindowTitle(light);
 			setWindowsMessage(light);
 			setWindowBounds();
 			_window.setVisible(true);
 			placeScrollAtTheBegining();
-		}
-
-		private void checkForConfirmations(Light light) {
-			_confirmationPanel.setVisible(light.hasConfirmation());
 		}
 
 		private void placeScrollAtTheBegining() {

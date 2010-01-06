@@ -11,7 +11,4 @@ public interface Light {
 	Throwable error();
 	String helpMessage();
 	
-	boolean hasConfirmation();
-	void sayYes();
-	void sayNo();
 }

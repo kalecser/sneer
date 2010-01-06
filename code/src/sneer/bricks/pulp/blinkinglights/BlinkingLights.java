@@ -2,7 +2,6 @@ package sneer.bricks.pulp.blinkinglights;
 
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.exceptions.FriendlyException;
 
 @Brick
@@ -23,9 +22,5 @@ public interface BlinkingLights {
 	Light turnOn(LightType type, String caption, String helpMessage, Throwable t);
 	Light turnOn(LightType type, String caption, String helpMessage, Throwable t, int timeToLive);
 
-	void askForConfirmation(LightType type, String caption, String helpMessage, Consumer<Boolean> confirmationReceiver);
-	
 	void turnOffIfNecessary(Light light);
-
-
 }

@@ -17,7 +17,6 @@ import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.foundation.lang.ByRef;
-import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.exceptions.FriendlyException;
 
 class BlinkingLightsImpl implements BlinkingLights {
@@ -123,13 +122,6 @@ class BlinkingLightsImpl implements BlinkingLights {
 			turnOffIn(light, timeout);
 	}
 
-	@Override
-	public void askForConfirmation(LightType type, String caption, String helpMessage, Consumer<Boolean> confirmationReceiver) {
-		LightImpl light = new LightImpl(type, confirmationReceiver);
-		light._caption = caption;
-		light._helpMessage = helpMessage;
-		turnOnIfNecessary(light, caption, helpMessage);
-	}
 
 	private void log(LightType lightType, String caption) {
 		my(Logger.class).log(severityTag(lightType), caption);
