@@ -26,26 +26,22 @@
 	- [Igor] Runnable -> ClosureX - Find all places in foundation and in all our brick APIs that accept Runnable and change them to accept ClosureX.
 		- Code that calls these APIs and needs to throw a checked throwable will call using ClosureX, code that does not throw a checked throwable will call using Closure.
 
-	- [Klaus/Igor] (Discuss task) @Snapp - Delete this annotation.
+	- [Igor] @Snapp - Delete this annotation.
 		- Detect snapps not by the fact that they have the annotation but by the fact that they have no methods! ;)
 			- Revise for all bricks: Is it a snapp?
 				- no: Does it have no methods? Does a non-snapp brick with no methods make sense? Discuss with Klaus.
 					- sneer.bricks.pulp.dyndns.client.DynDnsClient;
+						- It is disabled temporarily. Comment the @Brick line for the same purpose or add a dummy method so it is not loaded as a Snapp.
 					- sneer.bricks.hardware.cpu.threads.latches.Latches;
+						- Inherited methods must be considered too.
 				- yes: Does it really have to be a snapp? Is the @Snapp annotation really necessary?
  					- no: remove the annotation
-						- dfcsantos.wusic.Wusic;
-						- sneer.bricks.snapps.wind.Wind;
-						- sneer.bricks.skin.main.menu.exit.impl.ExitMenuItemImpl;
 					- yes: Does it have methods?
  						- no: ok.
 						- yes: Can the methods be removed?
 							- yes: remove the methods.
  							- no: discuss with Klaus.
-								- sneer.bricks.skin.main.menu.MainMenu;
-								- sneer.bricks.skin.main.synth.menu.SynthMenus;
-								- sneer.bricks.snapps.contacts.gui.ContactsGui;
-								- sneer.bricks.softwaresharing.BrickSpace; 
+ 								(@Snapp removed from the ones found so far)
 
 
 	- [Igor] ContactInfoWindowImpl - Add a field for the Contact's Seal: 128 bytes represented in hexadecimal that can be >entered< any old way like a copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< IN COURIER like this:
