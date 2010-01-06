@@ -49,7 +49,7 @@ import sneer.bricks.softwaresharing.installer.BrickInstaller;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 import sneer.foundation.lang.exceptions.Refusal;
-import sneer.main.Sneer;
+import sneer.main.SneerVersionUpdater;
 import sneer.tests.SovereignParty;
 import sneer.tests.adapters.SneerParty;
 import sneer.tests.adapters.SneerPartyController;
@@ -395,7 +395,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		File stageFolder = my(FolderConfig.class).stageFolder().get();
 		try {
 			String backupLabel = "" + System.currentTimeMillis();
-			Sneer.installStagedCodeIfNecessary(stageFolder , backupLabel, _codeFolder);
+			SneerVersionUpdater.installNewVersionIfPresent(stageFolder , backupLabel, _codeFolder);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}

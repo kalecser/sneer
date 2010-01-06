@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import sneer.foundation.testsupport.CleanTestBase;
-import sneer.main.Sneer;
+import sneer.main.SneerVersionUpdater;
 
 
 public class StagedCodeInstallationTest extends CleanTestBase {
@@ -17,6 +17,8 @@ public class StagedCodeInstallationTest extends CleanTestBase {
 			"src/sneer/main/Sneer.java",
 			"bin/sneer/main/Sneer.class",
 			"bin/sneer/main/Sneer$ExclusionFilter.class",
+			"src/sneer/main/SneerVersionUpdater.java",
+			"bin/sneer/main/SneerVersionUpdater.class",
 			"src/sneer/main/SneerCodeFolders.java",
 			"bin/sneer/main/SneerCodeFolders.class",
 			"src/toBeDeleted.java",
@@ -28,7 +30,7 @@ public class StagedCodeInstallationTest extends CleanTestBase {
 			"stage/bin/foo.class"
 		);
 		
-		Sneer.installStagedCodeIfNecessary(tmpFolder("stage"), "2008-12-31-23-59-59", tmpFolder());
+		SneerVersionUpdater.installNewVersionIfPresent(tmpFolder("stage"), "2008-12-31-23-59-59", tmpFolder());
 		
 		assertTmpFilesExist(
 			"backup/2000-01-01-00-00-00",
@@ -41,6 +43,8 @@ public class StagedCodeInstallationTest extends CleanTestBase {
 			"src/sneer/main/Sneer.java", //Preserved
 			"bin/sneer/main/Sneer.class",
 			"bin/sneer/main/Sneer$ExclusionFilter.class",
+			"src/sneer/main/SneerVersionUpdater.java",
+			"bin/sneer/main/SneerVersionUpdater.class",
 			"src/sneer/main/SneerCodeFolders.java",
 			"bin/sneer/main/SneerCodeFolders.class",
 
