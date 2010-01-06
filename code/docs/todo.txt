@@ -1,0 +1,117 @@
+﻿General Direction:
+	1) To ENABLE users to develop and share bricks.
+	2) To MOTIVATE users to develop bricks by fostering a growing user-base through interesting snapps such as media sharing (Wusic, Movies, etc). Better ideas of cool easy-kill snapps are welcome.
+
+Following are the tasks each one of us has on his plate right now:
+
+
+Bamboo =================================================
+
+	- Prevalence
+		- KeptTuples (Prevalent) - Take a look. See if TupleSpaceImpl._keptTuples -> my(KeptTuples.class) works.
+			- Delete all other java files from the TupleSpaceImpl package.
+			- Delete the lib folder from the TupleSpaceImpl package. 
+		- Use a single prevayler for all bricks inside PrevalentImpl so that transactions are properly synchronized among all prevalent bricks.
+			- Ignore method calls that are already inside a transaction context.
+		- Make the Contacts brick prevalent. You might have to instrument creation of the Contact objects to give them an id for serialization, to avoid the baptism problem.
+		- Make Seals.put() accept a Contact instead of a nickname string.
+		- BrickStateStore: retire. Use the prevalent nature instead.
+		- Announce to community
+
+	- GUI Nature
+		- "Finish Him"
+		- Announce to community
+
+
+
+Igor ====================================================
+		
+	- Don't leave dirt under the carpet
+		- Forget the following, if it is a leak it will bite us later: FileRequest surplus - Confirm it is not a leak
+		- Forget the following, it will be radically changed soon: IncomingHandShaker.identifyContact(ByteArraySocket) is very time-consuming
+		- Unignore FileDownloadTest.receiveFileContentBlocksOutOfSequence()
+		- Unignore RemoteCopyTest.testWithZeroLengthFile()
+		- IO.fileFilter().extensions(String...) implementation (there are two versions - one commented)
+			- Do whatever you think is best. But null argument is not supported and empty array means NO files, not ANY files. Change caller because of that.
+			
+	- Runnable -> ClosureX - Find all places in foundation and in all our brick APIs that accept Runnable and change them to accept ClosureX.
+		- Code that calls these APIs and needs to throw a checked throwable will call using ClosureX, code that does not throw a checked throwable will call using Closure.
+		- Announce to community
+
+	- @Snapp - Delete this annotation.
+		- Detect snapps not by the fact that they have the annotation but by the fact that they have no methods! ;)
+			- Revise for all bricks: Is it a snapp?
+				- no: Does it have no methods? Does a non-snapp brick with no methods make sense? Discuss with Klaus.
+					- sneer.bricks.pulp.dyndns.client.DynDnsClient;
+						- It is disabled temporarily. See comment.
+					- sneer.bricks.hardware.cpu.threads.latches.Latches;
+						- Inherited methods must be considered too!!
+				- yes: Does it really have to be a snapp? Is the @Snapp annotation really necessary?
+ 					- no: remove the annotation
+					- yes: Does it have methods?
+ 						- no: ok.
+						- yes: Can the methods be removed?
+							- yes: remove the methods.
+ 							- no: discuss with Klaus.
+ 								(@Snapp removed from the ones found so far)
+		- Announce to community
+
+	- Seals
+		- OwnInfoImpl - Add a field to show one's Seals.ownSeal().
+		- ContactInfoWindowImpl - Add a field for the Contact's Seal: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
+			(Forget Courier. Just use default font)
+			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
+			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
+			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
+			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
+			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
+			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
+			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
+			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f
+			- Ask Klaus for help glueing the gui to the Seals brick. Non-trivial per-contact signals and picky consumers need to be exposed in the Seals interface.  
+
+	- Wusic
+		- TrackDownloaderTest - Unignore and run. 
+		- Lighter Track Mapping
+			- Implement Crypto.digest(File) as a stepper. It will automatically use the CpuThrottle. 
+				- Test mapping of folder with several tracks before and after doing the above, to see if CPU consumption is actually reduced.
+				- Notice CpuThrottle max usage is already being limited in FolderMapping.run().
+			- FileMap - Add the @Brick(Prevalent.class) nature and see if it works.
+		- Downloads
+			- Simultaneous download limit of 3.
+			- 15 min timeout per download.
+			- Do not download files user already has (includes candidates).
+		- Contact List - Display playing track of each contact
+			- Announce to community
+		- MusicalTasteMatcher Kernel
+			- Talk to Klaus and Daniel
+		- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
+		- Back Button 
+		- Find another way to solve pause lag (try to use a smaller frame in player)
+
+	- RapidShare Killer (Transfer Huge Files) - Do this in parallel, when you're bored of Wusic :) 
+		- Focus. Keep it simple. Zero sophistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
+			- Talk to Klaus.
+		- Announce to community
+
+
+
+Klaus =================================================
+
+	- Make Network usable
+		- Sneer "DNS"
+		- Routing for unreachable users
+
+	- Freedom7 - "Me Too" for Bricks 
+		- Unignore Freedom7.meToo
+			- BrickSpaceImpl.init() uncomment.
+			- BrickInstallerTest
+			- LocalBrickDiscoveryTest unignore.
+			- SneerJockey - Extract from Sneer so it can be updated (Sneer itself is not updatable).
+		- Brick States - All
+			- Hierarchical View - Consider groups of bricks (brick package at any level, examples: bricks.hardware, bricks.software, bricks.hardware.io, etc) as an optional grouping for versioning and downloading from friends, not only individual bricks.
+				- Do not allow circular dependencies among any level of groups of bricks and voila: the world is free of cyclic dependencies.
+	
+	- Revise entire package structure.
+		- Delete roadmap.txt
+		- Remove all calls to Thread.sleep() including indirect.
