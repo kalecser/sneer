@@ -90,7 +90,7 @@ class FileDownload extends AbstractDownload {
 	
 	private void receiveFirstBlock(FileContentsFirstBlock contents) throws IOException {
 		if (firstBlockWasAlreadyReceived()) return;
-		_fileSizeInBlocks = calculateFileSizeInBlocks(contents.fileSize);
+		_fileSizeInBlocks = my(IO.class).files().fileSizeInBlocks(contents.fileSize, Protocol.FILE_BLOCK_SIZE);
 		_output = new FileOutputStream(_path);
 		
 		if (_fileSizeInBlocks == 0) finishWithSuccess();  //Empty file case.
@@ -100,13 +100,6 @@ class FileDownload extends AbstractDownload {
 	private boolean firstBlockWasAlreadyReceived() {
 		return _fileSizeInBlocks != -1;
 	} 
-
-	
-	private int calculateFileSizeInBlocks(long fileSizeInBytes) {
-		return fileSizeInBytes == 0
-			? 0
-			: (int) ((fileSizeInBytes - 1) / Protocol.FILE_BLOCK_SIZE) + 1;
-	}
 
 	
 	private void tryToWriteBlocksInSequence() throws IOException {

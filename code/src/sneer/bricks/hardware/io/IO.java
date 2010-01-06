@@ -36,8 +36,9 @@ public interface IO {
 		public boolean accept(File folder, String name);
 	}
 	
-	interface Files{
-		long sizeOfFolder(File Folder);
+	interface Files {
+		int fileSizeInBlocks(long fileSizeInBytes, int blockSize);
+		long folderSize(File Folder);
 
 		Collection<File> listFiles(File folder, String[] extensions, boolean recursive);
 		Collection<File> listFiles(File folder, Filter fileFilter, Filter folderFilter);
@@ -63,14 +64,13 @@ public interface IO {
 		void writeByteArrayToFile(File file, byte[] data) throws IOException;
 
 		void assertSameContents(File file1, File file2) throws IOException;
-
-
 	}
 	
-	interface Streams{
+	interface Streams {
 		String toString(InputStream input) throws IOException;
 		byte[] toByteArray(InputStream input) throws IOException;
 		byte[] readBytesAndClose(InputStream input) throws IOException;
 		void closeQuietly(Closeable closeable);
 	}
+
 }
