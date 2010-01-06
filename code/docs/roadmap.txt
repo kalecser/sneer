@@ -44,7 +44,8 @@
  								(@Snapp removed from the ones found so far)
 
 
-	- [Igor] ContactInfoWindowImpl - Add a field for the Contact's Seal: 128 bytes represented in hexadecimal that can be >entered< any old way like a copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< IN COURIER like this:
+	- [Igor] ContactInfoWindowImpl - Add a field for the Contact's Seal: 128 bytes represented in hexadecimal that can be >entered< any old way like a copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
+		(Forget Courier. Just use default font)
 		12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
 		12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
 		12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
@@ -53,6 +54,7 @@
 		12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
 		12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
 		12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f
+		- OwnInfoImpl - Add a field to show one's Seals.ownSeal().
 		- [Klaus] Glue the gui to the Seals brick.  
 
 	- [Klaus] Improve networking experience so Wusic can be used
