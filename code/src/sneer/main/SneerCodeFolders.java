@@ -12,6 +12,7 @@ public class SneerCodeFolders {
 	public static final File BIN = new File(CODE, "bin");
 	public static final File STAGE = new File(CODE, "stage");
 
+	
 	private static File sneerHome() {
 		String override = System.getProperty("sneer.home");
 		if (override != null)
