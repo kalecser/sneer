@@ -23,37 +23,23 @@ Bamboo =================================================
 		- Announce to community
 
 
-
 Igor ====================================================
-		
+
 	- Don't leave dirt under the carpet
-		- Forget the following, if it is a leak it will bite us later: FileRequest surplus - Confirm it is not a leak
-		- Forget the following, it will be radically changed soon: IncomingHandShaker.identifyContact(ByteArraySocket) is very time-consuming
 		- Unignore FileDownloadTest.receiveFileContentBlocksOutOfSequence()
 		- Unignore RemoteCopyTest.testWithZeroLengthFile()
-		- IO.fileFilter().extensions(String...) implementation (there are two versions - one commented)
-			- Do whatever you think is best. But null argument is not supported and empty array means NO files, not ANY files. Change caller because of that.
-			
+
 	- Runnable -> ClosureX - Find all places in foundation and in all our brick APIs that accept Runnable and change them to accept ClosureX.
-		- Code that calls these APIs and needs to throw a checked throwable will call using ClosureX, code that does not throw a checked throwable will call using Closure.
+		- [Klaus] Does it make sense to change methods such as Threads.startDaemon and Threads.startStepping to use ClosureX<X>? (it's a case I came across) 
+			- These methods start new threads and the exception doesn't affect the forked one (original thread)
+			- Should I use Closure instead of Runnable anyway?
 		- Announce to community
 
-	- @Snapp - Delete this annotation.
-		- Detect snapps not by the fact that they have the annotation but by the fact that they have no methods! ;)
-			- Revise for all bricks: Is it a snapp?
-				- no: Does it have no methods? Does a non-snapp brick with no methods make sense? Discuss with Klaus.
-					- sneer.bricks.pulp.dyndns.client.DynDnsClient;
-						- It is disabled temporarily. See comment.
-					- sneer.bricks.hardware.cpu.threads.latches.Latches;
-						- Inherited methods must be considered too!!
-				- yes: Does it really have to be a snapp? Is the @Snapp annotation really necessary?
- 					- no: remove the annotation
-					- yes: Does it have methods?
- 						- no: ok.
-						- yes: Can the methods be removed?
-							- yes: remove the methods.
- 							- no: discuss with Klaus.
- 								(@Snapp removed from the ones found so far)
+	- [Klaus] @Snapp - Delete this annotation.
+		- Discuss with Klaus before @Snapp's coup de grâce
+		- Change SnappStarterImpl.isSnapp(Class<?>) implementation to identify snapps by its brick's methodless trait (instead of using @Snapp annotation)
+		- Cleanup BrickImplLoader removing the method #logMethodlessBrick(Class<?>)
+		- Remove @Snapp annotation 
 		- Announce to community
 
 	- Seals
@@ -70,28 +56,21 @@ Igor ====================================================
 			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f
 			- Ask Klaus for help glueing the gui to the Seals brick. Non-trivial per-contact signals and picky consumers need to be exposed in the Seals interface.  
 
-	- Wusic
-		- TrackDownloaderTest - Unignore and run. 
+	- Wusic 
 		- Lighter Track Mapping
-			- Implement Crypto.digest(File) as a stepper. It will automatically use the CpuThrottle. 
-				- Test mapping of folder with several tracks before and after doing the above, to see if CPU consumption is actually reduced.
-				- Notice CpuThrottle max usage is already being limited in FolderMapping.run().
 			- FileMap - Add the @Brick(Prevalent.class) nature and see if it works.
 		- Downloads
-			- Simultaneous download limit of 3.
 			- 15 min timeout per download.
-			- Do not download files user already has (includes candidates).
+			- Do not download files user already has (includes peertracks) - check if it's already working.
 		- Contact List - Display playing track of each contact
 			- Announce to community
-		- MusicalTasteMatcher Kernel
-			- Talk to Klaus and Daniel
+		- [Klaus/Daniel] MusicalTasteMatcher Kernel
 		- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
 		- Back Button 
 		- Find another way to solve pause lag (try to use a smaller frame in player)
 
-	- RapidShare Killer (Transfer Huge Files) - Do this in parallel, when you're bored of Wusic :) 
+	- [Klaus] RapidShare Killer (Transfer Huge Files) - Do this in parallel, when you're bored of Wusic :)
 		- Focus. Keep it simple. Zero sophistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
-			- Talk to Klaus.
 		- Announce to community
 
 
