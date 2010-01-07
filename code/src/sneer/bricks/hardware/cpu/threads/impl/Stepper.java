@@ -1,9 +1,9 @@
 package sneer.bricks.hardware.cpu.threads.impl;
 
+import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
-import static sneer.foundation.environments.Environments.my;
 
 class Stepper implements Runnable, Contract {
 
