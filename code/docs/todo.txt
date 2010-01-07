@@ -111,6 +111,8 @@ Klaus =================================================
 	- Make Network usable
 		- Sneer "DNS"
 
+	- Delete roadmap.txt
+
 	- Freedom7 - "Me Too" for Bricks 
 		- Unignore Freedom7.meToo
 			- BrickSpaceImpl.init() uncomment.
@@ -121,5 +123,4 @@ Klaus =================================================
 				- Do not allow circular dependencies among any level of groups of bricks and voila: the world is free of cyclic dependencies.
 	
 	- Revise entire package structure.
-		- Delete roadmap.txt
 		- Remove all calls to Thread.sleep() including indirect.
