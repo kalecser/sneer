@@ -100,7 +100,6 @@ Klaus =================================================
 
 	- Make Network usable
 		- Sneer "DNS"
-		- Routing for unreachable users
 
 	- Freedom7 - "Me Too" for Bricks 
 		- Unignore Freedom7.meToo
