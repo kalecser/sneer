@@ -25,6 +25,16 @@ Bamboo =================================================
 
 
 Igor ====================================================
+
+	- Something interesting happened
+		The stepper you implemented in Crypto.digest(File) had no stopping condition, so it just ran forever, taking 100% of the CPU.
+		RemoteCopyTest.testWithSmallFile started to timeout every time on my machine because all other threads starved.
+		It didn't fail on your machine because you have a dual-core, I believe. :)
+		The other tests didn't timeout because Folder mapping has its CPU throttled. ;)
+		Take a look at the commit that says "Igor, look at this commit". Take a look at how the stepper is stopped by disposing the stepping Contract. Just returning inside the stepper didn't do it, of course.
+		I also went and kick-ass refactored your atomic-integer-for-file-block-index-based solution back to the original FileInputStream approach. It is OK to keep the file open I think.
+			The MethodObject pattern helped get rid of all ByRefs.
+			Take a look at how the FileDigest.tryToStep() method cleanly captures the essence.
 		
 	- Don't leave dirt under the carpet
 		- Forget the following, if it is a leak it will bite us later: FileRequest surplus - Confirm it is not a leak
