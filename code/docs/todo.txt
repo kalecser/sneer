@@ -77,6 +77,9 @@ Igor ====================================================
 
 Klaus =================================================
 
+	- [Igor] Have a quick look at Crypto.digest(File) new implementation as a Stepper
+		- The tests are passing (CryptoTest included), but the CPU throttle doesn't seem to be working properly 
+
 	- Make Network usable
 		- Sneer "DNS"
 		- Routing for unreachable users
