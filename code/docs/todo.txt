@@ -7,6 +7,8 @@ Following are the tasks each one of us has on his plate right now:
 
 Bamboo =================================================
 
+	- Delete roadmap.txt
+
 	- Prevalence
 		- KeptTuples (Prevalent) - Take a look. See if TupleSpaceImpl._keptTuples -> my(KeptTuples.class) works.
 			- Delete all other java files from the TupleSpaceImpl package.
@@ -26,7 +28,6 @@ Bamboo =================================================
 Igor ====================================================
 
 	- Something interesting happened
-
 		The stepper you implemented in Crypto.digest(File) had no stopping condition, so it just ran forever, taking 100% of the CPU.
 		RemoteCopyTest.testWithSmallFile started to timeout every time on my machine because all other threads starved.
 		It didn't fail on your machine because you have a dual-core, I believe. :)
@@ -35,6 +36,8 @@ Igor ====================================================
 		I also went and kick-ass refactored your atomic-integer-for-file-block-index-based solution back to the original FileInputStream approach. It is OK to keep the file open I think.
 			The MethodObject pattern helped get rid of all ByRefs.
 			Take a look at how the FileDigest.tryToStep() method cleanly captures the essence.
+		> The tests are passing (CryptoTest included), but the CPU throttle doesn't seem to be working properly. Igor.
+			Why do you say so? It might not work properly if the step is too fast (wait time rounded down to zero millis) but it should work ok for things like Crypto.digest(File). Klaus
 
 	- Don't leave dirt under the carpet
 		- Unignore FileDownloadTest.receiveFileContentBlocksOutOfSequence()
@@ -42,12 +45,12 @@ Igor ====================================================
 
 	- Runnable -> ClosureX - Find all places in foundation and in all our brick APIs that accept Runnable and change them to accept ClosureX.
 		- [Klaus] Does it make sense to change methods such as Threads.startDaemon and Threads.startStepping to use ClosureX<X>? (it's a case I came across) 
-			- These methods start new threads and the exception doesn't affect the forked one (original thread)
-			- Should I use Closure instead of Runnable anyway?
+			Good point. Leave Runnable. Closures will be accepted too because Closures are Runnables.
 		- Announce to community
 
 	- [Klaus] @Snapp - Delete this annotation.
 		- Discuss with Klaus before @Snapp's coup de grâce
+			- Yes? How may I help you? Klaus.
 		- Change SnappStarterImpl.isSnapp(Class<?>) implementation to identify snapps by its brick's methodless trait (instead of using @Snapp annotation)
 		- Cleanup BrickImplLoader removing the method #logMethodlessBrick(Class<?>)
 		- Remove @Snapp annotation 
@@ -88,12 +91,8 @@ Igor ====================================================
 
 Klaus =================================================
 
-	- [Igor] Have a quick look at Crypto.digest(File) new implementation as a Stepper
-		- The tests are passing (CryptoTest included), but the CPU throttle doesn't seem to be working properly 
-
 	- Make Network usable
 		- Sneer "DNS"
-		- Routing for unreachable users
 
 	- Freedom7 - "Me Too" for Bricks 
 		- Unignore Freedom7.meToo
@@ -105,5 +104,4 @@ Klaus =================================================
 				- Do not allow circular dependencies among any level of groups of bricks and voila: the world is free of cyclic dependencies.
 	
 	- Revise entire package structure.
-		- Delete roadmap.txt
 		- Remove all calls to Thread.sleep() including indirect.
