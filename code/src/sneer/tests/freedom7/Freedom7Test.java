@@ -9,7 +9,6 @@ import java.io.IOException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.foundation.brickness.Brick;
@@ -167,7 +166,6 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 		JavaSourceWriter writer = my(JavaSourceWriters.class).newInstance(srcFolder);
 		writer.write("freedom7.y.Y",
 				"@" + Brick.class.getName() + " " +
-				"@" + Snapp.class.getName() + " " +
 				"public interface Y {}");
 		writer.write("freedom7.y.impl.YImpl",
 				"class YImpl implements freedom7.y.Y {\n" +

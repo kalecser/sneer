@@ -36,10 +36,7 @@ Igor ====================================================
 		- Announce to community
 
 	- @Snapp - Delete this annotation.
-		- Change SnappStarterImpl.isSnapp(Class<?>) implementation to identify snapps by its brick's methodless trait (instead of using @Snapp annotation)
-		- Cleanup BrickImplLoader removing the method #logMethodlessBrick(Class<?>)
-		- Remove @Snapp annotation 
-		- Announce to community
+		- [Klaus] Announce to community: do I publish at SneerCoders mailing list?
 
 	- Seals
 		- OwnInfoImpl - Add a field to show one's Seals.ownSeal().
@@ -55,9 +52,8 @@ Igor ====================================================
 			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f
 			- Ask Klaus for help glueing the gui to the Seals brick. Non-trivial per-contact signals and picky consumers need to be exposed in the Seals interface.  
 
-	- Wusic 
-		- Lighter Track Mapping
-			- FileMap - Add the @Brick(Prevalent.class) nature and see if it works.
+	- Wusic
+		- Find the problem with FileMap prevalence mechanism
 		- Downloads
 			- 15 min timeout per download.
 			- Do not download files user already has (includes peertracks) - check if it's already working.
