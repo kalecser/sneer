@@ -23,6 +23,7 @@ import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccount;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccountKeeper;
+import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.own.name.OwnNameKeeper;
 import sneer.bricks.pulp.port.PortKeeper;
 import sneer.bricks.pulp.reactive.Signal;
@@ -43,6 +44,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 	private Environment _environment;
 	private TextWidget<JTextField>  _yourOwnName;
 	private TextWidget<JTextField> _sneerPort;
+	private JTextField _ownSeal;
 	
 	private final JTextField _dynDnsHost = new JTextField();
 	private final JTextField _dynDnsUser = new JTextField();
@@ -99,11 +101,14 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		_yourOwnName = newTextField(_nameKeeper.name(), _nameKeeper.nameSetter());
 		
 		_sneerPort = newTextField(_portKeeper.port(), my(IntegerParsers.class).newIntegerParser(_portKeeper.portSetter()));
-		
+
+		_ownSeal = new JTextField(toHexString(my(Seals.class).ownSeal().bytes.copy()));
+
 		pnl.setLayout(new GridBagLayout());
 		
 		addWidget(_yourOwnName.getComponent(), "Own Name:", 0);
 		addWidget(_sneerPort.getComponent(), "Sneer TCP Port:", 1);
+		addWidget(_ownSeal, "Own Seal:", 2);
 		
 		JPanel pnlDynDns = new JPanel();
 		pnlDynDns.setLayout(new GridBagLayout());
@@ -126,6 +131,15 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 			submit();
 			setVisible(false);
 		}});
+	}
+
+	private String toHexString(byte[] bytes) {
+		StringBuilder result = new StringBuilder();
+		for (byte b : bytes) {
+			result.append(Integer.toHexString(b).toUpperCase());
+			result.append(" ");
+		}
+		return result.toString();
 	}
 
 	private void addWidget(JComponent widget, String label, int y) {	addWidget(getContentPane(), widget, label, y);	}
@@ -179,4 +193,5 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 			open();
 		}});
 	}
+
 }

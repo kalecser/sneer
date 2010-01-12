@@ -51,7 +51,9 @@ Igor ====================================================
 		- [Klaus] Announce to community: do I publish at SneerCoders mailing list?
 
 	- Seals
-		- OwnInfoImpl - Add a field to show one's Seals.ownSeal().
+		- [Klaus] OwnInfoImpl - Add a field to show one's Seals.ownSeal().
+			- What's the preferred order for the window's fields? 'Own Name' >> 'Sneer TCP Port' >> 'Own Field'?
+			- Have a look a the output format (I can change the OwnInfoImpl.toHexString(byte[])
 		- ContactInfoWindowImpl - Add a field for the Contact's Seal: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
 			(Forget Courier. Just use default font)
 			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
