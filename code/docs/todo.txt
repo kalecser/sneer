@@ -36,6 +36,18 @@ Igor ====================================================
 		- Announce to community
 
 	- @Snapp - Delete this annotation.
+		- [Klaus]
+			- After I deleted the @Snapp annotation, I had problems with the so called "place holder bricks", which don't have an implementation. See the list below:
+				- Protocol;
+				- ActionPlaceHolder;
+				- ImmutableArrays;
+				- ProtocolTokens;
+				- BrickWithoutNature - used in tests and doesn't have impl;
+				- SomeNature - used in tests and doesn't have impl;
+			- We may remove the @Brick annotation from these bricks, but until we do so, I have created a new parameter for the @Brick annotation indicating if the brick has an impl (which is 'true' by default)
+			- Other things to consider:
+				- We may simplify the method SnappStarterImpl.isSnapp(Class<?>) depending on the decision made in the previous item
+				- Reconsider the implementation of BrickFinder.findBricks()
 		- [Klaus] Announce to community: do I publish at SneerCoders mailing list?
 
 	- Seals

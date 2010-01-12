@@ -8,4 +8,6 @@ public @interface Brick {
 
 	Class<? extends Nature>[] value() default {};
 
+	boolean hasImpl() default true;
+
 }

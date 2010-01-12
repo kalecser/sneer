@@ -10,6 +10,8 @@ import java.util.HashSet;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.bricks.software.bricks.finder.BrickFinder;
 import sneer.bricks.software.bricks.snappstarter.SnappStarter;
+import sneer.foundation.brickness.Brick;
+import sneer.foundation.brickness.Nature;
 
 class SnappStarterImpl implements SnappStarter {
 
@@ -43,11 +45,19 @@ class SnappStarterImpl implements SnappStarter {
 	}
 
 	private boolean isSnapp(Class<?> brick) {
-		return !hasMethods(brick);
+		return !hasMethods(brick) && hasImpl(brick) && !isNature(brick);
 	}
 
 	private boolean hasMethods(Class<?> brick) {
 		return brick.getDeclaredMethods().length > 0;
+	}
+
+	private boolean isNature(Class<?> brick) {
+		return Nature.class.isAssignableFrom(brick);
+	}
+
+	private boolean hasImpl(Class<?> brick) {
+		return brick.getAnnotation(Brick.class).hasImpl();
 	}
 
 }
