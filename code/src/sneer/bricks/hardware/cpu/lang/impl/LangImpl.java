@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.SerializationUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.text.StrBuilder;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
 
@@ -37,7 +38,17 @@ class LangImpl implements Lang {
 		@Override public String substringAfterLast(String str, String separator) {	return StringUtils.substringAfterLast(str, separator); }
 
 		@Override public String deleteWhitespace(String str) {return StringUtils.deleteWhitespace(str);}
-		
+
+		@Override
+		public String insertSpacedSeparators(String str, String separator, int interval) {
+			StrBuilder result = new StrBuilder(str);
+			int gap = separator.length();
+			int numberOfSeparators = (result.length() - 1) / interval;
+			for (int index = interval, count = 0; count < numberOfSeparators; ++count, index += interval + gap)
+				result.insert(index, separator);
+			return result.toString();
+		}
+
 		@Override public List<String> readLines(String input) {
 	        BufferedReader reader = new BufferedReader(new StringReader(input));
 			List<String> list = new ArrayList<String>();
@@ -86,9 +97,11 @@ class LangImpl implements Lang {
 			my(Lang.class).arrays().reverse(array);
 			return array;
 		}
+
 	};
 
 	@Override	public Arrays arrays() { return _arrays; }
 	@Override public Serialization serialization() {	 return _serialization;}
 	@Override public Strings strings() { return _strings;}
+
 }

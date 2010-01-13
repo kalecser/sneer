@@ -29,6 +29,7 @@ public interface Lang {
 		String chomp(String str, String suffix);
 		String substringBeforeLast(String str, String separator);
 		String deleteWhitespace(String str);
+		String insertSpacedSeparators(String str, String separator, int interval);
 		List<String> readLines(String input);
 		byte[] toByteArray(String string);
 		String[] splitRight(String line, char separator, int maxParts);
