@@ -186,7 +186,7 @@ class IOImpl implements IO {
 			@Override public boolean accept(File dir, String name) { return _delegate.accept(dir, name); }
 		}
 
-		@Override public Filter extensions(String... acceptedExtensions) {
+		@Override public Filter foldersAndExtensions(String... acceptedExtensions) {
 			Collection<Filter> fileExtensionFilters = my(CollectionUtils.class).map(Arrays.asList(acceptedExtensions), new Functor<String, Filter>() { @Override public Filter evaluate(String acceptedExtension) throws RuntimeException {
 				return adapt(FileFilterUtils.suffixFileFilter(acceptedExtension));
 			}});

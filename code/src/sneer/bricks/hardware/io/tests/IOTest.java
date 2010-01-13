@@ -63,7 +63,7 @@ public class IOTest extends BrickTest {
 	}
 
 	private List<File> listFiles(File folder, String... fileExtensions) {
-		return Arrays.asList(folder.listFiles(_subject.fileFilters().extensions(fileExtensions)));
+		return Arrays.asList(folder.listFiles(_subject.fileFilters().foldersAndExtensions(fileExtensions)));
 	}
 
 }

@@ -27,7 +27,7 @@ public interface IO {
 		Filter or(Filter[] filters);
 		Filter suffix(String sulfix);
 		Filter name(String name);
-		FileFilter extensions(String... validFileTypes);
+		FileFilter foldersAndExtensions(String... validFileTypes);
 
 		Collection<File> listFiles(File folder, Filter fileFilter, Filter folderFilter);
 	}
