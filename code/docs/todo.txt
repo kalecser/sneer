@@ -87,7 +87,7 @@ Igor ====================================================
 Klaus =================================================
 
 	- Make Network usable
-		- Sneer "DNS"
+		- Sneer "DNS".
 
 	- Freedom7 - "Me Too" for Bricks 
 		- Unignore Freedom7.meToo
