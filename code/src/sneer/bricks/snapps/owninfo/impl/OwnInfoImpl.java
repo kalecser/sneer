@@ -16,9 +16,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
+import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
+import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccount;
@@ -44,7 +47,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 	private Environment _environment;
 	private TextWidget<JTextField>  _yourOwnName;
 	private TextWidget<JTextField> _sneerPort;
-	private JTextField _ownSeal;
+	private JTextArea _ownSeal;
 	
 	private final JTextField _dynDnsHost = new JTextField();
 	private final JTextField _dynDnsUser = new JTextField();
@@ -92,9 +95,10 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 	private void initGui() {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle("Own Info");
-		
+
 //		setSize(350, 260);
-		setSize(350, 140);
+		setSize(430, 255);
+		setResizable(false);
 		
 		java.awt.Container pnl = getContentPane();
 		
@@ -102,7 +106,10 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		
 		_sneerPort = newTextField(_portKeeper.port(), my(IntegerParsers.class).newIntegerParser(_portKeeper.portSetter()));
 
-		_ownSeal = new JTextField(toHexString(my(Seals.class).ownSeal().bytes.copy()));
+		_ownSeal = new JTextArea(formattedOwnSeal());
+		_ownSeal.setEditable(false);
+		_ownSeal.setLineWrap(true);
+		_ownSeal.setWrapStyleWord(true);
 
 		pnl.setLayout(new GridBagLayout());
 		
@@ -133,24 +140,34 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		}});
 	}
 
-	private String toHexString(byte[] bytes) {
-		StringBuilder result = new StringBuilder();
-		for (byte b : bytes) {
-			result.append(Integer.toHexString(b).toUpperCase());
-			result.append(" ");
-		}
-		return result.toString();
+	private String formattedOwnSeal() {
+		/*	Format used (128 bytes represented in hexadecimal):
+		 *
+		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
+		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
+		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
+		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
+		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
+		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
+		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
+		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
+		 * 
+		 */
+		String hexString = my(Crypto.class).toHexa(my(Seals.class).ownSeal().bytes.copy()).toUpperCase();
+		return my(Lang.class).strings().insertSpacedSeparators( 
+			my(Lang.class).strings().insertSpacedSeparators(hexString, " ", 4), "\n", 40
+		);
 	}
 
-	private void addWidget(JComponent widget, String label, int y) {	addWidget(getContentPane(), widget, label, y);	}
+	private void addWidget(JComponent widget, String label, int y) { addWidget(getContentPane(), widget, label, y);	}
 	private void addWidget(Container container, JComponent widget, String label, int y) {
 		container.add(new JLabel(label),
 				new GridBagConstraints(0, y, 1, 1, 0.0, 0.0,
-						GridBagConstraints.EAST,	GridBagConstraints.NONE, new Insets(5, 5, 5, 5),0, 0));
+						GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5, 5, 5, 5),0, 0));
 		
 		container.add(widget,
 				new GridBagConstraints(1, y, 1, 1, 1.0, 0.0,
-						GridBagConstraints.WEST,	GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5),0, 0));
+						GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5),0, 0));
 	}
 
 	private TextWidget<JTextField> newTextField(final Signal<?> signal, final PickyConsumer<String> setter) {
