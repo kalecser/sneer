@@ -3,6 +3,7 @@ package sneer.bricks.snapps.owninfo.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -97,7 +98,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		setTitle("Own Info");
 
 //		setSize(350, 260);
-		setSize(430, 255);
+		setSize(430, 260);
 		setResizable(false);
 		
 		java.awt.Container pnl = getContentPane();
@@ -107,8 +108,10 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		_sneerPort = newTextField(_portKeeper.port(), my(IntegerParsers.class).newIntegerParser(_portKeeper.portSetter()));
 
 		_ownSeal = new JTextArea(formattedOwnSeal());
+		_ownSeal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 		_ownSeal.setEditable(false);
 		_ownSeal.setLineWrap(true);
+		_ownSeal.setTabSize(3);
 		_ownSeal.setWrapStyleWord(true);
 
 		pnl.setLayout(new GridBagLayout());
@@ -132,9 +135,9 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		final JButton btn = new JButton("OK");
 		getContentPane().add(btn,
 				new GridBagConstraints(0, 3, 2, 1, 0.0, 0.0,
-						GridBagConstraints.EAST,	GridBagConstraints.NONE, new Insets(0, 5, 5, 5),0, 0));
+						GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 5, 5),0, 0));
 
-		btn.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent ignored) {
+		btn.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent ignored) {
 			submit();
 			setVisible(false);
 		}});
@@ -154,8 +157,8 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		 * 
 		 */
 		String hexString = my(Crypto.class).toHexa(my(Seals.class).ownSeal().bytes.copy()).toUpperCase();
-		return my(Lang.class).strings().insertSpacedSeparators( 
-			my(Lang.class).strings().insertSpacedSeparators(hexString, " ", 4), "\n", 40
+		return "\t" + my(Lang.class).strings().insertSpacedSeparators( 
+			my(Lang.class).strings().insertSpacedSeparators(hexString, " ", 4), "\n\t", 40
 		);
 	}
 
