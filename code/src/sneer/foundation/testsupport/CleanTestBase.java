@@ -251,12 +251,12 @@ public abstract class CleanTestBase extends AssertUtils {
 		return file;
 	}
 
-	protected File newTmpFile(String fileName) {
-		return new File(tmpFolder(), fileName);
+	protected File newTmpFile() {
+		return newTmpFile("tmp" + System.nanoTime());
 	}
 
-	protected File newTmpFile() {
-		return new File(tmpFolder(), "tmp" + System.nanoTime());
+	protected File newTmpFile(String fileName) {
+		return new File(tmpFolder(), fileName);
 	}
 
 	protected void createTmpFilesWithFileNameAsContent(String... fileNames) throws IOException {
