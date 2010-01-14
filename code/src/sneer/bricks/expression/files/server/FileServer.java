@@ -2,5 +2,5 @@ package sneer.bricks.expression.files.server;
 
 import sneer.foundation.brickness.Brick;
 
-@Brick
+@Brick (isSnapp = true)
 public interface FileServer {}

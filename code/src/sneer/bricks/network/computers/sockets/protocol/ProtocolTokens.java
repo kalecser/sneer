@@ -4,7 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.foundation.brickness.Brick;
 
-@Brick (hasImpl = false)
+@Brick
 public interface ProtocolTokens {
 
 	static final byte[] FALLBACK = my(Lang.class).strings().toByteArray("Fallback");

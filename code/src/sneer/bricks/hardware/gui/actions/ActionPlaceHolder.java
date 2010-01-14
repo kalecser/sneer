@@ -3,5 +3,5 @@ package sneer.bricks.hardware.gui.actions;
 import sneer.foundation.brickness.Brick;
 
 /** A place-holder brick for the Action interface. */
-@Brick (hasImpl = false)
+@Brick
 public interface ActionPlaceHolder {}
