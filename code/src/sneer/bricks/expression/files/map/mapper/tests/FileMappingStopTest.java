@@ -19,8 +19,8 @@ import sneer.foundation.brickness.testsupport.Bind;
 
 public class FileMappingStopTest extends BrickTest {
 
-	private final FileMapper _subject = my(FileMapper.class);
 	@Bind private final FileMap _fileMap = mock(FileMap.class);
+	private final FileMapper _subject = my(FileMapper.class);
 
 	@Test (timeout = 3000, expected = MappingStopped.class)
 	public void mapFolder() throws Exception {
