@@ -142,7 +142,7 @@ class FileMapperImpl implements FileMapper {
 
 		private File[] listFiles(File folder, final String... acceptedExtensions) {
 			return acceptedExtensions.length > 0
-					? folder.listFiles(my(IO.class).fileFilters().extensions(acceptedExtensions))
+					? folder.listFiles(my(IO.class).fileFilters().foldersAndExtensions(acceptedExtensions))
 					: folder.listFiles();
 		}
 
