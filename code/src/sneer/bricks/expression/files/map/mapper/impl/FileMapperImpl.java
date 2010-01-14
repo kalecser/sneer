@@ -31,13 +31,15 @@ import sneer.foundation.lang.Producer;
 
 class FileMapperImpl implements FileMapper {
 
+	private final static FileMap FileMap = my(FileMap.class);
+
 	private final CacheMap<File, FolderMapping> _mappingsByFolder = CacheMap.newInstance();
 
-	
+
 	@Override
 	public Sneer1024 mapFile(File file) throws IOException {
 		Sneer1024 hash = my(Crypto.class).digest(file);
-		my(FileMap.class).putFile(file, hash);
+		FileMap.putFile(file, hash);
 		return hash;
 	}
 
@@ -57,7 +59,7 @@ class FileMapperImpl implements FileMapper {
 		if (_mappingsByFolder.get(folder) == null) return;
 		_mappingsByFolder.remove(folder).stop();
 		my(Threads.class).startDaemon("Removing \'" + folder.getName() + "\' folder from FileMap...", new Runnable() { @Override public void run() {
-			my(FileMap.class).remove(folder);
+			FileMap.remove(folder);
 		}});
 	}
 
@@ -113,7 +115,7 @@ class FileMapperImpl implements FileMapper {
 		private Sneer1024 mapFolder(File folder, String... acceptedFileExtensions) throws MappingStopped, IOException {
 			FolderContents contents = new FolderContents(immutable(mapFolderEntries(folder, acceptedFileExtensions)));
 			Sneer1024 hash = my(FolderContentsHasher.class).hash(contents);
-			my(FileMap.class).putFolderContents(folder, contents, hash);
+			FileMap.putFolderContents(folder, contents, hash);
 			return hash;
 		}
 
