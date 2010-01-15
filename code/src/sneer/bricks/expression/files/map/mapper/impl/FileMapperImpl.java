@@ -26,6 +26,7 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.Producer;
 
@@ -58,7 +59,7 @@ class FileMapperImpl implements FileMapper {
 	public void stopFolderMapping(final File folder) {
 		if (_mappingsByFolder.get(folder) == null) return;
 		_mappingsByFolder.remove(folder).stop();
-		my(Threads.class).startDaemon("Removing \'" + folder.getName() + "\' folder from FileMap...", new Runnable() { @Override public void run() {
+		my(Threads.class).startDaemon("Removing \'" + folder.getName() + "\' folder from FileMap...", new Closure() { @Override public void run() {
 			FileMap.remove(folder);
 		}});
 	}

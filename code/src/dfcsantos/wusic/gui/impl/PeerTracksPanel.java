@@ -17,6 +17,7 @@ import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
 import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic.OperatingMode;
@@ -74,7 +75,7 @@ class PeerTracksPanel extends AbstractTabPane {
 		return my(ReactiveWidgetFactory.class).newCheckBox(
 			_controller.isTracksDownloadAllowed(),
 			new Consumer<Boolean>() { @Override public void consume(Boolean isTracksDownloadAllowed) { _controller.allowTracksDownload(isTracksDownloadAllowed); } },
-			new Runnable() { @Override public void run() { allowTracksDownloadActionPerformed(_controller.isTracksDownloadAllowed().currentValue()); } }
+			new Closure() { @Override public void run() { allowTracksDownloadActionPerformed(_controller.isTracksDownloadAllowed().currentValue()); } }
 		).getMainWidget();
 	}
 

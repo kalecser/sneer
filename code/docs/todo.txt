@@ -30,10 +30,6 @@ Igor ====================================================
 	- Unignore RemoteCopyTest.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
 		- [Klaus] I tried many approaches and none of them worked. Then I found this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298 
 
-	- Runnable -> ClosureX
-		- Find all places in foundation and in all our brick APIs that accept Runnable and change them to accept ClosureX.
-		- Announce to community
-
 	- [Klaus] @Brick (isSnapp = true)
 		- What do you prefer @Snapp or the attribute shown above?
 			- I like the attribute because it makes clear that a Snapp is also a brick
@@ -87,3 +83,4 @@ Klaus =================================================
 	
 	- Revise entire package structure.
 		- Remove all calls to Thread.sleep() including indirect.
+ 

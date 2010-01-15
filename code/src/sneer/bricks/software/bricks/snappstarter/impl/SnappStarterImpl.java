@@ -11,6 +11,7 @@ import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.bricks.software.bricks.finder.BrickFinder;
 import sneer.bricks.software.bricks.snappstarter.SnappStarter;
 import sneer.foundation.brickness.Brick;
+import sneer.foundation.lang.Closure;
 
 class SnappStarterImpl implements SnappStarter {
 
@@ -38,7 +39,7 @@ class SnappStarterImpl implements SnappStarter {
 //			...		
 //		}});
 		
-		my(ExceptionHandler.class).shield(new Runnable() { @Override public void run() {
+		my(ExceptionHandler.class).shield(new Closure() { @Override public void run() {
 			_referenceToAvoidGC.add(my(brick));
 		}});
 	}

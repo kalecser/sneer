@@ -19,6 +19,7 @@ import sneer.bricks.pulp.network.ByteArrayServerSocket;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
 import sneer.bricks.pulp.port.PortKeeper;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class SocketAccepterImpl implements SocketAccepter {
@@ -28,7 +29,7 @@ class SocketAccepterImpl implements SocketAccepter {
 	private final BlinkingLights _lights = my(BlinkingLights.class);
 	private final Threads _threads = my(Threads.class);
 	@SuppressWarnings("unused")
-	private final WeakContract _crashingContract = _threads.crashing().addPulseReceiver(new Runnable() { @Override public void run() {
+	private final WeakContract _crashingContract = _threads.crashing().addPulseReceiver(new Closure() { @Override public void run() {
 		crashServerSocketIfNecessary();
 	}});
 	
@@ -53,7 +54,7 @@ class SocketAccepterImpl implements SocketAccepter {
 			setPort(port);
 		}});
 
-		_threads.startStepping(new Runnable() { @Override public void run() {
+		_threads.startStepping(new Closure() { @Override public void run() {
 			listenToSneerPort();
 		}});
 	}
@@ -84,7 +85,7 @@ class SocketAccepterImpl implements SocketAccepter {
     }
 	
 	private void startAccepting() {
-		_stepperContract = _threads.startStepping(new Runnable() { @Override public void run() {
+		_stepperContract = _threads.startStepping(new Closure() { @Override public void run() {
 			try {
 				dealWith(_serverSocket.accept());
 			} catch (IOException e) {

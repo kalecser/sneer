@@ -16,6 +16,7 @@ import sneer.bricks.pulp.internetaddresskeeper.InternetAddress;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
+import sneer.foundation.lang.Closure;
 
 class OutgoingAttempt {
 
@@ -29,7 +30,7 @@ class OutgoingAttempt {
 	OutgoingAttempt(InternetAddress address) {
 		_address = address;
 
-		_steppingContract = my(Timer.class).wakeUpNowAndEvery(20 * 1000, new Runnable() { @Override public void run() {
+		_steppingContract = my(Timer.class).wakeUpNowAndEvery(20 * 1000, new Closure() { @Override public void run() {
 			tryToOpen();
 		}});
 	}

@@ -27,7 +27,7 @@ abstract class TrackSourceStrategy {
 	
 	
 	TrackSourceStrategy() {
-		_refToAvoidGc = my(Timer.class).wakeUpEvery(5000, new Runnable() { @Override public void run() {
+		_refToAvoidGc = my(Timer.class).wakeUpEvery(5000, new Closure() { @Override public void run() {
 			disposePendingTracks();
 		}});
 

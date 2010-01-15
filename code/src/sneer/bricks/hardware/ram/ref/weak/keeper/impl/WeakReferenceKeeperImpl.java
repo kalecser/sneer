@@ -8,6 +8,7 @@ import java.util.WeakHashMap;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
+import sneer.foundation.lang.Closure;
 
 public class WeakReferenceKeeperImpl implements WeakReferenceKeeper { // Refactor: in-line this brick, it's too simple 
 
@@ -16,7 +17,7 @@ public class WeakReferenceKeeperImpl implements WeakReferenceKeeper { // Refacto
 
 	
 	{
-		_timerContract = my(Timer.class).wakeUpEvery(5000, new Runnable() { @Override public void run() {
+		_timerContract = my(Timer.class).wakeUpEvery(5000, new Closure() { @Override public void run() {
 			forceWeakMapToCleanStaleReferences();
 		}});
 	}

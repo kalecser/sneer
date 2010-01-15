@@ -14,6 +14,7 @@ import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.foundation.lang.Closure;
 import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
 import dfcsantos.tracks.endorsements.TrackEndorser;
@@ -26,7 +27,7 @@ class TrackEndorserImpl implements TrackEndorser {
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidCG;
 
 	{
-		_refToAvoidCG = my(Timer.class).wakeUpNowAndEvery(60*1000, new Runnable(){@Override public void run() {
+		_refToAvoidCG = my(Timer.class).wakeUpNowAndEvery(60 * 1000, new Closure() { @Override public void run() {
 			endorseRandomTrack();
 		}});
 	}

@@ -10,13 +10,14 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.network.httpgateway.HttpGateway;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 public class HttpGatewayImpl implements HttpGateway {
 
 	@Override
 	public void get(final String httpUrl, final Consumer<byte[]> client, final Consumer<IOException> exceptionHandler) {
-		my(Threads.class).startDaemon(httpUrl, new Runnable(){ @Override public void run() {
+		my(Threads.class).startDaemon(httpUrl, new Closure(){ @Override public void run() {
 				try {
 					client.consume(getResponse(httpUrl));
 				} catch (IOException e) {

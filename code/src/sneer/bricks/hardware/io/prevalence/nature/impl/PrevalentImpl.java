@@ -17,6 +17,7 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.brickness.ClassDefinition;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Producer;
 
 class PrevalentImpl implements Prevalent {
@@ -27,7 +28,7 @@ class PrevalentImpl implements Prevalent {
 
 
 	{
-		_refToAvoidGc = my(Threads.class).crashing().addPulseReceiver(new Runnable() { @Override public void run() {
+		_refToAvoidGc = my(Threads.class).crashing().addPulseReceiver(new Closure() { @Override public void run() {
 			crash();
 		}});
 	}

@@ -4,6 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.ticker.custom.CustomClockTicker;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.foundation.lang.Closure;
 
 class CustomClockTickerImpl implements CustomClockTicker {
 
@@ -13,7 +14,7 @@ class CustomClockTickerImpl implements CustomClockTicker {
 	@Override
 	public void start(final int millisToSleep) {
 		tick(millisToSleep);
-		_threads.startStepping(new Runnable() { @Override public void run() {
+		_threads.startStepping(new Closure() { @Override public void run() {
 			tick(millisToSleep);
 		}});
 	}
@@ -21,7 +22,7 @@ class CustomClockTickerImpl implements CustomClockTicker {
 	@Override
 	public void start(final int millisToSleep, final long timeIncrement) {
 		tick(millisToSleep, timeIncrement);
-		_threads.startStepping(new Runnable() { @Override public void run() {
+		_threads.startStepping(new Closure() { @Override public void run() {
 			tick(millisToSleep, timeIncrement);
 		}});
 	}

@@ -48,9 +48,9 @@ class TimeboxedEventQueueImpl extends EventQueue implements TimeboxedEventQueue 
 
 	@Override
 	protected void dispatchEvent(final AWTEvent event) {
-		Closure timebox = EnvironmentUtils.retrieveFrom(_environment, Timebox.class).prepare(_timeboxDuration, new Runnable(){ @Override public void run() {
+		Closure timebox = EnvironmentUtils.retrieveFrom(_environment, Timebox.class).prepare(_timeboxDuration, new Closure() { @Override public void run() {
 			superDispatchEvent(event);
-		}}, new Runnable(){ @Override public void run() {
+		}}, new Closure(){ @Override public void run() {
 			my(Logger.class).log("Starting new Gui Thread");
 			
 			startNewQueue(); //This is an EventQueue leak. Not serious compared to the thread leak of the blocked threads that make these new EventQueues necessary. If these EventQueues are ever discarded (popped), take care because pending events will be automatically passed on to the previous queue and if that is the AWT queue it will start dispatching events immediately. This has to be avoided.

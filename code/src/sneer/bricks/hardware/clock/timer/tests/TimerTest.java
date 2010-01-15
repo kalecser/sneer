@@ -15,6 +15,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.ByRef;
+import sneer.foundation.lang.Closure;
 
 public class TimerTest extends BrickTest {
 
@@ -60,7 +61,7 @@ public class TimerTest extends BrickTest {
 	public void testContractWeakness() throws Exception {
 		final ByRef<Boolean> finalized = ByRef.newInstance(false);
 		
-		_subject.wakeUpEvery(42, new Runnable() {
+		_subject.wakeUpEvery(42, new Closure() {
 			@Override
 			public void run() {
 				return;
@@ -106,8 +107,8 @@ public class TimerTest extends BrickTest {
 		final Latch latch1 = my(Latches.class).produce();
 		final Latch latch2 = my(Latches.class).produce();
 		
-		_c1 = _subject.wakeUpInAtLeast(1, new Runnable(){ @Override public void run() {
-			_c2 = _subject.wakeUpInAtLeast(1, new Runnable(){ @Override public void run() {
+		_c1 = _subject.wakeUpInAtLeast(1, new Closure() { @Override public void run() {
+			_c2 = _subject.wakeUpInAtLeast(1, new Closure() { @Override public void run() {
 				latch2.open();
 			}});
 			latch1.open();

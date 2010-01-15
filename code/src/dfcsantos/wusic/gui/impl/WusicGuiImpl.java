@@ -8,6 +8,7 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.main.menu.MainMenu;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Functor;
 import dfcsantos.wusic.Wusic;
 import dfcsantos.wusic.gui.WusicGui;
@@ -26,7 +27,7 @@ class WusicGuiImpl implements WusicGui {
     private boolean _isInitialized = false;
 
     {
-		my(MainMenu.class).addAction("Wusic", new Runnable() { @Override public void run() {
+		my(MainMenu.class).addAction("Wusic", new Closure() { @Override public void run() {
 			if (!_isInitialized){
 				_isInitialized = true;
 				_frame = initFrame();

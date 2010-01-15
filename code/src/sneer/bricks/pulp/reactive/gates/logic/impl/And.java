@@ -7,6 +7,7 @@ import sneer.bricks.pulp.events.pulsers.Pulsers;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.foundation.lang.Closure;
 
 class And {
 
@@ -20,7 +21,7 @@ class And {
 		_a = a;
 		_b = b;
 
-		_referenceToAvoidGc = my(Pulsers.class).receive(new Runnable(){@Override public void run() {
+		_referenceToAvoidGc = my(Pulsers.class).receive(new Closure(){@Override public void run() {
 			refresh();
 		}}, a, b);
 	}

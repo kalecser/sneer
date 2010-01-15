@@ -11,6 +11,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.synth.SynthLookAndFeel;
 
+import sneer.foundation.lang.Closure;
+
 
 public class InstallationWizard extends JFrame {
 
@@ -81,14 +83,14 @@ public class InstallationWizard extends JFrame {
 	}
 
 	private Runnable exitDialog() {
-		return new Runnable() { @Override public void run() {
+		return new Closure() { @Override public void run() {
 			Dialogs.show(WIZARD_TITLE, "This wizard will now exit with no changes to your system.", systemExit(), "Exit");
 			System.exit(0);
 		}};
 	}
 
 	private Runnable systemExit() {
-		return new Runnable() { @Override public void run() {
+		return new Closure() { @Override public void run() {
 			System.exit(0);
 		}};
 	}

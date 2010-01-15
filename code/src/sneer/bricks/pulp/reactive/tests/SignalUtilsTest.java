@@ -9,6 +9,7 @@ import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Predicate;
 
 
@@ -28,7 +29,7 @@ public class SignalUtilsTest extends BrickTest {
 	public void waitForNewElementWithPredicate() {
 		final SetRegister<String> setRegister = my(CollectionSignals.class).newSetRegister();
 		
-		my(Threads.class).startDaemon("SignalUtils Test", new Runnable() { @Override public void run() {
+		my(Threads.class).startDaemon("SignalUtils Test", new Closure() { @Override public void run() {
 			my(Threads.class).sleepWithoutInterruptions(200);
 			setRegister.add("foo");
 		}});

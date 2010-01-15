@@ -11,6 +11,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.PickyConsumer;
@@ -28,7 +29,7 @@ public class WusicImpl implements Wusic {
 
 	private TrackSourceStrategy _trackSource = OwnTracks.INSTANCE;
 	private final Register<Track> _trackToPlay = my(Signals.class).newRegister(null);
-	private final DJ _dj = new DJ(_trackToPlay.output(), new Runnable() { @Override public void run() { skip(); } } );
+	private final DJ _dj = new DJ(_trackToPlay.output(), new Closure() { @Override public void run() { skip(); } } );
 	private Track _lastPlayedTrack;
 
 	private Register<Boolean> _isTracksDownloadAllowed = my(Signals.class).newRegister(false);

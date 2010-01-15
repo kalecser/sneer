@@ -11,6 +11,7 @@ import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Producer;
 
@@ -71,7 +72,7 @@ class EventNotifierImpl<T> implements EventNotifier<T>, EventSource<T> {
 
 	
 	private void notify(final Consumer<T> receiver, final T valueChange) {
-		my(ExceptionHandler.class).shield(new Runnable() { @Override public void run() {
+		my(ExceptionHandler.class).shield(new Closure() { @Override public void run() {
 			receiver.consume(valueChange);
 		}});
 	}
@@ -79,7 +80,7 @@ class EventNotifierImpl<T> implements EventNotifier<T>, EventSource<T> {
 	
 	private void notifyCurrentValue(final Consumer<? super T> receiver) {
 		if (_welcomeEventProducer == null) return;
-		Environments.my(ExceptionHandler.class).shield(new Runnable() { @Override public void run() {
+		Environments.my(ExceptionHandler.class).shield(new Closure() { @Override public void run() {
 			receiver.consume(_welcomeEventProducer.produce());
 		}});
 	}

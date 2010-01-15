@@ -16,6 +16,7 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.foundation.lang.Closure;
 
 abstract class AbstractDownload implements Download {
 
@@ -130,7 +131,7 @@ abstract class AbstractDownload implements Download {
 
 
 	void startSendingRequests() {
-		_timerContract = my(Timer.class).wakeUpNowAndEvery(REQUEST_INTERVAL, new Runnable() { @Override public void run() {
+		_timerContract = my(Timer.class).wakeUpNowAndEvery(REQUEST_INTERVAL, new Closure() { @Override public void run() {
 			publishRequestIfNecessary();
 		}});
 	}

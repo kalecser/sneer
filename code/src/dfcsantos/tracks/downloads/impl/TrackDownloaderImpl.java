@@ -19,6 +19,7 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.downloads.TrackDownloader;
 import dfcsantos.tracks.endorsements.TrackEndorsement;
@@ -61,7 +62,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
 		_downloads.add(download);
 
-		my(Threads.class).startDaemon("Waiting for Download", new Runnable() { @Override public void run() {
+		my(Threads.class).startDaemon("Waiting for Download", new Closure() { @Override public void run() {
 			try {
 				download.waitTillFinished();
 				_numberOfDownloadedTracks.setter().consume(_numberOfDownloadedTracks.output().currentValue() + 1);

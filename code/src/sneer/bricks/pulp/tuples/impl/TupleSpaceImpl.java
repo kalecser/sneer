@@ -60,7 +60,7 @@ class TupleSpaceImpl implements TupleSpace {
 		}
 
 		private Runnable notifier() {
-			return new Runnable() { @Override public void run() {
+			return new Closure() { @Override public void run() {
 				Tuple nextTuple = waitToPopTuple();
 				if (_isDisposed) return;
 				
@@ -73,7 +73,7 @@ class TupleSpaceImpl implements TupleSpace {
 			final Consumer<? super Tuple> subscriber = _subscriber;
 			if (subscriber == null) return;
 			
-			_exceptionHandler.shield(new Runnable() { @Override public void run() {
+			_exceptionHandler.shield(new Closure() { @Override public void run() {
 				Environments.runWith(_environment, new Closure() { @Override public void run() {
 					subscriber.consume(tuple);
 				}});
@@ -140,7 +140,7 @@ class TupleSpaceImpl implements TupleSpace {
 
 	
 	@SuppressWarnings("unused")
-	private final WeakContract _crashingContract = my(Threads.class).crashing().addPulseReceiver(new Runnable() { @Override public void run() {
+	private final WeakContract _crashingContract = my(Threads.class).crashing().addPulseReceiver(new Closure() { @Override public void run() {
 		_isPrevaylerClosed = true;
 		closePrevayler();
 	}});

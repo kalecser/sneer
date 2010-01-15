@@ -17,6 +17,7 @@ import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.foundation.lang.ByRef;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.exceptions.FriendlyException;
 
 class BlinkingLightsImpl implements BlinkingLights {
@@ -62,7 +63,7 @@ class BlinkingLightsImpl implements BlinkingLights {
 	private void turnOffIn(final Light light, int millisFromNow) {
 		final Latch added = my(Latches.class).produce();
 		final ByRef<WeakContract> weakContract = ByRef.newInstance();
-		weakContract.value = my(Timer.class).wakeUpInAtLeast(millisFromNow, new Runnable() { @Override public void run() {
+		weakContract.value = my(Timer.class).wakeUpInAtLeast(millisFromNow, new Closure() { @Override public void run() {
 			
 			turnOffIfNecessary(light);
 			

@@ -11,6 +11,7 @@ import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
 import sneer.bricks.skin.widgets.autoscroll.AutoScroll;
 import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 public class ReactiveAutoScrollImpl implements ReactiveAutoScroll {
@@ -21,7 +22,7 @@ public class ReactiveAutoScrollImpl implements ReactiveAutoScroll {
 		final JScrollPane result = my(SynthScrolls.class).create();
 		
 		WeakContract reception = eventSource.addReceiver(new Consumer<T>() {  @Override public void consume(final T change) {
-			my(AutoScroll.class).runWithAutoscroll(result, new Runnable() {  @Override public void run() {
+			my(AutoScroll.class).runWithAutoscroll(result, new Closure() {  @Override public void run() {
 				receiver.consume(change);
 			}});
 		}});

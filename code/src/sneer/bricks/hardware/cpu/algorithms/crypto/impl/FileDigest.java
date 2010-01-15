@@ -12,6 +12,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
+import sneer.foundation.lang.Closure;
 
 class FileDigest {
 
@@ -31,7 +32,7 @@ class FileDigest {
 		_input = new FileInputStream(file);
 		_digester = digester;
 
-		_contract = my(Threads.class).startStepping(new Runnable() { @Override public void run() {
+		_contract = my(Threads.class).startStepping(new Closure() { @Override public void run() {
 			step();
 		}});
 	}

@@ -68,7 +68,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		initGui();
 		restoreFieldData();
 		
-		my(WindowBoundsSetter.class).runWhenBaseContainerIsReady(new Runnable(){ @Override public void run() {
+		my(WindowBoundsSetter.class).runWhenBaseContainerIsReady(new Closure() { @Override public void run() {
 			openIfNeedConfig();
 		}});
 	}
@@ -209,7 +209,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 	}
 	
 	private void addOpenWindowAction() {
-		_mainMenu.addAction("Own Info...", new Runnable() {	@Override public void run() {
+		_mainMenu.addAction("Own Info...", new Closure() { @Override public void run() {
 			open();
 		}});
 	}

@@ -115,7 +115,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 	}
 	
 	private void addMenuAction() {
-		_mainMenu.addAction("Open Log Console", new Runnable() { @Override public void run() {
+		_mainMenu.addAction("Open Log Console", new Closure() { @Override public void run() {
 			open();
 		}});
 	}
@@ -146,7 +146,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		initClearLogAction();
 		
 		final WindowBoundsSetter wbSetter = my(WindowBoundsSetter.class);
-		wbSetter.runWhenBaseContainerIsReady(new Runnable(){ @Override public void run() {
+		wbSetter.runWhenBaseContainerIsReady(new Closure() { @Override public void run() {
 			Rectangle unused = wbSetter.unusedArea();
 			setBounds(_X , unused.height-_HEIGHT-_OFFSET_Y, unused.width-_OFFSET_X, _HEIGHT-_OFFSET_Y);
 			setFocusableWindowState(false);

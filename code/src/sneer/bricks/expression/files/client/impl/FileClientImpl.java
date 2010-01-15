@@ -9,6 +9,7 @@ import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Producer;
 
 class FileClientImpl implements FileClient {
@@ -24,7 +25,7 @@ class FileClientImpl implements FileClient {
 	@Override
 	public Download startFileDownload(final File file, final long lastModified, final Sneer1024 hashOfFile) {
 		return startDownload("file", file, hashOfFile, new Producer<Download>() { @Override public Download produce() throws RuntimeException {
-			return new FileDownload(file, lastModified, hashOfFile, new Runnable() { @Override public void run() {
+			return new FileDownload(file, lastModified, hashOfFile, new Closure() { @Override public void run() {
 				removeDownload(hashOfFile);
 			}});
 		}});
@@ -40,7 +41,7 @@ class FileClientImpl implements FileClient {
 	@Override
 	public Download startFolderDownload(final File folder, final long lastModified, final Sneer1024 hashOfFolder) {
 		return startDownload("folder", folder, hashOfFolder, new Producer<Download>() { @Override public Download produce() throws RuntimeException {
-			return new FolderDownload(folder, lastModified, hashOfFolder, new Runnable() { @Override public void run() {
+			return new FolderDownload(folder, lastModified, hashOfFolder, new Closure() { @Override public void run() {
 				removeDownload(hashOfFolder);
 			}});
 		}});

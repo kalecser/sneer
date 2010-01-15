@@ -109,13 +109,12 @@ class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Runnable {
 		my(Logger.class).log("Contact {} is online.", contact);
 	}
 
+
 	private void setDead(Contact contact) {
 		if (!isAlive(contact).currentValue()) return;
 		isAliveRegister(contact).setter().consume(false);
 		my(Logger.class).log("Contact {} is offline.", contact);
 	}
-
-
 
 
 	@Override

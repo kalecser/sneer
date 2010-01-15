@@ -46,6 +46,7 @@ import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 import sneer.foundation.lang.exceptions.Refusal;
@@ -184,7 +185,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	public void waitForShouts(final String shoutsExpected) {
 		final Latch latch = my(Latches.class).produce();
 
-		WeakContract contract = my(Wind.class).shoutsHeard().addPulseReceiver(new Runnable() { @Override public void run() {
+		WeakContract contract = my(Wind.class).shoutsHeard().addPulseReceiver(new Closure() { @Override public void run() {
 			openLatchIfShoutsHeard(shoutsExpected, latch);
 		}});
 		openLatchIfShoutsHeard(shoutsExpected, latch);
@@ -257,7 +258,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private void accelerateHeartbeat() {
-		my(Threads.class).startStepping(new Runnable() { @Override public void run() {
+		my(Threads.class).startStepping(new Closure() { @Override public void run() {
 			my(Clock.class).advanceTime(1000);
 			my(Threads.class).sleepWithoutInterruptions(20);
 		}});

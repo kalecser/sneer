@@ -24,6 +24,7 @@ import sneer.bricks.softwaresharing.demolisher.Demolisher;
 import sneer.bricks.softwaresharing.publisher.SourcePublisher;
 import sneer.bricks.softwaresharing.publisher.SrcFolderHash;
 import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.Consumer;
 
@@ -38,7 +39,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 	
 	{
-		my(Threads.class).startDaemon("BrickSpaceImpl init", new Runnable() { @Override public void run() {
+		my(Threads.class).startDaemon("BrickSpaceImpl init", new Closure() { @Override public void run() {
 			//init();
 		}});
 	}
@@ -61,7 +62,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	@Override
 	public void consume(final SrcFolderHash srcFolderHash) {
 		my(Logger.class).log("Consuming SrcFolderHash");
-		my(Threads.class).startDaemon("BrickSpace Fetcher", new Runnable() { @Override public void run() {
+		my(Threads.class).startDaemon("BrickSpace Fetcher", new Closure() { @Override public void run() {
 			fetchIfNecessary(srcFolderHash);
 		}});
 	}
