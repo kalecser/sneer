@@ -39,6 +39,10 @@ class FileMapperImpl implements FileMapper {
 
 	@Override
 	public Sneer1024 mapFile(File file) throws IOException {
+		long lastModified = FileMap.getLastModified(file);
+		if (lastModified == file.lastModified())
+			return FileMap.getHash(file);
+
 		Sneer1024 hash = my(Crypto.class).digest(file);
 		FileMap.putFile(file, hash);
 		return hash;
@@ -121,12 +125,12 @@ class FileMapperImpl implements FileMapper {
 		}
 
 		private List<FileOrFolder> mapFolderEntries(File folder, String... acceptedExtensions) throws MappingStopped, IOException{
-			List<FileOrFolder> folderEntries = new ArrayList<FileOrFolder>();
-			for (File fileOrFolder : sortedFiles(folder, acceptedExtensions)) {
+			List<FileOrFolder> result = new ArrayList<FileOrFolder>();
+			for (File entry : sortedFiles(folder, acceptedExtensions)) {
 				if (_stop.get()) throw new MappingStopped();
-				folderEntries.add(mapFolderEntry(fileOrFolder, acceptedExtensions));
+				result.add(mapFolderEntry(entry, acceptedExtensions));
 			}
-			return folderEntries;
+			return result;
 		}
 
 		private FileOrFolder mapFolderEntry(File fileOrFolder, String... acceptedExtensions) throws IOException, MappingStopped {

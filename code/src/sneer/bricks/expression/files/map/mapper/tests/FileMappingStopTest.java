@@ -25,6 +25,7 @@ public class FileMappingStopTest extends BrickTest {
 	@Test (timeout = 3000, expected = MappingStopped.class)
 	public void mapFolder() throws Exception {
 		checking(new Expectations() {{
+			oneOf(_fileMap).getLastModified(with(any(File.class))); will(returnValue(-1L));
 			oneOf(_fileMap).putFile(with(any(File.class)), with(any(Sneer1024.class)));
 				will(new CustomAction("Call stopFolderMapping") { @Override public Object invoke(Invocation invocation) throws Throwable {
 					_subject.stopFolderMapping(fixturesFolder());

@@ -50,7 +50,6 @@ Igor ====================================================
 			- Ask Klaus for help glueing the gui to the Seals brick. Non-trivial per-contact signals and picky consumers need to be exposed in the Seals interface.  
 
 	- Wusic
-		- Find the problem with FileMap prevalence mechanism
 		- Downloads
 			- 15 min timeout per download.
 			- Do not download files user already has (includes peertracks) - check if it's already working.
