@@ -84,6 +84,7 @@ class Bubble {
 		
 		Class<?> type = method.getReturnType();
 		if (isReadOnly(type)) return object;
+		if (type.isArray()) return object;
 
 		List<String> pathToObject = new ArrayList<String>(_getterMethodPath.size() + 1);
 		pathToObject.addAll(_getterMethodPath);
@@ -99,7 +100,7 @@ class Bubble {
 		if (type == Date.class) return true;
 		if (type == File.class) return true;
 		if (ReadOnly.class.isAssignableFrom(type)) return true;
-			
+
 		return false;
 	}
 
