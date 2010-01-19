@@ -1,4 +1,4 @@
-package dfcsantos.tracks.downloads.tests;
+package dfcsantos.tracks.sharing.downloads.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -19,9 +19,9 @@ import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
-import dfcsantos.tracks.downloads.TrackDownloader;
-import dfcsantos.tracks.endorsements.TrackEndorsement;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
+import dfcsantos.tracks.sharing.downloads.TrackDownloader;
+import dfcsantos.tracks.sharing.endorsements.TrackEndorsement;
 import dfcsantos.wusic.Wusic;
 
 public class TrackDownloaderTest extends BrickTest {

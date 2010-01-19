@@ -1,4 +1,4 @@
-package dfcsantos.tracks.endorsements;
+package dfcsantos.tracks.sharing.endorsements;
 
 import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
 import sneer.bricks.pulp.tuples.Tuple;
