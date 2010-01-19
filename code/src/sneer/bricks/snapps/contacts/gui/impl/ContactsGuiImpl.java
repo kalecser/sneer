@@ -41,23 +41,25 @@ import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
+import dfcsantos.tracks.sharing.playingtrack.keeper.PlayingTrackKeeper;
 
 class ContactsGuiImpl implements ContactsGui {
 	
 	private final Synth _synth = my(Synth.class);
 	
-	{_synth.notInGuiThreadLoad(this.getClass());}
+	{ _synth.notInGuiThreadLoad(this.getClass()); }
+
 	private final Image ONLINE = getImage("ContactsGuiImpl.onlineIconName");
 	private final Image OFFLINE = getImage("ContactsGuiImpl.offlineIconName");
 	
-	private final SignalChooser<Contact> _chooser = new SignalChooser<Contact>(){ @Override public Signal<?>[] signalsToReceiveFrom(Contact contact) {
+	private final SignalChooser<Contact> _chooser = new SignalChooser<Contact>() { @Override public Signal<?>[] signalsToReceiveFrom(Contact contact) {
 		return new Signal<?>[]{my(Stethoscope.class).isAlive(contact), contact.nickname()};
 	}};
 
-	private final ListSignal<Contact> _sortedList = my(ListSorter.class).sort( my(Contacts.class).contacts() , my(ContactComparator.class), _chooser);
-	private final ListWidget<Contact> _contactList;{
+	private final ListSignal<Contact> _sortedList = my(ListSorter.class).sort(my(Contacts.class).contacts() , my(ContactComparator.class), _chooser);
+	private final ListWidget<Contact> _contactList; {
 		final ByRef<ListWidget<Contact>> ref = ByRef.newInstance();
-		my(GuiThread.class).invokeAndWait(new Closure(){ @Override public void run() {
+		my(GuiThread.class).invokeAndWait(new Closure() { @Override public void run() {
 			ref.value = my(ReactiveWidgetFactory.class).newList(_sortedList, new ContactLabelProvider(), new ContactsGuiCellRenderer(new ContactLabelProvider()));
 		}});
 		_contactList = ref.value;
@@ -116,8 +118,8 @@ class ContactsGuiImpl implements ContactsGui {
 	}
 	
 	private void addContactActions(MenuGroup<JPopupMenu> menuGroup) {
-		menuGroup.addAction(new Action(){
-			@Override public String caption() {return "New Contact...";}
+		menuGroup.addAction(new Action() {
+			@Override public String caption() { return "New Contact..."; }
 			@Override public void run() {
 				contactList().setSelectedValue(newContact(), true);
 			}});
@@ -132,13 +134,17 @@ class ContactsGuiImpl implements ContactsGui {
 	}	
 
 	final class ContactLabelProvider implements LabelProvider<Contact> {
-		@Override public Signal<String> labelFor(Contact contact) {
-			return contact.nickname();
+
+		@Override public Signal<String> labelFor(final Contact contact) {
+			final String playingTrack = my(PlayingTrackKeeper.class).getPlayingTrackOf(contact);
+			return my(Signals.class).adapt(contact.nickname(), new Functor<String, String>() { @Override public String evaluate(String nickname) throws RuntimeException {
+				return (playingTrack == null) ? nickname : nickname + " (" + playingTrack + ")";
+			}});
 		}
 
 		@Override public Signal<Image> imageFor(Contact contact) {
 			Functor<Boolean, Image> functor = new Functor<Boolean, Image>(){ @Override public Image evaluate(Boolean value) {
-				return value?ONLINE:OFFLINE;
+				return value ? ONLINE : OFFLINE;
 			}};
 			
 			Signal<Boolean> isOnline = my(Stethoscope.class).isAlive(contact);
