@@ -22,7 +22,7 @@ import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
 import dfcsantos.tracks.sharing.endorsements.TrackEndorsement;
 import dfcsantos.tracks.sharing.endorsements.TrackEndorser;
 
-public class TrackEndorsementPublisherTest extends BrickTest {
+public class TrackEndorserTest extends BrickTest {
 
 	@Bind private final FileMap _fileMap = mock(FileMap.class);
 
