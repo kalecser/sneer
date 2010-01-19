@@ -118,7 +118,7 @@ class FileMapperImpl implements FileMapper {
 
 		private void throwNarrowed(Exception e) throws MappingStopped, IOException {
 			if (e instanceof MappingStopped) throw (MappingStopped) e;
-			if (e instanceof MappingStopped) throw (IOException) e;
+			if (e instanceof IOException) throw (IOException) e;
 			throw new IllegalStateException(e);
 		}
 
