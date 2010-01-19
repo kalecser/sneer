@@ -1,4 +1,4 @@
-package dfcsantos.tracks.sharing.downloads.impl;
+package dfcsantos.tracks.sharing.endorsements.client.downloads.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -23,8 +23,8 @@ import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
 import dfcsantos.tracks.rejected.RejectedTracksKeeper;
-import dfcsantos.tracks.sharing.downloads.TrackDownloader;
-import dfcsantos.tracks.sharing.endorsements.TrackEndorsement;
+import dfcsantos.tracks.sharing.endorsements.client.downloads.TrackDownloader;
+import dfcsantos.tracks.sharing.endorsements.protocol.TrackEndorsement;
 import dfcsantos.wusic.Wusic;
 
 class TrackDownloaderImpl implements TrackDownloader {

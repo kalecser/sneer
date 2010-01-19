@@ -1,4 +1,4 @@
-package dfcsantos.tracks.sharing.client.impl;
+package dfcsantos.tracks.sharing.endorsements.client.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -16,8 +16,8 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
-import dfcsantos.tracks.sharing.client.TrackClient;
-import dfcsantos.tracks.sharing.downloads.TrackDownloader;
+import dfcsantos.tracks.sharing.endorsements.client.TrackClient;
+import dfcsantos.tracks.sharing.endorsements.client.downloads.TrackDownloader;
 
 class TrackClientImpl implements TrackClient {
 

@@ -41,7 +41,7 @@ import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
-import dfcsantos.tracks.sharing.playingtrack.keeper.PlayingTrackKeeper;
+import dfcsantos.tracks.sharing.playingtracks.keeper.PlayingTrackKeeper;
 
 class ContactsGuiImpl implements ContactsGui {
 	

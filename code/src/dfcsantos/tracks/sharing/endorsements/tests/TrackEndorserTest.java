@@ -19,8 +19,8 @@ import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
-import dfcsantos.tracks.sharing.endorsements.TrackEndorsement;
-import dfcsantos.tracks.sharing.endorsements.TrackEndorser;
+import dfcsantos.tracks.sharing.endorsements.protocol.TrackEndorsement;
+import dfcsantos.tracks.sharing.endorsements.server.TrackEndorser;
 
 public class TrackEndorserTest extends BrickTest {
 

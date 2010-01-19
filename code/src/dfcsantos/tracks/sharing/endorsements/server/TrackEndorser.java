@@ -1,4 +1,4 @@
-package dfcsantos.tracks.sharing.endorsements;
+package dfcsantos.tracks.sharing.endorsements.server;
 
 import sneer.foundation.brickness.Brick;
 

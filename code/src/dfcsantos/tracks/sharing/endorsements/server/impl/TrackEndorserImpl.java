@@ -1,4 +1,4 @@
-package dfcsantos.tracks.sharing.endorsements.impl;
+package dfcsantos.tracks.sharing.endorsements.server.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -17,17 +17,17 @@ import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Closure;
 import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
-import dfcsantos.tracks.sharing.endorsements.TrackEndorsement;
-import dfcsantos.tracks.sharing.endorsements.TrackEndorser;
+import dfcsantos.tracks.sharing.endorsements.protocol.TrackEndorsement;
+import dfcsantos.tracks.sharing.endorsements.server.TrackEndorser;
 
 class TrackEndorserImpl implements TrackEndorser {
 
 	private static final File[] FILE_ARRAY = new File[0];
 
-	@SuppressWarnings("unused") private final WeakContract _refToAvoidCG;
+	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC;
 
 	{
-		_refToAvoidCG = my(Timer.class).wakeUpNowAndEvery(60 * 1000, new Closure() { @Override public void run() {
+		_refToAvoidGC = my(Timer.class).wakeUpNowAndEvery(60 * 1000, new Closure() { @Override public void run() {
 			endorseRandomTrack();
 		}});
 	}

@@ -18,7 +18,7 @@ import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
-import dfcsantos.tracks.sharing.downloads.TrackDownloader;
+import dfcsantos.tracks.sharing.endorsements.client.downloads.TrackDownloader;
 import dfcsantos.wusic.Wusic;
 
 public class WusicImpl implements Wusic {
