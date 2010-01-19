@@ -27,6 +27,10 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Test CPUThrottle's new implementation
+		- Test if Crypto.digest(File) is working with the new implementation
+		- Change Crypto.digest(File) to use a loop and CPUThrottle.yield() instead of a Stepper
+
 	- Unignore RemoteCopyTest.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
 		- [Klaus] I tried many approaches and none of them worked. Then I found this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298 
 
@@ -50,12 +54,12 @@ Igor ====================================================
 			- Ask Klaus for help glueing the gui to the Seals brick. Non-trivial per-contact signals and picky consumers need to be exposed in the Seals interface.  
 
 	- Wusic
-		- Downloads
-			- 15 min timeout per download.
-			- Do not download files user already has (includes peertracks) - check if it's already working.
 		- Contact List - Display playing track of each contact
 			- Announce to community
 		- [Klaus/Daniel] MusicalTasteMatcher Kernel
+		- Downloads
+			- 15 min timeout per download.
+			- Do not download files user already has (includes peertracks) - check if it's already working.
 		- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
 		- Back Button 
 		- Find another way to solve pause lag (try to use a smaller frame in player)
