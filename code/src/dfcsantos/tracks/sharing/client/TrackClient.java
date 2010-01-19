@@ -1,4 +1,4 @@
-package dfcsantos.tracks.client;
+package dfcsantos.tracks.sharing.client;
 
 import sneer.foundation.brickness.Brick;
 
