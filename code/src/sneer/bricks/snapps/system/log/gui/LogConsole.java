@@ -1,6 +1,8 @@
 package sneer.bricks.snapps.system.log.gui;
 
+import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.foundation.brickness.Brick;
 
-@Brick (isSnapp = true)
+@Snapp
+@Brick
 public interface LogConsole {}

@@ -1,6 +1,8 @@
 package sneer.bricks.snapps.contacts.gui.delete;
 
+import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.foundation.brickness.Brick;
 
-@Brick (isSnapp = true)
+@Snapp
+@Brick
 public interface DeleteContactWindow {}

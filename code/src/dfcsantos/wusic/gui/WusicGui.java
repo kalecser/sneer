@@ -2,9 +2,11 @@ package dfcsantos.wusic.gui;
 
 import java.awt.Dimension;
 
+import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.foundation.brickness.Brick;
 
-@Brick (isSnapp = true)
+@Snapp
+@Brick
 public interface WusicGui {
 
 	Dimension PREFERRED_SIZE = new Dimension(480, 140);

@@ -34,12 +34,6 @@ Igor ====================================================
 		- Test if Crypto.digest(File) is working with the new implementation
 		- Change Crypto.digest(File) to use a loop and CPUThrottle.yield() instead of a Stepper 
 
-	- [Klaus] @Brick (isSnapp = true)
-		- What do you prefer @Snapp or the attribute shown above?
-			- I like the attribute because it makes clear that a Snapp is also a brick
-		- Reconsider the implementation of BrickFinder.findBricks() - it still uses ASM
-		- Announce to community: do I publish the new approach at SneerCoders mailing list?
-
 	- Seals
 		- ContactInfoWindowImpl - Add a field for the Contact's Seal: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
 			(Forget Courier. Just use default font)

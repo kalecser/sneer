@@ -9,8 +9,8 @@ import java.util.HashSet;
 
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.bricks.software.bricks.finder.BrickFinder;
+import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.bricks.software.bricks.snappstarter.SnappStarter;
-import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.Closure;
 
 class SnappStarterImpl implements SnappStarter {
@@ -45,7 +45,7 @@ class SnappStarterImpl implements SnappStarter {
 	}
 
 	private boolean isSnapp(Class<?> brick) {
-		return brick.getAnnotation(Brick.class).isSnapp();
+		return brick.getAnnotation(Snapp.class) != null;
 	}
 
 }

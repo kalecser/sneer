@@ -1,6 +1,8 @@
 package dfcsantos.tracks.sharing.endorsements.server;
 
+import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.foundation.brickness.Brick;
 
-@Brick (isSnapp = true)
+@Snapp
+@Brick
 public interface TrackEndorser {}
