@@ -5,7 +5,7 @@ import sneer.foundation.lang.ClosureX;
 
 public class CpuThrottleImpl implements CpuThrottle {
 
-	private final ThreadLocal<Throttle> _throttleByThread = new ThreadLocal<Throttle>();
+	private static final ThreadLocal<Throttle> _throttleByThread = new ThreadLocal<Throttle>();
 
 	
 	@Override
@@ -23,7 +23,7 @@ public class CpuThrottleImpl implements CpuThrottle {
 	@Override
 	public void yield() {
 		Throttle throttle = _throttleByThread.get();
-		if (throttle == null) return;
+		if (throttle == null) return; // Fix: Using Stepper this will always be the case (the CPU usage was set in a different thread)
 		
 		throttle.yield();
 	}

@@ -27,9 +27,8 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Test CPUThrottle's new implementation
-		- Test if Crypto.digest(File) is working with the new implementation
-		- Change Crypto.digest(File) to use a loop and CPUThrottle.yield() instead of a Stepper 
+	- Change CpuThrottle mechanism
+		- [Klaus] See comments at CPUThrottleImpl
 
 	- Seals
 		- ContactInfoWindowImpl - Add a field for the Contact's Seal: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
