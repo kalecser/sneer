@@ -27,9 +27,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Fix Sneer to run it through Java Web Start (it's not working right now: a ClassNotFoundException is being thrown)
-		- Find out why SneerVersionUpdater is not being located
-
 	- Test CPUThrottle's new implementation
 		- Test if Crypto.digest(File) is working with the new implementation
 		- Change Crypto.digest(File) to use a loop and CPUThrottle.yield() instead of a Stepper 
