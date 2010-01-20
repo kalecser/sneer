@@ -94,7 +94,7 @@
 		
 		<jar destfile="build/dist/sneer-bootstrap.jar">
 			<fileset dir="${bin.dir}">
-				<exclude name="'sneer/main/SneerSession.*'"/>
+				<exclude name='sneer/main/SneerSession*.*' />
 			</fileset>
 			<fileset dir="src">
 				<include name='**/*.*' />
