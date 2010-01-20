@@ -27,12 +27,12 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Fix Sneer to run it through Java Web Start (it's not working right now: a ClassNotFoundException is being thrown)
+		- Find out why SneerVersionUpdater is not being located
+
 	- Test CPUThrottle's new implementation
 		- Test if Crypto.digest(File) is working with the new implementation
-		- Change Crypto.digest(File) to use a loop and CPUThrottle.yield() instead of a Stepper
-
-	- Unignore RemoteCopyTest.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
-		- [Klaus] I tried many approaches and none of them worked. Then I found this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298 
+		- Change Crypto.digest(File) to use a loop and CPUThrottle.yield() instead of a Stepper 
 
 	- [Klaus] @Brick (isSnapp = true)
 		- What do you prefer @Snapp or the attribute shown above?
@@ -55,6 +55,7 @@ Igor ====================================================
 
 	- Wusic
 		- Contact List - Display playing track of each contact
+			- [Klaus] Revise first draft's architecture - package 'dfcsantos.tracks.sharing.playingtracks'
 			- Announce to community
 		- [Klaus/Daniel] MusicalTasteMatcher Kernel
 		- Downloads
@@ -71,6 +72,9 @@ Igor ====================================================
 
 
 Klaus =================================================
+
+	- Unignore RemoteCopyTest.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
+		- See this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298
 
 	- Make Network usable
 		- Sneer "DNS".
