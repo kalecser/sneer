@@ -19,12 +19,19 @@ public class CpuThrottleImpl implements CpuThrottle {
 		}
 	}
 	
-	
+
+	@Override
+	public int maxCpuUsage() {
+		Throttle throttle = _throttleByThread.get();
+		return (throttle == null) ? 100 : throttle._maxCpuUsage;
+	}
+
+
 	@Override
 	public void yield() {
 		Throttle throttle = _throttleByThread.get();
-		if (throttle == null) return; // Fix: Using Stepper this will always be the case (the CPU usage was set in a different thread)
-		
+		if (throttle == null) return;
+
 		throttle.yield();
 	}
 

@@ -6,17 +6,19 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 
 class Throttle {
 
+	final int _maxCpuUsage;
 	private final float _fractionToYield;
-	private final long _t0;
 
+	private final long _t0;
 	private long _waited;
 	private float _millisToWait = 1;
 
 
-	Throttle(float percentage) {
+	Throttle(int percentage) {
 		if (percentage < 1  || percentage > 100)
 			throw new IllegalArgumentException("Parameter must be an integer between 1 and 100");
-		_fractionToYield = 1 - (percentage / 100);
+		_maxCpuUsage = percentage;
+		_fractionToYield = 1 - ((float) percentage) / 100;
 
 		_t0 = now();
 	}
@@ -33,7 +35,7 @@ class Throttle {
 	private void adaptTimeToWait(long now) {
 		long ellapsed = now - _t0;
 
-		if (_waited / ellapsed < _fractionToYield)
+		if ((double)_waited / ellapsed < _fractionToYield)
 			_millisToWait *= 1.5;
 		else 
 			_millisToWait /= 1.5;
@@ -43,7 +45,6 @@ class Throttle {
 	private void sleep(long sleepStart) {
 		if (_millisToWait < 1) return;
 
-//		System.out.println("Sleeping: " + _millisToWait / 1000 + "s");
 		my(Threads.class).sleepWithoutInterruptions((long)_millisToWait);
 		_waited += now() - sleepStart;
 	}
@@ -51,12 +52,6 @@ class Throttle {
 
 	private long now() {
 		return System.currentTimeMillis();
-	}
-
-
-	@Override
-	public String toString() {
-		return "Throttle (" + (100 * _fractionToYield) + "%) for thread: " + Thread.currentThread().getName();
 	}
 
 }
