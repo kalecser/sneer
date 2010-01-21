@@ -19,7 +19,7 @@ class Sneer1024Impl implements Sneer1024 {
 
 	@Override
 	public byte[] bytes() {
-		return _bytes;
+		return _bytes.clone();
 	}
 
 	@Override

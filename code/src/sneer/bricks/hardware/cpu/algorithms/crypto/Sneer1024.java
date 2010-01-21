@@ -1,8 +1,8 @@
 package sneer.bricks.hardware.cpu.algorithms.crypto;
 
-import java.io.Serializable;
+import sneer.foundation.lang.ReadOnly;
 
-public interface Sneer1024 extends Serializable {
+public interface Sneer1024 extends ReadOnly {
 
 	byte[] bytes();
 	

@@ -80,8 +80,7 @@ class Bubble {
 
 	private Object wrapIfNecessary(Object object, Method method) {
 		String methodName = method.getName();
-		if (methodName.equals("output")) return object;
-		
+
 		Class<?> type = method.getReturnType();
 		if (isReadOnly(type)) return object;
 		if (type.isArray()) return object;
