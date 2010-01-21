@@ -21,8 +21,9 @@ class PlayingTrackClientImpl implements PlayingTrackClient {
 
 	@Override
 	public void consume(PlayingTrack playingTrack) {
+		if (my(Seals.class).ownSeal().equals(playingTrack.publisher)) return;
+
 		Contact contact = my(Seals.class).contactGiven(playingTrack.publisher);
-		// Fix: Add the new contact?
 		if (contact == null) return;
 
 		if (playingTrack.name.equals(PlayingTrackKeeper.getPlayingTrackOf(contact))) return;
