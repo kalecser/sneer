@@ -2,6 +2,7 @@ package dfcsantos.tracks.sharing.playingtracks.client.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.tuples.TupleSpace;
@@ -24,21 +25,13 @@ class PlayingTrackClientImpl implements PlayingTrackClient {
 		if (my(Seals.class).ownSeal().equals(playingTrack.publisher)) return;
 
 		Contact contact = my(Seals.class).contactGiven(playingTrack.publisher);
-		if (contact == null) doSomething();
+		if (contact == null) {
+			my(Logger.class).log("PlayingTrack received from unkown contact: ", playingTrack.publisher);
+			return;
+		}
 
 		if (playingTrack.name.equals(PlayingTrackKeeper.getPlayingTrackOf(contact))) return;
 		PlayingTrackKeeper.setPlayingTrackOf(contact, playingTrack.name);
-	}
-
-	private void doSomething() {
-		/* Options:
-		 * 	- Add the contact;
-		 * 	- Return;
-		 * 	- Throw an IllegalStateException();
-		 * 	- Call the cops, but do something!!!
-		 */
-
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 }
