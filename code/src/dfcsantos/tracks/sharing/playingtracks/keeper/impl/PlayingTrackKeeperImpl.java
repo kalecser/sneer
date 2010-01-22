@@ -20,7 +20,8 @@ class PlayingTrackKeeperImpl implements PlayingTrackKeeper {
 	@Override
 	synchronized
 	public String getPlayingTrackOf(Contact contact) {
-		return _playingTracksByContact.get(contact);
+		final String result = _playingTracksByContact.get(contact);
+		return (result == null) ? "" : result;
 	}
 
 	@Override

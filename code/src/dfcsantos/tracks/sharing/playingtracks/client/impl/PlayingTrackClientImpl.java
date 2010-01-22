@@ -24,10 +24,21 @@ class PlayingTrackClientImpl implements PlayingTrackClient {
 		if (my(Seals.class).ownSeal().equals(playingTrack.publisher)) return;
 
 		Contact contact = my(Seals.class).contactGiven(playingTrack.publisher);
-		if (contact == null) return;
+		if (contact == null) doSomething();
 
 		if (playingTrack.name.equals(PlayingTrackKeeper.getPlayingTrackOf(contact))) return;
 		PlayingTrackKeeper.setPlayingTrackOf(contact, playingTrack.name);
+	}
+
+	private void doSomething() {
+		/* Options:
+		 * 	- Add the contact;
+		 * 	- Return;
+		 * 	- Throw an IllegalStateException();
+		 * 	- Call the cops, but do something!!!
+		 */
+
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 }

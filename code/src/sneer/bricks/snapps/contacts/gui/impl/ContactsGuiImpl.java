@@ -138,7 +138,7 @@ class ContactsGuiImpl implements ContactsGui {
 		@Override public Signal<String> labelFor(final Contact contact) {
 			final String playingTrack = my(PlayingTrackKeeper.class).getPlayingTrackOf(contact);
 			return my(Signals.class).adapt(contact.nickname(), new Functor<String, String>() { @Override public String evaluate(String nickname) throws RuntimeException {
-				return (playingTrack == null) ? nickname : nickname + " (" + playingTrack + ")";
+				return (playingTrack.isEmpty()) ? nickname : nickname + " (" + playingTrack + ")";
 			}});
 		}
 
