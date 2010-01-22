@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Random;
 
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.keymanager.Seal;
@@ -30,6 +31,9 @@ class SealsImpl implements Seals {
 
 	
 	private Seal produceOwnSeal() {
+		if ("true".equals(System.getProperty("sneer.dummy")))
+			return dummySeal();
+
 		//All this complexity with a separate prevalent OwnSealKeeper is because the source of randomness cannot be inside a prevalent brick.
 		if (my(OwnSealKeeper.class).needsToProduceSeal())
 			my(OwnSealKeeper.class).produceOwnSeal(randomness());
@@ -38,11 +42,16 @@ class SealsImpl implements Seals {
 	}
 
 
+	private Seal dummySeal() {
+		return new Seal(new ImmutableByteArray(new byte[128]));
+	}
+
+
 	private byte[] randomness() {
 		my(Logger.class).log("This random source needs to be made cryptographically secure. " + getClass());
 
 		byte[] result = new byte[128];
-		new Random().nextBytes(result);
+		new Random(System.nanoTime() + System.currentTimeMillis()).nextBytes(result);
 		return result;
 	}
 
@@ -70,4 +79,5 @@ class SealsImpl implements Seals {
 		
 		return null;
 	}
+
 }

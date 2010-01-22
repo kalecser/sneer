@@ -1,9 +1,12 @@
 package sneer.bricks.snapps.contacts.hardcoded.impl;
 
 import static sneer.foundation.environments.Environments.my;
+import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
+import sneer.bricks.pulp.keymanager.Seal;
+import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.snapps.contacts.hardcoded.HardcodedContacts;
 
 public class HardcodedContactsImpl implements HardcodedContacts {
@@ -19,6 +22,20 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 	}
 	
 	private void add(ContactInfo contact) {
+		addSeal(contact);
+		addAddresses(contact);
+	}
+
+	private void addSeal(ContactInfo contact) {
+		if (contact._seal == null) return;
+
+		System.out.println(">>> Nick: " + contact._nick + " Seal: " + contact._seal);
+		my(Seals.class).put(contact._nick, contact._seal);
+		Seal seal = my(Seals.class).sealGiven(my(Contacts.class).contactGiven(contact._nick));
+		System.out.println("\n>>> Seal set: " + seal + " for contact: " + my(Seals.class).contactGiven(seal) + "\n");
+	}
+
+	private void addAddresses(ContactInfo contact) {
 		String nick = contact._nick;
 		addAddress(nick, contact._host, contact._port);
 		
@@ -32,6 +49,11 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 		return new String[]{};
 	}
 
+	private void addAddress(String nick, String host, int port) {
+		Contact contact = _contactManager.produceContact(nick);
+		my(InternetAddressKeeper.class).add(contact, host, port);
+	}
+
 	private ContactInfo[] contacts() {
 		return new ContactInfo[] {
 			new ContactInfo("Agnaldo4j", "agnaldo4j.selfip.com", 5923),
@@ -40,7 +62,7 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 			new ContactInfo("Célio", "ccidral.dyndns.org", 9789),
 			new ContactInfo("Daniel Santos", "dfcsantos.homeip.net", 7777),
 			new ContactInfo("Douglas Giacomini", "dtgiacomini.dyndns.org", 5923),
-			new ContactInfo("Dummy", "localhost", 7777),
+			new ContactInfo("Dummy", "localhost", 7777, new Seal(new ImmutableByteArray(new byte[128]))),
 			new ContactInfo("Igor Arouca", "igorarouca.dyndns.org", 6789),
 			new ContactInfo("Kalecser", "kalecser.dyndns.org", 7770),
 			new ContactInfo("Klaus", "klausw.selfip.net", 5923),
@@ -55,17 +77,18 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 		final String _nick;
 		final String _host;
 		final int _port;
+		final Seal _seal;
 
 		ContactInfo(String nick, String host, int port) {
+			this(nick, host, port, null);
+		}
+
+		ContactInfo(String nick, String host, int port, Seal seal) {
 			_nick = nick;
 			_host = host;
 			_port = port;
+			_seal = seal;
 		}
-	}
-
-	private void addAddress(String nick, String host, int port) {
-		Contact contact = _contactManager.produceContact(nick);
-		my(InternetAddressKeeper.class).add(contact, host, port);
 	}
 
 }
