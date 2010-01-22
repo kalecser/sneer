@@ -28,11 +28,7 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 
 	private void addSeal(ContactInfo contact) {
 		if (contact._seal == null) return;
-
-		System.out.println(">>> Nick: " + contact._nick + " Seal: " + contact._seal);
 		my(Seals.class).put(contact._nick, contact._seal);
-		Seal seal = my(Seals.class).sealGiven(my(Contacts.class).contactGiven(contact._nick));
-		System.out.println("\n>>> Seal set: " + seal + " for contact: " + my(Seals.class).contactGiven(seal) + "\n");
 	}
 
 	private void addAddresses(ContactInfo contact) {
