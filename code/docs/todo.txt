@@ -27,6 +27,10 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Fix Dummy's hardcoded seal scheme 
+		- Find problem with HardcodedContactsImpl.addSeal(ContactInfo)
+		- Validate OutgoingAttempt.contactHasSeal()
+
 	- Seals
 		- ContactInfoWindowImpl - Add a field for the Contact's Seal: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
 			(Forget Courier. Just use default font)
@@ -42,6 +46,11 @@ Igor ====================================================
 
 	- Wusic
 		- Contact List - Display playing track of each contact
+			- Fix ContactGuiImpl.ContactLabelProvider.labelFor(Contact):
+				- Create new gate to concatenate Signal<String>
+				- 'playingTrack' local variable cannot be final
+				- Change ContactGuiImpl to accept ContactLabelProvider to be registered 
+			- Join 'PlayingTrackClientTest' and 'PlayingTrackServerTest' in one functional test (PlayingTrackTest) using two environments
 			- [Klaus] Revise first draft's architecture - package 'dfcsantos.tracks.sharing.playingtracks'
 			- Announce to community
 		- [Klaus/Daniel] MusicalTasteMatcher Kernel
