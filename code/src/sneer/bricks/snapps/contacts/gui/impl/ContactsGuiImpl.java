@@ -143,12 +143,10 @@ class ContactsGuiImpl implements ContactsGui {
 		}
 
 		@Override public Signal<Image> imageFor(Contact contact) {
-			Functor<Boolean, Image> functor = new Functor<Boolean, Image>(){ @Override public Image evaluate(Boolean value) {
-				return value ? ONLINE : OFFLINE;
-			}};
-			
 			Signal<Boolean> isOnline = my(Stethoscope.class).isAlive(contact);
-			return my(Signals.class).adapt(isOnline, functor);
+			return my(Signals.class).adapt(isOnline, new Functor<Boolean, Image>(){ @Override public Image evaluate(Boolean value) {
+				return value ? ONLINE : OFFLINE;
+			}});
 		}
 	}
 	
