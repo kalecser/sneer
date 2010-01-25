@@ -114,7 +114,6 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		_ownSeal = new JTextArea(formattedOwnSeal());
 		_ownSeal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 		_ownSeal.setEditable(false);
-		_ownSeal.setLineWrap(false);
 		_ownSeal.setTabSize(3);
 		_ownSeal.setWrapStyleWord(true);
 		JScrollPane sealScroll = new JScrollPane(_ownSeal, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
