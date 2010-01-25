@@ -3,7 +3,7 @@ package sneer.bricks.expression.files.map;
 import java.io.File;
 
 import sneer.bricks.expression.files.protocol.FolderContents;
-import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
 import sneer.foundation.brickness.Brick;
 

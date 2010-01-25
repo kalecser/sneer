@@ -1,4 +1,4 @@
-package sneer.bricks.hardware.cpu.algorithms.crypto.impl;
+package sneer.bricks.hardware.cpu.codecs.crypto.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -9,11 +9,10 @@ import java.security.MessageDigest;
 import java.security.Security;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.util.encoders.Hex;
 
-import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
-import sneer.bricks.hardware.cpu.algorithms.crypto.Digester;
-import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.codecs.crypto.Crypto;
+import sneer.bricks.hardware.cpu.codecs.crypto.Digester;
+import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 
 class CryptoImpl implements Crypto {
@@ -66,11 +65,6 @@ class CryptoImpl implements Crypto {
 	@Override
 	public Sneer1024 unmarshallSneer1024(byte[] bytes) {
 		return new Sneer1024Impl(bytes);
-	}
-
-	@Override
-	public String toHexa(byte[] bytes) {
-		return new String(Hex.encode(bytes));
 	}
 
 }

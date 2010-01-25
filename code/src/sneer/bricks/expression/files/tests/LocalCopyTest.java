@@ -8,7 +8,7 @@ import java.io.IOException;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.expression.files.writer.atomic.AtomicFileWriter;
-import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
 import sneer.bricks.hardware.io.IO;
 
 public class LocalCopyTest extends FileCopyTestBase {

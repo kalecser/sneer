@@ -8,7 +8,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 import sneer.bricks.expression.files.map.visitors.FolderStructureVisitor;
-import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
 import sneer.bricks.hardware.io.IO;
 
 final class FileWritingVisitor implements FolderStructureVisitor {

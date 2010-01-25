@@ -2,7 +2,7 @@ package sneer.bricks.softwaresharing;
 
 import java.util.List;
 
-import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
 
 public interface BrickVersion {
 

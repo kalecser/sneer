@@ -1,4 +1,4 @@
-package sneer.bricks.hardware.cpu.algorithms.crypto.tests;
+package sneer.bricks.hardware.cpu.codecs.crypto.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -9,8 +9,9 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
-import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.codecs.crypto.Crypto;
+import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.codecs.hex.Hex;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class CryptoTest extends BrickTest { 
@@ -55,7 +56,7 @@ public class CryptoTest extends BrickTest {
 	}
 
 	private void assertHexa(String expected, byte[] hash) {
-		assertEquals(expected, _subject.toHexa(hash));
+		assertEquals(expected, my(Hex.class).encode(hash));
 	}
 
 }

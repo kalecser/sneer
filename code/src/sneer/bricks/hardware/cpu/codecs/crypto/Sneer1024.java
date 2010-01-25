@@ -1,4 +1,4 @@
-package sneer.bricks.hardware.cpu.algorithms.crypto;
+package sneer.bricks.hardware.cpu.codecs.crypto;
 
 import sneer.foundation.lang.ReadOnly;
 

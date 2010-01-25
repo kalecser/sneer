@@ -4,7 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.IOException;
 
-import sneer.bricks.hardware.cpu.algorithms.base64.Base64;
+import sneer.bricks.hardware.cpu.codecs.base64.Base64;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.dyndns.updater.BadAuthException;
 import sneer.bricks.pulp.dyndns.updater.InvalidHostException;

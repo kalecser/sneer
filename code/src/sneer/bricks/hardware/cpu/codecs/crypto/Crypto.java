@@ -1,4 +1,4 @@
-package sneer.bricks.hardware.cpu.algorithms.crypto;
+package sneer.bricks.hardware.cpu.codecs.crypto;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,5 @@ public interface Crypto {
 	Digester newDigester();
 
 	Sneer1024 unmarshallSneer1024(byte[] bytes);
-
-	String toHexa(byte[] bytes);
 
 }

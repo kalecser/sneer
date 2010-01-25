@@ -1,6 +1,6 @@
-package sneer.bricks.hardware.cpu.algorithms.base64.impl;
+package sneer.bricks.hardware.cpu.codecs.base64.impl;
 
-import sneer.bricks.hardware.cpu.algorithms.base64.Base64;
+import sneer.bricks.hardware.cpu.codecs.base64.Base64;
 
 class Base64Impl implements Base64 {
 

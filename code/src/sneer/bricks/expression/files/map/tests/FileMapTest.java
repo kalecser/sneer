@@ -7,8 +7,8 @@ import java.io.File;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.map.FileMap;
-import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
-import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.codecs.crypto.Crypto;
+import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 
