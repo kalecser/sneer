@@ -27,6 +27,8 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- OwnInfoGui - Import Patrick's fix
+	
 	- Fix Dummy's hardcoded seal scheme 
 		- Find problem with HardcodedContactsImpl.addSeal(ContactInfo)
 		- Validate OutgoingAttempt.contactHasSeal()
