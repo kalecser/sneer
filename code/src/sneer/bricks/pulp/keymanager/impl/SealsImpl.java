@@ -65,8 +65,9 @@ class SealsImpl implements Seals {
 	@Override
 	public synchronized void put(String nick, Seal seal) {
 		Contact contact = my(Contacts.class).contactGiven(nick);
-		if(sealGiven(contact) != null) throw new IllegalArgumentException("There already was a seal registered for contact: " + contact.nickname().currentValue());
-		if(contactGiven(seal) != null) throw new IllegalArgumentException("There already was a contact registered with seal: " + seal);
+		if (contact == null || seal == null) throw new NullPointerException();
+		if (sealGiven(contact) != null) throw new IllegalArgumentException("There already was a seal registered for contact: " + contact.nickname().currentValue());
+		if (contactGiven(seal) != null) throw new IllegalArgumentException("There already was a contact registered with seal: " + seal);
 		_sealsByContact.put(contact, seal);
 	}
 

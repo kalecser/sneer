@@ -104,7 +104,11 @@ class ContactsImpl implements Contacts {
 	@Override
 	synchronized
 	public Contact produceContact(String nickname) {
-		if (contactGiven(nickname) == null) doAddContact(nickname);
-		return contactGiven(nickname);
+		Contact result = contactGiven(nickname);
+		if (result == null)
+			result = doAddContact(nickname);
+
+		return result;
 	}
+
 }

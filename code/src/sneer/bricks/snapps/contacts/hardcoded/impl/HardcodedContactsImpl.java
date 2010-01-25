@@ -22,8 +22,8 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 	}
 	
 	private void add(ContactInfo contact) {
-		addSeal(contact);
 		addAddresses(contact);
+		addSeal(contact);
 	}
 
 	private void addSeal(ContactInfo contact) {
