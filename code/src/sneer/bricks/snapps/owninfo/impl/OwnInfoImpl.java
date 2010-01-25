@@ -163,8 +163,8 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		 * 
 		 */
 		String hexString = my(Crypto.class).toHexa(my(Seals.class).ownSeal().bytes.copy()).toUpperCase();
-		return "\t" + my(Lang.class).strings().insertSpacedSeparators( 
-			my(Lang.class).strings().insertSpacedSeparators(hexString, " ", 4), "\n\t", 40
+		return " " + my(Lang.class).strings().insertSpacedSeparators(
+			my(Lang.class).strings().insertSpacedSeparators(hexString, " ", 4), "\n ", 40
 		);
 	}
 
