@@ -22,6 +22,7 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 	}
 	
 	private void add(ContactInfo contact) {
+		if (my(Seals.class).ownSeal().equals(contact._seal)) return;
 		addAddresses(contact);
 		addSeal(contact);
 	}
