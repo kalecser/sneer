@@ -3,6 +3,7 @@ package sneer.bricks.snapps.owninfo.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -17,8 +18,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
 
 import sneer.bricks.hardware.cpu.algorithms.crypto.Crypto;
@@ -97,8 +100,9 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setTitle("Own Info");
 
-//		setSize(350, 260);
-		setSize(430, 260);
+		// these numbers are made up out of thin air
+		setMinimumSize(new Dimension(200, 100));
+		setMaximumSize(new Dimension(600, 300));
 		setResizable(false);
 		
 		java.awt.Container pnl = getContentPane();
@@ -110,15 +114,16 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		_ownSeal = new JTextArea(formattedOwnSeal());
 		_ownSeal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 		_ownSeal.setEditable(false);
-		_ownSeal.setLineWrap(true);
+		_ownSeal.setLineWrap(false);
 		_ownSeal.setTabSize(3);
 		_ownSeal.setWrapStyleWord(true);
+		JScrollPane sealScroll = new JScrollPane(_ownSeal, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 		pnl.setLayout(new GridBagLayout());
 		
 		addWidget(_yourOwnName.getComponent(), "Own Name:", 0);
 		addWidget(_sneerPort.getComponent(), "Sneer TCP Port:", 1);
-		addWidget(_ownSeal, "Own Seal:", 2);
+		addWidget(sealScroll, "Own Seal:", 2);
 		
 		JPanel pnlDynDns = new JPanel();
 		pnlDynDns.setLayout(new GridBagLayout());
@@ -141,6 +146,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 			submit();
 			setVisible(false);
 		}});
+		pack();
 	}
 
 	private String formattedOwnSeal() {
