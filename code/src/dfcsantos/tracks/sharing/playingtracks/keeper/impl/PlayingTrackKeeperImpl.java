@@ -1,33 +1,32 @@
 package dfcsantos.tracks.sharing.playingtracks.keeper.impl;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
+import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.network.social.Contact;
+import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Signals;
+import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.Producer;
 import dfcsantos.tracks.sharing.playingtracks.keeper.PlayingTrackKeeper;
 
 class PlayingTrackKeeperImpl implements PlayingTrackKeeper {
 
-//	private MapRegister<Contact, String> _playingTracksByContact = my(CollectionSignals.class).newMapRegister();
-
-//	@Override
-//	public MapSignal<Contact, String> playingTracksByContact() {
-//		return _playingTracksByContact.output();
-//	}
-
-	private Map<Contact, String> _playingTracksByContact = new ConcurrentHashMap<Contact, String>();
+	private CacheMap<Contact, Register<String>> _playingTracksByContact = CacheMap.newInstance();
 
 	@Override
-	synchronized
-	public String getPlayingTrackOf(Contact contact) {
-		final String result = _playingTracksByContact.get(contact);
-		return (result == null) ? "" : result;
+	public Signal<String> playingTrack(Contact contact) {
+		return playingTrackRegister(contact).output();
 	}
 
 	@Override
-	synchronized
-	public void setPlayingTrackOf(Contact contact, String playingTrack) {
-		_playingTracksByContact.put(contact, playingTrack);
+	public void setPlayingTrack(Contact contact, String playingTrack) {
+		playingTrackRegister(contact).setter().consume(playingTrack);
+	}
+
+	private Register<String> playingTrackRegister(Contact contact) throws RuntimeException {
+		return _playingTracksByContact.get(contact, new Producer<Register<String>>() { @Override public Register<String> produce() throws RuntimeException {
+			return my(Signals.class).newRegister(null);
+		}});
 	}
 
 }

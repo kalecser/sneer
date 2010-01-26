@@ -1,15 +1,14 @@
 package dfcsantos.tracks.sharing.playingtracks.keeper;
 
 import sneer.bricks.network.social.Contact;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface PlayingTrackKeeper {
 
-//	MapSignal<Contact, String> playingTracksByContact();
+	Signal<String> playingTrack(Contact contact);
 
-	String getPlayingTrackOf(Contact contact);
-
-	void setPlayingTrackOf(Contact contact, String playingTrack);
+	void setPlayingTrack(Contact contact, String playingTrack);
 
 }
