@@ -8,9 +8,9 @@ import java.math.BigInteger;
 import sneer.bricks.expression.files.hasher.FolderContentsHasher;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
-import sneer.bricks.hardware.cpu.codecs.crypto.Crypto;
-import sneer.bricks.hardware.cpu.codecs.crypto.Digester;
-import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Crypto;
+import sneer.bricks.hardware.cpu.crypto.Digester;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 
 class FolderContentsHasherImpl implements FolderContentsHasher {
 

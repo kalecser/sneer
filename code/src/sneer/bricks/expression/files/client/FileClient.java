@@ -2,7 +2,7 @@ package sneer.bricks.expression.files.client;
 
 import java.io.File;
 
-import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.foundation.brickness.Brick;
 
 @Brick

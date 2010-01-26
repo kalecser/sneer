@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;

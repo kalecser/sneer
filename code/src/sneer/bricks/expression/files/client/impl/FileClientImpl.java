@@ -6,7 +6,7 @@ import java.io.File;
 
 import sneer.bricks.expression.files.client.Download;
 import sneer.bricks.expression.files.client.FileClient;
-import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Closure;

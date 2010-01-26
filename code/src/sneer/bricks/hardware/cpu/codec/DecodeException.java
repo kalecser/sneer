@@ -1,4 +1,4 @@
-package sneer.bricks.hardware.cpu.codecs.hex;
+package sneer.bricks.hardware.cpu.codec;
 
 public class DecodeException extends Exception {
 

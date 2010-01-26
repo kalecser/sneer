@@ -50,22 +50,22 @@ public class PlayingTrackClientTest extends BrickTest {
 
 		my(PlayingTrackClient.class);
 
-		assertEquals("", my(PlayingTrackKeeper.class).getPlayingTrackOf(whatsit));
+		assertEquals("", my(PlayingTrackKeeper.class).playingTrack(whatsit));
 
 		sendPlayingTrack("track1.mp3");
-		assertEquals("track1", my(PlayingTrackKeeper.class).getPlayingTrackOf(whatsit));
+		assertEquals("track1", my(PlayingTrackKeeper.class).playingTrack(whatsit));
 
 		sendPlayingTrack("track2.mp3");
-		assertEquals("track2", my(PlayingTrackKeeper.class).getPlayingTrackOf(whatsit));
+		assertEquals("track2", my(PlayingTrackKeeper.class).playingTrack(whatsit));
 
 		sendPlayingTrack("track2.mp3");
-		assertEquals("track2", my(PlayingTrackKeeper.class).getPlayingTrackOf(whatsit));
+		assertEquals("track2", my(PlayingTrackKeeper.class).playingTrack(whatsit));
 
 		sendPlayingTrack("track3.mp3");
-		assertEquals("track3", my(PlayingTrackKeeper.class).getPlayingTrackOf(whatsit));
+		assertEquals("track3", my(PlayingTrackKeeper.class).playingTrack(whatsit));
 
 		sendPlayingTrack(null);
-		assertEquals("", my(PlayingTrackKeeper.class).getPlayingTrackOf(whatsit));
+		assertEquals("", my(PlayingTrackKeeper.class).playingTrack(whatsit));
 	}
 
 	private void sendPlayingTrack(String trackName) {

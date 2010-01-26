@@ -22,6 +22,7 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.collections.listsorter.ListSorter;
+import sneer.bricks.pulp.reactive.gates.strings.StringGates;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
@@ -136,10 +137,10 @@ class ContactsGuiImpl implements ContactsGui {
 	final class ContactLabelProvider implements LabelProvider<Contact> {
 
 		@Override public Signal<String> labelFor(final Contact contact) {
-			final String playingTrack = my(PlayingTrackKeeper.class).getPlayingTrackOf(contact);
-			return my(Signals.class).adapt(contact.nickname(), new Functor<String, String>() { @Override public String evaluate(String nickname) throws RuntimeException {
-				return (playingTrack.isEmpty()) ? nickname : nickname + " (" + playingTrack + ")";
+			Signal<String> playingTrack = my(Signals.class).adapt(my(PlayingTrackKeeper.class).playingTrack(contact), new Functor<String, String>() { @Override public String evaluate(String playingTrackString) throws RuntimeException {
+				return playingTrackString.isEmpty() ? "" : "[" + playingTrackString + "]";
 			}});
+			return my(StringGates.class).concat(" ", contact.nickname() , playingTrack);
 		}
 
 		@Override public Signal<Image> imageFor(Contact contact) {

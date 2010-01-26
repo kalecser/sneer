@@ -24,7 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
 
-import sneer.bricks.hardware.cpu.codecs.hex.Hex;
+import sneer.bricks.hardware.cpu.codec.Codec;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
@@ -161,7 +161,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
 		 * 
 		 */
-		String hexString = my(Hex.class).encode(my(Seals.class).ownSeal().bytes.copy()).toUpperCase();
+		String hexString = my(Codec.class).hex().encode(my(Seals.class).ownSeal().bytes.copy()).toUpperCase();
 		return " " + my(Lang.class).strings().insertSpacedSeparators(
 			my(Lang.class).strings().insertSpacedSeparators(hexString, " ", 4), "\n ", 40
 		);

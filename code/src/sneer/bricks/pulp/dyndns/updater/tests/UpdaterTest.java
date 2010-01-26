@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.jmock.Expectations;
 import org.junit.Test;
 
-import sneer.bricks.hardware.cpu.codecs.base64.Base64;
+import sneer.bricks.hardware.cpu.codec.Codec;
 import sneer.bricks.pulp.dyndns.updater.BadAuthException;
 import sneer.bricks.pulp.dyndns.updater.InvalidHostException;
 import sneer.bricks.pulp.dyndns.updater.RedundantUpdateException;
@@ -105,6 +105,6 @@ public class UpdaterTest extends BrickTest {
 	}
 	
 	public static String encode(String value) {
-		return my(Base64.class).encode(value);
+		return my(Codec.class).base64().encode(value);
 	}
 }

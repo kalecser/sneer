@@ -3,7 +3,7 @@ package sneer.bricks.softwaresharing.demolisher;
 
 import java.io.IOException;
 
-import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.CacheMap;

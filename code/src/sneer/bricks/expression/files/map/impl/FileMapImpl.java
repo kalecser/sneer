@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FolderContents;
-import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.io.log.Logger;
 
 class FileMapImpl implements FileMap {

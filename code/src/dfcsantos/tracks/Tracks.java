@@ -3,7 +3,7 @@ package dfcsantos.tracks;
 import java.io.File;
 import java.util.List;
 
-import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.foundation.brickness.Brick;
 
 @Brick

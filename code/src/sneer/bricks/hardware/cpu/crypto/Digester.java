@@ -1,4 +1,4 @@
-package sneer.bricks.hardware.cpu.codecs.crypto;
+package sneer.bricks.hardware.cpu.crypto;
 
 public interface Digester {
 

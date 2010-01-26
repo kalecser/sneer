@@ -30,8 +30,8 @@ class PlayingTrackClientImpl implements PlayingTrackClient {
 			return;
 		}
 
-		if (playingTrack.name.equals(PlayingTrackKeeper.getPlayingTrackOf(contact))) return;
-		PlayingTrackKeeper.setPlayingTrackOf(contact, playingTrack.name);
+		if (playingTrack.name.equals(PlayingTrackKeeper.playingTrack(contact))) return;
+		PlayingTrackKeeper.setPlayingTrack(contact, playingTrack.name);
 	}
 
 }

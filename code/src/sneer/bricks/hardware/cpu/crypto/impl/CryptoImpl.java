@@ -1,4 +1,4 @@
-package sneer.bricks.hardware.cpu.codecs.crypto.impl;
+package sneer.bricks.hardware.cpu.crypto.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -10,9 +10,9 @@ import java.security.Security;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-import sneer.bricks.hardware.cpu.codecs.crypto.Crypto;
-import sneer.bricks.hardware.cpu.codecs.crypto.Digester;
-import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Crypto;
+import sneer.bricks.hardware.cpu.crypto.Digester;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 
 class CryptoImpl implements Crypto {

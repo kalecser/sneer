@@ -9,8 +9,8 @@ import org.jmock.Expectations;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.client.FileClient;
-import sneer.bricks.hardware.cpu.codecs.crypto.Crypto;
-import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Crypto;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.pulp.keymanager.Seal;

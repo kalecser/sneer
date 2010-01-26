@@ -9,8 +9,8 @@ import org.jmock.Expectations;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.map.FileMap;
-import sneer.bricks.hardware.cpu.codecs.crypto.Crypto;
-import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Crypto;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;

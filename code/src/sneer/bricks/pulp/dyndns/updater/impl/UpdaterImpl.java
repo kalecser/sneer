@@ -4,7 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.IOException;
 
-import sneer.bricks.hardware.cpu.codecs.base64.Base64;
+import sneer.bricks.hardware.cpu.codec.Codec;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.dyndns.updater.BadAuthException;
 import sneer.bricks.pulp.dyndns.updater.InvalidHostException;
@@ -64,7 +64,7 @@ class UpdaterImpl implements Updater {
 	}
 
 	private String encode(final String text) {
-		return my(Base64.class).encode(text);
+		return my(Codec.class).base64().encode(text);
 	}
 
 }

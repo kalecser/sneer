@@ -1,9 +1,9 @@
-package sneer.bricks.hardware.cpu.codecs.crypto.impl;
+package sneer.bricks.hardware.cpu.crypto.impl;
 
 import java.security.MessageDigest;
 
-import sneer.bricks.hardware.cpu.codecs.crypto.Digester;
-import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Digester;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 
 class DigesterImpl implements Digester {
 

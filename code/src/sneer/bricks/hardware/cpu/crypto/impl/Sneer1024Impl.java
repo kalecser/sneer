@@ -1,11 +1,11 @@
-package sneer.bricks.hardware.cpu.codecs.crypto.impl;
+package sneer.bricks.hardware.cpu.crypto.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
 import java.util.Arrays;
 
-import sneer.bricks.hardware.cpu.codecs.crypto.Sneer1024;
-import sneer.bricks.hardware.cpu.codecs.hex.Hex;
+import sneer.bricks.hardware.cpu.codec.Codec;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 
 class Sneer1024Impl implements Sneer1024 {
 
@@ -25,7 +25,7 @@ class Sneer1024Impl implements Sneer1024 {
 
 	@Override
 	public String toHexa() {
-		return my(Hex.class).encode(_bytes);
+		return my(Codec.class).hex().encode(_bytes);
 	}
 
 	@Override
