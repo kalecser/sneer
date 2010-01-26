@@ -22,7 +22,7 @@ class PlayingTrackServerImpl implements PlayingTrackServer {
 	private void broadcastPlayingTrack(String playingTrackName) {
 		PlayingTrack playingTrack = new NullPlayingTrack();
 
-		if (!playingTrack.equals("<No track to play>"))
+		if (!playingTrackName.equals("<No track to play>"))
 			playingTrack = new PlayingTrack(playingTrackName);
 
 		my(TupleSpace.class).acquire(playingTrack);

@@ -25,7 +25,7 @@ class PlayingTrackKeeperImpl implements PlayingTrackKeeper {
 
 	private Register<String> playingTrackRegister(Contact contact) throws RuntimeException {
 		return _playingTracksByContact.get(contact, new Producer<Register<String>>() { @Override public Register<String> produce() throws RuntimeException {
-			return my(Signals.class).newRegister(null);
+			return my(Signals.class).newRegister("");
 		}});
 	}
 
