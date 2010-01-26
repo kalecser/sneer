@@ -24,7 +24,7 @@ class Concatenator {
 	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGc;
 
 	Concatenator(Signal<String>... chunks) {
-		this(null, chunks);
+		this("", chunks);
 	}
 
 	Concatenator(String separator, Signal<String>... chunks) {
@@ -37,8 +37,19 @@ class Concatenator {
 	}
 
 	private void refresh() {
-		String whole = my(Lang.class).strings().join(_chunks, _separator);
-		_concat.setter().consume(my(Lang.class).strings().strip(whole, _separator));
+		_concat.setter().consume(
+			my(Lang.class).strings().chomp(concatenation(), _separator)
+		);
+	}
+
+	private String concatenation() {
+		StringBuilder result = new StringBuilder();
+		for (Signal<String> chunk : _chunks) {
+			String chunkString = chunk.currentValue();
+			if (chunkString != null && !chunkString.isEmpty())
+				result.append(chunkString).append(_separator);
+		}
+		return result.toString();
 	}
 
 	Signal<String> output() {

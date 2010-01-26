@@ -48,12 +48,25 @@ public class StringGatesTest extends BrickTest {
 		Register<String> d = my(Signals.class).newRegister("");
 		Signal<String> a_concat_space_concat_b_concat_space_concat_c_concat_space_concat_d = _subject.concat(" ", a.output(), b.output(), c.output(), d.output());
 
-		a.setter().consume("What");
-		b.setter().consume("A");
-		c.setter().consume("Wonderful");
-		d.setter().consume("World");
+		a.setter().consume("A");
+		b.setter().consume("B");
+		c.setter().consume("C");
+		d.setter().consume("D");
 
-		assertEquals("What A Wonderful World", a_concat_space_concat_b_concat_space_concat_c_concat_space_concat_d.currentValue());
+		assertEquals("A B C D", a_concat_space_concat_b_concat_space_concat_c_concat_space_concat_d.currentValue());
+
+		b.setter().consume(null);
+		assertEquals("A C D", a_concat_space_concat_b_concat_space_concat_c_concat_space_concat_d.currentValue());
+
+		c.setter().consume("");
+		assertEquals("A D", a_concat_space_concat_b_concat_space_concat_c_concat_space_concat_d.currentValue());
+
+		d.setter().consume(null);
+		assertEquals("A", a_concat_space_concat_b_concat_space_concat_c_concat_space_concat_d.currentValue());
+
+		d.setter().consume("D again");
+		assertEquals("A D again", a_concat_space_concat_b_concat_space_concat_c_concat_space_concat_d.currentValue());
+
 	}
 
 }
