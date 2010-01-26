@@ -16,18 +16,18 @@ import sneer.foundation.lang.Closure;
 
 class Concatenator {
 
-	private final List<Signal<String>> _chunks;
+	private final List<Signal<?>> _chunks;
 	private final String _separator;
 
 	private final Register<String> _concat = my(Signals.class).newRegister("");
 
 	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGc;
 
-	Concatenator(Signal<String>... chunks) {
+	Concatenator(Signal<?>... chunks) {
 		this("", chunks);
 	}
 
-	Concatenator(String separator, Signal<String>... chunks) {
+	Concatenator(String separator, Signal<?>... chunks) {
 		_separator = separator;
 		_chunks = Arrays.asList(chunks);
 
@@ -44,10 +44,10 @@ class Concatenator {
 
 	private String concatenation() {
 		StringBuilder result = new StringBuilder();
-		for (Signal<String> chunk : _chunks) {
-			String chunkString = chunk.currentValue();
-			if (chunkString != null && !chunkString.isEmpty())
-				result.append(chunkString).append(_separator);
+		for (Signal<?> chunk : _chunks) {
+			Object chunkValue = chunk.currentValue();
+			if (chunkValue != null && chunkValue.toString().isEmpty()) continue;
+			result.append(chunkValue).append(_separator);
 		}
 		return result.toString();
 	}

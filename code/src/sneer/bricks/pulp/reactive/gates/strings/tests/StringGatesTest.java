@@ -56,17 +56,20 @@ public class StringGatesTest extends BrickTest {
 		assertEquals("A B C D", a_concat_space_concat_b_concat_space_concat_c_concat_space_concat_d.currentValue());
 
 		b.setter().consume(null);
-		assertEquals("A C D", a_concat_space_concat_b_concat_space_concat_c_concat_space_concat_d.currentValue());
+		assertEquals("A null C D", a_concat_space_concat_b_concat_space_concat_c_concat_space_concat_d.currentValue());
 
+		b.setter().consume("");
 		c.setter().consume("");
 		assertEquals("A D", a_concat_space_concat_b_concat_space_concat_c_concat_space_concat_d.currentValue());
 
 		d.setter().consume(null);
+		assertEquals("A null", a_concat_space_concat_b_concat_space_concat_c_concat_space_concat_d.currentValue());
+
+		d.setter().consume("");
 		assertEquals("A", a_concat_space_concat_b_concat_space_concat_c_concat_space_concat_d.currentValue());
 
 		d.setter().consume("D again");
 		assertEquals("A D again", a_concat_space_concat_b_concat_space_concat_c_concat_space_concat_d.currentValue());
-
 	}
 
 }

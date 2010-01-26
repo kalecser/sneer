@@ -6,8 +6,8 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface StringGates {
 
-	Signal<String> concat(Signal<String>... strings);
+	Signal<String> concat(Signal<?>... objects);
 
-	Signal<String> concat(String separator, Signal<String>... strings);
+	Signal<String> concat(String separator, Signal<?>... objects);
 
 }
