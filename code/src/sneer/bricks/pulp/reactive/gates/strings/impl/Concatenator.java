@@ -38,7 +38,7 @@ class Concatenator {
 
 	private void refresh() {
 		String whole = my(Lang.class).strings().join(_chunks, _separator);
-		_concat.setter().consume(whole.toString());
+		_concat.setter().consume(my(Lang.class).strings().strip(whole, _separator));
 	}
 
 	Signal<String> output() {

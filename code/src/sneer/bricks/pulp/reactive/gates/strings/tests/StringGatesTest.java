@@ -30,13 +30,17 @@ public class StringGatesTest extends BrickTest {
 
 		b.setter().consume("");
 		assertEquals("A", a_concat_b.currentValue());
-		assertEquals("A,", a_concat_comma_concat_b.currentValue());
+		assertEquals("A", a_concat_comma_concat_b.currentValue());
 
-		a.setter().consume("A");
 		b.setter().consume("B");
 		assertEquals("AB", a_concat_b.currentValue());
 		assertEquals("A,B", a_concat_comma_concat_b.currentValue());
 
+		a.setter().consume("");
+		assertEquals("B", a_concat_b.currentValue());
+		assertEquals("B", a_concat_comma_concat_b.currentValue());
+
+		a.setter().consume("A");
 		Signal<String> a_concat_b_concat_period_concat_a_concat_comma_concat_b = _subject.concat(".", a_concat_b, a_concat_comma_concat_b);
 		assertEquals("AB.A,B", a_concat_b_concat_period_concat_a_concat_comma_concat_b.currentValue());
 
