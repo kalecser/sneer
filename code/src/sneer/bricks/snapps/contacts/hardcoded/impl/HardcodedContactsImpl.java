@@ -64,7 +64,7 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 			new ContactInfo("Dummy", "localhost", 7777, new Seal(new ImmutableByteArray(new byte[128]))),
 			new ContactInfo("Igor Arouca", "igorarouca.dyndns.org", 6789, new Seal(new ImmutableByteArray(my(Codec.class).hex().decode("F9EEBC9D1E11037D0A6B8BDBFF83FAE393F8BC3975D843BD51BE7C3311EEBA5CA582EEDBF1CB023C09534128E2CEE064CAEA9CA925AC7BB16D15A01F2C713B1260E38ABBDBD5728CE54B7962FF45B4B367D5FE3A25C89D6689A52D88F6AAEAFCAFFC18B7B677C5E0E32C89B1AB5F09F732A22C566D036A5CF92224786C5E7951")))),
 			new ContactInfo("Kalecser", "kalecser.dyndns.org", 7770),
-			new ContactInfo("Klaus", "klausw.selfip.net", 5923),
+			new ContactInfo("Klaus", "klausw.selfip.net", 5923, new Seal(new ImmutableByteArray(my(Codec.class).hex().decode(          "46162EB567B755C523200A68559E9FAA4EC68ED7F0788EAE418DE5A5FFC08C069779F2DC316B91BBD9F9F259D74A9A039795292E8C72F0860F08DC96C6400619B87CB2429932F4F859CEA0AA3C14B37DA27DE4BC12068B6361A20CE340DE5A7EBFF243F312021B15302EF2CBC8B752ADFB557A0D7E7894C0883331FB4AC3BAC6")))),
 			new ContactInfo("Nell", "anelisedaux.dyndns.org", 5924),
 			new ContactInfo("Priscila Vriesman", "priscilavriesman.dyndns.org", 7770),
 			new ContactInfo("Ramon Tramontini", "ramontramontini.dyndns.org", 7770),
