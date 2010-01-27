@@ -10,4 +10,6 @@ public interface ContactsGui extends Instrument {
 
 	Signal<Contact> selectedContact();
 
+	void registerContactTextProvider(ContactTextProvider textProvider);
+
 }

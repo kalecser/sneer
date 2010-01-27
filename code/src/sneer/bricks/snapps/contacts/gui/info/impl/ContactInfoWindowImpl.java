@@ -59,7 +59,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 					return my(Signals.class).constant(null);
 				}
 
-				@Override public Signal<String> labelFor(InternetAddress element) {
+				@Override public Signal<String> textFor(InternetAddress element) {
 					return my(Signals.class).constant(element.host()+" : "+element.port());
 				}});
 		}});

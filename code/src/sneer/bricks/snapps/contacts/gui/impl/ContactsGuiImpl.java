@@ -7,6 +7,10 @@ import java.awt.Container;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.swing.JList;
 import javax.swing.JPopupMenu;
@@ -15,6 +19,7 @@ import javax.swing.JScrollPane;
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.gui.images.Images;
+import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
@@ -36,45 +41,61 @@ import sneer.bricks.skin.widgets.reactive.ListWidget;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
+import sneer.bricks.snapps.contacts.gui.ContactImageProvider;
+import sneer.bricks.snapps.contacts.gui.ContactTextProvider;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.bricks.snapps.contacts.gui.comparator.ContactComparator;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
-import dfcsantos.tracks.sharing.playingtracks.keeper.PlayingTrackKeeper;
 
 class ContactsGuiImpl implements ContactsGui {
-	
+
 	private final Synth _synth = my(Synth.class);
-	
 	{ _synth.notInGuiThreadLoad(this.getClass()); }
 
 	private final Image ONLINE = getImage("ContactsGuiImpl.onlineIconName");
 	private final Image OFFLINE = getImage("ContactsGuiImpl.offlineIconName");
-	
-	private final SignalChooser<Contact> _chooser = new SignalChooser<Contact>() { @Override public Signal<?>[] signalsToReceiveFrom(Contact contact) {
-		return new Signal<?>[]{my(Stethoscope.class).isAlive(contact), contact.nickname()};
-	}};
 
-	private final ListSignal<Contact> _sortedList = my(ListSorter.class).sort(my(Contacts.class).contacts() , my(ContactComparator.class), _chooser);
-	private final ListWidget<Contact> _contactList; {
+	private ContactImageProvider _contactImageProvider;
+	private List<ContactTextProvider> _contactTextProviders = new ArrayList<ContactTextProvider>();
+
+	private final ListWidget<Contact> _contactList;
+
+	private Container _container;
+
+	ContactsGuiImpl() {
+		_contactImageProvider = new ContactImageProvider() { @Override public Signal<Image> imageFor(Contact contact) {
+			Signal<Boolean> isOnline = my(Stethoscope.class).isAlive(contact);
+			return my(Signals.class).adapt(isOnline, new Functor<Boolean, Image>(){ @Override public Image evaluate(Boolean value) {
+				return value ? ONLINE : OFFLINE;
+			}});
+		}};
+
+		_contactTextProviders.add(
+			new ContactTextProvider() {
+				@Override public Position position() { return ContactTextProvider.Position.LEFT; }
+				@Override public Signal<String> textFor(Contact contact) { return contact.nickname(); }
+			}
+		);
+
+		final ListSignal<Contact> _sortedList = my(ListSorter.class).sort(my(Contacts.class).contacts() , my(ContactComparator.class), new SignalChooser<Contact>() { @Override public Signal<?>[] signalsToReceiveFrom(Contact contact) {
+			return new Signal<?>[] { my(Stethoscope.class).isAlive(contact), contact.nickname() };
+		}});
+
 		final ByRef<ListWidget<Contact>> ref = ByRef.newInstance();
 		my(GuiThread.class).invokeAndWait(new Closure() { @Override public void run() {
 			ref.value = my(ReactiveWidgetFactory.class).newList(_sortedList, new ContactLabelProvider(), new ContactsGuiCellRenderer(new ContactLabelProvider()));
 		}});
 		_contactList = ref.value;
-	}
 
-	private Container _container;
-	
+		my(InstrumentRegistry.class).registerInstrument(this);
+	} 
+
 	private Image getImage(String key) {
 		return my(Images.class).getImage(ContactsGuiImpl.class.getResource((String) _synth.getDefaultProperty(key)));
 	}
-	
-	ContactsGuiImpl(){
-		my(InstrumentRegistry.class).registerInstrument(this);
-	} 
 
 	@Override
 	public void init(InstrumentPanel window) {
@@ -136,19 +157,18 @@ class ContactsGuiImpl implements ContactsGui {
 
 	final class ContactLabelProvider implements LabelProvider<Contact> {
 
-		@Override public Signal<String> labelFor(final Contact contact) {
-			Signal<String> playingTrack = my(Signals.class).adapt(my(PlayingTrackKeeper.class).playingTrack(contact), new Functor<String, String>() { @Override public String evaluate(String playingTrackString) throws RuntimeException {
-				return playingTrackString.isEmpty() ? "" : "\u266A " + playingTrackString;
-			}});
-			return my(StringGates.class).concat(" ", contact.nickname() , playingTrack);
+		@Override public Signal<Image> imageFor(final Contact contact) {
+			return _contactImageProvider.imageFor(contact);
 		}
 
-		@Override public Signal<Image> imageFor(Contact contact) {
-			Signal<Boolean> isOnline = my(Stethoscope.class).isAlive(contact);
-			return my(Signals.class).adapt(isOnline, new Functor<Boolean, Image>(){ @Override public Image evaluate(Boolean value) {
-				return value ? ONLINE : OFFLINE;
-			}});
+		@Override public Signal<String> textFor(final Contact contact) {
+			Signal<String>[] texts = my(CollectionUtils.class).map(_contactTextProviders, new Functor<ContactTextProvider, Signal<String>>() { @Override public Signal<String> evaluate(ContactTextProvider textProvider) throws RuntimeException {
+				return textProvider.textFor(contact);
+			}}).toArray(new Signal[0]);
+
+			return my(StringGates.class).concat(" ", texts);
 		}
+
 	}
 	
 	private final class ListContactsPopUpSupport {
@@ -174,4 +194,16 @@ class ContactsGuiImpl implements ContactsGui {
 				popupMain.getWidget().show(e.getComponent(),e.getX(),e.getY());
 		}
 	}
+
+	@Override
+	public void registerContactTextProvider(ContactTextProvider textProvider) {
+		_contactTextProviders.add(textProvider);
+		Collections.sort(_contactTextProviders, new Comparator<ContactTextProvider>() { @Override public int compare(ContactTextProvider provider1, ContactTextProvider provider2) {
+			final int result = provider1.position().compareTo(provider2.position());
+			return (result == 0)
+				? _contactTextProviders.indexOf(provider1) - _contactTextProviders.indexOf(provider2)
+				: result; 
+		}});
+	}
+
 }

@@ -42,8 +42,8 @@ Igor ====================================================
 
 	- Wusic
 		- Contact List - Display playing track of each contact
-			- Fix ContactGuiImpl.ContactLabelProvider.labelFor(Contact):
-				- Change ContactGuiImpl to accept ContactLabelProvider to be registered 
+			- [Klaus] Check method ContactsGui.registerContactTextProvider(ContactTextProvider textProvider)
+				- The sort operation may be causing a performance hit
 			- Join 'PlayingTrackClientTest' and 'PlayingTrackServerTest' in one functional test (PlayingTrackTest) using two environments
 			- Announce to community
 		- [Klaus/Daniel] MusicalTasteMatcher Kernel

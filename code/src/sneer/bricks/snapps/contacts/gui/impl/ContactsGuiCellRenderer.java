@@ -30,7 +30,7 @@ class ContactsGuiCellRenderer implements ListCellRenderer {
 
 		Contact contact = getElement(value);
 		
-		Signal<String> slabel = _labelProvider.labelFor(contact);
+		Signal<String> slabel = _labelProvider.textFor(contact);
 		Signal<Image> sicon = _labelProvider.imageFor(contact);
 
 		ImageIcon icon = new ImageIcon(sicon.currentValue());

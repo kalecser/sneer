@@ -74,7 +74,7 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 	@Override public String title() { return "Blinking Lights"; }	
 	
 	private final class BlinkingLightsLabelProvider implements LabelProvider<Light> {
-		@Override public Signal<String> labelFor(Light light) {  return my(Signals.class).constant(light.caption()); }
+		@Override public Signal<String> textFor(Light light) {  return my(Signals.class).constant(light.caption()); }
 		@Override public Signal<Image> imageFor(Light light) { return _images.get(light.type()); }
 	}
 

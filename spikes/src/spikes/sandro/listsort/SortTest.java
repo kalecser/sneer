@@ -108,7 +108,7 @@ public class SortTest {
 			}
 
 			@Override
-			public Signal<String> labelFor(SortTestElement element) {
+			public Signal<String> textFor(SortTestElement element) {
 				return my(Signals.class).constant(element.nick());
 			}};
 	}

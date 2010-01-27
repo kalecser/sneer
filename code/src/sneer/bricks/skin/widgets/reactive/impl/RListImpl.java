@@ -50,7 +50,7 @@ class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
 	private void initModel() {
 		SignalChooser<ELEMENT> chooser = new SignalChooser<ELEMENT>(){	@Override public Signal<?>[] signalsToReceiveFrom(ELEMENT element) {
 			return new Signal<?>[]{_labelProvider.imageFor(element), 
-								   	   _labelProvider.labelFor(element)};}};
+								   	   _labelProvider.textFor(element)};}};
 		ListModel model = new ListSignalModel<ELEMENT>(_source, chooser);
 		setModel(model);
 	}

@@ -68,7 +68,7 @@ class WindListCellRendererSample implements ListCellRenderer {
 			}
 
 			@Override
-			public Signal<String> labelFor(String element) {
+			public Signal<String> textFor(String element) {
 				return my(Signals.class).constant("bla, bla, bla, bla, bla, bla, bla, bla, bla, bla, bla, bla, bla, bla, " +
 						"bla, bla, bla, bla, bla, bla, bla, bla, bla, bla, bla, bla, bla, bla, bla, bla, bla, bla, bla");
 			}
@@ -151,7 +151,7 @@ class WindListCellRendererSample implements ListCellRenderer {
 	}
 
 	private JComponent createShoutText(String shout) {
-		Signal<String> signalText = _labelProvider.labelFor(shout);
+		Signal<String> signalText = _labelProvider.textFor(shout);
 		return createTextComponent(signalText.currentValue(), SHOUT);
 	}	
 	
