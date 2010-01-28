@@ -32,7 +32,7 @@ class DotPartsImpl implements DotParts {
 
 
 	private File actualFile(File dotPartFile) {
-		return new File(my(Lang.class).strings().chomp(dotPartFile.getAbsolutePath(), ".part"));
+		return new File(my(Lang.class).strings().remove(dotPartFile.getAbsolutePath(), ".part"));
 	}
 
 }

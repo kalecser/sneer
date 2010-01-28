@@ -31,10 +31,11 @@ class LangImpl implements Lang {
 
 	private Strings _strings = new Lang.Strings(){
 		@Override public boolean isEmpty(String str) { return str == null || str.isEmpty();	}
-		@Override public String join(Collection<?> collection, String separator) {return StringUtils.join(collection, separator); }
-		@Override public String trimToNull(String str) {return StringUtils.trimToNull(str);}
-		@Override public String chomp(String str, String separator) { return StringUtils.chomp(str, separator);}
-		@Override public String strip(String str, String stripChars) { return StringUtils.strip(str, stripChars);}
+		@Override public String join(Collection<?> collection, String separator) { return StringUtils.join(collection, separator); }
+		@Override public String trimToNull(String str) { return StringUtils.trimToNull(str); }
+		@Override public String remove(String str, String remove) { return StringUtils.remove(str, remove); }
+		@Override public String chomp(String str, String separator) { return StringUtils.chomp(str, separator); }
+		@Override public String strip(String str, String stripChars) { return StringUtils.strip(str, stripChars); }
 		@Override public String substringBeforeLast(String str, String separator) {	return StringUtils.substringBeforeLast(str, separator); }
 		@Override public String substringAfterLast(String str, String separator) {	return StringUtils.substringAfterLast(str, separator); }
 
