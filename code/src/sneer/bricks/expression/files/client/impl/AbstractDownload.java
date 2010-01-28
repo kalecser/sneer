@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 
 import sneer.bricks.expression.files.client.Download;
-import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
