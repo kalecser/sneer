@@ -19,6 +19,6 @@ public interface FileMap {
 	void putFolderContents(File folder, FolderContents contents, Sneer1024 hash);
 	FolderContents getFolderContents(Sneer1024 hash);
 
-	void remove(File fileOrFolder);
+	Sneer1024 remove(File fileOrFolder);
 
 }

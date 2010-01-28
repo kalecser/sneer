@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import sneer.bricks.expression.files.client.Download;
+import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -103,6 +104,8 @@ abstract class AbstractDownload implements Download {
 
 	void finishWithSuccess() throws IOException {
 		my(DotParts.class).closeDotPart(_path, _lastModified);
+//		if (!_actualPath.isDirectory())
+//			my(FileMap.class).putFile(_actualPath, _hash);
 
 		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
 		finish();

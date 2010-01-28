@@ -7,13 +7,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.foundation.lang.Closure;
 import dfcsantos.tracks.Track;
-import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.playlist.Playlist;
 import dfcsantos.tracks.rejected.RejectedTracksKeeper;
 
@@ -65,10 +64,8 @@ abstract class TrackSourceStrategy {
 	
 	void noWay(final Track rejected) {
 		//Implement Create event to notify listeners of track rejection (musical taste matcher, for example).
-		my(Threads.class).startDaemon("Calculating Hash to Reject Track", new Closure() { @Override public void run() {
-			Sneer1024 hash = my(Tracks.class).calculateHashFor(rejected);
-			my(RejectedTracksKeeper.class).reject(hash);
-		}});
+		Sneer1024 hash = my(FileMap.class).getHash(rejected.file());
+		my(RejectedTracksKeeper.class).reject(hash);
 		markForDisposal(rejected);	
 	}
 

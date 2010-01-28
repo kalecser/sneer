@@ -74,18 +74,23 @@ class FileMapImpl implements FileMap {
 
 	@Override
 	synchronized
-	public void remove(File fileOrFolderToBeRemoved) {
+	public Sneer1024 remove(File fileOrFolderToBeRemoved) {
+		Sneer1024 removed = getHash(fileOrFolderToBeRemoved);
+
 		if (fileOrFolderToBeRemoved.isDirectory()) {
 			removeFolder(fileOrFolderToBeRemoved);
 		} else {
 			removeFile(fileOrFolderToBeRemoved);
 		}
+
+		return removed;
 	}
 
 	private void removeFile(File fileToBeRemoved) {
 		Iterator<File> filesInTheMap = _filesByHash.values().iterator();
 		while (filesInTheMap.hasNext()) {
 			if (filesInTheMap.next().equals(fileToBeRemoved)) {
+				_hashesByFile.remove(fileToBeRemoved);
 				filesInTheMap.remove();
 				break;
 			}
@@ -100,7 +105,7 @@ class FileMapImpl implements FileMap {
 			final Entry<Sneer1024, File> hashAndFile = entries.next();
 			if (!hashAndFile.getValue().getAbsolutePath().startsWith(pathToBeRemoved))
 				continue;
-			
+
 			entries.remove();
 			_folderContentsByHash.remove(hashAndFile.getKey());
 		}
