@@ -103,15 +103,17 @@ abstract class AbstractDownload implements Download {
 
 	void finishWithSuccess() throws IOException {
 		my(DotParts.class).closeDotPart(_path, _lastModified);
-//		if (!_actualPath.isDirectory())
-//			my(FileMap.class).putFile(_actualPath, _hash);
+		map(_actualPath);
 
 		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
 		finish();
 	}
 
 
-	private void finish() {
+	abstract void map(File fileOrFolder);
+
+
+	void finish() {
 		if (_toCallWhenFinished != null) _toCallWhenFinished.run();
 		_isFinished.open();
 	}

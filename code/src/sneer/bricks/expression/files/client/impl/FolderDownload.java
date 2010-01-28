@@ -70,7 +70,11 @@ class FolderDownload extends AbstractDownload {
 	    finishWithSuccess();
 	}
 
-	
+
+	@Override
+	void map(File folder) {} // Not used yet
+
+
 	private Download startDownload(FileOrFolder entry) {
 		return entry.isFolder
 			? new FolderDownload(new File(_path, entry.name), entry.lastModified, entry.hashOfContents)

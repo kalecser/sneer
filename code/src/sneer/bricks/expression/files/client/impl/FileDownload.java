@@ -130,6 +130,12 @@ class FileDownload extends AbstractDownload {
 	}
 
 
+	@Override
+	void map(File file) {
+		my(FileMap.class).putFile(file, _hash);
+	}
+
+
 	private boolean readyToFinish() {
 		return _nextBlockToWrite >= _fileSizeInBlocks;
 	}
