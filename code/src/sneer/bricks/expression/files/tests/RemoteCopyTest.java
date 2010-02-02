@@ -30,15 +30,6 @@ public class RemoteCopyTest extends FileCopyTestBase {
 	
 	@Override
 	protected void copyFolderFromFileMap(final Sneer1024 hashOfContents, final File destination) throws IOException {
-		try {
-			tryToCopyFolderFromFileMap(hashOfContents, destination);
-		} catch (RuntimeException e) {
-			throw new RuntimeException("Is this a timeout? It might have been caused by running on a fast machine and producing several equal tuples (there are duplicate files and directories in the fixtures) on the same clock tick and the TupleSpace ignores them. In this case, something has to be done about it.", e);
-		}
-	}
-
-	
-	private void tryToCopyFolderFromFileMap(final Sneer1024 hashOfContents,	final File destination) throws IOException {
 		copyFromFileMap(new ClosureX<IOException>() { @Override public void run() throws IOException {
 			my(FileClient.class).startFolderDownload(destination, hashOfContents).waitTillFinished();
 		}});

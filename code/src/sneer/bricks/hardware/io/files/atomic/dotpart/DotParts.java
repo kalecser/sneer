@@ -10,6 +10,6 @@ public interface DotParts {
 
 	File openDotPartFor(File actualFile) throws IOException;
 
-	void closeDotPart(File dotPartFile, long lastModified) throws IOException;
+	File closeDotPart(File dotPartFile, long lastModified) throws IOException;
 
 }

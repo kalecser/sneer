@@ -3,6 +3,7 @@ package sneer.bricks.expression.files.map.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,7 +12,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.ram.collections.CollectionUtils;
+import sneer.foundation.lang.Predicate;
 
 class FileMapImpl implements FileMap {
 
@@ -108,6 +112,32 @@ class FileMapImpl implements FileMap {
 
 			entries.remove();
 			_folderContentsByHash.remove(hashAndFile.getKey());
+		}
+	}
+
+	@Override
+	public void removeDotPart(File folder) {
+		if (!folder.isDirectory()) throw new IllegalArgumentException("Parameter must be a folder, but was: " + folder);
+
+		final String folderPath = folder.getAbsolutePath();
+		Collection<File> filesToBeRenamed = my(CollectionUtils.class).filter(_filesByHash.values(), new Predicate<File>() { @Override public boolean evaluate(File file) {
+			return file.getAbsolutePath().startsWith(folderPath);
+		}});
+
+		if (filesToBeRenamed.isEmpty()) return;
+
+		String folderPathWithoutDotPart = my(Lang.class).strings().chomp(folderPath, ".part");
+		for (File file : filesToBeRenamed) {
+			File renamedFile = new File(folderPathWithoutDotPart, file.getName());
+			Sneer1024 hash = getHash(file);
+
+			_filesByHash.put(hash, renamedFile);
+
+			_hashesByFile.put(renamedFile, hash);
+			_hashesByFile.remove(file);
+
+			_lastModifiedDatesByFile.put(renamedFile, getLastModified(file));
+			_lastModifiedDatesByFile.remove(file);
 		}
 	}
 
