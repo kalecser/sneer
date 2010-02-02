@@ -24,8 +24,6 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
 
-import sneer.bricks.hardware.cpu.codec.Codec;
-import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccount;
