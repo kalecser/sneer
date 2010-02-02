@@ -111,7 +111,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		
 		_sneerPort = newTextField(_portKeeper.port(), my(IntegerParsers.class).newIntegerParser(_portKeeper.portSetter()));
 
-		_ownSeal = new JTextArea(formattedOwnSeal());
+		_ownSeal = new JTextArea(my(Seals.class).ownSeal().toFormattedHexString());
 		_ownSeal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 		_ownSeal.setEditable(false);
 		_ownSeal.setTabSize(3);
@@ -146,25 +146,6 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 			setVisible(false);
 		}});
 		pack();
-	}
-
-	private String formattedOwnSeal() {
-		/*	Format used (128 bytes represented in hexadecimal):
-		 *
-		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
-		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
-		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
-		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
-		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
-		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
-		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
-		 *	12AB 12AB 21AB 21F4 2E44 2A34 1C34 123F
-		 * 
-		 */
-		String hexString = my(Codec.class).hex().encode(my(Seals.class).ownSeal().bytes.copy()).toUpperCase();
-		return " " + my(Lang.class).strings().insertSpacedSeparators(
-			my(Lang.class).strings().insertSpacedSeparators(hexString, " ", 4), "\n ", 40
-		);
 	}
 
 	private void addWidget(JComponent widget, String label, int y) { addWidget(getContentPane(), widget, label, y);	}
