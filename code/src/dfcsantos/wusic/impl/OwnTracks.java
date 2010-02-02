@@ -6,9 +6,9 @@ import java.io.File;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
-import dfcsantos.tracks.playlist.Playlist;
-import dfcsantos.tracks.playlist.Playlists;
+import dfcsantos.tracks.execution.playlist.Playlist;
+import dfcsantos.tracks.execution.playlist.Playlists;
+import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
 
 public class OwnTracks extends TrackSourceStrategy {

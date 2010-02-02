@@ -15,9 +15,9 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
 import dfcsantos.tracks.sharing.endorsements.client.TrackClient;
 import dfcsantos.tracks.sharing.endorsements.client.downloads.TrackDownloader;
+import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
 class TrackClientImpl implements TrackClient {
 

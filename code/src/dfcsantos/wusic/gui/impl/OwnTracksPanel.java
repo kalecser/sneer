@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
+import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic.OperatingMode;
 
 class OwnTracksPanel extends AbstractTabPane {

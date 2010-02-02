@@ -16,9 +16,9 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Closure;
 import dfcsantos.tracks.Tracks;
-import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
 import dfcsantos.tracks.sharing.endorsements.protocol.TrackEndorsement;
 import dfcsantos.tracks.sharing.endorsements.server.TrackEndorser;
+import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
 class TrackEndorserImpl implements TrackEndorser {
 

@@ -10,8 +10,8 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.Track;
-import dfcsantos.tracks.player.TrackContract;
-import dfcsantos.tracks.player.TrackPlayer;
+import dfcsantos.tracks.execution.player.TrackContract;
+import dfcsantos.tracks.execution.player.TrackPlayer;
 
 public class DJ implements Consumer<Track> {
 
