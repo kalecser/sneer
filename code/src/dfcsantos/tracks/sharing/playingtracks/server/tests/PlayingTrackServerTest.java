@@ -33,7 +33,8 @@ public class PlayingTrackServerTest extends BrickTest {
 			oneOf(_tupleSpace).acquire(with(new NullPlayingTrack()));
 		}});
 
-		my(PlayingTrackServer.class);
+		@SuppressWarnings("unused")
+		PlayingTrackServer server = my(PlayingTrackServer.class);
 
 		setPlayingTrack("track1.mp3");
 		setPlayingTrack("track2.mp3");
