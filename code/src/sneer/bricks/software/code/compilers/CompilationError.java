@@ -1,4 +1,4 @@
-package sneer.bricks.software.code.compilers.java;
+package sneer.bricks.software.code.compilers;
 
 public interface CompilationError {
 

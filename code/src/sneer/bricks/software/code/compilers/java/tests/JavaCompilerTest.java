@@ -10,10 +10,10 @@ import java.util.Collections;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.software.code.compilers.java.CompilationError;
+import sneer.bricks.software.code.compilers.CompilationError;
+import sneer.bricks.software.code.compilers.CompilerException;
+import sneer.bricks.software.code.compilers.Result;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
-import sneer.bricks.software.code.compilers.java.JavaCompilerException;
-import sneer.bricks.software.code.compilers.java.Result;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class JavaCompilerTest extends BrickTest {
@@ -67,7 +67,7 @@ public class JavaCompilerTest extends BrickTest {
 		File[] classpath = classPathForLibs(libDir);
 		try {
 			return _compiler.compile(Collections.singletonList(java), tmpFolder(), classpath);
-		} catch (JavaCompilerException e) {
+		} catch (CompilerException e) {
 			return e.result();
 		}
 	}
