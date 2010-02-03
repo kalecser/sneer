@@ -27,6 +27,8 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Timeout for connection opened by Sneer
+
 	- Unignore FileCopyTestBase.testWithFolder()
 		- [Klaus] Evaluate use of FileMap.removeDotPart(File) - also suggest a better name for this method
 			- I'm thinking of a better way to coordinate the .parts and the FileMap's folder insertions
@@ -42,7 +44,8 @@ Igor ====================================================
 			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
 			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
 			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f
-			- Ask Klaus for help glueing the gui to the Seals brick. Non-trivial per-contact signals and picky consumers need to be exposed in the Seals interface.  
+			- Ask Klaus for help glueing the gui to the Seals brick. Non-trivial per-contact signals and picky consumers need to be exposed in the Seals interface.
+			- [Klaus] Discuss with Igor refactoring of ContactsInfoWindow   
 
 	- Wusic
 		- Contact List - Display playing track of each contact
