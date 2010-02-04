@@ -48,11 +48,7 @@ Igor ====================================================
 			- [Klaus] Discuss with Igor refactoring of ContactsInfoWindow   
 
 	- Wusic
-		- Contact List - Display playing track of each contact
-			- [Klaus] Check method ContactsGui.registerContactTextProvider(ContactTextProvider textProvider)
-				- The sort operation may be causing a performance hit
-			- Join 'PlayingTrackClientTest' and 'PlayingTrackServerTest' in one functional test (PlayingTrackTest) using two environments
-			- Announce to community
+		- Change Wusic.playingTrackName() to return null and let the GUI treat the string
 		- [Klaus/Daniel] MusicalTasteMatcher Kernel
 		- Downloads
 			- 15 min timeout per download.
