@@ -29,10 +29,6 @@ Igor ====================================================
 
 	- Timeout for connection opened by Sneer
 
-	- Unignore FileCopyTestBase.testWithFolder()
-		- [Klaus] Evaluate use of FileMap.removeDotPart(File) - also suggest a better name for this method
-			- I'm thinking of a better way to coordinate the .parts and the FileMap's folder insertions
-
 	- Seals
 		- ContactInfoWindowImpl - Add a field for the Contact's Seal: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
 			(Forget Courier. Just use default font)
@@ -65,8 +61,9 @@ Igor ====================================================
 
 Klaus =================================================
 
-	- Urgent: Check what's going on with our integration server: http://sneer.vpscustomer.com:8080/hudson
-		- The server is down and I don't know how to contact the customer service of our host
+	- Unignore FileCopyTestBase.testWithFolder()
+		- Evaluate use of FileMap.removeDotPart(File) - this method desperately needs a better name
+			- Is there a better way to coordinate the .parts and the FileMap's folder insertions?
 
 	- Unignore RemoteCopyTest.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
 		- See this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298
