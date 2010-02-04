@@ -73,9 +73,8 @@ class ContactsGuiImpl implements ContactsGui {
 			}});
 		}};
 
-		_contactTextProviders.add(
-			new ContactTextProvider() {
-				@Override public Position position() { return ContactTextProvider.Position.LEFT; }
+		registerContactTextProvider(new ContactTextProvider() {
+				@Override public Position position() { return ContactTextProvider.Position.CENTER; }
 				@Override public Signal<String> textFor(Contact contact) { return contact.nickname(); }
 			}
 		);
@@ -199,10 +198,7 @@ class ContactsGuiImpl implements ContactsGui {
 	public void registerContactTextProvider(ContactTextProvider textProvider) {
 		_contactTextProviders.add(textProvider);
 		Collections.sort(_contactTextProviders, new Comparator<ContactTextProvider>() { @Override public int compare(ContactTextProvider provider1, ContactTextProvider provider2) {
-			final int result = provider1.position().compareTo(provider2.position());
-			return (result == 0)
-				? _contactTextProviders.indexOf(provider1) - _contactTextProviders.indexOf(provider2)
-				: result; 
+			return provider1.position().compareTo(provider2.position());
 		}});
 	}
 
