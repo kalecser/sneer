@@ -124,7 +124,7 @@ class FileDownload extends AbstractDownload {
 		_output.write(bytes);
 		++_nextBlockToWrite;
 		if (readyToFinish()) {
-			my(IO.class).streams().closeQuietly(_output);
+			my(IO.class).crash(_output);
 			finishWithSuccess();
 		}
 	}
