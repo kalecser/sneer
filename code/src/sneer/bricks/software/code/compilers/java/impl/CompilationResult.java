@@ -31,7 +31,7 @@ class CompilationResult implements Result {
 	}
 
 	@Override
-	public List<CompilationError> getErrors() {
+	public List<CompilationError> errors() {
 		if(_errorString != null && _errors == null)
 			_errors = parseErrorString(_errorString);
 
@@ -54,7 +54,7 @@ class CompilationResult implements Result {
 	}
 
 	@Override
-	public String getErrorString() {
+	public String errorString() {
 		return _errorString;
 	}
 }

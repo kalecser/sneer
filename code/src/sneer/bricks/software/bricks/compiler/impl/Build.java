@@ -189,7 +189,8 @@ class Build {
 	private void compile(File srcFolder, File binFolder, File... classpath) throws IOException, BrickCompilerException {
 		if (!srcFolder.exists()) return;
 		try {
-			compiler().compile(srcFolder, binFolder, classpath);
+			List<File> srcFiles = new ArrayList<File>(my(IO.class).files().listFiles(srcFolder, new String[]{_language.fileExtension()}, true));
+			compiler().compile(srcFiles, binFolder, classpath);
 		} catch (CompilerException e) {
 			throw new BrickCompilerException(e);
 		}

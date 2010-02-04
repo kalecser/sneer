@@ -5,7 +5,7 @@ public class CompilerException extends Exception {
 	private final Result _result;
 	
 	public CompilerException(Result result) {
-		super(result.getErrorString());
+		super(result.errorString());
 		_result = result;
 	}
 

@@ -25,12 +25,6 @@ import com.sun.tools.javac.Main;
 class JavaCompilerImpl implements JavaCompiler {
 
 	@Override
-	public void compile(File srcFolder, File destinationFolder,	File... classpath) throws CompilerException, IOException {
-		List<File> srcFiles = new ArrayList<File>(my(IO.class).files().listFiles(srcFolder, new String[]{"java"}, true));
-		compile(srcFiles, destinationFolder, classpath);
-	}
-
-	@Override
 	public Result compile(Collection<File> sourceFiles, File destination, File... classpath) throws IOException, CompilerException {
 		
 		File tmpFile = createArgsFileForJavac(sourceFiles);

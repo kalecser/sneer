@@ -19,17 +19,17 @@ class CompilationErrorImpl implements CompilationError {
 	}
 
 	@Override
-	public int getLineNumber() {
+	public int lineNumber() {
 		return _lineNumber;
 	}
 
 	@Override
-	public String getMessage() {
+	public String message() {
 		return _message;
 	}
 
 	@Override
-	public String getFileName() {
+	public String fileName() {
 		return _fileName;
 	}
 

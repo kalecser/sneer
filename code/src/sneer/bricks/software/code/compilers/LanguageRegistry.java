@@ -8,4 +8,6 @@ public interface LanguageRegistry {
 
 	ListSignal<Language> languages();
 
+	Language languageByFileExtension(String fileExtension);
+
 }

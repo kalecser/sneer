@@ -7,7 +7,7 @@ public interface Result {
 
 	boolean success();
 
-	List<CompilationError> getErrors();
+	List<CompilationError> errors();
 
-	String getErrorString();
+	String errorString();
 }
