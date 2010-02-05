@@ -44,7 +44,6 @@ Igor ====================================================
 			- [Klaus] Discuss with Igor refactoring of ContactsInfoWindow   
 
 	- Wusic
-		- Change Wusic.playingTrackName() to return null and let the GUI treat the string
 		- [Klaus/Daniel] MusicalTasteMatcher Kernel
 		- Downloads
 			- 15 min timeout per download.
