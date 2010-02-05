@@ -153,16 +153,22 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void meToo() {
-		((PeerTracks)_trackSource).meToo(_trackToPlay.output().currentValue());
+		((PeerTracks)_trackSource).keepTrack(_trackToPlay.output().currentValue());
 	}
 
 	@Override
 	public void noWay() {
+		my(TrackDownloader.class).decrementDownloadedTracks();
+		deleteTrack();
+	}
+
+	@Override
+	public void deleteTrack() {
 		final Track currentTrack = currentTrack();
 		if (currentTrack == null) return;
-
-		_trackSource.noWay(currentTrack);
+		
 		skip();
+		_trackSource.deleteTrack(currentTrack);
 	}
 
 	@Override

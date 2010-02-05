@@ -27,10 +27,7 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Unignore FileCopyTestBase.testWithFolder()
-		- FileMap.rename - Create test and implement. Use FileMap public API, don't break encapsulation by accessing maps directly.
-
-	- Timeout for connection opened by Sneer
+	- Add a method to 'TrackDownloaderTest' to test increments and decrements of the # of downloaded tracks
 
 	- Seals
 		- ContactInfoWindowImpl - Add a field for the Contact's Seal: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
@@ -62,6 +59,10 @@ Igor ====================================================
 
 
 Klaus =================================================
+
+	- Unignore FileCopyTestBase.testWithFolder()
+		- Evaluate use of FileMap.removeDotPart(File) - this method desperately needs a better name
+			- Is there a better way to coordinate the .parts and the FileMap's folder insertions?
 
 	- Unignore RemoteCopyTest.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
 		- See this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298
