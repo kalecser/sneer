@@ -4,6 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
+import dfcsantos.tracks.Track;
 import dfcsantos.tracks.sharing.playingtracks.protocol.NullPlayingTrack;
 import dfcsantos.tracks.sharing.playingtracks.protocol.PlayingTrack;
 import dfcsantos.tracks.sharing.playingtracks.server.PlayingTrackServer;
@@ -14,18 +15,15 @@ class PlayingTrackServerImpl implements PlayingTrackServer {
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC;
 
 	{
-		_refToAvoidGC = my(Wusic.class).playingTrackName().addReceiver(new Consumer<String>() { @Override public void consume(String playingTrack) {
+		_refToAvoidGC = my(Wusic.class).playingTrack().addReceiver(new Consumer<Track>() { @Override public void consume(Track playingTrack) {
 			broadcastPlayingTrack(playingTrack);
 		}});
 	}
 
-	private void broadcastPlayingTrack(String playingTrackName) {
-		PlayingTrack playingTrack = new NullPlayingTrack();
-
-		if (!playingTrackName.equals("<No track to play>"))
-			playingTrack = new PlayingTrack(playingTrackName);
-
-		my(TupleSpace.class).acquire(playingTrack);
+	private void broadcastPlayingTrack(Track playingTrack) {
+		my(TupleSpace.class).acquire(
+			(playingTrack == null) ? new NullPlayingTrack() : new PlayingTrack(playingTrack.name())
+		);
 	}
 
 }

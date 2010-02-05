@@ -13,6 +13,7 @@ import sneer.bricks.snapps.contacts.gui.ContactTextProvider;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Functor;
+import dfcsantos.tracks.Track;
 import dfcsantos.tracks.sharing.playingtracks.keeper.PlayingTrackKeeper;
 import dfcsantos.wusic.Wusic;
 import dfcsantos.wusic.gui.WusicGui;
@@ -56,8 +57,8 @@ class WusicGuiImpl implements WusicGui {
 	}
 
 	private Signal<String> title() {
-		return my(Signals.class).adapt(_controller.playingTrackName(), new Functor<String, String>() { @Override public String evaluate(String track) {
-			return "Wusic :: " + track;
+		return my(Signals.class).adapt(_controller.playingTrack(), new Functor<Track, String>() { @Override public String evaluate(Track track) {
+			return "Wusic :: " + track.name();
 		}});
 	}
 

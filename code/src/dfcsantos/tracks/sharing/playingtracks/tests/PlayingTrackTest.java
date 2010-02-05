@@ -2,6 +2,8 @@ package dfcsantos.tracks.sharing.playingtracks.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.File;
+
 import org.jmock.Expectations;
 import org.junit.Test;
 
@@ -20,7 +22,8 @@ import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
+import dfcsantos.tracks.Track;
+import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.sharing.playingtracks.client.PlayingTrackClient;
 import dfcsantos.tracks.sharing.playingtracks.keeper.PlayingTrackKeeper;
 import dfcsantos.tracks.sharing.playingtracks.server.PlayingTrackServer;
@@ -29,15 +32,15 @@ import dfcsantos.wusic.Wusic;
 public class PlayingTrackTest extends BrickTest {
 
 	@Bind private final Wusic _wusic = mock(Wusic.class);
-	private final Register<String> _playingTrack = my(Signals.class).newRegister("");
+	private final Register<Track> _playingTrack = my(Signals.class).newRegister(null);
 
 	private Contact _localContact;
 	private PlayingTrackKeeper _remoteKeeper;
 
 	@Test
-	public void playingTrackExchange() {
+	public void playingTrackBroadcast() {
 		checking(new Expectations() {{
-			oneOf(_wusic).playingTrackName(); will(returnValue(_playingTrack.output()));
+			oneOf(_wusic).playingTrack(); will(returnValue(_playingTrack.output()));
 		}});
 
 		my(PlayingTrackServer.class);
@@ -53,25 +56,36 @@ public class PlayingTrackTest extends BrickTest {
 			my(PlayingTrackClient.class);
 		}});
 
-		_remoteKeeper.playingTrack(_localContact).addReceiver(new Consumer<String>() { @Override public void consume(String remotePlayingTrack) {
-			assertEquals(playingTrack(), remotePlayingTrack);
-		}});
+		testPlayingTrack("track1");
+		testPlayingTrack("track2");
+		testPlayingTrack("track2");
+		testPlayingTrack("track3");
+		testPlayingTrack("");
+		testPlayingTrack("track4");
 
-		setPlayingTrack("track1.mp3");
-		setPlayingTrack("track2.mp3");
-		setPlayingTrack("track2.mp3");
-		setPlayingTrack("track3.mp3");
-		setPlayingTrack("");
+		testNullPlayingTrack();
 
 		crash(remote);
 	}
 
-	private void setPlayingTrack(String trackName) {
-		_playingTrack.setter().consume(trackName);
+	private void testPlayingTrack(String trackName) {
+		setPlayingTrack(trackName + ".mp3");
+		my(TupleSpace.class).waitForAllDispatchingToFinish();
+		assertEquals(trackName, playingTrackReceivedFromLocal());
 	}
 
-	String playingTrack() {
-		return _playingTrack.output().currentValue();
+	private void testNullPlayingTrack() {
+		_playingTrack.setter().consume(null);
+		my(TupleSpace.class).waitForAllDispatchingToFinish();
+		assertEquals("", playingTrackReceivedFromLocal());
+	}
+
+	private String playingTrackReceivedFromLocal() {
+		return _remoteKeeper.playingTrack(_localContact).currentValue();
+	}
+
+	private void setPlayingTrack(String trackName) {
+		_playingTrack.setter().consume(my(Tracks.class).newTrack(new File(trackName)));
 	}
 
 	private void configureStorageFolder(Environment remote) {
