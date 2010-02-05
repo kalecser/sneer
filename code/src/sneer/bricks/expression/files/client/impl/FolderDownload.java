@@ -80,11 +80,8 @@ class FolderDownload extends AbstractDownload {
 
 
 	@Override
-	void updateFileMapWith(File folder) {
-		// Implement: Add folder to FileMap when it becomes a requisite
-		// my(FileMap.class).putFolderContents(folder, _folderContents, _hash);
-
-		my(FileMap.class).removeDotPart(_path);
+	void updateFileMapWith(File tmpFolder, File actualFolder) {
+		my(FileMap.class).rename(tmpFolder, actualFolder);
 	}
 
 

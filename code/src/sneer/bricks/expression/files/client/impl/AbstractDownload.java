@@ -102,15 +102,15 @@ abstract class AbstractDownload implements Download {
 
 
 	void finishWithSuccess() throws IOException {
-		updateFileMapWith(_actualPath);
 		my(DotParts.class).closeDotPart(_path, _lastModified);
+		updateFileMapWith(_path, _actualPath);
 
 		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
 		finish();
 	}
 
 
-	abstract void updateFileMapWith(File actualFile);
+	abstract void updateFileMapWith(File tmpFile, File actualFile);
 
 
 	void finish() {
