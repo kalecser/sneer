@@ -27,6 +27,9 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Unignore FileCopyTestBase.testWithFolder()
+		- FileMap.rename - Create test and implement. Use FileMap public API, don't break encapsulation by accessing maps directly.
+
 	- Add a method to 'TrackDownloaderTest' to test increments and decrements of the # of downloaded tracks
 
 	- Seals
