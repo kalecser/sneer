@@ -69,12 +69,13 @@ public class PlayingTrackTest extends BrickTest {
 	}
 
 	private void testPlayingTrack(String trackName) {
-		setPlayingTrack(trackName + ".mp3");
+		setPlayingTrack(trackName.isEmpty() ? "" : trackName + ".mp3");
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 		assertEquals(trackName, playingTrackReceivedFromLocal());
 	}
 
 	private void testNullPlayingTrack() {
+		my(Clock.class).advanceTime(1);
 		_playingTrack.setter().consume(null);
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 		assertEquals("", playingTrackReceivedFromLocal());
