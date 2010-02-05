@@ -1,7 +1,10 @@
 package dfcsantos.tracks.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.io.File;
 
+import sneer.bricks.hardware.cpu.lang.Lang;
 import dfcsantos.tracks.Track;
 
 class TrackImpl implements Track {
@@ -11,7 +14,7 @@ class TrackImpl implements Track {
 
 	TrackImpl(File file) {
 		_file = file;
-		_info = file.getName().replaceAll(".mp3", "");
+		_info = my(Lang.class).strings().substringBeforeLast(file.getName(), ".");
 	}
 
 	@Override
