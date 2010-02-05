@@ -32,6 +32,7 @@ class PeerTracks extends TrackSourceStrategy {
 	}
 
 	void meToo(Track trackToKeep) {
+		//Implement Create event to notify listeners of track rejection (musical taste matcher, for example).
 		final File sharedTracksFolder = my(TracksFolderKeeper.class).sharedTracksFolder().currentValue();
 		moveTrackToFolder(trackToKeep, sharedTracksFolder);
 	}

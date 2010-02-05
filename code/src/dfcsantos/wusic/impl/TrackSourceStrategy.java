@@ -23,8 +23,8 @@ abstract class TrackSourceStrategy {
 	private final List<Track> _tracksToDispose = Collections.synchronizedList(new ArrayList<Track>());
 
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
-	
-	
+
+
 	TrackSourceStrategy() {
 		_refToAvoidGc = my(Timer.class).wakeUpEvery(5000, new Closure() { @Override public void run() {
 			disposePendingTracks();
@@ -33,12 +33,12 @@ abstract class TrackSourceStrategy {
 		initPlaylist();
 	}
 
-	
+
 	void initPlaylist() {
 		initPlaylist(tracksFolder());
 	}
 
-	
+
 	void initPlaylist(File tracksFolder) {
 		_playlist = createPlaylist(tracksFolder);
 	}
@@ -52,7 +52,7 @@ abstract class TrackSourceStrategy {
 		}
 	}
 
-	
+
 	Track nextTrack() {
 		Track nextTrack = _playlist.nextTrack();
 		if (_tracksToDispose.contains(nextTrack))
@@ -63,21 +63,21 @@ abstract class TrackSourceStrategy {
 
 	
 	void noWay(final Track rejected) {
-		//Implement Create event to notify listeners of track rejection (musical taste matcher, for example).
 		Sneer1024 hash = my(FileMap.class).getHash(rejected.file());
+		my(FileMap.class).remove(rejected.file());
 		my(RejectedTracksKeeper.class).reject(hash);
 		markForDisposal(rejected);	
 	}
 
-	
+
 	void markForDisposal(Track trackToDispose) {
 		_tracksToDispose.add(trackToDispose);
 	}
 
-	
+
 	abstract Playlist createPlaylist(File tracksFolder);
 
-	
+
 	abstract File tracksFolder();
 
 }
