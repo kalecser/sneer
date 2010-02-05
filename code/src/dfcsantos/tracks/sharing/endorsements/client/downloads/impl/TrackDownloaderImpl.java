@@ -21,6 +21,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
+import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.sharing.endorsements.client.downloads.TrackDownloader;
 import dfcsantos.tracks.sharing.endorsements.protocol.TrackEndorsement;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
@@ -30,7 +31,7 @@ import dfcsantos.wusic.Wusic;
 class TrackDownloaderImpl implements TrackDownloader {
 
 	private final List<Download> _downloads = Collections.synchronizedList(new ArrayList<Download>());
-	private final Register<Integer> _numberOfDownloadedTracks = my(Signals.class).newRegister(0);
+	private final Register<Integer> _numberOfDownloadedTracks = my(Signals.class).newRegister(numberOfTracksDownloadedAlready());
 
 	@SuppressWarnings("unused") private final WeakContract _trackEndorsementConsumerContract;
 	private boolean _isActive = false;
@@ -41,8 +42,16 @@ class TrackDownloaderImpl implements TrackDownloader {
 		}});
 	}
 
+	@Override
 	public Signal<Integer> numberOfDownloadedTracks() {
 		return _numberOfDownloadedTracks.output();
+	}
+
+	@Override
+	public void decrementDownloadedTracks() {
+		_numberOfDownloadedTracks.setter().consume(
+			numberOfDownloadedTracks().currentValue() - 1
+		);
 	}
 
 	@Override
@@ -74,34 +83,38 @@ class TrackDownloaderImpl implements TrackDownloader {
 		}});
 	}
 
-	private boolean isRejected(TrackEndorsement endorsement) {
+	private static int numberOfTracksDownloadedAlready() {
+		return my(Tracks.class).listMp3FilesFromFolder(peerTracksFolder()).size();
+	}
+
+	private static boolean isRejected(TrackEndorsement endorsement) {
 		return my(RejectedTracksKeeper.class).isRejected(endorsement.hash);
 	}
 
-	private boolean isDuplicated(TrackEndorsement endorsement) {
+	private static boolean isDuplicated(TrackEndorsement endorsement) {
 		return my(FileMap.class).getFile(endorsement.hash) != null;
 	}
 
-	private boolean isTracksDownloadAllowed() {
+	private static boolean isTracksDownloadAllowed() {
 		if (!my(Wusic.class).isTracksDownloadAllowed().currentValue()) return false;
 		return peerTracksFolderSize() < downloadAllowanceInBytes();
 	}
 
-	private long peerTracksFolderSize() {
+	private static long peerTracksFolderSize() {
 		return my(IO.class).files().folderSize(peerTracksFolder());
 	}
 
-	private int downloadAllowanceInBytes() {
+	private static File peerTracksFolder() {
+		return my(TracksFolderKeeper.class).peerTracksFolder();
+	}
+
+	private static int downloadAllowanceInBytes() {
 		return 1024 * 1024 * my(Wusic.class).tracksDownloadAllowance().currentValue();
 	}
 
-	private File fileToWrite(TrackEndorsement endorsement) {
+	private static File fileToWrite(TrackEndorsement endorsement) {
 		String name = new File(endorsement.path).getName();
 		return new File(peerTracksFolder(), name);
-	}
-
-	private File peerTracksFolder() {
-		return my(TracksFolderKeeper.class).peerTracksFolder();
 	}
 
 }

@@ -61,12 +61,12 @@ abstract class TrackSourceStrategy {
 		return nextTrack;
 	}
 
-	
-	void noWay(final Track rejected) {
+
+	void deleteTrack(final Track rejected) {
 		Sneer1024 hash = my(FileMap.class).getHash(rejected.file());
 		my(FileMap.class).remove(rejected.file());
 		my(RejectedTracksKeeper.class).reject(hash);
-		markForDisposal(rejected);	
+		markForDisposal(rejected);
 	}
 
 
