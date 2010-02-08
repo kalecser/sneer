@@ -26,7 +26,6 @@ public interface Wusic {
 	void stop();
 
 	void meToo();
-	void noWay();
 	void deleteTrack();
 
 	Signal<Boolean> isPlaying();

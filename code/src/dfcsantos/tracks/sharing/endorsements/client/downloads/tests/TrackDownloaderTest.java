@@ -8,26 +8,26 @@ import java.io.IOException;
 import org.jmock.Expectations;
 import org.junit.Test;
 
-import sneer.bricks.expression.files.client.Download;
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
-import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.lang.ByRef;
 import dfcsantos.tracks.sharing.endorsements.client.downloads.TrackDownloader;
 import dfcsantos.tracks.sharing.endorsements.protocol.TrackEndorsement;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
 
 public class TrackDownloaderTest extends BrickTest {
+
+	private final TrackDownloader _subject = my(TrackDownloader.class);
 
 	@Bind private final FileClient _fileClient = mock(FileClient.class);
 	@Bind private final Seals _seals = mock(Seals.class);
@@ -38,22 +38,23 @@ public class TrackDownloaderTest extends BrickTest {
 		final Sneer1024 hash2 = my(Crypto.class).digest(new byte[] { 2 });
 		final Sneer1024 hash3 = my(Crypto.class).digest(new byte[] { 3 });
 
-		final ByRef<Download> download = ByRef.newInstance();
 		checking(new Expectations(){{
 			oneOf(_seals).ownSeal(); will(returnValue(newSeal(1)));
 			oneOf(_seals).ownSeal(); will(returnValue(newSeal(2)));
-			download.value = exactly(1).of(_fileClient).startFileDownload(new File(peerTracksFolder(), "ok.mp3"), 41, hash1);
+			exactly(1).of(_fileClient).startFileDownload(new File(peerTracksFolder(), "ok.mp3"), 41, hash1);
 			allowing(_seals).ownSeal();
 		}});
 
 		my(Wusic.class).allowTracksDownload(true);
 		my(Wusic.class).tracksDownloadAllowanceSetter().consume(1);
 
-		my(TrackDownloader.class).setActive(true);
+		_subject.setActive(true);
 
+		assertNumberOfDownloadedTracksEquals(0);
 		aquireEndorsementTuple(hash1, 41, "songs/subfolder/ok.mp3");
-		download.value.waitTillFinished();
-		testNumberOfDownloadedTracks();
+		my(SignalUtils.class).waitForValue(_subject.numberOfDownloadedTracks(), 1);
+		_subject.decrementDownloadedTracks();
+		my(SignalUtils.class).waitForValue(_subject.numberOfDownloadedTracks(), 0);
 
 		my(Wusic.class).allowTracksDownload(false);
 		aquireEndorsementTuple(hash2, 42, "songs/subfolder/notOk1.mp3");
@@ -64,7 +65,7 @@ public class TrackDownloaderTest extends BrickTest {
 	}
 
 	private void useUpAllowance() throws IOException {
-		final File fileWith1MB = createTmpFileWithRandomContent(1048576);
+		final File fileWith1MB = createTmpFileWithRandomContent(1048576); // Optimize: change things so that we do not have to create so big a file
 		my(IO.class).files().copyFileToFolder(fileWith1MB, peerTracksFolder());
 	}
 
@@ -79,13 +80,6 @@ public class TrackDownloaderTest extends BrickTest {
 
 	private Seal newSeal(int b) {
 		return new Seal(new ImmutableByteArray(new byte[] { (byte) b }));
-	}
-
-	private void testNumberOfDownloadedTracks() {
-		my(Threads.class).sleepWithoutInterruptions(10);
-		assertNumberOfDownloadedTracksEquals(1);
-		my(Wusic.class).noWay(); // Rejects track
-		assertNumberOfDownloadedTracksEquals(0);
 	}
 
 	private void assertNumberOfDownloadedTracksEquals(int actual) {
