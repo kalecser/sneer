@@ -118,7 +118,10 @@ class FileMapImpl implements FileMap {
 	@Override
 	synchronized
 	public void rename(File from, File to) {
-		final String fromPath = from.getAbsolutePath();
+		final String fromPath =
+			from.getAbsolutePath().endsWith(File.separator)
+				? from.getAbsolutePath()
+				: from.getAbsolutePath() + File.separator;
 
 		Collection<File> filesToBeRenamed = my(CollectionUtils.class).filter(_filesByHash.values(), new Predicate<File>() { @Override public boolean evaluate(File candidate) {
 			return candidate.getAbsolutePath().startsWith(fromPath);
