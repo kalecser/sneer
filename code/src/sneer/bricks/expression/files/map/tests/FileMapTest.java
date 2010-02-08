@@ -37,10 +37,11 @@ public class FileMapTest extends BrickTest {
 
 		_subject.rename(new File("folder"), new File("newFolder"));
 
-		assertFileWasRenamed("newFolder/sub/file1.txt", 41, hash(1));
-		assertFileWasRenamed("newfolder/sub/file2.txt", 42, hash(2));
-		assertFileWasRenamed("newfolder/file3.txt", 43, hash(3));
-		assertFileWasRenamed("newfolder/file4.txt", 44, hash(4));
+		assertFileWasRenamed("newFolder/sub/file1.txt",	41, hash(1));
+		assertFileWasRenamed("newfolder/sub/file2.txt",	42, hash(2));
+		assertFileWasRenamed("newfolder/file3.txt",		43, hash(3));
+		assertFileWasRenamed("newfolder/file4.txt",		44, hash(4));
+
 		assertNull(_subject.getHash(new File("newfolder/file5.txt")));
 
 		_subject.rename(new File("newFolder/sub"), new File("newFolder/newSub"));
