@@ -34,6 +34,7 @@ class LangImpl implements Lang {
 		@Override public String join(Collection<?> collection, String separator) { return StringUtils.join(collection, separator); }
 		@Override public String trimToNull(String str) { return StringUtils.trimToNull(str); }
 		@Override public String remove(String str, String remove) { return StringUtils.remove(str, remove); }
+		@Override public String removeStart(String str, String remove) { return StringUtils.removeStart(str, remove); }
 		@Override public String chomp(String str, String separator) { return StringUtils.chomp(str, separator); }
 		@Override public String strip(String str, String stripChars) { return StringUtils.strip(str, stripChars); }
 		@Override public String substringBeforeLast(String str, String separator) {	return StringUtils.substringBeforeLast(str, separator); }

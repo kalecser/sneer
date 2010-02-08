@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.foundation.lang.Predicate;
@@ -70,7 +71,6 @@ class FileMapImpl implements FileMap {
 	}
 
 	@Override
-	synchronized
 	public FolderContents getFolderContents(Sneer1024 hash) {
 		return _folderContentsByHash.get(hash);
 	}
@@ -94,6 +94,7 @@ class FileMapImpl implements FileMap {
 		while (filesInTheMap.hasNext()) {
 			if (filesInTheMap.next().equals(fileToBeRemoved)) {
 				_hashesByFile.remove(fileToBeRemoved);
+				_lastModifiedDatesByFile.remove(fileToBeRemoved);
 				filesInTheMap.remove();
 				break;
 			}
@@ -115,27 +116,21 @@ class FileMapImpl implements FileMap {
 	}
 
 	@Override
-	public void rename(File fileOrFolder, File newFileOrFolder) {
-		final String folderPath = fileOrFolder.getAbsolutePath();
-		
-		@SuppressWarnings("unused") Collection<File> filesToBeRenamed = my(CollectionUtils.class).filter(_filesByHash.values(), new Predicate<File>() { @Override public boolean evaluate(File file) {
-			return file.getAbsolutePath().startsWith(folderPath);
+	synchronized
+	public void rename(File from, File to) {
+		final String fromPath = from.getAbsolutePath();
+
+		Collection<File> filesToBeRenamed = my(CollectionUtils.class).filter(_filesByHash.values(), new Predicate<File>() { @Override public boolean evaluate(File candidate) {
+			return candidate.getAbsolutePath().startsWith(fromPath);
 		}});
 
-//		String folderPathWithoutDotPart = my(Lang.class).strings().chomp(folderPath, ".part");
-//		for (File file : filesToBeRenamed) {
-//			File renamedFile = new File(folderPathWithoutDotPart, file.getName());
-//			Sneer1024 hash = getHash(file);
-//
-//			_filesByHash.put(hash, renamedFile);
-//
-//			_hashesByFile.put(renamedFile, hash);
-//			_hashesByFile.remove(file);
-//
-//			_lastModifiedDatesByFile.put(renamedFile, getLastModified(file));
-//			_lastModifiedDatesByFile.remove(file);
-//		}
-		
+		for (File file : filesToBeRenamed) {
+			String relativePath = my(Lang.class).strings().removeStart(file.getAbsolutePath(), fromPath);
+			File renamedFile = new File(to, relativePath);
+			putFile(renamedFile, getLastModified(file), getHash(file));
+			remove(file);
+		}
+
 	}
 
 }
