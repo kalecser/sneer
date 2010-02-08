@@ -30,8 +30,6 @@ Igor ====================================================
 	- Unignore FileCopyTestBase.testWithFolder()
 		- FileMap.rename - Create test and implement. Use FileMap public API, don't break encapsulation by accessing maps directly.
 
-	- Add a method to 'TrackDownloaderTest' to test increments and decrements of the # of downloaded tracks
-
 	- Seals
 		- ContactInfoWindowImpl - Add a field for the Contact's Seal: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
 			(Forget Courier. Just use default font)
