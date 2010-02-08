@@ -20,7 +20,6 @@ public interface FileMap {
 	FolderContents getFolderContents(Sneer1024 hash);
 
 	Sneer1024 remove(File fileOrFolder);
-
-	void removeDotPart(File folder); 
+	void rename(File fileOrFolder, File newFileOrFolder); 
 
 }
