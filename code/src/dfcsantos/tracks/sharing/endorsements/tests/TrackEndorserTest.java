@@ -18,9 +18,9 @@ import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
 import dfcsantos.tracks.sharing.endorsements.protocol.TrackEndorsement;
 import dfcsantos.tracks.sharing.endorsements.server.TrackEndorser;
+import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
 public class TrackEndorserTest extends BrickTest {
 

@@ -13,8 +13,8 @@ import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.foundation.lang.Closure;
 import dfcsantos.tracks.Track;
-import dfcsantos.tracks.playlist.Playlist;
-import dfcsantos.tracks.rejected.RejectedTracksKeeper;
+import dfcsantos.tracks.execution.playlist.Playlist;
+import dfcsantos.tracks.storage.rejected.RejectedTracksKeeper;
 
 abstract class TrackSourceStrategy {
 

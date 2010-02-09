@@ -22,11 +22,11 @@ abstract class AbstractDownload implements Download {
 
 	static final int REQUEST_INTERVAL = 15000;
 
-	final File _path;
+	File _path;
 	final long _lastModified;
 	final Sneer1024 _hash;
 
-	private File _actualPath;
+	private final File _actualPath;
 
 	@SuppressWarnings("unused") private WeakContract _timerContract;
 
@@ -102,15 +102,15 @@ abstract class AbstractDownload implements Download {
 
 
 	void finishWithSuccess() throws IOException {
+		updateFileMapWith(_actualPath);
 		my(DotParts.class).closeDotPart(_path, _lastModified);
-		map(_actualPath);
 
 		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
 		finish();
 	}
 
 
-	abstract void map(File fileOrFolder);
+	abstract void updateFileMapWith(File actualFile);
 
 
 	void finish() {

@@ -20,8 +20,9 @@ import sneer.foundation.lang.Consumer;
 
 class FolderDownload extends AbstractDownload {
 
-	@SuppressWarnings("unused") private WeakContract _folderContentConsumerContract;
 	private boolean _received = false;
+
+	@SuppressWarnings("unused") private WeakContract _folderContentConsumerContract;
 
 
 	FolderDownload(File folder, long lastModified, Sneer1024 hashOfFolder) {
@@ -71,14 +72,19 @@ class FolderDownload extends AbstractDownload {
 	}
 
 
-	@Override
-	void map(File folder) {} // Not used yet
-
-
 	private Download startDownload(FileOrFolder entry) {
 		return entry.isFolder
-			? new FolderDownload(new File(_path, entry.name), entry.lastModified, entry.hashOfContents)
-	    	  : new FileDownload(new File(_path, entry.name), entry.lastModified, entry.hashOfContents);	
+		? new FolderDownload(new File(_path, entry.name), entry.lastModified, entry.hashOfContents)
+		: new FileDownload(new File(_path, entry.name), entry.lastModified, entry.hashOfContents);	
+	}
+
+
+	@Override
+	void updateFileMapWith(File folder) {
+		// Implement: Add folder to FileMap when it becomes a requisite
+		// my(FileMap.class).putFolderContents(folder, _folderContents, _hash);
+
+		my(FileMap.class).removeDotPart(_path);
 	}
 
 

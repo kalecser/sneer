@@ -45,6 +45,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		File result = new File(folderName);
 		if (!result.exists())
 			assertTrue("Unable to create tmp folder: " + result, result.mkdirs());
+		result.deleteOnExit();
 		return result;
 	}
 
@@ -256,7 +257,9 @@ public abstract class CleanTestBase extends AssertUtils {
 	}
 
 	protected File newTmpFile(String fileName) {
-		return new File(tmpFolder(), fileName);
+		final File tmpFile = new File(tmpFolder(), fileName);
+		tmpFile.deleteOnExit();
+		return tmpFile;
 	}
 
 	protected void createTmpFilesWithFileNameAsContent(String... fileNames) throws IOException {

@@ -22,17 +22,20 @@ class DotPartsImpl implements DotParts {
 
 
 	@Override
-	public void closeDotPart(File dotPartFile, long lastModified) throws IOException {
+	public File closeDotPart(File dotPartFile, long lastModified) throws IOException {
 		if (lastModified != -1)
 			dotPartFile.setLastModified(lastModified);
 		
-		if (!dotPartFile.renameTo(actualFile(dotPartFile)))
-			throw new IOException("Unable to rename .part file/folder to actual file/folder: " + actualFile(dotPartFile));
+		final File actualFile = actualFile(dotPartFile);
+		if (!dotPartFile.renameTo(actualFile))
+			throw new IOException("Unable to rename .part file/folder to actual file/folder: " + actualFile);
+
+		return actualFile;
 	}
 
 
 	private File actualFile(File dotPartFile) {
-		return new File(my(Lang.class).strings().remove(dotPartFile.getAbsolutePath(), ".part"));
+		return new File(my(Lang.class).strings().chomp(dotPartFile.getAbsolutePath(), ".part"));
 	}
 
 }

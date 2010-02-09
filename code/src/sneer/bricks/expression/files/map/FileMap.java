@@ -21,4 +21,6 @@ public interface FileMap {
 
 	Sneer1024 remove(File fileOrFolder);
 
+	void removeDotPart(File folder); 
+
 }

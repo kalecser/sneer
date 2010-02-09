@@ -152,10 +152,6 @@ class IOImpl implements IO {
 				try { input.close(); } catch (Throwable ignore) { }
 			}
 		}
-		@Override public void closeQuietly(Closeable closeable) {
-			if (closeable == null) return;
-			try { closeable.close(); } catch (IOException ignored) {}
-		}
 	};
 
 	private FileFilters _fileFilters = new FileFilters(){
@@ -200,13 +196,12 @@ class IOImpl implements IO {
 	@Override public Files files() { return _files; }
 	@Override public Streams streams() { return _streams; }
 	@Override public FileFilters fileFilters() { return _fileFilters; }
-	@Override
-	public void crash(Closeable closeable) {
-		try {
-			if(closeable!=null) closeable.close();
-		} catch (IOException ignored) {}
+
+	@Override public void crash(Closeable closeable) {
+		if (closeable == null) return;
+		try { closeable.close(); } catch (IOException ignored) {}
 	}
-	
+
 	private static IOFileFilter asIOFileFilter(final Filter filter) {
 		if (filter == null)
 			return null;

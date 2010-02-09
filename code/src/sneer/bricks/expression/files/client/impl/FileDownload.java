@@ -124,14 +124,14 @@ class FileDownload extends AbstractDownload {
 		_output.write(bytes);
 		++_nextBlockToWrite;
 		if (readyToFinish()) {
-			my(IO.class).streams().closeQuietly(_output);
+			my(IO.class).crash(_output);
 			finishWithSuccess();
 		}
 	}
 
 
 	@Override
-	void map(File file) {
+	void updateFileMapWith(File file) {
 		my(FileMap.class).putFile(file, _hash);
 	}
 
@@ -167,15 +167,15 @@ class FileDownload extends AbstractDownload {
 
 
 	@Override
-	void copyContents(Object contents) throws IOException {
-		if (!(contents instanceof File)) throw new IOException("Wrong type of contents received. Should be File but was " + contents.getClass());
-		my(IO.class).files().copyFile((File) contents, _path);
+	Object mappedContentsBy(Sneer1024 hashOfContents) {
+		return my(FileMap.class).getFile(hashOfContents);
 	}
 
 
 	@Override
-	Object mappedContentsBy(Sneer1024 hashOfContents) {
-		return my(FileMap.class).getFile(hashOfContents);
+	void copyContents(Object contents) throws IOException {
+		if (!(contents instanceof File)) throw new IOException("Wrong type of contents received. Should be File but was " + contents.getClass());
+		my(IO.class).files().copyFile((File) contents, _path);
 	}
 
 }

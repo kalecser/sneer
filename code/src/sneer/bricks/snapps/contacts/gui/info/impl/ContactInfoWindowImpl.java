@@ -2,6 +2,7 @@ package sneer.bricks.snapps.contacts.gui.info.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -15,19 +16,23 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddress;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
+import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
@@ -68,6 +73,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 	
 	private final JTextField _host = new JTextField();
 	private final JTextField _port = new JTextField();
+	private final JTextArea _seal = new JTextArea();
 	private InternetAddress _selectedAdress;
 	
 	private boolean _isGuiInitialized = false;
@@ -103,6 +109,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 		JLabel labNickname = new JLabel("Nickname:");
 		JLabel labPort = new JLabel("Port:");
 		JLabel labHost = new JLabel("Host:");
+		JLabel labSeal = new JLabel("Seal:");
 		
 		Signal<String> nickname = my(Signals.class).adaptSignal(
 				my(ContactsGui.class).selectedContact(), 
@@ -117,9 +124,16 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 		}};
 		
 		_txtNickname = my(ReactiveWidgetFactory.class).newTextField(nickname, setter, NotificationPolicy.OnEnterPressedOrLostFocus);
-		
-		JScrollPane scroll = my(SynthScrolls.class).create();
-		scroll.getViewport().add(addresses());
+
+		String hardcodedSeal = new Seal(new ImmutableByteArray(new byte[128])).toFormattedHexString();
+		_seal.setText(hardcodedSeal);
+		_seal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
+		_seal.setTabSize(3);
+		_seal.setWrapStyleWord(true);
+		JScrollPane sealScroll = new JScrollPane(_seal, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+		JScrollPane addressesScroll = my(SynthScrolls.class).create();
+		addressesScroll.getViewport().add(addresses());
 
 		JButton btnNew = new JButton("New");
 		btnNew.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
@@ -136,13 +150,13 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 			delInternetAddress();
 		}});
 		
-		setGridBagLayout(panel, labNickname, labPort, labHost, scroll, btnNew, btnSave, btnDel);
+		setGridBagLayout(panel, labNickname, labSeal, sealScroll, labPort, labHost, addressesScroll, btnNew, btnSave, btnDel);
 		addListSelectionListestener();
 
-		this.setSize(400, 310);
+		this.setSize(500, 410);
 	}
 
-	private void setGridBagLayout(JPanel panel, JLabel labNickname, JLabel labPort, JLabel labHost, JScrollPane scroll, JButton btnNew, JButton btnSave, JButton btnDel) {
+	private void setGridBagLayout(JPanel panel, JLabel labNickname, JLabel labSeal, JScrollPane sealScroll, JLabel labPort, JLabel labHost, JScrollPane addressesScroll, JButton btnNew, JButton btnSave, JButton btnDel) {
 		getContentPane().setLayout(new GridBagLayout());
 		getContentPane().add(labNickname,  new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, 
 				GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5,5,0,5), 0, 0) );
@@ -154,29 +168,35 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
 		
 		panel.setLayout(new GridBagLayout());
-		panel.add(scroll,  new GridBagConstraints(0, 1, 12, 1, 1.0, 1.0, 
+		panel.add(addressesScroll,  new GridBagConstraints(0, 1, 12, 1, 0.6, 0.6, 
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
-		
-		panel.add(labHost,  new GridBagConstraints(0, 2, 1,1, 0.0,0.0, 
+
+		panel.add(labHost, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, 
 				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,5,0,5), 0, 0) );
 
-		panel.add(_host,  new GridBagConstraints(1, 2, 7, 1, 2.0,0.0, 
+		panel.add(_host, new GridBagConstraints(1, 2, 7, 1, 2.0, 0.0, 
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0) );
 
-		panel.add(labPort,  new GridBagConstraints(9, 2, 1,1, 0.0,0.0, 
+		panel.add(labPort, new GridBagConstraints(9, 2, 1, 1, 0.0, 0.0, 
 				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,5,5,5), 0, 0) );
 		
-		panel.add(_port,  new GridBagConstraints(10, 2, 2,1, 0.0,0.0, 
+		panel.add(_port, new GridBagConstraints(10, 2, 2, 1, 0.0, 0.0, 
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,5), 0, 0) );
 		
-		panel.add(btnNew,  new GridBagConstraints(7,3, 1,1, 0.0,0.0, 
+		panel.add(btnNew, new GridBagConstraints(7, 4, 1, 1, 0.0, 0.0, 
 				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0) );
 
-		panel.add(btnSave,  new GridBagConstraints(8,3, 3, 1, 0.0,0.0, 
+		panel.add(btnSave, new GridBagConstraints(8, 4, 3, 1, 0.0, 0.0, 
 				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0) );
 
-		panel.add(btnDel,  new GridBagConstraints(11,3, 1,1, 0.0,0.0, 
+		panel.add(btnDel, new GridBagConstraints(11, 4, 1, 1, 0.0, 0.0, 
 				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0) );
+
+		panel.add(labSeal,  new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, 
+				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0) );
+
+		panel.add(sealScroll,  new GridBagConstraints(1, 3, 12, 1, 1.0, 1.0, 
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,0,5,5), 0, 0) );
 	}
 	
 	private void addListSelectionListestener() {
