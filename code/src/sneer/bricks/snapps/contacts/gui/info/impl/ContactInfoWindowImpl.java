@@ -127,7 +127,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 
 		String hardcodedSeal = new Seal(new ImmutableByteArray(new byte[128])).toFormattedHexString();
 		_seal.setText(hardcodedSeal);
-		_seal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
+		_seal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 		_seal.setTabSize(3);
 		_seal.setWrapStyleWord(true);
 		JScrollPane sealScroll = new JScrollPane(_seal, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -153,7 +153,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 		setGridBagLayout(panel, labNickname, labSeal, sealScroll, labPort, labHost, addressesScroll, btnNew, btnSave, btnDel);
 		addListSelectionListestener();
 
-		this.setSize(500, 410);
+		this.setSize(400, 350);
 	}
 
 	private void setGridBagLayout(JPanel panel, JLabel labNickname, JLabel labSeal, JScrollPane sealScroll, JLabel labPort, JLabel labHost, JScrollPane addressesScroll, JButton btnNew, JButton btnSave, JButton btnDel) {
@@ -163,8 +163,14 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 
 		getContentPane().add(_txtNickname.getComponent(),  new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0, 
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5,0,0,5), 0, 0) );
-		
-		getContentPane().add(panel,  new GridBagConstraints(0, 1, 2, 1, 1.0, 1.0, 
+
+		getContentPane().add(labSeal,  new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, 
+				GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5,5,0,5), 0, 0) );
+
+		getContentPane().add(sealScroll,  new GridBagConstraints(0, 2, 5, 1, 1.0, 1.0, 
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
+
+		getContentPane().add(panel,  new GridBagConstraints(0, 3, 2, 1, 1.0, 0.2, 
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
 		
 		panel.setLayout(new GridBagLayout());
@@ -191,12 +197,6 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 
 		panel.add(btnDel, new GridBagConstraints(11, 4, 1, 1, 0.0, 0.0, 
 				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0) );
-
-		panel.add(labSeal,  new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, 
-				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0) );
-
-		panel.add(sealScroll,  new GridBagConstraints(1, 3, 12, 1, 1.0, 1.0, 
-				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,0,5,5), 0, 0) );
 	}
 	
 	private void addListSelectionListestener() {
