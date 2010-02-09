@@ -27,32 +27,19 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Timeout for connection opened by Sneer
+	- Create new brick PeerTracksCounter:
+		- Downloader -> increment
+		- Strategy -> decrement
 
-	- Unignore FileCopyTestBase.testWithFolder()
-		- [Klaus] Evaluate use of FileMap.removeDotPart(File) - also suggest a better name for this method
-			- I'm thinking of a better way to coordinate the .parts and the FileMap's folder insertions
+	- Unignore FileMapTest.rename
 
 	- Seals
-		- ContactInfoWindowImpl - Add a field for the Contact's Seal: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
-			(Forget Courier. Just use default font)
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f
+		- ContactInfoWindowImpl - Contact's Seal Field: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
+			- Position - Place it immediately under the nickname field. Outside the Internet Addresses box.
 			- Ask Klaus for help glueing the gui to the Seals brick. Non-trivial per-contact signals and picky consumers need to be exposed in the Seals interface.
 			- [Klaus] Discuss with Igor refactoring of ContactsInfoWindow   
 
 	- Wusic
-		- Contact List - Display playing track of each contact
-			- [Klaus] Check method ContactsGui.registerContactTextProvider(ContactTextProvider textProvider)
-				- The sort operation may be causing a performance hit
-			- Join 'PlayingTrackClientTest' and 'PlayingTrackServerTest' in one functional test (PlayingTrackTest) using two environments
-			- Announce to community
 		- [Klaus/Daniel] MusicalTasteMatcher Kernel
 		- Downloads
 			- 15 min timeout per download.
@@ -69,8 +56,9 @@ Igor ====================================================
 
 Klaus =================================================
 
-	- Urgent: Check what's going on with our integration server: http://sneer.vpscustomer.com:8080/hudson
-		- The server is down and I don't know how to contact the customer service of our host
+	- Unignore FileCopyTestBase.testWithFolder()
+		- Evaluate use of FileMap.removeDotPart(File) - this method desperately needs a better name
+			- Is there a better way to coordinate the .parts and the FileMap's folder insertions?
 
 	- Unignore RemoteCopyTest.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
 		- See this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298

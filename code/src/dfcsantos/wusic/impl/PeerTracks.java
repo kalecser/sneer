@@ -13,6 +13,7 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.execution.playlist.Playlist;
 import dfcsantos.tracks.execution.playlist.Playlists;
+import dfcsantos.tracks.sharing.endorsements.client.downloads.TrackDownloader;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
 class PeerTracks extends TrackSourceStrategy {
@@ -32,8 +33,15 @@ class PeerTracks extends TrackSourceStrategy {
 	}
 
 	void meToo(Track trackToKeep) {
+		//Implement Create event to notify listeners of track rejection (musical taste matcher, for example).
 		final File sharedTracksFolder = my(TracksFolderKeeper.class).sharedTracksFolder().currentValue();
 		moveTrackToFolder(trackToKeep, sharedTracksFolder);
+	}
+
+	@Override
+	void deleteTrack(Track rejected) {
+		my(TrackDownloader.class).decrementDownloadedTracks();
+		super.deleteTrack(rejected);
 	}
 
 	private void moveTrackToFolder(Track track, File destFolder) { // Move = Copy + Delete

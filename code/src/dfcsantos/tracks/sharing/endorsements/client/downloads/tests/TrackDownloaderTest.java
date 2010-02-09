@@ -15,6 +15,7 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -25,6 +26,8 @@ import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
 
 public class TrackDownloaderTest extends BrickTest {
+
+	private final TrackDownloader _subject = my(TrackDownloader.class);
 
 	@Bind private final FileClient _fileClient = mock(FileClient.class);
 	@Bind private final Seals _seals = mock(Seals.class);
@@ -45,9 +48,13 @@ public class TrackDownloaderTest extends BrickTest {
 		my(Wusic.class).allowTracksDownload(true);
 		my(Wusic.class).tracksDownloadAllowanceSetter().consume(1);
 
-		my(TrackDownloader.class).setActive(true);
+		_subject.setActive(true);
 
+		assertNumberOfDownloadedTracksEquals(0);
 		aquireEndorsementTuple(hash1, 41, "songs/subfolder/ok.mp3");
+		my(SignalUtils.class).waitForValue(_subject.numberOfDownloadedTracks(), 1);
+		_subject.decrementDownloadedTracks();
+		my(SignalUtils.class).waitForValue(_subject.numberOfDownloadedTracks(), 0);
 
 		my(Wusic.class).allowTracksDownload(false);
 		aquireEndorsementTuple(hash2, 42, "songs/subfolder/notOk1.mp3");
@@ -58,7 +65,7 @@ public class TrackDownloaderTest extends BrickTest {
 	}
 
 	private void useUpAllowance() throws IOException {
-		final File fileWith1MB = createTmpFileWithRandomContent(1048576);
+		final File fileWith1MB = createTmpFileWithRandomContent(1048576); // Optimize: change things so that we do not have to create so big a file
 		my(IO.class).files().copyFileToFolder(fileWith1MB, peerTracksFolder());
 	}
 
@@ -73,6 +80,10 @@ public class TrackDownloaderTest extends BrickTest {
 
 	private Seal newSeal(int b) {
 		return new Seal(new ImmutableByteArray(new byte[] { (byte) b }));
+	}
+
+	private void assertNumberOfDownloadedTracksEquals(int actual) {
+		assertTrue(my(TrackDownloader.class).numberOfDownloadedTracks().currentValue() == actual);
 	}
 
 }

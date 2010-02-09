@@ -27,6 +27,7 @@ public interface Lang {
 		String join(Collection<?> collection, String separator);
 		String trimToNull(String str);
 		String remove(String str, String remove);
+		String removeStart(String str, String remove);
 		String chomp(String str, String suffix);
 		String strip(String str, String stripChars);
 		String substringBeforeLast(String str, String separator);

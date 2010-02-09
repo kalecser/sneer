@@ -71,7 +71,6 @@ class FileMapImpl implements FileMap {
 	}
 
 	@Override
-	synchronized
 	public FolderContents getFolderContents(Sneer1024 hash) {
 		return _folderContentsByHash.get(hash);
 	}
@@ -95,6 +94,7 @@ class FileMapImpl implements FileMap {
 		while (filesInTheMap.hasNext()) {
 			if (filesInTheMap.next().equals(fileToBeRemoved)) {
 				_hashesByFile.remove(fileToBeRemoved);
+				_lastModifiedDatesByFile.remove(fileToBeRemoved);
 				filesInTheMap.remove();
 				break;
 			}
@@ -116,29 +116,24 @@ class FileMapImpl implements FileMap {
 	}
 
 	@Override
-	public void removeDotPart(File folder) {
-		if (!folder.isDirectory()) throw new IllegalArgumentException("Parameter must be a folder, but was: " + folder);
+	synchronized
+	public void rename(File from, File to) {
+		final String fromPath =
+			from.getAbsolutePath().endsWith(File.separator)
+				? from.getAbsolutePath()
+				: from.getAbsolutePath() + File.separator;
 
-		final String folderPath = folder.getAbsolutePath();
-		Collection<File> filesToBeRenamed = my(CollectionUtils.class).filter(_filesByHash.values(), new Predicate<File>() { @Override public boolean evaluate(File file) {
-			return file.getAbsolutePath().startsWith(folderPath);
+		Collection<File> filesToBeRenamed = my(CollectionUtils.class).filter(_filesByHash.values(), new Predicate<File>() { @Override public boolean evaluate(File candidate) {
+			return candidate.getAbsolutePath().startsWith(fromPath);
 		}});
 
-		if (filesToBeRenamed.isEmpty()) return;
-
-		String folderPathWithoutDotPart = my(Lang.class).strings().chomp(folderPath, ".part");
 		for (File file : filesToBeRenamed) {
-			File renamedFile = new File(folderPathWithoutDotPart, file.getName());
-			Sneer1024 hash = getHash(file);
-
-			_filesByHash.put(hash, renamedFile);
-
-			_hashesByFile.put(renamedFile, hash);
-			_hashesByFile.remove(file);
-
-			_lastModifiedDatesByFile.put(renamedFile, getLastModified(file));
-			_lastModifiedDatesByFile.remove(file);
+			String relativePath = my(Lang.class).strings().removeStart(file.getAbsolutePath(), fromPath);
+			File renamedFile = new File(to, relativePath);
+			putFile(renamedFile, getLastModified(file), getHash(file));
+			remove(file);
 		}
+
 	}
 
 }

@@ -5,6 +5,7 @@ import java.io.File;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.PickyConsumer;
+import dfcsantos.tracks.Track;
 
 @Brick
 public interface Wusic {
@@ -19,24 +20,24 @@ public interface Wusic {
 	void setShuffle(boolean shuffle);
 
 	void start();
-	Signal<String> playingTrackName();
-	Signal<String> playingTrackTime();
-
 	void pauseResume();
 	void back();
 	void skip();
 	void stop();
 
 	void meToo();
-	void noWay();
+	void deleteTrack();
+
+	Signal<Boolean> isPlaying();
+	Signal<Track>	playingTrack();
+	Signal<Integer> playingTrackTime();
 
 	Signal<String> numberOfPeerTracks();
-	
-	Signal<Boolean> isPlaying();
 
-	int DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE = 100; // MBs
 	Signal<Boolean> isTracksDownloadAllowed();
 	void allowTracksDownload(boolean b);
+
+	int DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE = 100; // MBs
 	Signal<Integer> tracksDownloadAllowance();
 	PickyConsumer<Integer> tracksDownloadAllowanceSetter();
 
