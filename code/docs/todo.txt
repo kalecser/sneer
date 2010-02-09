@@ -27,10 +27,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Create new brick PeerTracksCounter:
-		- Downloader -> increment
-		- Strategy -> decrement
-
 	- Unignore FileMapTest.rename
 
 	- Seals
