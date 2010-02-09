@@ -56,20 +56,24 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 	private ContactInfo[] contacts() throws DecodeException {
 		return new ContactInfo[] {
 			new ContactInfo("Agnaldo4j", "agnaldo4j.selfip.com", 5923),
-			new ContactInfo("Bamboo", "rodrigobamboo.dyndns.org", 5923),
+			new ContactInfo("Bamboo","rbo.selfip.net",5923, sealFromString("4C8419B3FD4D9A3A684C21F2E3CE309D4998BAEC8B16BA103E70D541D83542729001782884E0A22547E6EE1C3C7DF3CDAF52340532D5FCCA5FDFB46A58E6C38ACEB776559B334CF0BE886909D4206930036FCBD14E0490876DAE0EEC13AE6CA5E4F142785FC5311AF590ADE4DE96B1F35DA4C105AF52750A5AE259223F57ED67")),
 			new ContactInfo("Bihaiko", "bihaiko.dyndns.org", 6789),
 			new ContactInfo("Célio", "ccidral.dyndns.org", 9789),
 			new ContactInfo("Daniel Santos", "dfcsantos.homeip.net", 7777),
 			new ContactInfo("Douglas Giacomini", "dtgiacomini.dyndns.org", 5923),
 			new ContactInfo("Dummy", "localhost", 7777, new Seal(new ImmutableByteArray(new byte[128]))),
-			new ContactInfo("Igor Arouca", "igorarouca.dyndns.org", 6789, new Seal(new ImmutableByteArray(my(Codec.class).hex().decode("F9EEBC9D1E11037D0A6B8BDBFF83FAE393F8BC3975D843BD51BE7C3311EEBA5CA582EEDBF1CB023C09534128E2CEE064CAEA9CA925AC7BB16D15A01F2C713B1260E38ABBDBD5728CE54B7962FF45B4B367D5FE3A25C89D6689A52D88F6AAEAFCAFFC18B7B677C5E0E32C89B1AB5F09F732A22C566D036A5CF92224786C5E7951")))),
+			new ContactInfo("Igor Arouca", "igorarouca.dyndns.org", 6789, sealFromString("F9EEBC9D1E11037D0A6B8BDBFF83FAE393F8BC3975D843BD51BE7C3311EEBA5CA582EEDBF1CB023C09534128E2CEE064CAEA9CA925AC7BB16D15A01F2C713B1260E38ABBDBD5728CE54B7962FF45B4B367D5FE3A25C89D6689A52D88F6AAEAFCAFFC18B7B677C5E0E32C89B1AB5F09F732A22C566D036A5CF92224786C5E7951")),
 			new ContactInfo("Kalecser", "kalecser.dyndns.org", 7770),
-			new ContactInfo("Klaus", "klausw.selfip.net", 5923, new Seal(new ImmutableByteArray(my(Codec.class).hex().decode(          "46162EB567B755C523200A68559E9FAA4EC68ED7F0788EAE418DE5A5FFC08C069779F2DC316B91BBD9F9F259D74A9A039795292E8C72F0860F08DC96C6400619B87CB2429932F4F859CEA0AA3C14B37DA27DE4BC12068B6361A20CE340DE5A7EBFF243F312021B15302EF2CBC8B752ADFB557A0D7E7894C0883331FB4AC3BAC6")))),
+			new ContactInfo("Klaus", "klausw.selfip.net", 5923, sealFromString("46162EB567B755C523200A68559E9FAA4EC68ED7F0788EAE418DE5A5FFC08C069779F2DC316B91BBD9F9F259D74A9A039795292E8C72F0860F08DC96C6400619B87CB2429932F4F859CEA0AA3C14B37DA27DE4BC12068B6361A20CE340DE5A7EBFF243F312021B15302EF2CBC8B752ADFB557A0D7E7894C0883331FB4AC3BAC6")),
 			new ContactInfo("Nell", "anelisedaux.dyndns.org", 5924),
 			new ContactInfo("Priscila Vriesman", "priscilavriesman.dyndns.org", 7770),
 			new ContactInfo("Ramon Tramontini", "ramontramontini.dyndns.org", 7770),
 			new ContactInfo("Vitor Pamplona", "vfpamp.dyndns.org", 5923),
 		};
+	}
+
+	private Seal sealFromString(String seal) throws DecodeException {
+		return new Seal(new ImmutableByteArray(my(Codec.class).hex().decode(seal)));
 	}
 
 	static class ContactInfo {
