@@ -95,7 +95,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		}
 		
 		checkConsolePollution();
-		deleteFiles();
+		cleanTmpFolder();
 		checkThreadLeak();
 	}
 	
@@ -150,7 +150,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		_errSentinel.complainIfUsed();
 	}
 
-	private void deleteFiles() {
+	protected void cleanTmpFolder() {
 		_tmpFolderName = null;
 		
 		if (_tmpFolder == null) return;
