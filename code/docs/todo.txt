@@ -32,16 +32,8 @@ Igor ====================================================
 		- Strategy -> decrement
 
 	- Seals
-		- ContactInfoWindowImpl - Add a field for the Contact's Seal: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
-			(Forget Courier. Just use default font)
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f     
-			12ab 12ab 21ab 21f4 2e44 2a34 1c34 123f
+		- ContactInfoWindowImpl - Contact's Seal Field: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
+			- Position - Place it immediately under the nickname field. Outside the Internet Addresses box.
 			- Ask Klaus for help glueing the gui to the Seals brick. Non-trivial per-contact signals and picky consumers need to be exposed in the Seals interface.
 			- [Klaus] Discuss with Igor refactoring of ContactsInfoWindow   
 
