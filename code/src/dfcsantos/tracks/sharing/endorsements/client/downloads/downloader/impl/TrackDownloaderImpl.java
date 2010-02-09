@@ -1,4 +1,4 @@
-package dfcsantos.tracks.sharing.endorsements.client.downloads.impl;
+package dfcsantos.tracks.sharing.endorsements.client.downloads.downloader.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -15,14 +15,11 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.pulp.keymanager.Seals;
-import sneer.bricks.pulp.reactive.Register;
-import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.Tracks;
-import dfcsantos.tracks.sharing.endorsements.client.downloads.TrackDownloader;
+import dfcsantos.tracks.sharing.endorsements.client.downloads.counter.TrackDownloadCounter;
+import dfcsantos.tracks.sharing.endorsements.client.downloads.downloader.TrackDownloader;
 import dfcsantos.tracks.sharing.endorsements.protocol.TrackEndorsement;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.tracks.storage.rejected.RejectedTracksKeeper;
@@ -31,27 +28,15 @@ import dfcsantos.wusic.Wusic;
 class TrackDownloaderImpl implements TrackDownloader {
 
 	private final List<Download> _downloads = Collections.synchronizedList(new ArrayList<Download>());
-	private final Register<Integer> _numberOfDownloadedTracks = my(Signals.class).newRegister(numberOfTracksDownloadedAlready());
+
+	private boolean _isActive = false;
 
 	@SuppressWarnings("unused") private final WeakContract _trackEndorsementConsumerContract;
-	private boolean _isActive = false;
 
 	{
 		_trackEndorsementConsumerContract = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement trackEndorsement) {
 			consumeTrackEndorsement(trackEndorsement);
 		}});
-	}
-
-	@Override
-	public Signal<Integer> numberOfDownloadedTracks() {
-		return _numberOfDownloadedTracks.output();
-	}
-
-	@Override
-	public void decrementDownloadedTracks() {
-		_numberOfDownloadedTracks.setter().consume(
-			numberOfDownloadedTracks().currentValue() - 1
-		);
 	}
 
 	@Override
@@ -74,17 +59,13 @@ class TrackDownloaderImpl implements TrackDownloader {
 		my(Threads.class).startDaemon("Waiting for Download", new Closure() { @Override public void run() {
 			try {
 				download.waitTillFinished();
-				_numberOfDownloadedTracks.setter().consume(_numberOfDownloadedTracks.output().currentValue() + 1);
+				my(TrackDownloadCounter.class).increment();
 			} catch (IOException e) {
 				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 			} finally {
 				_downloads.remove(download);
 			}
 		}});
-	}
-
-	private static int numberOfTracksDownloadedAlready() {
-		return my(Tracks.class).listMp3FilesFromFolder(peerTracksFolder()).size();
 	}
 
 	private static boolean isRejected(TrackEndorsement endorsement) {

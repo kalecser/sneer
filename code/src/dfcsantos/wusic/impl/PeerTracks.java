@@ -13,7 +13,7 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.execution.playlist.Playlist;
 import dfcsantos.tracks.execution.playlist.Playlists;
-import dfcsantos.tracks.sharing.endorsements.client.downloads.TrackDownloader;
+import dfcsantos.tracks.sharing.endorsements.client.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
 class PeerTracks extends TrackSourceStrategy {
@@ -40,7 +40,7 @@ class PeerTracks extends TrackSourceStrategy {
 
 	@Override
 	void deleteTrack(Track rejected) {
-		my(TrackDownloader.class).decrementDownloadedTracks();
+		my(TrackDownloadCounter.class).decrement();
 		super.deleteTrack(rejected);
 	}
 

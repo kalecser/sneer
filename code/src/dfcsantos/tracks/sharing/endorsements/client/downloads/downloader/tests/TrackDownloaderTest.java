@@ -1,4 +1,4 @@
-package dfcsantos.tracks.sharing.endorsements.client.downloads.tests;
+package dfcsantos.tracks.sharing.endorsements.client.downloads.downloader.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -15,12 +15,12 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
-import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
-import dfcsantos.tracks.sharing.endorsements.client.downloads.TrackDownloader;
+import dfcsantos.tracks.sharing.endorsements.client.downloads.counter.TrackDownloadCounter;
+import dfcsantos.tracks.sharing.endorsements.client.downloads.downloader.TrackDownloader;
 import dfcsantos.tracks.sharing.endorsements.protocol.TrackEndorsement;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
@@ -31,6 +31,7 @@ public class TrackDownloaderTest extends BrickTest {
 
 	@Bind private final FileClient _fileClient = mock(FileClient.class);
 	@Bind private final Seals _seals = mock(Seals.class);
+	@Bind private final TrackDownloadCounter _downloadCounter = mock(TrackDownloadCounter.class);
 
 	@Test(timeout = 3000)
 	public void trackDownload() throws Exception {
@@ -38,10 +39,11 @@ public class TrackDownloaderTest extends BrickTest {
 		final Sneer1024 hash2 = my(Crypto.class).digest(new byte[] { 2 });
 		final Sneer1024 hash3 = my(Crypto.class).digest(new byte[] { 3 });
 
-		checking(new Expectations(){{
+		checking(new Expectations() {{
 			oneOf(_seals).ownSeal(); will(returnValue(newSeal(1)));
 			oneOf(_seals).ownSeal(); will(returnValue(newSeal(2)));
-			exactly(1).of(_fileClient).startFileDownload(new File(peerTracksFolder(), "ok.mp3"), 41, hash1);
+			oneOf(_fileClient).startFileDownload(new File(peerTracksFolder(), "ok.mp3"), 41, hash1);
+			oneOf(_downloadCounter).increment();
 			allowing(_seals).ownSeal();
 		}});
 
@@ -50,11 +52,7 @@ public class TrackDownloaderTest extends BrickTest {
 
 		_subject.setActive(true);
 
-		assertNumberOfDownloadedTracksEquals(0);
 		aquireEndorsementTuple(hash1, 41, "songs/subfolder/ok.mp3");
-		my(SignalUtils.class).waitForValue(_subject.numberOfDownloadedTracks(), 1);
-		_subject.decrementDownloadedTracks();
-		my(SignalUtils.class).waitForValue(_subject.numberOfDownloadedTracks(), 0);
 
 		my(Wusic.class).allowTracksDownload(false);
 		aquireEndorsementTuple(hash2, 42, "songs/subfolder/notOk1.mp3");
@@ -80,10 +78,6 @@ public class TrackDownloaderTest extends BrickTest {
 
 	private Seal newSeal(int b) {
 		return new Seal(new ImmutableByteArray(new byte[] { (byte) b }));
-	}
-
-	private void assertNumberOfDownloadedTracksEquals(int actual) {
-		assertTrue(my(TrackDownloader.class).numberOfDownloadedTracks().currentValue() == actual);
 	}
 
 }
