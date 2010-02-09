@@ -6,6 +6,7 @@ import sneer.bricks.network.computers.sockets.accepter.SocketAccepter;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.receiver.SocketReceiver;
 import sneer.bricks.pulp.network.ByteArraySocket;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class SocketReceiverImpl implements SocketReceiver {
@@ -18,7 +19,7 @@ class SocketReceiverImpl implements SocketReceiver {
 
 	SocketReceiverImpl() {
 		_receptionRefToAvoidGc = _socketAccepter.lastAcceptedSocket().addReceiver(new Consumer<ByteArraySocket>() { @Override public void consume(final ByteArraySocket socket) {
-			_threads.startDaemon("SocketReceiverImpl", new Runnable() { @Override public void run() {
+			_threads.startDaemon("SocketReceiverImpl", new Closure() { @Override public void run() {
 				my(ConnectionManager.class).manageIncomingSocket(socket);
 			}});
 		}});

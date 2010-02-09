@@ -10,6 +10,7 @@ import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.retrier.Retrier;
 import sneer.bricks.pulp.retrier.Task;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.exceptions.FriendlyException;
 
 class RetrierImpl implements Retrier {
@@ -22,7 +23,7 @@ class RetrierImpl implements Retrier {
 	private final Contract _steppingContract;
 	
 	RetrierImpl(final int periodBetweenAttempts, final Task task) {
-		_steppingContract = _threads.startStepping(new Runnable() { @Override public void run() {
+		_steppingContract = _threads.startStepping(new Closure() { @Override public void run() {
 			if (wasSuccessful(task))
 				_steppingContract.dispose();
 			else

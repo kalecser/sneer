@@ -17,7 +17,7 @@ import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.foundation.lang.ByRef;
-import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.exceptions.FriendlyException;
 
 class BlinkingLightsImpl implements BlinkingLights {
@@ -63,7 +63,7 @@ class BlinkingLightsImpl implements BlinkingLights {
 	private void turnOffIn(final Light light, int millisFromNow) {
 		final Latch added = my(Latches.class).produce();
 		final ByRef<WeakContract> weakContract = ByRef.newInstance();
-		weakContract.value = my(Timer.class).wakeUpInAtLeast(millisFromNow, new Runnable() { @Override public void run() {
+		weakContract.value = my(Timer.class).wakeUpInAtLeast(millisFromNow, new Closure() { @Override public void run() {
 			
 			turnOffIfNecessary(light);
 			
@@ -115,7 +115,7 @@ class BlinkingLightsImpl implements BlinkingLights {
 		light._error = t;
 		light._helpMessage = helpMessage == null ? "If this problem doesn't go away on its own, get an expert sovereign friend to help you. ;)" : helpMessage;
 		
-		log(caption);
+		log(light_.type(), caption);
 		
 		_lights.add(light);
 		
@@ -123,16 +123,16 @@ class BlinkingLightsImpl implements BlinkingLights {
 			turnOffIn(light, timeout);
 	}
 
-	@Override
-	public void askForConfirmation(LightType type, String caption, String helpMessage, Consumer<Boolean> confirmationReceiver) {
-		LightImpl light = new LightImpl(type, confirmationReceiver);
-		light._caption = caption;
-		light._helpMessage = helpMessage;
-		turnOnIfNecessary(light, caption, helpMessage);
+
+	private void log(LightType lightType, String caption) {
+		my(Logger.class).log(severityTag(lightType), caption);
 	}
 
-	private void log(String caption) {
-		my(Logger.class).log("Blinking light turned on: {}", caption);
+	
+	private String severityTag(LightType lightType) {
+		if (lightType == LightType.ERROR) return "> > > > > > ERROR: ";
+		if (lightType == LightType.WARNING) return "> > > WARNING: ";
+		return "   ";
 	}
 
 }

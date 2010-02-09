@@ -9,29 +9,30 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
-import sneer.foundation.brickness.Tuple;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 
 public class TuplePersistenceTest extends BrickTest {
 
-	@Test
+	@Test (timeout = 2000)
 	public void tuplePersistence() {
-		runInNewEnvironment(new Runnable() { @Override public void run() {
+		runInNewEnvironment(new Closure() { @Override public void run() {
 			TupleSpace subject1 = createSubject();
 	
 			assertEquals(0, subject1.keptTuples().size());
 	
 			subject1.keep(TestTuple.class);
-			subject1.publish(tuple(0));
-			subject1.publish(tuple(1));
-			subject1.publish(tuple(2));
+			subject1.acquire(tuple(0));
+			subject1.acquire(tuple(1));
+			subject1.acquire(tuple(2));
 		}});
 		
-		runInNewEnvironment(new Runnable() { @Override public void run() {
+		runInNewEnvironment(new Closure() { @Override public void run() {
 			
 			TupleSpace subject2 = createSubject();
 			List<Tuple> kept = subject2.keptTuples();
@@ -44,11 +45,11 @@ public class TuplePersistenceTest extends BrickTest {
 	}
 
 	
-	@Test
+	@Test (timeout = 2000)
 	public void filesAreClosedUponCrash() throws IOException {
 		
 		my(TupleSpace.class).keep(TestTuple.class);
-		my(TupleSpace.class).publish(tuple(42));
+		my(TupleSpace.class).acquire(tuple(42));
 		
 		my(Threads.class).crashAllThreads();
 		
@@ -60,9 +61,9 @@ public class TuplePersistenceTest extends BrickTest {
 		return new TestTuple(i);
 	}
 	
-	private void runInNewEnvironment(Runnable runnable) {
+	private void runInNewEnvironment(Closure closure) {
 		Environment newEnvironment = newTestEnvironment(my(FolderConfig.class));
-		Environments.runWith(newEnvironment, runnable);
+		Environments.runWith(newEnvironment, closure);
 	}
 	
 	private TupleSpace createSubject() {

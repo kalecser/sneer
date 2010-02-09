@@ -2,7 +2,7 @@ package sneer.bricks.pulp.internetaddresskeeper.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddress;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
@@ -11,7 +11,7 @@ import sneer.bricks.pulp.reactive.collections.SetSignal;
 
 class InternetAddressKeeperImpl implements InternetAddressKeeper {
 
-	private final ContactManager _contactManager = my(ContactManager.class);
+	private final Contacts _contactManager = my(Contacts.class);
 	private final SetRegister<InternetAddress> _addresses = my(CollectionSignals.class).newSetRegister();
 	
 	InternetAddressKeeperImpl(){

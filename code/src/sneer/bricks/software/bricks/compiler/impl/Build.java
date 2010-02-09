@@ -17,19 +17,22 @@ import sneer.bricks.hardware.io.IO.Filter;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.software.bricks.compiler.BrickCompilerException;
 import sneer.bricks.software.bricks.compiler.Builder;
-import sneer.bricks.software.code.compilers.java.JavaCompiler;
-import sneer.bricks.software.code.compilers.java.JavaCompilerException;
+import sneer.bricks.software.code.compilers.CompilerException;
+import sneer.bricks.software.code.compilers.Language;
+import sneer.bricks.software.code.compilers.LanguageCompiler;
 import sneer.bricks.software.folderconfig.FolderConfig;
 
 class Build {
 
 	private final File _srcFolder;
 	private final File _destFolder;
+	private final Language _language;
 
 
-	Build(File srcFolder, File destFolder) throws IOException, BrickCompilerException {
+	Build(File srcFolder, File destFolder, Language language) throws IOException, BrickCompilerException {
 		_srcFolder = srcFolder;
 		_destFolder = destFolder;
+		_language = language;
 		
 		buildFoundation();
 		buildBricks();
@@ -102,10 +105,15 @@ class Build {
 
 	private void compile(Collection<File> testFiles) throws IOException, BrickCompilerException {
 		try {
-			my(JavaCompiler.class).compile(testFiles, _destFolder, testClassPath());
-		} catch (JavaCompilerException e) {
+			compiler().compile(testFiles, _destFolder, testClassPath());
+		} catch (CompilerException e) {
 			throw new BrickCompilerException(e);
 		}
+	}
+
+
+	private LanguageCompiler compiler() {
+		return _language.compiler();
 	}
 
 
@@ -181,8 +189,9 @@ class Build {
 	private void compile(File srcFolder, File binFolder, File... classpath) throws IOException, BrickCompilerException {
 		if (!srcFolder.exists()) return;
 		try {
-			my(JavaCompiler.class).compile(srcFolder, binFolder, classpath);
-		} catch (JavaCompilerException e) {
+			List<File> srcFiles = new ArrayList<File>(my(IO.class).files().listFiles(srcFolder, new String[]{_language.fileExtension()}, true));
+			compiler().compile(srcFiles, binFolder, classpath);
+		} catch (CompilerException e) {
 			throw new BrickCompilerException(e);
 		}
 	}
@@ -190,8 +199,8 @@ class Build {
 	
 	private void compileApi(Collection<File> apiFiles, File destinationFolder) throws IOException, BrickCompilerException {
 		try {
-			my(JavaCompiler.class).compile(apiFiles, destinationFolder, destinationFolder);
-		} catch (JavaCompilerException e) {
+			compiler().compile(apiFiles, destinationFolder, destinationFolder);
+		} catch (CompilerException e) {
 			throw new BrickCompilerException(e);
 		}
 	}
@@ -200,10 +209,11 @@ class Build {
 	private Collection<File> brickApiFiles() {
 		return listJavaFiles(
 			_srcFolder,
-			fileFilters().not(fileFilters().or(
+			fileFilters().not(fileFilters().or(new Filter[] {
 				fileFilters().name("impl"),
 				fileFilters().name("tests"),
-				fileFilters().name("foundation"))));
+				fileFilters().name("foundation")
+			})));
 	}
 
 	

@@ -11,20 +11,21 @@ import sneer.bricks.pulp.network.ByteArrayServerSocket;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.foundation.lang.Closure;
 
 
 public class NetworkTest extends BrickTest {
 	
 	private final Threads _threads = my(Threads.class);
 	
-	@Test
+	@Test(timeout = 2000)
 	public void testNetworkMessages() throws Exception {
 		
 		final Network network = my(Network.class);
 		
 		final ByteArrayServerSocket server = network.openServerSocket(9090);
 
-		_threads.startDaemon("Network Test", new Runnable() { @Override public void run() {
+		_threads.startDaemon("Network Test", new Closure() { @Override public void run() {
 			try {
 				ByteArraySocket request = server.accept();
 				request.write(new String(request.read()).toUpperCase().getBytes());

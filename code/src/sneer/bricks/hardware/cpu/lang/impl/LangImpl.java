@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.SerializationUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.text.StrBuilder;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
 
@@ -30,14 +31,27 @@ class LangImpl implements Lang {
 
 	private Strings _strings = new Lang.Strings(){
 		@Override public boolean isEmpty(String str) { return str == null || str.isEmpty();	}
-		@Override public String join(Collection<?> collection, String separator) {return StringUtils.join(collection, separator); }
-		@Override public String trimToNull(String str) {return StringUtils.trimToNull(str);}
-		@Override public String chomp(String str, String separator) { return StringUtils.chomp(str, separator);}
+		@Override public String join(Collection<?> collection, String separator) { return StringUtils.join(collection, separator); }
+		@Override public String trimToNull(String str) { return StringUtils.trimToNull(str); }
+		@Override public String remove(String str, String remove) { return StringUtils.remove(str, remove); }
+		@Override public String removeStart(String str, String remove) { return StringUtils.removeStart(str, remove); }
+		@Override public String chomp(String str, String separator) { return StringUtils.chomp(str, separator); }
+		@Override public String strip(String str, String stripChars) { return StringUtils.strip(str, stripChars); }
 		@Override public String substringBeforeLast(String str, String separator) {	return StringUtils.substringBeforeLast(str, separator); }
 		@Override public String substringAfterLast(String str, String separator) {	return StringUtils.substringAfterLast(str, separator); }
 
 		@Override public String deleteWhitespace(String str) {return StringUtils.deleteWhitespace(str);}
-		
+
+		@Override
+		public String insertSpacedSeparators(String str, String separator, int interval) {
+			StrBuilder result = new StrBuilder(str);
+			int gap = separator.length();
+			int numberOfSeparators = (result.length() - 1) / interval;
+			for (int index = interval, count = 0; count < numberOfSeparators; ++count, index += interval + gap)
+				result.insert(index, separator);
+			return result.toString();
+		}
+
 		@Override public List<String> readLines(String input) {
 	        BufferedReader reader = new BufferedReader(new StringReader(input));
 			List<String> list = new ArrayList<String>();
@@ -86,9 +100,11 @@ class LangImpl implements Lang {
 			my(Lang.class).arrays().reverse(array);
 			return array;
 		}
+
 	};
 
 	@Override	public Arrays arrays() { return _arrays; }
 	@Override public Serialization serialization() {	 return _serialization;}
 	@Override public Strings strings() { return _strings;}
+
 }

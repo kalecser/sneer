@@ -3,16 +3,20 @@ package sneer.bricks.network.computers.sockets.connections.originator.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
+import sneer.bricks.network.social.Contact;
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.Light;
+import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddress;
+import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
+import sneer.foundation.lang.Closure;
 
 class OutgoingAttempt {
 
@@ -20,34 +24,21 @@ class OutgoingAttempt {
 	private final ConnectionManager _connectionManager = my(ConnectionManager.class);
 	private final InternetAddress _address;
 	private final WeakContract _steppingContract;
+	private final Light _light = my(BlinkingLights.class).prepare(LightType.WARNING);
 
-	private AtomicBoolean _isOpening = new AtomicBoolean(false);
-	
 	
 	OutgoingAttempt(InternetAddress address) {
 		_address = address;
 
-		_steppingContract = my(Timer.class).wakeUpNowAndEvery(20 * 1000, new Runnable() { @Override public void run() {
-			my(Threads.class).startDaemon("Outgoing Attempt", new Runnable() { @Override public void run() {
-				tryToOpenOnlyOnce();
-			}});
-		}});
-
-	}
-
-	
-	private void tryToOpenOnlyOnce() {
-		if (_isOpening.getAndSet(true)) return;
-		try {
+		_steppingContract = my(Timer.class).wakeUpNowAndEvery(20 * 1000, new Closure() { @Override public void run() {
 			tryToOpen();
-		} finally {
-			_isOpening.set(false);
-		}
-	}	
+		}});
+	}
 
 	
 	private void tryToOpen() {
 		if (hasSocketAlready()) return;
+		if (!contactHasSeal()) return;
 		
 		my(Logger.class).log("Trying to open socket to: {} port: {}", _address.host(), _address.port());
 
@@ -60,12 +51,27 @@ class OutgoingAttempt {
 		}
 
 		my(Logger.class).log("Socket opened to: {} port: {}", _address.host(), _address.port());
-		_connectionManager.manageOutgoingSocket(socket, _address.contact());
+		_connectionManager.manageOutgoingSocket(socket, contact());
+	}
+
+
+	private boolean contactHasSeal() {
+		if (my(Seals.class).sealGiven(contact()) == null) {
+			my(BlinkingLights.class).turnOnIfNecessary(_light, "" + contact() + "'s Seal is unknown.", "You will be able to connect to this contact once you have entered his Seal. Right-click on the contact and choose 'Edit Contact' (or something like that :)");
+			return false;
+		}
+		my(BlinkingLights.class).turnOffIfNecessary(_light);
+		return true;
+	}
+
+
+	private Contact contact() {
+		return _address.contact();
 	}
 
 	
 	private boolean hasSocketAlready() {
-		return _connectionManager.connectionFor(_address.contact()).isConnected().currentValue();
+		return _connectionManager.connectionFor(contact()).isConnected().currentValue();
 	}
 
 	

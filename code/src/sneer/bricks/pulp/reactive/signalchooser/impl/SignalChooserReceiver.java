@@ -11,6 +11,7 @@ import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.CollectionSignal;
 import sneer.bricks.pulp.reactive.signalchooser.ListOfSignalsReceiver;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 
@@ -62,7 +63,7 @@ class SignalChooserReceiver<T> {
 		@SuppressWarnings("unused") private final WeakContract _referenceToAvoidGc;
 
 		ElementReceiver(final T element) {
-			_referenceToAvoidGc = my(Pulsers.class).receive(new Runnable(){ @Override public void run() {
+			_referenceToAvoidGc = my(Pulsers.class).receive(new Closure(){ @Override public void run() {
 				if (!_isActive) return;
 				_listOfSignalsReceiver.elementSignalChanged(element);
 			}}, signalChooser().signalsToReceiveFrom(element));

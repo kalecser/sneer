@@ -25,17 +25,17 @@ abstract class ShoutUtils {
 
 	static String publisherNick(Shout shout) {
 		if(isMyOwnShout(shout)) return ownName().name().currentValue();
-		Contact contact = keyManager().contactGiven(shout.publisher());
+		Contact contact = keyManager().contactGiven(shout.publisher);
 		return contact == null
-			? "Unknown Public Key: " + shout.publisher() + " "
+			? "Unknown Public Key: " + shout.publisher + " "
 			: contact.nickname().currentValue() + " ";
 	}
 
 	static String getFormatedShoutTime(Shout shout) {
-		return FORMAT.format(new Date(shout.publicationTime()));
+		return FORMAT.format(new Date(shout.publicationTime));
 	}
 
 	static boolean isMyOwnShout(Shout shout) {
-		return keyManager().ownSeal().equals(shout.publisher());
+		return keyManager().ownSeal().equals(shout.publisher);
 	}
 }

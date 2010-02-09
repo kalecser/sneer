@@ -7,9 +7,9 @@ import java.util.Arrays;
 
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
+import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.foundation.brickness.Seal;
 
 /** When two parties simultaneously open sockets to each other, this guy decides which socket to use by comparing an arbitrary symmetry breaker: each party's seal.*/
 class TieBreaker {
@@ -36,8 +36,8 @@ class TieBreaker {
 
 
 	private static boolean mySealIsGreaterThanHis(Contact contact) {
-		byte[] bytes1 = Seals.ownSeal().bytes();
-		byte[] bytes2 = Seals.sealGiven(contact).bytes();
+		byte[] bytes1 = Seals.ownSeal().bytes.copy();
+		byte[] bytes2 = Seals.sealGiven(contact).bytes.copy();
 		
 		if (bytes1.length != bytes2.length)
 			return bytes1.length > bytes2.length;

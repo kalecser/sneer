@@ -26,7 +26,7 @@ class WindImpl implements Wind, Consumer<Shout> {
 		my(TupleSpace.class).keep(Shout.class);
 		
 		_sortedShouts = my(ListSorter.class).sort(_shoutsHeard.output(), new Comparator<Shout>(){ @Override public int compare(Shout o1, Shout o2) {
-			return (int) (o1.publicationTime() - o2.publicationTime());
+			return (int) (o1.publicationTime - o2.publicationTime);
 		}});
 	}
 
@@ -37,7 +37,7 @@ class WindImpl implements Wind, Consumer<Shout> {
 
 	@Override
 	public void consume(Shout shout) {
-		if (my(Clock.class).time().currentValue() - shout.publicationTime() > 1000 * 60 * 60 * 24) return;
+		if (my(Clock.class).time().currentValue() - shout.publicationTime > 1000 * 60 * 60 * 24) return;
 		_shoutsHeard.adder().consume(shout);
 	}
 
@@ -49,6 +49,6 @@ class WindImpl implements Wind, Consumer<Shout> {
 	}
 
 	private void shout(String phrase) {
-		my(TupleSpace.class).publish(new Shout(phrase));
+		my(TupleSpace.class).acquire(new Shout(phrase));
 	}
 }

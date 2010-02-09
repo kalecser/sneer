@@ -19,6 +19,7 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.widgets.autoscroll.AutoScroll;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 
@@ -46,8 +47,8 @@ public class AutoScrollTest extends BrickTest {
 		_subject1 = new JScrollPane();
 		@SuppressWarnings("unused")
 		WeakContract reception = _register.output().addReceiver(new Consumer<String>() { @Override public void consume(final String change) {
-			my(GuiThread.class).invokeAndWait(new Runnable(){ @Override public void run() {
-				my(AutoScroll.class).runWithAutoscroll(_subject1, new Runnable() { @Override public void run() {
+			my(GuiThread.class).invokeAndWait(new Closure(){ @Override public void run() {
+				my(AutoScroll.class).runWithAutoscroll(_subject1, new Closure() { @Override public void run() {
 					append(_field1, change);
 				}});
 			}});
@@ -58,7 +59,7 @@ public class AutoScrollTest extends BrickTest {
 		_subject2 = new JScrollPane();
 		@SuppressWarnings("unused")
 		WeakContract reception = _register.output().addReceiver(new Consumer<String>() { @Override public void consume(final String change) {
-			my(AutoScroll.class).runWithAutoscroll(_subject2, new Runnable() { @Override public void run() {
+			my(AutoScroll.class).runWithAutoscroll(_subject2, new Closure() { @Override public void run() {
 				append(_field2, change);
 			}});
 		}});

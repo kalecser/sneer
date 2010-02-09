@@ -8,9 +8,9 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
-import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Consumer;
 
@@ -26,12 +26,12 @@ public class TupleSpaceTest extends BrickTest {
 		}});
 		
 		final TestTuple tuple = new TestTuple(42);
-		_subject.publish(tuple);
+		_subject.acquire(tuple);
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 
 		contract.dispose();
 		
-		_subject.publish(new TestTuple(-1));
+		_subject.acquire(new TestTuple(-1));
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 		assertArrayEquals(new Object[] { tuple }, tuples.toArray());
 	}

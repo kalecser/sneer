@@ -26,7 +26,7 @@ public class TupleSpaceResponsivenessTest extends BrickTest {
 		}});
 
 		final TestTuple tuple = new TestTuple(42);
-		_subject.publish(tuple);
+		_subject.acquire(tuple);
 		
 		assertFalse(wasPublished.value);
 		_threads.getStepper(0).run();

@@ -11,4 +11,6 @@ public interface WusicGui {
 
 	Dimension PREFERRED_SIZE = new Dimension(480, 140);
 
+	String MUSICAL_NOTE_ICON = "\u266A"; 
+
 }

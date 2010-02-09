@@ -57,11 +57,11 @@ public class BricknessImpl implements Environment {
 	private <T> T tryToLoadBrick(Class<T> brick) throws ClassNotFoundException {
 		checkClassLoader(brick);
 		
-		Class<?> brickImpl = _brickImplLoader.loadImplClassFor(brick);
+		Class<T> brickImpl = _brickImplLoader.loadImplClassFor(brick);
 		return instantiate(brick, brickImpl);
 	}
 	
-	private <T> T instantiate(Class<T> brick, final Class<?> brickImpl) {
+	private <T> T instantiate(Class<T> brick, final Class<T> brickImpl) {
 		List<Nature> natures = BrickImplLoader.naturesFor(brick);
 		if (natures.isEmpty())
 			return (T)newInstance(brickImpl);

@@ -16,7 +16,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import sneer.bricks.hardware.gui.Action;
+import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
@@ -25,6 +25,7 @@ import sneer.bricks.snapps.gis.location.Location;
 import sneer.bricks.snapps.gis.location.Locations;
 import sneer.bricks.snapps.gis.map.MapRenderer;
 import sneer.bricks.snapps.gis.map.gui.MapGui;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class MapGuiImpl implements MapGui{
@@ -70,7 +71,7 @@ class MapGuiImpl implements MapGui{
 		if(image==null) return;
 		_mapHolder.setIcon(new ImageIcon(image));
 
-		my(GuiThread.class).invokeLater(new Runnable(){ @Override public void run() {
+		my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
 			centerScrollBar(_scroll.getVerticalScrollBar(), _scroll.getSize().height/2);
 			centerScrollBar(_scroll.getHorizontalScrollBar(), _scroll.getSize().width/2);
 			_address.setEnabled(true);

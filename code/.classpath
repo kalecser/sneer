@@ -4,13 +4,15 @@
 	<classpathentry kind="lib" path="src/sneer/bricks/software/code/compilers/java/impl/lib/compiler-7-ea-b17-02_aug_2007.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/bricks/interception/impl/lib/javassist.jar" sourcepath="src/sneer/bricks/software/bricks/interception/impl/lib/javassist-src.zip"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/bricks/interception/tests/fixtures/brickwithlib/impl/lib/foo.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/software/code/compilers/scala/impl/lib/scala-compiler.jar" sourcepath="/usr/java/scala/scala/src/scala-compiler-src.jar"/>
+	<classpathentry kind="lib" path="src/sneer/foundation/languagesupport/scala/lib/scala-library.jar"/>
+	<classpathentry kind="lib" path="src/dfcsantos/tracks/execution/player/impl/lib/jl1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/sneer/foundation/testsupport/lib/hamcrest-core-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/sneer/foundation/testsupport/lib/hamcrest-library-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/sneer/foundation/testsupport/lib/jmock-2.5.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/sneer/foundation/testsupport/lib/jmock-junit4-2.5.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/sneer/foundation/testsupport/lib/junit-4.4.jar" sourcepath="src/sneer/foundation/testsupport/lib/junit-4.4-src.jar"/>
-	<classpathentry kind="lib" path="src/sneer/bricks/pulp/tuples/impl/lib/prevayler-2.3.jar" sourcepath="src/sneer/bricks/pulp/tuples/impl/lib/prevayler-2.3-src.zip"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/hardware/io/prevalence/nature/impl/lib/prevayler-2.3.jar" sourcepath="src/sneer/bricks/hardware/io/prevalence/nature/impl/lib/prevayler-2.3-src.zip"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/skin/main/dashboard/impl/lib/jxlayer.jar" sourcepath="bricks/src/sneer/skin/main/dashboard/impl/lib/jxlayer-src.zip"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/hardware/cpu/lang/impl/lib/commons-lang-2.4.jar" sourcepath="src/sneer/bricks/hardware/cpu/lang/impl/lib/commons-lang-2.4-src.zip"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/hardware/io/impl/lib/commons-io-1.4.jar" sourcepath="src/sneer/bricks/hardware/io/impl/lib/commons-io-1.4-src.zip"/>
@@ -20,7 +22,8 @@
 	<classpathentry kind="lib" path="src/sneer/bricks/software/code/metaclass/asm/impl/lib/asm-all-3.1.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/diff/impl/lib/diff_match_patch.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/timing/impl/lib/TimingFramework-1.0.jar"/>
-	<classpathentry kind="lib" path="src/dfcsantos/tracks/player/impl/lib/jl1.0.1.jar" sourcepath="src/dfcsantos/tracks/player/impl/lib/jl1.0.1-src.zip"/>
-	<classpathentry kind="lib" path="src/sneer/bricks/hardware/cpu/algorithms/crypto/impl/lib/bcprov-jdk16-139.jar"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/hardware/cpu/crypto/impl/lib/bcprov-jdk16-139.jar"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/hardware/cpu/codec/impl/lib/commons-codec-1.4.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -23,19 +23,22 @@ import sneer.foundation.environments.Environments;
 class InterceptionEnhancerImpl implements InterceptionEnhancer {
 
 	public static final String BRICK_METADATA_CLASS = "natures.runtime.BrickMetadata";
-	private final ClassPool classPool;
+	private final ClassPool _classPool = new ClassPool(false);
 	private int _continuations;
 
 	public InterceptionEnhancerImpl() {
-		classPool  = new ClassPool(false);
-		classPool.appendClassPath(new LoaderClassPath(InterceptionEnhancer.class.getClassLoader()));
+		appendBrickApiClassPath();
+	}
+
+	private void appendBrickApiClassPath() {
+		_classPool.appendClassPath(new LoaderClassPath(InterceptionEnhancer.class.getClassLoader()));
 	}
 
 	@Override
 	public List<ClassDefinition> realize(Class<? extends Interceptor> interceptorClass, final ClassDefinition classDef) {
 		final ArrayList<ClassDefinition> result = new ArrayList<ClassDefinition>();
 		try {
-			final CtClass ctClass = classPool.makeClass(new ByteArrayInputStream(classDef.bytes));
+			final CtClass ctClass = _classPool.makeClass(new ByteArrayInputStream(classDef.bytes));
 			CtClass metadata = null;
 			try {
 				metadata = defineBrickMetadata(ctClass);
@@ -78,7 +81,7 @@ class InterceptionEnhancerImpl implements InterceptionEnhancer {
 	}
 
 	private CtClass defineBrickMetadata(@SuppressWarnings("unused") CtClass brickClass) {
-		CtClass metadata = classPool.makeClass(BRICK_METADATA_CLASS);
+		CtClass metadata = _classPool.makeClass(BRICK_METADATA_CLASS);
 		metadata.setModifiers(javassist.Modifier.PUBLIC);
 		try {
 			metadata.addField(CtField.make("public static " + Class.class.getName() + " BRICK;", metadata));
@@ -106,7 +109,7 @@ class InterceptionEnhancerImpl implements InterceptionEnhancer {
 		for (CtMethod m : ctClass.getDeclaredMethods()) {
 			if (!isAccessibleInstanceMethod(m))
 				continue;
-			new MethodEnhancer(continuationNameFor(m), classPool, ctClass, m, result).run();
+			new MethodEnhancer(continuationNameFor(m), _classPool, ctClass, m, result).run();
 		}
 	}
 

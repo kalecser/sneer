@@ -20,8 +20,8 @@ import sneer.bricks.pulp.datastructures.cache.CacheFactory;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.EventSource;
+import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.exceptions.FriendlyException;
 import spikes.sneer.bricks.skin.screenshotter.Screenshotter;
@@ -74,7 +74,7 @@ class WatchMeImpl implements WatchMe {
 		final Cache<ImmutableByteArray> cache = _cacheFactory.createWithCapacity(CACHE_CAPACITY);
 		
 		return new Consumer<ImageDeltaPacket>(){@Override public void consume(ImageDeltaPacket delta) {
-			if (!delta.publisher().equals(publisher))
+			if (!delta.publisher.equals(publisher))
 				return;
 			
 			ImmutableByteArray imageData = delta.imageData != null
@@ -123,14 +123,14 @@ class WatchMeImpl implements WatchMe {
 		if (cache().contains(delta.imageData))
 			publishCacheHit(delta);
 		else
-			_tupleSpace.publish(new ImageDeltaPacket(delta.x, delta.y, delta.imageData, 0));
+			_tupleSpace.acquire(new ImageDeltaPacket(delta.x, delta.y, delta.imageData, 0));
 		
 		cache().keep(delta.imageData);
 	}
 
 	private void publishCacheHit(ImageDelta delta) {
 		int handle = cache().handleFor(delta.imageData);
-		_tupleSpace.publish(new ImageDeltaPacket(delta.x, delta.y, null, handle));
+		_tupleSpace.acquire(new ImageDeltaPacket(delta.x, delta.y, null, handle));
 	}
 
 	private Encoder encoder() {

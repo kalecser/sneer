@@ -4,7 +4,7 @@
 package sneer.bricks.skin.main.dashboard.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.hardware.gui.Action;
+import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.trayicon.SystemTrayNotSupported;
 import sneer.bricks.hardware.gui.trayicon.TrayIcon;
 import sneer.bricks.hardware.gui.trayicon.TrayIcons;

@@ -4,35 +4,35 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 
-import sneer.bricks.hardware.ram.ref.immutable.Immutable;
-import sneer.bricks.hardware.ram.ref.immutable.Immutables;
+import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
+import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
 import sneer.bricks.software.folderconfig.FolderConfig;
 
 
 public class FolderConfigImpl implements FolderConfig {
 
-	private final Immutable<File> _ownSrcFolder = immutable();
-	private final Immutable<File> _ownBinFolder = immutable();
+	private final ImmutableReference<File> _ownSrcFolder = immutable();
+	private final ImmutableReference<File> _ownBinFolder = immutable();
 
-	private final Immutable<File> _srcFolder = immutable();
-	private final Immutable<File> _binFolder = immutable();
-	private final Immutable<File> _stageFolder = immutable();
+	private final ImmutableReference<File> _srcFolder = immutable();
+	private final ImmutableReference<File> _binFolder = immutable();
+	private final ImmutableReference<File> _stageFolder = immutable();
 
-	private final Immutable<File> _storageFolder = immutable();
-	private final Immutable<File> _tmpFolder = immutable();
+	private final ImmutableReference<File> _storageFolder = immutable();
+	private final ImmutableReference<File> _tmpFolder = immutable();
 
 	@Override
-	public Immutable<File> ownBinFolder() {
+	public ImmutableReference<File> ownBinFolder() {
 		return _ownBinFolder;
 	}
 
 	@Override
-	public Immutable<File> binFolder() {
+	public ImmutableReference<File> binFolder() {
 		return _binFolder;
 	}
 
 	@Override
-	public Immutable<File> storageFolder() {
+	public ImmutableReference<File> storageFolder() {
 		return _storageFolder;
 	}
 
@@ -42,22 +42,22 @@ public class FolderConfigImpl implements FolderConfig {
 	}
 
 	private File brickFolderIn(File parent, Class<?> brick) {
-		final File folder = new File(parent, brick.getName().replace(".", "/"));
+		final File folder = new File(parent, "bricks/" + brick.getName());
 		folder.mkdirs();
 		return folder;
 	}
 
-	private static <T> Immutable<T> immutable() {
-		return my(Immutables.class).newInstance();
+	private static <T> ImmutableReference<T> immutable() {
+		return my(ImmutableReferences.class).newInstance();
 	}
 
 	@Override
-	public Immutable<File> ownSrcFolder() {
+	public ImmutableReference<File> ownSrcFolder() {
 		return _ownSrcFolder;
 	}
 
 	@Override
-	public Immutable<File> srcFolder() {
+	public ImmutableReference<File> srcFolder() {
 		return _srcFolder;
 	}
 
@@ -67,12 +67,12 @@ public class FolderConfigImpl implements FolderConfig {
 	}
 
 	@Override
-	public Immutable<File> tmpFolder() {
+	public ImmutableReference<File> tmpFolder() {
 		return _tmpFolder;
 	}
 
 	@Override
-	public Immutable<File> stageFolder() {
+	public ImmutableReference<File> stageFolder() {
 		return _stageFolder;
 	}
 	

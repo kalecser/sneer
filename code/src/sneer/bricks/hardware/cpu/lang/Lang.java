@@ -26,9 +26,13 @@ public interface Lang {
 		boolean isEmpty(String str);
 		String join(Collection<?> collection, String separator);
 		String trimToNull(String str);
+		String remove(String str, String remove);
+		String removeStart(String str, String remove);
 		String chomp(String str, String suffix);
+		String strip(String str, String stripChars);
 		String substringBeforeLast(String str, String separator);
 		String deleteWhitespace(String str);
+		String insertSpacedSeparators(String str, String separator, int interval);
 		List<String> readLines(String input);
 		byte[] toByteArray(String string);
 		String[] splitRight(String line, char separator, int maxParts);

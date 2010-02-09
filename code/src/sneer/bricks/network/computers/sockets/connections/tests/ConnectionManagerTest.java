@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -16,7 +16,7 @@ public class ConnectionManagerTest extends BrickTest {
 
 	private final ConnectionManager _subject = my(ConnectionManager.class);
 
-	private final ContactManager _contactManager = my(ContactManager.class);
+	private final Contacts _contactManager = my(Contacts.class);
 
 	@Ignore
 	@Test (timeout = 2000)

@@ -13,7 +13,7 @@ import javax.swing.SwingUtilities;
 
 import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 
-class WindowBoundsSetterImpl implements WindowBoundsSetter{
+class WindowBoundsSetterImpl implements WindowBoundsSetter {
 
 	private List<Runnable> _toRunWhenBaseComponentIsReady = new ArrayList<Runnable>();
 	private Component _defaultBaseComponent;

@@ -57,9 +57,7 @@ abstract class ClassLoaderWithNatures extends EagerClassLoader {
 		return classDefs;
 	}
 
-	private List<ClassDefinition> realizeNature(
-			List<ClassDefinition> classDefs, Nature nature) {
-		
+	private List<ClassDefinition> realizeNature(List<ClassDefinition> classDefs, Nature nature) {
 		ArrayList<ClassDefinition> resultingDefs = new ArrayList<ClassDefinition>();
 		for (ClassDefinition classDef : classDefs)
 			resultingDefs.addAll(nature.realize(classDef));

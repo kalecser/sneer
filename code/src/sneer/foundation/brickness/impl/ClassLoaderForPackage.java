@@ -30,4 +30,11 @@ class ClassLoaderForPackage extends ClassLoaderWithNatures {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return ClassLoaderForPackage.class.getSimpleName()+ ":" + _package;
+	}
+
+	
+	
 }

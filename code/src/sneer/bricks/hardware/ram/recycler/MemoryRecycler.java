@@ -5,4 +5,4 @@ import sneer.foundation.brickness.Brick;
 
 @Snapp
 @Brick
-public interface MemoryRecycler { }
+public interface MemoryRecycler {}

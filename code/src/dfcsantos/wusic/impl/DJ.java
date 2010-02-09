@@ -7,10 +7,11 @@ import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.Track;
-import dfcsantos.tracks.player.TrackContract;
-import dfcsantos.tracks.player.TrackPlayer;
+import dfcsantos.tracks.execution.player.TrackContract;
+import dfcsantos.tracks.execution.player.TrackPlayer;
 
 public class DJ implements Consumer<Track> {
 
@@ -27,7 +28,7 @@ public class DJ implements Consumer<Track> {
 		_toCallWhenDonePlayingATrack = toCallWhenDonePlayingATrack;
 		_djContract = trackToPlay.addReceiver(this);
 
-		_timerContract = my(Timer.class).wakeUpEvery(500, new Runnable() { @Override public void run() {
+		_timerContract = my(Timer.class).wakeUpEvery(500, new Closure() { @Override public void run() {
 			if (_currentTrackContract != null)
 				_trackElapsedTime.setter().consume(_currentTrackContract.trackElapsedTime());
 		}});

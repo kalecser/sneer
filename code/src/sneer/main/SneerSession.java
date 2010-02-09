@@ -13,7 +13,7 @@ import java.io.File;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.robust.RobustExceptionLogging;
-import sneer.bricks.hardware.ram.ref.immutable.Immutable;
+import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.snapps.system.log.file.LogToFile;
 import sneer.bricks.snapps.system.log.sysout.LogToSysout;
 import sneer.bricks.software.bricks.snappstarter.SnappStarter;
@@ -21,24 +21,22 @@ import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 
-public class SneerSession implements Runnable {
+public class SneerSession {
 	
 	public SneerSession() {
-		Environments.runWith(container(), this);
+		Environments.runWith(container(), new Closure() { @Override public void run() {  //Who said Java doesn't have closures? XD
+			start();
+		}});
 	}
 
 	
-	public void run() {
-		
+	private void start() {
 		setContextClassLoader();
-		
 		configure(my(FolderConfig.class));
-
 		startLogging();
-		
 		my(SnappStarter.class).startSnapps();
-		
 		my(Threads.class).waitUntilCrash();
 	}
 
@@ -71,7 +69,7 @@ public class SneerSession implements Runnable {
 	}
 
 	
-	private static void createAndSet(Immutable<File> property, File folder) {
+	private static void createAndSet(ImmutableReference<File> property, File folder) {
 		if (!folder.exists() && !folder.mkdirs()) throw new IllegalStateException("Unable to create folder " + property);
 		property.set(folder);
 	}

@@ -67,7 +67,7 @@ class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Runnable {
 
 
 	private boolean isTooOld(Heartbeat beat) {
-		if (now() - beat.publicationTime() < MAX_BEAT_AGE) return false;
+		if (now() - beat.publicationTime < MAX_BEAT_AGE) return false;
 		
 		my(BlinkingLights.class).turnOn(LightType.WARNING, "Time mismatch with " + contact(beat), "You have received an old Heartbeat from " + contact(beat) + ". This can happen if your clock and his are set to different times or to same times but different timezones.", 20000);
 		return true;
@@ -81,7 +81,7 @@ class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Runnable {
 
 
 	private Contact contact(Heartbeat beat) {
-		return my(Seals.class).contactGiven(beat.publisher());
+		return my(Seals.class).contactGiven(beat.publisher);
 	}
 
 
@@ -91,6 +91,7 @@ class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Runnable {
 		if (isTooOld(beat)) return;
 		
 		Contact contact = contact(beat);
+		if (contact == null) return;
 		_lastBeatTimesByContact.put(contact, now());
 
 		setAlive(contact);
@@ -98,7 +99,7 @@ class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Runnable {
 
 
 	private boolean isMyOwn(Heartbeat beat) {
-		return my(Seals.class).ownSeal().equals(beat.publisher());
+		return my(Seals.class).ownSeal().equals(beat.publisher);
 	}
 
 
@@ -108,13 +109,12 @@ class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Runnable {
 		my(Logger.class).log("Contact {} is online.", contact);
 	}
 
+
 	private void setDead(Contact contact) {
 		if (!isAlive(contact).currentValue()) return;
 		isAliveRegister(contact).setter().consume(false);
 		my(Logger.class).log("Contact {} is offline.", contact);
 	}
-
-
 
 
 	@Override

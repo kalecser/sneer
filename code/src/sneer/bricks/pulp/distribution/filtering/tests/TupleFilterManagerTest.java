@@ -5,8 +5,8 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
+import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
-import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Predicate;
 

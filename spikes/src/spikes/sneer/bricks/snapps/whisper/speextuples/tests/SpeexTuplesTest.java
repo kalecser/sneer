@@ -6,19 +6,19 @@ import org.jmock.Expectations;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
+import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray2D;
+import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.skin.rooms.ActiveRoomKeeper;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
-import sneer.foundation.brickness.Seal;
-import sneer.foundation.brickness.Tuple;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.exceptions.NotImplementedYet;
 import spikes.sneer.bricks.snapps.whisper.speex.Decoder;
 import spikes.sneer.bricks.snapps.whisper.speex.Encoder;
 import spikes.sneer.bricks.snapps.whisper.speex.Speex;
@@ -30,7 +30,6 @@ import spikes.sneer.bricks.snapps.whisper.speextuples.SpeexTuples;
 public class SpeexTuplesTest extends BrickTest {
 
 	private final Seals _keyManager = my(Seals.class);
-	private final Clock _clock = my(Clock.class);
 	private final TupleSpace _tupleSpace = my(TupleSpace.class);
 	
 	@Bind private final Speex _speex = mock(Speex.class);
@@ -107,19 +106,23 @@ public class SpeexTuplesTest extends BrickTest {
 		final PcmSoundPacket pcmPacket = packet.value;
 		assertNotNull(pcmPacket);
 		assertArrayEquals(pcmPacketPayload, pcmPacket.payload.copy());
-		assertEquals(contactKey(), pcmPacket.publisher());
+		assertEquals(contactKey(), pcmPacket.publisher);
 	}
 
 	private void setRoom(String name) {
 		my(ActiveRoomKeeper.class).setter().consume(name);
 	}
 
+	@SuppressWarnings("unused") 
 	private Tuple speexPacketFrom(Seal contactKey, byte[][] bs, String channel, short sequence) {
-		return new SpeexPacket(contactKey, immutable(bs), channel, sequence);
+		SpeexPacket result = new SpeexPacket(immutable(bs), channel, sequence);
+		//result.stamp(contactKey, 0);
+		//return result;
+		throw new NotImplementedYet("Mock the Seals.ownSeal() method to generate tuples with different publishers.");
 	}
 
 	private ImmutableByteArray2D immutable(byte[][] array2D) {
-		return my(ImmutableArrays.class).newImmutableByteArray2D(array2D);
+		return new ImmutableByteArray2D(array2D);
 	}
 
 	private void assertFrames(final byte[][] frames) {
@@ -132,19 +135,23 @@ public class SpeexTuplesTest extends BrickTest {
 	}
 	
 	private Seal contactKey() {
-		return new Seal("anything".getBytes());
+		return new Seal(new ImmutableByteArray("anything".getBytes()));
 	}
-	
+
 	private PcmSoundPacket myPacket(byte[] pcm) {
-		return pcmSoundPacketFor(ownPublicKey(), pcm);
+		return pcmSoundPacketFrom(ownPublicKey(), pcm);
 	}
 
 	private Seal ownPublicKey() {
 		return _keyManager.ownSeal();
 	}
-	
-	private PcmSoundPacket pcmSoundPacketFor(Seal publicKey, final byte[] pcmPayload) {
-		return new PcmSoundPacket(publicKey, _clock.time().currentValue(), my(ImmutableArrays.class).newImmutableByteArray(pcmPayload));
+
+	@SuppressWarnings("unused")
+	private PcmSoundPacket pcmSoundPacketFrom(Seal publicKey, final byte[] pcmPayload) {
+		PcmSoundPacket result = new PcmSoundPacket(new ImmutableByteArray(pcmPayload));
+		//result.stamp(publicKey, _clock.time().currentValue());
+		//return result;
+		throw new NotImplementedYet("Mock the Seals.ownSeal() method to generate tuples with different publishers.");
 	}
 	
 	private byte[][] frames() {

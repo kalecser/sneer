@@ -8,11 +8,11 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
-import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
-import sneer.bricks.hardwaresharing.files.map.FileMap;
-import sneer.bricks.hardwaresharing.files.map.visitors.FileMapGuide;
-import sneer.bricks.hardwaresharing.files.map.visitors.FolderStructureVisitor;
-import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
+import sneer.bricks.expression.files.map.FileMap;
+import sneer.bricks.expression.files.map.visitors.FileMapGuide;
+import sneer.bricks.expression.files.map.visitors.FolderStructureVisitor;
+import sneer.bricks.expression.files.protocol.FolderContents;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
 
@@ -25,7 +25,7 @@ class BrickVersionImpl implements BrickVersion {
 	private boolean _stagedForExecution;
 	
 	BrickVersionImpl(Sneer1024 hashOfPackage, boolean isCurrent) throws IOException {
-		_hash = BrickFilter.cacheOnlyFilesFromThisBrick(hashOfPackage);
+		_hash = BrickFilter.mapOnlyFilesFromThisBrick(hashOfPackage);
 		_files = findFiles();
 		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
 	}
@@ -65,7 +65,7 @@ class BrickVersionImpl implements BrickVersion {
 
 
 	private FolderContents folderContents() {
-		return my(FileMap.class).getFolder(_hash);
+		return my(FileMap.class).getFolderContents(_hash);
 	}
 
 	

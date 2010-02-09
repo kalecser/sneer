@@ -14,6 +14,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class TimerImpl implements Timer {
@@ -129,7 +130,7 @@ class TimerImpl implements Timer {
 			}
 			_isRunning = true;
 			
-			my(Threads.class).startDaemon("Timer for " + stepper, new Runnable() { @Override public void run() {
+			my(Threads.class).startDaemon("Timer for " + stepper, new Closure() { @Override public void run() {
 				stepper.run();
 				_isRunning = false;
 			}});

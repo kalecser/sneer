@@ -16,9 +16,11 @@ import sneer.bricks.skin.main.instrumentregistry.Instrument;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 
 
 public class DashboardDemo  {
+
 	public DashboardDemo() {
 		Environments.my(Dashboard.class);
 		installSampleInstrument();
@@ -32,7 +34,7 @@ public class DashboardDemo  {
     }
 	
 	public static void main(String[] args) throws Exception {
-		Environments.runWith(Brickness.newBrickContainer(), new Runnable(){ @Override public void run() {
+		Environments.runWith(Brickness.newBrickContainer(), new Closure(){ @Override public void run() {
 			new DashboardDemo();
 		}});
 	}
@@ -89,9 +91,11 @@ class Snapp2 implements Instrument{
 	public String title() {
 		return null;
 	}
+
 }
 
-class Snapp3 implements Instrument{
+class Snapp3 implements Instrument {
+
 	@Override
 	public void init(InstrumentPanel window) {
 		Container container = window.contentPane();
@@ -109,4 +113,5 @@ class Snapp3 implements Instrument{
 	public String title() {
 		return null;
 	}
+
 }

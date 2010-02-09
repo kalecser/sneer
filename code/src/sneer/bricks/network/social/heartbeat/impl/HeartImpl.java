@@ -6,6 +6,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.social.heartbeat.Heart;
 import sneer.bricks.network.social.heartbeat.Heartbeat;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.foundation.lang.Closure;
 
 public class HeartImpl implements Heart {
 	
@@ -13,13 +14,13 @@ public class HeartImpl implements Heart {
 	private final WeakContract _timerContract;
 	
 	{
-		_timerContract = my(Timer.class).wakeUpNowAndEvery(10 * 1000, new Runnable() { @Override public void run() {
+		_timerContract = my(Timer.class).wakeUpNowAndEvery(10 * 1000, new Closure() { @Override public void run() {
 			beat();
 		}});
 	}
 
 	private void beat() {
-		my(TupleSpace.class).publish(new Heartbeat());
+		my(TupleSpace.class).acquire(new Heartbeat());
 	}
 	
 }

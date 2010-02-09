@@ -29,7 +29,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import sneer.bricks.hardware.gui.Action;
+import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.io.log.filter.LogFilter;
 import sneer.bricks.hardware.io.log.notifier.LogNotifier;
@@ -48,6 +48,7 @@ import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.system.log.gui.LogConsole;
 import sneer.bricks.software.timing.Animator;
 import sneer.bricks.software.timing.TimingFramework;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class LogConsoleImpl extends JFrame implements LogConsole {
@@ -73,7 +74,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		super(SNEER_LOG_CONSOLE);
 		my(Dashboard.class);
 		addMenuAction();
-		my(GuiThread.class).invokeLater(new Runnable(){ @Override public void run() {
+		my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
 			initGui();
 			initTranslucentWindow();
 			initWindowListener();
@@ -114,7 +115,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 	}
 	
 	private void addMenuAction() {
-		_mainMenu.addAction("Open Log Console", new Runnable() { @Override public void run() {
+		_mainMenu.addAction("Open Log Console", new Closure() { @Override public void run() {
 			open();
 		}});
 	}
@@ -145,7 +146,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		initClearLogAction();
 		
 		final WindowBoundsSetter wbSetter = my(WindowBoundsSetter.class);
-		wbSetter.runWhenBaseContainerIsReady(new Runnable(){ @Override public void run() {
+		wbSetter.runWhenBaseContainerIsReady(new Closure() { @Override public void run() {
 			Rectangle unused = wbSetter.unusedArea();
 			setBounds(_X , unused.height-_HEIGHT-_OFFSET_Y, unused.width-_OFFSET_X, _HEIGHT-_OFFSET_Y);
 			setFocusableWindowState(false);

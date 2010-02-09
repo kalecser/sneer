@@ -20,7 +20,7 @@ public class HeartTest extends BrickTest {
 	@Bind TupleSpace _tupleSpace = mock(TupleSpace.class);
 	@Bind Timer _timer = mock(Timer.class);
 
-	@Test
+	@Test (timeout = 2000)
 	public void heartIsBeating() {
 		
 		final ByRef<Runnable> _timerSteppable = ByRef.newInstance();
@@ -32,7 +32,7 @@ public class HeartTest extends BrickTest {
 				_timerSteppable.value = (Runnable)invocation.getParameter(1); return null;
 			}});
 
-			exactly(2).of(_tupleSpace).publish(with(any(Heartbeat.class)));
+			exactly(2).of(_tupleSpace).acquire(with(any(Heartbeat.class)));
 		}});
 
 		my(Heart.class);

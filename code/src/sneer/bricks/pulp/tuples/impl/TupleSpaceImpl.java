@@ -4,7 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -17,25 +16,23 @@ import java.util.Set;
 import org.prevayler.Prevayler;
 import org.prevayler.PrevaylerFactory;
 
-import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.lang.contracts.Contracts;
 import sneer.bricks.hardware.cpu.lang.contracts.Disposable;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
+import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
+import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.foundation.brickness.Seal;
-import sneer.foundation.brickness.Tuple;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Predicate;
 
@@ -63,7 +60,7 @@ class TupleSpaceImpl implements TupleSpace {
 		}
 
 		private Runnable notifier() {
-			return new Runnable() { @Override public void run() {
+			return new Closure() { @Override public void run() {
 				Tuple nextTuple = waitToPopTuple();
 				if (_isDisposed) return;
 				
@@ -76,8 +73,8 @@ class TupleSpaceImpl implements TupleSpace {
 			final Consumer<? super Tuple> subscriber = _subscriber;
 			if (subscriber == null) return;
 			
-			_exceptionHandler.shield(new Runnable() { @Override public void run() {
-				Environments.runWith(_environment, new Runnable() { @Override public void run() {
+			_exceptionHandler.shield(new Closure() { @Override public void run() {
+				Environments.runWith(_environment, new Closure() { @Override public void run() {
 					subscriber.consume(tuple);
 				}});
 			}});
@@ -125,7 +122,6 @@ class TupleSpaceImpl implements TupleSpace {
 	private static final int FLOODED_CACHE_SIZE = 1000;
 	private static final Subscription<?>[] SUBSCRIPTION_ARRAY = new Subscription[0];
 
-	private final Seals _keyManager = my(Seals.class);
 	private final Threads _threads = my(Threads.class);
 	private final ExceptionHandler _exceptionHandler = my(ExceptionHandler.class);
 
@@ -138,14 +134,13 @@ class TupleSpaceImpl implements TupleSpace {
 	private final Set<Class<? extends Tuple>> _typesToKeep = new HashSet<Class<? extends Tuple>>();
 	private final ListRegister<Tuple> _keptTuples;
 
-	private final Object _publicationMonitor = new Object();
 
 	final Prevayler _prevayler = prevayler(my(CollectionSignals.class).newListRegister());
 	volatile boolean _isPrevaylerClosed = false;
 
 	
 	@SuppressWarnings("unused")
-	private final WeakContract _crashingContract = my(Threads.class).crashing().addPulseReceiver(new Runnable() { @Override public void run() {
+	private final WeakContract _crashingContract = my(Threads.class).crashing().addPulseReceiver(new Closure() { @Override public void run() {
 		_isPrevaylerClosed = true;
 		closePrevayler();
 	}});
@@ -153,9 +148,6 @@ class TupleSpaceImpl implements TupleSpace {
 	
 	TupleSpaceImpl() {
 		_keptTuples = Bubble.wrapStateMachine(_prevayler);
-		
-		for (Tuple tuple : _keptTuples.output().currentElements())
-			if (isWeird(tuple)) _keptTuples.remover().consume(tuple);
 	}
 
 
@@ -188,24 +180,14 @@ class TupleSpaceImpl implements TupleSpace {
 
 	
 	@Override
-	public void publish(Tuple tuple) {
-		synchronized (_publicationMonitor ) {
-			stamp(tuple);
-			acquire(tuple);
-		}
-	}
-
-	@Override
 	public synchronized void acquire(Tuple tuple) {
-		if (isWeird(tuple)) return; //Filter out those weird shouts that appeared in the beginning.
-		
 		if (tuple.addressee == null) {
 			if (_floodedTupleCache.contains(tuple)) return;
 			_floodedTupleCache.add(tuple);
 			capFloodedTuples();
 		} else {
 			Seal me = my(Seals.class).ownSeal();
-			if (!tuple.addressee.equals(me) && !tuple.publisher().equals(me)) {
+			if (!tuple.addressee.equals(me) && !tuple.publisher.equals(me)) {
 				my(Logger.class).log("Tuple received with incorrect addressee: {} type: ", tuple.addressee, tuple.getClass());
 				return;
 			}
@@ -215,22 +197,6 @@ class TupleSpaceImpl implements TupleSpace {
 		keepIfNecessary(tuple);
 				
 		notifySubscriptions(tuple);
-	}
-
-
-	private boolean isWeird(Tuple tuple) {
-		if (nameFor(tuple.publisher()).length() < 60) return false;
-		
-		my(BlinkingLights.class).turnOn(LightType.ERROR, "Weird Tuple", "Tuples with weird publishers are being filtered out.", 30000);
-		return true;
-	}
-
-	private String nameFor(Seal seal) {
-		try {
-			return new String(seal.bytes(), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalStateException(e);
-		}
 	}
 
 
@@ -265,10 +231,6 @@ class TupleSpaceImpl implements TupleSpace {
 	}
 
 	
-	private void stamp(Tuple tuple) {
-		tuple.stamp(_keyManager.ownSeal(), my(Clock.class).time().currentValue());
-	}
-
 	private void capFloodedTuples() {
 		if (_floodedTupleCache.size() <= FLOODED_CACHE_SIZE) return;
 

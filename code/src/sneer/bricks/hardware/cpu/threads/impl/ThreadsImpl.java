@@ -5,12 +5,14 @@ import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
+import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import sneer.bricks.pulp.events.pulsers.PulseSource;
 import sneer.bricks.pulp.events.pulsers.Pulser;
 import sneer.bricks.pulp.events.pulsers.Pulsers;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 
 class ThreadsImpl implements Threads {
 
@@ -56,12 +58,15 @@ class ThreadsImpl implements Threads {
 		if (_isCrashing) return;
 		
 		final Environment environment = my(Environment.class);
+		final int maxCpuUsage = my(CpuThrottle.class).maxCpuUsage();
 		final Latch hasStarted = Latches.produce();
 
 		new Daemon(threadName) { @Override public void run() {
 			hasStarted.open();
-			Environments.runWith(environment, new Runnable() { @Override public void run() {
-				ExceptionHandler.shield(runnable);
+			Environments.runWith(environment, new Closure() { @Override public void run() {
+				my(CpuThrottle.class).limitMaxCpuUsage(maxCpuUsage, new Closure() { @Override public void run() {
+					ExceptionHandler.shield(runnable);				
+				}});
 			}});
 		}};
 		

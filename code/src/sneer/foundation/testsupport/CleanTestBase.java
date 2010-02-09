@@ -45,6 +45,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		File result = new File(folderName);
 		if (!result.exists())
 			assertTrue("Unable to create tmp folder: " + result, result.mkdirs());
+		result.deleteOnExit();
 		return result;
 	}
 
@@ -130,7 +131,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		long t0 = System.currentTimeMillis();
 		while (true) {
 			if (thread.getState() == Thread.State.TERMINATED) return true;
-			if (System.currentTimeMillis() - t0 > 200) return false;
+			if (System.currentTimeMillis() - t0 > 2000) return false;
 			System.gc();
 			sleep(10);
 		}
@@ -251,12 +252,14 @@ public abstract class CleanTestBase extends AssertUtils {
 		return file;
 	}
 
-	protected File newTmpFile(String fileName) {
-		return new File(tmpFolder(), fileName);
+	protected File newTmpFile() {
+		return newTmpFile("tmp" + System.nanoTime());
 	}
 
-	protected File newTmpFile() {
-		return new File(tmpFolder(), "tmp" + System.nanoTime());
+	protected File newTmpFile(String fileName) {
+		final File tmpFile = new File(tmpFolder(), fileName);
+		tmpFile.deleteOnExit();
+		return tmpFile;
 	}
 
 	protected void createTmpFilesWithFileNameAsContent(String... fileNames) throws IOException {

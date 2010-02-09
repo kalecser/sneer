@@ -12,7 +12,6 @@ import org.junit.Test;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.threads.mocks.ThreadsMock;
-import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.dyndns.client.DynDnsClient;
@@ -56,17 +55,17 @@ Unacceptable Client Behavior
 
 	 */
 	
-	final Register<String> _ownIp = my(Signals.class).newRegister("123.45.67.89");
-	final DynDnsAccount _account = new DynDnsAccount("test.dyndns.org", "test", "test");
-	final Register<DynDnsAccount> _ownAccount = my(Signals.class).newRegister(_account);
-	
 	@Bind final OwnIpDiscoverer _ownIpDiscoverer = mock(OwnIpDiscoverer.class);
 	@Bind final DynDnsAccountKeeper _ownAccountKeeper = mock(DynDnsAccountKeeper.class);
 	@Bind final Updater _updater = mock(Updater.class);
 	@Bind final TransientPropertyStore _propertyStore = new TransientPropertyStore();
 	@Bind final ThreadsMock _threads = new ThreadsMock();
-	@Bind final Logger _logger = mock(Logger.class);
 	@Bind final Timer _timer = mock(Timer.class);
+
+	final Register<String> _ownIp = my(Signals.class).newRegister("123.45.67.89");
+	final DynDnsAccount _account = new DynDnsAccount("test.dyndns.org", "test", "test");
+	final Register<DynDnsAccount> _ownAccount = my(Signals.class).newRegister(_account);
+	
 	
 	@Test
 	public void updateOnIpChange() throws Exception {
@@ -83,10 +82,6 @@ Unacceptable Client Behavior
 		
 		startDynDnsClientOnNewEnvironment();
 		_threads.runDaemonWithNameStartingWith("DynDns Requesting");
-		
-		//Fix: Why were these two lines here?
-		//startDynDnsClientOnNewEnvironment();
-		//_threads.runAllDaemonsNamed("DynDns Requesting");
 	}
 
 	private void startDynDnsClientOnNewEnvironment() {
@@ -118,7 +113,6 @@ Unacceptable Client Behavior
 				will(throwException(error));
 				
 			exactly(1).of(_updater).update(account.host, account.user, account.password, _ownIp.output().currentValue());
-			exactly(1).of(_logger).log(with(any(String.class)), with(any(String.class)));
 		}});
 		
 
@@ -152,8 +146,6 @@ Unacceptable Client Behavior
 				will(throwException(error));
 				
 			exactly(1).of(_updater).update(account.host, account.user, "*" + account.password, newIp);
-
-			exactly(1).of(_logger).log(with(any(String.class)), with(any(String.class)));
 		}});
 		
 		startDynDnsClient();
@@ -184,8 +176,6 @@ Unacceptable Client Behavior
 			
 			exactly(1).of(_updater).update(account.host, account.user, account.password, _ownIp.output().currentValue());
 				will(throwException(error));
-
-			exactly(1).of(_logger).log(with(any(String.class)), with(any(String.class)));
 		}});
 		
 		startDynDnsClient();

@@ -8,6 +8,7 @@ import sneer.bricks.pulp.bandwidth.BandwidthCounter;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.foundation.lang.Closure;
 
 class BandwidthCounterImpl implements BandwidthCounter {
 
@@ -26,7 +27,7 @@ class BandwidthCounterImpl implements BandwidthCounter {
 
 	
 	BandwidthCounterImpl(){
-		_alarmContract = my(Timer.class).wakeUpEvery(CONSOLIDATION_TIME, new Runnable(){ @Override public void run() {
+		_alarmContract = my(Timer.class).wakeUpEvery(CONSOLIDATION_TIME, new Closure(){ @Override public void run() {
 			consolidate();
 		}});
 	}

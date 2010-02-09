@@ -1,0 +1,76 @@
+﻿General Direction:
+	1) To ENABLE users to develop and share bricks.
+	2) To MOTIVATE users to develop bricks by fostering a growing user-base through interesting snapps such as media sharing (Wusic, Movies, etc). Better ideas of cool easy-kill snapps are welcome.
+
+Following are the tasks each one of us has on his plate right now:
+
+
+Bamboo =================================================
+
+	- Delete roadmap.txt
+
+	- Prevalence
+		- KeptTuples (Prevalent) - Take a look. See if TupleSpaceImpl._keptTuples -> my(KeptTuples.class) works.
+			- Delete all other java files from the TupleSpaceImpl package.
+			- Delete the lib folder from the TupleSpaceImpl package. 
+		- Use a single prevayler for all bricks inside PrevalentImpl so that transactions are properly synchronized among all prevalent bricks.
+			- Ignore method calls that are already inside a transaction context.
+		- Make the Contacts brick prevalent. You might have to instrument creation of the Contact objects to give them an id for serialization, to avoid the baptism problem.
+		- Make Seals.put() accept a Contact instead of a nickname string.
+		- BrickStateStore: retire. Use the prevalent nature instead.
+		- Announce to community
+
+	- GUI Nature
+		- "Finish Him"
+		- Announce to community
+
+
+Igor ====================================================
+
+	- Create new brick PeerTracksCounter:
+		- Downloader -> increment
+		- Strategy -> decrement
+
+	- Unignore FileMapTest.rename
+
+	- Seals
+		- ContactInfoWindowImpl - Contact's Seal Field: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
+			- Position - Place it immediately under the nickname field. Outside the Internet Addresses box.
+			- Ask Klaus for help glueing the gui to the Seals brick. Non-trivial per-contact signals and picky consumers need to be exposed in the Seals interface.
+			- [Klaus] Discuss with Igor refactoring of ContactsInfoWindow   
+
+	- Wusic
+		- [Klaus/Daniel] MusicalTasteMatcher Kernel
+		- Downloads
+			- 15 min timeout per download.
+			- Do not download files user already has (includes peertracks) - check if it's already working.
+		- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
+		- Back Button 
+		- Find another way to solve pause lag (try to use a smaller frame in player)
+
+	- [Klaus] RapidShare Killer (Transfer Huge Files) - Do this in parallel, when you're bored of Wusic :)
+		- Focus. Keep it simple. Zero sophistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
+		- Announce to community
+
+
+
+Klaus =================================================
+
+	- Unignore RemoteCopyTest.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
+		- See this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298
+
+	- Make Network usable
+		- Sneer "DNS".
+
+	- Freedom7 - "Me Too" for Bricks 
+		- Unignore Freedom7.meToo
+			- BrickSpaceImpl.init() uncomment.
+			- BrickInstallerTest
+			- LocalBrickDiscoveryTest unignore.
+		- Brick States - All
+			- Hierarchical View - Consider groups of bricks (brick package at any level, examples: bricks.hardware, bricks.software, bricks.hardware.io, etc) as an optional grouping for versioning and downloading from friends, not only individual bricks.
+				- Do not allow circular dependencies among any level of groups of bricks and voila: the world is free of cyclic dependencies.
+	
+	- Revise entire package structure.
+		- Remove all calls to Thread.sleep() including indirect.
+ 

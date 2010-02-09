@@ -6,6 +6,4 @@ import sneer.foundation.brickness.Brick;
 
 @Snapp
 @Brick
-public interface BandwidthMeterGui extends Instrument {
-
-}
+public interface BandwidthMeterGui extends Instrument {}

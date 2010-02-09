@@ -41,6 +41,7 @@ import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.BrickVersion.Status;
 import sneer.bricks.softwaresharing.gui.BricksGui;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
+import sneer.foundation.lang.Closure;
 
 class BricksGuiImpl extends JFrame implements BricksGui {
 
@@ -77,8 +78,8 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 	
 	private void registerMainMenuItem() {
 		final WindowBoundsSetter wbSetter = my(WindowBoundsSetter.class);
-		wbSetter.runWhenBaseContainerIsReady(new Runnable(){ @Override public void run() {
-			my(MainMenu.class).addAction("Bricks", new Runnable() { @Override public void run() {
+		wbSetter.runWhenBaseContainerIsReady(new Closure() { @Override public void run() {
+			my(MainMenu.class).addAction("Bricks", new Closure() { @Override public void run() {
 				show(wbSetter);
 			}});
 		}});
@@ -228,7 +229,7 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		toolbar.add(button);
 		button.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
 			button.setEnabled(false);
-			my(Threads.class).startDaemon("BricksGui MeToo", new Runnable() { @Override public void run() {
+			my(Threads.class).startDaemon("BricksGui MeToo", new Closure() { @Override public void run() {
 				try {
 					my(BrickInstaller.class).stageBricksForInstallation();
 				} finally {

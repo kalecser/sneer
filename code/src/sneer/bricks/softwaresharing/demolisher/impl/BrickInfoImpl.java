@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickVersion;
@@ -17,7 +17,7 @@ class BrickInfoImpl implements BrickInfo {
 
 	
 	private final String _brickName;
-	private final CacheMap<Sneer1024, BrickVersionImpl> _versionsByHash = new CacheMap<Sneer1024, BrickVersionImpl>();
+	private final CacheMap<Sneer1024, BrickVersionImpl> _versionsByHash = CacheMap.newInstance();
 
 	
 	public BrickInfoImpl(String brickName, Sneer1024 packageHash, boolean isCurrent) throws IOException {

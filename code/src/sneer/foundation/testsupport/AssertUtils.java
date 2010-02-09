@@ -6,7 +6,7 @@ import java.util.Collection;
 
 import org.junit.Assert;
 
-import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.ClosureX;
 
 public abstract class AssertUtils extends Assert {
 
@@ -36,7 +36,7 @@ public abstract class AssertUtils extends Assert {
 		assertEquals("Collections not same size", expectedInAnyOrder.length, collection.size());
 	}
 
-	public static <X extends Throwable> void expect(Class<X> throwable, Closure<X> closure) {
+	public static <X extends Throwable> void expect(Class<X> throwable, ClosureX<X> closure) {
 		try {
 			closure.run();
 		} catch (Throwable t) {

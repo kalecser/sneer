@@ -7,11 +7,11 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
+import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.foundation.brickness.Seal;
-import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.Consumer;
 
 final class ProbeImpl implements Consumer<Tuple> {
@@ -64,7 +64,7 @@ final class ProbeImpl implements Consumer<Tuple> {
 	}
 
 	private boolean isClearToSend(Tuple tuple) {
-		initContactsPKIfNecessary();
+		initContactsSealIfNecessary();
 		if (_contactsSeal == null) return false;
 
 		if (!_filter.canBePublished(tuple)) return false;
@@ -81,10 +81,10 @@ final class ProbeImpl implements Consumer<Tuple> {
 
 	
 	private boolean isEcho(Tuple tuple) {
-		return _contactsSeal.equals(tuple.publisher());
+		return _contactsSeal.equals(tuple.publisher);
 	}
 
-	private void initContactsPKIfNecessary() {
+	private void initContactsSealIfNecessary() {
 		if (_contactsSeal != null) return;
 		_contactsSeal = _keyManager.sealGiven(_contact);
 	}

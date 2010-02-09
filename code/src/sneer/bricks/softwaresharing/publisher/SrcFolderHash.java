@@ -1,7 +1,7 @@
 package sneer.bricks.softwaresharing.publisher;
 
-import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
-import sneer.foundation.brickness.Tuple;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.pulp.tuples.Tuple;
 
 /** Conveys the hash of the entire source folder of a given publisher at a certain point in time. */
 public class SrcFolderHash extends Tuple {

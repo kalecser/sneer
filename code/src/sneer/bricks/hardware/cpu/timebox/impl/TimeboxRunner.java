@@ -8,6 +8,7 @@ import java.util.Set;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
+import sneer.foundation.lang.Closure;
 
 @SuppressWarnings("deprecation")
 class TimeboxRunner {
@@ -21,7 +22,7 @@ class TimeboxRunner {
 	static {
 		final Timer timer = my(Timer.class);
 
-		my(Threads.class).startDaemon("Timebox Killer", new Runnable() { @Override public void run() {
+		my(Threads.class).startDaemon("Timebox Killer", new Closure() { @Override public void run() {
 			Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 			while (true) {
 				timer.sleepAtLeast(PRECISION_IN_MILLIS);

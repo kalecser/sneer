@@ -2,7 +2,7 @@ package sneer.bricks.software.code.compilers.java.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.Lang;
-import sneer.bricks.software.code.compilers.java.CompilationError;
+import sneer.bricks.software.code.compilers.CompilationError;
 
 class CompilationErrorImpl implements CompilationError {
 
@@ -19,17 +19,17 @@ class CompilationErrorImpl implements CompilationError {
 	}
 
 	@Override
-	public int getLineNumber() {
+	public int lineNumber() {
 		return _lineNumber;
 	}
 
 	@Override
-	public String getMessage() {
+	public String message() {
 		return _message;
 	}
 
 	@Override
-	public String getFileName() {
+	public String fileName() {
 		return _fileName;
 	}
 

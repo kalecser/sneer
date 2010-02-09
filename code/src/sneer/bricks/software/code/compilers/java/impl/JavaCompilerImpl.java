@@ -15,9 +15,9 @@ import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
+import sneer.bricks.software.code.compilers.CompilerException;
+import sneer.bricks.software.code.compilers.Result;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
-import sneer.bricks.software.code.compilers.java.JavaCompilerException;
-import sneer.bricks.software.code.compilers.java.Result;
 import sneer.foundation.lang.Functor;
 
 import com.sun.tools.javac.Main;
@@ -25,13 +25,7 @@ import com.sun.tools.javac.Main;
 class JavaCompilerImpl implements JavaCompiler {
 
 	@Override
-	public void compile(File srcFolder, File destinationFolder,	File... classpath) throws JavaCompilerException, IOException {
-		List<File> srcFiles = new ArrayList<File>(my(IO.class).files().listFiles(srcFolder, new String[]{"java"}, true));
-		compile(srcFiles, destinationFolder, classpath);
-	}
-
-	@Override
-	public Result compile(Collection<File> sourceFiles, File destination, File... classpath) throws IOException, JavaCompilerException {
+	public Result compile(Collection<File> sourceFiles, File destination, File... classpath) throws IOException, CompilerException {
 		
 		File tmpFile = createArgsFileForJavac(sourceFiles);
 		my(Logger.class).log("Compiling {} files to {}", sourceFiles.size(), destination);
@@ -43,10 +37,10 @@ class JavaCompilerImpl implements JavaCompiler {
 		StringWriter writer = new StringWriter();
 		int code = Main.compile(args.toArray(new String[0]), new PrintWriter(writer));
 		tmpFile.delete();
-		Result result = new CompilationResult(code, destination);
+		CompilationResult result = new CompilationResult(code);
 		if (code != 0) {
 			result.setError(writer.getBuffer().toString());
-			throw new JavaCompilerException(result);
+			throw new CompilerException(result);
 		}
 		return result;
 	}

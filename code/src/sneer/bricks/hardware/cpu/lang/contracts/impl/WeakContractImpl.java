@@ -6,6 +6,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 
 class WeakContractImpl implements WeakContract {
 
@@ -28,7 +29,7 @@ class WeakContractImpl implements WeakContract {
 	@Override
 	protected void finalize() throws Throwable {
 		if (_service != null)
-			Environments.runWith(_environment, new Runnable() { @Override public void run() {
+			Environments.runWith(_environment, new Closure() { @Override public void run() {
 				my(Logger.class).log("Weak Contract gc'd: " + _service);
 			}});
 		

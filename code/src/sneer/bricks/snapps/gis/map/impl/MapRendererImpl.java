@@ -11,7 +11,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.network.httpgateway.HttpGateway;
 import sneer.bricks.snapps.gis.location.Location;
 import sneer.bricks.snapps.gis.map.MapRenderer;
@@ -32,20 +31,13 @@ class MapRendererImpl implements MapRenderer{
 		String httpUrl = "http://maps.google.com/staticmap?center=" + location.latitude() + "," + location.longitude() + "&zoom=" + zoom + "&size=" + _mapSize + "x" + _mapSize
 						  + "&key=ABQIAAAAipu2vgwNjShyGzhINGjXvRT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTKgtleBywtdYBkXFEBvmkPMqvBzg";
 		
-		my(HttpGateway.class).get(httpUrl, 
-			new Consumer<byte[]>(){ @Override public void consume(byte[] bytes) {
-				try {
-					receiver.consume(bytesToImage(bytes));
-				} catch (IOException e) {
-					my(ExceptionLogger.class).log(e);
-				}
-			}});
+		my(HttpGateway.class).get(httpUrl, new Consumer<byte[]>(){ @Override public void consume(byte[] bytes) {
+			receiver.consume(bytesToImage(bytes));
+		}});
 	}
 
-	private Image bytesToImage(byte[] imageData) throws IOException {
-		BufferedImage image = null;
-		ByteArrayInputStream imageIn = new ByteArrayInputStream(imageData);
-		image = ImageIO.read(imageIn);
+	private Image bytesToImage(byte[] imageData) {
+		BufferedImage image = decode(imageData);
 		Graphics2D g2d=((Graphics2D)image.getGraphics());
 		g2d.setColor(Color.green);
 		
@@ -53,5 +45,13 @@ class MapRendererImpl implements MapRenderer{
 		g2d.setColor(Color.black);
 		g2d.drawOval(_mapSize/2-5, _mapSize/2-5,10,10);
 		return image;
+	}
+
+	private BufferedImage decode(byte[] imageData) {
+		try {
+			return ImageIO.read(new ByteArrayInputStream(imageData));
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 }

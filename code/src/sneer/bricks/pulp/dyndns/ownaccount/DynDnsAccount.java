@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.dyndns.ownaccount;
 
-import sneer.foundation.brickness.Tuple;
+import sneer.bricks.pulp.tuples.Tuple;
 
 public class DynDnsAccount extends Tuple {
 	

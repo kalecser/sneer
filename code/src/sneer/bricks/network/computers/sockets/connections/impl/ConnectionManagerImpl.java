@@ -8,13 +8,14 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
+import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.foundation.brickness.Seal;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.ClosureX;
 
 class ConnectionManagerImpl implements ConnectionManager {
 
-	static final WeakContract crashingContract = my(Threads.class).crashing().addPulseReceiver(new Runnable() { @Override public void run() {
+	static final WeakContract crashingContract = my(Threads.class).crashing().addPulseReceiver(new Closure() { @Override public void run() {
 		for (ByteConnectionImpl victim : ConnectionsByContact.all())
 			victim.close();
 	}});
@@ -28,7 +29,7 @@ class ConnectionManagerImpl implements ConnectionManager {
 	
 	@Override
 	public void manageIncomingSocket(final ByteArraySocket socket) {
-		SocketCloser.closeIfUnsuccessful(socket, "Incoming socket closed.", new Closure<IOException>() { @Override public void run() throws IOException {
+		SocketCloser.closeIfUnsuccessful(socket, "Incoming socket closed.", new ClosureX<IOException>() { @Override public void run() throws IOException {
 			Seal contactsSeal = IncomingHandShaker.greet(socket);
 			TieBreaker.manageIncomingSocket(socket, contactsSeal);
 		}});
@@ -37,7 +38,7 @@ class ConnectionManagerImpl implements ConnectionManager {
 
 	@Override
 	public void manageOutgoingSocket(final ByteArraySocket socket, final Contact contact) {
-		SocketCloser.closeIfUnsuccessful(socket, "Outgoing socket closed.", new Closure<IOException>() { @Override public void run() throws IOException {
+		SocketCloser.closeIfUnsuccessful(socket, "Outgoing socket closed.", new ClosureX<IOException>() { @Override public void run() throws IOException {
 			OutgoingHandShaker.greet(socket);
 			TieBreaker.manageOutgoingSocket(socket, contact);
 		}});

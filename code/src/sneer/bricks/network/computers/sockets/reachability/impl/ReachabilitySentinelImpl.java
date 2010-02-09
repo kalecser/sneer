@@ -10,6 +10,7 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.port.PortKeeper;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class ReachabilitySentinelImpl implements ReachabilitySentinel {
@@ -31,7 +32,7 @@ class ReachabilitySentinelImpl implements ReachabilitySentinel {
 			updateIncomingSocketTime();
 		}});
 
-		_timerContract = my(Timer.class).wakeUpEvery(THIRTY_SECONDS, new Runnable() { @Override public void run() {
+		_timerContract = my(Timer.class).wakeUpEvery(THIRTY_SECONDS, new Closure() { @Override public void run() {
 			if (_clock.time().currentValue() - _lastIncomingSocketTime >= THIRTY_SECONDS)
 				_lights.turnOnIfNecessary(unreachableLight(), "Unreachable", "You have not received any incoming sockets recently. Either none of your contacts are online or your machine is unreachable from the internet on your current Sneer TCP Port: " + my(PortKeeper.class).port().currentValue() + ". You can change your Sneer TCP Port using the Menu > Own Info dialog.");
 		}});		

@@ -6,6 +6,4 @@ import sneer.foundation.brickness.Brick;
 
 @Snapp
 @Brick
-public interface WindGui extends Instrument {
-
-}
+public interface WindGui extends Instrument {}

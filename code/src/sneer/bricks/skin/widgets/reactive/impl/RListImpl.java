@@ -23,6 +23,7 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.skin.widgets.reactive.ListWidget;
+import sneer.foundation.lang.Closure;
 
 class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
 
@@ -49,7 +50,7 @@ class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
 	private void initModel() {
 		SignalChooser<ELEMENT> chooser = new SignalChooser<ELEMENT>(){	@Override public Signal<?>[] signalsToReceiveFrom(ELEMENT element) {
 			return new Signal<?>[]{_labelProvider.imageFor(element), 
-								   	   _labelProvider.labelFor(element)};}};
+								   	   _labelProvider.textFor(element)};}};
 		ListModel model = new ListSignalModel<ELEMENT>(_source, chooser);
 		setModel(model);
 	}
@@ -90,7 +91,7 @@ class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
 
 			private void changeSelectionGuiToSelectedContact() {
 				final ELEMENT element = _selectedElement.output().currentValue();
-				my(GuiThread.class).invokeLater(new Runnable(){ @Override public void run() {
+				my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
 					if(getSelectedValue()==element)
 						return;
 					
@@ -111,7 +112,7 @@ class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
 	
 	@Override
 	public void clearSelection(){
-		my(GuiThread.class).invokeLater(new Runnable(){ @Override public void run() {
+		my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
 			getSelectionModel().clearSelection();
 			changeSelectedElement(null);
 		}});

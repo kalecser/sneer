@@ -102,7 +102,7 @@ class ReactiveWidgetFactoryImpl implements ReactiveWidgetFactory {
 	public <T> ListWidget<T> newList(ListSignal<T> source) {
 		return newList(source, new LabelProvider<T>(){
 			@Override public Signal<? extends Image> imageFor(T element) { return my(Signals.class).constant(null); }
-			@Override public Signal<String> labelFor(T element) { return my(Signals.class).constant(element.toString());
+			@Override public Signal<String> textFor(T element) { return my(Signals.class).constant(element.toString());
 			}});
 	}
 	@Override

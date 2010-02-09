@@ -1,6 +1,6 @@
 package sneer.bricks.skin.main.dashboard;
 
-import sneer.bricks.pulp.natures.gui.GUI;
+import sneer.bricks.hardware.gui.nature.GUI;
 import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.foundation.brickness.Brick;
 

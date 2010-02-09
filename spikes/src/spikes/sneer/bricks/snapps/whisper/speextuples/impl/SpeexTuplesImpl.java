@@ -7,17 +7,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.sound.sampled.LineUnavailableException;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray2D;
+import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.streams.sequencer.Sequencer;
 import sneer.bricks.pulp.streams.sequencer.Sequencers;
+import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.skin.rooms.ActiveRoomKeeper;
-import sneer.foundation.brickness.Seal;
-import sneer.foundation.brickness.Tuple;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Consumer;
@@ -68,7 +67,7 @@ class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the en
 	
 	
 	private void playInSequence(SpeexPacket packet) {
-		Sequencer<SpeexPacket> sequencer = _sequencersByPublisher.get(packet.publisher(), _sequencerProducer);
+		Sequencer<SpeexPacket> sequencer = _sequencersByPublisher.get(packet.publisher, _sequencerProducer);
 		sequencer.produceInSequence(packet, packet.sequence);
 	}
 	
@@ -89,7 +88,7 @@ class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the en
 	}
 	
 	private boolean isMine(Tuple packet) {
-		return _keyManager.ownSeal().equals(packet.publisher());
+		return _keyManager.ownSeal().equals(packet.publisher);
 	}
 	
 	private static byte[][] newFramesArray() {
@@ -97,13 +96,13 @@ class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the en
 	}
 
 	private void flush() {
-		_tupleSpace.publish(new SpeexPacket(immutable(_frames), _room.currentValue(), nextShort()));
+		_tupleSpace.acquire(new SpeexPacket(immutable(_frames), _room.currentValue(), nextShort()));
 		_frames = newFramesArray();
 		_frameIndex = 0;
 	}
 
 	private ImmutableByteArray2D immutable(byte[][] array2D) {
-		return my(ImmutableArrays.class).newImmutableByteArray2D(array2D);
+		return new ImmutableByteArray2D(array2D);
 	}
 
 	private boolean encode(final byte[] pcmBuffer) {

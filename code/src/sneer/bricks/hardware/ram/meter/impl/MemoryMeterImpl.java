@@ -7,6 +7,7 @@ import sneer.bricks.hardware.ram.meter.MemoryMeter;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.foundation.lang.Closure;
 
 class MemoryMeterImpl implements MemoryMeter {
 
@@ -20,7 +21,7 @@ class MemoryMeterImpl implements MemoryMeter {
 	private final WeakContract _timerContract;
 	
 	{
-		_timerContract = my(Timer.class).wakeUpNowAndEvery(PERIOD_IN_MILLIS, new Runnable() { @Override public void run() {
+		_timerContract = my(Timer.class).wakeUpNowAndEvery(PERIOD_IN_MILLIS, new Closure() { @Override public void run() {
 			measureMemory();
 		}});
 	}

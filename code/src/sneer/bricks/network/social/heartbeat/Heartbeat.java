@@ -1,5 +1,5 @@
 package sneer.bricks.network.social.heartbeat;
 
-import sneer.foundation.brickness.Tuple;
+import sneer.bricks.pulp.tuples.Tuple;
 
 public class Heartbeat extends Tuple {}

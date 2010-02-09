@@ -13,7 +13,7 @@ import org.junit.internal.runners.TestMethod;
 
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.ClosureX;
 
 class TestMethodWithEnvironment extends TestMethod {
 
@@ -26,7 +26,7 @@ class TestMethodWithEnvironment extends TestMethod {
 
 	@Override
 	public void invoke(final Object test) throws InvocationTargetException {
-		Environments.runWith(_environment, new Closure<InvocationTargetException>() { @Override public void run() throws InvocationTargetException {
+		Environments.runWith(_environment, new ClosureX<InvocationTargetException>() { @Override public void run() throws InvocationTargetException {
 			doInvoke(test);
 		}});
 	}

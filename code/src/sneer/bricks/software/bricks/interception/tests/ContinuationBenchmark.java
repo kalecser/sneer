@@ -12,6 +12,7 @@ import sneer.bricks.software.bricks.interception.tests.fixtures.nature.SomeInter
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Producer;
 
 public class ContinuationBenchmark {
@@ -26,7 +27,7 @@ public class ContinuationBenchmark {
 		}
 		
 		@Override
-		public <T> T instantiate(Class<T> brick, Class<?> implClass,
+		public <T> T instantiate(Class<T> brick, Class<T> implClass,
 				Producer<T> producer) {
 			return producer.produce();
 		}
@@ -72,26 +73,18 @@ public class ContinuationBenchmark {
 		}
 	}
 
-	private static void benchmark(String label,
-			SomeInterceptingNature runtimeNature) {
-		
+	private static void benchmark(String label, SomeInterceptingNature runtimeNature) {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		
-		Environments.runWith(Brickness.newBrickContainer(runtimeNature), new Runnable() {
-			@Override
-			public void run() {
-				
-				BrickOfSomeInterceptingNature brick = my(BrickOfSomeInterceptingNature.class);
-				for (int i=0; i<1000000; ++i)
-					brick.add(1, 2);
-
-			}
-		});
+		Environments.runWith(Brickness.newBrickContainer(runtimeNature), new Closure() { @Override public void run() {
+			BrickOfSomeInterceptingNature brick = my(BrickOfSomeInterceptingNature.class);
+			for (int i = 0; i < 1000000; ++i)
+				brick.add(1, 2);
+		}});
 		
 		stopWatch.stop();
 		System.out.println(label + stopWatch.getTime());
-		
 	}
 
 }

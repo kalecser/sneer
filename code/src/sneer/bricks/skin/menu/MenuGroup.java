@@ -2,7 +2,7 @@ package sneer.bricks.skin.menu;
 
 import javax.swing.JComponent;
 
-import sneer.bricks.hardware.gui.Action;
+import sneer.bricks.hardware.gui.actions.Action;
 
 public interface MenuGroup<T extends JComponent> {
 

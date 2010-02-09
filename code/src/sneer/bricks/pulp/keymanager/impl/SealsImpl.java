@@ -2,95 +2,83 @@ package sneer.bricks.pulp.keymanager.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
+import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.ContactManager;
+import sneer.bricks.network.social.Contacts;
+import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
-import sneer.bricks.pulp.own.name.OwnNameKeeper;
-import sneer.foundation.brickness.Seal;
+import sneer.bricks.pulp.keymanager.generator.OwnSealKeeper;
 
 class SealsImpl implements Seals {
 
-//	private PublicKey _ownKey;
-//	
-//	private final Map<Contact, PublicKey> _keyByContact = new HashMap<Contact, PublicKey>();
-//
-//	private final Crypto _crypto = my(Crypto.class);
-
-	private static final String UTF_8 = "UTF-8";
+	private Seal _ownSeal;
+	
+	private final Map<Contact, Seal> _sealsByContact = new HashMap<Contact, Seal>();
 
 
 	@Override
-	public synchronized Seal ownSeal() {
-		return generateMickeyMouseKey(ownName());
+	synchronized
+	public Seal ownSeal() {
+		if (_ownSeal == null)
+			_ownSeal = produceOwnSeal();
+		return _ownSeal;
 	}
+
+	
+	private Seal produceOwnSeal() {
+		if ("true".equals(System.getProperty("sneer.dummy")))
+			return dummySeal();
+
+		//All this complexity with a separate prevalent OwnSealKeeper is because the source of randomness cannot be inside a prevalent brick.
+		if (my(OwnSealKeeper.class).needsToProduceSeal())
+			my(OwnSealKeeper.class).produceOwnSeal(randomness());
+		
+		return my(OwnSealKeeper.class).seal();
+	}
+
+
+	private Seal dummySeal() {
+		return new Seal(new ImmutableByteArray(new byte[128]));
+	}
+
+
+	private byte[] randomness() {
+		my(Logger.class).log("This random source needs to be made cryptographically secure. " + getClass());
+
+		byte[] result = new byte[128];
+		new Random(System.nanoTime() + System.currentTimeMillis()).nextBytes(result);
+		return result;
+	}
+
 
 	@Override
 	public Seal sealGiven(Contact contact) {
-		//return _keyByContact.get(contact);
-		return generateMickeyMouseKey(contact.nickname().currentValue());
+		return _sealsByContact.get(contact);
 	}
 
 
-//	@Override
-//	public synchronized void addKey(Contact contact, PublicKey publicKey) {
-//		if(keyGiven(contact) != null) throw new IllegalArgumentException("There already was a public key registered for contact: " + contact.nickname().currentValue());
-//		_keyByContact.put(contact, publicKey);
-//	}
+	@Override
+	public synchronized void put(String nick, Seal seal) {
+		Contact contact = my(Contacts.class).contactGiven(nick);
+		if (contact == null || seal == null) throw new NullPointerException();
+		if (sealGiven(contact) != null) throw new IllegalArgumentException("There already was a seal registered for contact: " + contact.nickname().currentValue());
+		if (contactGiven(seal) != null) throw new IllegalArgumentException("There already was a contact registered with seal: " + seal);
+		_sealsByContact.put(contact, seal);
+	}
 
 
 	@Override
 	public synchronized Contact contactGiven(Seal peersSeal) {
-//		for (Contact candidate : _keyByContact.keySet())
-//			if(_keyByContact.get(candidate).equals(peersPublicKey))
-//				return candidate;
-//		
-//		return null;
+		for (Contact candidate : _sealsByContact.keySet())
+			if(_sealsByContact.get(candidate).equals(peersSeal))
+				return candidate;
 		
-		return my(ContactManager.class).produceContact(nameFor(peersSeal));
-	}
-
-	private String nameFor(Seal seal) {
-		try {
-			return new String(seal.bytes(), UTF_8);
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-
-	@Override
-	public Seal unmarshall(byte[] bytes) {
-		return new Seal(bytes);
-	}
-
-	private Seal generateMickeyMouseKey(String name) {
-//		Sneer1024 sneer1024 = _crypto.digest(string.getBytes());
-//		return new PublicKey(sneer1024.bytes());
-		
-		byte[] bytes;
-		try {
-			bytes = name.getBytes(UTF_8);
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalStateException(e);
-		} 
-		return unmarshall(bytes);
-	}
-
-//	@Override
-//	public Contact contactGiven(PublicKey peersPublicKey, Producer<Contact> producerToUseIfAbsent) {
-//		Contact result = contactGiven(peersPublicKey);
-//		if (result != null) return result;
-//		
-//		result = producerToUseIfAbsent.produce();
-//		addKey(result, peersPublicKey);
-//		return result;
-//	}
-	
-	private String ownName() {
-		String result = my(OwnNameKeeper.class).name().currentValue();
-		if (result.length() < 3) result = result + "   ";
-		return result;
+		return null;
 	}
 
 }

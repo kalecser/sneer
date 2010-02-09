@@ -81,7 +81,7 @@ class WindListCellRenderer implements ListCellRenderer {
 	}
 
 	private JComponent createShoutText(Shout shout) {
-		Signal<String> signalText = _labelProvider.labelFor(shout);
+		Signal<String> signalText = _labelProvider.textFor(shout);
 		return createTextComponent(signalText.currentValue(), SHOUT);
 	}	
 	

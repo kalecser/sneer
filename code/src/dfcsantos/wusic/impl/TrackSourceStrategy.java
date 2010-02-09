@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.clock.timer.Timer;
-import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.foundation.lang.Closure;
 import dfcsantos.tracks.Track;
-import dfcsantos.tracks.Tracks;
-import dfcsantos.tracks.playlist.Playlist;
-import dfcsantos.tracks.rejected.RejectedTracksKeeper;
+import dfcsantos.tracks.execution.playlist.Playlist;
+import dfcsantos.tracks.storage.rejected.RejectedTracksKeeper;
 
 abstract class TrackSourceStrategy {
 
@@ -23,22 +23,22 @@ abstract class TrackSourceStrategy {
 	private final List<Track> _tracksToDispose = Collections.synchronizedList(new ArrayList<Track>());
 
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
-	
-	
+
+
 	TrackSourceStrategy() {
-		_refToAvoidGc = my(Timer.class).wakeUpEvery(5000, new Runnable() { @Override public void run() {
+		_refToAvoidGc = my(Timer.class).wakeUpEvery(5000, new Closure() { @Override public void run() {
 			disposePendingTracks();
 		}});
 
 		initPlaylist();
 	}
 
-	
+
 	void initPlaylist() {
 		initPlaylist(tracksFolder());
 	}
 
-	
+
 	void initPlaylist(File tracksFolder) {
 		_playlist = createPlaylist(tracksFolder);
 	}
@@ -52,7 +52,7 @@ abstract class TrackSourceStrategy {
 		}
 	}
 
-	
+
 	Track nextTrack() {
 		Track nextTrack = _playlist.nextTrack();
 		if (_tracksToDispose.contains(nextTrack))
@@ -61,25 +61,23 @@ abstract class TrackSourceStrategy {
 		return nextTrack;
 	}
 
-	
-	void noWay(final Track rejected) {
-		//Implement Create event to notify listeners of track rejection (musical taste matcher, for example).
-		my(Threads.class).startDaemon("Calculating Hash to Reject Track", new Runnable() { @Override public void run() {
-			Sneer1024 hash = my(Tracks.class).calculateHashFor(rejected);
-			my(RejectedTracksKeeper.class).reject(hash);
-		}});
-		markForDisposal(rejected);	
+
+	void deleteTrack(final Track rejected) {
+		Sneer1024 hash = my(FileMap.class).getHash(rejected.file());
+		my(FileMap.class).remove(rejected.file());
+		my(RejectedTracksKeeper.class).reject(hash);
+		markForDisposal(rejected);
 	}
 
-	
+
 	void markForDisposal(Track trackToDispose) {
 		_tracksToDispose.add(trackToDispose);
 	}
 
-	
+
 	abstract Playlist createPlaylist(File tracksFolder);
 
-	
+
 	abstract File tracksFolder();
 
 }

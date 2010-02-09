@@ -7,17 +7,17 @@ import java.io.UnsupportedEncodingException;
 import java.util.Deque;
 import java.util.LinkedList;
 
-import sneer.bricks.hardware.cpu.algorithms.crypto.Sneer1024;
+import sneer.bricks.expression.files.map.FileMap;
+import sneer.bricks.expression.files.map.visitors.FileMapGuide;
+import sneer.bricks.expression.files.map.visitors.FolderStructureVisitor;
+import sneer.bricks.expression.files.protocol.FolderContents;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.Lang.Strings;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardwaresharing.files.map.FileMap;
-import sneer.bricks.hardwaresharing.files.map.visitors.FileMapGuide;
-import sneer.bricks.hardwaresharing.files.map.visitors.FolderStructureVisitor;
-import sneer.bricks.hardwaresharing.files.protocol.FolderContents;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.ProducerWithThrowable;
+import sneer.foundation.lang.ProducerX;
 
 class Demolition implements FolderStructureVisitor {
 
@@ -43,7 +43,7 @@ class Demolition implements FolderStructureVisitor {
 
 
 	private FolderContents folderContents(Sneer1024 srcFolderHash) {
-		return my(FileMap.class).getFolder(srcFolderHash);
+		return my(FileMap.class).getFolderContents(srcFolderHash);
 	}
 
 
@@ -92,7 +92,7 @@ class Demolition implements FolderStructureVisitor {
 		final String brickName = _strings.chomp(packageName + "." + fileName, ".java");
 		final Sneer1024 packageHash = _hashPath.peekLast();
 
-		BrickInfoImpl existingBrick = (BrickInfoImpl) _bricksByName.get(brickName, new ProducerWithThrowable<BrickInfo, IOException>() { @Override public BrickInfo produce() throws IOException {
+		BrickInfoImpl existingBrick = (BrickInfoImpl) _bricksByName.get(brickName, new ProducerX<BrickInfo, IOException>() { @Override public BrickInfo produce() throws IOException {
 			return new BrickInfoImpl(brickName, packageHash, _isCurrent);
 		}});
 		

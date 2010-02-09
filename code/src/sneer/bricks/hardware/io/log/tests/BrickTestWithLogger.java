@@ -34,13 +34,13 @@ public abstract class BrickTestWithLogger extends BrickTestBase {
 	private void printContext(Method method, Throwable thrown) {
 		System.out.println();
 		System.out.println();
-		System.out.println("Failed Test: =====================================================================================================");
+		System.out.println("Failed Test: -----------------------------------------------------------------------------------------------------");
 		System.out.println(getClass().getName() + "  " + method.getName());
 		System.out.println();
-		System.out.println("Filtered Stack: ==================================================================================================");
+		System.out.println("Filtered Stack: --------------------------------------------------------------------------------------------------");
 		printFilteredStack(thrown);
 		System.out.println();
-		System.out.println("Log: =============================================================================================================");
+		System.out.println("Log: -------------------------------------------------------------------------------------------------------------");
 		my(LoggerMocks.class).printAllKeptMessages();
 		System.out.println("==================================================================================================================");
 		System.out.println();

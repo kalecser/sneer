@@ -3,6 +3,7 @@ package spikes.demos;
 import static sneer.foundation.environments.Environments.my;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.ClosureX;
 import spikes.sneer.bricks.skin.audio.player.SoundPlayer;
 
 public class SoundPlayerDemo {
@@ -20,13 +21,10 @@ public class SoundPlayerDemo {
 		}
 	}
 	
-	public static void main(String[] args) {
-		Environments.runWith(Brickness.newBrickContainer(), new Runnable(){ @Override public void run() {
-			try {
-				new SoundPlayerDemo();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+	public static void main(String[] args) throws Exception {
+		Environments.runWith(Brickness.newBrickContainer(), new ClosureX<Exception>() { @Override public void run() throws Exception {
+			new SoundPlayerDemo();
 		}});
 	}
+
 }

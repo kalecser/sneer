@@ -8,6 +8,7 @@ import sneer.bricks.pulp.reactive.Signal;
 public interface LabelProvider<ELEMENT> {
 
 	Signal<? extends Image> imageFor(ELEMENT element);
-	Signal<String> labelFor(ELEMENT element);
+
+	Signal<String> textFor(ELEMENT element);
 
 }

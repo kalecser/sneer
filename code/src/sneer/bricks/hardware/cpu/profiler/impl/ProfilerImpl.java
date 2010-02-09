@@ -6,6 +6,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.MapRegister;
 import sneer.bricks.pulp.reactive.collections.MapSignal;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 class ProfilerImpl implements Profiler {
@@ -14,7 +15,7 @@ class ProfilerImpl implements Profiler {
 	private Thread[] _allThreads = new Thread[1];
 
 	{
-		my(Threads.class).startDaemon("Profiler", new Runnable() { @Override public void run() {
+		my(Threads.class).startDaemon("Profiler", new Closure() { @Override public void run() {
 			generateProfile();
 		}});
 	}

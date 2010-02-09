@@ -15,11 +15,12 @@ import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.security.InvalidParameterException;
 
-import sneer.bricks.hardware.gui.Action;
+import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.hardware.gui.trayicon.SystemTrayNotSupported;
 import sneer.bricks.hardware.gui.trayicon.TrayIcon;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
+import sneer.foundation.lang.Closure;
 
 class TrayIconImpl implements TrayIcon {
 
@@ -73,7 +74,7 @@ class TrayIconImpl implements TrayIcon {
 		final MenuItem menuItem = new MenuItem(action.caption());
 		
 		menuItem.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent ignored) {
-			my(ExceptionHandler.class).shield(new Runnable() { @Override public void run() {
+			my(ExceptionHandler.class).shield(new Closure() { @Override public void run() {
 				action.run();
 			}});
 		}});

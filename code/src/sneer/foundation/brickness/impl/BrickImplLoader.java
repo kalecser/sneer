@@ -14,7 +14,7 @@ import sneer.foundation.brickness.Nature;
 
 class BrickImplLoader {
 
-	Class<?> loadImplClassFor(Class<?> brick) throws ClassNotFoundException {
+	<T> Class<T> loadImplClassFor(Class<T> brick) throws ClassNotFoundException {
 		File path = ClassFiles.classpathRootFor(brick);
 		String implPackage = BrickConventions.implPackageFor(brick.getName());
 		List<Nature> natures = naturesFor(brick);
@@ -24,7 +24,7 @@ class BrickImplLoader {
 		ClassLoader nextClassLoader = libsClassLoader == null ? apiClassLoader : libsClassLoader;
 		ClassLoader packageLoader = new ClassLoaderForPackage(path, implPackage, natures, nextClassLoader);
 
-		return packageLoader.loadClass(implNameFor(brick.getName()));
+		return (Class<T>)packageLoader.loadClass(implNameFor(brick.getName()));
 	}
 
 	public static List<Nature> naturesFor(Class<?> brick) {
@@ -45,5 +45,6 @@ class BrickImplLoader {
 	private static String implNameFor(final String brickInterfaceName) {
 		return BrickConventions.implClassNameFor(brickInterfaceName);
 	}
-	
+
 }
+

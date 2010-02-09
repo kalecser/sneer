@@ -2,16 +2,12 @@ package sneer.bricks.software.code.compilers.java.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
-import sneer.bricks.software.code.compilers.java.CompilationError;
-import sneer.bricks.software.code.compilers.java.Result;
-import sneer.bricks.software.code.filefilters.java.JavaFilter;
-import sneer.bricks.software.code.filefilters.java.JavaFilters;
-import sneer.bricks.software.code.metaclass.MetaClass;
+import sneer.bricks.software.code.compilers.CompilationError;
+import sneer.bricks.software.code.compilers.Result;
 
 class CompilationResult implements Result {
 
@@ -21,11 +17,8 @@ class CompilationResult implements Result {
 	
 	private List<CompilationError> _errors;
 	
-	private File _targetFolder;
-	
-	public CompilationResult(int compilerCode, File targetFolder) {
+	public CompilationResult(int compilerCode) {
 		_compilerCode = compilerCode;
-		_targetFolder = targetFolder;
 	}
 
 	@Override
@@ -33,13 +26,12 @@ class CompilationResult implements Result {
 		return _compilerCode == 0;
 	}
 
-	@Override
 	public void setError(String errorString) {
 		_errorString = errorString;
 	}
 
 	@Override
-	public List<CompilationError> getErrors() {
+	public List<CompilationError> errors() {
 		if(_errorString != null && _errors == null)
 			_errors = parseErrorString(_errorString);
 
@@ -62,13 +54,7 @@ class CompilationResult implements Result {
 	}
 
 	@Override
-	public String getErrorString() {
+	public String errorString() {
 		return _errorString;
-	}
-
-	@Override
-	public List<MetaClass> compiledClasses() {
-		JavaFilter filter = my(JavaFilters.class).newInstance(_targetFolder);
-		return filter.listMetaClasses();
 	}
 }

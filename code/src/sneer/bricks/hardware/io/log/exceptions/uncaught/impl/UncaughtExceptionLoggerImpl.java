@@ -8,6 +8,7 @@ import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.hardware.io.log.exceptions.uncaught.UncaughtExceptionLogger;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 
 class UncaughtExceptionLoggerImpl implements UncaughtExceptionLogger, UncaughtExceptionHandler {
 
@@ -20,12 +21,9 @@ class UncaughtExceptionLoggerImpl implements UncaughtExceptionLogger, UncaughtEx
 	@Override
 	public void uncaughtException(Thread ignored, final Throwable t1) {
 		try {
-			Environments.runWith(_environment, new Runnable() {
-				@Override
-				public void run() {
-					my(ExceptionLogger.class).log(t1);
-				}
-			});
+			Environments.runWith(_environment, new Closure() { @Override public void run() {
+				my(ExceptionLogger.class).log(t1);
+			}});
 		} catch (Throwable t2) {
 			t2.printStackTrace();
 			System.err.println("The above was thrown while trying to log this throwable:");

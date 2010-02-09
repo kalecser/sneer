@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.tuples.tests;
 
-import sneer.foundation.brickness.Tuple;
+import sneer.bricks.pulp.tuples.Tuple;
 
 public class TestTuple extends Tuple {
 

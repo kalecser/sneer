@@ -17,6 +17,7 @@ import sneer.bricks.pulp.dyndns.ownip.OwnIpDiscoverer;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.foundation.lang.Closure;
 
 class OwnIpDiscovererImpl implements OwnIpDiscoverer {
 	
@@ -54,7 +55,7 @@ class OwnIpDiscovererImpl implements OwnIpDiscoverer {
 	}
 
 	private void scheduleNextDiscovery() {
-		_timerContract = my(Timer.class).wakeUpNoEarlierThan(timeForNextDiscovery(), new Runnable() { @Override public void run() {
+		_timerContract = my(Timer.class).wakeUpNoEarlierThan(timeForNextDiscovery(), new Closure() { @Override public void run() {
 			tryIpDiscovery();
 			scheduleNextDiscovery();
 		}});

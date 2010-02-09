@@ -45,7 +45,7 @@ import javax.swing.event.ChangeListener;
 import org.jdesktop.jxlayer.JXLayer;
 import org.jdesktop.jxlayer.plaf.AbstractLayerUI;
 
-import sneer.bricks.hardware.gui.Action;
+import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.Instrument;
@@ -53,6 +53,7 @@ import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.menu.MenuFactory;
 import sneer.bricks.skin.menu.MenuGroup;
 import sneer.bricks.software.bricks.introspection.Introspector;
+import sneer.foundation.lang.Closure;
 
 class DashboardPanel extends JPanel {
 
@@ -101,8 +102,8 @@ class DashboardPanel extends JPanel {
 	}
 
 	private void initSynth() {
-		_synth.attach(this, "DashboardPanel");
-		_synth.attach(_instrumentsContainer, "InstrumentsContainer");
+		_synth.notInGuiThreadAttach(this, "DashboardPanel");
+		_synth.notInGuiThreadAttach(_instrumentsContainer, "InstrumentsContainer");
 	}
 	
 	void hideAllToolbars() {
@@ -160,7 +161,7 @@ class DashboardPanel extends JPanel {
 			setLayout(new BorderLayout());
 			add(_contentPane, BorderLayout.CENTER);
 			
-			_synth.attach(this, "InstrumentPanel");
+			_synth.notInGuiThreadAttach(this, "InstrumentPanel");
 			_instrument = instrument;
 			_toolbar = new Toolbar(_instrument.title());
 			
@@ -185,7 +186,7 @@ class DashboardPanel extends JPanel {
 
 		private void repaintInstruments() {
 			resizeInstrumentPanel();
-			my(GuiThread.class).invokeLater(new Runnable(){ @Override public void run() {
+			my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
 				hideAllToolbars();
 				_toolbar.setVisible(true);
 			}});
@@ -311,10 +312,10 @@ class DashboardPanel extends JPanel {
 			}
 
 			private void initSynth() {
-				_synth.attach(_toolbarPanel, "InstrumentToolbar");
-				_synth.attach(_title, "InstrumentTitle");
-				_synth.attach(_menu, "InstrumentMenuButton");
-				_synth.attach(_mouseBlockButton);
+				_synth.notInGuiThreadAttach(_toolbarPanel, "InstrumentToolbar");
+				_synth.notInGuiThreadAttach(_title, "InstrumentTitle");
+				_synth.notInGuiThreadAttach(_menu, "InstrumentMenuButton");
+				_synth.notInGuiThreadAttach(_mouseBlockButton);
 			}
 			
 			private void initGui(String title) {
@@ -424,10 +425,14 @@ class DashboardPanel extends JPanel {
 			
 			final InstrumentPanelImpl instrumentPanel = new InstrumentPanelImpl(instrument);
 			
-			instrument.init(instrumentPanel);
-			instrumentPanel.resizeInstrumentPanel();
-			instrumentPanel.revalidate();
-			
+			my(GuiThread.class).invokeAndWait(new Closure(){	
+				@Override 
+				public void run() {
+					instrument.init(instrumentPanel);
+					instrumentPanel.resizeInstrumentPanel();
+					instrumentPanel.revalidate();
+				}
+			});
 //			RunMe.logTree(instrumentPanel);
 			return instrumentPanel;
 		}

@@ -24,7 +24,7 @@ class RListSimpleCellRenderer<ELEMENT> implements ListCellRenderer {
 	@Override
 	public Component getListCellRendererComponent(JList ignored, Object value, int ignored2, boolean isSelected, boolean cellHasFocus) {
 
-		Signal<String> slabel = _rlist._labelProvider.labelFor(getElement(value));
+		Signal<String> slabel = _rlist._labelProvider.textFor(getElement(value));
 		JLabel label = (JLabel) renderer.getListCellRendererComponent(ignored, value, ignored2, isSelected, cellHasFocus);
 		label.setText(slabel.currentValue());
 

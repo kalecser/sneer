@@ -10,6 +10,7 @@ import sneer.bricks.network.computers.sockets.connections.ByteConnection;
 import sneer.bricks.pulp.bandwidth.BandwidthCounter;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class ByteConnectionImpl implements ByteConnection {
@@ -45,14 +46,14 @@ class ByteConnectionImpl implements ByteConnection {
 
 	
 	private void startSending() {
-		_contractToSend = Threads.startStepping(new Runnable() { @Override public void run() {
+		_contractToSend = Threads.startStepping(new Closure() { @Override public void run() {
 			send(_socketHolder.waitForSocket());
 		}});
 	}
 
 	
 	private void startReceiving() {
-		_contractToReceive = Threads.startStepping(new Runnable() { @Override public void run() {
+		_contractToReceive = Threads.startStepping(new Closure() { @Override public void run() {
 			receiveFrom(_socketHolder.waitForSocket());
 		}});
 	}

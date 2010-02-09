@@ -11,11 +11,12 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 		return new CacheMap<K, V>();
 	}
 	
+	private CacheMap() {}
 	
 	Map<K, Thread> _keysByResolver = new HashMap<K, Thread>();
 	
 	
-	public <X extends Throwable> V get(K key, final ProducerWithThrowable<V, X> producerToUseIfAbsent) throws X {
+	public <X extends Throwable> V get(K key, final ProducerX<V, X> producerToUseIfAbsent) throws X {
 		return get(key, new FunctorWithThrowable<K, V, X>() { @Override public V evaluate(K ignored) throws X {
 			return producerToUseIfAbsent.produce();
 		}});

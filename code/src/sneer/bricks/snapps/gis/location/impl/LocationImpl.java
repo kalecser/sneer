@@ -42,10 +42,9 @@ class LocationImpl implements Location {
 				return;
 			}
 			
-			my(HttpGateway.class).get(url, 
-				new Consumer<byte[]>(){ @Override public void consume(byte[] value) {
-					parseAndSetLocation(value);
-				}});
+			my(HttpGateway.class).get(url, new Consumer<byte[]>(){ @Override public void consume(byte[] response) {
+				parseAndSetLocation(response);
+			}});
 	}
 	
 	private void parseAndSetLocation(byte[] value) {

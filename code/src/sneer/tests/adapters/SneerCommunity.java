@@ -155,8 +155,10 @@ public class SneerCommunity implements SovereignCommunity {
 	public void connect(SovereignParty a, SovereignParty b) {
 		SneerParty partyA = (SneerParty)a;
 		SneerParty partyB = (SneerParty)b;
-		partyA.connectTo(partyB);
-		partyB.connectTo(partyA);
+		partyA.startConnectingTo(partyB);
+		partyB.startConnectingTo(partyA);
+		partyA.waitUntilOnline(partyB);
+		partyB.waitUntilOnline(partyA);
 	}
 
 	

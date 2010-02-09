@@ -20,6 +20,7 @@ import javax.swing.tree.MutableTreeNode;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
+import sneer.foundation.lang.Closure;
 import static sneer.foundation.environments.Environments.my;
 
 public class TreeModelExample extends JFrame {
@@ -98,13 +99,9 @@ public class TreeModelExample extends JFrame {
 	private Runnable nodeAdder() {
 		return new Runnable() { @Override public void run() {
 			while (true) {
-				try {
-					my(GuiThread.class).invokeAndWait(new Runnable(){@Override public void run() {
-						addNode();
-					}});
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				my(GuiThread.class).invokeAndWait(new Closure() { @Override public void run() {
+					addNode();
+				}});
 			}
 		}};
 	}
@@ -112,13 +109,9 @@ public class TreeModelExample extends JFrame {
 	private Runnable nodeRemover() {
 		return new Runnable() { @Override public void run() {
 			while (true) {
-				try {
-					my(GuiThread.class).invokeAndWait(new Runnable(){@Override public void run() {
-						removeNode();
-					}});
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				my(GuiThread.class).invokeAndWait(new Closure() { @Override public void run() {
+					removeNode();
+				}});
 			}	
 		}};
 	}
@@ -130,7 +123,7 @@ public class TreeModelExample extends JFrame {
 
 	synchronized private void addNode() {
 		if (_model.getChildCount(_model.getRoot()) == 5) return;
-		_model.insertNodeInto(new NonLeafNode(new Date()+" - "+gen()), (NonLeafNode) _model.getRoot(), 0);
+		_model.insertNodeInto(new NonLeafNode(new Date() + " - " + gen()), (NonLeafNode) _model.getRoot(), 0);
 	}
 
 	private void removeChildrenRecursive(Object node) {
@@ -138,7 +131,7 @@ public class TreeModelExample extends JFrame {
 		while (_model.getChildCount(node) != 0) {
 			Object child = _model.getChild(node, 0);
 			removeChildrenRecursive(child);
-			_model.removeNodeFromParent((MutableTreeNode)child);
+			_model.removeNodeFromParent((MutableTreeNode) child);
 		}
 		System.out.println("children removed  ----");
 	}
@@ -156,4 +149,5 @@ public class TreeModelExample extends JFrame {
 	private synchronized long gen(){
 		return _generated++;
 	}
+
 }

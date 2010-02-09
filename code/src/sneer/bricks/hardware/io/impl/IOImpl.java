@@ -16,17 +16,19 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Functor;
 
 class IOImpl implements IO {
 	
 	private Files _files = new Files(){
-		@Override public long sizeOfFolder(File folder) { return FileUtils.sizeOfDirectory(folder); }
+		@Override public int fileSizeInBlocks(long fileSizeInBytes, int blockSize) { return (fileSizeInBytes == 0) ? 0 : (int) ((fileSizeInBytes - 1) / blockSize) + 1; }
+		@Override public long folderSize(File folder) { return FileUtils.sizeOfDirectory(folder); }
 
 		@Override public void copyFolder(File srcFolder, File destFolder, Filter fileFilter) throws IOException { FolderCopierToWorkaroundCommonsIoBug.copyDirectory(srcFolder, destFolder, asIOFileFilter(fileFilter), true); }
 		@Override public void copyFolder(File srcFolder, File destFolder) throws IOException { FolderCopierToWorkaroundCommonsIoBug.copyDirectory(srcFolder, destFolder, null, true); }
@@ -150,19 +152,16 @@ class IOImpl implements IO {
 				try { input.close(); } catch (Throwable ignore) { }
 			}
 		}
-		@Override public void closeQuietly(Closeable closeable) {
-			if (closeable == null) return;
-			try { closeable.close(); } catch (IOException ignored) {}
-		}
 	};
 
 	private FileFilters _fileFilters = new FileFilters(){
-		@Override public Filter name(String name) { return adapt(FileFilterUtils.nameFileFilter(name)); }
+		@Override public Filter any() { return adapt(FileFilterUtils.trueFileFilter()); }
+		@Override public Filter none() { return adapt(FileFilterUtils.falseFileFilter()); }
 		@Override public Filter not(Filter filter) { return adapt(FileFilterUtils.notFileFilter(asIOFileFilter(filter))); }
+		@Override public Filter name(String name) { return adapt(FileFilterUtils.nameFileFilter(name)); }
 		@Override public Filter suffix(String sulfix) { return adapt(FileFilterUtils.suffixFileFilter(sulfix)); }
-		@Override public Filter any() { return adapt(TrueFileFilter.INSTANCE); }
-		@Override public Filter or(Filter... filters) {
-			if (filters.length < 2) throw new IllegalArgumentException("At least two filters must be specified.");
+		@Override public Filter or(Filter[] filters) {
+			if (filters.length < 1) throw new IllegalArgumentException("The array of filters cannot be empty");
 			
 			IOFileFilter current = asIOFileFilter(filters[0]);
 			for (int i = 1; i < filters.length; i++) {
@@ -176,27 +175,33 @@ class IOImpl implements IO {
 		
 		private Filter adapt(IOFileFilter filter) { return new IOFileFilterAdapter(filter); }
 		
-		class IOFileFilterAdapter implements IOFileFilter, Filter{
+		class IOFileFilterAdapter implements IOFileFilter, Filter {
 			IOFileFilter _delegate;
 			public IOFileFilterAdapter(IOFileFilter delegate) { _delegate = delegate; }
 			@Override public boolean accept(File file) { return _delegate.accept(file);}
 			@Override public boolean accept(File dir, String name) { return _delegate.accept(dir, name); }
 		}
 
+		@Override public Filter foldersAndExtensions(String... acceptedExtensions) {
+			Collection<Filter> fileExtensionFilters = my(CollectionUtils.class).map(Arrays.asList(acceptedExtensions), new Functor<String, Filter>() { @Override public Filter evaluate(String acceptedExtension) throws RuntimeException {
+				return adapt(FileFilterUtils.suffixFileFilter(acceptedExtension));
+			}});
+			fileExtensionFilters.add(adapt(FileFilterUtils.directoryFileFilter()));
 
+			return or(fileExtensionFilters.toArray(new Filter[0]));  
+		}
 
 	};
 	
 	@Override public Files files() { return _files; }
 	@Override public Streams streams() { return _streams; }
 	@Override public FileFilters fileFilters() { return _fileFilters; }
-	@Override
-	public void crash(Closeable closeable) {
-		try {
-			if(closeable!=null) closeable.close();
-		} catch (IOException ignored) {}
+
+	@Override public void crash(Closeable closeable) {
+		if (closeable == null) return;
+		try { closeable.close(); } catch (IOException ignored) {}
 	}
-	
+
 	private static IOFileFilter asIOFileFilter(final Filter filter) {
 		if (filter == null)
 			return null;

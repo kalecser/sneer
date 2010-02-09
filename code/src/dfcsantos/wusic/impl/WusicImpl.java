@@ -3,41 +3,38 @@ package dfcsantos.wusic.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.Track;
-import dfcsantos.tracks.client.TrackClient;
-import dfcsantos.tracks.folder.keeper.TracksFolderKeeper;
+import dfcsantos.tracks.sharing.endorsements.client.downloads.TrackDownloader;
+import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
 
 public class WusicImpl implements Wusic {
-
-	private static final Format TIME_FORMATTER = new SimpleDateFormat("mm:ss");
 
 	private final Register<OperatingMode> _currentOperatingMode = my(Signals.class).newRegister(OperatingMode.OWN);
 
 	private TrackSourceStrategy _trackSource = OwnTracks.INSTANCE;
 	private final Register<Track> _trackToPlay = my(Signals.class).newRegister(null);
-	private final DJ _dj = new DJ(_trackToPlay.output(), new Runnable() { @Override public void run() { skip(); } } );
 	private Track _lastPlayedTrack;
+
+	private final DJ _dj = new DJ(_trackToPlay.output(), new Closure() { @Override public void run() { skip(); } } );
 
 	private Register<Boolean> _isTracksDownloadAllowed = my(Signals.class).newRegister(false);
 	private final Register<Integer> _tracksDownloadAllowance = my(Signals.class).newRegister(DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE);  
 
-	@SuppressWarnings("unused") private final WeakContract _operatingModeConsumerContract;
+	@SuppressWarnings("unused") private final WeakContract _downloadAllowanceConsumerContract;
+	@SuppressWarnings("unused") private final WeakContract _isDownloadEnabledConsumerContract;
 
-	@SuppressWarnings("unused") private WeakContract _downloadAllowanceConsumerContract;
-	@SuppressWarnings("unused") private WeakContract _isDownloadEnabledConsumerContract;
+	@SuppressWarnings("unused") private final WeakContract _operatingModeConsumerContract;
 
 	WusicImpl() {
 		restore();
@@ -54,7 +51,6 @@ public class WusicImpl implements Wusic {
 			reset();
 			_trackSource = (mode.equals(OperatingMode.OWN)) ? OwnTracks.INSTANCE : PeerTracks.INSTANCE;
 		}});
-
 	}
 
 	private void restore() {
@@ -114,20 +110,6 @@ public class WusicImpl implements Wusic {
 	}
 
 	@Override
-	public Signal<String> playingTrackName() {
-		return my(Signals.class).adapt(_trackToPlay.output(), new Functor<Track, String>() { @Override public String evaluate(Track track) {
-			return (track == null) ? "<No track to play>" : (track.name().length() >= 54) ? track.name().substring(0, 51).concat("...") : track.name();
-		}});
-	}
-
-	@Override
-	public Signal<String> playingTrackTime() {
-		return my(Signals.class).adapt(_dj.trackElapsedTime(), new Functor<Integer, String>() { @Override public String evaluate(Integer timeElapsed) {
-			return TIME_FORMATTER.format(new Date(timeElapsed));
-		}});
-	}
-
-	@Override
 	public void pauseResume() {
 		if (currentTrack() == null)
 			play();
@@ -175,24 +157,34 @@ public class WusicImpl implements Wusic {
 	}
 
 	@Override
-	public void noWay() {
+	public void deleteTrack() {
 		final Track currentTrack = currentTrack();
 		if (currentTrack == null) return;
-
-		_trackSource.noWay(currentTrack);
+		
 		skip();
-	}
-
-	@Override
-	public Signal<String> numberOfPeerTracks() {
-		return my(Signals.class).adapt(my(TrackClient.class).numberOfDownloadedTracks(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
-			return "Peer Tracks (" + numberOfTracks + ")";
-		}});
+		_trackSource.deleteTrack(currentTrack);
 	}
 
 	@Override
 	public Signal<Boolean> isPlaying() {
 		return _dj.isPlaying();
+	}
+
+	@Override
+	public Signal<Track> playingTrack() {
+		return _trackToPlay.output();
+	}
+
+	@Override
+	public Signal<Integer> playingTrackTime() {
+		return _dj.trackElapsedTime();
+	}
+
+	@Override
+	public Signal<String> numberOfPeerTracks() {
+		return my(Signals.class).adapt(my(TrackDownloader.class).numberOfDownloadedTracks(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
+			return "Peer Tracks (" + numberOfTracks + ")";
+		}});
 	}
 
 	@Override

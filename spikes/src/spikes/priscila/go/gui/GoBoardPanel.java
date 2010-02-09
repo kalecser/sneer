@@ -16,6 +16,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import spikes.priscila.go.GoBoard;
 import spikes.priscila.go.Move;
@@ -172,7 +173,7 @@ public class GoBoardPanel extends JPanel {
 			_scrollYDelta = scrollDeltaFor(e.getY());
 			
 			repaint();
-			my(GuiThread.class).invokeLater(new Runnable() { @Override public void run() {
+			my(GuiThread.class).invokeLater(new Closure() { @Override public void run() {
 				int x = toScreenPosition(e.getX());
 				int y = toScreenPosition(e.getY());
 				if(_board.canPlayStone(unscrollX(x), unscrollY(y)))

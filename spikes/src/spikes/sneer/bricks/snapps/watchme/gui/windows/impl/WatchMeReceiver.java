@@ -18,10 +18,11 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.events.EventSource;
+import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.Widget;
-import sneer.foundation.brickness.Seal;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import spikes.sneer.bricks.snapps.watchme.WatchMe;
 
@@ -43,7 +44,7 @@ class WatchMeReceiver{
 	}
 
 	private void initGui() {
-		my(GuiThread.class).invokeAndWait(new Runnable(){	@Override public void run() {
+		my(GuiThread.class).invokeAndWait(new Closure() { @Override public void run() {
 			_windowWidget = _factory.newFrame(_contact.nickname());
 			JFrame frm = _windowWidget.getMainWidget();
 			frm.setBounds(0,0,1024,768);

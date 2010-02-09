@@ -6,11 +6,11 @@ import java.io.IOException;
 
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.ClosureX;
 
 class SocketCloser {
 
-	static void closeIfUnsuccessful(ByteArraySocket socket,	String message, Closure<IOException> closure) {
+	static void closeIfUnsuccessful(ByteArraySocket socket,	String message, ClosureX<IOException> closure) {
 		try {
 			closure.run();
 		} catch (IOException e) {
