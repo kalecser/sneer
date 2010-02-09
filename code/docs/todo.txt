@@ -31,6 +31,8 @@ Igor ====================================================
 		- Downloader -> increment
 		- Strategy -> decrement
 
+	- Unignore FileMapTest.rename
+
 	- Seals
 		- ContactInfoWindowImpl - Contact's Seal Field: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
 			- Position - Place it immediately under the nickname field. Outside the Internet Addresses box.
