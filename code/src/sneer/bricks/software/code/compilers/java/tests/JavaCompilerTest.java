@@ -10,9 +10,9 @@ import sneer.bricks.software.code.compilers.CompilationError;
 import sneer.bricks.software.code.compilers.Language;
 import sneer.bricks.software.code.compilers.LanguageRegistry;
 import sneer.bricks.software.code.compilers.Result;
-import sneer.bricks.software.code.compilers.tests.LanguageCompilerTest;
+import sneer.bricks.software.code.compilers.tests.LanguageCompilerTestBase;
 
-public class JavaCompilerTest extends LanguageCompilerTest {
+public class JavaCompilerTest extends LanguageCompilerTestBase {
 
 	@Override
 	protected Language language() {

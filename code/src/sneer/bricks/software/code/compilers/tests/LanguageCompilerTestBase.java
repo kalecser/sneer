@@ -18,13 +18,13 @@ import sneer.bricks.software.code.compilers.java.tests.JarUtils;
 import sneer.bricks.software.code.compilers.java.tests.TestLib;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 
-public abstract class LanguageCompilerTest extends BrickTest {
+public abstract class LanguageCompilerTestBase extends BrickTest {
 
 	protected static final String TEST_FILE_PREFIX = "sneer-test-";
 
 	protected abstract Language language();
 
-	public LanguageCompilerTest() {
+	public LanguageCompilerTestBase() {
 		super();
 	}
 
