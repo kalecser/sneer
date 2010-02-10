@@ -21,6 +21,8 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Unignore TrackDownloadCounterTest and TrackDownloadMonitorTest
+
 	- Unignore FileMapTest.rename
 
 	- Seals
