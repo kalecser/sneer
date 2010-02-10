@@ -21,6 +21,9 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Check problem of OOME in some of the unit tests
+		- Consider increasing the Hudson's -Xmx parameter
+
 	- Unignore TrackDownloadCounterTest and TrackDownloadMonitorTest
 
 	- Unignore FileMapTest.rename
