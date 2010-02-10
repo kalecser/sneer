@@ -7,8 +7,6 @@ Following are the tasks each one of us has on his plate right now:
 
 Bamboo =================================================
 
-	- Delete roadmap.txt
-
 	- Prevalence
 		- KeptTuples (Prevalent) - Take a look. See if TupleSpaceImpl._keptTuples -> my(KeptTuples.class) works.
 			- Delete all other java files from the TupleSpaceImpl package.
@@ -18,10 +16,6 @@ Bamboo =================================================
 		- Make the Contacts brick prevalent. You might have to instrument creation of the Contact objects to give them an id for serialization, to avoid the baptism problem.
 		- Make Seals.put() accept a Contact instead of a nickname string.
 		- BrickStateStore: retire. Use the prevalent nature instead.
-		- Announce to community
-
-	- GUI Nature
-		- "Finish Him"
 		- Announce to community
 
 
@@ -51,6 +45,10 @@ Igor ====================================================
 
 Klaus =================================================
 
+	- GUI Nature
+		- "Finish Him"
+		- Announce to community
+		
 	- [Igor] Have a quick look at the 'TrackDownloadCounterImpl' class
 		- Note that it's using a timer to periodically (15 minutes) poll the peerTracksFoder and update the number of downloaded tracks in case the user access the file system directly
 		- I used the name 'TrackDownloadCounter.count()' instead of 'TrackDownloadCounter.numberOfDownloadedTracks()', cos I think the class' name makes the latter sound redundant
