@@ -4,10 +4,13 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import sneer.bricks.expression.files.client.Download;
 import sneer.bricks.hardware.clock.Clock;
+import sneer.bricks.hardware.clock.timer.Timer;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.foundation.lang.Closure;
 import dfcsantos.tracks.sharing.endorsements.client.downloads.counter.TrackDownloadCounter;
@@ -16,9 +19,27 @@ import dfcsantos.tracks.sharing.endorsements.client.downloads.monitor.TrackDownl
 class TrackDownloadMonitorImpl implements TrackDownloadMonitor {
 
 	private static final int PAYLOAD_LIMIT = 3;
-//	private static final int TIMEOUT_LIMIT = 15 * 60 * 1000;
+	private static final int TIMEOUT_LIMIT = 15 * 60 * 1000;
 
 	private final Map<Download, Long> _downloads = new ConcurrentHashMap<Download, Long>();
+
+	@SuppressWarnings("unused") private final WeakContract _timerContract;
+
+	{
+		_timerContract = my(Timer.class).wakeUpEvery(5 * 60 * 1000, new Closure() { @Override public void run() {
+			checkForDownloadsTimeout();
+		}});
+	}
+
+	private void checkForDownloadsTimeout() {
+		for (Entry<Download, Long> entry : _downloads.entrySet())
+			if (hasReachedTimeoutLimit(entry.getValue()))
+				entry.getKey().dispose();
+	}
+
+	private boolean hasReachedTimeoutLimit(long startTimeOfDownload) {
+		return my(Clock.class).time().currentValue() - startTimeOfDownload >= TIMEOUT_LIMIT;
+	}
 
 	@Override
 	public void watch(final Download download) {
