@@ -3,31 +3,23 @@ package dfcsantos.tracks.sharing.endorsements.client.downloads.downloader.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import sneer.bricks.expression.files.client.Download;
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.sharing.endorsements.client.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.sharing.endorsements.client.downloads.downloader.TrackDownloader;
+import dfcsantos.tracks.sharing.endorsements.client.downloads.monitor.TrackDownloadMonitor;
 import dfcsantos.tracks.sharing.endorsements.protocol.TrackEndorsement;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.tracks.storage.rejected.RejectedTracksKeeper;
 import dfcsantos.wusic.Wusic;
 
 class TrackDownloaderImpl implements TrackDownloader {
-
-	private final List<Download> _downloads = Collections.synchronizedList(new ArrayList<Download>());
 
 	private boolean _isActive = false;
 
@@ -52,20 +44,10 @@ class TrackDownloaderImpl implements TrackDownloader {
 		if (isDuplicated(endorsement)) return;
 		if (isRejected(endorsement)) return;
 
-		if (_downloads.size() >= 3) return;
-		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
-		_downloads.add(download);
+		if (my(TrackDownloadMonitor.class).isOverloaded()) return;
 
-		my(Threads.class).startDaemon("Waiting for Download", new Closure() { @Override public void run() {
-			try {
-				download.waitTillFinished();
-				my(TrackDownloadCounter.class).increment();
-			} catch (IOException e) {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-			} finally {
-				_downloads.remove(download);
-			}
-		}});
+		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
+		my(TrackDownloadMonitor.class).watch(download);
 	}
 
 	private static boolean isRejected(TrackEndorsement endorsement) {
