@@ -25,6 +25,8 @@ Igor ====================================================
 
 	- Unignore FileMapTest.rename
 
+	- Alter CleanTestBase to remove bricks' persistence files after running the tests 
+
 	- Seals
 		- ContactInfoWindowImpl - Contact's Seal Field: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
 			- Ask Klaus for help glueing the gui to the Seals brick. Non-trivial per-contact signals and picky consumers need to be exposed in the Seals interface.
@@ -34,10 +36,12 @@ Igor ====================================================
 		- [Klaus/Daniel] MusicalTasteMatcher Kernel
 		- Downloads
 			- 15 min timeout per download.
-			- Do not download files user already has (includes peertracks) - check if it's already working.
-		- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
-		- Back Button 
-		- Find another way to solve pause lag (try to use a smaller frame in player)
+				- [Klaus] Discuss timeout mechanism to be added to TrackDownloadMonitor
+			- Do not download files user already has (includes peertracks) - check if it's working after the changes made to AbstractDownload
+		- Nice-to-have:
+			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
+			- Back Button 
+			- Find another way to solve pause lag (try to use a smaller frame in player)
 
 	- [Klaus] RapidShare Killer (Transfer Huge Files) - Do this in parallel, when you're bored of Wusic :)
 		- Focus. Keep it simple. Zero sophistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
