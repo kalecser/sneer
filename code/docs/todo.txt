@@ -8,9 +8,6 @@ Following are the tasks each one of us has on his plate right now:
 Bamboo =================================================
 
 	- Prevalence
-		- KeptTuples (Prevalent) - Take a look. See if TupleSpaceImpl._keptTuples -> my(KeptTuples.class) works.
-			- Delete all other java files from the TupleSpaceImpl package.
-			- Delete the lib folder from the TupleSpaceImpl package. 
 		- Use a single prevayler for all bricks inside PrevalentImpl so that transactions are properly synchronized among all prevalent bricks.
 			- Ignore method calls that are already inside a transaction context.
 		- Make the Contacts brick prevalent. You might have to instrument creation of the Contact objects to give them an id for serialization, to avoid the baptism problem.

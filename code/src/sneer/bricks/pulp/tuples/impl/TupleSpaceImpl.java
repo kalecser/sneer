@@ -2,8 +2,6 @@ package sneer.bricks.pulp.tuples.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -12,9 +10,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import org.prevayler.Prevayler;
-import org.prevayler.PrevaylerFactory;
 
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.lang.contracts.Contracts;
@@ -25,11 +20,10 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
-import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.bricks.software.folderconfig.FolderConfig;
+import sneer.bricks.pulp.tuples.kept.KeptTuples;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
@@ -134,50 +128,9 @@ class TupleSpaceImpl implements TupleSpace {
 	private final Set<Class<? extends Tuple>> _typesToKeep = new HashSet<Class<? extends Tuple>>();
 	private final ListRegister<Tuple> _keptTuples;
 
-
-	final Prevayler _prevayler = prevayler(my(CollectionSignals.class).newListRegister());
-	volatile boolean _isPrevaylerClosed = false;
-
-	
-	@SuppressWarnings("unused")
-	private final WeakContract _crashingContract = my(Threads.class).crashing().addPulseReceiver(new Closure() { @Override public void run() {
-		_isPrevaylerClosed = true;
-		closePrevayler();
-	}});
-	
-	
 	TupleSpaceImpl() {
-		_keptTuples = Bubble.wrapStateMachine(_prevayler);
+		_keptTuples = my(KeptTuples.class);
 	}
-
-
-	private Prevayler prevayler(Object system) {
-		PrevaylerFactory factory = prevaylerFactory(system);
-
-		try {
-			return factory.create();
-		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		} catch (ClassNotFoundException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		}
-	}
-
-
-	private PrevaylerFactory prevaylerFactory(Object system) {
-		PrevaylerFactory factory = new PrevaylerFactory();
-		factory.configurePrevalentSystem(system);
-		factory.configurePrevalenceDirectory(folder().getAbsolutePath());
-		factory.configureTransactionFiltering(false);
-		factory.configureJournalSerializer("xstreamjournal", new OldTupleDiscardingSerializer());
-		return factory;
-	}
-
-
-	private File folder() {
-		return my(FolderConfig.class).storageFolderFor(TupleSpace.class);
-	}
-
 	
 	@Override
 	public synchronized void acquire(Tuple tuple) {
@@ -226,7 +179,6 @@ class TupleSpaceImpl implements TupleSpace {
 
 
 	private void keep(Tuple tuple) {
-		if (_isPrevaylerClosed) return;
 		_keptTuples.adder().consume(tuple);
 	}
 
@@ -295,15 +247,6 @@ class TupleSpaceImpl implements TupleSpace {
 			_dispatchCounter--;
 			if (_dispatchCounter == 0)
 				_dispatchCounterMonitor.notifyAll();
-		}
-	}
-
-
-	private void closePrevayler() {
-		try {
-			_prevayler.close();
-		} catch (IOException e) {
-			throw new IllegalStateException(e);
 		}
 	}
 }
