@@ -40,7 +40,11 @@ class IOImpl implements IO {
 			if (!fileOrFolder.exists()) return;
 			FileUtils.forceDelete(fileOrFolder);
 		}
-		
+
+		@Override public void forceDeleteOnExit(File fileOrFolder) throws IOException {
+			FileUtils.forceDeleteOnExit(fileOrFolder);
+		}
+
 		@Override public Iterator<File> iterate(File folder, String[] extensions, boolean recursive){ return FileUtils.iterateFiles(folder, extensions, recursive); }
 		
 		@Override public String readString(File file) throws IOException {return new String(readBytes(file)); }
