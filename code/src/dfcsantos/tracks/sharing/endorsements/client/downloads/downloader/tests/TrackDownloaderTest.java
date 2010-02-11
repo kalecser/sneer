@@ -4,6 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 import org.jmock.Expectations;
 import org.junit.Test;
@@ -78,6 +79,15 @@ public class TrackDownloaderTest extends BrickTest {
 
 	private Seal newSeal(int b) {
 		return new Seal(new ImmutableByteArray(new byte[] { (byte) b }));
+	}
+
+	private File createTmpFileWithRandomContent(int fileSizeInBytes) throws IOException {
+		final File fileWithRandomContent = newTmpFile();
+		final byte[] randomBytes = new byte[fileSizeInBytes];
+		new Random().nextBytes(randomBytes);
+		my(IO.class).files().writeByteArrayToFile(fileWithRandomContent, randomBytes);
+
+		return fileWithRandomContent;
 	}
 
 }

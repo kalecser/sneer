@@ -1,21 +1,16 @@
 package sneer.foundation.testsupport;
 
-import static sneer.foundation.environments.Environments.my;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
-import java.util.Random;
 import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-
-import sneer.bricks.hardware.io.IO;
 
 /** A test that does not pollute the environment: it closes all files handles it opens, it does not leak threads, it does not write to the console (out and err). */
 @RunWith(CleanTestRunner.class)
@@ -45,7 +40,6 @@ public abstract class CleanTestBase extends AssertUtils {
 		File result = new File(folderName);
 		if (!result.exists())
 			assertTrue("Unable to create tmp folder: " + result, result.mkdirs());
-		result.deleteOnExit();
 		return result;
 	}
 
@@ -95,7 +89,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		}
 		
 		checkConsolePollution();
-		cleanTmpFolder();
+		deleteTmpFolder();
 		checkThreadLeak();
 	}
 	
@@ -150,7 +144,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		_errSentinel.complainIfUsed();
 	}
 
-	protected void cleanTmpFolder() {
+	private void deleteTmpFolder() {
 		_tmpFolderName = null;
 		
 		if (_tmpFolder == null) return;
@@ -257,9 +251,7 @@ public abstract class CleanTestBase extends AssertUtils {
 	}
 
 	protected File newTmpFile(String fileName) {
-		final File tmpFile = new File(tmpFolder(), fileName);
-		tmpFile.deleteOnExit();
-		return tmpFile;
+		return new File(tmpFolder(), fileName);
 	}
 
 	protected void createTmpFilesWithFileNameAsContent(String... fileNames) throws IOException {
@@ -272,15 +264,6 @@ public abstract class CleanTestBase extends AssertUtils {
 		FileOutputStream fileOutputStream = new FileOutputStream(file);
 		fileOutputStream.write(fileName.getBytes());
 		return file;
-	}
-
-	protected File createTmpFileWithRandomContent(int fileSizeInBytes) throws IOException {
-		final File fileWithRandomContent = newTmpFile();
-		final byte[] randomBytes = new byte[fileSizeInBytes];
-		new Random().nextBytes(randomBytes);
-		my(IO.class).files().writeByteArrayToFile(fileWithRandomContent, randomBytes);
-
-		return fileWithRandomContent;
 	}
 
 }
