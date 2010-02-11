@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.Test;
 
@@ -65,6 +66,15 @@ public class FileDownloadTest extends BrickTest {
 
 	private ImmutableByteArray getFileBlock(File file, int blockNumber) throws IOException {
 		return new ImmutableByteArray(my(IO.class).files().readBlock(file, blockNumber, Protocol.FILE_BLOCK_SIZE));
+	}
+
+	private File createTmpFileWithRandomContent(int fileSizeInBytes) throws IOException {
+		final File fileWithRandomContent = newTmpFile();
+		final byte[] randomBytes = new byte[fileSizeInBytes];
+		new Random().nextBytes(randomBytes);
+		my(IO.class).files().writeByteArrayToFile(fileWithRandomContent, randomBytes);
+
+		return fileWithRandomContent;
 	}
 
 }
