@@ -26,7 +26,7 @@ class TrackDownloadMonitorImpl implements TrackDownloadMonitor {
 	@SuppressWarnings("unused") private final WeakContract _timerContract;
 
 	{
-		_timerContract = my(Timer.class).wakeUpEvery(5 * 60 * 1000, new Closure() { @Override public void run() {
+		_timerContract = my(Timer.class).wakeUpEvery(TIMEOUT_LIMIT / 3, new Closure() { @Override public void run() {
 			checkForDownloadsTimeout();
 		}});
 	}
