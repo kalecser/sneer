@@ -26,6 +26,13 @@
 		</fileset>
 	</path>
 
+	<taskdef resource="scala/tools/ant/antlib.xml">
+		<classpath>
+	        <pathelement location="${sneer.src}/sneer/bricks/software/code/compilers/scala/impl/lib/scala-compiler.jar"   />
+	        <pathelement location="${sneer.src}/sneer/foundation/languagesupport/scala/lib/scala-library.jar"   />
+		</classpath>
+	</taskdef>
+
 
 	<target name="test" depends="makejar, test-execution, test-verification">
 		<antcall target="finalize"/>
@@ -100,6 +107,11 @@
 			   failonerror="true" debug="on" target="1.6" encoding="utf-8">
 			<classpath refid="classpath"/>
 		</javac>
+	    <scalac srcdir="${sneer.src}"
+	            destdir="${bin.dir}"
+	            classpathref="classpath">
+	    	<include name="**/*.scala"   />
+	    </scalac>
 	</target>
 
 	<target name="makejar" depends="compile, copy-bin">
