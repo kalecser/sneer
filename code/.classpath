@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<!-- required to fix scala compilation with 2.7 plugin version, try to remove later -->
+	<classpathentry kind="src" path="bin"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/code/compilers/java/impl/lib/compiler-7-ea-b17-02_aug_2007.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/bricks/interception/impl/lib/javassist.jar" sourcepath="src/sneer/bricks/software/bricks/interception/impl/lib/javassist-src.zip"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/bricks/interception/tests/fixtures/brickwithlib/impl/lib/foo.jar"/>

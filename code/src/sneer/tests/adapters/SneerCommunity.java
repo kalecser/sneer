@@ -19,6 +19,7 @@ import sneer.foundation.brickness.Brickness;
 import sneer.foundation.brickness.impl.EagerClassLoader;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
+import sneer.foundation.languagesupport.LanguageJarFinder;
 import sneer.tests.SovereignCommunity;
 import sneer.tests.SovereignParty;
 import sneer.tests.adapters.impl.utils.network.InProcessNetwork;
@@ -102,7 +103,12 @@ public class SneerCommunity implements SovereignCommunity {
 	}
 
 	private URLClassLoader apiClassLoader(File privateBin, File sharedBin, final String name) {
-		return new EagerClassLoader(new URL[]{toURL(privateBin), toURL(sharedBin)}, SneerCommunity.class.getClassLoader()) {
+		URL[] langJars = LanguageJarFinder.langSupportJars(sharedBin);
+		URL[] classPath = new URL[langJars.length + 2];
+		classPath[0] = toURL(privateBin);
+		classPath[1] = toURL(sharedBin);
+		System.arraycopy(langJars, 0, classPath, 2, langJars.length);
+		return new EagerClassLoader(classPath, SneerCommunity.class.getClassLoader()) {
 			@Override
 			protected boolean isEagerToLoad(String className) {
 				return !isSharedByAllParties(className);
