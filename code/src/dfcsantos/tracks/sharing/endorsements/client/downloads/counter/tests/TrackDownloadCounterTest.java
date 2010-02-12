@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jmock.Expectations;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
@@ -18,7 +17,6 @@ import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.sharing.endorsements.client.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
-@Ignore
 public class TrackDownloadCounterTest extends BrickTest {
 
 	private TrackDownloadCounter _subject;
