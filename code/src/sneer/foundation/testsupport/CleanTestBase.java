@@ -291,4 +291,4 @@ class PrintStreamSentinel extends PrintStream {
 		if (_exception != null)	throw _exception;
 	}
 	
-};
+}
