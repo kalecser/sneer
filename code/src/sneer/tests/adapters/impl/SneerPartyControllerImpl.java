@@ -324,7 +324,8 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	private void copyUnupdatableBinFiles() throws IOException {
 		copyNecessaryRepositoryBinFiles(
 			"sneer/main/Sneer.class",
-			"sneer/main/Sneer$ExclusionFilter.class",
+			"sneer/main/SneerVersionUpdater.class",
+			"sneer/main/SneerVersionUpdater$ExclusionFilter.class",
 			"sneer/main/SneerCodeFolders.class"
 		);
 	}
