@@ -18,7 +18,7 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Refactoring: XXXTrackDownload --> XXXFileDownload
+	- Refactoring: TrackDownloadXXX --> FileDownloadXXX
 
 	- Unignore FileMapTest.rename
 
