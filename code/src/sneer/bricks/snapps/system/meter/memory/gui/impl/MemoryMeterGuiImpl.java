@@ -31,9 +31,10 @@ class MemoryMeterGuiImpl implements MemoryMeterGui {
 	private final JButton _gc = new JButton();
 	private final Synth _synth = my(Synth.class);
 	
-	private final JLabel _totalMemory = new JLabel();
-	private final TextWidget<JLabel> _maxUsedMemory = newLabel(_meter.usedMBsPeak(), "Peak: ", "MaxUsedMemoryLabel");
-	private final TextWidget<JLabel> _currentMemory = newLabel(_meter.usedMBs(), "MB Used: ", "CurrentMemoryLabel");
+	private final JLabel _maxMemory = new JLabel();
+	private final TextWidget<JLabel> _usedMemoryPeak = newLabel(_meter.usedMBsPeak(), "Peak: ", "MaxUsedMemoryLabel");
+	private final TextWidget<JLabel> _usedMemoryCurrent
+	= newLabel(_meter.usedMBs(), "MB Used: ", "CurrentMemoryLabel");
 
 	public MemoryMeterGuiImpl() {
 		_instruments.registerInstrument(this);
@@ -43,24 +44,24 @@ class MemoryMeterGuiImpl implements MemoryMeterGui {
 	private void initSynth() {
 		_synth.notInGuiThreadLoad(this.getClass());
 		_synth.notInGuiThreadAttach(_gc, "GCButton");
-		_synth.notInGuiThreadAttach(_totalMemory, "TotalMemoryLabel");
+		_synth.notInGuiThreadAttach(_maxMemory, "TotalMemoryLabel");
 	}
 	
 	@Override
 	public void init(InstrumentPanel window) {
 		JComponent container = (JComponent) window.contentPane();
 		
-		_totalMemory.setText("(Max " + _meter.maxMBs() + ")");
+		_maxMemory.setText("(Max " + _meter.maxMBs() + ")");
 		container.setLayout(new FlowLayout(FlowLayout.CENTER));
 
 		_gc.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
 			System.gc();
 		}});
 		
-		container.add(_currentMemory.getComponent());
+		container.add(_usedMemoryCurrent.getComponent());
 		container.add(_gc);
-		container.add(_maxUsedMemory.getComponent());
-		container.add(_totalMemory);
+		container.add(_usedMemoryPeak.getComponent());
+		container.add(_maxMemory);
 	}
 	
 	private TextWidget<JLabel> newLabel(final Signal<Integer> source, final String prefix, final String synthName) {
