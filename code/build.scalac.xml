@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<project name="sneer.build.scala" default="run-scalac" basedir=".">
+
+    <property name="sneer.src" location="../code/src" />
+    <property name="sneer.lib" location="../code/src" />
+    <property name="sneer.bin" location="../code/bin" />
+	
+    <taskdef resource="scala/tools/ant/antlib.xml">
+		<classpath>
+			<pathelement location="${sneer.src}/sneer/bricks/software/code/compilers/scala/impl/lib/scala-compiler.jar"   />
+			<pathelement location="${sneer.src}/sneer/foundation/languagesupport/scala/lib/scala-library.jar"   />
+		</classpath>
+    </taskdef>
+
+	<path id="classpath">
+		<pathelement path="${sneer.bin}"/>
+		<fileset dir="${sneer.src}">
+			<include name='**/*.jar' />
+		</fileset>
+    </path>
+	
+	<target name="run-scalac">
+		<scalac srcdir="${sneer.src}"
+				destdir="${sneer.bin}"
+				classpathref="classpath">
+			<include name="**/*.scala"   />
+		</scalac>
+	</target>
+	
+</project>
