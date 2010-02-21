@@ -9,7 +9,11 @@ import sneer.foundation.lang.Closure;
 
 class CounterImpl implements Counter {
 
-	private final Register<Integer> _countRegister = my(Signals.class).newRegister(0);
+	private final Register<Integer> _countRegister;
+
+	public CounterImpl(int initialValue) {
+		_countRegister = my(Signals.class).newRegister(initialValue);
+	}
 
 	@Override
 	synchronized

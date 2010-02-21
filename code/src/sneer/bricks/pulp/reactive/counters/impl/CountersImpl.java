@@ -6,8 +6,8 @@ import sneer.bricks.pulp.reactive.counters.Counters;
 class CountersImpl implements Counters {
 
 	@Override
-	public Counter newInstance() {
-		return new CounterImpl();
+	public Counter newInstance(int initialValue) {
+		return new CounterImpl(initialValue);
 	}
 
 }

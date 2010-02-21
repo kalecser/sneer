@@ -5,6 +5,6 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface Counters {
 
-	Counter newInstance();
+	Counter newInstance(int initialValue);
 
 }

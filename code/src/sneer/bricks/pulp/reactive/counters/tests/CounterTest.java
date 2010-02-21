@@ -13,7 +13,7 @@ public class CounterTest extends BrickTest {
 
 	@Test
 	public void countTest() {
-		Counter counter = my(Counters.class).newInstance();
+		Counter counter = my(Counters.class).newInstance(0);
 
 		Runnable incrementer = counter.incrementer();
 		Runnable boundlessDecrementer = counter.decrementer();
