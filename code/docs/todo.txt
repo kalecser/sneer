@@ -18,7 +18,15 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Refactoring: TrackDownloadXXX --> FileDownloadXXX
+	- Submit JavaOne paper
+
+	- Changes in the classes involved in the track download scheme
+		- Remove all references to Wusic from TrackDownloader
+			- TrackClient should no longer be a Snapp
+				- It should be activated/deactivated by Wusic's enable track download check box
+				- It should in turn activate/deactivate TrackDownloader
+		- Download.waitTillFinished() should throw TimeoutException
+		- Download should have a method to signal if it finished successfully 
 
 	- Unignore FileMapTest.rename
 
