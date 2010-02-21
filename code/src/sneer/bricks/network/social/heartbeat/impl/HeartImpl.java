@@ -8,7 +8,7 @@ import sneer.bricks.network.social.heartbeat.Heartbeat;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Closure;
 
-public class HeartImplOld implements Heart {
+class HeartImpl implements Heart {
 	
 	@SuppressWarnings("unused")
 	private final WeakContract _timerContract;
