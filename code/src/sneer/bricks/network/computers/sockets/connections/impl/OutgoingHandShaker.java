@@ -5,12 +5,12 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.IOException;
 
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.network.ByteArraySocket;
 
 class OutgoingHandShaker {
 
-	private static final Seals Seals = my(Seals.class);
+	private static final ContactSeals Seals = my(ContactSeals.class);
 
 	
 	static void greet(ByteArraySocket socket) throws IOException {

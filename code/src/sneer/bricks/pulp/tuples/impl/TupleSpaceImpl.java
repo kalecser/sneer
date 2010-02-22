@@ -19,7 +19,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
@@ -139,7 +139,7 @@ class TupleSpaceImpl implements TupleSpace {
 			_floodedTupleCache.add(tuple);
 			capFloodedTuples();
 		} else {
-			Seal me = my(Seals.class).ownSeal();
+			Seal me = my(ContactSeals.class).ownSeal();
 			if (!tuple.addressee.equals(me) && !tuple.publisher.equals(me)) {
 				my(Logger.class).log("Tuple received with incorrect addressee: {} type: ", tuple.addressee, tuple.getClass());
 				return;

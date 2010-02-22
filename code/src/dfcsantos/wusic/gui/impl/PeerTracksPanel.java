@@ -1,4 +1,5 @@
 package dfcsantos.wusic.gui.impl;
+
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Dimension;
@@ -14,11 +15,13 @@ import javax.swing.JTextField;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic.OperatingMode;
 
@@ -30,7 +33,7 @@ class PeerTracksPanel extends AbstractTabPane {
 
     private final JLabel _tracksDownloadAllowanceLabel		= new JLabel();
     private final JTextField _tracksDownloadAllowance		= newReactiveTextField();
-    private final JCheckBox _allowTracksDownload			= newReactiveCheckBox();
+    private final JCheckBox _tracksDownloadActivity			= newReactiveCheckBox();
 
     @SuppressWarnings("unused")	private final WeakContract _toAvoidGC;
 
@@ -48,8 +51,8 @@ class PeerTracksPanel extends AbstractTabPane {
         }});
         customPanel().add(_chooseSharedTracksFolder);
 
-        _allowTracksDownload.setText("Allow Tracks Download");
-        customPanel().add(_allowTracksDownload);
+        _tracksDownloadActivity.setText("Download Tracks");
+        customPanel().add(_tracksDownloadActivity);
 
         _tracksDownloadAllowanceLabel.setText("-   Limit (MBs):");
         customPanel().add(_tracksDownloadAllowanceLabel);
@@ -68,14 +71,18 @@ class PeerTracksPanel extends AbstractTabPane {
 	}
 
 	private JLabel newReactiveLabel() {
-		return my(ReactiveWidgetFactory.class).newLabel(_controller.numberOfPeerTracks()).getMainWidget();
+		return my(ReactiveWidgetFactory.class).newLabel(
+			my(Signals.class).adapt(_controller.numberOfPeerTracks(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
+				return "Peer Tracks (" + numberOfTracks + ")";
+			}})
+		).getMainWidget();
 	}
 
 	private JCheckBox newReactiveCheckBox() {
 		return my(ReactiveWidgetFactory.class).newCheckBox(
-			_controller.isTracksDownloadAllowed(),
-			new Consumer<Boolean>() { @Override public void consume(Boolean isTracksDownloadAllowed) { _controller.allowTracksDownload(isTracksDownloadAllowed); } },
-			new Closure() { @Override public void run() { allowTracksDownloadActionPerformed(_controller.isTracksDownloadAllowed().currentValue()); } }
+			_controller.isTracksDownloadActive(),
+			_controller.tracksDownloadActivator(),
+			new Closure() { @Override public void run() { allowTracksDownloadActionPerformed(_controller.isTracksDownloadActive().currentValue()); } }
 		).getMainWidget();
 	}
 

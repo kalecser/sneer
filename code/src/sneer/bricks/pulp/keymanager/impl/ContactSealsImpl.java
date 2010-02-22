@@ -2,23 +2,27 @@ package sneer.bricks.pulp.keymanager.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.keymanager.generator.OwnSealKeeper;
+import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Signals;
+import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.Producer;
+import sneer.foundation.lang.exceptions.Refusal;
 
-class SealsImpl implements Seals {
+class ContactSealsImpl implements ContactSeals {
 
 	private Seal _ownSeal;
 	
-	private final Map<Contact, Seal> _sealsByContact = new HashMap<Contact, Seal>();
+	private final CacheMap<Contact, Register<Seal>> _sealsByContact = CacheMap.newInstance();
 
 
 	@Override
@@ -57,25 +61,30 @@ class SealsImpl implements Seals {
 
 
 	@Override
-	public Seal sealGiven(Contact contact) {
-		return _sealsByContact.get(contact);
+	public Signal<Seal> sealGiven(Contact contact) {
+		return _sealsByContact.get(contact).output();
+	}
+
+	
+	@Override
+	public void put(String nick, Seal seal) throws Refusal {
+		final Contact contact = my(Contacts.class).contactGiven(nick);
+		if (contact == null) throw new Refusal("No contact found with nickname: " + nick);
+
+		Contact oldContact = contactGiven(seal);
+		if (contact.equals(oldContact)) return;
+		if (oldContact != null) throw new Refusal("Trying to set a Seal for '" + contact + "' that already belonged to '" + oldContact + "'.");
+		
+		_sealsByContact.get(contact, new Producer<Register<Seal>>() { @Override public Register<Seal> produce() {
+			return my(Signals.class).newRegister(null);
+		}}).setter().consume(seal);
 	}
 
 
 	@Override
-	public synchronized void put(String nick, Seal seal) {
-		Contact contact = my(Contacts.class).contactGiven(nick);
-		if (contact == null || seal == null) throw new NullPointerException();
-		if (sealGiven(contact) != null) throw new IllegalArgumentException("There already was a seal registered for contact: " + contact.nickname().currentValue());
-		if (contactGiven(seal) != null) throw new IllegalArgumentException("There already was a contact registered with seal: " + seal);
-		_sealsByContact.put(contact, seal);
-	}
-
-
-	@Override
-	public synchronized Contact contactGiven(Seal peersSeal) {
+	public Contact contactGiven(Seal peersSeal) {
 		for (Contact candidate : _sealsByContact.keySet())
-			if(_sealsByContact.get(candidate).equals(peersSeal))
+			if(sealGiven(candidate).currentValue().equals(peersSeal))
 				return candidate;
 		
 		return null;

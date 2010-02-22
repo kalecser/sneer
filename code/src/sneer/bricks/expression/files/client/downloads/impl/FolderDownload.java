@@ -1,11 +1,12 @@
-package sneer.bricks.expression.files.client.impl;
+package sneer.bricks.expression.files.client.downloads.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
 
-import sneer.bricks.expression.files.client.Download;
+import sneer.bricks.expression.files.client.downloads.Download;
+import sneer.bricks.expression.files.client.downloads.TimeoutException;
 import sneer.bricks.expression.files.hasher.FolderContentsHasher;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
@@ -32,14 +33,11 @@ class FolderDownload extends AbstractDownload {
 
 	FolderDownload(File folder, long lastModified, Sneer1024 hashOfFolder, Runnable toCallWhenFinished) {
 		super(folder, lastModified, hashOfFolder, toCallWhenFinished);
-
-		if (isFinished()) return;
-		subscribeToFolderContents();
-		startSendingRequests();
 	}
 
-	
-	private void subscribeToFolderContents() {
+
+	@Override
+	void subscribeToContents() {
 		_folderContentConsumerContract = my(TupleSpace.class).addSubscription(FolderContents.class, new Consumer<FolderContents>() { @Override public void consume(FolderContents folderContents) {
 			receiveFolder(folderContents);
 		}});
@@ -52,11 +50,13 @@ class FolderDownload extends AbstractDownload {
 			tryToReceiveFolder(contents);
 		} catch (IOException ioe) {
 			finishWith(ioe);
+		} catch (TimeoutException te) {
+			finishWith(te);
 		}
 	}
 
 	
-	private void tryToReceiveFolder(FolderContents folderContents) throws IOException {
+	private void tryToReceiveFolder(FolderContents folderContents) throws IOException, TimeoutException {
 		if (isFinished()) return;
 
 	    Sneer1024 hashOfFolder = my(FolderContentsHasher.class).hash(folderContents);
@@ -66,13 +66,13 @@ class FolderDownload extends AbstractDownload {
 	    if (!_path.exists() && !_path.mkdir()) throw new IOException("Unable to create folder: " + _path);
 
 	    for (FileOrFolder entry : folderContents.contents)
-	    	startDownload(entry).waitTillFinished();
+	    	startSpinOffDownload(entry).waitTillFinished();
 
 	    finishWithSuccess();
 	}
 
 
-	private Download startDownload(FileOrFolder entry) {
+	private Download startSpinOffDownload(FileOrFolder entry) {
 		return entry.isFolder
 		? new FolderDownload(new File(_path, entry.name), entry.lastModified, entry.hashOfContents)
 		: new FileDownload(new File(_path, entry.name), entry.lastModified, entry.hashOfContents);	

@@ -7,14 +7,17 @@ import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.snapps.contacts.hardcoded.HardcodedContacts;
+import sneer.foundation.lang.exceptions.Refusal;
 
 public class HardcodedContactsImpl implements HardcodedContacts {
 
+	
 	private final Contacts _contactManager = my(Contacts.class);
 
+	
 	HardcodedContactsImpl() throws DecodeException {
 		if(!_contactManager.contacts().currentElements().isEmpty()) 
 			return;
@@ -23,17 +26,24 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 			add(contact);
 	}
 	
+	
 	private void add(ContactInfo contact) {
-		if (my(Seals.class).ownSeal().equals(contact._seal)) return;
+		if (my(ContactSeals.class).ownSeal().equals(contact._seal)) return;
 		addAddresses(contact);
 		addSeal(contact);
 	}
 
+	
 	private void addSeal(ContactInfo contact) {
 		if (contact._seal == null) return;
-		my(Seals.class).put(contact._nick, contact._seal);
+		try {
+			my(ContactSeals.class).put(contact._nick, contact._seal);
+		} catch (Refusal e) {
+			throw new IllegalStateException(e); // Fix Handle this exception.
+		}
 	}
 
+	
 	private void addAddresses(ContactInfo contact) {
 		String nick = contact._nick;
 		addAddress(nick, contact._host, contact._port);
@@ -42,17 +52,20 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 			addAddress(nick, host, contact._port);
 	}
 
+	
 	private String[] alternativeHostsFor(String nick) {
 		if (nick.equals("Kalecser")) return new String[]{"10.42.11.165"};
 		if (nick.equals("Klaus")) return new String[]{"200.169.90.89", "10.42.11.19"};
 		return new String[]{};
 	}
 
+	
 	private void addAddress(String nick, String host, int port) {
 		Contact contact = _contactManager.produceContact(nick);
 		my(InternetAddressKeeper.class).add(contact, host, port);
 	}
 
+	
 	private ContactInfo[] contacts() throws DecodeException {
 		return new ContactInfo[] {
 			new ContactInfo("Agnaldo4j", "agnaldo4j.selfip.com", 5923),
@@ -72,10 +85,12 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 		};
 	}
 
+	
 	private Seal sealFromString(String seal) throws DecodeException {
 		return new Seal(new ImmutableByteArray(my(Codec.class).hex().decode(seal)));
 	}
 
+	
 	static class ContactInfo {
 		final String _nick;
 		final String _host;

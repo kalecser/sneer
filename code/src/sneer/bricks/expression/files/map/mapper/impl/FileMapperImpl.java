@@ -18,7 +18,6 @@ import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
-import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
@@ -61,13 +60,11 @@ class FileMapperImpl implements FileMapper {
 	public void stopFolderMapping(final File folder) {
 		if (_mappingsByFolder.get(folder) == null) return;
 		_mappingsByFolder.remove(folder).stop();
-		my(Threads.class).startDaemon("Removing \'" + folder.getName() + "\' folder from FileMap...", new Closure() { @Override public void run() {
-			FileMap.remove(folder);
-		}});
+		FileMap.remove(folder);
 	}
 
 
-	private class FolderMapping implements Runnable {
+	private class FolderMapping {
 
 		private final File _folder;
 		private final String[] _acceptedFileExtensions;
@@ -86,11 +83,11 @@ class FileMapperImpl implements FileMapper {
 			_folder = folder;
 			_acceptedFileExtensions = acceptedFileExtensions;
 
-			my(Threads.class).startDaemon("Mapping \'" + _folder.getName() + "\'", this);
+			run();
 		}
 
 
-		public void run() {
+		private void run() {
 			my(CpuThrottle.class).limitMaxCpuUsage(20, new Closure() { @Override public void run() {
 				try {
 					_result = mapFolder(_folder, _acceptedFileExtensions);

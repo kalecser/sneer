@@ -1,4 +1,4 @@
-package spikes.priscila.go.gui;
+package spikes.klaus.go.gui;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
@@ -7,8 +7,8 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
-import spikes.priscila.go.Move;
-import spikes.priscila.go.GoBoard.StoneColor;
+import spikes.klaus.go.Move;
+import spikes.klaus.go.GoBoard.StoneColor;
 
 public class GoMain {
 	

@@ -1,9 +1,9 @@
-package spikes.priscila.go;
+package spikes.klaus.go;
 
 import java.io.Serializable;
 import java.util.HashSet;
 
-import spikes.priscila.go.GoBoard.StoneColor;
+import spikes.klaus.go.GoBoard.StoneColor;
 
 class Intersection implements Serializable {
 

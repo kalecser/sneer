@@ -1,4 +1,4 @@
-package sneer.bricks.expression.files.client.impl;
+package sneer.bricks.expression.files.client.downloads.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -45,14 +45,11 @@ class FileDownload extends AbstractDownload {
 
 	FileDownload(File file, long lastModified, Sneer1024 hashOfFile, Runnable toCallWhenFinished) {
 		super(file, lastModified, hashOfFile, toCallWhenFinished);
-
-		if (isFinished()) return; 
-		subscribeToFileContents();
-		startSendingRequests();
 	}
 
 
-	private void subscribeToFileContents() {
+	@Override
+	void subscribeToContents() {
 		_fileContentConsumerContract = my(TupleSpace.class).addSubscription(FileContents.class, new Consumer<FileContents>() { @Override public void consume(FileContents contents) {
 			receiveFileBlock(contents);
 		}});
@@ -90,7 +87,7 @@ class FileDownload extends AbstractDownload {
 	
 	private void receiveFirstBlock(FileContentsFirstBlock contents) throws IOException {
 		if (firstBlockWasAlreadyReceived()) return;
-		_fileSizeInBlocks = my(IO.class).files().fileSizeInBlocks(contents.fileSize, Protocol.FILE_BLOCK_SIZE);
+		_fileSizeInBlocks = (contents.fileSize == 0) ? 0 : (int) ((contents.fileSize - 1) / Protocol.FILE_BLOCK_SIZE) + 1;
 		_output = new FileOutputStream(_path);
 		
 		if (_fileSizeInBlocks == 0) finishWithSuccess();  //Empty file case.

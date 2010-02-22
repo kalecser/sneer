@@ -5,7 +5,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.social.loggers.tuples.TupleLogger;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
@@ -23,7 +23,7 @@ class TupleLoggerImpl implements TupleLogger, Consumer<Tuple> {
 	@Override
 	public void consume(Tuple tuple) {
 		Seal publisherSeal = tuple.publisher;
-		String message = my(Seals.class).ownSeal().equals(publisherSeal)
+		String message = my(ContactSeals.class).ownSeal().equals(publisherSeal)
 			? "Tuple published: "
 			: "Tuple acquired: ";
 		my(Logger.class).log(message, tuple);

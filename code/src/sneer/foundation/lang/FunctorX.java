@@ -1,7 +1,7 @@
 package sneer.foundation.lang;
 
 
-public interface FunctorWithThrowable<A, B, X extends Throwable> {
+public interface FunctorX<A, B, X extends Throwable> {
 	
 	B evaluate(A value) throws X;
 

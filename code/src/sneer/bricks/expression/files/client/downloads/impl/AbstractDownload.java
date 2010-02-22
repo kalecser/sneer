@@ -1,11 +1,13 @@
-package sneer.bricks.expression.files.client.impl;
+package sneer.bricks.expression.files.client.downloads.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
 
-import sneer.bricks.expression.files.client.Download;
+import sneer.bricks.expression.files.client.downloads.Download;
+import sneer.bricks.expression.files.client.downloads.TimeoutException;
+import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -20,7 +22,9 @@ import sneer.foundation.lang.Closure;
 
 abstract class AbstractDownload implements Download {
 
-	static final int REQUEST_INTERVAL = 15000;
+	private static int TIMEOUT_LIMIT = 15 * 60 * 1000;
+
+	static final int REQUEST_INTERVAL = 15 * 1000;
 
 	File _path;
 	final long _lastModified;
@@ -28,12 +32,14 @@ abstract class AbstractDownload implements Download {
 
 	private final File _actualPath;
 
-	@SuppressWarnings("unused") private WeakContract _timerContract;
+	private long _startTime;
 
 	final Latch _isFinished = my(Latches.class).produce();
-	private IOException _exception;
+	private Exception _exception;
 
 	private final Runnable _toCallWhenFinished;
+
+	@SuppressWarnings("unused") private WeakContract _timerContract;
 
 
 	AbstractDownload(File path, long lastModified, Sneer1024 hashOfFile, Runnable toCallWhenFinished) {
@@ -46,12 +52,29 @@ abstract class AbstractDownload implements Download {
 		_toCallWhenFinished = toCallWhenFinished;
 
 		finishIfLocallyAvailable();
+
+		if (isFinished()) return;
+
+		start();
 	}
 
 
-	public void waitTillFinished() throws IOException {
+	private void start() {
+		subscribeToContents();
+		_startTime = my(Clock.class).time().currentValue();
+		startSendingRequests();
+	}
+
+
+	abstract void subscribeToContents();
+
+
+	@Override
+	public void waitTillFinished() throws IOException, TimeoutException {
 		_isFinished.waitTillOpen();
-		if (_exception != null) throw _exception;
+		if (_exception != null)
+			if (_exception instanceof IOException) throw (IOException) _exception;
+			if (_exception instanceof TimeoutException) throw (TimeoutException) _exception;
 	}
 
 
@@ -80,14 +103,13 @@ abstract class AbstractDownload implements Download {
 		publish(request);
 	}
 
+	
+	abstract Tuple requestToPublishIfNecessary();
+	
 
 	void publish(Tuple request) {
 		my(TupleSpace.class).acquire(request);
 	}
-
-
-	abstract void copyContents(Object contents) throws IOException;
-	abstract Tuple requestToPublishIfNecessary();
 
 
 	boolean isFinished() {
@@ -95,8 +117,8 @@ abstract class AbstractDownload implements Download {
 	}
 
 
-	void finishWith(IOException ioe) {
-		_exception = ioe;
+	void finishWith(Exception e) {
+		_exception = e;
 		finish();
 	}
 
@@ -133,12 +155,20 @@ abstract class AbstractDownload implements Download {
 
 	abstract Object mappedContentsBy(Sneer1024 hashOfContents);
 
+	abstract void copyContents(Object contents) throws IOException;
+
 
 	void startSendingRequests() {
 		_timerContract = my(Timer.class).wakeUpNowAndEvery(REQUEST_INTERVAL, new Closure() { @Override public void run() {
+			checkForTimeOut();
 			publishRequestIfNecessary();
 		}});
 	}
 
+
+	void checkForTimeOut() {
+		if (my(Clock.class).time().currentValue() - _startTime >= TIMEOUT_LIMIT)
+			finishWith(new TimeoutException());
+	}
 
 }

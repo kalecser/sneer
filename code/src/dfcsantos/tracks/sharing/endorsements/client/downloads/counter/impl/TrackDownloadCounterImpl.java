@@ -31,7 +31,7 @@ class TrackDownloadCounterImpl implements TrackDownloadCounter {
 		return _delegate.incrementer();
 	}
 
-	private static int numberOfTracksInTheDownloadsFolder() {
+	private int numberOfTracksInTheDownloadsFolder() {
 		return downloadsFolder().listFiles(my(DotParts.class).dotPartFilter()).length;
 	}
 

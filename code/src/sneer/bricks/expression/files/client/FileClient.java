@@ -2,6 +2,7 @@ package sneer.bricks.expression.files.client;
 
 import java.io.File;
 
+import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.foundation.brickness.Brick;
 
@@ -14,4 +15,6 @@ public interface FileClient {
 	Download startFolderDownload(File folder, long lastModified, Sneer1024 hashOfFolder);
 	Download startFolderDownload(File folder, Sneer1024 hashOfFolder);
 
+	int numberOfRunningDownloads();
 }
+
