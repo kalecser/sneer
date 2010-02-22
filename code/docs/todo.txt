@@ -18,10 +18,7 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Check problem of OOME in some of the unit tests
-		- Consider increasing the Hudson's -Xmx parameter
-
-	- Unignore TrackDownloadCounterTest and TrackDownloadMonitorTest
+	- Refactoring: TrackDownloadXXX --> FileDownloadXXX
 
 	- Unignore FileMapTest.rename
 
@@ -35,8 +32,6 @@ Igor ====================================================
 	- Wusic
 		- [Klaus/Daniel] MusicalTasteMatcher Kernel
 		- Downloads
-			- 15 min timeout per download.
-				- [Klaus] Discuss timeout mechanism to be added to TrackDownloadMonitor
 			- Do not download files user already has (includes peertracks) - check if it's working after the changes made to AbstractDownload
 		- Nice-to-have:
 			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name

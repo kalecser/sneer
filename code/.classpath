@@ -24,7 +24,6 @@
 	<classpathentry kind="lib" path="src/sneer/bricks/software/timing/impl/lib/TimingFramework-1.0.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/hardware/cpu/crypto/impl/lib/bcprov-jdk16-139.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/hardware/cpu/codec/impl/lib/commons-codec-1.4.jar"/>
-	<classpathentry kind="con" path="ch.epfl.lamp.sdt.launching.SCALA_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
