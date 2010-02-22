@@ -40,7 +40,7 @@ class WatchMeReceiver{
 
 	WatchMeReceiver(Contact contact) {
 		_contact = contact;
-		startWindowPaint(Seals.sealGiven(_contact));
+		startWindowPaint(Seals.sealGiven(_contact).currentValue());
 	}
 
 	private void initGui() {
@@ -68,10 +68,10 @@ class WatchMeReceiver{
 	}
 
 
-	private void startWindowPaint(Seal key) {
+	private void startWindowPaint(Seal seal) {
 		if (_screensReception != null) _screensReception.dispose();
 		
-		final EventSource<BufferedImage> screens = _watchMe.screenStreamFor(key);
+		final EventSource<BufferedImage> screens = _watchMe.screenStreamFor(seal);
 		_screensReception = screens.addReceiver(new Consumer<Image>() { @Override public void consume(Image img) {
 			if (_windowWidget == null) initGui();
 			

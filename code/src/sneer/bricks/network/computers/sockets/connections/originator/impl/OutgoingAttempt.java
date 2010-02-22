@@ -56,7 +56,7 @@ class OutgoingAttempt {
 
 
 	private boolean contactHasSeal() {
-		if (my(ContactSeals.class).sealGiven(contact()) == null) {
+		if (my(ContactSeals.class).sealGiven(contact()).currentValue() == null) {
 			my(BlinkingLights.class).turnOnIfNecessary(_light, "" + contact() + "'s Seal is unknown.", "You will be able to connect to this contact once you have entered his Seal. Right-click on the contact and choose 'Edit Contact' (or something like that :)");
 			return false;
 		}

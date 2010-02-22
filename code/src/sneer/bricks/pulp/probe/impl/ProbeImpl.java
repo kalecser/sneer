@@ -7,8 +7,8 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
-import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.ContactSeals;
+import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
@@ -22,7 +22,6 @@ final class ProbeImpl implements Consumer<Tuple> {
 
 	
 	private final Contact _contact;
-	private Seal _contactsSeal;
 	
 	private final Object _isConnectedMonitor = new Object();
 	private boolean _isConnected = false;
@@ -63,30 +62,31 @@ final class ProbeImpl implements Consumer<Tuple> {
 		}
 	}
 
+	
 	private boolean isClearToSend(Tuple tuple) {
-		initContactsSealIfNecessary();
-		if (_contactsSeal == null) return false;
+		Seal seal = contactsSeal();
+		if (seal == null) return false;
 
 		if (!_filter.canBePublished(tuple)) return false;
-		if (!isCorrectAddressee(tuple)) return false;
-		if (isEcho(tuple)) return false;
+		if (!isCorrectAddressee(tuple, seal)) return false;
+		if (isEcho(tuple, seal)) return false;
 		
 		return true;
 	}
 
 	
-	private boolean isCorrectAddressee(Tuple tuple) {
-		return (tuple.addressee == null || tuple.addressee.equals(_contactsSeal));
+	private Seal contactsSeal() {
+		return _keyManager.sealGiven(_contact).currentValue();
 	}
 
 	
-	private boolean isEcho(Tuple tuple) {
-		return _contactsSeal.equals(tuple.publisher);
+	private boolean isCorrectAddressee(Tuple tuple, Seal seal) {
+		return (tuple.addressee == null || tuple.addressee.equals(seal));
 	}
 
-	private void initContactsSealIfNecessary() {
-		if (_contactsSeal != null) return;
-		_contactsSeal = _keyManager.sealGiven(_contact);
+	
+	private boolean isEcho(Tuple tuple, Seal seal) {
+		return seal.equals(tuple.publisher);
 	}
 
 }

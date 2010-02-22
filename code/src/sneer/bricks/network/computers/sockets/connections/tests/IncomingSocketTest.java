@@ -12,9 +12,11 @@ import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
-import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.ContactSeals;
+import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.network.ByteArraySocket;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 
@@ -45,8 +47,8 @@ public class IncomingSocketTest extends BrickTest {
 			allowing(_seals).ownSeal(); will(returnValue(_ownSeal));
 			allowing(_seals).contactGiven(_smallerSeal); will(returnValue(a));
 			allowing(_seals).contactGiven(_greaterSeal); will(returnValue(b));
-			allowing(_seals).sealGiven(a); will(returnValue(_smallerSeal));
-			allowing(_seals).sealGiven(b); will(returnValue(_greaterSeal));
+			allowing(_seals).sealGiven(a); will(returnValue(constant(_smallerSeal)));
+			allowing(_seals).sealGiven(b); will(returnValue(constant(_greaterSeal)));
 
 			oneOf(_socketA).read(); will(returnValue(ProtocolTokens.SNEER_WIRE_PROTOCOL_1)); inSequence(sequence);
 			oneOf(_socketA).read(); will(returnValue(new byte[]{1, 1, 1})); inSequence(sequence);
@@ -68,6 +70,11 @@ public class IncomingSocketTest extends BrickTest {
 	}
 
 	
+	private static Signal<Seal> constant(Seal seal) {
+		return my(Signals.class).constant(seal);
+	}
+
+
 	private Seal newSeal(byte[] bytes) {
 		return new Seal(new ImmutableByteArray(bytes));
 	}
