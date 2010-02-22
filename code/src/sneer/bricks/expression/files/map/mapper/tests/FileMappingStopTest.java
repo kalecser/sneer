@@ -7,6 +7,7 @@ import java.io.File;
 import org.jmock.Expectations;
 import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.map.FileMap;
@@ -22,6 +23,7 @@ public class FileMappingStopTest extends BrickTest {
 	@Bind private final FileMap _fileMap = mock(FileMap.class);
 	private final FileMapper _subject = my(FileMapper.class);
 
+	@Ignore
 	@Test (timeout = 3000, expected = MappingStopped.class)
 	public void mapFolder() throws Exception {
 		checking(new Expectations() {{

@@ -10,10 +10,10 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.Track;
+import dfcsantos.tracks.sharing.endorsements.client.TrackClient;
 import dfcsantos.tracks.sharing.endorsements.client.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
@@ -28,7 +28,7 @@ public class WusicImpl implements Wusic {
 
 	private final DJ _dj = new DJ(_trackToPlay.output(), new Closure() { @Override public void run() { skip(); } } );
 
-	private Register<Boolean> _isTracksDownloadAllowed = my(Signals.class).newRegister(false);
+	private Register<Boolean> _isTracksDownloadActive = my(Signals.class).newRegister(false);
 	private final Register<Integer> _tracksDownloadAllowance = my(Signals.class).newRegister(DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE);  
 
 	@SuppressWarnings("unused") private final WeakContract _downloadAllowanceConsumerContract;
@@ -39,7 +39,9 @@ public class WusicImpl implements Wusic {
 	WusicImpl() {
 		restore();
 
-		_isDownloadEnabledConsumerContract = isTracksDownloadAllowed().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isDownloadAllowed) {
+		my(TrackClient.class).setOnOffSwitch(isTracksDownloadActive());
+
+		_isDownloadEnabledConsumerContract = isTracksDownloadActive().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isDownloadAllowed) {
 			save();
 		}});
 
@@ -57,7 +59,7 @@ public class WusicImpl implements Wusic {
 		Object[] restoredDownloadAllowanceState = Store.restore();
 		if (restoredDownloadAllowanceState == null) return;
 
-		allowTracksDownload((Boolean) restoredDownloadAllowanceState[0]);
+		_isTracksDownloadActive.setter().consume((Boolean) restoredDownloadAllowanceState[0]);
 		try {
 			tracksDownloadAllowanceSetter().consume((Integer) restoredDownloadAllowanceState[1]);
 		} catch (Refusal e) {
@@ -66,7 +68,7 @@ public class WusicImpl implements Wusic {
 	}
 
 	private void save() {
-		Store.save(isTracksDownloadAllowed().currentValue(), tracksDownloadAllowance().currentValue());
+		Store.save(isTracksDownloadActive().currentValue(), tracksDownloadAllowance().currentValue());
 	}
 
 	private void reset() {
@@ -181,20 +183,18 @@ public class WusicImpl implements Wusic {
 	}
 
 	@Override
-	public Signal<String> numberOfPeerTracks() {
-		return my(Signals.class).adapt(my(TrackDownloadCounter.class).count(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
-			return "Peer Tracks (" + numberOfTracks + ")";
-		}});
+	public Signal<Integer> numberOfPeerTracks() {
+		return my(TrackDownloadCounter.class).count();
 	}
 
 	@Override
-	public Signal<Boolean> isTracksDownloadAllowed() {
-		return _isTracksDownloadAllowed.output();
+	public Signal<Boolean> isTracksDownloadActive() {
+		return _isTracksDownloadActive.output();
 	}
 
 	@Override
-	public void allowTracksDownload(boolean b) {
-		_isTracksDownloadAllowed.setter().consume(b);
+	public Consumer<Boolean> tracksDownloadActivator() {
+		return _isTracksDownloadActive.setter();
 	}
 
 	@Override
@@ -215,3 +215,5 @@ public class WusicImpl implements Wusic {
 	}
 
 }
+
+

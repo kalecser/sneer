@@ -21,12 +21,21 @@ Bamboo =================================================
 Igor ====================================================
 
 	- Hudson - Stabilize
-	
+
+	- Changes in the classes involved in the track download scheme
+		- Remove all references to Wusic from TrackDownloader
+			- TrackClient should no longer be a Snapp
+				- It should be activated/deactivated by Wusic's enable track download check box
+				- It should in turn activate/deactivate TrackDownloader
+		- Download.waitTillFinished() should throw TimeoutException
+		- Download should have a method to signal if it finished successfully 
+
 	- Unignore FileMapTest.rename
 
-	- Refactoring: TrackDownloadXXX --> FileDownloadXXX
 
 	- CleanTestBase - Make sure tmp folder is being deleted. 
+
+	- Submit JavaOne paper
 
 	- Seals
 		- ContactInfoWindowImpl - Contact's Seal Field: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
@@ -36,7 +45,6 @@ Igor ====================================================
 	- Wusic
 		- [Klaus/Daniel] MusicalTasteMatcher Kernel
 		- Downloads
-			- TrackDownloadMonitor - Delete. Move timeout to Download itself (hardcoded).
 			- Do not download files user already has (includes peertracks) - check if it's working after the changes made to AbstractDownload
 		- Nice-to-have:
 			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
@@ -46,7 +54,6 @@ Igor ====================================================
 	- [Klaus] RapidShare Killer (Transfer Huge Files) - Do this in parallel, when you're bored of Wusic :)
 		- Focus. Keep it simple. Zero sophistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
 		- Announce to community
-
 
 
 Klaus =================================================
@@ -74,4 +81,4 @@ Klaus =================================================
 
 	- Revise entire package structure.
 		- Remove all calls to Thread.sleep() including indirect.
- 
+

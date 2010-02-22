@@ -4,8 +4,9 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 
-import sneer.bricks.expression.files.client.Download;
 import sneer.bricks.expression.files.client.FileClient;
+import sneer.bricks.expression.files.client.downloads.Download;
+import sneer.bricks.expression.files.client.downloads.Downloads;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.foundation.lang.CacheMap;
@@ -25,7 +26,7 @@ class FileClientImpl implements FileClient {
 	@Override
 	public Download startFileDownload(final File file, final long lastModified, final Sneer1024 hashOfFile) {
 		return startDownload("file", file, hashOfFile, new Producer<Download>() { @Override public Download produce() throws RuntimeException {
-			return new FileDownload(file, lastModified, hashOfFile, new Closure() { @Override public void run() {
+			return my(Downloads.class).newFileDownload(file, lastModified, hashOfFile, new Closure() { @Override public void run() {
 				removeDownload(hashOfFile);
 			}});
 		}});
@@ -41,10 +42,16 @@ class FileClientImpl implements FileClient {
 	@Override
 	public Download startFolderDownload(final File folder, final long lastModified, final Sneer1024 hashOfFolder) {
 		return startDownload("folder", folder, hashOfFolder, new Producer<Download>() { @Override public Download produce() throws RuntimeException {
-			return new FolderDownload(folder, lastModified, hashOfFolder, new Closure() { @Override public void run() {
+			return my(Downloads.class).newFolderDownload(folder, lastModified, hashOfFolder, new Closure() { @Override public void run() {
 				removeDownload(hashOfFolder);
 			}});
 		}});
+	}
+
+
+	@Override
+	public int numberOfRunningDownloads() {
+		return _downloadsByHash.size();
 	}
 
 

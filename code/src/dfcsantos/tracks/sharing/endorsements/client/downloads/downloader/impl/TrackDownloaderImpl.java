@@ -4,16 +4,19 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 
-import sneer.bricks.expression.files.client.Download;
 import sneer.bricks.expression.files.client.FileClient;
+import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
+import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
 import sneer.bricks.pulp.keymanager.ContactSeals;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
+import dfcsantos.tracks.sharing.endorsements.client.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.sharing.endorsements.client.downloads.downloader.TrackDownloader;
-import dfcsantos.tracks.sharing.endorsements.client.downloads.monitor.TrackDownloadMonitor;
 import dfcsantos.tracks.sharing.endorsements.protocol.TrackEndorsement;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.tracks.storage.rejected.RejectedTracksKeeper;
@@ -21,33 +24,48 @@ import dfcsantos.wusic.Wusic;
 
 class TrackDownloaderImpl implements TrackDownloader {
 
-	private boolean _isActive = false;
+	private static final int CONCURRENT_DOWNLOADS_LIMIT = 3;
+
+	private final ImmutableReference<Signal<Boolean>> _onOffSwitch = my(ImmutableReferences.class).newInstance();
 
 	@SuppressWarnings("unused") private final WeakContract _trackEndorsementConsumerContract;
 
 	{
-		_trackEndorsementConsumerContract = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement trackEndorsement) {
-			consumeTrackEndorsement(trackEndorsement);
+		_trackEndorsementConsumerContract = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement endorsement) {
+			consumeTrackEndorsement(endorsement);
 		}});
 	}
 
 	@Override
-	public void setActive(boolean isActive) {
-		_isActive = isActive;
+	public void setOnOffSwitch(Signal<Boolean> onOffSwitch) {
+		_onOffSwitch.set(onOffSwitch);
 	}
 
 	private void consumeTrackEndorsement(TrackEndorsement endorsement) {
-		if (!_isActive ) return;
+		if (!isOn()) return;
 
-		if (!isTracksDownloadAllowed()) return;
+		if (hasReachedDownloadLimit()) return;
+
 		if (my(ContactSeals.class).ownSeal().equals(endorsement.publisher)) return;
 		if (isDuplicated(endorsement)) return;
 		if (isRejected(endorsement)) return;
-
-		if (my(TrackDownloadMonitor.class).isOverloaded()) return;
+		if (hasSpentDownloadAllowance()) return;
 
 		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
-		my(TrackDownloadMonitor.class).watch(download);
+
+		download.finished().addPulseReceiver(new Runnable() { @Override public void run() {
+			if (download.hasFinishedSuccessfully())
+				my(TrackDownloadCounter.class).incrementer().run();		
+		}});
+	}
+
+	private boolean isOn() {
+		if (!_onOffSwitch.isAlreadySet()) return false;
+		return _onOffSwitch.get().currentValue();
+	}
+
+	private static boolean hasReachedDownloadLimit() {
+		return my(FileClient.class).numberOfRunningDownloads() >= CONCURRENT_DOWNLOADS_LIMIT;
 	}
 
 	private static boolean isRejected(TrackEndorsement endorsement) {
@@ -58,13 +76,12 @@ class TrackDownloaderImpl implements TrackDownloader {
 		return my(FileMap.class).getFile(endorsement.hash) != null;
 	}
 
-	private static boolean isTracksDownloadAllowed() {
-		if (!my(Wusic.class).isTracksDownloadAllowed().currentValue()) return false;
-		return peerTracksFolderSize() < downloadAllowanceInBytes();
+	private static boolean hasSpentDownloadAllowance() {
+		return peerTracksFolderSize() >= downloadAllowanceInBytes();
 	}
 
 	private static long peerTracksFolderSize() {
-		return my(IO.class).files().folderSize(peerTracksFolder());
+		return my(IO.class).files().sizeOfFolder(peerTracksFolder());
 	}
 
 	private static File peerTracksFolder() {

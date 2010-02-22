@@ -1,10 +1,11 @@
 package dfcsantos.tracks.sharing.endorsements.client.downloads.downloader;
 
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface TrackDownloader {
 
-	void setActive(boolean isActive);
+	void setOnOffSwitch(Signal<Boolean> onOffSwitch);
 
 }
