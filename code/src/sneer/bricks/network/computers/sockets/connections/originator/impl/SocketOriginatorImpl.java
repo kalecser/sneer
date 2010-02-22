@@ -8,13 +8,13 @@ import java.util.Map;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddress;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.foundation.lang.Consumer;
 
 class SocketOriginatorImpl implements SocketOriginator {
 
-	private static final Seals Seals = my(Seals.class);
+	private static final ContactSeals Seals = my(ContactSeals.class);
 	
 	private final InternetAddressKeeper _internetAddressKeeper = my(InternetAddressKeeper.class);
 	@SuppressWarnings("unused")
@@ -48,7 +48,7 @@ class SocketOriginatorImpl implements SocketOriginator {
 
 	
 	private boolean isMyOwnAddress(InternetAddress address) {
-		return Seals.ownSeal().equals(Seals.sealGiven(address.contact()));
+		return Seals.ownSeal().equals(Seals.sealGiven(address.contact()).currentValue());
 	}
 	
 }

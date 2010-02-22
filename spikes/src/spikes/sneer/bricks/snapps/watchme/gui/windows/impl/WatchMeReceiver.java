@@ -19,7 +19,7 @@ import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.Widget;
 import sneer.foundation.lang.Closure;
@@ -29,7 +29,7 @@ import spikes.sneer.bricks.snapps.watchme.WatchMe;
 class WatchMeReceiver{
 
 	private final WatchMe _watchMe = my(WatchMe.class);
-	private final Seals Seals = my(Seals.class);
+	private final ContactSeals Seals = my(ContactSeals.class);
 	private final ReactiveWidgetFactory _factory = my(ReactiveWidgetFactory.class);
 	private final Contact _contact;
 
@@ -40,7 +40,7 @@ class WatchMeReceiver{
 
 	WatchMeReceiver(Contact contact) {
 		_contact = contact;
-		startWindowPaint(Seals.sealGiven(_contact));
+		startWindowPaint(Seals.sealGiven(_contact).currentValue());
 	}
 
 	private void initGui() {
@@ -68,10 +68,10 @@ class WatchMeReceiver{
 	}
 
 
-	private void startWindowPaint(Seal key) {
+	private void startWindowPaint(Seal seal) {
 		if (_screensReception != null) _screensReception.dispose();
 		
-		final EventSource<BufferedImage> screens = _watchMe.screenStreamFor(key);
+		final EventSource<BufferedImage> screens = _watchMe.screenStreamFor(seal);
 		_screensReception = screens.addReceiver(new Consumer<Image>() { @Override public void consume(Image img) {
 			if (_windowWidget == null) initGui();
 			

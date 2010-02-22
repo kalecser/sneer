@@ -30,8 +30,8 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.own.name.OwnNameKeeper;
 import sneer.bricks.pulp.port.PortKeeper;
 import sneer.bricks.pulp.probe.ProbeManager;
@@ -88,7 +88,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	private void putSeal(SneerParty other, Contact contact) {
 		try {
-			my(Seals.class).put(contact.nickname().currentValue(), newSeal(other.seal()));
+			my(ContactSeals.class).put(contact.nickname().currentValue(), newSeal(other.seal()));
 		} catch (Refusal e) {
 			throw new IllegalStateException(e); // Fix Handle this exception.
 		}
@@ -156,7 +156,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	private Contact waitForContactGiven(byte[] seal) {
 		while (true) {
-			Contact contact = my(Seals.class).contactGiven(new Seal(new ImmutableByteArray(seal)));
+			Contact contact = my(ContactSeals.class).contactGiven(new Seal(new ImmutableByteArray(seal)));
 			if (contact != null) return contact;
 			my(Threads.class).sleepWithoutInterruptions(10);
 			my(Clock.class).advanceTime(60 * 1000);
@@ -166,7 +166,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	@Override
     public byte[] seal() {
-		return my(Seals.class).ownSeal().bytes.copy();
+		return my(ContactSeals.class).ownSeal().bytes.copy();
 	}
 
 	
@@ -439,8 +439,8 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private String print(Seal seal) {
-		return seal.equals(my(Seals.class).ownSeal())
+		return seal.equals(my(ContactSeals.class).ownSeal())
 			? "myself"
-			: my(Seals.class).contactGiven(seal).nickname().toString();
+			: my(ContactSeals.class).contactGiven(seal).nickname().toString();
 	}
 }

@@ -10,8 +10,10 @@ Bamboo =================================================
 	- Prevalence
 		- Use a single prevayler for all bricks inside PrevalentImpl so that transactions are properly synchronized among all prevalent bricks.
 			- Ignore method calls that are already inside a transaction context.
-		- Make the Contacts brick prevalent. You might have to instrument creation of the Contact objects to give them an id for serialization, to avoid the baptism problem.
-		- Make Seals.put() accept a Contact instead of a nickname string.
+		- Make the Contacts brick prevalent.
+			- Batism Problem - Solve. Implement "Membrane, The"
+				- Talk to Klaus. Can be done using proxies exclusively or with instrumentation.
+		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
 		- BrickStateStore: retire. Use the prevalent nature instead.
 		- Announce to community
 
@@ -28,7 +30,7 @@ Igor ====================================================
 
 	- Seals
 		- ContactInfoWindowImpl - Contact's Seal Field: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
-			- [Klaus] Help glueing the gui to the Seals brick. Non-trivial per-contact signals and picky consumers need to be exposed in the Seals interface.
+			- ContactsSeals interface is ready to be plugged to the GUI. "Ask me how", Klaus.
 			- [Klaus] Discuss with Igor refactoring of ContactsInfoWindow   
 
 	- Wusic
@@ -49,10 +51,8 @@ Igor ====================================================
 
 Klaus =================================================
 
-	- GUI Nature
-		- "Finish Him"
-		- Announce to community
-		
+	- ContactSeals.ownSeal() - Extract to a new non-prevalent brick: OwnSeal.get()
+
 	- Unignore RemoteCopyTest.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
 		- See this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298
 
@@ -68,6 +68,10 @@ Klaus =================================================
 			- Hierarchical View - Consider groups of bricks (brick package at any level, examples: bricks.hardware, bricks.software, bricks.hardware.io, etc) as an optional grouping for versioning and downloading from friends, not only individual bricks.
 				- Do not allow circular dependencies among any level of groups of bricks and voila: the world is free of cyclic dependencies.
 	
+	- GUI Nature
+		- "Finish Him"
+		- Announce to community
+
 	- Revise entire package structure.
 		- Remove all calls to Thread.sleep() including indirect.
  

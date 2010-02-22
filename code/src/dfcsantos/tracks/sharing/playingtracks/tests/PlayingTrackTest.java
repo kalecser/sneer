@@ -11,8 +11,8 @@ import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
@@ -50,10 +50,10 @@ public class PlayingTrackTest extends BrickTest {
 		Environment remote = newTestEnvironment(my(TupleSpace.class), my(Clock.class));
 		configureStorageFolder(remote);
 
-		final Seal localSeal = my(Seals.class).ownSeal();
+		final Seal localSeal = my(ContactSeals.class).ownSeal();
 		Environments.runWith(remote, new ClosureX<Refusal>() { @Override public void run() throws Refusal {
 			_localContact = my(Contacts.class).produceContact("local");
-			my(Seals.class).put("local", localSeal);
+			my(ContactSeals.class).put("local", localSeal);
 			_remoteKeeper = my(PlayingTrackKeeper.class);
 			my(PlayingTrackClient.class);
 		}});
