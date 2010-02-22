@@ -20,9 +20,9 @@ Igor ====================================================
 
 	- Hudson - Stabilize
 	
-	- Refactoring: TrackDownloadXXX --> FileDownloadXXX
-	
 	- Unignore FileMapTest.rename
+
+	- Refactoring: TrackDownloadXXX --> FileDownloadXXX
 
 	- CleanTestBase - Make sure tmp folder is being deleted. 
 
@@ -34,7 +34,7 @@ Igor ====================================================
 	- Wusic
 		- [Klaus/Daniel] MusicalTasteMatcher Kernel
 		- Downloads
-			- [Igor] Unignore TrackDownloadMonitorTest
+			- TrackDownloadMonitor - Delete. Move timeout to Download itself (hardcoded).
 			- Do not download files user already has (includes peertracks) - check if it's working after the changes made to AbstractDownload
 		- Nice-to-have:
 			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
