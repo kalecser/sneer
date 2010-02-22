@@ -45,6 +45,8 @@ class FileDownload extends AbstractDownload {
 
 	FileDownload(File file, long lastModified, Sneer1024 hashOfFile, Runnable toCallWhenFinished) {
 		super(file, lastModified, hashOfFile, toCallWhenFinished);
+
+		start();
 	}
 
 

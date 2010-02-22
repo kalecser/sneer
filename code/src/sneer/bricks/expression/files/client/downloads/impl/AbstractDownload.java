@@ -57,14 +57,12 @@ abstract class AbstractDownload implements Download {
 		_toCallWhenFinished = toCallWhenFinished;
 
 		finishIfLocallyAvailable();
-
-		if (isFinished()) return;
-
-		start();
 	}
 
 
-	private void start() {
+	void start() {
+		if (isFinished()) return;
+
 		subscribeToContents();
 		_startTime = my(Clock.class).time().currentValue();
 		startSendingRequests();
