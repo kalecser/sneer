@@ -1,4 +1,4 @@
-package spikes.priscila.go.gui;
+package spikes.klaus.go.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
