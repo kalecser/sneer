@@ -6,7 +6,10 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import sneer.bricks.hardware.io.log.Logger;
@@ -103,12 +106,7 @@ public class SneerCommunity implements SovereignCommunity {
 	}
 
 	private URLClassLoader apiClassLoader(File privateBin, File sharedBin, final String name) {
-		URL[] langJars = LanguageJarFinder.langSupportJars(sharedBin);
-		URL[] classPath = new URL[langJars.length + 2];
-		classPath[0] = toURL(privateBin);
-		classPath[1] = toURL(sharedBin);
-		System.arraycopy(langJars, 0, classPath, 2, langJars.length);
-		return new EagerClassLoader(classPath, SneerCommunity.class.getClassLoader()) {
+		return new EagerClassLoader(classpath(privateBin, sharedBin), SneerCommunity.class.getClassLoader()) {
 			@Override
 			protected boolean isEagerToLoad(String className) {
 				return !isSharedByAllParties(className);
@@ -144,6 +142,16 @@ public class SneerCommunity implements SovereignCommunity {
 		};
 	}
 
+
+	private URL[] classpath(File privateBin, File sharedBin) {
+		List<URL> result = new ArrayList<URL>();
+		result.add(toURL(privateBin));
+		result.add(toURL(sharedBin));
+		result.addAll(Arrays.asList(LanguageJarFinder.langSupportJars(sharedBin)));
+		return result.toArray(new URL[0]);
+	}
+
+	
 	private URL toURL(File file) {
 		try {
 			return file.toURI().toURL();
