@@ -43,7 +43,7 @@ class DotPartsImpl implements DotParts {
 
 
 	@Override
-	public FileFilter dotPartFilter() {
+	public FileFilter dotPartExclusionFilter() {
 		return my(IO.class).fileFilters().not(
 			my(IO.class).fileFilters().suffix(DOT_PART_EXTENSION)
 		);
