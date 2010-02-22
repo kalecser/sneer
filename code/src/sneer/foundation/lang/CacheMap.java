@@ -17,13 +17,13 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 	
 	
 	public <X extends Throwable> V get(K key, final ProducerX<V, X> producerToUseIfAbsent) throws X {
-		return get(key, new FunctorWithThrowable<K, V, X>() { @Override public V evaluate(K ignored) throws X {
+		return get(key, new FunctorX<K, V, X>() { @Override public V evaluate(K ignored) throws X {
 			return producerToUseIfAbsent.produce();
 		}});
 	}
 
 	
-	public <X extends Throwable> V get(K key, FunctorWithThrowable<K, V, X> functorToUseIfAbsent) throws X {
+	public <X extends Throwable> V get(K key, FunctorX<K, V, X> functorToUseIfAbsent) throws X {
 		boolean thisThreadMustResolve = false;
 		synchronized (_keysByResolver) {
 			V found = get(key);
