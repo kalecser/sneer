@@ -26,12 +26,13 @@ Igor ====================================================
 
 	- Seals
 		- ContactInfoWindowImpl - Contact's Seal Field: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
-			- Ask Klaus for help glueing the gui to the Seals brick. Non-trivial per-contact signals and picky consumers need to be exposed in the Seals interface.
+			- [Klaus] Help glueing the gui to the Seals brick. Non-trivial per-contact signals and picky consumers need to be exposed in the Seals interface.
 			- [Klaus] Discuss with Igor refactoring of ContactsInfoWindow   
 
 	- Wusic
 		- [Klaus/Daniel] MusicalTasteMatcher Kernel
 		- Downloads
+			- [Igor] Unignore TrackDownloadMonitorTest
 			- Do not download files user already has (includes peertracks) - check if it's working after the changes made to AbstractDownload
 		- Nice-to-have:
 			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
