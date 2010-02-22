@@ -1,4 +1,4 @@
-package spikes.priscila.go.gui;
+package spikes.klaus.go.gui;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -18,10 +18,10 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
-import spikes.priscila.go.GoBoard;
-import spikes.priscila.go.Move;
-import spikes.priscila.go.ToroidalGoBoard;
-import spikes.priscila.go.GoBoard.StoneColor;
+import spikes.klaus.go.GoBoard;
+import spikes.klaus.go.Move;
+import spikes.klaus.go.ToroidalGoBoard;
+import spikes.klaus.go.GoBoard.StoneColor;
 
 public class GoBoardPanel extends JPanel {
 	

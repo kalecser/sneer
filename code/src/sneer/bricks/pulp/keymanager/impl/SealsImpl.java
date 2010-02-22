@@ -13,6 +13,7 @@ import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.keymanager.generator.OwnSealKeeper;
+import sneer.foundation.lang.exceptions.Refusal;
 
 class SealsImpl implements Seals {
 
@@ -63,11 +64,16 @@ class SealsImpl implements Seals {
 
 
 	@Override
-	public synchronized void put(String nick, Seal seal) {
+	public synchronized void put(String nick, Seal seal) throws Refusal {
+		if (seal == null) throw new IllegalArgumentException();
+		
 		Contact contact = my(Contacts.class).contactGiven(nick);
-		if (contact == null || seal == null) throw new NullPointerException();
-		if (sealGiven(contact) != null) throw new IllegalArgumentException("There already was a seal registered for contact: " + contact.nickname().currentValue());
-		if (contactGiven(seal) != null) throw new IllegalArgumentException("There already was a contact registered with seal: " + seal);
+		if (contact == null) throw new Refusal("No contact found with nickname: " + nick);
+		
+		Contact oldContact = contactGiven(seal);
+		if (contact.equals(oldContact)) return;
+		if (oldContact != null) throw new Refusal("Trying to set Seal for '" + contact + "' but it already belonged to '" + oldContact + "'.");
+		
 		_sealsByContact.put(contact, seal);
 	}
 

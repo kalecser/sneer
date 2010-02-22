@@ -1,4 +1,4 @@
-package spikes.priscila.go.gui;
+package spikes.klaus.go.gui;
 
 import static sneer.foundation.environments.Environments.my;
 

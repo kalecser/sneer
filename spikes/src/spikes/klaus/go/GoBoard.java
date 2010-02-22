@@ -1,8 +1,8 @@
-package spikes.priscila.go;
+package spikes.klaus.go;
 
 import static sneer.foundation.environments.Environments.my;
-import static spikes.priscila.go.GoBoard.StoneColor.BLACK;
-import static spikes.priscila.go.GoBoard.StoneColor.WHITE;
+import static spikes.klaus.go.GoBoard.StoneColor.BLACK;
+import static spikes.klaus.go.GoBoard.StoneColor.WHITE;
 
 import java.util.Arrays;
 

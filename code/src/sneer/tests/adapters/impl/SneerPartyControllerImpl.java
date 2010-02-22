@@ -81,8 +81,17 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		Contact contact = produceContact(other.ownName());
 
 		SneerParty sneerParty = other;
-		my(Seals.class).put(contact.nickname().currentValue(), newSeal(other.seal()));
+		putSeal(other, contact);
 		my(InternetAddressKeeper.class).add(contact, MOCK_ADDRESS, sneerParty.sneerPort());
+	}
+
+
+	private void putSeal(SneerParty other, Contact contact) {
+		try {
+			my(Seals.class).put(contact.nickname().currentValue(), newSeal(other.seal()));
+		} catch (Refusal e) {
+			throw new IllegalStateException(e); // Fix Handle this exception.
+		}
 	}
 
 	

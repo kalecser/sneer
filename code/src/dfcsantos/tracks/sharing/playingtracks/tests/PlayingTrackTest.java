@@ -22,6 +22,8 @@ import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.ClosureX;
+import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.sharing.playingtracks.client.PlayingTrackClient;
@@ -38,7 +40,7 @@ public class PlayingTrackTest extends BrickTest {
 	private PlayingTrackKeeper _remoteKeeper;
 
 	@Test
-	public void playingTrackBroadcast() {
+	public void playingTrackBroadcast() throws Exception {
 		checking(new Expectations() {{
 			oneOf(_wusic).playingTrack(); will(returnValue(_playingTrack.output()));
 		}});
@@ -49,7 +51,7 @@ public class PlayingTrackTest extends BrickTest {
 		configureStorageFolder(remote);
 
 		final Seal localSeal = my(Seals.class).ownSeal();
-		Environments.runWith(remote, new Closure() { @Override public void run() {
+		Environments.runWith(remote, new ClosureX<Refusal>() { @Override public void run() throws Refusal {
 			_localContact = my(Contacts.class).produceContact("local");
 			my(Seals.class).put("local", localSeal);
 			_remoteKeeper = my(PlayingTrackKeeper.class);

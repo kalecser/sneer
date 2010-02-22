@@ -1,4 +1,4 @@
-package spikes.priscila.go;
+package spikes.klaus.go;
 
 
 public class ToroidalGoBoard extends GoBoard {

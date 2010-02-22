@@ -1,12 +1,12 @@
-package spikes.priscila.go.tests;
+package spikes.klaus.go.tests;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
-import spikes.priscila.go.GoBoard;
-import spikes.priscila.go.ToroidalGoBoard;
+import spikes.klaus.go.GoBoard;
+import spikes.klaus.go.ToroidalGoBoard;
 
 public class GoTest extends BrickTest {
 

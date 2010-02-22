@@ -1,4 +1,4 @@
-package spikes.priscila.go.gui;
+package spikes.klaus.go.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -11,8 +11,8 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 import sneer.bricks.pulp.reactive.Register;
-import spikes.priscila.go.Move;
-import spikes.priscila.go.GoBoard.StoneColor;
+import spikes.klaus.go.Move;
+import spikes.klaus.go.GoBoard.StoneColor;
 
 public class GoFrame extends JFrame {
 	
