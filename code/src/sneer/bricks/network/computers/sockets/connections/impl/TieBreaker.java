@@ -8,13 +8,13 @@ import java.util.Arrays;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.network.ByteArraySocket;
 
 /** When two parties simultaneously open sockets to each other, this guy decides which socket to use by comparing an arbitrary symmetry breaker: each party's seal.*/
 class TieBreaker {
 
-	static private final Seals Seals = my(Seals.class);
+	static private final ContactSeals Seals = my(ContactSeals.class);
 
 	
 	static void manageIncomingSocket(ByteArraySocket newSocket, Seal contactsSeal) throws IOException {

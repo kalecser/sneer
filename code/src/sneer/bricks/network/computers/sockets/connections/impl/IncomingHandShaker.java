@@ -8,13 +8,13 @@ import java.util.Arrays;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.network.ByteArraySocket;
 
 class IncomingHandShaker {
 
 	
-	private static final Seals Seals = my(Seals.class);
+	private static final ContactSeals Seals = my(ContactSeals.class);
 
 
 	static Seal greet(ByteArraySocket socket) throws IOException {

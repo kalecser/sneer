@@ -13,14 +13,14 @@ import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 
 public class IncomingSocketTest extends BrickTest {
 
-	@Bind private final Seals _seals = mock(Seals.class);
+	@Bind private final ContactSeals _seals = mock(ContactSeals.class);
 
 	private ConnectionManager _subject = my(ConnectionManager.class);
 

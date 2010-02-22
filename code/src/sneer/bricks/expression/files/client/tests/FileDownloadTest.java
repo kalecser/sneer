@@ -23,7 +23,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Consumer;
@@ -61,7 +61,7 @@ public class FileDownloadTest extends BrickTest {
 	}
 
 	private Seal me() {
-		return my(Seals.class).ownSeal();
+		return my(ContactSeals.class).ownSeal();
 	}
 
 	private ImmutableByteArray getFileBlock(File file, int blockNumber) throws IOException {

@@ -19,7 +19,7 @@ import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.Widget;
 import sneer.foundation.lang.Closure;
@@ -29,7 +29,7 @@ import spikes.sneer.bricks.snapps.watchme.WatchMe;
 class WatchMeReceiver{
 
 	private final WatchMe _watchMe = my(WatchMe.class);
-	private final Seals Seals = my(Seals.class);
+	private final ContactSeals Seals = my(ContactSeals.class);
 	private final ReactiveWidgetFactory _factory = my(ReactiveWidgetFactory.class);
 	private final Contact _contact;
 

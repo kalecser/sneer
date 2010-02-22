@@ -13,7 +13,7 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddress;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
 import sneer.foundation.lang.Closure;
@@ -56,7 +56,7 @@ class OutgoingAttempt {
 
 
 	private boolean contactHasSeal() {
-		if (my(Seals.class).sealGiven(contact()) == null) {
+		if (my(ContactSeals.class).sealGiven(contact()) == null) {
 			my(BlinkingLights.class).turnOnIfNecessary(_light, "" + contact() + "'s Seal is unknown.", "You will be able to connect to this contact once you have entered his Seal. Right-click on the contact and choose 'Edit Contact' (or something like that :)");
 			return false;
 		}

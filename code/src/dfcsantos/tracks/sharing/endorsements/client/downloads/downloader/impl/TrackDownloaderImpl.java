@@ -9,7 +9,7 @@ import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.sharing.endorsements.client.downloads.downloader.TrackDownloader;
@@ -40,7 +40,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 		if (!_isActive ) return;
 
 		if (!isTracksDownloadAllowed()) return;
-		if (my(Seals.class).ownSeal().equals(endorsement.publisher)) return;
+		if (my(ContactSeals.class).ownSeal().equals(endorsement.publisher)) return;
 		if (isDuplicated(endorsement)) return;
 		if (isRejected(endorsement)) return;
 

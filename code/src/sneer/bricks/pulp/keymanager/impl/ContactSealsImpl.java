@@ -10,12 +10,12 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.keymanager.generator.OwnSealKeeper;
 import sneer.foundation.lang.exceptions.Refusal;
 
-class SealsImpl implements Seals {
+class ContactSealsImpl implements ContactSeals {
 
 	private Seal _ownSeal;
 	
@@ -62,24 +62,22 @@ class SealsImpl implements Seals {
 		return _sealsByContact.get(contact);
 	}
 
-
+	
 	@Override
-	public synchronized void put(String nick, Seal seal) throws Refusal {
-		if (seal == null) throw new IllegalArgumentException();
-		
-		Contact contact = my(Contacts.class).contactGiven(nick);
+	public void put(String nick, Seal seal) throws Refusal {
+		final Contact contact = my(Contacts.class).contactGiven(nick);
 		if (contact == null) throw new Refusal("No contact found with nickname: " + nick);
-		
+
 		Contact oldContact = contactGiven(seal);
 		if (contact.equals(oldContact)) return;
-		if (oldContact != null) throw new Refusal("Trying to set Seal for '" + contact + "' but it already belonged to '" + oldContact + "'.");
+		if (oldContact != null) throw new Refusal("Trying to set a Seal for '" + contact + "' that already belonged to '" + oldContact + "'.");
 		
 		_sealsByContact.put(contact, seal);
 	}
 
 
 	@Override
-	public synchronized Contact contactGiven(Seal peersSeal) {
+	public Contact contactGiven(Seal peersSeal) {
 		for (Contact candidate : _sealsByContact.keySet())
 			if(_sealsByContact.get(candidate).equals(peersSeal))
 				return candidate;

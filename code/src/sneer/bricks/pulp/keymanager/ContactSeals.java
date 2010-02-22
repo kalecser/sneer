@@ -6,11 +6,10 @@ import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.exceptions.Refusal;
 
 @Brick(Prevalent.class)
-public interface Seals {
+public interface ContactSeals {
 
 	Seal ownSeal();
 
-	//@Deprecated
 	void put(String contactNickname, Seal seal) throws Refusal;
 
 	//@Deprecated

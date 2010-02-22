@@ -4,7 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import dfcsantos.tracks.sharing.playingtracks.client.PlayingTrackClient;
 import dfcsantos.tracks.sharing.playingtracks.keeper.PlayingTrackKeeper;
@@ -22,9 +22,9 @@ class PlayingTrackClientImpl implements PlayingTrackClient {
 
 	@Override
 	public void consume(PlayingTrack playingTrack) {
-		if (my(Seals.class).ownSeal().equals(playingTrack.publisher)) return;
+		if (my(ContactSeals.class).ownSeal().equals(playingTrack.publisher)) return;
 
-		Contact contact = my(Seals.class).contactGiven(playingTrack.publisher);
+		Contact contact = my(ContactSeals.class).contactGiven(playingTrack.publisher);
 		if (contact == null) {
 			my(Logger.class).log("PlayingTrack received from unkown contact: ", playingTrack.publisher);
 			return;

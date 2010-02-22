@@ -7,8 +7,8 @@ import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.snapps.contacts.hardcoded.HardcodedContacts;
 import sneer.foundation.lang.exceptions.Refusal;
 
@@ -28,7 +28,7 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 	
 	
 	private void add(ContactInfo contact) {
-		if (my(Seals.class).ownSeal().equals(contact._seal)) return;
+		if (my(ContactSeals.class).ownSeal().equals(contact._seal)) return;
 		addAddresses(contact);
 		addSeal(contact);
 	}
@@ -37,7 +37,7 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 	private void addSeal(ContactInfo contact) {
 		if (contact._seal == null) return;
 		try {
-			my(Seals.class).put(contact._nick, contact._seal);
+			my(ContactSeals.class).put(contact._nick, contact._seal);
 		} catch (Refusal e) {
 			throw new IllegalStateException(e); // Fix Handle this exception.
 		}

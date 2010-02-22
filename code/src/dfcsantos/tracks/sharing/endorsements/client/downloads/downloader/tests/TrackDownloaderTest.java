@@ -15,7 +15,7 @@ import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -31,7 +31,7 @@ public class TrackDownloaderTest extends BrickTest {
 	private final TrackDownloader _subject = my(TrackDownloader.class);
 
 	@Bind private final FileClient _fileClient = mock(FileClient.class);
-	@Bind private final Seals _seals = mock(Seals.class);
+	@Bind private final ContactSeals _seals = mock(ContactSeals.class);
 	@Bind private final TrackDownloadCounter _downloadCounter = mock(TrackDownloadCounter.class);
 
 	@Test(timeout = 3000)

@@ -10,7 +10,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray2D;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.streams.sequencer.Sequencer;
 import sneer.bricks.pulp.streams.sequencer.Sequencers;
@@ -33,7 +33,7 @@ import spikes.sneer.bricks.snapps.whisper.speextuples.SpeexTuples;
 class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the encoding and decoding sides.
 
 	private final TupleSpace _tupleSpace = my(TupleSpace.class);
-	private final Seals _keyManager = my(Seals.class);
+	private final ContactSeals _keyManager = my(ContactSeals.class);
 	private final Speex _speex = my(Speex.class);
 
 	private final Signal<String> _room = my(ActiveRoomKeeper.class).room();

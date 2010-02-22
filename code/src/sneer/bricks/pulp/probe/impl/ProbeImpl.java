@@ -8,7 +8,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
 import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
@@ -17,7 +17,7 @@ import sneer.foundation.lang.Consumer;
 final class ProbeImpl implements Consumer<Tuple> {
 
 	private final TupleSpace _tuples = my(TupleSpace.class);
-	private final Seals _keyManager = my(Seals.class);
+	private final ContactSeals _keyManager = my(ContactSeals.class);
 	private final TupleFilterManager _filter = my(TupleFilterManager.class);
 
 	
