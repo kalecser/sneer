@@ -18,11 +18,13 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Hudson - Stabilize
+	
 	- Refactoring: TrackDownloadXXX --> FileDownloadXXX
-
+	
 	- Unignore FileMapTest.rename
 
-	- Alter CleanTestBase to remove bricks' persistence files after running the tests 
+	- CleanTestBase - Make sure tmp folder is being deleted. 
 
 	- Seals
 		- ContactInfoWindowImpl - Contact's Seal Field: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
