@@ -4,7 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.map.FileMap;
@@ -28,7 +27,6 @@ public class FileMapTest extends BrickTest {
 		assertNull(_subject.getFile(hash));
 	}
 
-	@Ignore
 	@Test
 	public void rename() {
 		_subject.putFile(new File("folder/sub/file1.txt"),	41, hash(1));

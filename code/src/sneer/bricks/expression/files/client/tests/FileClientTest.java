@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.client.FileClient;
@@ -53,7 +52,6 @@ public class FileClientTest extends BrickTest {
 		my(IO.class).files().assertSameContents(tmpFile, anySmallFile());
 	}
 
-	@Ignore
 	@Test (timeout = 4000)
 	public void receiveFileContentBlocksOutOfSequence() throws IOException, TimeoutException {
 		final File smallFile = createTmpFileWithRandomContent(3 * Protocol.FILE_BLOCK_SIZE);

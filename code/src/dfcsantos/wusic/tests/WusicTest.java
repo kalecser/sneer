@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import org.jmock.Expectations;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.client.FileClient;
@@ -25,6 +26,7 @@ import dfcsantos.tracks.endorsements.protocol.TrackEndorsement;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
 
+@Ignore
 public class WusicTest extends BrickTest {
 
 	private final Wusic _subject = my(Wusic.class);
@@ -43,8 +45,8 @@ public class WusicTest extends BrickTest {
 			oneOf(_seals).ownSeal(); will(returnValue(newSeal(2)));
 			oneOf(_fileClient).numberOfRunningDownloads();
 			oneOf(_fileClient).startFileDownload(new File(peerTracksFolder(), "ok.mp3"), 41, hash1);
-//			allowing(_fileClient).numberOfRunningDownloads();
-//			allowing(_seals).ownSeal();
+			allowing(_fileClient).numberOfRunningDownloads();
+			allowing(_seals).ownSeal();
 		}});
 
 		_subject.trackDownloadActivator().consume(true);
