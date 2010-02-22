@@ -51,10 +51,6 @@ Klaus =================================================
 		- "Finish Him"
 		- Announce to community
 		
-	- [Igor] Have a quick look at the 'TrackDownloadCounterImpl' class
-		- Note that it's using a timer to periodically (15 minutes) poll the peerTracksFoder and update the number of downloaded tracks in case the user access the file system directly
-		- I used the name 'TrackDownloadCounter.count()' instead of 'TrackDownloadCounter.numberOfDownloadedTracks()', cos I think the class' name makes the latter sound redundant
-
 	- Unignore RemoteCopyTest.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
 		- See this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298
 

@@ -9,7 +9,6 @@ import java.util.List;
 import org.jmock.Expectations;
 import org.junit.Test;
 
-import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
@@ -27,7 +26,7 @@ public class TrackDownloadCounterTest extends BrickTest {
 	@Test (timeout = 1000)
 	public void trackDownloadCount() {
 		checking(new Expectations() {{
-			exactly(3).of(_tracks).listMp3FilesFromFolder(with(peerTracksFolder())); will(returnValue(_peerTracks));
+			exactly(1).of(_tracks).listMp3FilesFromFolder(with(peerTracksFolder())); will(returnValue(_peerTracks));
 		}});
 
 		setPeerTracks(5);
@@ -40,15 +39,6 @@ public class TrackDownloadCounterTest extends BrickTest {
 		_subject.increment();
 		assertNumberOfDownloadedTracksEquals(5);
 
-		setPeerTracks(0);
-		assertNumberOfDownloadedTracksEquals(5);
-		my(Clock.class).advanceTime(15 * 60 * 1000);
-		assertNumberOfDownloadedTracksEquals(0);
-
-		setPeerTracks(1);
-		assertNumberOfDownloadedTracksEquals(0);
-		my(Clock.class).advanceTime(15 * 60 * 1000);
-		assertNumberOfDownloadedTracksEquals(1);
 	}
 
 	private void assertNumberOfDownloadedTracksEquals(int expected) {
