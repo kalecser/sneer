@@ -53,10 +53,6 @@ Klaus =================================================
 
 	- ContactSeals.ownSeal() - Extract to a new non-prevalent brick: OwnSeal.get()
 
-	- GUI Nature
-		- "Finish Him"
-		- Announce to community
-		
 	- Unignore RemoteCopyTest.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
 		- See this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298
 
@@ -72,6 +68,10 @@ Klaus =================================================
 			- Hierarchical View - Consider groups of bricks (brick package at any level, examples: bricks.hardware, bricks.software, bricks.hardware.io, etc) as an optional grouping for versioning and downloading from friends, not only individual bricks.
 				- Do not allow circular dependencies among any level of groups of bricks and voila: the world is free of cyclic dependencies.
 	
+	- GUI Nature
+		- "Finish Him"
+		- Announce to community
+
 	- Revise entire package structure.
 		- Remove all calls to Thread.sleep() including indirect.
  
