@@ -16,6 +16,9 @@ import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.bricks.pulp.events.pulsers.PulseSource;
+import sneer.bricks.pulp.events.pulsers.Pulser;
+import sneer.bricks.pulp.events.pulsers.Pulsers;
 import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Closure;
@@ -34,7 +37,9 @@ abstract class AbstractDownload implements Download {
 
 	private long _startTime;
 
-	final Latch _isFinished = my(Latches.class).produce();
+	private final Latch _isFinished = my(Latches.class).produce();
+	private Pulser _finished = my(Pulsers.class).newInstance();
+
 	private Exception _exception;
 
 	private final Runnable _toCallWhenFinished;
@@ -81,6 +86,19 @@ abstract class AbstractDownload implements Download {
 	@Override
 	public void dispose() {
 		finishWith(new IOException("Download disposed: " + _actualPath));
+	}
+
+
+	@Override
+	public PulseSource finished() {
+		return _finished.output();
+	}
+
+
+	@Override
+	public boolean hasFinishedSuccessfully() {
+		if (!isFinished()) return false;
+		return _exception == null;
 	}
 
 
@@ -137,6 +155,7 @@ abstract class AbstractDownload implements Download {
 
 	void finish() {
 		if (_toCallWhenFinished != null) _toCallWhenFinished.run();
+		_finished.sendPulse();
 		_isFinished.open();
 	}
 

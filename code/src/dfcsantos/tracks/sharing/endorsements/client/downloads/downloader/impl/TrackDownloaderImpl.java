@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 
 import sneer.bricks.expression.files.client.FileClient;
+import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
@@ -14,6 +15,7 @@ import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
+import dfcsantos.tracks.sharing.endorsements.client.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.sharing.endorsements.client.downloads.downloader.TrackDownloader;
 import dfcsantos.tracks.sharing.endorsements.protocol.TrackEndorsement;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
@@ -49,7 +51,12 @@ class TrackDownloaderImpl implements TrackDownloader {
 		if (isRejected(endorsement)) return;
 		if (hasSpentDownloadAllowance()) return;
 
-		my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
+		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
+
+		download.finished().addPulseReceiver(new Runnable() { @Override public void run() {
+			if (download.hasFinishedSuccessfully())
+				my(TrackDownloadCounter.class).incrementer().run();		
+		}});
 	}
 
 	private boolean isOn() {
