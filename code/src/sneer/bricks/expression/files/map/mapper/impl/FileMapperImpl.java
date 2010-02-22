@@ -18,8 +18,6 @@ import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
@@ -59,7 +57,8 @@ class FileMapperImpl implements FileMapper {
 	@Override
 	public void stopFolderMapping(final File folder) {
 		if (_mappingsByFolder.get(folder) == null) return;
-		_mappingsByFolder.remove(folder).stop();
+		final FolderMapping folderMapping = _mappingsByFolder.remove(folder);
+		folderMapping.stop();
 		FileMap.remove(folder);
 	}
 
@@ -73,7 +72,6 @@ class FileMapperImpl implements FileMapper {
 		private Exception _exception;
 
 		private final AtomicBoolean _stop = new AtomicBoolean(false);
-		private final Latch _isFinished = my(Latches.class).produce();
 
 
 		private FolderMapping(File folder, String... acceptedFileExtensions) {
@@ -82,8 +80,6 @@ class FileMapperImpl implements FileMapper {
 
 			_folder = folder;
 			_acceptedFileExtensions = acceptedFileExtensions;
-
-			run();
 		}
 
 
@@ -94,20 +90,15 @@ class FileMapperImpl implements FileMapper {
 				} catch (Exception e) {
 					_exception = e;
 				} finally {
-					finish();					
+					_mappingsByFolder.remove(_folder);					
 				}
 			}});
 		}
 
 
-		private void finish() {
-			_mappingsByFolder.remove(_folder);
-			_isFinished.open();
-		}
-
-
+		synchronized
 		Sneer1024 result() throws MappingStopped, IOException {
-			_isFinished.waitTillOpen();
+			if (_result == null && _exception == null) run();
 			if (_exception != null) throwNarrowed(_exception);
 			return _result;
 		}
