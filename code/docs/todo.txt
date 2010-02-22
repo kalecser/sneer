@@ -10,8 +10,10 @@ Bamboo =================================================
 	- Prevalence
 		- Use a single prevayler for all bricks inside PrevalentImpl so that transactions are properly synchronized among all prevalent bricks.
 			- Ignore method calls that are already inside a transaction context.
-		- Make the Contacts brick prevalent. You might have to instrument creation of the Contact objects to give them an id for serialization, to avoid the baptism problem.
-		- Make ContactSeals.sealPutterFor() accept a Contact because using the nickname string is not idempotent.
+		- Make the Contacts brick prevalent.
+			- Batism Problem - Solve. Implement "Membrane, The"
+				- Talk to Klaus. Can be done using proxies exclusively or with instrumentation.
+		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
 		- BrickStateStore: retire. Use the prevalent nature instead.
 		- Announce to community
 
