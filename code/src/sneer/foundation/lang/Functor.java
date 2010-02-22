@@ -6,9 +6,4 @@ public interface Functor<A, B> extends FunctorX<A, B, RuntimeException> {
 		return obj;
 	}};
 
-
-	public static final Functor<Object, Object> SINGLETON_FUNCTOR = new Functor<Object, Object>() { @Override public Object evaluate(Object value) {
-		return this; //Any single object would do.
-	}};
-
 }
