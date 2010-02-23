@@ -84,7 +84,7 @@
 	</target>
 
 	<target name="test-execution" depends="copy-src-for-tests">
-		<junit printsummary="true" failureproperty="junit.failures" fork="yes" timeout="60000">
+		<junit printsummary="true" failureproperty="junit.failures" fork="yes" jvm="java -Xms32m -Xmx128m" timeout="60000">
 			<formatter type="xml"/>
 			<sysproperty key="java.awt.headless" value="${java.awt.headless}" />
 			<classpath>
