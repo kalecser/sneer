@@ -20,6 +20,8 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- CleanTestBase - Make sure tmp folder is being deleted.
+
 	- Create functional test for Wusic
 		- [Klaus] Revise changes in the classes involved in the track download scheme
 			- Remove all references to Wusic from TrackDownloader
@@ -29,14 +31,15 @@ Igor ====================================================
 			- Download.waitTillFinished() should throw TimeoutException
 			- Download should have a method to signal if it finished successfully 
 
-	- CleanTestBase - Make sure tmp folder is being deleted. 
-
 	- Submit JavaOne paper
 
 	- Seals
 		- ContactInfoWindowImpl - Contact's Seal Field: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
 			- ContactsSeals interface is ready to be plugged to the GUI. "Ask me how", Klaus.
-			- [Klaus] Discuss with Igor refactoring of ContactsInfoWindow   
+				- Create a reactive component at ContactInfoWindow receiving to parameters:
+					- Signals.adapt(ContactSeals.sealGiven(), functor - to convert from Seal to String)
+					- new PickyConsumer<String>() that receives a String, converts to Seal, and then calls ContactsSeals.put()
+			- [Klaus] Discuss with Igor refactoring of ContactsInfoWindow
 
 	- Wusic
 		- [Klaus/Daniel] MusicalTasteMatcher Kernel
