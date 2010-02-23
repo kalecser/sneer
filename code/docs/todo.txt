@@ -20,9 +20,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Hudson - Stabilize (OOME)
-		- Analyze ScalaCompilerTet
-
 	- Create functional test for Wusic
 		- [Klaus] Revise changes in the classes involved in the track download scheme
 			- Remove all references to Wusic from TrackDownloader
@@ -31,9 +28,6 @@ Igor ====================================================
 					- It should in turn activate/deactivate TrackDownloader
 			- Download.waitTillFinished() should throw TimeoutException
 			- Download should have a method to signal if it finished successfully 
-
-	- Unignore FileMapTest.rename
-
 
 	- CleanTestBase - Make sure tmp folder is being deleted. 
 
@@ -59,6 +53,9 @@ Igor ====================================================
 
 
 Klaus =================================================
+
+	- Unignore FileMapTest.rename
+		- [Igor] I formatted my HD and haven't installed my Linux enviroment yet (dual boot). Can you have a look at what's happening with this test in your environment?
 
 	- ContactSeals.ownSeal() - Extract to a new non-prevalent brick: OwnSeal.get()
 
