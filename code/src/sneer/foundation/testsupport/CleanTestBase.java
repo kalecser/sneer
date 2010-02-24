@@ -158,13 +158,10 @@ public abstract class CleanTestBase extends AssertUtils {
 		int counter = 0;
 		while (true) {
 			try {
-				deleteFolder(tmp);
-//				System.out.println(">>> Temp folder deleted: " + tmp);
+				deleteFolder(tmp); // it can throw subclasses of IOException or IllegalArgumentException
 				return;
-			} catch (IOException e) {
-//				System.out.println(">>> Attempt " + counter + " to delete temp folder: " + tmp + " failed due to " + e.getMessage());
+			} catch (Exception e) {
 				if (System.currentTimeMillis() - t0 > 1000) {
-//					System.out.println(">>> Throwing ISE after 1 sec and " + counter + " attempts to delete temp folder.");
 					throw new IllegalStateException(e);
 				}
 				System.gc();
