@@ -46,6 +46,7 @@ public class RemoteCopyTest extends FileCopyTestBase {
 		Environments.runWith(remote, closure);
 		
 		crash(remote);
+		my(Threads.class).crashAllThreads();
 	}
 
 	
