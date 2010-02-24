@@ -17,7 +17,7 @@ import sneer.bricks.pulp.serialization.Serializer;
 import sneer.bricks.software.bricks.statestore.BrickStateStore;
 import sneer.bricks.software.folderconfig.FolderConfig;
 
-public class BrickStateStoreImpl implements BrickStateStore {
+class BrickStateStoreImpl implements BrickStateStore {
 
 	private static final String FILE_NAME = "BrickState.xml";
 	
