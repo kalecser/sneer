@@ -21,6 +21,7 @@ Bamboo =================================================
 Igor ====================================================
 
 	- CleanTestBase - Make sure tmp folder is being deleted.
+		- Clean up System.out()'s from #tryToClean() after solving problem
 
 	- Create functional test for Wusic
 		- [Klaus] Revise changes in the classes involved in the track download scheme

@@ -45,7 +45,7 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	protected String tmpFolderName() {
 		if (_tmpFolderName == null)
-			_tmpFolderName = System.getProperty("java.io.tmpdir") + "/" + System.nanoTime();
+			_tmpFolderName = System.getProperty("java.io.tmpdir") + "/" + this.getClass().getSimpleName() + "_" + System.nanoTime();
 
 		return _tmpFolderName;
 	}
@@ -155,16 +155,21 @@ public abstract class CleanTestBase extends AssertUtils {
 	
 	private void tryToClean(File tmp) {
 		long t0 = System.currentTimeMillis();
+		int counter = 0;
 		while (true) {
 			try {
 				deleteFolder(tmp);
+//				System.out.println(">>> Temp folder deleted: " + tmp);
 				return;
 			} catch (IOException e) {
+//				System.out.println(">>> Attempt " + counter + " to delete temp folder: " + tmp + " failed due to " + e.getMessage());
 				if (System.currentTimeMillis() - t0 > 1000) {
+//					System.out.println(">>> Throwing ISE after 1 sec and " + counter + " attempts to delete temp folder.");
 					throw new IllegalStateException(e);
 				}
 				System.gc();
 			}
+			++counter;
 		}
 	}
 	
@@ -263,6 +268,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		File file = createTmpFile(fileName);
 		FileOutputStream fileOutputStream = new FileOutputStream(file);
 		fileOutputStream.write(fileName.getBytes());
+		fileOutputStream.close();
 		return file;
 	}
 
