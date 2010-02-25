@@ -23,6 +23,8 @@ Igor ====================================================
 	- CleanTestBase - Make sure tmp folder is being deleted.
 		- Find out the cause of the intermittence that prevents some unit tests from deleting the prevalent files
 
+	- FileMapTest.rename() - Fix. See comment at the end of the class with failure.
+
 	- Create functional test for Wusic
 		- [Klaus] Revise changes in the classes involved in the track download scheme
 			- [Igor] I will revise, but finish the Wusic test first and clean up the things you already know are bad.
@@ -58,9 +60,6 @@ Igor ====================================================
 
 
 Klaus =================================================
-
-	- Unignore FileMapTest.rename
-		- [Igor] I formatted my HD and haven't installed my Linux enviroment yet (dual boot). Can you have a look at what's happening with this test in your environment?
 
 	- ContactSeals.ownSeal() - Extract to a new non-prevalent brick: OwnSeal.get()
 
