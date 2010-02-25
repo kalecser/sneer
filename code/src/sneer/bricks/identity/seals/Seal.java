@@ -1,4 +1,4 @@
-package sneer.bricks.pulp.keymanager;
+package sneer.bricks.identity.seals;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.codec.Codec;

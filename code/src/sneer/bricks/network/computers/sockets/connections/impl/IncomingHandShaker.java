@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
-import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.network.ByteArraySocket;
 
 class IncomingHandShaker {

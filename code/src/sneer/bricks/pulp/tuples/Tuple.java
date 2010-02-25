@@ -3,8 +3,8 @@ package sneer.bricks.pulp.tuples;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.clock.Clock;
-import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.ContactSeals;
+import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.foundation.lang.Immutable;
 
 public abstract class Tuple extends Immutable {

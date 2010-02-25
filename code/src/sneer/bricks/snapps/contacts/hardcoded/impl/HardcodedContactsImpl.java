@@ -4,11 +4,11 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.codec.Codec;
 import sneer.bricks.hardware.cpu.codec.DecodeException;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
-import sneer.bricks.pulp.keymanager.ContactSeals;
-import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.snapps.contacts.hardcoded.HardcodedContacts;
 import sneer.foundation.lang.exceptions.Refusal;
 

@@ -1,4 +1,4 @@
-package sneer.bricks.pulp.keymanager.impl;
+package sneer.bricks.identity.seals.contacts.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -6,11 +6,11 @@ import java.util.Random;
 
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
+import sneer.bricks.identity.seals.generator.OwnSealGenerator;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
-import sneer.bricks.pulp.keymanager.ContactSeals;
-import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.generator.OwnSealKeeper;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -39,10 +39,10 @@ class ContactSealsImpl implements ContactSeals {
 			return dummySeal();
 
 		//All this complexity with a separate prevalent OwnSealKeeper is because the source of randomness cannot be inside a prevalent brick.
-		if (my(OwnSealKeeper.class).needsToProduceSeal())
-			my(OwnSealKeeper.class).produceOwnSeal(randomness());
+		if (my(OwnSealGenerator.class).needsToGenerateOwnSeal())
+			my(OwnSealGenerator.class).generateOwnSeal(randomness());
 		
-		return my(OwnSealKeeper.class).seal();
+		return my(OwnSealGenerator.class).generatedSeal();
 	}
 
 

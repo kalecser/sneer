@@ -9,10 +9,10 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
-import sneer.bricks.pulp.keymanager.ContactSeals;
-import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;

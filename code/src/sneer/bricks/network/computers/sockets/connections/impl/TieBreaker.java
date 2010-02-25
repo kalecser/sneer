@@ -5,10 +5,10 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.IOException;
 import java.util.Arrays;
 
+import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.network.ByteArraySocket;
 
 /** When two parties simultaneously open sockets to each other, this guy decides which socket to use by comparing an arbitrary symmetry breaker: each party's seal.*/

@@ -26,9 +26,9 @@ import javax.swing.border.TitledBorder;
 
 import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccount;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccountKeeper;
-import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.own.name.OwnNameKeeper;
 import sneer.bricks.pulp.port.PortKeeper;
 import sneer.bricks.pulp.reactive.Signal;

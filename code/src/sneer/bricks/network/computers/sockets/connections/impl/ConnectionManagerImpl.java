@@ -6,9 +6,9 @@ import java.io.IOException;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.ClosureX;

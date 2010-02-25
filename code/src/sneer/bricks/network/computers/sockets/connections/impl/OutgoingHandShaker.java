@@ -4,8 +4,8 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.IOException;
 
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
-import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.network.ByteArraySocket;
 
 class OutgoingHandShaker {

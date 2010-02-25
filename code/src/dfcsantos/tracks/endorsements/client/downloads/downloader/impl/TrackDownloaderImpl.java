@@ -11,7 +11,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
-import sneer.bricks.pulp.keymanager.ContactSeals;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
