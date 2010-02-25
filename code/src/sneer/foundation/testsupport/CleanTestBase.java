@@ -146,11 +146,15 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	private void deleteTmpFolder() {
 		_tmpFolderName = null;
-		
-		if (_tmpFolder == null) return;
+
+		if (!isTmpFolderBeingUsed()) return;
 		tryToClean(_tmpFolder);
 		_tmpFolder = null;
 
+	}
+
+	private boolean isTmpFolderBeingUsed() {
+		return new File(tmpFolderName()).exists();
 	}
 	
 	private void tryToClean(File tmp) {
@@ -158,9 +162,9 @@ public abstract class CleanTestBase extends AssertUtils {
 		int counter = 0;
 		while (true) {
 			try {
-				deleteFolder(tmp); // it can throw subclasses of IOException or IllegalArgumentException
+				deleteFolder(tmp);
 				return;
-			} catch (Exception e) {
+			} catch (IOException e) {
 				if (System.currentTimeMillis() - t0 > 1000) {
 					throw new IllegalStateException(e);
 				}
