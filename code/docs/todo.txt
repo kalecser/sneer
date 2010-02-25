@@ -31,14 +31,8 @@ Igor ====================================================
 				- ContinuationBenchmark (it's used by no one)
 
 	- Create functional test for Wusic
-		- [Klaus] Revise changes in the classes involved in the track download scheme
-			- [Igor] I will revise, but finish the Wusic test first and clean up the things you already know are bad.
-				- Remove all references to Wusic from TrackDownloader
-					- TrackClient should no longer be a Snapp
-						- It should be activated/deactivated by Wusic's enable track download check box
-						- It should in turn activate/deactivate TrackDownloader
-				- Download.waitTillFinished() should throw TimeoutException
-				- Download should have a method to signal if it finished successfully 
+
+	- Discuss with Klaus the possibility of making Download's interface simpler
 
 	- Submit JavaOne paper
 
