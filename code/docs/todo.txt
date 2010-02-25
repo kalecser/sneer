@@ -25,19 +25,20 @@ Igor ====================================================
 
 	- Create functional test for Wusic
 		- [Klaus] Revise changes in the classes involved in the track download scheme
-			- Remove all references to Wusic from TrackDownloader
-				- TrackClient should no longer be a Snapp
-					- It should be activated/deactivated by Wusic's enable track download check box
-					- It should in turn activate/deactivate TrackDownloader
-			- Download.waitTillFinished() should throw TimeoutException
-			- Download should have a method to signal if it finished successfully 
+			- [Igor] I will revise, but finish the Wusic test first and clean up the things you already know are bad.
+				- Remove all references to Wusic from TrackDownloader
+					- TrackClient should no longer be a Snapp
+						- It should be activated/deactivated by Wusic's enable track download check box
+						- It should in turn activate/deactivate TrackDownloader
+				- Download.waitTillFinished() should throw TimeoutException
+				- Download should have a method to signal if it finished successfully 
 
 	- Submit JavaOne paper
 
 	- Seals
 		- ContactInfoWindowImpl - Contact's Seal Field: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
 			- ContactsSeals interface is ready to be plugged to the GUI. "Ask me how", Klaus.
-				- Create a reactive component at ContactInfoWindow receiving to parameters:
+				- Create a reactive component at ContactInfoWindow receiving two parameters:
 					- Signals.adapt(ContactSeals.sealGiven(), functor - to convert from Seal to String)
 					- new PickyConsumer<String>() that receives a String, converts to Seal, and then calls ContactsSeals.put()
 			- [Klaus] Discuss with Igor refactoring of ContactsInfoWindow
