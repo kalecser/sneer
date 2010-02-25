@@ -61,8 +61,6 @@ Igor ====================================================
 
 Klaus =================================================
 
-	- ContactSeals.ownSeal() - Extract to a new non-prevalent brick: OwnSeal.get()
-
 	- Unignore RemoteCopyTest.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
 		- See this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298
 

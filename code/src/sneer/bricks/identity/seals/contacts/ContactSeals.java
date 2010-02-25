@@ -10,8 +10,6 @@ import sneer.foundation.lang.exceptions.Refusal;
 @Brick(Prevalent.class)
 public interface ContactSeals {
 
-	Seal ownSeal();
-
 	void put(String contactNickname, Seal seal) throws Refusal;
 
 	Signal<Seal> sealGiven(Contact contact);

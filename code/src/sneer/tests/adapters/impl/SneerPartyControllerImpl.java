@@ -19,6 +19,7 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.hardware.ram.iterables.Iterables;
+import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
@@ -166,7 +167,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	@Override
     public byte[] seal() {
-		return my(ContactSeals.class).ownSeal().bytes.copy();
+		return my(OwnSeal.class).get().bytes.copy();
 	}
 
 	
@@ -439,7 +440,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private String print(Seal seal) {
-		return seal.equals(my(ContactSeals.class).ownSeal())
+		return seal.equals(my(OwnSeal.class).get())
 			? "myself"
 			: my(ContactSeals.class).contactGiven(seal).nickname().toString();
 	}

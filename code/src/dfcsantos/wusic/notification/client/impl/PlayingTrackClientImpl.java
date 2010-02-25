@@ -3,6 +3,7 @@ package dfcsantos.wusic.notification.client.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.tuples.TupleSpace;
@@ -22,7 +23,7 @@ class PlayingTrackClientImpl implements PlayingTrackClient {
 
 	@Override
 	public void consume(PlayingTrack playingTrack) {
-		if (my(ContactSeals.class).ownSeal().equals(playingTrack.publisher)) return;
+		if (my(OwnSeal.class).get().equals(playingTrack.publisher)) return;
 
 		Contact contact = my(ContactSeals.class).contactGiven(playingTrack.publisher);
 		if (contact == null) {

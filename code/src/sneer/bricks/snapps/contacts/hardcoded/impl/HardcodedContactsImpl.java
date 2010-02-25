@@ -4,6 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.codec.Codec;
 import sneer.bricks.hardware.cpu.codec.DecodeException;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
@@ -28,7 +29,7 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 	
 	
 	private void add(ContactInfo contact) {
-		if (my(ContactSeals.class).ownSeal().equals(contact._seal)) return;
+		if (my(OwnSeal.class).get().equals(contact._seal)) return;
 		addAddresses(contact);
 		addSeal(contact);
 	}

@@ -11,7 +11,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
-import sneer.bricks.identity.seals.contacts.ContactSeals;
+import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
@@ -46,7 +46,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 		if (hasReachedDownloadLimit()) return;
 
-		if (my(ContactSeals.class).ownSeal().equals(endorsement.publisher)) return;
+		if (my(OwnSeal.class).get().equals(endorsement.publisher)) return;
 		
 		if (isDuplicated(endorsement)) return;
 		if (isRejected(endorsement)) return;

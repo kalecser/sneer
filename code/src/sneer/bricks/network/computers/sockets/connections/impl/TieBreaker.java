@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.IOException;
 import java.util.Arrays;
 
+import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
@@ -36,7 +37,7 @@ class TieBreaker {
 
 
 	private static boolean mySealIsGreaterThanHis(Contact contact) {
-		byte[] bytes1 = Seals.ownSeal().bytes.copy();
+		byte[] bytes1 = my(OwnSeal.class).get().bytes.copy();
 		byte[] bytes2 = Seals.sealGiven(contact).currentValue().bytes.copy();
 		
 		if (bytes1.length != bytes2.length)

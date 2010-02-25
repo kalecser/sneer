@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.own.name.OwnNameKeeper;
@@ -36,6 +37,6 @@ abstract class ShoutUtils {
 	}
 
 	static boolean isMyOwnShout(Shout shout) {
-		return keyManager().ownSeal().equals(shout.publisher);
+		return my(OwnSeal.class).get().equals(shout.publisher);
 	}
 }

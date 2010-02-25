@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
@@ -50,7 +51,7 @@ public class PlayingTrackTest extends BrickTest {
 		Environment remote = newTestEnvironment(my(TupleSpace.class), my(Clock.class));
 		configureStorageFolder(remote);
 
-		final Seal localSeal = my(ContactSeals.class).ownSeal();
+		final Seal localSeal = my(OwnSeal.class).get();
 		Environments.runWith(remote, new ClosureX<Refusal>() { @Override public void run() throws Refusal {
 			_localContact = my(Contacts.class).produceContact("local");
 			my(ContactSeals.class).put("local", localSeal);

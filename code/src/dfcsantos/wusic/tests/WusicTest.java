@@ -16,8 +16,8 @@ import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -32,7 +32,7 @@ public class WusicTest extends BrickTest {
 	private final Wusic _subject = my(Wusic.class);
 
 	@Bind private final FileClient _fileClient = mock(FileClient.class);
-	@Bind private final ContactSeals _seals = mock(ContactSeals.class);
+	@Bind private final OwnSeal _ownSeal = mock(OwnSeal.class);
 
 	@Test(timeout = 3000)
 	public void trackDownload() throws Exception {
@@ -41,12 +41,12 @@ public class WusicTest extends BrickTest {
 		final Sneer1024 hash3 = my(Crypto.class).digest(new byte[] { 3 });
 
 		checking(new Expectations() {{
-			oneOf(_seals).ownSeal(); will(returnValue(newSeal(1)));
-			oneOf(_seals).ownSeal(); will(returnValue(newSeal(2)));
+			oneOf(_ownSeal).get(); will(returnValue(newSeal(1)));
+			oneOf(_ownSeal).get(); will(returnValue(newSeal(2)));
 			oneOf(_fileClient).numberOfRunningDownloads();
 			oneOf(_fileClient).startFileDownload(new File(peerTracksFolder(), "ok.mp3"), 41, hash1);
 			allowing(_fileClient).numberOfRunningDownloads();
-			allowing(_seals).ownSeal();
+			allowing(_ownSeal).get();
 		}});
 
 		_subject.trackDownloadActivator().consume(true);
