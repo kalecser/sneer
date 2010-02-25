@@ -9,8 +9,8 @@ import org.junit.Test;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray2D;
-import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.ContactSeals;
+import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.skin.rooms.ActiveRoomKeeper;
@@ -29,7 +29,6 @@ import spikes.sneer.bricks.snapps.whisper.speextuples.SpeexTuples;
 @Ignore //SpeexTuples no longer produces PcmSoundPacket tuples. It uses Mic.sound() and Speaker.acquireLine() directly. This test must be fixed accordingly.
 public class SpeexTuplesTest extends BrickTest {
 
-	private final ContactSeals _keyManager = my(ContactSeals.class);
 	private final TupleSpace _tupleSpace = my(TupleSpace.class);
 	
 	@Bind private final Speex _speex = mock(Speex.class);
@@ -143,7 +142,7 @@ public class SpeexTuplesTest extends BrickTest {
 	}
 
 	private Seal ownPublicKey() {
-		return _keyManager.ownSeal();
+		return my(OwnSeal.class).get();
 	}
 
 	@SuppressWarnings("unused")

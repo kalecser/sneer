@@ -5,12 +5,13 @@ import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.heartbeat.Heartbeat;
 import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -99,7 +100,7 @@ class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Runnable {
 
 
 	private boolean isMyOwn(Heartbeat beat) {
-		return my(ContactSeals.class).ownSeal().equals(beat.publisher);
+		return my(OwnSeal.class).get().equals(beat.publisher);
 	}
 
 

@@ -85,6 +85,8 @@
 
 	<target name="test-execution" depends="copy-src-for-tests">
 		<junit printsummary="true" failureproperty="junit.failures" fork="yes" timeout="60000">
+			<jvmarg value="-Xms32m"/>
+			<jvmarg value="-Xmx128m"/>
 			<formatter type="xml"/>
 			<sysproperty key="java.awt.headless" value="${java.awt.headless}" />
 			<classpath>

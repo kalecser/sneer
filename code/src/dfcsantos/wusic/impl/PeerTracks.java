@@ -12,9 +12,9 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Closure;
 import dfcsantos.tracks.Track;
+import dfcsantos.tracks.endorsements.client.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.execution.playlist.Playlist;
 import dfcsantos.tracks.execution.playlist.Playlists;
-import dfcsantos.tracks.sharing.endorsements.client.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
 class PeerTracks extends TrackSourceStrategy {

@@ -8,12 +8,13 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
-import sneer.bricks.pulp.keymanager.ContactSeals;
-import sneer.bricks.pulp.keymanager.Seal;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -23,6 +24,7 @@ import sneer.foundation.brickness.testsupport.Bind;
 public class IncomingSocketTest extends BrickTest {
 
 	@Bind private final ContactSeals _seals = mock(ContactSeals.class);
+	@Bind private final OwnSeal _ownSealBrick = mock(OwnSeal.class);
 
 	private ConnectionManager _subject = my(ConnectionManager.class);
 
@@ -44,7 +46,8 @@ public class IncomingSocketTest extends BrickTest {
 		checking(new Expectations() {{
 			Sequence sequence = newSequence("main");
 
-			allowing(_seals).ownSeal(); will(returnValue(_ownSeal));
+			allowing(_ownSealBrick).get(); will(returnValue(_ownSeal));
+			
 			allowing(_seals).contactGiven(_smallerSeal); will(returnValue(a));
 			allowing(_seals).contactGiven(_greaterSeal); will(returnValue(b));
 			allowing(_seals).sealGiven(a); will(returnValue(constant(_smallerSeal)));

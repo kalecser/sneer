@@ -13,6 +13,6 @@ public interface DotParts {
 
 	File closeDotPart(File dotPartFile, long lastModified) throws IOException;
 
-	FileFilter dotPartFilter();
+	FileFilter dotPartExclusionFilter();
 
 }

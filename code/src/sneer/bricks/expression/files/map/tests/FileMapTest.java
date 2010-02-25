@@ -28,8 +28,7 @@ public class FileMapTest extends BrickTest {
 		assertNull(_subject.getFile(hash));
 	}
 
-	@Ignore
-	@Test
+	@Test @Ignore
 	public void rename() {
 		_subject.putFile(new File("folder/sub/file1.txt"),	41, hash(1));
 		_subject.putFile(new File("folder/sub/file2.txt"),	42, hash(2));
@@ -67,3 +66,22 @@ public class FileMapTest extends BrickTest {
 	}
 
 }
+
+// The rename test fails like this:
+//
+//Filtered Stack: --------------------------------------------------------------------------------------------------
+//java.lang.AssertionError: expected:<-6-7272> but was:<null>
+//	at sneer.bricks.expression.files.map.tests.FileMapTest.assertFileWasRenamed(FileMapTest.java:56)
+//	at sneer.bricks.expression.files.map.tests.FileMapTest.rename(FileMapTest.java:42)
+//
+//Log: -------------------------------------------------------------------------------------------------------------
+//Log  : Mapping folder/sub/file1.txt(0 KB)                                                              sneer.bricks.expression.files.map.impl.FileMapImpl.putFile(FileMapImpl.java:39)
+//Log  : Mapping folder/sub/file2.txt(0 KB)                                                              sneer.bricks.expression.files.map.impl.FileMapImpl.putFile(FileMapImpl.java:39)
+//Log  : Mapping folder/file3.txt(0 KB)                                                                  sneer.bricks.expression.files.map.impl.FileMapImpl.putFile(FileMapImpl.java:39)
+//Log  : Mapping folder/file4.txt(0 KB)                                                                  sneer.bricks.expression.files.map.impl.FileMapImpl.putFile(FileMapImpl.java:39)
+//Log  : Mapping folder2/file5.txt(0 KB)                                                                 sneer.bricks.expression.files.map.impl.FileMapImpl.putFile(FileMapImpl.java:39)
+//Log  : Mapping newFolder/file4.txt(0 KB)                                                               sneer.bricks.expression.files.map.impl.FileMapImpl.putFile(FileMapImpl.java:39)
+//Log  : Mapping newFolder/file3.txt(0 KB)                                                               sneer.bricks.expression.files.map.impl.FileMapImpl.putFile(FileMapImpl.java:39)
+//Log  : Mapping newFolder/sub/file2.txt(0 KB)                                                           sneer.bricks.expression.files.map.impl.FileMapImpl.putFile(FileMapImpl.java:39)
+//Log  : Mapping newFolder/sub/file1.txt(0 KB)                                                           sneer.bricks.expression.files.map.impl.FileMapImpl.putFile(FileMapImpl.java:39)
+//==================================================================================================================

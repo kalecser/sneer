@@ -7,7 +7,6 @@ import java.io.File;
 import org.jmock.Expectations;
 import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.map.FileMap;
@@ -23,28 +22,23 @@ public class FileMappingStopTest extends BrickTest {
 	@Bind private final FileMap _fileMap = mock(FileMap.class);
 	private final FileMapper _subject = my(FileMapper.class);
 
-	@Ignore
 	@Test (timeout = 3000, expected = MappingStopped.class)
 	public void mapFolder() throws Exception {
+		final File fixturesFolder = new File(myClassFile().getParent(), "fixtures");
+
 		checking(new Expectations() {{
 			oneOf(_fileMap).getLastModified(with(any(File.class))); will(returnValue(-1L));
 			oneOf(_fileMap).putFile(with(any(File.class)), with(any(Sneer1024.class)));
 				will(new CustomAction("Call stopFolderMapping") { @Override public Object invoke(Invocation invocation) throws Throwable {
-					_subject.stopFolderMapping(fixturesFolder());
+					_subject.stopFolderMapping(fixturesFolder);
 					return null;
 				}});
-			oneOf(_fileMap).remove(fixturesFolder());
+			oneOf(_fileMap).remove(fixturesFolder);
 		}});
-		
-		_subject.mapFolder(fixturesFolder(), "txt");
+
+		_subject.mapFolder(fixturesFolder, "txt");
 	}
 
-	
-	private File fixturesFolder() {
-		return new File(myClassFile().getParent(), "fixtures");
-	}
-
-	
 	private File myClassFile() {
 		return my(ClassUtils.class).classFile(getClass());
 	}

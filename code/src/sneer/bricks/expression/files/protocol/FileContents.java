@@ -2,7 +2,7 @@ package sneer.bricks.expression.files.protocol;
 
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
-import sneer.bricks.pulp.keymanager.Seal;
+import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.tuples.Tuple;
 
 public class FileContents extends Tuple {

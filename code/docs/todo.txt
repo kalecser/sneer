@@ -20,27 +20,30 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Hudson - Stabilize
+	- CleanTestBase - Make sure tmp folder is being deleted.
+		- Find out the cause of the intermittence that prevents some unit tests from deleting the prevalent files
 
-	- Changes in the classes involved in the track download scheme
-		- Remove all references to Wusic from TrackDownloader
-			- TrackClient should no longer be a Snapp
-				- It should be activated/deactivated by Wusic's enable track download check box
-				- It should in turn activate/deactivate TrackDownloader
-		- Download.waitTillFinished() should throw TimeoutException
-		- Download should have a method to signal if it finished successfully 
+	- FileMapTest.rename() - Fix. See comment at the end of the class with failure.
 
-	- Unignore FileMapTest.rename
-
-
-	- CleanTestBase - Make sure tmp folder is being deleted. 
+	- Create functional test for Wusic
+		- [Klaus] Revise changes in the classes involved in the track download scheme
+			- [Igor] I will revise, but finish the Wusic test first and clean up the things you already know are bad.
+				- Remove all references to Wusic from TrackDownloader
+					- TrackClient should no longer be a Snapp
+						- It should be activated/deactivated by Wusic's enable track download check box
+						- It should in turn activate/deactivate TrackDownloader
+				- Download.waitTillFinished() should throw TimeoutException
+				- Download should have a method to signal if it finished successfully 
 
 	- Submit JavaOne paper
 
 	- Seals
 		- ContactInfoWindowImpl - Contact's Seal Field: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
 			- ContactsSeals interface is ready to be plugged to the GUI. "Ask me how", Klaus.
-			- [Klaus] Discuss with Igor refactoring of ContactsInfoWindow   
+				- Create a reactive component at ContactInfoWindow receiving two parameters:
+					- Signals.adapt(ContactSeals.sealGiven(), functor - to convert from Seal to String)
+					- new PickyConsumer<String>() that receives a String, converts to Seal, and then calls ContactsSeals.put()
+			- [Klaus] Discuss with Igor refactoring of ContactsInfoWindow
 
 	- Wusic
 		- [Klaus/Daniel] MusicalTasteMatcher Kernel
@@ -58,10 +61,10 @@ Igor ====================================================
 
 Klaus =================================================
 
-	- ContactSeals.ownSeal() - Extract to a new non-prevalent brick: OwnSeal.get()
-
 	- Unignore RemoteCopyTest.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
 		- See this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298
+
+	- [Rene] Dependency cycle detector.
 
 	- Make Network usable
 		- Sneer "DNS".

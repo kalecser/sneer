@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.client.FileClient;
@@ -25,8 +24,8 @@ import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
-import sneer.bricks.pulp.keymanager.ContactSeals;
-import sneer.bricks.pulp.keymanager.Seal;
+import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -53,7 +52,6 @@ public class FileClientTest extends BrickTest {
 		my(IO.class).files().assertSameContents(tmpFile, anySmallFile());
 	}
 
-	@Ignore
 	@Test (timeout = 4000)
 	public void receiveFileContentBlocksOutOfSequence() throws IOException, TimeoutException {
 		final File smallFile = createTmpFileWithRandomContent(3 * Protocol.FILE_BLOCK_SIZE);
@@ -89,7 +87,7 @@ public class FileClientTest extends BrickTest {
 	}
 
 	private Seal me() {
-		return my(ContactSeals.class).ownSeal();
+		return my(OwnSeal.class).get();
 	}
 
 	private ImmutableByteArray getFileBlock(File file, int blockNumber) throws IOException {

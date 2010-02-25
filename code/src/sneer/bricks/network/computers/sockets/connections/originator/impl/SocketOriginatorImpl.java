@@ -5,10 +5,11 @@ import static sneer.foundation.environments.Environments.my;
 import java.util.HashMap;
 import java.util.Map;
 
+import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddress;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
-import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.foundation.lang.Consumer;
 
@@ -48,7 +49,7 @@ class SocketOriginatorImpl implements SocketOriginator {
 
 	
 	private boolean isMyOwnAddress(InternetAddress address) {
-		return Seals.ownSeal().equals(Seals.sealGiven(address.contact()).currentValue());
+		return my(OwnSeal.class).get().equals(Seals.sealGiven(address.contact()).currentValue());
 	}
 	
 }

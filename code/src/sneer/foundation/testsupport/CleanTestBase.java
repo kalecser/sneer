@@ -45,7 +45,7 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	protected String tmpFolderName() {
 		if (_tmpFolderName == null)
-			_tmpFolderName = System.getProperty("java.io.tmpdir") + "/" + System.nanoTime();
+			_tmpFolderName = System.getProperty("java.io.tmpdir") + "/" + this.getClass().getSimpleName() + "_" + System.nanoTime();
 
 		return _tmpFolderName;
 	}
@@ -146,15 +146,20 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	private void deleteTmpFolder() {
 		_tmpFolderName = null;
-		
-		if (_tmpFolder == null) return;
+
+		if (!isTmpFolderBeingUsed()) return;
 		tryToClean(_tmpFolder);
 		_tmpFolder = null;
 
 	}
+
+	private boolean isTmpFolderBeingUsed() {
+		return new File(tmpFolderName()).exists();
+	}
 	
 	private void tryToClean(File tmp) {
 		long t0 = System.currentTimeMillis();
+		int counter = 0;
 		while (true) {
 			try {
 				deleteFolder(tmp);
@@ -165,6 +170,7 @@ public abstract class CleanTestBase extends AssertUtils {
 				}
 				System.gc();
 			}
+			++counter;
 		}
 	}
 	
@@ -208,7 +214,9 @@ public abstract class CleanTestBase extends AssertUtils {
 	void failedWith(Method method, Throwable thrown) {
 		if (_failure != null) return;
 		
-		if (thrown.getMessage().startsWith("test timed out")) //Kent, Erich, please improve the JUnit API for tests with timeouts. JUnit4ClassRunner.invokeTestMethod hides the test instance and the roadie. TestRunner and TestMethod parallel hierarchies is the only (clumsy) way to get close to what one needs. Klaus.
+		if (thrown
+				.getMessage() //One method call per line to pinpoint an intermittent NPE we had in feb 2010.
+				.startsWith("test timed out")) //Kent, Erich, please improve the JUnit API for tests with timeouts. JUnit4ClassRunner.invokeTestMethod hides the test instance and the roadie. TestRunner and TestMethod parallel hierarchies is the only (clumsy) way to get close to what one needs. Klaus.
 			tryToWaitForTheFailureFromTheActualTestThread(method, thrown);
 		else
 			keepFailure(method, thrown);
@@ -263,6 +271,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		File file = createTmpFile(fileName);
 		FileOutputStream fileOutputStream = new FileOutputStream(file);
 		fileOutputStream.write(fileName.getBytes());
+		fileOutputStream.close();
 		return file;
 	}
 

@@ -37,7 +37,6 @@ public abstract class FileCopyTestBase extends BrickTest {
 		testWith(anySmallFile());
 	}
 
-	@Ignore
 	@Test (timeout = 6000)
 	public void testWithFolder() throws Exception {
 		testWith(folderWithAFewFiles());

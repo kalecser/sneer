@@ -31,9 +31,9 @@ class PeerTracksPanel extends AbstractTabPane {
 	private final JFileChooser _sharedTracksFolderChooser;
     private final JButton _chooseSharedTracksFolder			= new JButton();
 
-    private final JLabel _tracksDownloadAllowanceLabel		= new JLabel();
-    private final JTextField _tracksDownloadAllowance		= newReactiveTextField();
-    private final JCheckBox _tracksDownloadActivity			= newReactiveCheckBox();
+    private final JLabel _downloadAllowanceLabel		= new JLabel();
+    private final JTextField _downloadAllowance		= newReactiveTextField();
+    private final JCheckBox _downloadActivity			= newReactiveCheckBox();
 
     @SuppressWarnings("unused")	private final WeakContract _toAvoidGC;
 
@@ -51,14 +51,14 @@ class PeerTracksPanel extends AbstractTabPane {
         }});
         customPanel().add(_chooseSharedTracksFolder);
 
-        _tracksDownloadActivity.setText("Download Tracks");
-        customPanel().add(_tracksDownloadActivity);
+        _downloadActivity.setText("Download Tracks");
+        customPanel().add(_downloadActivity);
 
-        _tracksDownloadAllowanceLabel.setText("-   Limit (MBs):");
-        customPanel().add(_tracksDownloadAllowanceLabel);
+        _downloadAllowanceLabel.setText("-   Limit (MBs):");
+        customPanel().add(_downloadAllowanceLabel);
 
-        _tracksDownloadAllowance.setPreferredSize(new Dimension(42, 18));
-        customPanel().add(_tracksDownloadAllowance);
+        _downloadAllowance.setPreferredSize(new Dimension(42, 18));
+        customPanel().add(_downloadAllowance);
 
 		_toAvoidGC = _controller.operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode operatingMode) {
 			updateComponents(operatingMode);
@@ -80,15 +80,15 @@ class PeerTracksPanel extends AbstractTabPane {
 
 	private JCheckBox newReactiveCheckBox() {
 		return my(ReactiveWidgetFactory.class).newCheckBox(
-			_controller.isTracksDownloadActive(),
-			_controller.tracksDownloadActivator(),
-			new Closure() { @Override public void run() { allowTracksDownloadActionPerformed(_controller.isTracksDownloadActive().currentValue()); } }
+			_controller.isTrackDownloadActive(),
+			_controller.trackDownloadActivator(),
+			new Closure() { @Override public void run() { allowDownloadsActionPerformed(_controller.isTrackDownloadActive().currentValue()); } }
 		).getMainWidget();
 	}
 
 	private JTextField newReactiveTextField() {
 		return my(ReactiveWidgetFactory.class).newTextField(
-			_controller.tracksDownloadAllowance(), my(IntegerParsers.class).newIntegerParser(_controller.tracksDownloadAllowanceSetter()), NotificationPolicy.OnEnterPressedOrLostFocus
+			_controller.trackDownloadAllowance(), my(IntegerParsers.class).newIntegerParser(_controller.trackDownloadAllowanceSetter()), NotificationPolicy.OnEnterPressedOrLostFocus
 		).getMainWidget();
 	}
 
@@ -104,13 +104,13 @@ class PeerTracksPanel extends AbstractTabPane {
         _controller.deleteTrack();
     }
 
-	private void allowTracksDownloadActionPerformed(boolean isSelected) {
+	private void allowDownloadsActionPerformed(boolean isSelected) {
 		if (isSelected) {
-			_tracksDownloadAllowanceLabel.setEnabled(true);
-			_tracksDownloadAllowance.setEnabled(true);
+			_downloadAllowanceLabel.setEnabled(true);
+			_downloadAllowance.setEnabled(true);
 		} else {
-			_tracksDownloadAllowanceLabel.setEnabled(false);
-			_tracksDownloadAllowance.setEnabled(false);			
+			_downloadAllowanceLabel.setEnabled(false);
+			_downloadAllowance.setEnabled(false);			
 		}
 	}
 

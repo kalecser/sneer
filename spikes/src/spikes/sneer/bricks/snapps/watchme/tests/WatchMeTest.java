@@ -18,9 +18,9 @@ import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.gui.images.Images;
+import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.events.EventSource;
-import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.ContactSeals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.skin.image.ImageFactory;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -38,7 +38,6 @@ public class WatchMeTest extends BrickTest {
 	private final TupleSpace _sharedSpace = my(TupleSpace.class);
 	
 	private final ImageFactory _imageFactory = my(ImageFactory.class);
-	private final ContactSeals _keys = my(ContactSeals.class);
 	private final Clock _clock = my(Clock.class);
 	private final WatchMe _subject = my(WatchMe.class);
 	
@@ -65,7 +64,7 @@ public class WatchMeTest extends BrickTest {
 		Environment container2 = newTestEnvironment(_sharedSpace); 
 		WatchMe subject2 = EnvironmentUtils.retrieveFrom(container2, WatchMe.class);
 
-		Seal key = _keys.ownSeal();
+		Seal key = my(OwnSeal.class).get();
 		
 		EventSource<BufferedImage> screens = subject2.screenStreamFor(key);
 

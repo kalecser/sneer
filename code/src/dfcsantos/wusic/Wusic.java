@@ -35,12 +35,12 @@ public interface Wusic {
 
 	Signal<Integer> numberOfPeerTracks();
 
-	Signal<Boolean> isTracksDownloadActive();
-	Consumer<Boolean> tracksDownloadActivator();
+	Signal<Boolean> isTrackDownloadActive();
+	Consumer<Boolean> trackDownloadActivator();
 
 	int DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE = 100; // MBs
-	Signal<Integer> tracksDownloadAllowance();
-	PickyConsumer<Integer> tracksDownloadAllowanceSetter();
+	Signal<Integer> trackDownloadAllowance();
+	PickyConsumer<Integer> trackDownloadAllowanceSetter();
 
 }
 
