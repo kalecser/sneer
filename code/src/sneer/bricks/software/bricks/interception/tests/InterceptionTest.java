@@ -10,9 +10,9 @@ import org.jmock.Mockery;
 import org.jmock.api.Invocation;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.action.CustomAction;
-import org.junit.Assert;
 import org.junit.Test;
 
+import sneer.bricks.hardware.cpu.threads.tests.BrickTestWithThreads;
 import sneer.bricks.software.bricks.interception.InterceptionEnhancer;
 import sneer.bricks.software.bricks.interception.Interceptor;
 import sneer.bricks.software.bricks.interception.Interceptor.Continuation;
@@ -27,7 +27,7 @@ import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.Producer;
 
-public class InterceptionTest extends Assert {
+public class InterceptionTest extends BrickTestWithThreads {
 	
 	final Mockery mockery = new JUnit4Mockery();
 	
@@ -93,9 +93,11 @@ public class InterceptionTest extends Assert {
 			}
 		};
 			
-		Environments.runWith(Brickness.newBrickContainer(passThroughNature), new Closure() { @Override public void run() {
+		Environment newEnvironment = Brickness.newBrickContainer(passThroughNature);
+		Environments.runWith(newEnvironment, new Closure() { @Override public void run() {
 			assertEquals("Hello!!!", my(BrickOfSomeInterceptingNature.class).newGreeter().hello());
 		}});
+		crash(newEnvironment);
 	}
 
 	
@@ -175,6 +177,7 @@ public class InterceptionTest extends Assert {
 		Environment subject = Brickness.newBrickContainer(interceptingNatureMock);
 		Environments.runWith(subject, block);
 		mockery.assertIsSatisfied();
+		crash(subject);
 	}
 	
 	

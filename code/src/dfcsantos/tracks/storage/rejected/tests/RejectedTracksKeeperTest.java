@@ -67,6 +67,8 @@ public class RejectedTracksKeeperTest extends BrickTest {
 			assertTrue(_subject.isRejected(secondTrackHash));
 			assertTrue(_subject.isRejected(thirdTrackHash));
 		}});
+
+		crash(newTestEnvironment);
 	}
 
 }
