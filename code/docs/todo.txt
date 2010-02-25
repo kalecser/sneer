@@ -20,8 +20,15 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- CleanTestBase - Make sure tmp folder is being deleted.
-		- Find out the cause of the intermittence that prevents some unit tests from deleting the prevalent files
+	- Check if unit tests are crashing the threads of all environments created by them
+		- Discuss with Klaus:
+			- Where to put method #crash(Environment) without creating circular dependencies
+				- See changes made to 'BrickTestWithThreads' and 'BrickTest'
+			- Extraction of method #runInNewEnvironment(Closure) to a base class (see TuplePersistenceTest for reference)
+			- The implementation of the following classes:
+				- GUINatureTest
+				- EnvironmentsTest
+				- ContinuationBenchmark (it's used by no one)		
 
 	- FileMapTest.rename() - Fix. See comment at the end of the class with failure.
 
