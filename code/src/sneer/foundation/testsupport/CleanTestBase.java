@@ -111,14 +111,20 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	@SuppressWarnings("deprecation")
 	private void stopIfNecessary(Thread thread) {
-		if(_activeThreadsBeforeTest.contains(thread)) return;
+		if (_activeThreadsBeforeTest.contains(thread)) return;
+		if (isGUIThread(thread)) return; //Fix: Check for leaking Gui resources too.
 		if (waitForTermination(thread)) return;
-		if (thread.getName().indexOf("AWT") != -1) return; //Fix: Check for leaking Gui resources too.
 
 		final LeakingThreadStopped plug = new LeakingThreadStopped(thread, "" + thread + " was leaked by test: " + this.getClass() + " and is now being stopped!");
 		thread.stop(plug);
 		
 		throw new IllegalStateException(plug);
+	}
+
+	private boolean isGUIThread(Thread thread) {
+		if (thread.getName().indexOf("AWT") != -1) return true;
+		if (thread.getName().indexOf("Java2D") != -1) return true;
+		return false;
 	}
 
 	private boolean waitForTermination(Thread thread) {
