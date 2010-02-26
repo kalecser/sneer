@@ -14,13 +14,17 @@ public abstract class BrickTestWithThreads extends BrickTestWithLogger {
 
 	@After
 	public void afterBrickTestWithTreads() {
-		my(Threads.class).crashAllThreads();
+		crash();
 	}
 
-	protected static void crash(Environment environment) {
+	protected void crash(Environment environment) {
 		Environments.runWith(environment, new Closure() { @Override public void run() {
-			my(Threads.class).crashAllThreads();
+			crash();
 		}});
+	}
+
+	private void crash() {
+		my(Threads.class).crashAllThreads();
 	}
 
 }
