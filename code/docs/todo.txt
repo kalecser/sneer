@@ -58,11 +58,7 @@ Igor ====================================================
 		- Focus. Keep it simple. Zero sophistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
 		- Announce to community
 
-	- Configure Hudson:
-		- Fix Sneer-Clover
-		- So it doens't start a new build when only non-source files are changed (ex: changes in todo.txt)
-			- One simple way of bulking out builds is to enable a "quiet period" - a newly scheduled build waits for X seconds before actually being built
-		- Set up Hudson to run PMD - Programming Mistake Detector (http://pmd.sourceforge.net)
+	- Fix Sneer-Clover
 
 Klaus =================================================
 
