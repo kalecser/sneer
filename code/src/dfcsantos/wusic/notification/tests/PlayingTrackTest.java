@@ -46,7 +46,7 @@ public class PlayingTrackTest extends BrickTest {
 		my(PlayingTrackServer.class);
 
 		Environment remote = newTestEnvironment(my(TupleSpace.class), my(Clock.class));
-		configureStorageFolder(remote);
+		configureStorageFolder(remote, "remote/data");
 
 		final Seal localSeal = my(OwnSeal.class).get();
 		Environments.runWith(remote, new ClosureX<Refusal>() { @Override public void run() throws Refusal {

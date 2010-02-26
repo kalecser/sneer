@@ -38,7 +38,7 @@ public class RemoteCopyTest extends FileCopyTestBase {
 		@SuppressWarnings("unused") FileServer server = my(FileServer.class);
 		my(CustomClockTicker.class).start(10, 10000);
 		Environment remote = newTestEnvironment(my(TupleSpace.class), my(Clock.class));
-		configureStorageFolder(remote);
+		configureStorageFolder(remote, "remote/Data");
 
 		Environments.runWith(remote, closure);
 		crash(remote);

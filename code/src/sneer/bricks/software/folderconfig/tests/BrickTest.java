@@ -18,9 +18,9 @@ public abstract class BrickTest extends BrickTestWithThreads {
 		my(FolderConfig.class).tmpFolder()    .set(new File(tmpFolderName(), "tmp" ));
 	}
 
-	protected void configureStorageFolder(Environment remote) {
-		Environments.runWith(remote, new Closure() { @Override public void run() {
-			my(FolderConfig.class).storageFolder().set(newTmpFile("remote"));
+	protected void configureStorageFolder(Environment environment, final String folderName) {
+		Environments.runWith(environment, new Closure() { @Override public void run() {
+			my(FolderConfig.class).storageFolder().set(new File(tmpFolderName(), folderName));
 		}});
 	}
 
