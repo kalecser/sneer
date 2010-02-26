@@ -45,7 +45,7 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	protected String tmpFolderName() {
 		if (_tmpFolderName == null)
-			_tmpFolderName = System.getProperty("java.io.tmpdir") + "/" + this.getClass().getSimpleName() + "_" + System.nanoTime();
+			_tmpFolderName = System.getProperty("java.io.tmpdir") + File.separator + this.getClass().getSimpleName() + "_" + System.nanoTime();
 
 		return _tmpFolderName;
 	}
@@ -81,16 +81,17 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	@After
 	public void afterCleanTest() {
-		recoverConsole();
-
-		if (_failure != null) {
-			afterFailedtest(_failedMethod, _failure);
-			return;
+		try {
+			recoverConsole();
+			if (_failure != null) {
+				afterFailedtest(_failedMethod, _failure);
+				return;
+			}
+			checkConsolePollution();
+			checkThreadLeak();
+		} finally {
+			deleteTmpFolder();
 		}
-		
-		checkConsolePollution();
-		deleteTmpFolder();
-		checkThreadLeak();
 	}
 	
 	
@@ -151,10 +152,11 @@ public abstract class CleanTestBase extends AssertUtils {
 	}
 
 	private void deleteTmpFolder() {
-		_tmpFolderName = null;
-
 		if (!isTmpFolderBeingUsed()) return;
+
 		tryToClean(_tmpFolder);
+
+		_tmpFolderName = null;
 		_tmpFolder = null;
 
 	}
