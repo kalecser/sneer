@@ -155,13 +155,13 @@ public abstract class CleanTestBase extends AssertUtils {
 		if (!isTmpFolderBeingUsed()) return;
 
 		tryToClean(_tmpFolder);
-
 		_tmpFolderName = null;
 		_tmpFolder = null;
 
 	}
 
 	private boolean isTmpFolderBeingUsed() {
+		if (_tmpFolder == null) return false;
 		return new File(tmpFolderName()).exists();
 	}
 	
