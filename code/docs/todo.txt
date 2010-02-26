@@ -31,6 +31,7 @@ Igor ====================================================
 				- ContinuationBenchmark (it's used by no one)
 
 	- Create functional test for Wusic
+		- Wusic.switchOperatingMode() --> Wusic.setOperatingMode()
 
 	- Discuss with Klaus the possibility of making Download's interface simpler
 
