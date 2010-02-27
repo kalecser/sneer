@@ -48,7 +48,7 @@ class ConnectionManagerImpl implements ConnectionManager {
 		SocketCloser.closeIfUnsuccessful(socket, direction + " socket closed.", closure);
 		
 		if (my(Threads.class).isCrashing())
-			SocketCloser.close(socket, "Closing socket that was created after all threads have crashed.");
+			SocketCloser.close(socket, "Closing socket that was " + direction + " while crashing all threads.");
 	}
 
 	
