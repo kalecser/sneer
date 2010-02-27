@@ -93,4 +93,9 @@ public class ThreadsMock implements Threads {
 	public PulseSource crashing() {
 		return _crashingPulser.output();
 	}
+
+	@Override
+	public boolean isCrashing() {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	}
 }
