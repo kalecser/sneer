@@ -38,8 +38,11 @@ public class RemoteCopyTest extends FileCopyTestBase {
 
 	
 	private void copyFromFileMap(ClosureX<Exception> closure) throws Exception {
+//		LoggerMocks.showLog = true;
+//		my(TupleLogger.class);
+		
 		@SuppressWarnings("unused") FileServer server = my(FileServer.class);
-		my(CustomClockTicker.class).start(10, 15000);
+		avoidDuplicateTuples();
 		Environment remote = newTestEnvironment(my(TupleSpace.class), my(Clock.class));
 		configureStorageFolder(remote);
 		
@@ -49,6 +52,14 @@ public class RemoteCopyTest extends FileCopyTestBase {
 		my(Threads.class).crashAllThreads();
 	}
 
+	
+
+
+
+	private void avoidDuplicateTuples() {
+		my(CustomClockTicker.class).start(10, 1);
+	}
+	
 	
 	private void configureStorageFolder(Environment remote) {
 		Environments.runWith(remote, new Closure() { @Override public void run() {

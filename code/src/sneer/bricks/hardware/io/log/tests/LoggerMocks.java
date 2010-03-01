@@ -9,6 +9,8 @@ import sneer.foundation.lang.Consumer;
 
 public class LoggerMocks {
 
+	static public boolean showLog = false;
+
 	private final List<String> _allInstanceLabels = new ArrayList<String>();
 	private final List<String> _keptMessages = Collections.synchronizedList(new ArrayList<String>());
 
@@ -29,7 +31,8 @@ public class LoggerMocks {
 	private Consumer<String> messageKeeper(final String prefix) {
 		return new Consumer<String>() { @Override public void consume(String message) {
 			_keptMessages.add(prefix + message);
-			//System.out.println(prefix + message);
+			if (showLog)
+				System.out.println(prefix + message);
 		}};
 	}
 

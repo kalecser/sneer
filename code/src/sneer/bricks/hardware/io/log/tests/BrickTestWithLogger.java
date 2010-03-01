@@ -11,10 +11,13 @@ import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import scala.actors.threadpool.Arrays;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.brickness.testsupport.BrickTestBase;
+import sneer.foundation.environments.Environment;
 
 public abstract class BrickTestWithLogger extends BrickTestBase {
 	
@@ -31,6 +34,20 @@ public abstract class BrickTestWithLogger extends BrickTestBase {
 		}
 	}
 
+	
+	@Override
+	protected Environment newTestEnvironment(Object... bindings) {
+		return super.newTestEnvironment(appendLogger(bindings));
+	}
+
+
+	private Object[] appendLogger(Object... bindings) {
+		List<Object> result = new ArrayList<Object>(Arrays.asList(bindings));
+		result.add(my(Logger.class));
+		return result.toArray();
+	}
+
+	
 	private void printContext(Method method, Throwable thrown) {
 		System.out.println();
 		System.out.println();
