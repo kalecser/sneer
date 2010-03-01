@@ -20,6 +20,10 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Unignore CopyTestBase.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
+		- See this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298
+		- Ok, smart-ass :), why does LocalCopyTest.testWithZeroLengthFile() always pass? Are you sure RemoteCopyTest is closing the file streams before trying to rename it?
+
 	- CleanTestBase - Make sure tmp folder is being deleted.
 		- Find out the cause of the intermittence that prevents some unit tests from deleting the prevalent files
 
@@ -60,9 +64,6 @@ Igor ====================================================
 
 
 Klaus =================================================
-
-	- Unignore RemoteCopyTest.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
-		- See this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298
 
 	- [Rene] Dependency cycle detector.
 
