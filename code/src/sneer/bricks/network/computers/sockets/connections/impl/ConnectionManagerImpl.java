@@ -10,16 +10,15 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.ClosureX;
 
 class ConnectionManagerImpl implements ConnectionManager {
-
-	static final WeakContract crashingContract = my(Threads.class).crashing().addPulseReceiver(new Closure() { @Override public void run() {
+	
+	static final WeakContract crashingContract = my(Threads.class).crashing().addPulseReceiver(new Runnable() { @Override public void run() {
 		for (ByteConnectionImpl victim : ConnectionsByContact.all())
 			victim.close();
 	}});
-	
+
 	
 	@Override
 	public ByteConnectionImpl connectionFor(final Contact contact) {
@@ -29,7 +28,7 @@ class ConnectionManagerImpl implements ConnectionManager {
 	
 	@Override
 	public void manageIncomingSocket(final ByteArraySocket socket) {
-		SocketCloser.closeIfUnsuccessful(socket, "Incoming socket closed.", new ClosureX<IOException>() { @Override public void run() throws IOException {
+		manageSocket(socket, "Incoming", new ClosureX<IOException>() { @Override public void run() throws IOException {
 			Seal contactsSeal = IncomingHandShaker.greet(socket);
 			TieBreaker.manageIncomingSocket(socket, contactsSeal);
 		}});
@@ -38,10 +37,18 @@ class ConnectionManagerImpl implements ConnectionManager {
 
 	@Override
 	public void manageOutgoingSocket(final ByteArraySocket socket, final Contact contact) {
-		SocketCloser.closeIfUnsuccessful(socket, "Outgoing socket closed.", new ClosureX<IOException>() { @Override public void run() throws IOException {
+		manageSocket(socket, "Outgoing", new ClosureX<IOException>() { @Override public void run() throws IOException {
 			OutgoingHandShaker.greet(socket);
 			TieBreaker.manageOutgoingSocket(socket, contact);
 		}});
+	}
+
+	
+	private void manageSocket(final ByteArraySocket socket, String direction, ClosureX<IOException> closure) {
+		SocketCloser.closeIfUnsuccessful(socket, direction + " socket closed.", closure);
+		
+		if (my(Threads.class).isCrashing())
+			SocketCloser.close(socket, "Closing socket that was " + direction + " while crashing all threads.");
 	}
 
 	

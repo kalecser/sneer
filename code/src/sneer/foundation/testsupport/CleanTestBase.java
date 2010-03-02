@@ -45,7 +45,7 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	protected String tmpFolderName() {
 		if (_tmpFolderName == null)
-			_tmpFolderName = System.getProperty("java.io.tmpdir") + "/" + this.getClass().getSimpleName() + "_" + System.nanoTime();
+			_tmpFolderName = System.getProperty("java.io.tmpdir") + File.separator + this.getClass().getSimpleName() + "_" + System.nanoTime();
 
 		return _tmpFolderName;
 	}
@@ -81,16 +81,17 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	@After
 	public void afterCleanTest() {
-		recoverConsole();
-
-		if (_failure != null) {
-			afterFailedtest(_failedMethod, _failure);
-			return;
+		try {
+			recoverConsole();
+			if (_failure != null) {
+				afterFailedtest(_failedMethod, _failure);
+				return;
+			}
+			checkConsolePollution();
+			checkThreadLeak();
+		} finally {
+			deleteTmpFolder();
 		}
-		
-		checkConsolePollution();
-		deleteTmpFolder();
-		checkThreadLeak();
 	}
 	
 	
@@ -111,14 +112,20 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	@SuppressWarnings("deprecation")
 	private void stopIfNecessary(Thread thread) {
-		if(_activeThreadsBeforeTest.contains(thread)) return;
+		if (_activeThreadsBeforeTest.contains(thread)) return;
+		if (isGUIThread(thread)) return; //Fix: Check for leaking Gui resources too.
 		if (waitForTermination(thread)) return;
-		if (thread.getName().indexOf("AWT") != -1) return; //Fix: Check for leaking Gui resources too.
 
 		final LeakingThreadStopped plug = new LeakingThreadStopped(thread, "" + thread + " was leaked by test: " + this.getClass() + " and is now being stopped!");
 		thread.stop(plug);
 		
 		throw new IllegalStateException(plug);
+	}
+
+	private boolean isGUIThread(Thread thread) {
+		if (thread.getName().indexOf("AWT") != -1) return true;
+		if (thread.getName().indexOf("Java2D") != -1) return true;
+		return false;
 	}
 
 	private boolean waitForTermination(Thread thread) {
@@ -145,15 +152,16 @@ public abstract class CleanTestBase extends AssertUtils {
 	}
 
 	private void deleteTmpFolder() {
-		_tmpFolderName = null;
-
 		if (!isTmpFolderBeingUsed()) return;
+
 		tryToClean(_tmpFolder);
+		_tmpFolderName = null;
 		_tmpFolder = null;
 
 	}
 
 	private boolean isTmpFolderBeingUsed() {
+		if (_tmpFolder == null) return false;
 		return new File(tmpFolderName()).exists();
 	}
 	

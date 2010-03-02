@@ -8,7 +8,6 @@ import org.jmock.Expectations;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
-import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -17,12 +16,10 @@ import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.Track;
@@ -49,7 +46,7 @@ public class PlayingTrackTest extends BrickTest {
 		my(PlayingTrackServer.class);
 
 		Environment remote = newTestEnvironment(my(TupleSpace.class), my(Clock.class));
-		configureStorageFolder(remote);
+		configureStorageFolder(remote, "remote/data");
 
 		final Seal localSeal = my(OwnSeal.class).get();
 		Environments.runWith(remote, new ClosureX<Refusal>() { @Override public void run() throws Refusal {
@@ -90,18 +87,6 @@ public class PlayingTrackTest extends BrickTest {
 
 	private void setPlayingTrack(String trackName) {
 		_playingTrack.setter().consume(my(Tracks.class).newTrack(new File(trackName)));
-	}
-
-	private void configureStorageFolder(Environment remote) {
-		Environments.runWith(remote, new Closure() { @Override public void run() {
-			my(FolderConfig.class).storageFolder().set(newTmpFile("remote"));
-		}});
-	}
-
-	private void crash(Environment remote) {
-		Environments.runWith(remote, new Closure() { @Override public void run() {
-			my(Threads.class).crashAllThreads();
-		}});
 	}
 
 }

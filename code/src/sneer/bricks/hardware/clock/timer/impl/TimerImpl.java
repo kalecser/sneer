@@ -150,7 +150,7 @@ class TimerImpl implements Timer {
 		
 		@Override
 		public String toString() {
-			return "Alarm: " + _wakeUpTime;
+			return "Alarm for: " + _stepper;
 		}
 
 		@Override

@@ -20,24 +20,20 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Unignore CopyTestBase.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
-		- See this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298
-		- Ok, smart-ass :), why does LocalCopyTest.testWithZeroLengthFile() always pass? Are you sure RemoteCopyTest is closing the file streams before trying to rename it?
-
-	- CleanTestBase - Make sure tmp folder is being deleted.
-		- Find out the cause of the intermittence that prevents some unit tests from deleting the prevalent files
-
-	- FileMapTest.rename() - Fix. See comment at the end of the class with failure.
+	- Check if unit tests are crashing the threads of all environments created by them
+		- Discuss with Klaus:
+			- Where to put method #crash(Environment) without creating circular dependencies
+				- See changes made to 'BrickTestWithThreads' and 'BrickTest'
+			- Extraction of method #runInNewEnvironment(Closure) to a base class (see TuplePersistenceTest for reference)
+			- The implementation of the following classes:
+				- GUINatureTest
+				- EnvironmentsTest
+				- ContinuationBenchmark (it's used by no one)
 
 	- Create functional test for Wusic
-		- [Klaus] Revise changes in the classes involved in the track download scheme
-			- [Igor] I will revise, but finish the Wusic test first and clean up the things you already know are bad.
-				- Remove all references to Wusic from TrackDownloader
-					- TrackClient should no longer be a Snapp
-						- It should be activated/deactivated by Wusic's enable track download check box
-						- It should in turn activate/deactivate TrackDownloader
-				- Download.waitTillFinished() should throw TimeoutException
-				- Download should have a method to signal if it finished successfully 
+		- Wusic.switchOperatingMode() --> Wusic.setOperatingMode()
+
+	- Discuss with Klaus the possibility of making Download's interface simpler
 
 	- Submit JavaOne paper
 
@@ -62,8 +58,12 @@ Igor ====================================================
 		- Focus. Keep it simple. Zero sophistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
 		- Announce to community
 
+	- Fix Sneer-Clover
 
 Klaus =================================================
+
+	- Unignore RemoteCopyTest.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
+		- See this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298
 
 	- [Rene] Dependency cycle detector.
 

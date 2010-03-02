@@ -7,6 +7,7 @@ import org.junit.Test;
 import sneer.bricks.pulp.propertystore.PropertyStore;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
@@ -22,7 +23,7 @@ public class PropertyStoreTest extends BrickTest {
 			assertEquals("1,80m", subject1.get("Height"));
 			assertEquals("85kg", subject1.get("Weight"));
 		}});
-		
+
 		runInNewEnvironment(new Closure() { @Override public void run() {
 			PropertyStore subject2 = my(PropertyStore.class);
 			assertEquals("1,80m", subject2.get("Height"));
@@ -31,8 +32,9 @@ public class PropertyStoreTest extends BrickTest {
 	}
 
 	private void runInNewEnvironment(Closure closure) {
-		Environments.runWith(newTestEnvironment(my(FolderConfig.class)), closure);
+		Environment newTestEnvironment = newTestEnvironment(my(FolderConfig.class));
+		Environments.runWith(newTestEnvironment, closure);
+		crash(newTestEnvironment);
 	}
-	
-}
 
+}

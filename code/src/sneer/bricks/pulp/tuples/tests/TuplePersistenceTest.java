@@ -31,7 +31,7 @@ public class TuplePersistenceTest extends BrickTest {
 			subject1.acquire(tuple(1));
 			subject1.acquire(tuple(2));
 		}});
-		
+
 		runInNewEnvironment(new Closure() { @Override public void run() {
 			
 			TupleSpace subject2 = createSubject();
@@ -44,7 +44,6 @@ public class TuplePersistenceTest extends BrickTest {
 		}});
 	}
 
-	
 	@Test (timeout = 2000)
 	public void filesAreClosedUponCrash() throws IOException {
 		
@@ -56,19 +55,18 @@ public class TuplePersistenceTest extends BrickTest {
 		my(IO.class).files().forceDelete(tmpFolder());
 	}
 
-
 	private TestTuple tuple(int i) {
 		return new TestTuple(i);
 	}
-	
+
 	private void runInNewEnvironment(Closure closure) {
 		Environment newEnvironment = newTestEnvironment(my(FolderConfig.class));
 		Environments.runWith(newEnvironment, closure);
+		crash(newEnvironment);
 	}
-	
+
 	private TupleSpace createSubject() {
 		return my(TupleSpace.class);
 	}
+
 }
-
-

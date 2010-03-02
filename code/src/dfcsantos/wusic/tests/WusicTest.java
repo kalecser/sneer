@@ -1,93 +1,95 @@
-
 package dfcsantos.wusic.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 
-import org.jmock.Expectations;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.expression.files.client.FileClient;
-import sneer.bricks.hardware.cpu.crypto.Crypto;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
-import sneer.bricks.identity.seals.OwnSeal;
-import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
-import sneer.foundation.brickness.testsupport.Bind;
-import dfcsantos.tracks.endorsements.protocol.TrackEndorsement;
+import sneer.foundation.environments.Environment;
+import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.ClosureX;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
+import dfcsantos.wusic.Wusic.OperatingMode;
 
-@Ignore
 public class WusicTest extends BrickTest {
 
-	private final Wusic _subject = my(Wusic.class);
+	private Wusic _subject1;
+	private Wusic _subject2;
 
-	@Bind private final FileClient _fileClient = mock(FileClient.class);
-	@Bind private final OwnSeal _ownSeal = mock(OwnSeal.class);
+//	@Bind private TrackPlayer _trackPlayer = mock(TrackPlayer.class);
 
-	@Test(timeout = 3000)
-	public void trackDownload() throws Exception {
-		final Sneer1024 hash1 = my(Crypto.class).digest(new byte[] { 1 });
-		final Sneer1024 hash2 = my(Crypto.class).digest(new byte[] { 2 });
-		final Sneer1024 hash3 = my(Crypto.class).digest(new byte[] { 3 });
+	@Test
+	public void basicStuff() {
+		_subject1 = my(Wusic.class);
 
-		checking(new Expectations() {{
-			oneOf(_ownSeal).get(); will(returnValue(newSeal(1)));
-			oneOf(_ownSeal).get(); will(returnValue(newSeal(2)));
-			oneOf(_fileClient).numberOfRunningDownloads();
-			oneOf(_fileClient).startFileDownload(new File(peerTracksFolder(), "ok.mp3"), 41, hash1);
-			allowing(_fileClient).numberOfRunningDownloads();
-			allowing(_ownSeal).get();
+		File localSharedFolder = my(TracksFolderKeeper.class).sharedTracksFolder().currentValue();
+		assertEquals(localSharedFolder, new File(tmpFolder(), "data/media/tracks"));
+		
+		assertSignalValue(_subject1.operatingMode(), OperatingMode.OWN);
+		_subject1.switchOperatingMode();
+		assertSignalValue(_subject1.operatingMode(), OperatingMode.PEERS);
+		
+		_subject1.start();
+		if (!my(BlinkingLights.class).lights().currentGet(0).caption().equals("No Tracks Found"))
+			fail();
+		assertSignalValue(_subject1.playingTrack(), null);
+		assertSignalValue(_subject1.isPlaying(), false);
+		
+		assertSignalValue(_subject1.numberOfPeerTracks(), 0);
+		assertSignalValue(_subject1.isTrackDownloadActive(), false);
+		
+		_subject1.trackDownloadActivator().consume(true);
+		
+		assertSignalValue(_subject1.trackDownloadAllowance(), Wusic.DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE);
+	}
+
+	@Ignore
+	@Test
+	public void ownMode() {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet();
+	}
+
+	@Test
+	public void peersMode() throws IOException {
+		Environment remoteEnvironment = newTestEnvironment(my(TupleSpace.class));
+		configureStorageFolder(remoteEnvironment, "remote/data");
+
+		Environments.runWith(remoteEnvironment, new ClosureX<IOException>() { @Override public void run() throws IOException {
+			createSampleTracks();
+			_subject2 = my(Wusic.class);
+			_subject2.trackDownloadActivator().consume(true);
 		}});
 
-		_subject.trackDownloadActivator().consume(true);
-		_subject.trackDownloadAllowanceSetter().consume(1);
+		/* Implement: Check if tracks were transfered from one wusic to the other
+		 * 		- Check number of downloaded tracks: _subject1.numberOfPeerTracks()
+		 * 		- Play downloaded tracks
+		 * 			- Keep one track and delete others
+		 * 				- Check number of tracks in shared tracks after changes 
+		*/
 
-		aquireEndorsementTuple(hash1, 41, "songs/subfolder/ok.mp3");
-
-		_subject.trackDownloadActivator().consume(false);
-		aquireEndorsementTuple(hash2, 42, "songs/subfolder/notOk1.mp3");
-
-		_subject.trackDownloadActivator().consume(true);
-		useUpAllowance();
-		aquireEndorsementTuple(hash3, 43, "songs/subfolder/notOk2.mp3");
+		crash(remoteEnvironment);
 	}
 
-	private void useUpAllowance() throws IOException {
-		final File fileWith1MB = createTmpFileWithRandomContent(1048576); // Optimize: change things so that we do not have to create so big a file
-		my(IO.class).files().copyFileToFolder(fileWith1MB, peerTracksFolder());
+	private <T> void assertSignalValue(Signal<T> signal, T value) {
+		my(SignalUtils.class).waitForValue(signal, value);
 	}
 
-	private File peerTracksFolder() {
-		return new File(my(FolderConfig.class).tmpFolderFor(TracksFolderKeeper.class), "peertracks");
-	}
-
-	private void aquireEndorsementTuple(final Sneer1024 hash1, int lastModified, String track) {
-		my(TupleSpace.class).acquire(new TrackEndorsement(track, lastModified, hash1));
-		my(TupleSpace.class).waitForAllDispatchingToFinish();
-	}
-
-	private Seal newSeal(int b) {
-		return new Seal(new ImmutableByteArray(new byte[] { (byte) b }));
-	}
-
-	private File createTmpFileWithRandomContent(int fileSizeInBytes) throws IOException {
-		final File fileWithRandomContent = newTmpFile();
-		final byte[] randomBytes = new byte[fileSizeInBytes];
-		new Random().nextBytes(randomBytes);
-		my(IO.class).files().writeByteArrayToFile(fileWithRandomContent, randomBytes);
-
-		return fileWithRandomContent;
+	private void createSampleTracks() throws IOException {
+		String[] tracks = { "track1.mp3", "track2.mp3", "track3.mp3" };
+		createTmpFilesWithFileNameAsContent(tracks);
+		File remoteSharedFolder = my(TracksFolderKeeper.class).sharedTracksFolder().currentValue();
+		for (String track : tracks)
+			my(IO.class).files().copyFileToFolder(new File(tmpFolder(), track), remoteSharedFolder);
 	}
 
 }
-
