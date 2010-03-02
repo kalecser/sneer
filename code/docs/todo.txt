@@ -20,6 +20,10 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Hudson - Solve intermittence: http://sneer.vpscustomer.com:8080/hudson/job/Sneer/714/testReport/
+		- See: http://stackoverflow.com/questions/1846329/forked-java-vm-exited-abnormally-error-from-junit-tests
+		- http://www.google.com.br/search?q=hudson+%22Forked+Java+VM+exited+abnormally%22
+
 	- CleanTestBase - Make sure tmp folder is being deleted.
 		- Find out the cause of the intermittence that prevents some unit tests from deleting the prevalent files
 			- Is this already done? What was the problem?
