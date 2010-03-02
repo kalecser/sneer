@@ -21,17 +21,11 @@ Bamboo =================================================
 Igor ====================================================
 
 	- Hudson - Solve intermittence: http://sneer.vpscustomer.com:8080/hudson/job/Sneer/714/testReport/
-		- See: http://stackoverflow.com/questions/1846329/forked-java-vm-exited-abnormally-error-from-junit-tests
-		- http://www.google.com.br/search?q=hudson+%22Forked+Java+VM+exited+abnormally%22
-
-	- CleanTestBase - Make sure tmp folder is being deleted.
-		- Find out the cause of the intermittence that prevents some unit tests from deleting the prevalent files
-			- Is this already done? What was the problem?
+		- Try:
+			- Update Ant's libraries at Hudson
+			- Increase -Xmx and stop forking VM when running tests
 
 	- Check if unit tests are crashing the threads of all environments created by them
-		- Discuss with Klaus:
-			- Where to put method #crash(Environment) without creating circular dependencies
-				- See changes made to 'BrickTestWithThreads' and 'BrickTest'
 			- Extraction of method #runInNewEnvironment(Closure) to a base class (see TuplePersistenceTest for reference)
 			- The implementation of the following classes:
 				- GUINatureTest
@@ -39,15 +33,10 @@ Igor ====================================================
 				- ContinuationBenchmark (it's used by no one)
 
 	- Unignore CopyTestBase.testWithZeroLengthFile() - this test is the one which fails because the .part file can't be renamed backed to the original file's name
-		- See this article on the Web: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6213298
-			- Why does LocalCopyTest.testWithZeroLengthFile() always pass? Are you sure RemoteCopyTest is closing the file streams before trying to rename it?
-
-	- FileMapTest.rename() - Fix. See comment at the end of the class with failure.
+		- Why does LocalCopyTest.testWithZeroLengthFile() always pass? Are you sure RemoteCopyTest is closing the file streams before trying to rename it?
 
 	- Create functional test for Wusic
 		- Wusic.switchOperatingMode() --> Wusic.setOperatingMode()
-
-	- Discuss with Klaus the possibility of making Download's interface simpler
 
 	- Submit JavaOne paper
 
