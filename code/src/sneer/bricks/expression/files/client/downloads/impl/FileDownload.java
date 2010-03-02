@@ -76,7 +76,7 @@ class FileDownload extends AbstractDownload {
 
 		if (contents instanceof FileContentsFirstBlock) {
 			receiveFirstBlock((FileContentsFirstBlock) contents);
-			if (isFinished()) return;  //Empty file case.
+			if (isFinished()) return;  // Empty file case.
 		}
 
 		if (contents.blockNumber < _nextBlockToWrite) return;
@@ -90,9 +90,10 @@ class FileDownload extends AbstractDownload {
 	private void receiveFirstBlock(FileContentsFirstBlock contents) throws IOException {
 		if (firstBlockWasAlreadyReceived()) return;
 		_fileSizeInBlocks = (contents.fileSize == 0) ? 0 : (int) ((contents.fileSize - 1) / Protocol.FILE_BLOCK_SIZE) + 1;
-		_output = new FileOutputStream(_path);
-		
-		if (_fileSizeInBlocks == 0) finishWithSuccess();  //Empty file case.
+		if (_fileSizeInBlocks > 0)
+			_output = new FileOutputStream(_path);			
+		else
+			finishWithSuccess();
 	}
 
 	

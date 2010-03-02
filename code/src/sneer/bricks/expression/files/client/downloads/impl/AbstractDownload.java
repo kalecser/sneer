@@ -44,7 +44,7 @@ abstract class AbstractDownload implements Download {
 
 	private final Runnable _toCallWhenFinished;
 
-	@SuppressWarnings("unused") private WeakContract _timerContract;
+	private WeakContract _timerContract;
 
 
 	AbstractDownload(File path, long lastModified, Sneer1024 hashOfFile, Runnable toCallWhenFinished) {
@@ -155,6 +155,21 @@ abstract class AbstractDownload implements Download {
 		if (_toCallWhenFinished != null) _toCallWhenFinished.run();
 		_finished.sendPulse();
 		_isFinished.open();
+		stopSendingRequests();
+	}
+
+
+	private void stopSendingRequests() {
+		if (_timerContract == null) return;
+		_timerContract.dispose();
+	}
+
+
+	void startSendingRequests() {
+		_timerContract = my(Timer.class).wakeUpNowAndEvery(REQUEST_INTERVAL, new Closure() { @Override public void run() {
+			checkForTimeOut();
+			publishRequestIfNecessary();
+		}});
 	}
 
 
@@ -173,14 +188,6 @@ abstract class AbstractDownload implements Download {
 	abstract Object mappedContentsBy(Sneer1024 hashOfContents);
 
 	abstract void copyContents(Object contents) throws IOException;
-
-
-	void startSendingRequests() {
-		_timerContract = my(Timer.class).wakeUpNowAndEvery(REQUEST_INTERVAL, new Closure() { @Override public void run() {
-			checkForTimeOut();
-			publishRequestIfNecessary();
-		}});
-	}
 
 
 	void checkForTimeOut() {
