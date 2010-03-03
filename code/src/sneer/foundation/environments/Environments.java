@@ -26,7 +26,7 @@ public class Environments {
 		return implementation;
 	}
 
-	public static Environment current() {
+	private static Environment current() {
 		return _environment.get();
 	}
 
