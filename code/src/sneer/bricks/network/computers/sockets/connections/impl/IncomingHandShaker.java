@@ -6,15 +6,16 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
-import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.network.ByteArraySocket;
 
 class IncomingHandShaker {
 
 	
-	private static final Seals Seals = my(Seals.class);
+	private static final ContactSeals Seals = my(ContactSeals.class);
 
 
 	static Seal greet(ByteArraySocket socket) throws IOException {
@@ -36,7 +37,7 @@ class IncomingHandShaker {
 
 
 	static private void rejectLoopback(Seal peersSeal) throws IOException {
-		if (peersSeal.equals(Seals.ownSeal()))
+		if (peersSeal.equals(my(OwnSeal.class).get()))
 			throw new IOException("Socket identified as originating from yourself.");
 	}
 

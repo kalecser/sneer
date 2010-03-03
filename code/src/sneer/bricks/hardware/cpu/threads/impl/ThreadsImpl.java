@@ -111,4 +111,9 @@ class ThreadsImpl implements Threads {
 	public PulseSource crashing() {
 		return _crashingPulser.output();
 	}
+
+	@Override
+	public boolean isCrashing() {
+		return _isCrashing;
+	}
 }

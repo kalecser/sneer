@@ -17,9 +17,9 @@ import sneer.bricks.hardware.cpu.lang.contracts.Disposable;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
-import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
@@ -135,16 +135,9 @@ class TupleSpaceImpl implements TupleSpace {
 	@Override
 	public synchronized void acquire(Tuple tuple) {
 		if (tuple.addressee == null) {
-			if (_floodedTupleCache.contains(tuple)) return;
-			_floodedTupleCache.add(tuple);
-			capFloodedTuples();
-		} else {
-			Seal me = my(Seals.class).ownSeal();
-			if (!tuple.addressee.equals(me) && !tuple.publisher.equals(me)) {
-				my(Logger.class).log("Tuple received with incorrect addressee: {} type: ", tuple.addressee, tuple.getClass());
-				return;
-			}
-		}
+			if (dealWithFloodedTuple(tuple)) return;
+		} else
+			if (dealWithAddressedTuple(tuple)) return;
 		
 		if (isAlreadyKept(tuple)) return;
 		keepIfNecessary(tuple);
@@ -152,7 +145,32 @@ class TupleSpaceImpl implements TupleSpace {
 		notifySubscriptions(tuple);
 	}
 
+	private boolean dealWithAddressedTuple(Tuple tuple) {
+		Seal me = my(OwnSeal.class).get();
+		if (!tuple.addressee.equals(me) && !tuple.publisher.equals(me)) {
+			my(Logger.class).log("Tuple received with incorrect addressee: {} type: ", tuple.addressee, tuple.getClass());
+			return true;
+		}
+		return false;
+	}
 
+
+	private boolean dealWithFloodedTuple(Tuple tuple) {
+		if (_floodedTupleCache.contains(tuple)) {
+			logDuplicateTupleIgnored(tuple);
+			return true;
+		};
+		_floodedTupleCache.add(tuple);
+		capFloodedTuples();
+		return false;
+	}
+
+	
+	private void logDuplicateTupleIgnored(Tuple tuple) {
+		my(Logger.class).log("Duplicate tuple ignored: ", tuple);
+	}
+
+	
 	private void notifySubscriptions(Tuple tuple) {
 		for (Subscription<?> subscription : _subscriptions.toArray(SUBSCRIPTION_ARRAY))
 			subscription.filterAndNotify(tuple);
@@ -174,7 +192,9 @@ class TupleSpaceImpl implements TupleSpace {
 
 
 	private boolean isAlreadyKept(Tuple tuple) {
-		return _keptTuples.output().currentIndexOf(tuple) != -1;  //Optimize
+		boolean result = _keptTuples.output().currentIndexOf(tuple) != -1;   //Optimize
+		if (result) logDuplicateTupleIgnored(tuple);
+		return result;
 	}
 
 

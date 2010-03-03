@@ -14,9 +14,9 @@ import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.Track;
-import dfcsantos.tracks.sharing.playingtracks.keeper.PlayingTrackKeeper;
 import dfcsantos.wusic.Wusic;
 import dfcsantos.wusic.gui.WusicGui;
+import dfcsantos.wusic.notification.keeper.PlayingTrackKeeper;
 
 /**
  *

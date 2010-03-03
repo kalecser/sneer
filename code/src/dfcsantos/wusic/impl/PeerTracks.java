@@ -10,15 +10,18 @@ import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.foundation.lang.Closure;
 import dfcsantos.tracks.Track;
+import dfcsantos.tracks.endorsements.client.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.execution.playlist.Playlist;
 import dfcsantos.tracks.execution.playlist.Playlists;
-import dfcsantos.tracks.sharing.endorsements.client.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
 class PeerTracks extends TrackSourceStrategy {
 
 	static final TrackSourceStrategy INSTANCE = new PeerTracks();
+
+	private final Closure _downloadCountDecrementer = my(TrackDownloadCounter.class).decrementer();
 
 	private PeerTracks() {}
 
@@ -34,13 +37,12 @@ class PeerTracks extends TrackSourceStrategy {
 
 	void meToo(Track trackToKeep) {
 		//Implement Create event to notify listeners of track rejection (musical taste matcher, for example).
-		final File sharedTracksFolder = my(TracksFolderKeeper.class).sharedTracksFolder().currentValue();
-		moveTrackToFolder(trackToKeep, sharedTracksFolder);
+		moveTrackToFolder(trackToKeep, sharedTracksFolder());
 	}
 
 	@Override
 	void deleteTrack(Track rejected) {
-		my(TrackDownloadCounter.class).decrement();
+		decrementDownloadCounter();
 		super.deleteTrack(rejected);
 	}
 
@@ -50,18 +52,23 @@ class PeerTracks extends TrackSourceStrategy {
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.WARNING, "Unable to copy track", "Unable to copy track: " + track.file(), 7000);
 		}
+		decrementDownloadCounter();
 		markForDisposal(track);
 		updateFileMap(track.file());
 	}
 
-	private void updateFileMap(File originalTrack) {
-		Sneer1024 hash = my(FileMap.class).remove(originalTrack);
-		File movedTrack = new File(sharedTracksFolder(), originalTrack.getName());
-		my(FileMap.class).putFile(movedTrack, hash);
+	private void updateFileMap(File tmpTrack) {
+		Sneer1024 hash = my(FileMap.class).remove(tmpTrack);
+		File keptTrack = new File(sharedTracksFolder(), tmpTrack.getName());
+		my(FileMap.class).putFile(keptTrack, hash);
 	}
 
 	private File sharedTracksFolder() {
 		return my(TracksFolderKeeper.class).sharedTracksFolder().currentValue();
+	}
+
+	private void decrementDownloadCounter() {
+		_downloadCountDecrementer.run();
 	}
 
 }

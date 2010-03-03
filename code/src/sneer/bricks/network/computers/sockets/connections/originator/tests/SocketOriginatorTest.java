@@ -11,14 +11,14 @@ import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
-import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
 import sneer.bricks.pulp.reactive.Signal;
@@ -43,7 +43,7 @@ public class SocketOriginatorTest extends BrickTest {
 	public void openConnection() throws Exception {
 		final Latch _ready = my(Latches.class).produce();
 		final Contact neide = my(Contacts.class).produceContact("Neide");
-		my(Seals.class).put("Neide", newSeal(new byte[]{42}));
+		my(ContactSeals.class).put("Neide", newSeal(new byte[]{42}));
 
 		checking(new Expectations() {{
 			oneOf(_connectionManagerMock).connectionFor(neide);

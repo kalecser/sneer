@@ -4,7 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.map.FileMap;
@@ -28,7 +27,6 @@ public class FileMapTest extends BrickTest {
 		assertNull(_subject.getFile(hash));
 	}
 
-	@Ignore
 	@Test
 	public void rename() {
 		_subject.putFile(new File("folder/sub/file1.txt"),	41, hash(1));
@@ -40,16 +38,16 @@ public class FileMapTest extends BrickTest {
 		_subject.rename(new File("folder"), new File("newFolder"));
 
 		assertFileWasRenamed("newFolder/sub/file1.txt",	41, hash(1));
-		assertFileWasRenamed("newfolder/sub/file2.txt",	42, hash(2));
-		assertFileWasRenamed("newfolder/file3.txt",		43, hash(3));
-		assertFileWasRenamed("newfolder/file4.txt",		44, hash(4));
+		assertFileWasRenamed("newFolder/sub/file2.txt",	42, hash(2));
+		assertFileWasRenamed("newFolder/file3.txt",		43, hash(3));
+		assertFileWasRenamed("newFolder/file4.txt",		44, hash(4));
 
-		assertNull(_subject.getHash(new File("newfolder/file5.txt")));
+		assertNull(_subject.getHash(new File("newFolder/file5.txt")));
 
 		_subject.rename(new File("newFolder/sub"), new File("newFolder/newSub"));
 
 		assertFileWasRenamed("newFolder/newSub/file1.txt", 41, hash(1));
-		assertFileWasRenamed("newfolder/newSub/file2.txt", 42, hash(2));
+		assertFileWasRenamed("newFolder/newSub/file2.txt", 42, hash(2));
 	}
 
 	private void assertFileWasRenamed(String fileName, int lastModified, Sneer1024 hash) {
