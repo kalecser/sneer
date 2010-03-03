@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.map.mapper.FileMapper;
@@ -25,6 +26,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 
 	protected final FileMapper _fileMapper = my(FileMapper.class);
 
+	@Ignore
 	@Test (timeout = 3000)
 	public void testWithZeroLengthFile() throws Exception {
 		testWith(zeroLengthFile());
