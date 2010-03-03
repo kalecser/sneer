@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.gui.nature.tests.fixtures.SomeGuiBrick;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
@@ -28,7 +29,7 @@ public class GUINatureTest extends BrickTest {
 
 	@Test
 	public void listenerInvocationHappensInBricknessEnvironment() {
-		final ActionListener listener = my(SomeGuiBrick.class).listenerFor(Environments.current());
+		final ActionListener listener = my(SomeGuiBrick.class).listenerFor(my(Environment.class));
 		Environments.runWith(null, new Closure() { @Override public void run() {
 			listener.actionPerformed(new ActionEvent(this, 0, null));
 		}});
@@ -36,16 +37,14 @@ public class GUINatureTest extends BrickTest {
 
 	@Test
 	public void invocationHappensInBricknessEnvironment() {
-		assertSame(Environments.current(), my(SomeGuiBrick.class).currentEnvironment());
+		assertSame(my(Environment.class), my(SomeGuiBrick.class).currentEnvironment());
 	}
 
 	@Test
 	public void invocationInTheSwingThreadForVoidMethod() {
-		Environments.runWith(Environments.current(), new Closure() { @Override public void run() {
-			assertFalse(isGuiThread(Thread.currentThread()));
-			my(SomeGuiBrick.class).run(new Closure() { @Override public void run() {
-				assertTrue(isGuiThread(Thread.currentThread()));
-			}});
+		assertFalse(isGuiThread(Thread.currentThread()));
+		my(SomeGuiBrick.class).run(new Closure() { @Override public void run() {
+			assertTrue(isGuiThread(Thread.currentThread()));
 		}});
 	}
 
