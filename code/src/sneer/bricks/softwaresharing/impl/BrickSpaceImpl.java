@@ -2,11 +2,13 @@ package sneer.bricks.softwaresharing.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import sneer.bricks.expression.files.client.FileClient;
+import sneer.bricks.expression.files.client.downloads.TimeoutException;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
@@ -18,6 +20,7 @@ import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.demolisher.Demolisher;
@@ -72,13 +75,20 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	public EventSource<Seal> newBuildingFound() {
 		return _newBuildingFound.output();
 	}
-
 	
 	private void fetchIfNecessary(final SrcFolderHash srcFolderHash) {
-		shield("writing", new ClosureX<IOException>() { @Override public void run() {
+		shield("writing", new ClosureX<IOException>() { @Override public void run() throws IOException {
 
-			my(FileClient.class).startFolderDownload(null, srcFolderHash.value);
-		
+			File tmpFolderRoot = my(FolderConfig.class).tmpFolderFor(BrickSpace.class);
+			File tmpFolder = new File(tmpFolderRoot, String.valueOf(System.nanoTime()));
+			
+			try {
+				my(FileClient.class).startFolderDownload(tmpFolder, srcFolderHash.value).waitTillFinished();
+			} 
+			catch (TimeoutException e) {
+				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			}
+			
 			shield("reading", new ClosureX<IOException>() { @Override public void run() throws IOException {
 				accumulateBricks(srcFolderHash);
 			}});
