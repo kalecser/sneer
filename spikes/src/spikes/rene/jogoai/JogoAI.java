@@ -28,7 +28,7 @@ public class JogoAI {
 			boolean lado = confirm("Hmm... Por acaso o animal " + noAtual._caracteristica + "?");
 			
 			Elemento proximoElemento = lado ? noAtual._ladoSim : noAtual._ladoNao ;
-			if (proximoElemento.isAnimal()) {
+			if (proximoElemento instanceof Animal) {
 				chuta((Animal)proximoElemento, noAtual, lado);
 				break;
 			}
@@ -75,8 +75,6 @@ public class JogoAI {
 	
 	interface Elemento {
 		
-		boolean isAnimal();
-		
 	}
 
 
@@ -86,11 +84,6 @@ public class JogoAI {
 
 		Animal(String nome) {
 			_nome = nome;
-		}
-
-		@Override
-		public boolean isAnimal() {
-			return true;
 		}
 
 	}
@@ -108,10 +101,6 @@ public class JogoAI {
 			_ladoNao = new Animal(animalNao);
 		}
 
-		@Override
-		public boolean isAnimal() {
-			return false;
-		}
 	}
 
 	
