@@ -12,10 +12,13 @@ import dfcsantos.tracks.Track;
 public interface Wusic {
 
 	enum OperatingMode { OWN, PEERS };
-	void switchOperatingMode();
+	void setOperatingMode(OperatingMode operatingMode);
 	Signal<OperatingMode> operatingMode();
 
+	File playingFolder();
 	void setPlayingFolder(File selectedFolder);
+
+	Signal<File> sharedTracksFolder();
 	void setSharedTracksFolder(File selectedFolder);
 
 	void setShuffle(boolean shuffle);
