@@ -54,6 +54,7 @@ Klaus =================================================
 	- @After are not being called by ignored tests so tmpFolder() is not being removed
 
 	- [Rene] Dependency cycle detector.
+		- Git install
 
 	- Make Network usable
 		- Sneer "DNS".
