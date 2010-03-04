@@ -77,11 +77,7 @@ public class WusicImpl implements Wusic {
 	}
 
 	@Override
-	public void switchOperatingMode() {
-		setOperatingMode(operatingMode().currentValue().equals(OperatingMode.OWN) ? OperatingMode.PEERS : OperatingMode.OWN);
-	}
-
-	private void setOperatingMode(OperatingMode mode) {
+	public void setOperatingMode(OperatingMode mode) {
 		_currentOperatingMode.setter().consume(mode);
 	}
 
@@ -91,9 +87,19 @@ public class WusicImpl implements Wusic {
 	}
 
 	@Override
+	public File playingFolder() {
+		return _trackSource.tracksFolder();
+	}
+
+	@Override
 	public void setPlayingFolder(File playingFolder) {
 		my(TracksFolderKeeper.class).setPlayingFolder(playingFolder);
 		skip();
+	}
+
+	@Override
+	public Signal<File> sharedTracksFolder() {
+		return my(TracksFolderKeeper.class).sharedTracksFolder();
 	}
 
 	@Override

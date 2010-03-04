@@ -70,6 +70,10 @@ class PeerTracksPanel extends AbstractTabPane {
 		return OperatingMode.PEERS.equals(operatingMode);
 	}
 
+	private void activateMyOperatingMode() {
+		_controller.setOperatingMode(OperatingMode.PEERS);
+	}
+
 	private JLabel newReactiveLabel() {
 		return my(ReactiveWidgetFactory.class).newLabel(
 			my(Signals.class).adapt(_controller.numberOfPeerTracks(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
@@ -150,6 +154,11 @@ class PeerTracksPanel extends AbstractTabPane {
 		@Override
 		boolean isMyOperatingMode(OperatingMode operatingMode) {
 			return PeerTracksPanel.this.isMyOperatingMode(operatingMode);
+		}
+
+		@Override
+		void activateMyOperatingMode() {
+			PeerTracksPanel.this.activateMyOperatingMode();
 		}
 
 		@Override

@@ -15,7 +15,6 @@ import javax.swing.JLabel;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic.OperatingMode;
 
 class OwnTracksPanel extends AbstractTabPane {
@@ -32,7 +31,7 @@ class OwnTracksPanel extends AbstractTabPane {
 	    	if (chosenFolder != null)
 	    		_controller.setPlayingFolder(chosenFolder);
 		}}, JFileChooser.DIRECTORIES_ONLY);
-		_playingFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).playingFolder().currentValue());
+		_playingFolderChooser.setCurrentDirectory(_controller.playingFolder());
 
 	    _choosePlayingFolder.setText("Playing Folder");
 	    _choosePlayingFolder.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent evt) {
@@ -55,6 +54,10 @@ class OwnTracksPanel extends AbstractTabPane {
 	@Override
 	boolean isMyOperatingMode(OperatingMode operatingMode) {
 		return OperatingMode.OWN.equals(operatingMode);
+	}
+
+	private void activateMyOperatingMode() {
+		_controller.setOperatingMode(OperatingMode.OWN);
 	}
 
 	private void choosePlayingFolderActionPerformed() {
@@ -105,6 +108,11 @@ class OwnTracksPanel extends AbstractTabPane {
 		@Override
 		boolean isMyOperatingMode(OperatingMode operatingMode) {
 			return OwnTracksPanel.this.isMyOperatingMode(operatingMode);
+		}
+
+		@Override
+		void activateMyOperatingMode() {
+			OwnTracksPanel.this.activateMyOperatingMode();
 		}
 
 		@Override
