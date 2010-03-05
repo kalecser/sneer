@@ -74,7 +74,9 @@ class TrackDownloaderImpl implements TrackDownloader {
 	}
 
 	private static boolean isDuplicated(TrackEndorsement endorsement) {
-		return my(FileMap.class).getFile(endorsement.hash) != null;
+		if (my(FileClient.class).getRunningDownload(endorsement.hash) == null) return false; // Downloading
+		if (my(FileMap.class).getFile(endorsement.hash) == null) return false; // Already downloaded
+		return true;
 	}
 
 	private static boolean hasSpentDownloadAllowance() {
