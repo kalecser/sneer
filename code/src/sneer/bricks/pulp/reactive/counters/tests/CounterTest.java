@@ -17,7 +17,7 @@ public class CounterTest extends BrickTest {
 
 		Runnable incrementer = counter.incrementer();
 		Runnable boundlessDecrementer = counter.decrementer();
-		Runnable nonNegativeDecrementer = wrapDecrementerToAvoidNegativeValues(counter);
+		Runnable nonNegativeDecrementer = counter.conditionalDecrementer(counter.count().currentValue() > 0);
 
 		assertCurrentCountIs(0, counter);
 
@@ -40,29 +40,15 @@ public class CounterTest extends BrickTest {
 		boundlessDecrementer.run();
 		assertCurrentCountIs(0, counter);
 
-		try {
-			nonNegativeDecrementer.run();
-			fail();
-		} catch (IllegalStateException ignore) {}
+		nonNegativeDecrementer.run();
+		assertCurrentCountIs(0, counter);		
 
 		boundlessDecrementer.run();
 		assertCurrentCountIs(-1, counter);
 	}
 
-	private Runnable wrapDecrementerToAvoidNegativeValues(final Counter counter) {
-		return new Runnable() {
-			private final Runnable _delegate = counter.decrementer(); 
-
-			@Override public void run() {
-				if (counter.count().currentValue() == 0)
-					throw new IllegalStateException("Counter cannot hold a negative value");
-				_delegate.run();
-			}
-		};
-	}
-
 	private void assertCurrentCountIs(int expected, Counter counter) {
 		my(SignalUtils.class).waitForValue(counter.count(), expected);
 	}
-                         
+
 }

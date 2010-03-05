@@ -8,7 +8,9 @@ public interface Counter {
 	Signal<Integer> count();
 
 	Closure incrementer();
+	Closure conditionalIncrementer(boolean condition);
 
 	Closure decrementer();
+	Closure conditionalDecrementer(boolean condition);
 
 }

@@ -22,27 +22,37 @@ class CounterImpl implements Counter {
 	}
 
 	@Override
-	public Closure decrementer() {
-		return new Closure() { @Override public void run() {
-			decrement();
-		}};
-	}
-
-	synchronized
-	private void decrement() {
-		_countRegister.setter().consume(count().currentValue() - 1);
+	public Closure incrementer() {
+		return conditionalIncrementer(true);
 	}
 
 	@Override
-	public Closure incrementer() {
+	public Closure conditionalIncrementer(final boolean condition) {
 		return new Closure() { @Override public void run() {
-			increment();
+			if (condition) increment();
 		}};
 	}
 
 	synchronized
 	private void increment() {
 		_countRegister.setter().consume(count().currentValue() + 1);
+	}
+
+	@Override
+	public Closure decrementer() {
+		return conditionalDecrementer(true);
+	}
+
+	@Override
+	public Closure conditionalDecrementer(final boolean condition) {
+		return new Closure() { @Override public void run() {
+			if (condition) decrement();
+		}};
+	}
+
+	synchronized
+	private void decrement() {
+		_countRegister.setter().consume(count().currentValue() - 1);
 	}
 
 }
