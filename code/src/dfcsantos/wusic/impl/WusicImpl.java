@@ -15,6 +15,7 @@ import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.endorsements.client.TrackClient;
 import dfcsantos.tracks.endorsements.client.downloads.counter.TrackDownloadCounter;
+import dfcsantos.tracks.endorsements.server.TrackEndorser;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
 
@@ -40,6 +41,7 @@ public class WusicImpl implements Wusic {
 		restore();
 
 		my(TrackClient.class).setOnOffSwitch(isTrackDownloadActive());
+		my(TrackEndorser.class).setOnOffSwitch(isTrackDownloadActive());
 
 		_isDownloadEnabledConsumerContract = isTrackDownloadActive().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isDownloadAllowed) {
 			save();

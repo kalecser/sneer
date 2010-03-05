@@ -65,7 +65,6 @@ public class WusicTest extends BrickTest {
 			_subject2 = my(Wusic.class);
 			_subject2.trackDownloadActivator().consume(true);
 			my(CustomClockTicker.class).start(10, 60 * 1000);
-			my(TrackEndorser.class);
 		}});
 
 		_subject1 = my(Wusic.class);
