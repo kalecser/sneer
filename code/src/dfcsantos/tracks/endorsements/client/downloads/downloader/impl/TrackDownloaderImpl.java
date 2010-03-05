@@ -3,14 +3,18 @@ package dfcsantos.tracks.endorsements.client.downloads.downloader.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.map.FileMap;
+import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
+import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.tuples.TupleSpace;
@@ -28,6 +32,8 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 	private final ImmutableReference<Signal<Boolean>> _onOffSwitch = my(ImmutableReferences.class).newInstance();
 
+	private final Set<Sneer1024> _tracksBeingDownloaded = new HashSet<Sneer1024>(); 
+
 	@SuppressWarnings("unused") private final WeakContract _trackEndorsementConsumerContract;
 
 	{
@@ -41,23 +47,27 @@ class TrackDownloaderImpl implements TrackDownloader {
 		_onOffSwitch.set(onOffSwitch);
 	}
 
-	private void consumeTrackEndorsement(TrackEndorsement endorsement) {
+	private void consumeTrackEndorsement(final TrackEndorsement endorsement) {
 		if (!isOn()) return;
 
 		if (hasReachedDownloadLimit()) return;
 
 		if (my(OwnSeal.class).get().equals(endorsement.publisher)) return;
-		
+
 		if (isDuplicated(endorsement)) return;
 		if (isRejected(endorsement)) return;
 		if (hasSpentDownloadAllowance()) return;
 
 		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
+		_tracksBeingDownloaded.add(endorsement.hash);
 
-		download.finished().addPulseReceiver(new Runnable() { @Override public void run() {
-			if (download.hasFinishedSuccessfully())
-				my(TrackDownloadCounter.class).incrementer().run();		
+		WeakContract weakContract = download.finished().addPulseReceiver(new Runnable() { @Override public void run() {
+			System.out.println("Incrementing number of downloads...");
+			my(TrackDownloadCounter.class).conditionalIncrementer(download.hasFinishedSuccessfully()).run();
+			_tracksBeingDownloaded.remove(endorsement.hash);
 		}});
+
+		my(WeakReferenceKeeper.class).keep(download, weakContract);
 	}
 
 	private boolean isOn() {
@@ -65,18 +75,18 @@ class TrackDownloaderImpl implements TrackDownloader {
 		return _onOffSwitch.get().currentValue();
 	}
 
-	private static boolean hasReachedDownloadLimit() {
-		return my(FileClient.class).numberOfRunningDownloads() >= CONCURRENT_DOWNLOADS_LIMIT;
+	private boolean hasReachedDownloadLimit() {
+		return _tracksBeingDownloaded.size() >= CONCURRENT_DOWNLOADS_LIMIT; 
+	}
+
+	private boolean isDuplicated(TrackEndorsement endorsement) {
+		if (_tracksBeingDownloaded.contains(endorsement.hash)) return true;
+		if (my(FileMap.class).getFile(endorsement.hash) != null) return true;
+		return false;
 	}
 
 	private static boolean isRejected(TrackEndorsement endorsement) {
 		return my(RejectedTracksKeeper.class).isRejected(endorsement.hash);
-	}
-
-	private static boolean isDuplicated(TrackEndorsement endorsement) {
-		if (my(FileClient.class).getRunningDownload(endorsement.hash) == null) return false; // Downloading
-		if (my(FileMap.class).getFile(endorsement.hash) == null) return false; // Already downloaded
-		return true;
 	}
 
 	private static boolean hasSpentDownloadAllowance() {
