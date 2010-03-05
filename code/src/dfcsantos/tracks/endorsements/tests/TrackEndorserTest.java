@@ -14,6 +14,7 @@ import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
@@ -49,8 +50,12 @@ public class TrackEndorserTest extends BrickTest {
 		}});
 
 		my(TracksFolderKeeper.class).setSharedTracksFolder(tmpFolder());
-		my(TrackEndorser.class);
+		activateTrackEndorser();
 		latch.waitTillOpen();
+	}
+
+	private void activateTrackEndorser() {
+		my(TrackEndorser.class).setOnOffSwitch(my(Signals.class).constant(true));
 	}
 
 }

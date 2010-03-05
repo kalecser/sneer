@@ -21,7 +21,6 @@ Bamboo =================================================
 Igor ====================================================
 
 	- Create functional test for Wusic
-		- Wusic.switchOperatingMode() --> Wusic.setOperatingMode()
 
 	- Submit JavaOne paper
 

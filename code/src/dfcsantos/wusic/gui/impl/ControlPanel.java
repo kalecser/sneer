@@ -93,7 +93,7 @@ abstract class ControlPanel extends JPanel {
 	private void switchOperatingModeIfNecessary() {
 		if (isMyOperatingMode()) return;
 
-		_controller.switchOperatingMode();
+		activateMyOperatingMode();
 	}
 
 //	private void backActionPerformed() {
@@ -113,5 +113,6 @@ abstract class ControlPanel extends JPanel {
 	}
 
 	abstract boolean isMyOperatingMode(OperatingMode operatingMode);
+	abstract void activateMyOperatingMode();
 
 }

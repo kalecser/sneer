@@ -1,8 +1,11 @@
 package dfcsantos.tracks.endorsements.server;
 
-import sneer.bricks.software.bricks.snappstarter.Snapp;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.brickness.Brick;
 
-@Snapp
 @Brick
-public interface TrackEndorser {}
+public interface TrackEndorser {
+
+	void setOnOffSwitch(Signal<Boolean> onOffSwitch);
+
+}

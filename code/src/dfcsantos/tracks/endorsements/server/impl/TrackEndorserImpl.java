@@ -13,8 +13,12 @@ import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
+import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.endorsements.protocol.TrackEndorsement;
 import dfcsantos.tracks.endorsements.server.TrackEndorser;
@@ -24,11 +28,22 @@ class TrackEndorserImpl implements TrackEndorser {
 
 	private static final File[] FILE_ARRAY = new File[0];
 
-	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC;
+	private final ImmutableReference<Signal<Boolean>> _onOffSwitch = my(ImmutableReferences.class).newInstance();
 
-	{
-		_refToAvoidGC = my(Timer.class).wakeUpNowAndEvery(60 * 1000, new Closure() { @Override public void run() {
-			endorseRandomTrack();
+	private WeakContract _timerContract;
+	@SuppressWarnings("unused") private WeakContract _refToAvoidGC;
+
+	@Override
+	public void setOnOffSwitch(Signal<Boolean> onOffSwitch) {
+		_onOffSwitch.set(onOffSwitch);
+
+		_refToAvoidGC = onOffSwitch.addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isOn) {
+			if (isOn) 
+				_timerContract = my(Timer.class).wakeUpNowAndEvery(60 * 1000, new Closure() { @Override public void run() {
+					endorseRandomTrack();
+				}});
+			else
+				if (_timerContract != null) _timerContract.dispose();
 		}});
 	}
 
