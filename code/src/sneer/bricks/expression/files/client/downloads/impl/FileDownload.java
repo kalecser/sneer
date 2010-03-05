@@ -46,6 +46,7 @@ class FileDownload extends AbstractDownload {
 	FileDownload(File file, long lastModified, Sneer1024 hashOfFile, Runnable toCallWhenFinished) {
 		super(file, lastModified, hashOfFile, toCallWhenFinished);
 
+		 my(Logger.class).log("Downloading file: {} Hash:", _path, _hash);
 		start();
 	}
 

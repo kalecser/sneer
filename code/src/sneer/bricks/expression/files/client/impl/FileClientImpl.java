@@ -45,19 +45,9 @@ class FileClientImpl implements FileClient {
 
 
 	private Runnable downloadCleaner(final Sneer1024 hash) { 
-		return new Closure() { @Override public void run() { _downloadsByHash.remove(hash); } };
-	}
-
-
-	@Override
-	public int numberOfRunningDownloads() {
-		return _downloadsByHash.size();
-	}
-
-
-	@Override
-	public Download getRunningDownload(Sneer1024 hash) {
-		return _downloadsByHash.get(hash);
+		return new Closure() { @Override public void run() {
+			_downloadsByHash.remove(hash);
+		}};
 	}
 
 }

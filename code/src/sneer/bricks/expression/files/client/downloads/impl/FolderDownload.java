@@ -15,6 +15,7 @@ import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.expression.files.writer.folder.FolderContentsWriter;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
@@ -34,6 +35,7 @@ class FolderDownload extends AbstractDownload {
 	FolderDownload(File folder, long lastModified, Sneer1024 hashOfFolder, Runnable toCallWhenFinished) {
 		super(folder, lastModified, hashOfFolder, toCallWhenFinished);
 
+		my(Logger.class).log("Downloading folder: {} Hash:", _path, _hash);
 		start();
 	}
 

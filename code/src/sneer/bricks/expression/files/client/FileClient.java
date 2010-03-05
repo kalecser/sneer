@@ -15,8 +15,5 @@ public interface FileClient {
 	Download startFolderDownload(File folder, long lastModified, Sneer1024 hashOfFolder);
 	Download startFolderDownload(File folder, Sneer1024 hashOfFolder);
 
-	Download getRunningDownload(Sneer1024 hash);
-	int numberOfRunningDownloads();
-
 }
 

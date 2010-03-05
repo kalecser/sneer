@@ -152,10 +152,10 @@ abstract class AbstractDownload implements Download {
 
 
 	void finish() {
-		if (_toCallWhenFinished != null) _toCallWhenFinished.run();
-		_finished.sendPulse();
-		_isFinished.open();
 		stopSendingRequests();
+		_isFinished.open();
+		_finished.sendPulse();
+		if (_toCallWhenFinished != null) _toCallWhenFinished.run();
 	}
 
 
