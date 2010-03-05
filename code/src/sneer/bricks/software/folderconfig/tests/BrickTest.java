@@ -24,4 +24,10 @@ public abstract class BrickTest extends BrickTestWithThreads {
 		}});
 	}
 
+	protected void configureTmpFolder(Environment environment, final String folderName) {
+		Environments.runWith(environment, new Closure() { @Override public void run() {
+			my(FolderConfig.class).tmpFolder().set(new File(tmpFolderName(), folderName));
+		}});
+	}
+
 }
