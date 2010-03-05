@@ -38,13 +38,20 @@ class TrackEndorserImpl implements TrackEndorser {
 		_onOffSwitch.set(onOffSwitch);
 
 		_refToAvoidGC = onOffSwitch.addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isOn) {
-			if (isOn) 
-				_timerContract = my(Timer.class).wakeUpNowAndEvery(60 * 1000, new Closure() { @Override public void run() {
-					endorseRandomTrack();
-				}});
-			else
-				if (_timerContract != null) _timerContract.dispose();
+			turnSwitch(isOn);
 		}});
+	}
+
+	private void turnSwitch(Boolean isOn) {
+		if (isOn) 
+			_timerContract = my(Timer.class).wakeUpNowAndEvery(60 * 1000, new Closure() { @Override public void run() {
+				endorseRandomTrack();
+			}});
+		else
+			if (_timerContract != null) { 
+				_timerContract.dispose();
+				_timerContract = null;
+			}
 	}
 
 	private void endorseRandomTrack() {
