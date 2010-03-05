@@ -17,7 +17,6 @@ import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.ClosureX;
-import dfcsantos.tracks.endorsements.server.TrackEndorser;
 import dfcsantos.wusic.Wusic;
 import dfcsantos.wusic.Wusic.OperatingMode;
 
@@ -63,8 +62,8 @@ public class WusicTest extends BrickTest {
 			assertEquals(3, sharedTracksFolder().listFiles().length);
 
 			_subject2 = my(Wusic.class);
-			_subject2.trackDownloadActivator().consume(true);
 			my(CustomClockTicker.class).start(10, 60 * 1000);
+			_subject2.trackDownloadActivator().consume(true);
 		}});
 
 		_subject1 = my(Wusic.class);
@@ -76,7 +75,7 @@ public class WusicTest extends BrickTest {
 //				arrivalOfAllTtracks.open();
 //		}});
 //		arrivalOfAllTtracks.waitTillOpen();
-
+//
 //		checking(new Expectations() {{
 //			oneOf(_trackPlayer).startPlaying(with(any(Track.class)), with(any(Signal.class)), with(any(Runnable.class)));
 //		}});
