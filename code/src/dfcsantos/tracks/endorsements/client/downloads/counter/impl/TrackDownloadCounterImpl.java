@@ -22,13 +22,23 @@ class TrackDownloadCounterImpl implements TrackDownloadCounter {
 	}
 
 	@Override
+	public Closure incrementer() {
+		return _delegate.incrementer();
+	}
+
+	@Override
+	public Closure conditionalIncrementer(boolean condition) {
+		return _delegate.conditionalIncrementer(condition);
+	}
+
+	@Override
 	public Closure decrementer() {
 		return _delegate.decrementer();
 	}
 
 	@Override
-	public Closure incrementer() {
-		return _delegate.incrementer();
+	public Closure conditionalDecrementer(boolean condition) {
+		return _delegate.conditionalDecrementer(condition);
 	}
 
 	private int numberOfTracksInTheDownloadsFolder() {
