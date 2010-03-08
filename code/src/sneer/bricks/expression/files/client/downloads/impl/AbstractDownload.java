@@ -14,6 +14,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.events.pulsers.PulseSource;
@@ -61,6 +62,8 @@ abstract class AbstractDownload implements Download {
 
 
 	void start() {
+		my(Logger.class).log("Downloading: {} Hash:", _actualPath, _hash);
+
 		if (isFinished()) return;
 
 		subscribeToContents();
@@ -135,6 +138,7 @@ abstract class AbstractDownload implements Download {
 
 	void finishWith(Exception e) {
 		_exception = e;
+		my(Logger.class).log("Download failed with: {} message: {}", _exception.getClass(), _exception.getMessage());
 		finish();
 	}
 
