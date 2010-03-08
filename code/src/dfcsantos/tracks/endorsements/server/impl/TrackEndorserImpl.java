@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.Random;
 
 import sneer.bricks.expression.files.map.FileMap;
+import sneer.bricks.expression.files.server.FileServer;
+import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
@@ -30,6 +32,8 @@ class TrackEndorserImpl implements TrackEndorser {
 
 	private final ImmutableReference<Signal<Boolean>> _onOffSwitch = my(ImmutableReferences.class).newInstance();
 
+	private Random _random = new Random(my(Clock.class).time().currentValue());
+
 	private WeakContract _timerContract;
 	@SuppressWarnings("unused") private WeakContract _refToAvoidGC;
 
@@ -43,15 +47,19 @@ class TrackEndorserImpl implements TrackEndorser {
 	}
 
 	private void turnSwitch(Boolean isOn) {
-		if (isOn) 
+		if (isOn) {
+			my(FileServer.class);
 			_timerContract = my(Timer.class).wakeUpNowAndEvery(60 * 1000, new Closure() { @Override public void run() {
 				endorseRandomTrack();
 			}});
-		else
-			if (_timerContract != null) { 
-				_timerContract.dispose();
-				_timerContract = null;
-			}
+
+			return;
+		}
+
+		if (_timerContract != null) { 
+			_timerContract.dispose();
+			_timerContract = null;
+		}
 	}
 
 	private void endorseRandomTrack() {
@@ -80,7 +88,7 @@ class TrackEndorserImpl implements TrackEndorser {
 	}
 
 	private <T> T pickOneAtRandom(T[] list) {
-		return list[new Random().nextInt(list.length)];
+		return list[_random.nextInt(list.length)];
 	}
 
 	private File[] listMp3Files(File folder) {

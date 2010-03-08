@@ -5,10 +5,11 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
+import sneer.bricks.expression.files.server.FileServer;
 import sneer.bricks.hardware.clock.Clock;
+import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.reactive.Signal;
@@ -53,9 +54,10 @@ public class WusicTest extends BrickTest {
 		assertSignalValue(_subject1.trackDownloadAllowance(), Wusic.DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE);
 	}
 
-	@Ignore
-	@Test (timeout = 5000)
+	@Test (timeout = 6000)
 	public void peersMode() throws IOException {
+//		LoggerMocks.showLog = true;
+
 		Environment remoteEnvironment = newTestEnvironment(my(TupleSpace.class), my(Clock.class));
 		configureStorageFolder(remoteEnvironment, "remote/data");
 		configureTmpFolder(remoteEnvironment, "remote/tmp");
@@ -64,16 +66,19 @@ public class WusicTest extends BrickTest {
 		Environments.runWith(remoteEnvironment, new ClosureX<IOException>() { @Override public void run() throws IOException {
 			createSampleTracks(trackNames);
 			assertEquals(3, sharedTracksFolder().listFiles().length);
+
+			my(FileServer.class);
 			_subject2 = my(Wusic.class);
 			_subject2.trackDownloadActivator().consume(true);
+//			my(TupleLogger.class);
 		}});
 
+//		my(TupleLogger.class);
 		_subject1 = my(Wusic.class);
 		_subject1.trackDownloadActivator().consume(true);
 
 		while(true) {
-			publishRandomEndorsement(remoteEnvironment);
-			my(TupleSpace.class).waitForAllDispatchingToFinish();
+			accelerateTrackEndorsements(remoteEnvironment);
 			if (_subject1.numberOfPeerTracks().currentValue() == 3) break;
 		}
 
@@ -90,9 +95,10 @@ public class WusicTest extends BrickTest {
 		crash(remoteEnvironment);
 	}
 
-	private void publishRandomEndorsement(Environment environment) {
+	private void accelerateTrackEndorsements(Environment environment) {
 		Environments.runWith(environment, new Closure() { @Override public void run() {
-			my(Clock.class).advanceTime(60 * 1000);
+			my(Clock.class).advanceTime(2000);
+			my(Threads.class).sleepWithoutInterruptions(20);
 		}});
 	}
 

@@ -62,7 +62,6 @@ class TrackDownloaderImpl implements TrackDownloader {
 		_tracksBeingDownloaded.add(endorsement.hash);
 
 		WeakContract weakContract = download.finished().addPulseReceiver(new Runnable() { @Override public void run() {
-			System.out.println("Incrementing number of downloads...");
 			my(TrackDownloadCounter.class).conditionalIncrementer(download.hasFinishedSuccessfully()).run();
 			_tracksBeingDownloaded.remove(endorsement.hash);
 		}});
