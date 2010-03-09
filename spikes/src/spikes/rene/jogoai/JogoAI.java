@@ -20,7 +20,7 @@ public class JogoAI {
 		
 		print("\nFechando...");
 	}
-
+ //uahuahauhauahau
 
 	private void joga() {
 		No noAtual = _raiz;
