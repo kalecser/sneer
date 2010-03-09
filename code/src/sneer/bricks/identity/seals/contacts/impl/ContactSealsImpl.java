@@ -20,7 +20,7 @@ class ContactSealsImpl implements ContactSeals {
 
 	@Override
 	public Signal<Seal> sealGiven(Contact contact) {
-		return _sealsByContact.get(contact).output();
+		return sealRegisterGiven(contact).output();
 	}
 
 	
@@ -33,9 +33,14 @@ class ContactSealsImpl implements ContactSeals {
 		if (contact.equals(oldContact)) return;
 		if (oldContact != null) throw new Refusal("Trying to set a Seal for '" + contact + "' that already belonged to '" + oldContact + "'.");
 		
-		_sealsByContact.get(contact, new Producer<Register<Seal>>() { @Override public Register<Seal> produce() {
+		sealRegisterGiven(contact).setter().consume(seal);
+	}
+
+
+	private Register<Seal> sealRegisterGiven(final Contact contact) {
+		return _sealsByContact.get(contact, new Producer<Register<Seal>>() { @Override public Register<Seal> produce() {
 			return my(Signals.class).newRegister(null);
-		}}).setter().consume(seal);
+		}});
 	}
 
 
