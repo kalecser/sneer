@@ -10,13 +10,11 @@ public class JogoAI {
 	JogoAI(Jogador jogador) {
 
 		_jogador = jogador;
-
 		_raiz = new No("vive no mar", "golfinho", "cachorro");
-
 		print("Bem vindo ao Jogo Dos Animais 1.0 Console Edition.\nImagine um animal e eu tentarei adivinhar qual eh.\nNao se esqueca de que nao possuo animais predefinidos.\n");
-		do {
-			joga();
-		} while (confirm("Quer jogar de novo?"));
+		
+		do joga();
+		while (confirm("Quer jogar de novo?"));
 		
 		print("\nFechando...");
 	}
@@ -26,8 +24,8 @@ public class JogoAI {
 		No noAtual = _raiz;
 		while (true) {
 			boolean lado = confirm("Hmm... Por acaso o animal " + noAtual._caracteristica + "?");
-			
 			Elemento proximoElemento = lado ? noAtual._ladoSim : noAtual._ladoNao ;
+			
 			if (proximoElemento instanceof Animal) {
 				chuta((Animal)proximoElemento, noAtual, lado);
 				break;
@@ -48,11 +46,8 @@ public class JogoAI {
 		String novacaract=responde(novoanimal+" eh diferente de "+animal._nome+" porque "+novoanimal+"...");
 
 		No novoNo = new No(novacaract, novoanimal, animal._nome);
-		if (lado) {
-			no._ladoSim=novoNo;
-		} else {
-			no._ladoNao=novoNo;
-		}
+		if (lado) no._ladoSim=novoNo;
+		else no._ladoNao=novoNo;
 	}
 	
 	
@@ -74,7 +69,7 @@ public class JogoAI {
 
 	
 	interface Elemento {
-		
+		//parent
 	}
 
 
