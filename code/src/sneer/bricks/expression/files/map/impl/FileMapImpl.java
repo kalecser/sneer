@@ -93,6 +93,7 @@ class FileMapImpl implements FileMap {
 		Iterator<File> filesInTheMap = _filesByHash.values().iterator();
 		while (filesInTheMap.hasNext()) {
 			if (filesInTheMap.next().equals(fileToBeRemoved)) {
+				my(Logger.class).log("Unmapping " + fileToBeRemoved + fileSizeInKB(fileToBeRemoved));
 				_hashesByFile.remove(fileToBeRemoved);
 				_lastModifiedDatesByFile.remove(fileToBeRemoved);
 				filesInTheMap.remove();
