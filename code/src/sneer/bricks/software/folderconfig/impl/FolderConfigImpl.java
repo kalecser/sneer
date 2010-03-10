@@ -42,7 +42,7 @@ public class FolderConfigImpl implements FolderConfig {
 	}
 
 	private File brickFolderIn(File parent, Class<?> brick) {
-		final File folder = new File(parent, "bricks/" + brick.getSimpleName());
+		final File folder = new File(parent, "bricks/" + brick.getName());
 		folder.mkdirs();
 		return folder;
 	}
