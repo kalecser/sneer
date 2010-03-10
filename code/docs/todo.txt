@@ -20,8 +20,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Create functional test for Wusic
-
 	- Submit JavaOne paper
 
 	- Seals
@@ -49,6 +47,8 @@ Igor ====================================================
 
 
 Klaus =================================================
+
+	- Revise WusicTest
 
 	- Use CustomClockTicker at SneerPartyController.accelerateHeartbeat()
 
