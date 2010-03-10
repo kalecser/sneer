@@ -74,8 +74,8 @@ public class WusicImpl implements Wusic {
 	}
 
 	private void reset() {
-		stop();
 		_lastPlayedTrack = null;
+		stop();
 	}
 
 	@Override
@@ -121,26 +121,17 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void pauseResume() {
-		if (currentTrack() == null)
+		if (playingTrack().currentValue() == null)
 			play();
 		else
 			_dj.pauseResume();
 	}
 
-	private Track currentTrack() {
-		return _trackToPlay.output().currentValue();
-	}
-
-	@Override
-	public void back() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
-	}
-
 	@Override
 	public void skip() {
 		Track nextTrack = _trackSource.nextTrack();
-		if (nextTrack == null || nextTrack.equals(_lastPlayedTrack))
-			stop();
+		if (nextTrack == null) reset(); // track was marked for deletion but hasn't been deleted yet
+		else if (nextTrack.equals(_lastPlayedTrack)) stop(); // only-one-track scenario 
 		play(nextTrack);
 	}
 
@@ -163,16 +154,16 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void meToo() {
-		((PeerTracks)_trackSource).meToo(_trackToPlay.output().currentValue());
+		((PeerTracks)_trackSource).meToo(playingTrack().currentValue());
 	}
 
 	@Override
 	public void deleteTrack() {
-		final Track currentTrack = currentTrack();
+		final Track currentTrack = playingTrack().currentValue();
 		if (currentTrack == null) return;
-		
-		skip();
+
 		_trackSource.deleteTrack(currentTrack);
+		skip();
 	}
 
 	@Override

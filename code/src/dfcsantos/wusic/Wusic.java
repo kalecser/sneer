@@ -25,7 +25,7 @@ public interface Wusic {
 
 	void start();
 	void pauseResume();
-	void back();
+//	void back();
 	void skip();
 	void stop();
 

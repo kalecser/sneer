@@ -8,6 +8,7 @@ import java.io.IOException;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Closure;
@@ -36,7 +37,7 @@ class PeerTracks extends TrackSourceStrategy {
 	}
 
 	void meToo(Track trackToKeep) {
-		//Implement Create event to notify listeners of track rejection (musical taste matcher, for example).
+		//Implement Create event to notify listeners (like the MusicalTasteMatcher) of track approval/rejection.
 		moveTrackToFolder(trackToKeep, sharedTracksFolder());
 	}
 
@@ -47,6 +48,7 @@ class PeerTracks extends TrackSourceStrategy {
 	}
 
 	private void moveTrackToFolder(Track track, File destFolder) { // Move = Copy + Delete
+		my(Logger.class).log("Moving track {} to shared folder", track.file());
 		try {
 			my(IO.class).files().copyFileToFolder(track.file(), destFolder);
 		} catch (IOException e) {
