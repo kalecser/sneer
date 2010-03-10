@@ -6,9 +6,6 @@ import java.io.File;
 import java.util.List;
 import java.util.ListIterator;
 
-import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.Light;
-import sneer.bricks.pulp.blinkinglights.LightType;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.execution.playlist.Playlist;
@@ -17,8 +14,6 @@ abstract class AbstractPlaylist implements Playlist {
 
 	private final File _tracksFolder;
 	private ListIterator<File> _trackIterator;
-
-	private final Light _noTracksFound = my(BlinkingLights.class).prepare(LightType.WARNING);
 
 	AbstractPlaylist(File tracksFolder) {
 		_tracksFolder = tracksFolder;
@@ -42,12 +37,9 @@ abstract class AbstractPlaylist implements Playlist {
 	public Track nextTrack() {
 		if (!_trackIterator.hasNext()) {
 			rescan();
-			if (!_trackIterator.hasNext()) {
-				my(BlinkingLights.class).turnOnIfNecessary(_noTracksFound, "No Tracks Found", "Please choose a folder with MP3 files in it or in its subfolders (Wusic > File > Configure Root Track Folder).");
+			if (!_trackIterator.hasNext())
 				return null;
-			}
 		}
-		my(BlinkingLights.class).turnOffIfNecessary(_noTracksFound);
 
 		final Track nextTrack = my(Tracks.class).newTrack(_trackIterator.next());
 		_trackIterator.remove();

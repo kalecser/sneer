@@ -1,7 +1,6 @@
 package dfcsantos.wusic.impl;
 
 import static sneer.foundation.environments.Environments.my;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +10,10 @@ import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.Light;
+import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Closure;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.execution.playlist.Playlist;
@@ -21,6 +24,8 @@ abstract class TrackSourceStrategy {
 	private Playlist _playlist;
 
 	private final List<Track> _tracksToDispose = Collections.synchronizedList(new ArrayList<Track>());
+
+	private final Light _noTracksFound = my(BlinkingLights.class).prepare(LightType.WARNING);
 
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
 
@@ -55,14 +60,18 @@ abstract class TrackSourceStrategy {
 
 	Track nextTrack() {
 		Track nextTrack = _playlist.nextTrack();
-		if (_tracksToDispose.contains(nextTrack))
+		if (nextTrack == null || _tracksToDispose.contains(nextTrack)) {
+			my(BlinkingLights.class).turnOnIfNecessary(_noTracksFound, "No Tracks Found", "Please choose a folder with MP3 files by clicking on 'Playing Folder' button	.");
 			return null;
+		}
 
+		my(BlinkingLights.class).turnOffIfNecessary(_noTracksFound);
 		return nextTrack;
 	}
 
 
 	void deleteTrack(final Track rejected) {
+		my(Logger.class).log("Deleteing track: ", rejected.file());
 		Sneer1024 hash = my(FileMap.class).getHash(rejected.file());
 		my(FileMap.class).remove(rejected.file());
 		my(RejectedTracksKeeper.class).reject(hash);
