@@ -3,8 +3,10 @@ package spikes.rene.jogoai;
 
 interface Jogador {
 
-	String getString();
-
-	void print(String texto);
+	String answer(String question);
+	
+	boolean confirm(String proposicao);
+	
+	void acknowledge(String texto);
 
 }

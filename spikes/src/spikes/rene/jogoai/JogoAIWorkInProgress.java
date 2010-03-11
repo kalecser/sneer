@@ -2,6 +2,59 @@ package spikes.rene.jogoai;
 
 
 public class JogoAIWorkInProgress {
+	
+	
+//isso sao o joga e chuta antigos
+	
+	
+//	private void joga() {
+//	if (_raiz instanceof Animal) {			
+//		chuta((Animal)_raiz, null, false);
+//		return;
+//	}
+//	
+//	
+//	No noAtual = (No)_raiz;
+//	while (true) {
+//		boolean lado = confirm("Hmm... Por acaso o animal " + noAtual._caracteristica + "?");
+//		Elemento proximoElemento = lado ? noAtual._ladoSim : noAtual._ladoNao ;
+//		
+//		if (proximoElemento instanceof Animal) {
+//			chuta((Animal)proximoElemento, noAtual, lado);
+//			break;
+//		}
+//
+//		noAtual = (No) proximoElemento;
+//	}
+//}
+
+
+//private void chuta(Animal animal, No no, boolean lado) {
+//	if (confirm("O animal eh " + animal._nome + "?")) {
+//		print("Ahaaa eu sabia xD!");
+//		return;
+//	}
+//
+//	String novoanimal=responde("Desisto! qual era o animal???");
+//	String novacaract=responde(novoanimal+" eh diferente de "+animal._nome+" porque "+novoanimal+"...");
+//
+//	No novoNo = new No(novacaract, novoanimal, animal._nome);
+//	if (no == null) 	_raiz=novoNo;
+//	else {
+//		if (lado) no._ladoSim=novoNo;
+//		else no._ladoNao=novoNo;
+//	}
+//}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 //
 //	private Jogador _jogador;
 //	private Elemento _raiz;

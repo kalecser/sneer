@@ -1,75 +1,44 @@
 package spikes.rene.jogoai;
 
-
 public class JogoAI {
 
 	private Jogador _jogador;
-	private No _raiz;
+	private Elemento _raiz;
 
 	
 	JogoAI(Jogador jogador) {
 
 		_jogador = jogador;
-		_raiz = new No("vive no mar", "golfinho", "cachorro");
+		_raiz = new Animal("cachorro");
 		print("Bem vindo ao Jogo Dos Animais 1.0 Console Edition.\nImagine um animal e eu tentarei adivinhar qual eh.\nNao se esqueca de que nao possuo animais predefinidos.\n");
 		
-		do joga();
+		do _raiz=_raiz.learn();
 		while (confirm("Quer jogar de novo?"));
 		
 		print("\nFechando...");
 	}
 
 
-	private void joga() {
-		No noAtual = _raiz;
-		while (true) {
-			boolean lado = confirm("Hmm... Por acaso o animal " + noAtual._caracteristica + "?");
-			Elemento proximoElemento = lado ? noAtual._ladoSim : noAtual._ladoNao ;
-			
-			if (proximoElemento instanceof Animal) {
-				chuta((Animal)proximoElemento, noAtual, lado);
-				break;
-			}
-
-			noAtual = (No) proximoElemento;
-		}
-	}
-
-
-	private void chuta(Animal animal, No no, boolean lado) {
-		if (confirm("O animal eh " + animal._nome + "?")) {
-			print("Ahaaa eu sabia xD!");
-			return;
-		}
-
-		String novoanimal=responde("Desisto! qual era o animal???");
-		String novacaract=responde(novoanimal+" eh diferente de "+animal._nome+" porque "+novoanimal+"...");
-
-		No novoNo = new No(novacaract, novoanimal, animal._nome);
-		if (lado) no._ladoSim=novoNo;
-		else no._ladoNao=novoNo;
-	}
 	
 	
 	private boolean confirm(String proposicao) {
-		return responde(proposicao).toLowerCase().startsWith("s");
+		return _jogador.confirm(proposicao);
 	}
 
 	
 	private String responde(String pergunta) {
-		print(pergunta);
-		return _jogador.getString();
+		return _jogador.answer(pergunta);
 	}
 	
 	
 	private void print(String texto) {
-		_jogador.print(texto);
+		_jogador.acknowledge(texto);
 	}
 
 
 	
 	interface Elemento {
-		//parent
+		Elemento learn();
 	}
 
 
@@ -80,7 +49,18 @@ public class JogoAI {
 		Animal(String nome) {
 			_nome = nome;
 		}
+		public Elemento learn() {
+			
+			if (confirm("O animal eh " + _nome + "?")) {
+			print("Ahaaa eu sabia xD!");
+			return _raiz;}
+			
+			String novoanimal=responde("Desisto! qual era o animal???");
+			String novacaract=responde(novoanimal+" eh diferente de "+_nome+" porque "+novoanimal+"...");
 
+			return new No(novacaract, novoanimal, _nome);
+		}
+		
 	}
 
 
@@ -95,7 +75,14 @@ public class JogoAI {
 			_ladoSim = new Animal(animalSim);
 			_ladoNao = new Animal(animalNao);
 		}
-
+		
+		public Elemento learn() {
+			
+			boolean lado = confirm("Hmm... Por acaso o animal " + _caracteristica + "?");
+			Elemento proximo = lado ? _ladoSim : _ladoNao ;
+			return proximo.learn();
+//interceptar o return e checar instanceof pra ver se tem q cria novo no pro no atual		
+		}
 	}
 
 	
