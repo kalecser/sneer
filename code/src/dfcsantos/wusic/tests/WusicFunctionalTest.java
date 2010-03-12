@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.jmock.Expectations;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import scala.actors.threadpool.Arrays;
@@ -160,10 +161,11 @@ public class WusicFunctionalTest extends BrickTest {
 		_subject1.skip();
 		assertEquals("track1", playingTrack());
 
-		// Play all songs randomly (pseudo-random done by regression)
+		// Play all songs randomly
 		_subject1.setPlayingFolder(rootFolder);
 		_subject1.setShuffle(true);
 
+		// Pseudo-random sequence (done by regression)
 		_subject1.skip();
 		assertEquals("track5", playingTrack());
 		_subject1.skip();
@@ -180,13 +182,20 @@ public class WusicFunctionalTest extends BrickTest {
 		assertEquals("track5", playingTrack());
 	}
 
+	@Ignore
 	@Test (timeout = 4000)
 	public void peersMode() throws IOException {
-		my(CustomClockTicker.class).start(10, 2000);
-		_subject1 = my(Wusic.class);
-
 		Environment remoteEnvironment = newTestEnvironment(my(TupleSpace.class));
-		downloadTracksFrom(remoteEnvironment);
+		configureFoldersOf(remoteEnvironment);
+
+		activateTrackEndorsementsFrom(remoteEnvironment);
+
+		_subject1 = my(Wusic.class);
+		_subject1.trackDownloadActivator().consume(true);
+
+		my(CustomClockTicker.class).start(10, 2000);
+
+		waitForSignalValue(_subject1.numberOfPeerTracks(), 3);
 
 		checking(new Expectations() {{
 			exactly(3).of(_trackPlayer).startPlaying(with(any(Track.class)), with(any(Signal.class)), with(any(Runnable.class)));
@@ -194,18 +203,18 @@ public class WusicFunctionalTest extends BrickTest {
 
 		_subject1.setOperatingMode(OperatingMode.PEERS);
 
-		// Deletes the first played track
+		// Deletes first played track
 		_subject1.start();
 		_subject1.deleteTrack(); // Skip is called automatically after a track is deleted
 
-		// Keeps the last two played tracks
 		File[] keptTracks = new File[2];
 		keptTracks[0] = _subject1.playingTrack().currentValue().file();
-		_subject1.meToo();
+		_subject1.meToo(); // Keeps second played track
 		assertTrue(_subject1.isPlaying().currentValue()); // MeToo doesn't affect the playing track's flow
+
 		_subject1.skip();
 		keptTracks[1] = _subject1.playingTrack().currentValue().file();
-		_subject1.meToo();
+		_subject1.meToo(); // Keeps last played track
 
 		waitForSignalValue(_subject1.numberOfPeerTracks(), 0);
 
@@ -229,23 +238,21 @@ public class WusicFunctionalTest extends BrickTest {
 		return _subject1.playingTrack().currentValue().name();
 	}
 
-	private void downloadTracksFrom(Environment remoteEnvironment) throws IOException {
+	private void configureFoldersOf(Environment remoteEnvironment) {
 		configureStorageFolder(remoteEnvironment, "remote/data");
 		configureTmpFolder(remoteEnvironment, "remote/tmp");
+	}
 
+	private void activateTrackEndorsementsFrom(Environment remoteEnvironment) throws IOException {
 		Environments.runWith(remoteEnvironment, new ClosureX<IOException>() { @Override public void run() throws IOException {
-			my(CustomClockTicker.class).start(10, 2000);
-
 			createSampleTracks(sharedTracksFolder(), new String[] { "track1.mp3", "track2.mp3", "track3.mp3" });
 			assertEquals(3, sharedTracksFolder().listFiles().length);
 
 			_subject2 = my(Wusic.class);
 			_subject2.trackDownloadActivator().consume(true);
+
+			my(CustomClockTicker.class).start(10, 2000);
 		}});
-
-		_subject1.trackDownloadActivator().consume(true);
-
-		waitForSignalValue(_subject1.numberOfPeerTracks(), 3);
 	}
 
 	private Collection<String> trackNames(File[] trackFiles) {
