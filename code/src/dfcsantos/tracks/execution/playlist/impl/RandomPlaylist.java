@@ -17,6 +17,7 @@ class RandomPlaylist extends AbstractPlaylist {
 
 	@Override
 	public void sortTracks(List<File> tracks) {
+		super.sortTracks(tracks);
 		Collections.shuffle(tracks, new Random(my(Clock.class).time().currentValue()));
 	}
 

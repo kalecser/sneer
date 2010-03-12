@@ -3,6 +3,8 @@ package dfcsantos.tracks.execution.playlist.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -31,7 +33,11 @@ abstract class AbstractPlaylist implements Playlist {
 		return tracks;
 	}
 
-	abstract void sortTracks(List<File> tracks);
+	void sortTracks(List<File> tracks) { // Sorts tracks alphabetically
+		Collections.sort(tracks, new Comparator<File>() { @Override public int compare(File file1, File file2) {
+			return file1.getPath().compareTo(file2.getPath());
+		}});
+	}
 
 	@Override
 	public Track nextTrack() {
