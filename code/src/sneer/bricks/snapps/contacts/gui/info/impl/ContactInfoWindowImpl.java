@@ -27,6 +27,7 @@ import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.codec.SealCodec;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -125,7 +126,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 		
 		_txtNickname = my(ReactiveWidgetFactory.class).newTextField(nickname, setter, NotificationPolicy.OnEnterPressedOrLostFocus);
 
-		String hardcodedSeal = new Seal(new ImmutableByteArray(new byte[128])).toFormattedHexString();
+		String hardcodedSeal = my(SealCodec.class).formattedHexEncode(new Seal(new ImmutableByteArray(new byte[128])));
 		_seal.setText(hardcodedSeal);
 		_seal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 		_seal.setTabSize(3);

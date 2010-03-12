@@ -27,6 +27,7 @@ import javax.swing.border.TitledBorder;
 import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.codec.SealCodec;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccount;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccountKeeper;
 import sneer.bricks.pulp.own.name.OwnNameKeeper;
@@ -109,7 +110,8 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		
 		_sneerPort = newTextField(_portKeeper.port(), my(IntegerParsers.class).newIntegerParser(_portKeeper.portSetter()));
 
-		_ownSeal = new JTextArea(my(OwnSeal.class).get().toFormattedHexString());
+		String formattedHexString = my(SealCodec.class).formattedHexEncode(my(OwnSeal.class).get());
+		_ownSeal = new JTextArea(formattedHexString);
 		_ownSeal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 		_ownSeal.setEditable(false);
 		_ownSeal.setTabSize(3);
