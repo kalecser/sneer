@@ -20,8 +20,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- TrackDownloader -> Wusic. Remove dependency.
-
 	- Submit JavaOne paper
 
 	- Seals

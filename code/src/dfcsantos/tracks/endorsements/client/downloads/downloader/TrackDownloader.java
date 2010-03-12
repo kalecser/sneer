@@ -8,4 +8,6 @@ public interface TrackDownloader {
 
 	void setOnOffSwitch(Signal<Boolean> onOffSwitch);
 
+	void setTrackDownloadAllowance(Signal<Integer> downloadAllowance);
+
 }

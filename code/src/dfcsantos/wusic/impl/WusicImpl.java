@@ -41,6 +41,8 @@ public class WusicImpl implements Wusic {
 		restore();
 
 		my(TrackClient.class).setOnOffSwitch(isTrackDownloadActive());
+		my(TrackClient.class).setTrackDownloadAllowance(trackDownloadAllowance());
+
 		my(TrackEndorser.class).setOnOffSwitch(isTrackDownloadActive());
 
 		_isDownloadEnabledConsumerContract = isTrackDownloadActive().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isDownloadAllowed) {

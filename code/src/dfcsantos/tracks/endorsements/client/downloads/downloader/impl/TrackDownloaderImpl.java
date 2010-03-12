@@ -24,13 +24,14 @@ import dfcsantos.tracks.endorsements.client.downloads.downloader.TrackDownloader
 import dfcsantos.tracks.endorsements.protocol.TrackEndorsement;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.tracks.storage.rejected.RejectedTracksKeeper;
-import dfcsantos.wusic.Wusic;
 
 class TrackDownloaderImpl implements TrackDownloader {
 
 	private static final int CONCURRENT_DOWNLOADS_LIMIT = 3;
 
 	private final ImmutableReference<Signal<Boolean>> _onOffSwitch = my(ImmutableReferences.class).newInstance();
+
+	private final ImmutableReference<Signal<Integer>> _downloadAllowance = my(ImmutableReferences.class).newInstance();
 
 	private final Set<Sneer1024> _tracksBeingDownloaded = new HashSet<Sneer1024>(); 
 
@@ -45,6 +46,11 @@ class TrackDownloaderImpl implements TrackDownloader {
 	@Override
 	public void setOnOffSwitch(Signal<Boolean> onOffSwitch) {
 		_onOffSwitch.set(onOffSwitch);
+	}
+
+	@Override
+	public void setTrackDownloadAllowance(Signal<Integer> downloadAllowance) {
+		_downloadAllowance.set(downloadAllowance);
 	}
 
 	private void consumeTrackEndorsement(final TrackEndorsement endorsement) {
@@ -88,7 +94,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 		return my(RejectedTracksKeeper.class).isRejected(endorsement.hash);
 	}
 
-	private static boolean hasSpentDownloadAllowance() {
+	private boolean hasSpentDownloadAllowance() {
 		return peerTracksFolderSize() >= downloadAllowanceInBytes();
 	}
 
@@ -100,8 +106,8 @@ class TrackDownloaderImpl implements TrackDownloader {
 		return my(TracksFolderKeeper.class).peerTracksFolder();
 	}
 
-	private static int downloadAllowanceInBytes() {
-		return 1024 * 1024 * my(Wusic.class).trackDownloadAllowance().currentValue();
+	private int downloadAllowanceInBytes() {
+		return 1024 * 1024 * _downloadAllowance.get().currentValue();
 	}
 
 	private static File fileToWrite(TrackEndorsement endorsement) {

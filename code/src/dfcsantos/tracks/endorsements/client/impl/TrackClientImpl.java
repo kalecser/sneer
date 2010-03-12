@@ -54,6 +54,12 @@ class TrackClientImpl implements TrackClient {
 		}});
 	}
 
+	@Override
+	public void setTrackDownloadAllowance(Signal<Integer> downloadAllowance) {
+		my(TrackDownloader.class).setTrackDownloadAllowance(downloadAllowance);
+	}
+
+
 	synchronized
 	private void react() {
 		stopOldMappingIfNecessary();
