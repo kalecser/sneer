@@ -23,12 +23,8 @@ Igor ====================================================
 	- Submit JavaOne paper
 
 	- Seals
-		- ContactInfoWindowImpl - Contact's Seal Field: 128 bytes represented in hexadecimal that can be >entered< any old way such as copy-and-paste from an email (anything other than hex digits is ignored) but is >presented< like this:
-			- ContactsSeals interface is ready to be plugged to the GUI. "Ask me how", Klaus.
-				- Create a reactive component at ContactInfoWindow receiving two parameters:
-					- Signals.adapt(ContactSeals.sealGiven(), functor - to convert from Seal to String)
-					- new PickyConsumer<String>() that receives a String, converts to Seal, and then calls ContactsSeals.put()
-			- [Klaus] Discuss with Igor refactoring of ContactsInfoWindow
+		- ContactInfoWindowImpl
+			- Discuss with Klaus refactoring of ContactsInfoWindow
 
 	- Wusic
 		- [Klaus/Daniel] MusicalTasteMatcher Kernel

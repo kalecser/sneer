@@ -16,18 +16,19 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import sneer.bricks.hardware.cpu.codec.DecodeException;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.codec.SealCodec;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -74,7 +75,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 	
 	private final JTextField _host = new JTextField();
 	private final JTextField _port = new JTextField();
-	private final JTextArea _seal = new JTextArea();
+	private TextWidget<JTextPane> _seal;
 	private InternetAddress _selectedAdress;
 	
 	private boolean _isGuiInitialized = false;
@@ -115,23 +116,27 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 		Signal<String> nickname = my(Signals.class).adaptSignal(
 				my(ContactsGui.class).selectedContact(), 
 				new Functor<Contact, Signal<String>>() { @Override public Signal<String> evaluate(Contact contact) {
-					if(contact==null)
+					if(contact == null)
 						return my(Signals.class).constant("");
 					return contact.nickname();
-				}});
-		
+				}}
+		);
+
 		PickyConsumer<String> setter = new PickyConsumer<String>(){@Override public void consume(String value) throws Refusal {
-			my(Contacts.class).nicknameSetterFor(contact()).consume(value);
+			my(Contacts.class).nicknameSetterFor(selectedContact()).consume(value);
 		}};
-		
+
 		_txtNickname = my(ReactiveWidgetFactory.class).newTextField(nickname, setter, NotificationPolicy.OnEnterPressedOrLostFocus);
 
-		String hardcodedSeal = my(SealCodec.class).formattedHexEncode(new Seal(new ImmutableByteArray(new byte[128])));
-		_seal.setText(hardcodedSeal);
-		_seal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-		_seal.setTabSize(3);
-		_seal.setWrapStyleWord(true);
-		JScrollPane sealScroll = new JScrollPane(_seal, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		_seal = my(ReactiveWidgetFactory.class).newTextPane(contactsFormattedSealString(), contactsSealSetter());
+		_seal.getMainWidget().setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+
+		JScrollPane sealScroll =
+			new JScrollPane(
+				_seal.getMainWidget(),
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
+			);
 
 		JScrollPane addressesScroll = my(SynthScrolls.class).create();
 		addressesScroll.getViewport().add(addresses());
@@ -155,6 +160,35 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 		addListSelectionListestener();
 
 		this.setSize(400, 350);
+	}
+
+	private Signal<String> contactsFormattedSealString() {
+		return my(Signals.class).adaptSignal(
+			my(ContactsGui.class).selectedContact(),
+			new Functor<Contact, Signal<String>>() { @Override public Signal<String> evaluate(Contact contact) throws RuntimeException {
+				if (contact == null) return my(Signals.class).constant("");
+				return my(Signals.class).adapt(
+					my(ContactSeals.class).sealGiven(contact),
+					new Functor<Seal, String>() { @Override public String evaluate(Seal seal) throws RuntimeException {
+						return seal == null ? "" : my(SealCodec.class).formattedHexEncode(seal);						
+					}}
+				);
+			}}
+		);
+	}
+
+	private PickyConsumer<String> contactsSealSetter() {
+		return new PickyConsumer<String>() { @Override public void consume(String seal) throws Refusal {
+			if (seal == null || seal.isEmpty()) return;
+
+			try {
+				my(ContactSeals.class).put(
+					selectedContact().nickname().currentValue(),
+					my(SealCodec.class).hexDecode(seal));
+			} catch (DecodeException de) {
+				throw new Refusal(de.getMessage());
+			}
+		}};
 	}
 
 	private void setGridBagLayout(JPanel panel, JLabel labNickname, JLabel labSeal, JScrollPane sealScroll, JLabel labPort, JLabel labHost, JScrollPane addressesScroll, JButton btnNew, JButton btnSave, JButton btnDel) {
@@ -255,7 +289,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 			if(host==null || host.trim().length()==0) return;
 			
 			int port = Integer.parseInt(_port.getText());
-			my(InternetAddressKeeper.class).add(contact(), host, port);
+			my(InternetAddressKeeper.class).add(selectedContact(), host, port);
 			
 			_lstAddresses.clearSelection();
 			cleanFields();
@@ -273,7 +307,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 		_port.setText("");
 	}
 	
-	private Contact contact() {
+	private Contact selectedContact() {
 		return my(ContactsGui.class).selectedContact().currentValue();
 	}
 

@@ -6,8 +6,9 @@ import sneer.bricks.hardware.cpu.codec.DecodeException;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.codec.SealCodec;
 
-class SealCodec implements sneer.bricks.identity.seals.codec.SealCodec {
+class SealCodecImpl implements SealCodec {
 
 	@Override
 	public String hexEncode(Seal seal) {

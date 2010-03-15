@@ -46,10 +46,12 @@ class ContactSealsImpl implements ContactSeals {
 
 	@Override
 	public Contact contactGiven(Seal peersSeal) {
-		for (Contact candidate : _sealsByContact.keySet())
-			if(sealGiven(candidate).currentValue().equals(peersSeal))
+		for (Contact candidate : _sealsByContact.keySet()) {
+			Seal candidatesSeal = sealGiven(candidate).currentValue();
+			if(candidatesSeal != null && candidatesSeal.equals(peersSeal))
 				return candidate;
-		
+		}
+
 		return null;
 	}
 
