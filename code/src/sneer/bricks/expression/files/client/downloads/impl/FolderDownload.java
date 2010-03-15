@@ -21,7 +21,7 @@ import sneer.foundation.lang.Consumer;
 
 class FolderDownload extends AbstractDownload {
 
-	private boolean _received = false;
+	private FolderContents _contentsReceived = null;
 
 	@SuppressWarnings("unused") private WeakContract _folderContentConsumerContract;
 
@@ -63,7 +63,7 @@ class FolderDownload extends AbstractDownload {
 
 	    Sneer1024 hashOfFolder = my(FolderContentsHasher.class).hash(folderContents);
 	    if (!_hash.equals(hashOfFolder)) return;
-	    _received = true;
+	    _contentsReceived = folderContents;
 
 	    if (!_path.exists() && !_path.mkdir()) throw new IOException("Unable to create folder: " + _path);
 
@@ -89,7 +89,7 @@ class FolderDownload extends AbstractDownload {
 
 	@Override
 	Tuple requestToPublishIfNecessary() {
-		return _received
+		return _contentsReceived != null
 			? null
 			: new FileRequest(_hash, 0, _path.getAbsolutePath());
 	}

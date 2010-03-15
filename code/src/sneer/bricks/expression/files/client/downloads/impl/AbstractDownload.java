@@ -196,7 +196,7 @@ abstract class AbstractDownload implements Download {
 
 	void checkForTimeOut() {
 		if (my(Clock.class).time().currentValue() - _startTime >= TIMEOUT_LIMIT)
-			finishWith(new TimeoutException());
+			finishWith(new TimeoutException("Timeout downloading " + _actualPath.getAbsolutePath()));
 	}
 
 }
