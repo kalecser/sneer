@@ -9,6 +9,7 @@ import java.io.IOException;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.LoggerMocks;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.foundation.brickness.Brick;
@@ -32,6 +33,7 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 	@Test (timeout = 1000 * 60 * 5)
 	public void meToo_TakesACoupleOfMinutesToRunAndRunsOnlyOnHeadlessServer() throws Exception {
 		if (!isHudsonServer()) return;
+		LoggerMocks.showLog = true;
 		
 		a().copyToSourceFolder(generateY());
 		

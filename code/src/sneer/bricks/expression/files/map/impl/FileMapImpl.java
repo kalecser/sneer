@@ -34,7 +34,7 @@ class FileMapImpl implements FileMap {
 	@Override
 	synchronized
 	public void putFile(File file, long lastModified, Sneer1024 hash) {
-		if (file.isDirectory()) throw new IllegalArgumentException("Parameter 'file' cannot be a directory");
+		if (file.isDirectory()) throw new IllegalArgumentException("Parameter 'file' cannot be a directory: " + file.getAbsolutePath());
 
 		my(Logger.class).log("Mapping " + file + fileSizeInKB(file));
 		_filesByHash.put(hash, file);
@@ -68,6 +68,7 @@ class FileMapImpl implements FileMap {
 	public void putFolderContents(File folder, FolderContents contents, Sneer1024 hash) {
 		_folderContentsByHash.put(hash, contents); 
 		_filesByHash.put(hash, folder);
+		_hashesByFile.put(folder, hash);
 	}
 
 	@Override
@@ -115,7 +116,7 @@ class FileMapImpl implements FileMap {
 			_folderContentsByHash.remove(hashAndFile.getKey());
 		}
 	}
-
+	
 	@Override
 	synchronized
 	public void rename(File from, File to) {
@@ -125,16 +126,25 @@ class FileMapImpl implements FileMap {
 				: from.getAbsolutePath() + File.separator;
 
 		Collection<File> filesToBeRenamed = my(CollectionUtils.class).filter(_filesByHash.values(), new Predicate<File>() { @Override public boolean evaluate(File candidate) {
-			return candidate.getAbsolutePath().startsWith(fromPath);
+			return (candidate.getAbsolutePath() + File.separator).startsWith(fromPath);
 		}});
 
-		for (File file : filesToBeRenamed) {
-			String relativePath = my(Lang.class).strings().removeStart(file.getAbsolutePath(), fromPath);
-			File renamedFile = new File(to, relativePath);
-			putFile(renamedFile, getLastModified(file), getHash(file));
-			remove(file);
-		}
+		for (File file : filesToBeRenamed)
+			renameEntry(fromPath, to, file);
+	}
 
+	private void renameEntry(final String fromParent, File toParent, File file) {
+		String relativePath = my(Lang.class).strings().removeStart(file.getAbsolutePath(), fromParent);
+		File renamedFile = new File(toParent, relativePath);
+		Sneer1024 hash = getHash(file);
+		if(getFolderContents(hash) != null) {
+			FolderContents folderContents = getFolderContents(hash);
+			putFolderContents(renamedFile, folderContents, hash);
+		}
+		else {
+			putFile(renamedFile, getLastModified(file), hash);
+		}
+		remove(file);
 	}
 
 }
