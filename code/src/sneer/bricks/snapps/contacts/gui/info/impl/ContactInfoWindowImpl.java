@@ -130,7 +130,6 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 
 		_seal = my(ReactiveWidgetFactory.class).newTextPane(contactsFormattedSealString(), contactsSealSetter());
 		_seal.getMainWidget().setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-		_seal.getMainWidget().setEditable(false);
 
 		JScrollPane sealScroll =
 			new JScrollPane(
