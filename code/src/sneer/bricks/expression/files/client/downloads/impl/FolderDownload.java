@@ -84,6 +84,7 @@ class FolderDownload extends AbstractDownload {
 	@Override
 	void updateFileMapWith(File tmpFolder, File actualFolder) {
 		my(FileMap.class).rename(tmpFolder, actualFolder);
+		my(FileMap.class).putFolderContents(actualFolder, _contentsReceived, _hash);
 	}
 
 
@@ -98,7 +99,8 @@ class FolderDownload extends AbstractDownload {
 	@Override
 	void copyContents(Object contents) throws IOException {
 		if (!(contents instanceof FolderContents)) throw new IOException("Wrong type of contents received. Should be FolderContents but was " + contents.getClass());
-		my(FolderContentsWriter.class).writeToFolder(_path, (FolderContents) contents);
+		_contentsReceived = (FolderContents) contents;
+		my(FolderContentsWriter.class).writeToFolder(_path, _contentsReceived);
 	}
 
 
