@@ -16,6 +16,8 @@ import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
@@ -111,8 +113,10 @@ class TrackDownloaderImpl implements TrackDownloader {
 	}
 
 	private static File fileToWrite(TrackEndorsement endorsement) {
-		String name = new File(endorsement.path).getName();
-		return new File(peerTracksFolder(), name);
+		String trackName = new File(endorsement.path).getName();
+		Contact peer = my(ContactSeals.class).contactGiven(endorsement.publisher);
+		String fileName = (peer == null) ? trackName : peer.nickname().currentValue() + File.separator + trackName;
+		return new File(peerTracksFolder(), fileName);
 	}
 
 }

@@ -8,4 +8,9 @@ class TrackRejection extends AbstractTrackAssessment {
 		super(assessed);
 	}
 
+	@Override
+	public int score() {
+		return -1;
+	}
+
 }

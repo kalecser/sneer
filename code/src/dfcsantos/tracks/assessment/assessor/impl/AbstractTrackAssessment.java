@@ -11,4 +11,9 @@ abstract class AbstractTrackAssessment implements TrackAssessment {
 		_assessed = assessed;
 	}
 
+	@Override
+	public Track track() {
+		return _assessed;
+	}
+
 }

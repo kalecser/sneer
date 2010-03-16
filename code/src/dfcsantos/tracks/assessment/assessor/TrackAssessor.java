@@ -1,6 +1,6 @@
 package dfcsantos.tracks.assessment.assessor;
 
-import sneer.bricks.pulp.reactive.collections.ListSignal;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.brickness.Brick;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.assessment.TrackAssessment;
@@ -12,6 +12,6 @@ public interface TrackAssessor {
 
 	TrackAssessment reject(Track track);
 
-	ListSignal<TrackAssessment> assessements();
+	Signal<TrackAssessment> lastAssessment();
 
 }

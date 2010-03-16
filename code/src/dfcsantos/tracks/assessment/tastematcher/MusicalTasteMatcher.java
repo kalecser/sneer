@@ -1,8 +1,11 @@
 package dfcsantos.tracks.assessment.tastematcher;
 
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.assessment.TrackAssessment;
 
-@Brick
-public interface MusicalTasteMatcher extends Consumer<TrackAssessment> {}
+@Brick //(Prevalent.class)
+public interface MusicalTasteMatcher {
+
+	void setOnOffSwitch(Signal<Boolean> onOffSwitch);
+
+}

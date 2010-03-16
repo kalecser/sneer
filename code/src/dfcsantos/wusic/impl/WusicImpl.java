@@ -10,9 +10,11 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.Track;
+import dfcsantos.tracks.assessment.tastematcher.MusicalTasteMatcher;
 import dfcsantos.tracks.endorsements.client.TrackClient;
 import dfcsantos.tracks.endorsements.client.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.endorsements.server.TrackEndorser;
@@ -44,6 +46,8 @@ public class WusicImpl implements Wusic {
 		my(TrackClient.class).setTrackDownloadAllowance(trackDownloadAllowance());
 
 		my(TrackEndorser.class).setOnOffSwitch(isTrackDownloadActive());
+
+		my(MusicalTasteMatcher.class).setOnOffSwitch(isMusicalTasteMatcherActive());
 
 		_isDownloadEnabledConsumerContract = isTrackDownloadActive().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isDownloadAllowed) {
 			save();
@@ -78,6 +82,15 @@ public class WusicImpl implements Wusic {
 	private void reset() {
 		_lastPlayedTrack = null;
 		stop();
+	}
+
+	private Signal<Boolean> isMusicalTasteMatcherActive() {
+		return my(Signals.class).adapt(
+			operatingMode(),
+			new Functor<OperatingMode, Boolean>() { @Override public Boolean evaluate(OperatingMode operatingMode) throws RuntimeException {
+				return operatingMode.equals(OperatingMode.PEERS);
+			}}
+		);
 	}
 
 	@Override
