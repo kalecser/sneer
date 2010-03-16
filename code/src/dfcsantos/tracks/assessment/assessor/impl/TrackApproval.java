@@ -13,4 +13,9 @@ class TrackApproval extends AbstractTrackAssessment {
 		return 1;
 	}
 
+	@Override
+	public String toString() {
+		return "Track Approval: " + _assessed;
+	}
+
 }
