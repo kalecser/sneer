@@ -20,14 +20,12 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Submit JavaOne paper
-
 	- Seals
 		- ContactInfoWindowImpl
 			- Discuss with Klaus refactoring of ContactsInfoWindow
 
 	- Wusic
-		- [Klaus/Daniel] MusicalTasteMatcher Kernel
+		- MusicalTasteMatcher Kernel
 		- Downloads
 			- Do not download files user already has (includes peertracks) - check if it's working after the changes made to AbstractDownload
 		- Nice-to-have:
