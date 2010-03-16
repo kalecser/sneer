@@ -10,7 +10,7 @@ import dfcsantos.tracks.assessment.assessor.TrackAssessor;
 
 class TrackAssessorImpl implements TrackAssessor {
 
-	private Register<TrackAssessment> _lastAssessment = my(Signals.class).newRegister(null); 
+	private final Register<TrackAssessment> _lastAssessment = my(Signals.class).newRegister(null); 
 
 	@Override
 	synchronized
