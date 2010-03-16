@@ -23,12 +23,19 @@ public class Main {
 		
 		Security.addProvider(new BouncyCastleProvider());
 		
+		
+		
+		for (int i = 0; i < 10; i++)
+			generateKeyPair();
+		
+		
+		
 		printProvidersAndServices();
 		
-		byte[] bytecodeDummy = new SecureRandom().generateSeed(10);
+		byte[] message = new SecureRandom().generateSeed(10);
 		
-		testSHA512(bytecodeDummy);
-		testRSA(bytecodeDummy);
+		testSHA512(message);
+		testRSA(message);
 	}
 
 	private static void printProvidersAndServices() {
@@ -55,11 +62,11 @@ public class Main {
 		}
 		}
 
-	private static void testSHA512(byte[] bytecodeDummy) throws Exception {
+	private static void testSHA512(byte[] message) throws Exception {
 		//MessageDigest digester = MessageDigest.getInstance("SHA-512", "SUN");
 		//MessageDigest digester = MessageDigest.getInstance("WHIRLPOOL", "BC");
 		MessageDigest digester = MessageDigest.getInstance("SHA-512", "BC");
-		byte[] digest = digester.digest(bytecodeDummy);
+		byte[] digest = digester.digest(message);
 		System.out.println("Digest length: " + digest.length * 8 + " bits");
 	}
 
@@ -70,20 +77,30 @@ public class Main {
 		System.out.println("RSA Signature ok: " + ok);
 	}
 
+		
 	public static KeyPair generateKeyPair() throws Exception {
-		byte[] seed = "SENHA SECRETA COMPRIDA".getBytes("UTF-8");
-		SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
+		System.out.println(">>>>>>>> Starting to generate key.");
+		
+//		SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
 //		SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "BC");
-		random.setSeed(seed);
+		SecureRandom random = new CountingSecureRandom();
+		System.out.println("Random:" + random.nextInt());
+		
+//		byte[] seed = "SENHA SECRETA COMPRIDA".getBytes("UTF-8");
+//		random.setSeed(seed);
 
 //		KeyPairGenerator keypairgenerator = KeyPairGenerator.getInstance("RSA", "SunRsaSign");
-//		KeyPairGenerator keypairgenerator = KeyPairGenerator.getInstance("RSA", "BC");
-//		keypairgenerator.initialize(4096, random);
+		KeyPairGenerator keypairgenerator = KeyPairGenerator.getInstance("RSA", "BC");
+		keypairgenerator.initialize(4096, random);
 		
-		KeyPairGenerator keypairgenerator = KeyPairGenerator.getInstance("ECDSA", "BC");
-		keypairgenerator.initialize(256, random);
+//		KeyPairGenerator keypairgenerator = KeyPairGenerator.getInstance("ECDSA", "BC");
+//		keypairgenerator.initialize(256, random);
 
-		return keypairgenerator.generateKeyPair();
+		try {
+			return keypairgenerator.generateKeyPair();
+		} finally {
+			System.out.println(">>>>>>>> Finished generating key with " + ((CountingSecureRandom)random)._bytesRequested + " random bytes.");
+		}
 	}
 
 	public static byte[] generateSignature(PrivateKey privatekey, byte[] message) throws Exception {
