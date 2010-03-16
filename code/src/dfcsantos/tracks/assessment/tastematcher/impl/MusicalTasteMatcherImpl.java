@@ -61,6 +61,7 @@ class MusicalTasteMatcherImpl implements MusicalTasteMatcher {
 	}
 
 	private void startListeningToAssessments() {
+		my(Logger.class).log("Activating MusicalTasteMatcher");
 		_toAvoidGC = my(TrackAssessor.class).lastAssessment().addReceiver(new Consumer<TrackAssessment>() { @Override public void consume(TrackAssessment assessment) {
 			register(assessment);
 		}});
@@ -68,6 +69,7 @@ class MusicalTasteMatcherImpl implements MusicalTasteMatcher {
 
 	private void stopListeningToAssessments() {
 		if (_assessmentsConsumerContract == null) return;
+		my(Logger.class).log("Deactivating MusicalTasteMatcher");
 		_assessmentsConsumerContract.dispose();
 		_assessmentsConsumerContract = null;
 	}
@@ -80,6 +82,7 @@ class MusicalTasteMatcherImpl implements MusicalTasteMatcher {
 			my(Logger.class).log("Unable to assess track received from an unidentified peer: ", assessment.track());
 			return;
 		}
+		my(Logger.class).log("Registering assessment for {}: ({}, {})", assessment.track().name(), peer, assessment.score());
 		_scoreByContact.put(peer, assessment.score());
 		updateTopScorerIfNecessary();
 	}
@@ -113,7 +116,9 @@ class MusicalTasteMatcherImpl implements MusicalTasteMatcher {
 	}
 
 	private Integer topScore() {
-		return _scoreByContact.get(_topScorer.output().currentValue());
+		Contact topScorer = _topScorer.output().currentValue();
+		if (topScorer == null) return null;
+		return _scoreByContact.get(topScorer);
 	}
 
 }
