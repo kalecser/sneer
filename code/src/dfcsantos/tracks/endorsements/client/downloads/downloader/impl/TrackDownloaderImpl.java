@@ -18,9 +18,11 @@ import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
+import dfcsantos.tracks.assessment.tastematcher.MusicalTasteMatcher;
 import dfcsantos.tracks.endorsements.client.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.endorsements.client.downloads.downloader.TrackDownloader;
 import dfcsantos.tracks.endorsements.protocol.TrackEndorsement;
@@ -66,6 +68,8 @@ class TrackDownloaderImpl implements TrackDownloader {
 		if (isRejected(endorsement)) return;
 		if (hasSpentDownloadAllowance()) return;
 
+		if (!isFromTheBestAvailableSource(endorsement)) return;
+
 		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
 		_tracksBeingDownloaded.add(endorsement.hash);
 
@@ -110,6 +114,16 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 	private int downloadAllowanceInBytes() {
 		return 1024 * 1024 * _downloadAllowance.get().currentValue();
+	}
+
+	private boolean isFromTheBestAvailableSource(TrackEndorsement endorsement) {
+		Contact bestMatch = my(MusicalTasteMatcher.class).bestMatch().currentValue();
+		if (bestMatch == null) return true;
+		if (!my(Stethoscope.class).isAlive(bestMatch).currentValue()) return true;
+
+		Contact source = my(ContactSeals.class).contactGiven(endorsement.publisher);
+		if(bestMatch.equals(source)) return true;
+		return false;
 	}
 
 	private static File fileToWrite(TrackEndorsement endorsement) {
