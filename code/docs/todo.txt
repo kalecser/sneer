@@ -26,9 +26,7 @@ Igor ====================================================
 
 	- Wusic
 		- MusicalTasteMatcher Kernel
-			- Create unit test
-		- Downloads
-			- Do not download files user already has (includes peertracks) - check if it's working after the changes made to AbstractDownload
+			- Finish MusicalTasteMatcherTest
 		- Nice-to-have:
 			- Track downloads monitor pane with a progress bar for each download currently running (it's default is hidden)
 			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
