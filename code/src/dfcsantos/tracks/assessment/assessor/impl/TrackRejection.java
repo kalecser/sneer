@@ -4,8 +4,8 @@ import dfcsantos.tracks.Track;
 
 class TrackRejection extends AbstractTrackAssessment {
 
-	TrackRejection(Track assessed) {
-		super(assessed);
+	TrackRejection(Track toBeAssessed) {
+		super(toBeAssessed);
 	}
 
 	@Override
@@ -15,7 +15,7 @@ class TrackRejection extends AbstractTrackAssessment {
 
 	@Override
 	public String toString() {
-		return "Track Rejection: " + _assessed;
+		return super.toString() + " rejected --> " + "(" + trackSourceName() + ", " + score() + ")";
 	}
 
 }

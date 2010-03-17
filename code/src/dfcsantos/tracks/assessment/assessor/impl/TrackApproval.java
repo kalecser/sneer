@@ -4,8 +4,8 @@ import dfcsantos.tracks.Track;
 
 class TrackApproval extends AbstractTrackAssessment {
 
-	TrackApproval(Track assessed) {
-		super(assessed);
+	TrackApproval(Track toBeAssessed) {
+		super(toBeAssessed);
 	}
 
 	@Override
@@ -15,7 +15,7 @@ class TrackApproval extends AbstractTrackAssessment {
 
 	@Override
 	public String toString() {
-		return "Track Approval: " + _assessed;
+		return super.toString() + " approved --> " + "(" + trackSourceName() + ", " + score() + ")";
 	}
 
 }
