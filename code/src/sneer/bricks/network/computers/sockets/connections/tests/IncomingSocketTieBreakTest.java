@@ -21,7 +21,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 
-public class IncomingSocketTest extends BrickTest {
+public class IncomingSocketTieBreakTest extends BrickTest {
 
 	@Bind private final ContactSeals _seals = mock(ContactSeals.class);
 	@Bind private final OwnSeal _ownSealBrick = mock(OwnSeal.class);
