@@ -56,4 +56,9 @@ public class InProcessNetwork implements Network {
 	    
 	    return result;
 	}
+
+	@Override
+	public String remoteIpFor(ByteArraySocket socket) {
+		return "localhost"; // Implement
+	}
 }

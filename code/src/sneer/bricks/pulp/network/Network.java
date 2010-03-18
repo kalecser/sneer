@@ -11,4 +11,6 @@ public interface Network{
 
 	ByteArrayServerSocket openServerSocket(int port) throws IOException;
 
+	String remoteIpFor(ByteArraySocket socket);
+
 }

@@ -15,6 +15,7 @@ import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.network.ByteArraySocket;
+import sneer.bricks.pulp.network.Network;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -24,7 +25,7 @@ public class IncomingSocketOriginDetectionTest extends BrickTest {
 
 	@Bind private final ContactSeals _seals = mock(ContactSeals.class);
 	@Bind private final OwnSeal _ownSealBrick = mock(OwnSeal.class);
-//	@Bind private final SocketAccepter _socketAccepter = mock(SocketAccepter.class);
+	@Bind private final Network _network = mock(Network.class);
 
 	private ConnectionManager _subject = my(ConnectionManager.class);
 
@@ -35,7 +36,7 @@ public class IncomingSocketOriginDetectionTest extends BrickTest {
 
 		
 	@Test (timeout = 2000)
-	public void tieBreak() throws Exception {
+	public void incomingSocketOriginDetection() throws Exception {
 		
 		final Contact contact = mock(Contact.class);
 		
@@ -51,6 +52,8 @@ public class IncomingSocketOriginDetectionTest extends BrickTest {
 			oneOf(_socket).read(); will(returnValue(new byte[]{1, 1, 1})); inSequence(sequence);
 			oneOf(_socket).write(ProtocolTokens.CONFIRMED); inSequence(sequence);
 
+			oneOf(_network).remoteIpFor(_socket); will(returnValue("10.42.10.42"));
+			
 			oneOf(_socket).close();
 			
 		}});

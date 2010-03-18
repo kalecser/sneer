@@ -16,6 +16,7 @@ import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.network.ByteArraySocket;
+import sneer.bricks.pulp.network.Network;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -25,6 +26,7 @@ public class IncomingSocketTieBreakTest extends BrickTest {
 
 	@Bind private final ContactSeals _seals = mock(ContactSeals.class);
 	@Bind private final OwnSeal _ownSealBrick = mock(OwnSeal.class);
+	@Bind private final Network _network = mock(Network.class);
 
 	private ConnectionManager _subject = my(ConnectionManager.class);
 
@@ -52,6 +54,8 @@ public class IncomingSocketTieBreakTest extends BrickTest {
 			allowing(_seals).contactGiven(_greaterSeal); will(returnValue(b));
 			allowing(_seals).sealGiven(a); will(returnValue(constant(_smallerSeal)));
 			allowing(_seals).sealGiven(b); will(returnValue(constant(_greaterSeal)));
+			
+			allowing(_network).remoteIpFor(with(any(ByteArraySocket.class)));
 
 			oneOf(_socketA).read(); will(returnValue(ProtocolTokens.SNEER_WIRE_PROTOCOL_1)); inSequence(sequence);
 			oneOf(_socketA).read(); will(returnValue(new byte[]{1, 1, 1})); inSequence(sequence);

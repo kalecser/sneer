@@ -11,6 +11,7 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.pulp.network.ByteArraySocket;
+import sneer.bricks.pulp.network.Network;
 
 class IncomingHandShaker {
 
@@ -26,7 +27,7 @@ class IncomingHandShaker {
 		rejectUnknownSeal(contactsSeal);
 		//Implement: Challenge pk.
 
-		
+		my(Network.class).remoteIpFor(socket);
 		
 		return contactsSeal;
 	}
