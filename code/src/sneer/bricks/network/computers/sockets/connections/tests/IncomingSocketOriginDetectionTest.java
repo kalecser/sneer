@@ -63,7 +63,9 @@ public class IncomingSocketOriginDetectionTest extends BrickTest {
 		}});
 
 		final Latch ipDetected = my(Latches.class).produce();
-		_subject.contactSightings().addReceiver(new Consumer<ContactSighting>() { @Override public void consume(ContactSighting value) {
+		_subject.contactSightings().addReceiver(new Consumer<ContactSighting>() { @Override public void consume(ContactSighting sighting) {
+			assertEquals(_otherSeal, sighting.seal());
+			assertEquals("10.42.10.42", sighting.ip());
 			ipDetected.open();
 		}});
 

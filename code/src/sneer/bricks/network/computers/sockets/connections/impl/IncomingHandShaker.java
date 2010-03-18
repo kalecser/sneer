@@ -26,17 +26,21 @@ class IncomingHandShaker {
 
 	static Seal greet(ByteArraySocket socket) throws IOException {
 		byte[] contactsSealBytes = identifyContactsSeal(socket);
-		Seal contactsSeal = new Seal(new ImmutableByteArray(contactsSealBytes));
+		final Seal contactsSeal = new Seal(new ImmutableByteArray(contactsSealBytes));
 
 		rejectLoopback(contactsSeal);
 		rejectUnknownSeal(contactsSeal);
 		//Implement: Challenge pk.
 
-		contactSightings.notifyReceivers(new ContactSighting() {
-		});
-		my(Network.class).remoteIpFor(socket);
+		notifySighting(socket, contactsSeal);
 		
 		return contactsSeal;
+	}
+
+
+	private static void notifySighting(ByteArraySocket socket, final Seal contactsSeal) {
+		String ip = my(Network.class).remoteIpFor(socket);
+		contactSightings.notifyReceivers(new ContactSightingImpl(contactsSeal, ip));
 	}
 
 
