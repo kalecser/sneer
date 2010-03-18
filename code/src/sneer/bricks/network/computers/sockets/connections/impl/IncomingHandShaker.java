@@ -26,6 +26,8 @@ class IncomingHandShaker {
 		rejectUnknownSeal(contactsSeal);
 		//Implement: Challenge pk.
 
+		
+		
 		return contactsSeal;
 	}
 
