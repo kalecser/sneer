@@ -26,7 +26,10 @@ Igor ====================================================
 
 	- Wusic
 		- MusicalTasteMatcher Kernel
+			- [Klaus] Discuss path-based score model
 			- Finish MusicalTasteMatcherTest
+		- Downloads
+			- Do not download files user already has (includes peertracks) - check if it's working after the changes made to AbstractDownload
 		- Nice-to-have:
 			- Track downloads monitor pane with a progress bar for each download currently running (it's default is hidden)
 			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
