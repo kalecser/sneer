@@ -114,12 +114,9 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 		JLabel labSeal = new JLabel("Seal:");
 		
 		Signal<String> nickname = my(Signals.class).adaptSignal(
-				my(ContactsGui.class).selectedContact(), 
-				new Functor<Contact, Signal<String>>() { @Override public Signal<String> evaluate(Contact contact) {
-					if(contact == null)
-						return my(Signals.class).constant("");
-					return contact.nickname();
-				}}
+			my(ContactsGui.class).selectedContact(), new Functor<Contact, Signal<String>>() { @Override public Signal<String> evaluate(Contact contact) {
+				return (contact == null) ? my(Signals.class).constant("") : contact.nickname();
+			}}
 		);
 
 		PickyConsumer<String> setter = new PickyConsumer<String>(){@Override public void consume(String value) throws Refusal {
@@ -164,12 +161,10 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 
 	private Signal<String> contactsFormattedSealString() {
 		return my(Signals.class).adaptSignal(
-			my(ContactsGui.class).selectedContact(),
-			new Functor<Contact, Signal<String>>() { @Override public Signal<String> evaluate(Contact contact) throws RuntimeException {
+			my(ContactsGui.class).selectedContact(), new Functor<Contact, Signal<String>>() { @Override public Signal<String> evaluate(Contact contact) throws RuntimeException {
 				if (contact == null) return my(Signals.class).constant("");
 				return my(Signals.class).adapt(
-					my(ContactSeals.class).sealGiven(contact),
-					new Functor<Seal, String>() { @Override public String evaluate(Seal seal) throws RuntimeException {
+					my(ContactSeals.class).sealGiven(contact), new Functor<Seal, String>() { @Override public String evaluate(Seal seal) throws RuntimeException {
 						return seal == null ? "" : my(SealCodec.class).formattedHexEncode(seal);						
 					}}
 				);
@@ -178,17 +173,19 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 	}
 
 	private PickyConsumer<String> contactsSealSetter() {
-		return new PickyConsumer<String>() { @Override public void consume(String seal) throws Refusal {
-			if (seal == null || seal.isEmpty()) return;
-
-			try {
-				my(ContactSeals.class).put(
-					selectedContact().nickname().currentValue(),
-					my(SealCodec.class).hexDecode(seal));
-			} catch (DecodeException de) {
-				throw new Refusal(de.getMessage());
-			}
+		return new PickyConsumer<String>() { @Override public void consume(String sealString) throws Refusal {
+			if (sealString != null && sealString.isEmpty()) sealString = null;
+			String nick = selectedContact().nickname().currentValue();
+			my(ContactSeals.class).put(nick, decode(sealString));
 		}};
+	}
+
+	private Seal decode(String sealString) throws Refusal {
+		try {
+			return my(SealCodec.class).hexDecode(sealString);
+		} catch (DecodeException de) {
+			throw new Refusal(de.getMessage());
+		}
 	}
 
 	private void setGridBagLayout(JPanel panel, JLabel labNickname, JLabel labSeal, JScrollPane sealScroll, JLabel labPort, JLabel labHost, JScrollPane addressesScroll, JButton btnNew, JButton btnSave, JButton btnDel) {
