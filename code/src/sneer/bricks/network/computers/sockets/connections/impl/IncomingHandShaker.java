@@ -9,7 +9,11 @@ import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
+import sneer.bricks.network.computers.sockets.connections.ContactSighting;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
+import sneer.bricks.pulp.events.EventNotifier;
+import sneer.bricks.pulp.events.EventNotifiers;
+import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
 
@@ -17,6 +21,7 @@ class IncomingHandShaker {
 
 	
 	private static final ContactSeals Seals = my(ContactSeals.class);
+	private static EventNotifier<ContactSighting> contactSightings = my(EventNotifiers.class).newInstance();
 
 
 	static Seal greet(ByteArraySocket socket) throws IOException {
@@ -27,6 +32,8 @@ class IncomingHandShaker {
 		rejectUnknownSeal(contactsSeal);
 		//Implement: Challenge pk.
 
+		contactSightings.notifyReceivers(new ContactSighting() {
+		});
 		my(Network.class).remoteIpFor(socket);
 		
 		return contactsSeal;
@@ -55,6 +62,11 @@ class IncomingHandShaker {
 			
 			socket.write(ProtocolTokens.FALLBACK);
 		}
+	}
+
+
+	public static EventSource<ContactSighting> contactSightings() {
+		return contactSightings.output();
 	}
 
 }
