@@ -8,8 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
-import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.Register;
@@ -22,52 +20,22 @@ import dfcsantos.tracks.assessment.tastematcher.MusicalTasteMatcher;
 
 class MusicalTasteMatcherImpl implements MusicalTasteMatcher {
 
-	private final ImmutableReference<Signal<Boolean>> _onOffSwitch = my(ImmutableReferences.class).newInstance();
-
 	private final Map<Contact, Integer> _scoresByContact = new ConcurrentHashMap<Contact, Integer>();
 	private final Register<Contact> _topScorer = my(Signals.class).newRegister(randomContact());
 
-	private WeakContract _assessmentsListenerCtr;
+	@SuppressWarnings("unused") private WeakContract _toAvoidGC;
 
-	@SuppressWarnings("unused") private WeakContract _onOffSwitchListenerCtr;
-
-	MusicalTasteMatcherImpl() {
-		restore();
-	}
-
-	@Override
-	public void setOnOffSwitch(Signal<Boolean> onOffSwitch) {
-		_onOffSwitch.set(onOffSwitch);
-
-		_onOffSwitchListenerCtr = onOffSwitch.addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isOn) {
-			react(isOn);
+	{
+		_toAvoidGC = my(TrackAssessor.class).lastAssessment().addReceiver(new Consumer<TrackAssessment>() { @Override public void consume(TrackAssessment assessment) {
+			register(assessment);
 		}});
+
+		restore();
 	}
 
 	@Override
 	public Signal<Contact> bestMatch() {
 		return _topScorer.output();
-	}
-
-	private void react(boolean isOn) {
-		if(isOn)
-			startListeningToAssessments();
-		else
-			stopListeningToAssessments();
-	}
-
-	private void startListeningToAssessments() {
-		my(Logger.class).log("Activating MusicalTasteMatcher");
-		_onOffSwitchListenerCtr = my(TrackAssessor.class).lastAssessment().addReceiver(new Consumer<TrackAssessment>() { @Override public void consume(TrackAssessment assessment) {
-			register(assessment);
-		}});
-	}
-
-	private void stopListeningToAssessments() {
-		if (_assessmentsListenerCtr == null) return;
-		my(Logger.class).log("Deactivating MusicalTasteMatcher");
-		_assessmentsListenerCtr.dispose();
-		_assessmentsListenerCtr = null;
 	}
 
 	private void register(TrackAssessment assessment) {

@@ -60,6 +60,8 @@ class TrackDownloaderImpl implements TrackDownloader {
 	private void consumeTrackEndorsement(final TrackEndorsement endorsement) {
 		if (!isOn()) return;
 
+		if (isFromUnknownPublisher(endorsement)) return;
+
 		if (hasReachedDownloadLimit()) return;
 
 		if (my(OwnSeal.class).get().equals(endorsement.publisher)) return;
@@ -84,6 +86,10 @@ class TrackDownloaderImpl implements TrackDownloader {
 	private boolean isOn() {
 		if (!_onOffSwitch.isAlreadySet()) return false;
 		return _onOffSwitch.get().currentValue();
+	}
+
+	private static boolean isFromUnknownPublisher(final TrackEndorsement endorsement) {
+		return senderOf(endorsement) == null;
 	}
 
 	private boolean hasReachedDownloadLimit() {
@@ -121,16 +127,20 @@ class TrackDownloaderImpl implements TrackDownloader {
 		if (bestMatch == null) return true;
 		if (!my(Stethoscope.class).isAlive(bestMatch).currentValue()) return true;
 
-		Contact source = my(ContactSeals.class).contactGiven(endorsement.publisher);
+		Contact source = senderOf(endorsement);
 		if(bestMatch.equals(source)) return true;
 		return false;
 	}
 
 	private static File fileToWrite(TrackEndorsement endorsement) {
 		String trackName = new File(endorsement.path).getName();
-		Contact peer = my(ContactSeals.class).contactGiven(endorsement.publisher);
-		String fileName = (peer == null) ? trackName : peer.nickname().currentValue() + File.separator + trackName;
+		Contact peer = senderOf(endorsement);
+		String fileName = peer.nickname().currentValue() + File.separator + trackName;
 		return new File(peerTracksFolder(), fileName);
+	}
+
+	private static Contact senderOf(TrackEndorsement endorsement) {
+		return my(ContactSeals.class).contactGiven(endorsement.publisher);
 	}
 
 }

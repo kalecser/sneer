@@ -9,7 +9,6 @@ import org.junit.Test;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.SignalUtils;
-import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.Track;
@@ -33,16 +32,10 @@ public class MusicTasteMatcherTest extends BrickTest {
 //		Contact klaus = my(Contacts.class).addContact("klaus");
 //		Contact rodrigo = my(Contacts.class).addContact("rodrigo");
 
-		activateMusicalTasteMatcher();
-
 		_trackAssessor.approve(newTrackFrom(igor));
 		my(SignalUtils.class).waitForValue(_subject.bestMatch(), igor);
 
 		// Implement: finish test
-	}
-
-	private void activateMusicalTasteMatcher() {
-		_subject.setOnOffSwitch(my(Signals.class).constant(true));
 	}
 
 	private Track newTrackFrom(Contact contact) {
