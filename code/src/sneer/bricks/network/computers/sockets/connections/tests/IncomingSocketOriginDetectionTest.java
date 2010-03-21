@@ -45,13 +45,13 @@ public class IncomingSocketOriginDetectionTest extends BrickTest {
 		final Contact contact = mock(Contact.class);
 		
 		checking(new Expectations() {{
-			Sequence sequence = newSequence("main");
 
 			allowing(_ownSealBrick).get(); will(returnValue(_ownSeal));
 			
 			allowing(_seals).contactGiven(_otherSeal); will(returnValue(contact));
 			allowing(_seals).sealGiven(contact); will(returnValue(constant(_otherSeal)));
 
+			Sequence sequence = newSequence("seal");
 			oneOf(_socket).read(); will(returnValue(ProtocolTokens.SNEER_WIRE_PROTOCOL_1)); inSequence(sequence);
 			oneOf(_socket).read(); will(returnValue(new byte[]{1, 1, 1})); inSequence(sequence);
 			oneOf(_socket).write(ProtocolTokens.CONFIRMED); inSequence(sequence);
