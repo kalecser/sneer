@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ContactSighting;
@@ -14,21 +15,17 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.snapps.dns.Dns;
 import sneer.foundation.lang.Consumer;
 
-public class DnsImpl implements Dns {
+class DnsImpl implements Dns {
 
 	ConnectionManager connectionManager = my(ConnectionManager.class);
 	
 	final Map<Seal, ListRegister<String>> addressesForContact = new LinkedHashMap<Seal, ListRegister<String>>();
 	
-	public DnsImpl(){
-		connectionManager.contactSightings().addReceiver(new Consumer<ContactSighting>() {
-			@Override
-			public void consume(ContactSighting sighting) {
-				sighted(sighting.seal(), sighting.ip());
-			}
-		});
-	}
+	WeakContract _refToAvoidGc = connectionManager.contactSightings().addReceiver(new Consumer<ContactSighting>() { @Override public void consume(ContactSighting sighting) {
+		sighted(sighting.seal(), sighting.ip());
+	}});
 
+	
 	@Override
 	public synchronized ListSignal<String> knownIpsForContact(Seal seal) {
 		return addressesForSeal(seal).output();
