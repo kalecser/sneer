@@ -24,6 +24,7 @@ public interface Lang {
 	
 	interface Strings { 
 		boolean isEmpty(String str);
+		String abbreviate(String str, int maxWidth);
 		String join(Collection<?> collection, String separator);
 		String trimToNull(String str);
 		String remove(String str, String remove);
