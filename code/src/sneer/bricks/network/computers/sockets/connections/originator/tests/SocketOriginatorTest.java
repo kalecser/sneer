@@ -63,7 +63,6 @@ public class SocketOriginatorTest extends BrickTest {
 		_subject = my(SocketOriginator.class);
 
 		my(InternetAddressKeeper.class).add(neide, "neide.selfip.net", 5000);
-//		my(Clock.class).advanceTime(1);
 		ready.waitTillOpen();
 	}
 
