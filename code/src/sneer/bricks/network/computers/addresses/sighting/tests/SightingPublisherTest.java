@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.addresses.dns.tests;
+package sneer.bricks.network.computers.addresses.sighting.tests;
 
 
 import static sneer.foundation.environments.Environments.my;
@@ -9,9 +9,9 @@ import org.junit.Test;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.network.computers.addresses.dns.SightingPublisher;
-import sneer.bricks.network.computers.addresses.dns.DnsEntry;
-import sneer.bricks.network.computers.addresses.dns.tests.mock.MockContactSighting;
+import sneer.bricks.network.computers.addresses.sighting.Sighting;
+import sneer.bricks.network.computers.addresses.sighting.SightingPublisher;
+import sneer.bricks.network.computers.addresses.sighting.tests.mock.MockContactSighting;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ContactSighting;
 import sneer.bricks.network.social.Contacts;
@@ -39,17 +39,16 @@ public class SightingPublisherTest extends BrickTest {
 		}});	
 	}
 	
-	@SuppressWarnings("unused")
-	private final SightingPublisher _subject = my(SightingPublisher.class);
 	
 	@Test (timeout = 2000)
 	public void testSightingsAreConvertedToTuples(){
+		my(SightingPublisher.class);
 		see("foo", "10.42.10.42");
 		assertDnsEntryKept("foo", "10.42.10.42");
 	}
 
 	private void assertDnsEntryKept(final String seal, final String ip) {
-		assertTupleKept(new DnsEntry(sealForContact(seal), ip));
+		assertTupleKept(new Sighting(sealForContact(seal), ip));
 	}
 
 	private void assertTupleKept(final Tuple expected) {

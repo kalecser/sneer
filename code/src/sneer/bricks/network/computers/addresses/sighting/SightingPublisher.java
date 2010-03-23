@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.addresses.dns;
+package sneer.bricks.network.computers.addresses.sighting;
 
 import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.foundation.brickness.Brick;

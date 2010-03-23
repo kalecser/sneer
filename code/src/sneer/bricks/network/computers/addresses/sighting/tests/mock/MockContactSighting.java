@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.addresses.dns.tests.mock;
+package sneer.bricks.network.computers.addresses.sighting.tests.mock;
 
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.sockets.connections.ContactSighting;
