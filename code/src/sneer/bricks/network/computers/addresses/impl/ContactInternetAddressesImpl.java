@@ -39,7 +39,7 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 			
 			@Override
 			public int port() {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+				return 0;
 			}
 			
 			@Override
