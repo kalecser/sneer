@@ -19,10 +19,13 @@ public class ContactInternetAddressesTest extends BrickTest {
 	public void keptAddressesAreFound() throws Refusal {
 		Contact contact = my(Contacts.class).addContact("Neide");
 		my(InternetAddressKeeper.class).add(contact, "10.42.10.42", 42);
+		
 		InternetAddress kept = _subject.addresses().currentElements().iterator().next();
 		assertEquals(contact, kept.contact());
 		assertEquals("10.42.10.42", kept.host());
 		assertEquals(42, kept.port());
 	}
 
+	
+	
 }
