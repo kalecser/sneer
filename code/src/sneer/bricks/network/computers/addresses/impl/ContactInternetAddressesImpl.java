@@ -2,6 +2,7 @@ package sneer.bricks.network.computers.addresses.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
@@ -48,7 +49,7 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 			
 			@Override
 			public Contact contact() {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+				return my(ContactSeals.class).contactGiven(sighting.peersSeal);
 			}
 		});
 	}

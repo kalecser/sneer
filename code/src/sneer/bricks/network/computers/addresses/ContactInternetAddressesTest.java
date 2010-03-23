@@ -2,10 +2,13 @@ package sneer.bricks.network.computers.addresses;
 
 import static sneer.foundation.environments.Environments.my;
 
+import org.jmock.Expectations;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.addresses.sighting.Sighting;
@@ -13,13 +16,21 @@ import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.exceptions.Refusal;
 
 public class ContactInternetAddressesTest extends BrickTest {
+
+	@Bind private final ContactSeals _contactSeals = mock(ContactSeals.class);
+	private final Contact contact = produceContact("Neide");
+	{
+		checking(new Expectations(){{
+			allowing(_contactSeals).contactGiven(seal()); will(returnValue(contact));
+		}});
+	}
+	
 	
 	private final ContactInternetAddresses _subject = my(ContactInternetAddresses.class);
-	
-	private final Contact contact = produceContact("Neide");
 
 		
 	@Test
@@ -32,10 +43,14 @@ public class ContactInternetAddressesTest extends BrickTest {
 		assertEquals(42, kept.port());
 	}
 
+	@Ignore
 	@Test
-	public void dnsAddressesAreFound(){
+	public void dnsAddressesAreFound() {
 		see("10.42.10.42");
-		assertEquals("10.42.10.42", keptAddress().host());
+		InternetAddress kept = keptAddress();
+		assertEquals(contact, kept.contact());
+		assertEquals("10.42.10.42", kept.host());
+		assertEquals(42, kept.port());
 	}
 
 	private void see(String ip) {

@@ -54,9 +54,6 @@ Klaus =================================================
 	- [Rene] Dependency cycle detector.
 		- Git install
 
-	- Make Network usable
-		- Sneer "DNS".
-
 	- Freedom7 - "Me Too" for Bricks 
 		- Unignore Freedom7.meToo
 			- BrickSpaceImpl.init() uncomment.
@@ -73,3 +70,8 @@ Klaus =================================================
 	- Revise entire package structure.
 		- Remove all calls to Thread.sleep() including indirect.
 
+
+Kalecser =================================================
+
+		- Sneer "DNS".
+			- Unignore ContactInternetAddressesTest
