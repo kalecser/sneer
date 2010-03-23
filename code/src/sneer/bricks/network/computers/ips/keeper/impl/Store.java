@@ -1,4 +1,4 @@
-package sneer.bricks.pulp.internetaddresskeeper.impl;
+package sneer.bricks.network.computers.ips.keeper.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import sneer.bricks.pulp.internetaddresskeeper.InternetAddress;
-import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
+import sneer.bricks.network.computers.ips.keeper.InternetAddress;
+import sneer.bricks.network.computers.ips.keeper.InternetAddressKeeper;
 import sneer.bricks.software.bricks.statestore.BrickStateStore;
 
 abstract class Store {

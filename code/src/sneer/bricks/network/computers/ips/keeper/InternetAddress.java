@@ -1,4 +1,4 @@
-package sneer.bricks.pulp.internetaddresskeeper;
+package sneer.bricks.network.computers.ips.keeper;
 
 import sneer.bricks.network.social.Contact;
 

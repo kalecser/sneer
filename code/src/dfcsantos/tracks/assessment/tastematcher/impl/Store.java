@@ -8,8 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
+import sneer.bricks.network.computers.ips.keeper.InternetAddressKeeper;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
 import sneer.bricks.software.bricks.statestore.BrickStateStore;
 import dfcsantos.tracks.assessment.tastematcher.MusicalTasteMatcher;
 

@@ -7,9 +7,9 @@ import java.util.Map;
 
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
+import sneer.bricks.network.computers.ips.keeper.InternetAddress;
+import sneer.bricks.network.computers.ips.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
-import sneer.bricks.pulp.internetaddresskeeper.InternetAddress;
-import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.foundation.lang.Consumer;
 
