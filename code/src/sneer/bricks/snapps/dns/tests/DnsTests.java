@@ -3,7 +3,6 @@ package sneer.bricks.snapps.dns.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.jmock.Expectations;
 import org.junit.Assert;
 import org.junit.Test;
