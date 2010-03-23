@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ContactSighting;
@@ -16,30 +17,23 @@ import sneer.bricks.snapps.dns.Dns;
 import sneer.bricks.snapps.dns.DnsEntry;
 import sneer.foundation.lang.Consumer;
 
-public class DnsImpl implements Dns {
+class DnsImpl implements Dns {
 
-	ConnectionManager connectionManager = my(ConnectionManager.class);
+	private final ConnectionManager connectionManager = my(ConnectionManager.class);
+	private final Map<Seal, ListRegister<String>> addressesForContact = new LinkedHashMap<Seal, ListRegister<String>>();
 	
-	final Map<Seal, ListRegister<String>> addressesForContact = new LinkedHashMap<Seal, ListRegister<String>>();
+	@SuppressWarnings("unused")
+	private final WeakContract _refToAvoidGc = connectionManager.contactSightings().addReceiver(new Consumer<ContactSighting>() { @Override public void consume(ContactSighting sighting) {
+		sighted(sighting.seal(), sighting.ip());
+	}});
 	
 	public DnsImpl(){
-		registerToSightings();
 		my(TupleSpace.class).keep(DnsEntry.class);
 	}
-
+	
 	@Override
 	public synchronized ListSignal<String> knownIpsForContact(Seal seal) {
 		return addressesForSeal(seal).output();
-	}
-	
-	private void registerToSightings() {
-		connectionManager.contactSightings().addReceiver(new Consumer<ContactSighting>() {
-			@Override
-			public void consume(ContactSighting sighting) {
-				System.out.println(Thread.currentThread());
-				sighted(sighting.seal(), sighting.ip());
-			}
-		});
 	}
 	
 	protected synchronized void sighted(Seal seal, String ip) {
