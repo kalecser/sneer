@@ -68,13 +68,7 @@ public class DnsTests extends BrickTest {
 	}
 
 	private void assertTupleKept(final Tuple expected) {
-		for (Tuple t : my(TupleSpace.class).keptTuples()){
-			if (EqualsBuilder.reflectionEquals(t, expected)){
-				return;
-			}
-		}
-		
-		Assert.fail("Tuple " + expected + " not kept");
+		assertTrue(my(TupleSpace.class).keptTuples().contains(expected));
 	}
 
 	
