@@ -24,6 +24,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import sneer.bricks.hardware.cpu.codec.DecodeException;
+import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
@@ -125,7 +126,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 
 		_txtNickname = my(ReactiveWidgetFactory.class).newTextField(nickname, setter, NotificationPolicy.OnEnterPressedOrLostFocus);
 
-		_seal = my(ReactiveWidgetFactory.class).newTextPane(contactsFormattedSealString(), contactsSealSetter());
+		_seal = my(ReactiveWidgetFactory.class).newTextPane(contactsFormattedSealString(), contactsSealSetter(), NotificationPolicy.OnEnterPressed);
 		_seal.getMainWidget().setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
 		JScrollPane sealScroll =
@@ -165,7 +166,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 				if (contact == null) return my(Signals.class).constant("");
 				return my(Signals.class).adapt(
 					my(ContactSeals.class).sealGiven(contact), new Functor<Seal, String>() { @Override public String evaluate(Seal seal) throws RuntimeException {
-						return seal == null ? "" : my(SealCodec.class).formattedHexEncode(seal);						
+						return (seal == null) ? "" : my(SealCodec.class).formattedHexEncode(seal);						
 					}}
 				);
 			}}
@@ -174,15 +175,19 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 
 	private PickyConsumer<String> contactsSealSetter() {
 		return new PickyConsumer<String>() { @Override public void consume(String sealString) throws Refusal {
-			if (sealString != null && sealString.isEmpty()) sealString = null;
 			String nick = selectedContact().nickname().currentValue();
 			my(ContactSeals.class).put(nick, decode(sealString));
 		}};
 	}
 
 	private Seal decode(String sealString) throws Refusal {
+		if (sealString == null) return null;
+
+		String cleanedSealString = my(Lang.class).strings().deleteWhitespace(sealString);
+		if (cleanedSealString.isEmpty()) return null;
+
 		try {
-			return my(SealCodec.class).hexDecode(sealString);
+			return my(SealCodec.class).hexDecode(cleanedSealString);
 		} catch (DecodeException de) {
 			throw new Refusal(de.getMessage());
 		}
