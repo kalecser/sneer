@@ -3,14 +3,14 @@ package sneer.bricks.network.computers.addresses.dns.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.network.computers.addresses.dns.Dns;
+import sneer.bricks.network.computers.addresses.dns.SightingPublisher;
 import sneer.bricks.network.computers.addresses.dns.DnsEntry;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ContactSighting;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
 
-class DnsImpl implements Dns {
+class SightingPublisherImpl implements SightingPublisher {
 
 	private final ConnectionManager connectionManager = my(ConnectionManager.class);
 	

@@ -9,7 +9,7 @@ import org.junit.Test;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.network.computers.addresses.dns.Dns;
+import sneer.bricks.network.computers.addresses.dns.SightingPublisher;
 import sneer.bricks.network.computers.addresses.dns.DnsEntry;
 import sneer.bricks.network.computers.addresses.dns.tests.mock.MockContactSighting;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
@@ -22,7 +22,7 @@ import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 
-public class DnsTest extends BrickTest {
+public class SightingPublisherTest extends BrickTest {
 
 	@Bind private final ConnectionManager _connectionManager = mock(ConnectionManager.class);
 	@Bind private final ContactSeals _seals = mock(ContactSeals.class);
@@ -32,7 +32,6 @@ public class DnsTest extends BrickTest {
 		checking(new Expectations() {{
 			allowing(_connectionManager).contactSightings(); will(returnValue(_sightingsSource.output()));
 			allowingContactGivenSeal("foo");
-			allowingContactGivenSeal("bar");
 		}
 
 		private void allowingContactGivenSeal(String contact) {
@@ -41,7 +40,7 @@ public class DnsTest extends BrickTest {
 	}
 	
 	@SuppressWarnings("unused")
-	private final Dns _subject = my(Dns.class);
+	private final SightingPublisher _subject = my(SightingPublisher.class);
 	
 	@Test (timeout = 2000)
 	public void testSightingsAreConvertedToTuples(){

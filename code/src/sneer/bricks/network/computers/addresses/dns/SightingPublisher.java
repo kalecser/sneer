@@ -5,7 +5,7 @@ import sneer.foundation.brickness.Brick;
 
 @Snapp
 @Brick
-public interface Dns {
+public interface SightingPublisher {
 
 
 }
