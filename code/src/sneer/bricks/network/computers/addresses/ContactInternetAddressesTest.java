@@ -4,10 +4,14 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
+import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
+import sneer.bricks.network.computers.addresses.sighting.Sighting;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
+import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.exceptions.Refusal;
 
@@ -15,17 +19,45 @@ public class ContactInternetAddressesTest extends BrickTest {
 	
 	private final ContactInternetAddresses _subject = my(ContactInternetAddresses.class);
 	
+	private final Contact contact = produceContact("Neide");
+
+		
 	@Test
-	public void keptAddressesAreFound() throws Refusal {
-		Contact contact = my(Contacts.class).addContact("Neide");
+	public void keptAddressesAreFound(){
 		my(InternetAddressKeeper.class).add(contact, "10.42.10.42", 42);
 		
-		InternetAddress kept = _subject.addresses().currentElements().iterator().next();
+		InternetAddress kept = keptAddress();
 		assertEquals(contact, kept.contact());
 		assertEquals("10.42.10.42", kept.host());
 		assertEquals(42, kept.port());
 	}
 
+	@Test
+	public void dnsAddressesAreFound(){
+		see("10.42.10.42");
+		assertEquals("10.42.10.42", keptAddress().host());
+	}
+
+	private void see(String ip) {
+		my(TupleSpace.class).acquire(new Sighting(seal(), ip));
+		my(TupleSpace.class).waitForAllDispatchingToFinish();
+	}
 	
+	private Seal seal() {
+		return new Seal(new ImmutableByteArray(new byte[]{42}));
+	}
 	
+	private InternetAddress keptAddress() {
+		
+		InternetAddress kept = _subject.addresses().currentElements().iterator().next();
+		return kept;
+	}
+	
+	private Contact produceContact(String nickname) {
+		try {
+			return my(Contacts.class).addContact(nickname);
+		} catch (Refusal e) {
+			throw new IllegalStateException(e);
+		}
+	}
 }

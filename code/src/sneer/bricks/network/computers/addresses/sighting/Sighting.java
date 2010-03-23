@@ -5,17 +5,17 @@ import sneer.bricks.pulp.tuples.Tuple;
 
 public class Sighting extends Tuple {
 
-	public final Seal _peersSeal;
-	public final String _ip;
+	public final Seal peersSeal;
+	public final String ip;
 
-	public Sighting(Seal seal, String ip){
-		_peersSeal = seal;
-		_ip = ip;
+	public Sighting(Seal seal_, String ip_){
+		peersSeal = seal_;
+		ip = ip_;
 	}
 	
 	@Override
 	public String toString() {
-		return "Dns entry seal: " + _peersSeal + " ip: " + _ip;
+		return "Dns entry seal: " + peersSeal + " ip: " + ip;
 	}
 	
 }
