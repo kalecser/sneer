@@ -22,7 +22,7 @@ Igor ====================================================
 
 	- Seals
 		- ContactInfoWindowImpl
-			- Discuss with Klaus refactoring of ContactsInfoWindow
+			- Unignore NullParemterTest
 
 	- Wusic
 		- MusicalTasteMatcher Kernel
