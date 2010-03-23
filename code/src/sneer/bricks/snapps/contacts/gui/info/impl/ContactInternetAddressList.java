@@ -4,8 +4,8 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.util.Comparator;
 
-import sneer.bricks.network.computers.ips.keeper.InternetAddress;
-import sneer.bricks.network.computers.ips.keeper.InternetAddressKeeper;
+import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
+import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.ReactivePredicate;
 import sneer.bricks.pulp.reactive.Signal;

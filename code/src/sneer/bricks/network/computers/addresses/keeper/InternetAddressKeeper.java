@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.ips.keeper;
+package sneer.bricks.network.computers.addresses.keeper;
 
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.collections.SetSignal;

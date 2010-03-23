@@ -1,6 +1,6 @@
-package sneer.bricks.network.computers.ips.keeper.impl;
+package sneer.bricks.network.computers.addresses.keeper.impl;
 
-import sneer.bricks.network.computers.ips.keeper.InternetAddress;
+import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.social.Contact;
 
 class InternetAddressImpl implements InternetAddress {

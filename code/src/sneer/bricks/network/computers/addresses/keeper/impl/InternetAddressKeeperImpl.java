@@ -1,8 +1,8 @@
-package sneer.bricks.network.computers.ips.keeper.impl;
+package sneer.bricks.network.computers.addresses.keeper.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.network.computers.ips.keeper.InternetAddress;
-import sneer.bricks.network.computers.ips.keeper.InternetAddressKeeper;
+import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
+import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;

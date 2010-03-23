@@ -22,7 +22,7 @@ import sneer.bricks.hardware.ram.iterables.Iterables;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.network.computers.ips.keeper.InternetAddressKeeper;
+import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
 import sneer.bricks.network.computers.sockets.connections.receiver.SocketReceiver;
 import sneer.bricks.network.social.Contact;

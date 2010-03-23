@@ -12,7 +12,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.network.computers.ips.keeper.InternetAddressKeeper;
+import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
