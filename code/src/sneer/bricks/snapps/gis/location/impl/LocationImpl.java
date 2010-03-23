@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
-import sneer.bricks.network.httpgateway.HttpGateway;
+import sneer.bricks.network.computers.httpgateway.HttpGateway;
 import sneer.bricks.snapps.gis.location.Location;
 import sneer.foundation.lang.Consumer;
 

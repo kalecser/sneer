@@ -1,4 +1,4 @@
-package sneer.bricks.network.httpgateway;
+package sneer.bricks.network.computers.httpgateway;
 
 import java.io.IOException;
 

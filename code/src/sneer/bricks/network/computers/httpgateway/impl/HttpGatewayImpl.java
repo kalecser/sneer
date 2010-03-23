@@ -1,4 +1,4 @@
-package sneer.bricks.network.httpgateway.impl;
+package sneer.bricks.network.computers.httpgateway.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -7,7 +7,7 @@ import java.net.URL;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.network.httpgateway.HttpGateway;
+import sneer.bricks.network.computers.httpgateway.HttpGateway;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Closure;
