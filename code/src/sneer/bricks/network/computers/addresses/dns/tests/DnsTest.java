@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.dns.Dns;
 import sneer.bricks.network.computers.addresses.dns.DnsEntry;
 import sneer.bricks.network.computers.addresses.dns.tests.mock.MockContactSighting;
@@ -26,11 +27,18 @@ import sneer.foundation.brickness.testsupport.Bind;
 public class DnsTest extends BrickTest {
 
 	@Bind private final ConnectionManager _connectionManager = mock(ConnectionManager.class);
+	@Bind private final ContactSeals _seals = mock(ContactSeals.class);
 	private final EventNotifier<ContactSighting> _sightingsSource = my(EventNotifiers.class).newInstance();
 
 	{
 		checking(new Expectations() {{
-			allowing(_connectionManager).contactSightings(); will(returnValue(_sightingsSource.output()));	
+			allowing(_connectionManager).contactSightings(); will(returnValue(_sightingsSource.output()));
+			allowingContactGivenSeal("foo");
+			allowingContactGivenSeal("bar");
+		}
+
+		private void allowingContactGivenSeal(String contact) {
+			allowing(_seals).contactGiven(sealForContact(contact)); will(returnValue(my(Contacts.class).produceContact(contact)));
 		}});	
 	}
 	
