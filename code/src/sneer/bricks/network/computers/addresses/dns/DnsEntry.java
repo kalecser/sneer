@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.dns;
+package sneer.bricks.network.computers.addresses.dns;
 
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.tuples.Tuple;

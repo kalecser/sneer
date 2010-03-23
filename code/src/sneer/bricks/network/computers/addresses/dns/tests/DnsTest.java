@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.dns.tests;
+package sneer.bricks.network.computers.addresses.dns.tests;
 
 
 import static sneer.foundation.environments.Environments.my;
@@ -9,19 +9,19 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.network.computers.addresses.dns.Dns;
+import sneer.bricks.network.computers.addresses.dns.DnsEntry;
+import sneer.bricks.network.computers.addresses.dns.tests.mock.MockContactSighting;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ContactSighting;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.bricks.snapps.dns.Dns;
-import sneer.bricks.snapps.dns.DnsEntry;
-import sneer.bricks.snapps.dns.tests.mock.MockContactSighting;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 
-public class DnsTests extends BrickTest {
+public class DnsTest extends BrickTest {
 
 	@Bind private final ConnectionManager _connectionManager = mock(ConnectionManager.class);
 	private final EventNotifier<ContactSighting> _sightingsSource = my(EventNotifiers.class).newInstance();

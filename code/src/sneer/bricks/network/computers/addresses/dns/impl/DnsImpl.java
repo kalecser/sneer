@@ -1,16 +1,16 @@
-package sneer.bricks.snapps.dns.impl;
+package sneer.bricks.network.computers.addresses.dns.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.network.computers.addresses.dns.Dns;
+import sneer.bricks.network.computers.addresses.dns.DnsEntry;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ContactSighting;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.tuples.TupleSpace;
-import sneer.bricks.snapps.dns.Dns;
-import sneer.bricks.snapps.dns.DnsEntry;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Producer;
