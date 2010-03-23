@@ -14,6 +14,8 @@ import sneer.bricks.network.computers.addresses.dns.DnsEntry;
 import sneer.bricks.network.computers.addresses.dns.tests.mock.MockContactSighting;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ContactSighting;
+import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.tuples.Tuple;
@@ -72,10 +74,14 @@ public class DnsTest extends BrickTest {
 
 	
 	private Object[] knownIpsForContact(String contact) {
-		return  _subject.knownIpsForContact(sealForContact(contact)).currentElements().toArray();
+		return  _subject.knownIpsForContact(contact(contact)).currentElements().toArray();
 	}
 
 	
+	private Contact contact(String nickname) {
+		return my(Contacts.class).produceContact(nickname);
+	}
+
 	private void see(String contact, String ip) {
 		Seal seal = sealForContact(contact);
 		_sightingsSource.notifyReceivers(new MockContactSighting(ip, seal));
@@ -85,6 +91,8 @@ public class DnsTest extends BrickTest {
 	private Seal sealForContact(String contact) {
 		return new Seal(new ImmutableByteArray(contact.getBytes()));
 	}
+	
+	
 
 	
 }

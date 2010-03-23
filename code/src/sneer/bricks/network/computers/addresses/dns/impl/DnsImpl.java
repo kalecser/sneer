@@ -3,10 +3,12 @@ package sneer.bricks.network.computers.addresses.dns.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.dns.Dns;
 import sneer.bricks.network.computers.addresses.dns.DnsEntry;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ContactSighting;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
@@ -18,7 +20,7 @@ import sneer.foundation.lang.Producer;
 class DnsImpl implements Dns {
 
 	private final ConnectionManager connectionManager = my(ConnectionManager.class);
-	private final CacheMap<Seal, ListRegister<String>> addressesForContact = CacheMap.newInstance();
+	private final CacheMap<Contact, ListRegister<String>> addressesForContact = CacheMap.newInstance();
 	
 	@SuppressWarnings("unused")
 	private final WeakContract _refToAvoidGc = connectionManager.contactSightings().addReceiver(new Consumer<ContactSighting>() { @Override public void consume(ContactSighting sighting) {
@@ -32,19 +34,20 @@ class DnsImpl implements Dns {
 	
 	
 	@Override
-	public ListSignal<String> knownIpsForContact(Seal seal) {
-		return addressesForSeal(seal).output();
+	public ListSignal<String> knownIpsForContact(Contact contact) {
+		return addressesForContact(contact).output();
 	}
 	
 
 	private void sighted(Seal seal, String ip) {
-		addressesForSeal(seal).add(ip);
+		Contact contact = my(ContactSeals.class).contactGiven(seal);
+		addressesForContact(contact).add(ip);
 		my(TupleSpace.class).acquire(new DnsEntry(seal, ip));
 	}
 
 	
-	private ListRegister<String> addressesForSeal(Seal seal) {
-		return addressesForContact.get(seal, new Producer<ListRegister<String>>() {	@Override 	public ListRegister<String> produce() throws RuntimeException {
+	private ListRegister<String> addressesForContact(Contact contact) {
+		return addressesForContact.get(contact, new Producer<ListRegister<String>>() {	@Override 	public ListRegister<String> produce() throws RuntimeException {
 			return my(CollectionSignals.class).newListRegister();
 		}});
 	}
