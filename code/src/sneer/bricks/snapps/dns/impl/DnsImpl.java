@@ -11,7 +11,9 @@ import sneer.bricks.network.computers.sockets.connections.ContactSighting;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
+import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.snapps.dns.Dns;
+import sneer.bricks.snapps.dns.DnsEntry;
 import sneer.foundation.lang.Consumer;
 
 public class DnsImpl implements Dns {
@@ -21,12 +23,8 @@ public class DnsImpl implements Dns {
 	final Map<Seal, ListRegister<String>> addressesForContact = new LinkedHashMap<Seal, ListRegister<String>>();
 	
 	public DnsImpl(){
-		connectionManager.contactSightings().addReceiver(new Consumer<ContactSighting>() {
-			@Override
-			public void consume(ContactSighting sighting) {
-				sighted(sighting.seal(), sighting.ip());
-			}
-		});
+		registerToSightings();
+		my(TupleSpace.class).keep(DnsEntry.class);
 	}
 
 	@Override
@@ -34,8 +32,19 @@ public class DnsImpl implements Dns {
 		return addressesForSeal(seal).output();
 	}
 	
+	private void registerToSightings() {
+		connectionManager.contactSightings().addReceiver(new Consumer<ContactSighting>() {
+			@Override
+			public void consume(ContactSighting sighting) {
+				System.out.println(Thread.currentThread());
+				sighted(sighting.seal(), sighting.ip());
+			}
+		});
+	}
+	
 	protected synchronized void sighted(Seal seal, String ip) {
 		addressesForSeal(seal).add(ip);
+		my(TupleSpace.class).acquire(new DnsEntry(seal, ip));
 	}
 
 	private synchronized ListRegister<String> addressesForSeal(Seal seal) {
