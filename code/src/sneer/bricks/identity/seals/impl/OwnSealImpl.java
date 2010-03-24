@@ -28,7 +28,7 @@ class OwnSealImpl implements OwnSeal {
 		if ("true".equals(System.getProperty("sneer.dummy")))
 			return dummySeal();
 
-		//All this complexity with a separate prevalent OwnSealKeeper is because the source of randomness cannot be inside a prevalent brick.
+		//This complexity with a separate prevalent OwnSealGenerator is because the source of randomness cannot be inside a prevalent brick.
 		if (my(OwnSealGenerator.class).needsToGenerateOwnSeal())
 			my(OwnSealGenerator.class).generateOwnSeal(randomness());
 		
