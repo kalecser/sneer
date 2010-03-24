@@ -28,6 +28,8 @@ import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
 class TrackEndorserImpl implements TrackEndorser {
 
+	private static final int ENDORSEMENT_INTERVAL = 60 * 1000;
+
 	private static final File[] FILE_ARRAY = new File[0];
 
 	private final ImmutableReference<Signal<Boolean>> _onOffSwitch = my(ImmutableReferences.class).newInstance();
@@ -49,7 +51,7 @@ class TrackEndorserImpl implements TrackEndorser {
 	private void turnSwitch(Boolean isOn) {
 		if (isOn) {
 			my(FileServer.class);
-			_timerContract = my(Timer.class).wakeUpNowAndEvery(60 * 1000, new Closure() { @Override public void run() {
+			_timerContract = my(Timer.class).wakeUpNowAndEvery(ENDORSEMENT_INTERVAL, new Closure() { @Override public void run() {
 				endorseRandomTrack();
 			}});
 
