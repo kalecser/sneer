@@ -15,6 +15,10 @@ import java.util.Set;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import sneer.foundation.brickness.Brickness;
+import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
+
 public class Main {
 
 	public static void main(String[] args) throws Exception {
@@ -23,21 +27,29 @@ public class Main {
 		
 		Security.addProvider(new BouncyCastleProvider());
 		
-		
-		
-		for (int i = 0; i < 10; i++)
-			generateKeyPair();
-		
-		
-		
 		printProvidersAndServices();
 		
 		byte[] message = new SecureRandom().generateSeed(10);
 		
-		testSHA512(message);
-		testRSA(message);
+		testHash(message);
+		testPK(message);
+		
+		testKeySerialization();
 	}
 
+	
+	private static void testKeySerialization() throws Exception {
+		final KeyPair keys = generateKeyPair();
+		
+		Environments.runWith(Brickness.newBrickContainer(), new Closure() { @Override public void run() {
+//			byte[] serialized = my(Serializer.class).serialize(keys.getPublic());
+			byte[] encoded = keys.getPublic().getEncoded();
+			System.out.println(encoded);
+		}});
+		
+	}
+
+	
 	private static void printProvidersAndServices() {
 		HashSet<String> serviceTypes = new HashSet<String>();
 
@@ -62,7 +74,7 @@ public class Main {
 		}
 		}
 
-	private static void testSHA512(byte[] message) throws Exception {
+	private static void testHash(byte[] message) throws Exception {
 		//MessageDigest digester = MessageDigest.getInstance("SHA-512", "SUN");
 		//MessageDigest digester = MessageDigest.getInstance("WHIRLPOOL", "BC");
 		MessageDigest digester = MessageDigest.getInstance("SHA-512", "BC");
@@ -70,11 +82,12 @@ public class Main {
 		System.out.println("Digest length: " + digest.length * 8 + " bits");
 	}
 
-	private static void testRSA(byte[] bytecodeDummy) throws Exception {
+	private static void testPK(byte[] bytecodeDummy) throws Exception {
 		KeyPair keys = generateKeyPair();
+				
 		byte[] signature = generateSignature(keys.getPrivate(), bytecodeDummy);
 		boolean ok = verifySignature(keys.getPublic(), bytecodeDummy, signature);
-		System.out.println("RSA Signature ok: " + ok);
+		System.out.println("PK Signature ok: " + ok);
 	}
 
 		
@@ -90,11 +103,11 @@ public class Main {
 //		random.setSeed(seed);
 
 //		KeyPairGenerator keypairgenerator = KeyPairGenerator.getInstance("RSA", "SunRsaSign");
-		KeyPairGenerator keypairgenerator = KeyPairGenerator.getInstance("RSA", "BC");
-		keypairgenerator.initialize(4096, random);
+//		KeyPairGenerator keypairgenerator = KeyPairGenerator.getInstance("RSA", "BC");
+//		keypairgenerator.initialize(4096, random);
 		
-//		KeyPairGenerator keypairgenerator = KeyPairGenerator.getInstance("ECDSA", "BC");
-//		keypairgenerator.initialize(256, random);
+		KeyPairGenerator keypairgenerator = KeyPairGenerator.getInstance("ECDSA", "BC");
+		keypairgenerator.initialize(256, random);
 
 		try {
 			return keypairgenerator.generateKeyPair();
