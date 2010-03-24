@@ -76,6 +76,12 @@ abstract class AbstractDownload implements Download {
 
 
 	@Override
+	public Sneer1024 hash() {
+		return _hash;
+	}
+
+
+	@Override
 	public void waitTillFinished() throws IOException, TimeoutException {
 		_isFinished.waitTillOpen();
 		if (_exception != null)
@@ -197,6 +203,36 @@ abstract class AbstractDownload implements Download {
 	void checkForTimeOut() {
 		if (my(Clock.class).time().currentValue() - _startTime >= TIMEOUT_LIMIT)
 			finishWith(new TimeoutException("Timeout downloading " + _actualPath.getAbsolutePath()));
+	}
+
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((_hash == null) ? 0 : _hash.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		AbstractDownload other = (AbstractDownload) obj;
+		if (_hash == null) {
+			if (other._hash != null)
+				return false;
+		} else if (!_hash.equals(other._hash))
+			return false;
+		return true;
+	}
+
+
+	@Override
+	protected void finalize() throws Throwable {
+		this.dispose();
 	}
 
 }

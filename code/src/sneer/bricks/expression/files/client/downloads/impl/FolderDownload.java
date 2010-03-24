@@ -50,10 +50,8 @@ class FolderDownload extends AbstractDownload {
 	private void receiveFolder(FolderContents contents) {
 		try {
 			tryToReceiveFolder(contents);
-		} catch (IOException ioe) {
-			finishWith(ioe);
-		} catch (TimeoutException te) {
-			finishWith(te);
+		} catch (Exception e) {
+			finishWith(e);
 		}
 	}
 

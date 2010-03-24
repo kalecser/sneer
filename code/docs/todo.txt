@@ -22,12 +22,12 @@ Igor ====================================================
 
 	- Seals
 		- ContactInfoWindowImpl
-			- Unignore NullParemterTest
+			- Unignore NullParemterTest and fix problem with Prevalent Nature
 
 	- Wusic
 		- MusicalTasteMatcher Kernel
-			- [Klaus] Discuss path-based score model
-			- Finish MusicalTasteMatcherTest
+			- Implement MusicalTasteMatcherTest
+			- Make MusicalTasteMatcher prevalent
 		- Downloads
 			- Do not download files user already has (includes peertracks) - check if it's working after the changes made to AbstractDownload
 		- Nice-to-have:

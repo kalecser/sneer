@@ -3,8 +3,10 @@ package dfcsantos.tracks.endorsements.client.downloads.downloader.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
@@ -12,22 +14,23 @@ import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.assessment.tastematcher.MusicalTasteMatcher;
+import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.endorsements.client.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.endorsements.client.downloads.downloader.TrackDownloader;
 import dfcsantos.tracks.endorsements.protocol.TrackEndorsement;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.tracks.storage.rejected.RejectedTracksKeeper;
+import dfcsantos.tracks.tastematching.MusicalTasteMatcher;
 
 class TrackDownloaderImpl implements TrackDownloader {
 
@@ -37,7 +40,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 	private final ImmutableReference<Signal<Integer>> _downloadAllowance = my(ImmutableReferences.class).newInstance();
 
-	private final Set<Sneer1024> _tracksBeingDownloaded = new HashSet<Sneer1024>(); 
+	private final Map<Download, Float> _downloadsAndMatchRatings = new HashMap<Download, Float>();
 
 	@SuppressWarnings("unused") private final WeakContract _trackEndorsementConsumerContract;
 
@@ -61,23 +64,24 @@ class TrackDownloaderImpl implements TrackDownloader {
 		if (!isOn()) return;
 
 		if (isFromUnknownPublisher(endorsement)) return;
+		if (isFromMe(endorsement)) return;
+
+		preemptDownloadIfNecessary(
+			updateMusicalTasteMatcherAndReturnMatchRating(endorsement)
+		);
 
 		if (hasReachedDownloadLimit()) return;
-
-		if (my(OwnSeal.class).get().equals(endorsement.publisher)) return;
 
 		if (isDuplicated(endorsement)) return;
 		if (isRejected(endorsement)) return;
 		if (hasSpentDownloadAllowance()) return;
 
-		if (!isFromTheBestAvailableSource(endorsement)) return;
-
 		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
-		_tracksBeingDownloaded.add(endorsement.hash);
+		_downloadsAndMatchRatings.put(download, updateMusicalTasteMatcherAndReturnMatchRating(endorsement));
 
 		WeakContract weakContract = download.finished().addPulseReceiver(new Runnable() { @Override public void run() {
 			my(TrackDownloadCounter.class).conditionalIncrementer(download.hasFinishedSuccessfully()).run();
-			_tracksBeingDownloaded.remove(endorsement.hash);
+			_downloadsAndMatchRatings.remove(endorsement.hash);
 		}});
 
 		my(WeakReferenceKeeper.class).keep(download, weakContract);
@@ -92,14 +96,60 @@ class TrackDownloaderImpl implements TrackDownloader {
 		return senderOf(endorsement) == null;
 	}
 
+	private boolean isFromMe(final TrackEndorsement endorsement) {
+		return my(OwnSeal.class).get().equals(endorsement.publisher);
+	}
+
+	private float updateMusicalTasteMatcherAndReturnMatchRating(final TrackEndorsement endorsement) {
+		Contact sender = senderOf(endorsement);
+		String folder = new File(endorsement.path).getParent();
+		float endorsementMatchRating = Float.MAX_VALUE;
+
+		if (isMatch(endorsement))
+			my(MusicalTasteMatcher.class).processEndorsementOfKnownTrack(sender, folder);
+		else
+			endorsementMatchRating = my(MusicalTasteMatcher.class).processEndorsementOfUnknownTrackAndReturnMatchRating(sender, folder);
+
+		return endorsementMatchRating;
+	}
+
+	private boolean isMatch(final TrackEndorsement endorsement) {
+		return my(FileMap.class).getFile(endorsement.hash) != null;
+	}
+
+	private void preemptDownloadIfNecessary(float endorsementMatchRating) {
+		Download downloadToBePreempted = null;
+		float minMatchRating = endorsementMatchRating;
+
+		for (Entry<Download, Float> downloadAndMatchRating : _downloadsAndMatchRatings.entrySet()) {
+			Float matchRating = downloadAndMatchRating.getValue();
+			if (matchRating < minMatchRating) {
+				minMatchRating = matchRating;
+				downloadToBePreempted = downloadAndMatchRating.getKey();
+			}
+		}
+
+		if (downloadToBePreempted != null) {
+			_downloadsAndMatchRatings.remove(downloadToBePreempted);
+			downloadToBePreempted.dispose();
+		}
+		
+	}
+
 	private boolean hasReachedDownloadLimit() {
-		return _tracksBeingDownloaded.size() >= CONCURRENT_DOWNLOADS_LIMIT; 
+		return _downloadsAndMatchRatings.size() >= CONCURRENT_DOWNLOADS_LIMIT; 
 	}
 
 	private boolean isDuplicated(TrackEndorsement endorsement) {
-		if (_tracksBeingDownloaded.contains(endorsement.hash)) return true;
+		if (hashesOfRunningDownloads().contains(endorsement.hash)) return true;
 		if (my(FileMap.class).getFile(endorsement.hash) != null) return true;
 		return false;
+	}
+
+	private Collection<Sneer1024> hashesOfRunningDownloads() {
+		return my(CollectionUtils.class).map(_downloadsAndMatchRatings.keySet(), new Functor<Download, Sneer1024>() { @Override public Sneer1024 evaluate(Download download) throws RuntimeException {
+			return download.hash();
+		}});
 	}
 
 	private static boolean isRejected(TrackEndorsement endorsement) {
@@ -122,21 +172,8 @@ class TrackDownloaderImpl implements TrackDownloader {
 		return 1024 * 1024 * _downloadAllowance.get().currentValue();
 	}
 
-	private boolean isFromTheBestAvailableSource(TrackEndorsement endorsement) {
-		Contact bestMatch = my(MusicalTasteMatcher.class).bestMatch().currentValue();
-		if (bestMatch == null) return true;
-		if (!my(Stethoscope.class).isAlive(bestMatch).currentValue()) return true;
-
-		Contact source = senderOf(endorsement);
-		if(bestMatch.equals(source)) return true;
-		return false;
-	}
-
 	private static File fileToWrite(TrackEndorsement endorsement) {
-		String trackName = new File(endorsement.path).getName();
-		Contact peer = senderOf(endorsement);
-		String fileName = peer.nickname().currentValue() + File.separator + trackName;
-		return new File(peerTracksFolder(), fileName);
+		return new File(peerTracksFolder(), new File(endorsement.path).getName());
 	}
 
 	private static Contact senderOf(TrackEndorsement endorsement) {
