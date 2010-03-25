@@ -6,8 +6,8 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface MusicalTasteMatcher {
 
-    void processEndorsementOfKnownTrack(Contact sender, String folder);
+    void processEndorsement(Contact sender, String folder, boolean isKnownTrack);
 
-    float processEndorsementOfUnknownTrackAndReturnMatchRating(Contact sender, String folder);
+    float ratingFor(Contact sender, String folder);
 
 }

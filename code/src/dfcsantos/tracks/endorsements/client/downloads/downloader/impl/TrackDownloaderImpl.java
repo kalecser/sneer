@@ -66,18 +66,18 @@ class TrackDownloaderImpl implements TrackDownloader {
 		if (isFromUnknownPublisher(endorsement)) return;
 		if (isFromMe(endorsement)) return;
 
-		preemptDownloadIfNecessary(
-			updateMusicalTasteMatcherAndReturnMatchRating(endorsement)
-		);
+		if (isDuplicated(endorsement)) return;
+
+		updateMusicalTasteMatcher(endorsement, false);
+		killDownloadWithTheLowestRatingWorseThan(matchRatingFor(endorsement));
 
 		if (hasReachedDownloadLimit()) return;
 
-		if (isDuplicated(endorsement)) return;
 		if (isRejected(endorsement)) return;
 		if (hasSpentDownloadAllowance()) return;
 
 		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
-		_downloadsAndMatchRatings.put(download, updateMusicalTasteMatcherAndReturnMatchRating(endorsement));
+		_downloadsAndMatchRatings.put(download, matchRatingFor(endorsement));
 
 		WeakContract weakContract = download.finished().addPulseReceiver(new Runnable() { @Override public void run() {
 			my(TrackDownloadCounter.class).conditionalIncrementer(download.hasFinishedSuccessfully()).run();
@@ -100,40 +100,34 @@ class TrackDownloaderImpl implements TrackDownloader {
 		return my(OwnSeal.class).get().equals(endorsement.publisher);
 	}
 
-	private float updateMusicalTasteMatcherAndReturnMatchRating(final TrackEndorsement endorsement) {
-		Contact sender = senderOf(endorsement);
-		String folder = new File(endorsement.path).getParent();
-		float endorsementMatchRating = Float.MAX_VALUE;
-
-		if (isMatch(endorsement))
-			my(MusicalTasteMatcher.class).processEndorsementOfKnownTrack(sender, folder);
-		else
-			endorsementMatchRating = my(MusicalTasteMatcher.class).processEndorsementOfUnknownTrackAndReturnMatchRating(sender, folder);
-
-		return endorsementMatchRating;
-	}
-
-	private boolean isMatch(final TrackEndorsement endorsement) {
-		return my(FileMap.class).getFile(endorsement.hash) != null;
-	}
-
-	private void preemptDownloadIfNecessary(float endorsementMatchRating) {
-		Download downloadToBePreempted = null;
+	private void killDownloadWithTheLowestRatingWorseThan(float endorsementMatchRating) {
+		Download sentencedToDeath = null;
 		float minMatchRating = endorsementMatchRating;
 
 		for (Entry<Download, Float> downloadAndMatchRating : _downloadsAndMatchRatings.entrySet()) {
 			Float matchRating = downloadAndMatchRating.getValue();
 			if (matchRating < minMatchRating) {
 				minMatchRating = matchRating;
-				downloadToBePreempted = downloadAndMatchRating.getKey();
+				sentencedToDeath = downloadAndMatchRating.getKey();
 			}
 		}
 
-		if (downloadToBePreempted != null) {
-			_downloadsAndMatchRatings.remove(downloadToBePreempted);
-			downloadToBePreempted.dispose();
+		if (sentencedToDeath != null) {
+			_downloadsAndMatchRatings.remove(sentencedToDeath);
+			sentencedToDeath.dispose();
 		}
-		
+	}
+
+	private float matchRatingFor(final TrackEndorsement endorsement) {
+		Contact sender = senderOf(endorsement);
+		String folder = new File(endorsement.path).getParent();
+		return my(MusicalTasteMatcher.class).ratingFor(sender, folder);
+	}
+
+	private void updateMusicalTasteMatcher(TrackEndorsement endorsement, boolean isKnownTrack) {
+		Contact sender = senderOf(endorsement);
+		String folder = new File(endorsement.path).getParent();
+		my(MusicalTasteMatcher.class).processEndorsement(sender, folder, isKnownTrack);
 	}
 
 	private boolean hasReachedDownloadLimit() {
@@ -142,8 +136,15 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 	private boolean isDuplicated(TrackEndorsement endorsement) {
 		if (hashesOfRunningDownloads().contains(endorsement.hash)) return true;
-		if (my(FileMap.class).getFile(endorsement.hash) != null) return true;
+		if (isMatch(endorsement)) {
+			updateMusicalTasteMatcher(endorsement, true);
+			return true;
+		}
 		return false;
+	}
+
+	private boolean isMatch(final TrackEndorsement endorsement) {
+		return my(FileMap.class).getFile(endorsement.hash) != null;
 	}
 
 	private Collection<Sneer1024> hashesOfRunningDownloads() {
