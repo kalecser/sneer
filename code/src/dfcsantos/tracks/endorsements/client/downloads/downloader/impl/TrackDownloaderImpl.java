@@ -100,6 +100,19 @@ class TrackDownloaderImpl implements TrackDownloader {
 		return my(OwnSeal.class).get().equals(endorsement.publisher);
 	}
 
+	private boolean isDuplicated(TrackEndorsement endorsement) {
+		if (hashesOfRunningDownloads().contains(endorsement.hash)) return true;
+		if (isMatch(endorsement)) {
+			updateMusicalTasteMatcher(endorsement, true);
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isMatch(final TrackEndorsement endorsement) {
+		return my(FileMap.class).getFile(endorsement.hash) != null;
+	}
+
 	private void killDownloadWithTheLowestRatingWorseThan(float endorsementMatchRating) {
 		Download sentencedToDeath = null;
 		float minMatchRating = endorsementMatchRating;
@@ -132,19 +145,6 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 	private boolean hasReachedDownloadLimit() {
 		return _downloadsAndMatchRatings.size() >= CONCURRENT_DOWNLOADS_LIMIT; 
-	}
-
-	private boolean isDuplicated(TrackEndorsement endorsement) {
-		if (hashesOfRunningDownloads().contains(endorsement.hash)) return true;
-		if (isMatch(endorsement)) {
-			updateMusicalTasteMatcher(endorsement, true);
-			return true;
-		}
-		return false;
-	}
-
-	private boolean isMatch(final TrackEndorsement endorsement) {
-		return my(FileMap.class).getFile(endorsement.hash) != null;
 	}
 
 	private Collection<Sneer1024> hashesOfRunningDownloads() {
