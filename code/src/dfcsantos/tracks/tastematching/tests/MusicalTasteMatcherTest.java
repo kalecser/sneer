@@ -2,98 +2,47 @@ package dfcsantos.tracks.tastematching.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.expression.files.map.FileMap;
-import sneer.bricks.hardware.cpu.crypto.Crypto;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
-import sneer.bricks.hardware.io.IO;
-import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.ClosureX;
-import dfcsantos.tracks.endorsements.client.TrackClient;
-import dfcsantos.tracks.endorsements.server.TrackEndorser;
-import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
+import sneer.foundation.lang.exceptions.Refusal;
+import dfcsantos.tracks.tastematching.MusicalTasteMatcher;
 
-@Ignore
 public class MusicalTasteMatcherTest extends BrickTest {
 
+	private MusicalTasteMatcher _subject = my(MusicalTasteMatcher.class);
+
 	@Test (timeout = 4000)
-	public void endorsementProcessing() throws IOException {
-		/*
-		 * 1) Create the following tracks in the 'tmp folder':
-		 * 		- Rock 'n' Roll/ACDC/Black Ice/01 - Rock N Roll Train.mp3
-		 * 		- Rock 'n' Roll/ACDC/Black Ice/02 - Skies On Fire.mp3
-		 * 		- Rock 'n' Roll/ACDC/Black Ice/03 - Big Jack.mp3
-		 * 		- etc
-		 * 2) Set the 'shared tracks folder' to point to 'tmp folder'
-		 * 3) Activate the TrackEndorser
-		 * 4) Create remote environment to receive endorsements
-		 * 5) Insert some of the tracks created by the local environment in the file map of the remote environment 
-		 * 6) Activate remote environment's TrackClient
-		 * 7) Make sure tracks are received by the remote environment in a particular order based on the taste matching.
-		 * 
-		 */
+	public void endorsementProcessing() throws Refusal {
+		Contact neide = my(Contacts.class).addContact("Neide");
 
-		final List<File> sampleTracks = createSampleTracks(
-			"Rock 'n' Roll/ACDC/Black Ice/01 - Rock N Roll Train.mp3",
-			"Rock 'n' Roll/ACDC/Black Ice/02 - Skies On Fire.mp3",
-			"Rock 'n' Roll/ACDC/Black Ice/03 - Big Jack.mp3"
-		);
+		String folderOfRocketManAlbum = "My Fauvorites Songs/Pop/Elton John/Rocket Man";
+		_subject.processEndorsement(neide, folderOfRocketManAlbum, false);
+		assertEquals(0, _subject.ratingFor(neide, folderOfRocketManAlbum), 0.001);
 
-		my(TracksFolderKeeper.class).setSharedTracksFolder(tmpFolder());
+		String folderOfVivaLaVidaAlbum = "My Fauvorites Songs/Pop/Coldplay/Viva La Vida";
+		_subject.processEndorsement(neide, folderOfVivaLaVidaAlbum, false);
+		assertEquals(0, _subject.ratingFor(neide, folderOfVivaLaVidaAlbum), 0.001);
+		_subject.processEndorsement(neide, folderOfVivaLaVidaAlbum, true);
+		assertEquals(1/2, _subject.ratingFor(neide, folderOfVivaLaVidaAlbum), 0.001);
+		_subject.processEndorsement(neide, folderOfVivaLaVidaAlbum, true);
+		assertEquals(2/3, _subject.ratingFor(neide, folderOfVivaLaVidaAlbum), 0.001);
+		_subject.processEndorsement(neide, folderOfVivaLaVidaAlbum, true);
+		assertEquals(3/4, _subject.ratingFor(neide, folderOfVivaLaVidaAlbum), 0.001);
+		_subject.processEndorsement(neide, folderOfVivaLaVidaAlbum, true);
+		assertEquals(4/5, _subject.ratingFor(neide, folderOfVivaLaVidaAlbum), 0.001);
 
-		activateTrackEndorser();
+		Contact mister = my(Contacts.class).addContact("Mr. Mister");
 
-		Environment remoteEnvironment = newTestEnvironment(my(TupleSpace.class));
-		configureFoldersOf(remoteEnvironment);
-
-		Environments.runWith(remoteEnvironment, new ClosureX<IOException>() { @Override public void run() throws IOException {
-			File sharedTasteTrack = sampleTracks.get(0);
-			keep(sharedTasteTrack);
-			activateTrackClient();
-		}});
-
-	}
-
-	private List<File> createSampleTracks(String... tracks) throws IOException {
-		List<File> sampleTracks = new ArrayList<File>();
-		for (String track : tracks) {
-			File sampleTrack = new File(tmpFolder(), track);
-			my(IO.class).files().writeString(sampleTrack, track);
-			sampleTracks.add(sampleTrack);
-		}
-		return sampleTracks;
-	}
-
-	private void activateTrackEndorser() {
-		my(TrackEndorser.class).setOnOffSwitch(my(Signals.class).constant(true));
-	}
-
-	private void activateTrackClient() {
-		my(TrackClient.class).setOnOffSwitch(my(Signals.class).constant(true));
-	}
-
-	private void configureFoldersOf(Environment remoteEnvironment) {
-		configureStorageFolder(remoteEnvironment, "remote/data");
-		configureTmpFolder(remoteEnvironment, "remote/tmp");
-	}
-
-	private void keep(File sharedTasteTrack) throws IOException {
-		my(FileMap.class).putFile(sharedTasteTrack, hashFor(sharedTasteTrack));
-	}
-
-	private Sneer1024 hashFor(File track) throws IOException {
-		return my(Crypto.class).digest(track);
+		String folderOfFrankSinatra = "My Music/Jazz/Frank Sinatra/The Best Of The Columbia Years";
+		_subject.processEndorsement(mister, folderOfFrankSinatra, true);
+		assertEquals(1, _subject.ratingFor(mister, folderOfFrankSinatra), 0.001);
+		_subject.processEndorsement(mister, folderOfFrankSinatra, false);
+		assertEquals(1/2, _subject.ratingFor(mister, folderOfFrankSinatra), 0.001);
+		_subject.processEndorsement(mister, folderOfFrankSinatra, false);
+		assertEquals(1/3, _subject.ratingFor(mister, folderOfFrankSinatra), 0.001);
 	}
 
 }
