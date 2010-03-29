@@ -22,7 +22,7 @@ Igor ====================================================
 
 	- Seals
 		- ContactInfoWindowImpl
-			- Unignore NullParemterTest and fix problem with Prevalent Nature
+			- Unignore NullParameterTest and fix problem with Prevalent Nature
 
 	- Wusic
 		- MusicalTasteMatcher Kernel
