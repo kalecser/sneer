@@ -44,37 +44,28 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 	@SuppressWarnings("unused") private final WeakContract _trackEndorsementConsumerContract;
 
+	
 	{
 		_trackEndorsementConsumerContract = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement endorsement) {
 			consumeTrackEndorsement(endorsement);
 		}});
 	}
 
+	
 	@Override
 	public void setOnOffSwitch(Signal<Boolean> onOffSwitch) {
 		_onOffSwitch.set(onOffSwitch);
 	}
 
+	
 	@Override
 	public void setTrackDownloadAllowance(Signal<Integer> downloadAllowance) {
 		_downloadAllowance.set(downloadAllowance);
 	}
 
+	
 	private void consumeTrackEndorsement(final TrackEndorsement endorsement) {
-		if (!isOn()) return;
-
-		if (isFromUnknownPublisher(endorsement)) return;
-		if (isFromMe(endorsement)) return;
-
-		if (isDuplicated(endorsement)) return;
-
-		updateMusicalTasteMatcher(endorsement, false);
-		killDownloadWithTheLowestRatingWorseThan(matchRatingFor(endorsement));
-
-		if (hasReachedDownloadLimit()) return;
-
-		if (isRejected(endorsement)) return;
-		if (hasSpentDownloadAllowance()) return;
+		if (!prepareForDownload(endorsement)) return;
 
 		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash);
 		_downloadsAndMatchRatings.put(download, matchRatingFor(endorsement));
@@ -87,32 +78,50 @@ class TrackDownloaderImpl implements TrackDownloader {
 		my(WeakReferenceKeeper.class).keep(download, weakContract);
 	}
 
+	
+	private boolean prepareForDownload(final TrackEndorsement endorsement) {
+		if (!isOn()) return false;
+
+		if (isFromUnknownPublisher(endorsement)) return false;
+		if (isFromMe(endorsement)) return false;
+
+		boolean isKnown = isKnown(endorsement);
+		updateMusicalTasteMatcher(endorsement, isKnown);
+		if (isKnown) return false;
+
+		if (isRejected(endorsement)) return false;
+		if (hasSpentDownloadAllowance()) return false;
+
+		killDownloadWithTheLowestRatingWorseThan(matchRatingFor(endorsement));
+		if (hasReachedDownloadLimit()) return false;
+		
+		return true;
+	}
+
+	
 	private boolean isOn() {
 		if (!_onOffSwitch.isAlreadySet()) return false;
 		return _onOffSwitch.get().currentValue();
 	}
 
+	
 	private static boolean isFromUnknownPublisher(final TrackEndorsement endorsement) {
 		return senderOf(endorsement) == null;
 	}
 
+	
 	private boolean isFromMe(final TrackEndorsement endorsement) {
 		return my(OwnSeal.class).get().equals(endorsement.publisher);
 	}
 
-	private boolean isDuplicated(TrackEndorsement endorsement) {
+	
+	private boolean isKnown(TrackEndorsement endorsement) {
 		if (hashesOfRunningDownloads().contains(endorsement.hash)) return true;
-		if (isMatch(endorsement)) {
-			updateMusicalTasteMatcher(endorsement, true);
-			return true;
-		}
+		if (my(FileMap.class).getFile(endorsement.hash) != null) return true;
 		return false;
 	}
 
-	private boolean isMatch(final TrackEndorsement endorsement) {
-		return my(FileMap.class).getFile(endorsement.hash) != null;
-	}
-
+	
 	private void killDownloadWithTheLowestRatingWorseThan(float endorsementMatchRating) {
 		Download sentencedToDeath = null;
 		float minMatchRating = endorsementMatchRating;
@@ -131,52 +140,63 @@ class TrackDownloaderImpl implements TrackDownloader {
 		}
 	}
 
+	
 	private float matchRatingFor(final TrackEndorsement endorsement) {
 		Contact sender = senderOf(endorsement);
 		String folder = new File(endorsement.path).getParent();
 		return my(MusicalTasteMatcher.class).ratingFor(sender, folder);
 	}
 
+	
 	private void updateMusicalTasteMatcher(TrackEndorsement endorsement, boolean isKnownTrack) {
 		Contact sender = senderOf(endorsement);
 		String folder = new File(endorsement.path).getParent();
 		my(MusicalTasteMatcher.class).processEndorsement(sender, folder, isKnownTrack);
 	}
 
+	
 	private boolean hasReachedDownloadLimit() {
 		return _downloadsAndMatchRatings.size() >= CONCURRENT_DOWNLOADS_LIMIT; 
 	}
 
+	
 	private Collection<Sneer1024> hashesOfRunningDownloads() {
 		return my(CollectionUtils.class).map(_downloadsAndMatchRatings.keySet(), new Functor<Download, Sneer1024>() { @Override public Sneer1024 evaluate(Download download) throws RuntimeException {
 			return download.hash();
 		}});
 	}
 
+	
 	private static boolean isRejected(TrackEndorsement endorsement) {
 		return my(RejectedTracksKeeper.class).isRejected(endorsement.hash);
 	}
 
+	
 	private boolean hasSpentDownloadAllowance() {
 		return peerTracksFolderSize() >= downloadAllowanceInBytes();
 	}
 
+	
 	private static long peerTracksFolderSize() {
 		return my(IO.class).files().sizeOfFolder(peerTracksFolder());
 	}
 
+	
 	private static File peerTracksFolder() {
 		return my(TracksFolderKeeper.class).peerTracksFolder();
 	}
 
+	
 	private int downloadAllowanceInBytes() {
 		return 1024 * 1024 * _downloadAllowance.get().currentValue();
 	}
 
+	
 	private static File fileToWrite(TrackEndorsement endorsement) {
 		return new File(peerTracksFolder(), new File(endorsement.path).getName());
 	}
 
+	
 	private static Contact senderOf(TrackEndorsement endorsement) {
 		return my(ContactSeals.class).contactGiven(endorsement.publisher);
 	}
