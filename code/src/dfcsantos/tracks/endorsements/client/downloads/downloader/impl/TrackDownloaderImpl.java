@@ -4,8 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import sneer.bricks.expression.files.client.FileClient;
@@ -22,6 +20,9 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.collections.CollectionSignals;
+import sneer.bricks.pulp.reactive.collections.MapRegister;
+import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
@@ -40,7 +41,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 	private final ImmutableReference<Signal<Integer>> _downloadAllowance = my(ImmutableReferences.class).newInstance();
 
-	private final Map<Download, Float> _downloadsAndMatchRatings = new HashMap<Download, Float>();
+	private final MapRegister<Download, Float> _downloadsAndMatchRatings = my(CollectionSignals.class).newMapRegister();
 
 	@SuppressWarnings("unused") private final WeakContract _trackEndorsementConsumerContract;
 
@@ -58,6 +59,11 @@ class TrackDownloaderImpl implements TrackDownloader {
 	@Override
 	public void setTrackDownloadAllowance(Signal<Integer> downloadAllowance) {
 		_downloadAllowance.set(downloadAllowance);
+	}
+
+	@Override
+	public SetSignal<Download> runningDownloads() {
+		return _downloadsAndMatchRatings.output().keys();
 	}
 
 	private void consumeTrackEndorsement(final TrackEndorsement endorsement) {
@@ -81,7 +87,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 		WeakContract weakContract = download.finished().addPulseReceiver(new Runnable() { @Override public void run() {
 			my(TrackDownloadCounter.class).conditionalIncrementer(download.hasFinishedSuccessfully()).run();
-			_downloadsAndMatchRatings.remove(endorsement.hash);
+			_downloadsAndMatchRatings.remove(download);
 		}});
 
 		my(WeakReferenceKeeper.class).keep(download, weakContract);
@@ -117,7 +123,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 		Download sentencedToDeath = null;
 		float minMatchRating = endorsementMatchRating;
 
-		for (Entry<Download, Float> downloadAndMatchRating : _downloadsAndMatchRatings.entrySet()) {
+		for (Entry<Download, Float> downloadAndMatchRating : _downloadsAndMatchRatings.output().currentElements()) {
 			Float matchRating = downloadAndMatchRating.getValue();
 			if (matchRating < minMatchRating) {
 				minMatchRating = matchRating;
@@ -144,11 +150,11 @@ class TrackDownloaderImpl implements TrackDownloader {
 	}
 
 	private boolean hasReachedDownloadLimit() {
-		return _downloadsAndMatchRatings.size() >= CONCURRENT_DOWNLOADS_LIMIT; 
+		return _downloadsAndMatchRatings.output().size().currentValue() >= CONCURRENT_DOWNLOADS_LIMIT; 
 	}
 
 	private Collection<Sneer1024> hashesOfRunningDownloads() {
-		return my(CollectionUtils.class).map(_downloadsAndMatchRatings.keySet(), new Functor<Download, Sneer1024>() { @Override public Sneer1024 evaluate(Download download) throws RuntimeException {
+		return my(CollectionUtils.class).map(_downloadsAndMatchRatings.output().keys().currentElements(), new Functor<Download, Sneer1024>() { @Override public Sneer1024 evaluate(Download download) throws RuntimeException {
 			return download.hash();
 		}});
 	}
