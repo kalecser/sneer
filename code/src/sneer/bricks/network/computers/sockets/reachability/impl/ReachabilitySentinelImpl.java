@@ -4,7 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.network.computers.ports.PortKeeper;
+import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.sockets.accepter.SocketAccepter;
 import sneer.bricks.network.computers.sockets.reachability.ReachabilitySentinel;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -34,7 +34,7 @@ class ReachabilitySentinelImpl implements ReachabilitySentinel {
 
 		_timerContract = my(Timer.class).wakeUpEvery(THIRTY_SECONDS, new Closure() { @Override public void run() {
 			if (_clock.time().currentValue() - _lastIncomingSocketTime >= THIRTY_SECONDS)
-				_lights.turnOnIfNecessary(unreachableLight(), "Unreachable", "You have not received any incoming sockets recently. Either none of your contacts are online or your machine is unreachable from the internet on your current Sneer TCP Port: " + my(PortKeeper.class).port().currentValue() + ". You can change your Sneer TCP Port using the Menu > Own Info dialog.");
+				_lights.turnOnIfNecessary(unreachableLight(), "Unreachable", "You have not received any incoming sockets recently. Either none of your contacts are online or your machine is unreachable from the internet on your current Sneer TCP Port: " + my(OwnPort.class).port().currentValue() + ". You can change your Sneer TCP Port using the Menu > Own Info dialog.");
 		}});		
 	}
 

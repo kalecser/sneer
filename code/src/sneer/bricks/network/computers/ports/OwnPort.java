@@ -5,7 +5,7 @@ import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.PickyConsumer;
 
 @Brick
-public interface PortKeeper {
+public interface OwnPort {
 
 	Signal<Integer> port();
 

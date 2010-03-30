@@ -8,7 +8,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.network.computers.ports.PortKeeper;
+import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.sockets.accepter.SocketAccepter;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
@@ -24,7 +24,7 @@ import sneer.foundation.lang.Consumer;
 
 class SocketAccepterImpl implements SocketAccepter {
 	
-	private final PortKeeper _portKeeper = my(PortKeeper.class);
+	private final OwnPort _portKeeper = my(OwnPort.class);
 	private final Network _network = my(Network.class);
 	private final BlinkingLights _lights = my(BlinkingLights.class);
 	private final Threads _threads = my(Threads.class);
