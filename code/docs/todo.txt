@@ -22,14 +22,12 @@ Igor ====================================================
 
 	- Seals
 		- ContactInfoWindowImpl
-			- Unignore NullParemterTest and fix problem with Prevalent Nature
+			- Unignore NullParameterTest and fix problem with Prevalent Nature
 
 	- Wusic
 		- MusicalTasteMatcher Kernel
 			- Implement MusicalTasteMatcherTest
 			- Make MusicalTasteMatcher prevalent
-		- Downloads
-			- Do not download files user already has (includes peertracks) - check if it's working after the changes made to AbstractDownload
 		- Nice-to-have:
 			- Track downloads monitor pane with a progress bar for each download currently running (it's default is hidden)
 			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
@@ -39,8 +37,6 @@ Igor ====================================================
 	- [Klaus] RapidShare Killer (Transfer Huge Files) - Do this in parallel, when you're bored of Wusic :)
 		- Focus. Keep it simple. Zero sophistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
 		- Announce to community
-
-	- Fix Sneer-Clover
 
 
 Klaus =================================================

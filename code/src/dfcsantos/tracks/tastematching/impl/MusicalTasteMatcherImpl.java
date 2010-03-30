@@ -13,26 +13,15 @@ class MusicalTasteMatcherImpl implements MusicalTasteMatcher {
 	@SuppressWarnings("unused") private WeakContract _toAvoidGC;
 
 	@Override
-	public void processEndorsement(Contact sender, String folder, boolean isKnownTrack) {
-		if (isKnownTrack)
-			processEndorsementOfKnownTrack(sender, folder);
-		else
-			processEndorsementOfUnknownTrack(sender, folder);
+	public void processEndorsement(Contact peer, String folder, boolean isKnownTrack) {
+		FolderMatchCounter counter = matchesBy(peer, folder); 
+		counter.incrementEndorsementCount();
+		if (isKnownTrack) counter.incrementMatchCount();
 	}
 
 	@Override
 	public float ratingFor(Contact sender, String folder) {
 		return matchesBy(sender, folder).matchRating();
-	}
-
-	private void processEndorsementOfKnownTrack(Contact peer, String folder) {
-		FolderMatchCounter counter = matchesBy(peer, folder); 
-		counter.incrementEndorsementCount();
-		counter.incrementMatchCount();
-	}
-
-	private void processEndorsementOfUnknownTrack(Contact peer, String folder) {
-		matchesBy(peer, folder).incrementEndorsementCount();
 	}
 
 	private FolderMatchCounter matchesBy(Contact peer, String folder) {

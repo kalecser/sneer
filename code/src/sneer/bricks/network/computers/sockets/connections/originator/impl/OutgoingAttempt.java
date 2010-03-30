@@ -44,7 +44,7 @@ class OutgoingAttempt {
 
 		ByteArraySocket socket;
 		try {
-			socket = _network.openSocket(_address.host(), _address.port());
+			socket = _network.openSocket(_address.host(), _address.port().currentValue());
 		} catch (IOException e) {
 			my(Logger.class).log(e.getMessage());
 			return;

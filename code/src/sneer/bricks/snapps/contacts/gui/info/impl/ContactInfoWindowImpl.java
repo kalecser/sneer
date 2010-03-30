@@ -68,7 +68,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 				}
 
 				@Override public Signal<String> textFor(InternetAddress element) {
-					return my(Signals.class).constant(element.host()+" : "+element.port());
+					return my(Signals.class).constant(element.host()+" : "+element.port().currentValue());
 				}});
 		}});
 		_lstAddresses = (ListWidget<InternetAddress>) ref[0];
@@ -263,7 +263,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 			if(address == null || _host.getText().trim().length()==0) return;
 			
 			if(  _selectedAdress.host().equals(_host.getText())
-			&& _selectedAdress.port()== Integer.parseInt(_port.getText())
+			&& _selectedAdress.port().currentValue() == Integer.parseInt(_port.getText())
 			&& _selectedAdress.contact() == my(ContactsGui.class).selectedContact().currentValue()){
 				_lstAddresses.clearSelection();
 				return;

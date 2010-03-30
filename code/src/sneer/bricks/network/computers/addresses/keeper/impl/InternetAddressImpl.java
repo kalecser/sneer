@@ -1,20 +1,23 @@
 package sneer.bricks.network.computers.addresses.keeper.impl;
 
+import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.social.Contact;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Signals;
 
 class InternetAddressImpl implements InternetAddress {
 
-	private Contact _contact;
+	private final Contact _contact;
 	
-	private String _host;
+	private final String _host;
 	
-	private int _port;
+	private final Signal<Integer> _port;
 	
 	public InternetAddressImpl(Contact contact, String host, int port) {
 		_contact = contact;
 		_host = host;
-		_port = port;
+		_port = my(Signals.class).constant(port);
 	}
 
 	@Override
@@ -28,7 +31,7 @@ class InternetAddressImpl implements InternetAddress {
 	}
 
 	@Override
-	public int port() {
+	public Signal<Integer> port() {
 		return _port;
 	}
 

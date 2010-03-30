@@ -7,7 +7,9 @@ import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.addresses.sighting.Sighting;
+import sneer.bricks.network.computers.ports.contacts.ContactPorts;
 import sneer.bricks.network.social.Contact;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
@@ -38,8 +40,8 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 		_addresses.add(new InternetAddress() {
 			
 			@Override
-			public int port() {
-				return 0;
+			public Signal<Integer> port() {
+				return my(ContactPorts.class).portGiven(sighting.peersSeal);
 			}
 			
 			@Override

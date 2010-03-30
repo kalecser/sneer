@@ -23,6 +23,7 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
+import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
 import sneer.bricks.network.computers.sockets.connections.receiver.SocketReceiver;
 import sneer.bricks.network.social.Contact;
@@ -34,7 +35,6 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.own.name.OwnNameKeeper;
-import sneer.bricks.pulp.port.PortKeeper;
 import sneer.bricks.pulp.probe.ProbeManager;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
@@ -70,7 +70,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	@Override
 	public void setSneerPort(int port) {
 		try {
-			my(PortKeeper.class).portSetter().consume(port);
+			my(OwnPort.class).portSetter().consume(port);
 		} catch (Refusal e) {
 			throw new IllegalArgumentException(e);
 		}
@@ -181,7 +181,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	@Override
 	public int sneerPort() {
-        return my(PortKeeper.class).port().currentValue();
+        return my(OwnPort.class).port().currentValue();
     }
 
 	
