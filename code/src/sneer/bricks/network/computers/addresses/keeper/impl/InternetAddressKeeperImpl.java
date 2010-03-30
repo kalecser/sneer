@@ -51,7 +51,7 @@ class InternetAddressKeeperImpl implements InternetAddressKeeper {
 		for (InternetAddress addr : _addresses.output())
 			if(addr.contact().equals(contact) 
 					&& addr.host().equals(host)
-					&& addr.port() == port)
+					&& addr.port().currentValue() == port)
 				return false;
 		
 		return true;

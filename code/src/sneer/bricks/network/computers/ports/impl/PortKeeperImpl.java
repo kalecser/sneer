@@ -1,7 +1,7 @@
-package sneer.bricks.pulp.port.impl;
+package sneer.bricks.network.computers.ports.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.pulp.port.PortKeeper;
+import sneer.bricks.network.computers.ports.PortKeeper;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.software.bricks.statestore.BrickStateStore;
 import sneer.foundation.lang.Consumer;

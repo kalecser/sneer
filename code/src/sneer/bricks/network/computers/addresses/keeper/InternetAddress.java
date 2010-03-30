@@ -1,6 +1,7 @@
 package sneer.bricks.network.computers.addresses.keeper;
 
 import sneer.bricks.network.social.Contact;
+import sneer.bricks.pulp.reactive.Signal;
 
 public interface InternetAddress {
 
@@ -8,5 +9,5 @@ public interface InternetAddress {
 	
 	String host();
 	
-	int port();
+	Signal<Integer> port(); //Ugly
 }

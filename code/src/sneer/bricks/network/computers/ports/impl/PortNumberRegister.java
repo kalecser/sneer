@@ -1,4 +1,4 @@
-package sneer.bricks.pulp.port.impl;
+package sneer.bricks.network.computers.ports.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.utils.consumers.validators.bounds.integer.IntegerBounds;

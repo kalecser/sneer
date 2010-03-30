@@ -25,7 +25,7 @@ abstract class Store {
 			addresses.add(new Object[]{
 				address.contact().nickname().currentValue(),  
 				address.host(), 
-				address.port()});
+				address.port().currentValue()});
 
 		my(BrickStateStore.class).writeObjectFor(InternetAddressKeeper.class, addresses);
 	 }

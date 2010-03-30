@@ -13,6 +13,10 @@ import sneer.foundation.lang.Consumer;
 class SightingPublisherImpl implements SightingPublisher {
 
 	private final ConnectionManager connectionManager = my(ConnectionManager.class);
+	{
+		my(TupleSpace.class).keep(Sighting.class);
+	}	
+	
 	
 	@SuppressWarnings("unused")
 	private final WeakContract _refToAvoidGc = connectionManager.contactSightings().addReceiver(new Consumer<ContactSighting>() { @Override public void consume(ContactSighting sighting) {
@@ -20,14 +24,8 @@ class SightingPublisherImpl implements SightingPublisher {
 	}});
 	
 	
-	{
-		my(TupleSpace.class).keep(Sighting.class);
-	}	
-
 	private void sighted(Seal seal, String ip) {
 		my(TupleSpace.class).acquire(new Sighting(seal, ip));
 	}
-
-	
 
 }
