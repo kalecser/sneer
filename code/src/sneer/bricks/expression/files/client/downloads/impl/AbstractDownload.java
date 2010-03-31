@@ -15,11 +15,15 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.events.pulsers.PulseSource;
 import sneer.bricks.pulp.events.pulsers.Pulser;
 import sneer.bricks.pulp.events.pulsers.Pulsers;
+import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Closure;
@@ -34,9 +38,13 @@ abstract class AbstractDownload implements Download {
 	final long _lastModified;
 	final Sneer1024 _hash;
 
+	private final Contact _source;
+
 	private final File _actualPath;
 
 	private long _startTime;
+
+	private Register<Integer> _progress = my(Signals.class).newRegister(0);
 
 	private final Latch _isFinished = my(Latches.class).produce();
 	private Pulser _finished = my(Pulsers.class).newInstance();
@@ -48,10 +56,12 @@ abstract class AbstractDownload implements Download {
 	private WeakContract _timerContract;
 
 
-	AbstractDownload(File path, long lastModified, Sneer1024 hashOfFile, Runnable toCallWhenFinished) {
+	AbstractDownload(File path, long lastModified, Sneer1024 hashOfFile, Contact source, Runnable toCallWhenFinished) {
 		_path = dotPartFor(path);
 		_lastModified = lastModified;
 		_hash = hashOfFile;
+
+		_source = source; 
 
 		_actualPath = path;
 
@@ -78,6 +88,18 @@ abstract class AbstractDownload implements Download {
 	@Override
 	public Sneer1024 hash() {
 		return _hash;
+	}
+
+
+	@Override
+	public Signal<Integer> progress() {
+		return _progress.output();
+	}
+
+
+	void updateProgressBy(int increment) {
+		int progress = progress().currentValue() + increment;
+		_progress.setter().consume(Math.min(progress, 100));
 	}
 
 
@@ -227,6 +249,12 @@ abstract class AbstractDownload implements Download {
 		} else if (!_hash.equals(other._hash))
 			return false;
 		return true;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Download of " + _actualPath.getName().toUpperCase() + "(" + _source.nickname().currentValue().toUpperCase() + ")";
 	}
 
 

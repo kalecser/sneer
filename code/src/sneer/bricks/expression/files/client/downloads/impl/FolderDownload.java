@@ -32,7 +32,7 @@ class FolderDownload extends AbstractDownload {
 
 
 	FolderDownload(File folder, long lastModified, Sneer1024 hashOfFolder, Runnable toCallWhenFinished) {
-		super(folder, lastModified, hashOfFolder, toCallWhenFinished);
+		super(folder, lastModified, hashOfFolder, null, toCallWhenFinished);
 
 		start();
 	}

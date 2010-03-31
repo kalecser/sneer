@@ -20,6 +20,7 @@ import sneer.bricks.hardware.cpu.crypto.Sneer1024;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
@@ -39,12 +40,12 @@ class FileDownload extends AbstractDownload {
 
 
 	FileDownload(File file, long lastModified, Sneer1024 hashOfFile) {
-		this(file, lastModified, hashOfFile, null);
+		this(file, lastModified, hashOfFile, null, null);
 	}
 
 
-	FileDownload(File file, long lastModified, Sneer1024 hashOfFile, Runnable toCallWhenFinished) {
-		super(file, lastModified, hashOfFile, toCallWhenFinished);
+	FileDownload(File file, long lastModified, Sneer1024 hashOfFile, Contact source, Runnable toCallWhenFinished) {
+		super(file, lastModified, hashOfFile, source, toCallWhenFinished);
 
 		start();
 	}
@@ -122,6 +123,7 @@ class FileDownload extends AbstractDownload {
 	
 	private void writeBlock(byte[] bytes) throws IOException {
 		_output.write(bytes);
+		updateProgressBy(100 / _fileSizeInBlocks);
 		++_nextBlockToWrite;
 		if (readyToFinish()) {
 			my(IO.class).crash(_output);

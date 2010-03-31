@@ -6,6 +6,7 @@ import java.lang.ref.WeakReference;
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.Downloads;
 import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.network.social.Contact;
 
 class DownloadsImpl implements Downloads {
 
@@ -15,8 +16,8 @@ class DownloadsImpl implements Downloads {
 	}
 
 	@Override
-	public WeakReference<Download> newFileDownload(File file, long lastModified, Sneer1024 hashOfFile, Runnable toCallWhenFinished) {
-		return new WeakReference<Download>(new FileDownload(file, lastModified, hashOfFile, toCallWhenFinished));
+	public WeakReference<Download> newFileDownload(File file, long lastModified, Sneer1024 hashOfFile, Contact source, Runnable toCallWhenFinished) {
+		return new WeakReference<Download>(new FileDownload(file, lastModified, hashOfFile, source, toCallWhenFinished));
 	}
 
 	@Override
