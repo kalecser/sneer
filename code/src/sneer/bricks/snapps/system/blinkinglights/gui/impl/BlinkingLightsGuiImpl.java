@@ -41,7 +41,6 @@ import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
 import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.skin.widgets.reactive.ListWidget;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
-import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.system.blinkinglights.gui.BlinkingLightsGui;
 import sneer.foundation.lang.Closure;
 
@@ -100,7 +99,7 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 	} 
 	
 	private final class AlertWindowSupport{
-		private static final int HORIZONTAL_LIMIT = 600;
+//		private static final int HORIZONTAL_LIMIT = 600;
 		
 		private static final String HELP = "HELP";
 		private static final String STACK_TRACE = "STACK_TRACE";
@@ -190,7 +189,8 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 		
 		private void setWindowBounds() {
 			_window.pack();
-			my(WindowBoundsSetter.class).setBestBounds(_window, _container, HORIZONTAL_LIMIT);
+//			my(WindowBoundsSetter.class).setBestBounds(_window, _container, HORIZONTAL_LIMIT);
+			_window.setLocationRelativeTo(_container);
 		}
 		
 		private void appendStyledText(StyledDocument doc, String msg, String style) {

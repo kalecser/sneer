@@ -13,7 +13,6 @@ import javax.swing.JFrame;
 
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
-import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
@@ -68,7 +67,8 @@ class DeleteContactWindowImpl extends JFrame implements DeleteContactWindow {
 	
 	private void open(final Contact contact) {
 		setSize(300, 100);
-		my(WindowBoundsSetter.class).setBestBounds(this, my(ContactActionManager.class).baseComponent());
+		setLocationRelativeTo(my(ContactActionManager.class).baseComponent());
+//		my(WindowBoundsSetter.class).setBestBounds(this, my(ContactActionManager.class).baseComponent());
 		setVisible(true);
 		setTitle("Delete '" + contact + "'?");
 	}
