@@ -20,8 +20,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Fix bug of Console
-
 	- Fix bug of windows positioning
 
 	- Seals
