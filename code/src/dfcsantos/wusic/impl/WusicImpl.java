@@ -4,10 +4,12 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 
+import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;
@@ -15,6 +17,7 @@ import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.endorsements.client.TrackClient;
 import dfcsantos.tracks.endorsements.client.downloads.counter.TrackDownloadCounter;
+import dfcsantos.tracks.endorsements.client.downloads.downloader.TrackDownloader;
 import dfcsantos.tracks.endorsements.server.TrackEndorser;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
@@ -196,6 +199,11 @@ public class WusicImpl implements Wusic {
 	@Override
 	public Consumer<Boolean> trackDownloadActivator() {
 		return _isDownloadActive.setter();
+	}
+
+	@Override
+	public SetSignal<Download> activeTrackDownloads() {
+		return my(TrackDownloader.class).runningDownloads();
 	}
 
 	@Override

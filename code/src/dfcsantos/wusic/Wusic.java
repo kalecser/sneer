@@ -2,7 +2,9 @@ package dfcsantos.wusic;
 
 import java.io.File;
 
+import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;
@@ -40,6 +42,7 @@ public interface Wusic {
 
 	Signal<Boolean> isTrackDownloadActive();
 	Consumer<Boolean> trackDownloadActivator();
+	SetSignal<Download> activeTrackDownloads();
 
 	int DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE = 100; // MBs
 	Signal<Integer> trackDownloadAllowance();
