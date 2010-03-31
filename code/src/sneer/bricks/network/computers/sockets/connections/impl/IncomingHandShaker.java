@@ -30,15 +30,16 @@ class IncomingHandShaker {
 
 		rejectLoopback(contactsSeal);
 		rejectUnknownSeal(contactsSeal);
-		//Implement: Challenge pk.
 
-		notifySighting(socket, contactsSeal);
+		//my(PublicKeyChallenger.class).challenge(contactsSeal, socket);
+
+		notifySighting(contactsSeal, socket);
 		
 		return contactsSeal;
 	}
 
 
-	private static void notifySighting(ByteArraySocket socket, final Seal contactsSeal) {
+	private static void notifySighting(final Seal contactsSeal, ByteArraySocket socket) {
 		String ip = my(Network.class).remoteIpFor(socket);
 		contactSightings.notifyReceivers(new ContactSightingImpl(contactsSeal, ip));
 	}
