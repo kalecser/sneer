@@ -20,16 +20,23 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Work on spikes.klaus.crypto.Main
+
+	- Fix bug of Console
+
+	- Fix bug of windows positioning
+
 	- Seals
 		- ContactInfoWindowImpl
 			- Unignore NullParameterTest and fix problem with Prevalent Nature
 
 	- Wusic
 		- MusicalTasteMatcher Kernel
-			- Implement MusicalTasteMatcherTest
+			- Implement MusicalTasteMatcherFunctionalTest
 			- Make MusicalTasteMatcher prevalent
+		- Track Downloads Monitor Pane
+			- Implement panel with a progress bar for each download currently running
 		- Nice-to-have:
-			- Track downloads monitor pane with a progress bar for each download currently running (it's default is hidden)
 			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
 			- Back Button 
 			- Find another way to solve pause lag (try to use a smaller frame in player)
