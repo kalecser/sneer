@@ -1,5 +1,6 @@
 package spikes.klaus.crypto;
 
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
@@ -10,6 +11,7 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.Signature;
 import java.security.Provider.Service;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -133,8 +135,12 @@ public class Main {
 //		Signature verifier = Signature.getInstance("SHA512WITHRSA", "BC");
 //		Signature verifier = Signature.getInstance("SHA512WITHECDSA", "BC");
 		Signature verifier = Signature.getInstance("ECDSA", "BC");
-		//publickey = PublicKeyFactory.createKey(publickey.getEncoded());
-		verifier.initVerify(publickey);
+
+		X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publickey.getEncoded());
+		KeyFactory keyFactory = KeyFactory.getInstance("ECDSA");
+		PublicKey publicKeyDecoded = keyFactory.generatePublic(publicKeySpec);
+
+		verifier.initVerify(publicKeyDecoded);
 	
 		verifier.update(message);
 	
