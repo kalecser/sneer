@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.ImageIcon;
@@ -46,8 +45,6 @@ import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
 import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.system.log.gui.LogConsole;
-import sneer.bricks.software.timing.Animator;
-import sneer.bricks.software.timing.TimingFramework;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
@@ -76,7 +73,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		addMenuAction();
 		my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
 			initGui();
-			initTranslucentWindow();
+//			initTranslucentWindow();
 			initWindowListener();
 		}});
 	}
@@ -99,20 +96,20 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		}});
 	}
 
-	private void initTranslucentWindow() {
-		TimingFramework timing = my(TimingFramework.class);
-		final Animator fade = timing.windowOpacity().animator(this, 1f, 0.2f, 1000, 200);
-		fade.playForward();
-		
-		this.addWindowFocusListener(new WindowFocusListener(){
-			@Override public void windowLostFocus(WindowEvent e) { 
-				fade.playForward(); 
-			}
-			@Override public void windowGainedFocus(WindowEvent e) { 
-				fade.playBackward();
-			}
-		});
-	}
+//	private void initTranslucentWindow() {
+//		TimingFramework timing = my(TimingFramework.class);
+//		final Animator fade = timing.windowOpacity().animator(this, 1f, 0.2f, 1000, 200);
+//		fade.playForward();
+//		
+//		this.addWindowFocusListener(new WindowFocusListener(){
+//			@Override public void windowLostFocus(WindowEvent e) { 
+//				fade.playForward(); 
+//			}
+//			@Override public void windowGainedFocus(WindowEvent e) { 
+//				fade.playBackward();
+//			}
+//		});
+//	}
 	
 	private void addMenuAction() {
 		_mainMenu.addAction("Open Log Console", new Closure() { @Override public void run() {
