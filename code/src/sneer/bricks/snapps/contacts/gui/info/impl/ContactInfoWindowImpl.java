@@ -44,7 +44,6 @@ import sneer.bricks.skin.widgets.reactive.ListWidget;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
-import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
@@ -100,7 +99,8 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 			_isGuiInitialized = true;
 			initGui();
 		}
-		my(WindowBoundsSetter.class).setBestBounds(this, my(ContactActionManager.class).baseComponent());
+//		my(WindowBoundsSetter.class).setBestBounds(this, my(ContactActionManager.class).baseComponent());
+		setLocationRelativeTo(my(ContactActionManager.class).baseComponent());
 		setVisible(true);
 	}
 	

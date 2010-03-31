@@ -20,8 +20,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Fix bug of windows positioning
-
 	- Seals
 		- ContactInfoWindowImpl
 			- Unignore NullParameterTest and fix problem with Prevalent Nature
