@@ -44,7 +44,7 @@ public class Main {
 		Environments.runWith(Brickness.newBrickContainer(), new Closure() { @Override public void run() {
 //			byte[] serialized = my(Serializer.class).serialize(keys.getPublic());
 			byte[] encoded = keys.getPublic().getEncoded();
-			System.out.println(encoded);
+			System.out.println("Public key length: " + encoded.length);
 		}});
 		
 	}
@@ -119,7 +119,8 @@ public class Main {
 	public static byte[] generateSignature(PrivateKey privatekey, byte[] message) throws Exception {
 //		Signature signer = Signature.getInstance("SHA512WITHRSA", "SunRsaSign");
 //		Signature signer = Signature.getInstance("SHA512WITHRSA", "BC");
-		Signature signer = Signature.getInstance("SHA512WITHECDSA", "BC");
+//		Signature signer = Signature.getInstance("SHA512WITHECDSA", "BC");
+		Signature signer = Signature.getInstance("ECDSA", "BC");
 		signer.initSign(privatekey);
 	
 		signer.update(message);
@@ -130,7 +131,9 @@ public class Main {
 	public static boolean verifySignature(PublicKey publickey, byte[] message, byte[] signature) throws Exception {
 //		Signature verifier = Signature.getInstance("SHA512WITHRSA", "SunRsaSign");
 //		Signature verifier = Signature.getInstance("SHA512WITHRSA", "BC");
-		Signature verifier = Signature.getInstance("SHA512WITHECDSA", "BC");
+//		Signature verifier = Signature.getInstance("SHA512WITHECDSA", "BC");
+		Signature verifier = Signature.getInstance("ECDSA", "BC");
+		//publickey = PublicKeyFactory.createKey(publickey.getEncoded());
 		verifier.initVerify(publickey);
 	
 		verifier.update(message);
