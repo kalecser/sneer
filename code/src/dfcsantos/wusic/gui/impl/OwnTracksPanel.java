@@ -34,14 +34,14 @@ class OwnTracksPanel extends AbstractTabPane {
 		_playingFolderChooser.setCurrentDirectory(_controller.playingFolder());
 
 	    _choosePlayingFolder.setText("Playing Folder");
-	    _choosePlayingFolder.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent evt) {
+	    _choosePlayingFolder.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
 	    	choosePlayingFolderActionPerformed();
 	    }});
 	    customPanel().add(_choosePlayingFolder);
 
 	    _shuffle.setText("Shuffle");
 	    _shuffle.setSelected(false);
-	    _shuffle.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) {
+	    _shuffle.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
 	    	shuffleActionPerformed();
 	    }});
 	    customPanel().add(_shuffle);
@@ -97,11 +97,9 @@ class OwnTracksPanel extends AbstractTabPane {
 
 		private OwnTracksControlPanel() {
 			_deleteFile.setText("Delete File!");
-			_deleteFile.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					deleteFileActionPerformed();
-				}
-			});
+			_deleteFile.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
+				deleteFileActionPerformed();
+			}});
 			add(_deleteFile);
 		}
 
