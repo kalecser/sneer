@@ -39,6 +39,12 @@ Igor ====================================================
 		- Focus. Keep it simple. Zero sophistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
 		- Announce to community
 
+	- Fix WindowBoundSetter.setBestLocation()
+		- See commented lines at:
+			- ContactInfoWindow
+			- OwnInfo
+			- BlinkingLightsGui
+			- DeleteContactWindow
 
 Klaus =================================================
 
