@@ -9,6 +9,7 @@ import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
+import sneer.bricks.network.computers.authentication.PublicKeyChallenges;
 import sneer.bricks.network.computers.sockets.connections.ContactSighting;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.pulp.events.EventNotifier;
@@ -25,17 +26,23 @@ class IncomingHandShaker {
 
 
 	static Seal greet(ByteArraySocket socket) throws IOException {
-		byte[] contactsSealBytes = identifyContactsSeal(socket);
-		final Seal contactsSeal = new Seal(new ImmutableByteArray(contactsSealBytes));
+		final Seal contactsSeal = readContactsSeal(socket);
 
 		rejectLoopback(contactsSeal);
 		rejectUnknownSeal(contactsSeal);
 
-		//my(PublicKeyChallenger.class).challenge(contactsSeal, socket);
+//		authenticate(contactsSeal, socket);
 
 		notifySighting(contactsSeal, socket);
 		
 		return contactsSeal;
+	}
+
+
+	@SuppressWarnings("unused")
+	private static void authenticate(final Seal contactsSeal, ByteArraySocket socket) throws IOException {
+		if (!my(PublicKeyChallenges.class).challenge(contactsSeal, socket))
+			throw new IOException("Incoming connection failed to authenticate.");
 	}
 
 
@@ -57,7 +64,13 @@ class IncomingHandShaker {
 	}
 
 
-	static private byte[] identifyContactsSeal(ByteArraySocket socket) throws IOException {
+	private static Seal readContactsSeal(ByteArraySocket socket) throws IOException {
+		byte[] result = readContactsSealBytes(socket);
+		return new Seal(new ImmutableByteArray(result));
+	}
+
+
+	static private byte[] readContactsSealBytes(ByteArraySocket socket) throws IOException {
 		while (true) {
 			byte[] header = socket.read();
 			byte[] sealBytes = socket.read();
