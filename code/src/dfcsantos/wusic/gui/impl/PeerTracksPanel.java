@@ -71,8 +71,9 @@ class PeerTracksPanel extends AbstractTabPane {
         }});
         customPanel().add(_downloadsDetails);
 
-        _downloadsDetailsWindow.setTitle("Downloads' Details Panel");
         _downloadsDetailsWindow.add(new DownloadsPanel(_controller.activeTrackDownloads()));
+        _downloadsDetailsWindow.setLocationRelativeTo(customPanel().getTopLevelAncestor());
+        _downloadsDetailsWindow.setMinimumSize(new Dimension(450, 300));
         _downloadsDetailsWindow.setResizable(false);
         _downloadsDetailsWindow.setVisible(false);
 
@@ -199,7 +200,6 @@ class PeerTracksPanel extends AbstractTabPane {
 			super.disableButtons();
 			_meToo.setEnabled(false);
 			_noWay.setEnabled(false);
-			_downloadsDetails.setEnabled(false);
 		}
 
 	}

@@ -47,7 +47,8 @@ class WusicGuiImpl implements WusicGui {
 		JFrame result = my(ReactiveWidgetFactory.class).newFrame(title()).getMainWidget();
 
 		result.add(new MainPanel(PREFERRED_SIZE));
-		result.setLocationRelativeTo(my(MainMenu.class).getWidget());
+		// Implement: Set location of Wusic's frame relative to the Dashboard using the WindowBoundSetter
+		result.setLocationRelativeTo(null);
     	result.setResizable(false);
 		result.pack();
 
