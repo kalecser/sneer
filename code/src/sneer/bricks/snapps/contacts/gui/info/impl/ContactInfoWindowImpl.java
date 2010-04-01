@@ -53,7 +53,7 @@ import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.exceptions.Refusal;
 
-class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
+class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 
 	private final ContactInternetAddressList _contactAddresses = new ContactInternetAddressList();
 	
@@ -126,7 +126,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 
 		_txtNickname = my(ReactiveWidgetFactory.class).newTextField(nickname, setter, NotificationPolicy.OnEnterPressedOrLostFocus);
 
-		_seal = my(ReactiveWidgetFactory.class).newTextPane(contactsFormattedSealString(), contactsSealSetter(), NotificationPolicy.OnEnterPressed);
+		_seal = my(ReactiveWidgetFactory.class).newTextPane(contactsFormattedSealString(), contactsSealSetter(), NotificationPolicy.OnEnterPressedOrLostFocus);
 		_seal.getMainWidget().setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
 		JScrollPane sealScroll =
@@ -161,16 +161,15 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow{
 	}
 
 	private Signal<String> contactsFormattedSealString() {
-		return my(Signals.class).adaptSignal(
-			my(ContactsGui.class).selectedContact(), new Functor<Contact, Signal<String>>() { @Override public Signal<String> evaluate(Contact contact) throws RuntimeException {
-				if (contact == null) return my(Signals.class).constant("");
-				return my(Signals.class).adapt(
-					my(ContactSeals.class).sealGiven(contact), new Functor<Seal, String>() { @Override public String evaluate(Seal seal) throws RuntimeException {
-						return (seal == null) ? "" : my(SealCodec.class).formattedHexEncode(seal);						
-					}}
-				);
-			}}
-		);
+		return my(Signals.class).adapt(
+			my(Signals.class).adaptSignal(
+				my(ContactsGui.class).selectedContact(),
+				new Functor<Contact, Signal<Seal>>() { @Override public Signal<Seal> evaluate(Contact contact) throws RuntimeException {
+					return my(ContactSeals.class).sealGiven(contact);
+				}}
+			), new Functor<Seal, String>() { @Override public String evaluate(Seal seal) throws RuntimeException {
+				return (seal == null) ? "" : my(SealCodec.class).formattedHexEncode(seal);
+			}});
 	}
 
 	private PickyConsumer<String> contactsSealSetter() {
