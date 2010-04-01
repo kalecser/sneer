@@ -136,8 +136,8 @@ public class Main {
 //		Signature verifier = Signature.getInstance("SHA512WITHECDSA", "BC");
 		Signature verifier = Signature.getInstance("ECDSA", "BC");
 
+		KeyFactory keyFactory = KeyFactory.getInstance("ECDSA", "BC");
 		X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publickey.getEncoded());
-		KeyFactory keyFactory = KeyFactory.getInstance("ECDSA");
 		PublicKey publicKeyDecoded = keyFactory.generatePublic(publicKeySpec);
 
 		verifier.initVerify(publicKeyDecoded);
