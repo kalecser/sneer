@@ -38,7 +38,6 @@ import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
-import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.owninfo.OwnInfo;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
@@ -85,7 +84,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		if(isVisible()) return;
 		
 //		my(WindowBoundsSetter.class).setBestBounds(this);
-		setLocationRelativeTo(my(ContactActionManager.class).baseComponent());
+		setLocationRelativeTo(_mainMenu.getWidget());
 		setVisible(true);
 		_yourOwnName.getMainWidget().requestFocus();
 	}

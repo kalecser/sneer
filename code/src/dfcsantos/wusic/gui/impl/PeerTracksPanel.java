@@ -17,7 +17,6 @@ import javax.swing.JTextField;
 import sneer.bricks.expression.files.client.downloads.gui.DownloadsPanel;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
-import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
@@ -38,7 +37,8 @@ class PeerTracksPanel extends AbstractTabPane {
     private final JTextField _downloadAllowance				= newReactiveTextField();
     private final JCheckBox _downloadActivity				= newReactiveCheckBox();
 
-    private final JFrame _downloadsDetailsWindow			= new JFrame();
+    private final JButton _downloadsDetails					= new JButton();
+    private final JFrame _downloadsDetailsWindow			= newReactiveFrame();
 
     @SuppressWarnings("unused")	private final WeakContract _toAvoidGC;
 
@@ -64,6 +64,12 @@ class PeerTracksPanel extends AbstractTabPane {
 
         _downloadAllowance.setPreferredSize(new Dimension(42, 18));
         customPanel().add(_downloadAllowance);
+
+        _downloadsDetails.setText("Details >>");
+        _downloadsDetails.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
+        	downloadsDetailsActionPerformed();
+        }});
+        customPanel().add(_downloadsDetails);
 
         _downloadsDetailsWindow.setTitle("Downloads' Details Panel");
         _downloadsDetailsWindow.add(new DownloadsPanel(_controller.activeTrackDownloads()));
@@ -108,6 +114,14 @@ class PeerTracksPanel extends AbstractTabPane {
 		).getMainWidget();
 	}
 
+	private JFrame newReactiveFrame() {
+		return my(ReactiveWidgetFactory.class).newFrame(
+			my(Signals.class).adapt(_controller.activeTrackDownloads().size(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfDownloadsRunning) throws RuntimeException {
+				return (numberOfDownloadsRunning > 0) ? "Active Downloads' Details:" : "Active Downloads <None>";
+			}})
+		).getMainWidget();
+	}
+
     private void chooseSharedTracksFolderActionPerformed() {
     	_sharedTracksFolderChooser.showOpenDialog(null);
     }
@@ -134,12 +148,6 @@ class PeerTracksPanel extends AbstractTabPane {
 		_downloadsDetailsWindow.setVisible(true);
 	}
 
-	private Signal<Boolean> areThereDownloadsRunning() {
-		return my(Signals.class).adapt(_controller.activeTrackDownloads().size(), new Functor<Integer, Boolean>() { @Override public Boolean evaluate(Integer numberOfDownloadsRunning) throws RuntimeException {
-			return numberOfDownloadsRunning > 0;
-		}});
-	}
-
     @Override
     JLabel customTabLabel() {
     	return _peerTracksCountTabLabel;
@@ -155,10 +163,6 @@ class PeerTracksPanel extends AbstractTabPane {
 		private final JButton _meToo = new JButton();
 		private final JButton _noWay = new JButton();
 
-		private final JButton _downloadsDetails = new JButton();
-
-		@SuppressWarnings("unused") private final WeakContract _toAvoidGC2;
-
 		private PeerTracksControlPanel() {
 	        _meToo.setText("Me Too :)");
 	        _meToo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
@@ -171,18 +175,6 @@ class PeerTracksPanel extends AbstractTabPane {
 	        	noWayActionPerformed();
 	        }});
 	        add(_noWay);
-
-	        _downloadsDetails.setText("Downloads >>");
-	        _downloadsDetails.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
-	        	downloadsDetailsActionPerformed();
-	        }});
-	        _toAvoidGC2 = areThereDownloadsRunning().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean areThereDownloadsRunning) {
-	        	if (areThereDownloadsRunning)
-	        		_downloadsDetails.setEnabled(true);
-	        	else
-	        		_downloadsDetails.setEnabled(false);
-	        }});
-	        add(_downloadsDetails);
 		}
 
 		@Override

@@ -27,7 +27,6 @@ class WusicGuiImpl implements WusicGui {
     private static final Wusic _controller = my(Wusic.class);
 
     private JFrame _frame;
-    private MainPanel _mainPanel;
 
     private boolean _isInitialized = false;
 
@@ -47,13 +46,12 @@ class WusicGuiImpl implements WusicGui {
 	private JFrame initFrame() {
 		JFrame result = my(ReactiveWidgetFactory.class).newFrame(title()).getMainWidget();
 
-		_mainPanel = new MainPanel(PREFERRED_SIZE);
-		result.getContentPane().add(_mainPanel);
-
+		result.add(new MainPanel(PREFERRED_SIZE));
+		result.setLocationRelativeTo(my(MainMenu.class).getWidget());
     	result.setResizable(false);
 		result.pack();
 
-    	return result;
+		return result;
 	}
 
 	private Signal<String> title() {
@@ -72,9 +70,7 @@ class WusicGuiImpl implements WusicGui {
 				@Override
 				public Signal<String> textFor(Contact contact) {
 					return my(Signals.class).adapt(my(PlayingTrackKeeper.class).playingTrack(contact), new Functor<String, String>() { @Override public String evaluate(String playingTrack) throws RuntimeException {
-						return playingTrack.isEmpty()
-							? ""
-							: MUSICAL_NOTE_ICON + " " + playingTrack;
+						return playingTrack.isEmpty() ? "" : MUSICAL_NOTE_ICON + " " + playingTrack;
 					}});
 				}
 			}

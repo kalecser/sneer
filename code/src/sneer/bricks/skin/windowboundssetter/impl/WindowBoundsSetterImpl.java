@@ -19,7 +19,7 @@ class WindowBoundsSetterImpl implements WindowBoundsSetter {
 	private Component _defaultBaseComponent;
 
 	@Override
-	public void setDefaultBaseComponet(Component defaultBaseComponent) {
+	public void setDefaultBaseComponent(Component defaultBaseComponent) {
 		_defaultBaseComponent = defaultBaseComponent;
 		notifyRunnables();
 	}
