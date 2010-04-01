@@ -8,10 +8,10 @@ import java.util.List;
 import sneer.foundation.brickness.Nature;
 
 /** Loads only classes from a given package and its subpackages. All other loads are deferred to the next classLoader.*/
-class ClassLoaderForPackage extends ClassLoaderWithNatures {	
+class ClassLoaderForPackage extends ClassLoaderForBricks {	
 
-	public ClassLoaderForPackage(File classpath, String packageName, List<Nature> natures, ClassLoader next) {
-		super(toURLs(classpath), next, natures);
+	public ClassLoaderForPackage(Class<?> brick, File classpath, String packageName, List<Nature> natures, ClassLoader next) {
+		super(brick, toURLs(classpath), next, natures);
 		_package = packageName;
 	}
 	
@@ -35,6 +35,9 @@ class ClassLoaderForPackage extends ClassLoaderWithNatures {
 		return ClassLoaderForPackage.class.getSimpleName()+ ":" + _package;
 	}
 
-	
+	@Override
+	public Kind kind() {
+		return Kind.IMPL;
+	}	
 	
 }

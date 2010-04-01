@@ -16,6 +16,21 @@ import sneer.foundation.lang.Producer;
 
 public class BricknessImpl implements Environment {
 	
+<<<<<<< Updated upstream:code/src/sneer/foundation/brickness/impl/BricknessImpl.java
+=======
+	private static final class BrickImplProducer<T> implements Producer<T> {
+		private final Class<T> _brickImpl;
+
+		private BrickImplProducer(Class<T> brickImpl) {
+			_brickImpl = brickImpl;
+		}
+
+		@Override public T produce() throws RuntimeException {
+			return (T)newInstance(_brickImpl);
+		}
+	}
+
+>>>>>>> Stashed changes:code/src/sneer/foundation/brickness/impl/BricknessImpl.java
 	public BricknessImpl(Object... bindings) {
 		_bindings = new Bindings();
 		_bindings.bind(this);
@@ -25,13 +40,19 @@ public class BricknessImpl implements Environment {
 		
 		_brickImplLoader = new BrickImplLoader();
 	}
+<<<<<<< Updated upstream:code/src/sneer/foundation/brickness/impl/BricknessImpl.java
 
+=======
+>>>>>>> Stashed changes:code/src/sneer/foundation/brickness/impl/BricknessImpl.java
 	
 	private final Bindings _bindings;
 	private CachingEnvironment _cache;
 	private final BrickImplLoader _brickImplLoader;
 	private ClassLoader _classLoader;
+<<<<<<< Updated upstream:code/src/sneer/foundation/brickness/impl/BricknessImpl.java
 
+=======
+>>>>>>> Stashed changes:code/src/sneer/foundation/brickness/impl/BricknessImpl.java
 	
 	@Override
 	public <T> T provide(Class<T> intrface) {
@@ -67,12 +88,19 @@ public class BricknessImpl implements Environment {
 			return (T)newInstance(brickImpl);
 		
 		Nature nature = natures.get(0);
+<<<<<<< Updated upstream:code/src/sneer/foundation/brickness/impl/BricknessImpl.java
 		return nature.instantiate(brick, brickImpl, new Producer<T>() { @Override public T produce() throws RuntimeException {
 			return (T)newInstance(brickImpl);
 		}});
 	}
 
 	private <T> T newInstance(Class<?> brickImpl) {
+=======
+		return nature.instantiate(brick, brickImpl, new BrickImplProducer<T>(brickImpl));
+	}
+
+	private static <T> T newInstance(Class<?> brickImpl) {
+>>>>>>> Stashed changes:code/src/sneer/foundation/brickness/impl/BricknessImpl.java
 		try {
 			Constructor<?> constructor = brickImpl.getDeclaredConstructor();
 			constructor.setAccessible(true);

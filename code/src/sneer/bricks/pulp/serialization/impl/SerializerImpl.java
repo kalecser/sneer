@@ -6,31 +6,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import sneer.bricks.pulp.serialization.ClassMapper;
 import sneer.bricks.pulp.serialization.Serializer;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.binary.BinaryStreamReader;
 import com.thoughtworks.xstream.io.binary.BinaryStreamWriter;
+import com.thoughtworks.xstream.io.xml.XppDriver;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
+import com.thoughtworks.xstream.mapper.Mapper;
+import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 class SerializerImpl implements Serializer {
-
-	// XStream instances are not thread-safe.
-	private ThreadLocal<XStream> _xstreams = new ThreadLocal<XStream>() { @Override protected XStream initialValue() {
-		return new XStream();
-	}};
-
-	
-	private XStream myXStream() {
-		return _xstreams.get();
-	}
-
 	
 	@Override
 	public void serialize(OutputStream stream, Object object) throws IOException {
+		serializeWith(stream, object, new XStream());
+	}
+
+
+	private void serializeWith(OutputStream stream, Object object,
+			XStream xstream) throws IOException {
 		try {
 			BinaryStreamWriter writer = new BinaryStreamWriter(stream);
-			myXStream().marshal(object, writer);
+			xstream.marshal(object, writer);
 			writer.flush();
 		} catch (RuntimeException rx) {
 			throw new IOException(rx);
@@ -51,10 +50,14 @@ class SerializerImpl implements Serializer {
 
 	
 	@Override
-	public Object deserialize(InputStream stream, ClassLoader classloader) throws IOException, ClassNotFoundException {
-		myXStream().setClassLoader(classloader);
+	public Object deserialize(InputStream stream, ClassLoader classLoader) throws IOException, ClassNotFoundException {
+		return deserializeWith(stream, xStreamWith(classLoader));
+	}
+
+	private Object deserializeWith(InputStream stream, XStream xstream)
+			throws ClassNotFoundException, IOException {
 		try {
-			return myXStream().unmarshal(new BinaryStreamReader(stream));
+			return xstream.unmarshal(new BinaryStreamReader(stream));
 		} catch (RuntimeException rx) {
 			Throwable cause = rx;
 			while (cause != null) {
@@ -68,6 +71,13 @@ class SerializerImpl implements Serializer {
 	}
 
 
+	private XStream xStreamWith(ClassLoader classLoader) {
+		XStream xs = new XStream(); // XStream instances are not thread safe
+		xs.setClassLoader(classLoader);
+		return xs;
+	}
+
+
 	@Override
 	public Object deserialize(byte[] bytes, ClassLoader classloader) throws ClassNotFoundException {
 		try {
@@ -75,6 +85,42 @@ class SerializerImpl implements Serializer {
 		} catch (IOException ioe) {
 			throw new IllegalStateException(ioe);
 		}
+	}
+
+
+	@Override
+	public Object deserialize(InputStream stream, final ClassMapper mapper)
+			throws IOException, ClassNotFoundException {
+		return deserializeWith(stream, xStreamWith(mapper));
+	}
+
+
+	@SuppressWarnings("deprecation")
+	private XStream xStreamWith(final ClassMapper mapper) {
+		Mapper m = new MapperWrapper(new XStream().getMapper()) {
+			@SuppressWarnings("unchecked")
+			@Override
+			public String serializedClass(Class type) {
+				return mapper.serializationHandleFor(type);
+			}
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public Class realClass(String elementName) {
+				try {
+					return mapper.classGiven(elementName);
+				} catch (Exception e) {
+					return super.realClass(elementName);
+				}
+			}
+		};
+		return new XStream(null, m, new XppDriver());
+	}
+
+
+	@Override
+	public void serialize(OutputStream stream, Object obj, ClassMapper mapper) throws IOException {
+		serializeWith(stream, obj, xStreamWith(mapper));
 	}
 
 }

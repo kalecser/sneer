@@ -1,18 +1,26 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.List;
 
 import org.prevayler.TransactionWithQuery;
 
+import sneer.foundation.environments.Environment;
+import sneer.foundation.environments.EnvironmentUtils;
+import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.ByRef;
+import sneer.foundation.lang.Closure;
 class Invocation implements TransactionWithQuery {
 
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
 	private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
 
 	
-	Invocation(List<String> getterPath, Method method, Object[] args) {
+	Invocation(Class<?> brick, List<String> getterPath, Method method, Object[] args) {
+		_brick = brick;
 		_getterPath = getterPath.toArray(EMPTY_STRING_ARRAY);
 		_methodName = method.getName();
 		_argTypes = method.getParameterTypes();
@@ -20,17 +28,23 @@ class Invocation implements TransactionWithQuery {
 	}
 
 	
+	private final Class<?> _brick;
 	private final String[] _getterPath;
 	private final String _methodName;
 	private final Class<?>[] _argTypes;
 	private final Object[] _args;
-
 	
-	public Object executeAndQuery(Object brick, Date date) {
-		Object receiver = navigateToReceiver(brick);
-		return invoke(receiver, _methodName, _argTypes, _args);
+	public Object executeAndQuery(Object system, Date date) {
+		final PrevalentBuilding building = (PrevalentBuilding)system;
+		
+		final ByRef<Object> retVal = ByRef.newInstance();
+		Environments.runWith(EnvironmentUtils.compose(building, my(Environment.class)), new Closure() { @Override public void run() {
+			Object brickImpl = building.brick(_brick);
+			Object receiver = navigateToReceiver(brickImpl);
+			retVal.value = invoke(receiver, _methodName, _argTypes, _args);
+		}});
+		return retVal.value;
 	}
-
 	
 	private Object navigateToReceiver(Object brick) {
 		Object result = brick;

@@ -20,9 +20,15 @@ class BrickImplLoader {
 		List<Nature> natures = naturesFor(brick);
 
 		ClassLoader apiClassLoader = brick.getClassLoader();
+<<<<<<< Updated upstream:code/src/sneer/foundation/brickness/impl/BrickImplLoader.java
 		ClassLoader libsClassLoader = ClassLoaderForBrickLibs.newInstanceIfNecessary(path, implPackage, natures, apiClassLoader);
 		ClassLoader nextClassLoader = libsClassLoader == null ? apiClassLoader : libsClassLoader;
 		ClassLoader packageLoader = new ClassLoaderForPackage(path, implPackage, natures, nextClassLoader);
+=======
+		ClassLoader libsClassLoader = ClassLoaderForBrickLibs.newInstanceIfNecessary(brick, path, implPackage, natures, apiClassLoader);
+		ClassLoader nextClassLoader = libsClassLoader == null ? apiClassLoader : libsClassLoader;
+		ClassLoader packageLoader = new ClassLoaderForPackage(brick, path, implPackage, natures, nextClassLoader);
+>>>>>>> Stashed changes:code/src/sneer/foundation/brickness/impl/BrickImplLoader.java
 
 		return (Class<T>)packageLoader.loadClass(implNameFor(brick.getName()));
 	}

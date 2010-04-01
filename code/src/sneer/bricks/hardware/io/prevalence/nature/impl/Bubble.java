@@ -16,26 +16,26 @@ import sneer.foundation.lang.ReadOnly;
 
 class Bubble {
 
-	static <STATE_MACHINE> STATE_MACHINE wrapStateMachine(Prevayler prevayler) {
-		Object stateMachine = prevayler.prevalentSystem();
-		return (STATE_MACHINE)wrap(stateMachine, prevayler, new ArrayList<String>());
+	static <BRICK> BRICK wrap(Prevayler prevayler, Class<BRICK> brick, BRICK brickImpl) {
+		return wrap(brick, brickImpl, prevayler, new ArrayList<String>());
 	}
-
 	
-	private static <T> T wrap(Object object, Prevayler prevayler, List<String> getterMethodPath) {
-		InvocationHandler handler = new Bubble(object, prevayler, getterMethodPath).handler();
+	private static <T> T wrap(Class<?> brick, T object, Prevayler prevayler, List<String> getterMethodPath) {
+		InvocationHandler handler = new Bubble(brick, object, prevayler, getterMethodPath).handler();
 		return (T)Proxy.newProxyInstance(object.getClass().getClassLoader(), object.getClass().getInterfaces(), handler);
 	}
 
 	
-	private Bubble(Object stateMachine, Prevayler prevayler, List<String> getterMethodPath) {
-		_stateMachine = stateMachine;
+	private Bubble(Class<?> brick, Object brickImpl, Prevayler prevayler, List<String> getterMethodPath) {
+		_brick = brick;
+		_brickImpl = brickImpl;
 		_prevayler = prevayler;
 		_getterMethodPath = getterMethodPath;
 	}
 	
 	
-	private final Object _stateMachine;
+	private final Class<?> _brick;
+	private final Object _brickImpl;
 	private final Prevayler _prevayler;
 	private final List<String> _getterMethodPath;
 	
@@ -51,7 +51,7 @@ class Bubble {
 	
 	private Object handleCommand(Method method, Object[] args) {
 		try {
-			_prevayler.execute(new Invocation(_getterMethodPath, method, args));
+			_prevayler.execute(new Invocation(_brick, _getterMethodPath, method, args));
 		} catch (Exception e) {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
@@ -67,7 +67,7 @@ class Bubble {
 
 	private Object invokeOnStateMachine(Method method, Object[] args) throws Throwable {
 		try {
-			return method.invoke(_stateMachine, args);
+			return method.invoke(_brickImpl, args);
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		} catch (IllegalArgumentException e) {
@@ -89,7 +89,7 @@ class Bubble {
 		pathToObject.addAll(_getterMethodPath);
 		pathToObject.add(methodName);
 		
-		return wrap(object, _prevayler, pathToObject);
+		return wrap(_brick, object, _prevayler, pathToObject);
 	}
 
 

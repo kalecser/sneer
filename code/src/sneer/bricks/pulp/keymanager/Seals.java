@@ -4,7 +4,7 @@ import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
 import sneer.bricks.network.social.Contact;
 import sneer.foundation.brickness.Brick;
 
-@Brick(Prevalent.class)
+@Brick (Prevalent.class)
 public interface Seals {
 
 	Seal ownSeal();

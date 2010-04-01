@@ -33,4 +33,10 @@ public interface Serializer {
 	Object deserialize(InputStream stream, ClassLoader classloader) throws IOException, ClassNotFoundException;
 
 	Object deserialize(byte[] bytes, ClassLoader classloader) throws ClassNotFoundException;
+<<<<<<< Updated upstream:code/src/sneer/bricks/pulp/serialization/Serializer.java
+=======
+	
+	void serialize(OutputStream stream, Object object, ClassMapper mapper) throws IOException;
+	Object deserialize(InputStream stream, ClassMapper mapper) throws IOException, ClassNotFoundException;
+>>>>>>> Stashed changes:code/src/sneer/bricks/pulp/serialization/Serializer.java
 }
