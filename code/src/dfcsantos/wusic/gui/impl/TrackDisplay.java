@@ -29,7 +29,7 @@ class TrackDisplay extends JPanel {
 	private final JLabel _trackTime	 = my(ReactiveWidgetFactory.class).newLabel(playingTrackTime()).getMainWidget();
 
 	TrackDisplay() {
-		super(new FlowLayout(FlowLayout.LEFT, 9, 3));
+		super(new FlowLayout(FlowLayout.LEFT, 9, 5));
 
 		_trackLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		add(_trackLabel);

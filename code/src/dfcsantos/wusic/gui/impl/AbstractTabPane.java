@@ -2,7 +2,6 @@ package dfcsantos.wusic.gui.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
@@ -16,20 +15,16 @@ abstract class AbstractTabPane extends JPanel {
 
 	static final Wusic _controller = my(Wusic.class);
 
-	private final JPanel _customPanel	= new JPanel(new FlowLayout(FlowLayout.LEFT, 9, 3));
-	private final JPanel _fixedPanel	= new JPanel(new GridLayout(2,1));
-
+	private final JPanel _customPanel	= new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 5));
 	private final JPanel _trackDisplay	= new TrackDisplay();
-    private ControlPanel _controlPanel = newControlPanel();
+    private final ControlPanel _controlPanel = newControlPanel();
 
 	AbstractTabPane() {
-		super(new BorderLayout(3, 3));
+		super(new GridLayout(3, 1, 0, 5));
 
-		_fixedPanel.add(_trackDisplay);
-		_fixedPanel.add(_controlPanel);
-
-		add(_customPanel, BorderLayout.NORTH);
-		add(_fixedPanel, BorderLayout.SOUTH);
+		add(_customPanel);
+		add(_trackDisplay);
+		add(_controlPanel);
 	}
 
 	void updateComponents(OperatingMode operatingMode) {

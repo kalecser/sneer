@@ -9,7 +9,7 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface WindowBoundsSetter {
 	
-	void setDefaultBaseComponet(Component baseComponent);
+	void setDefaultBaseComponent(Component baseComponent);
 
 	Rectangle unusedArea();
 	void setBestBounds(Window window);
