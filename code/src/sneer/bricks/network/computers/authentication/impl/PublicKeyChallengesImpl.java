@@ -11,7 +11,12 @@ class PublicKeyChallengesImpl implements PublicKeyChallenges {
 
 	@Override
 	public boolean challenge(Seal contactsSeal, ByteArraySocket socket) throws IOException {
-		//socket.write(array);
+		// send challenge (random bytes).
+		// read public key
+		// check public key against seal
+		// read challenge signature
+		// verify signature
+		
 		@SuppressWarnings("unused")
 		byte[] publicKeyBytes = socket.read();
 		throw new NotImplementedYet();
