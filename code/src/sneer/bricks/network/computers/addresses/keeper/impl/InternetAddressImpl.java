@@ -14,7 +14,8 @@ class InternetAddressImpl implements InternetAddress {
 	
 	private final Signal<Integer> _port;
 	
-	public InternetAddressImpl(Contact contact, String host, int port) {
+	InternetAddressImpl(Contact contact, String host, int port) {
+		if (contact == null) throw new IllegalArgumentException();
 		_contact = contact;
 		_host = host;
 		_port = my(Signals.class).constant(port);
