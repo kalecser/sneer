@@ -14,7 +14,7 @@ class MusicalTasteMatcherImpl implements MusicalTasteMatcher {
 
 	@Override
 	public void processEndorsement(Contact peer, String folder, boolean isKnownTrack) {
-		FolderMatchCounter counter = matchesBy(peer, folder); 
+		FolderMatchCounter counter = matchesBy(peer, folder);
 		counter.incrementEndorsementCount();
 		if (isKnownTrack) counter.incrementMatchCount();
 	}
