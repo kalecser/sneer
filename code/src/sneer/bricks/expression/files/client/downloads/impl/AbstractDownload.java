@@ -44,7 +44,7 @@ abstract class AbstractDownload implements Download {
 
 	private long _startTime;
 
-	private Register<Integer> _progress = my(Signals.class).newRegister(0);
+	private Register<Float> _progress = my(Signals.class).newRegister(0f);
 
 	private final Latch _isFinished = my(Latches.class).produce();
 	private Pulser _finished = my(Pulsers.class).newInstance();
@@ -86,19 +86,31 @@ abstract class AbstractDownload implements Download {
 
 
 	@Override
+	public File file() {
+		return _actualPath;
+	}
+
+
+	@Override
 	public Sneer1024 hash() {
 		return _hash;
 	}
 
 
 	@Override
-	public Signal<Integer> progress() {
+	public Contact source() {
+		return _source;
+	}
+
+
+	@Override
+	public Signal<Float> progress() {
 		return _progress.output();
 	}
 
 
-	void updateProgressBy(int increment) {
-		int progress = progress().currentValue() + increment;
+	void updateProgressBy(float increment) {
+		float progress = progress().currentValue() + increment;
 		_progress.setter().consume(Math.min(progress, 100));
 	}
 
@@ -249,12 +261,6 @@ abstract class AbstractDownload implements Download {
 		} else if (!_hash.equals(other._hash))
 			return false;
 		return true;
-	}
-
-
-	@Override
-	public String toString() {
-		return "Download of " + _actualPath.getName().toUpperCase() + "(" + _source.nickname().currentValue().toUpperCase() + ")";
 	}
 
 

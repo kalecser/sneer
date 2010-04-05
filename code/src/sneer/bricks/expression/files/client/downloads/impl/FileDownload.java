@@ -112,6 +112,7 @@ class FileDownload extends AbstractDownload {
 				FileContents block = it.next();
 				if (block.blockNumber != _nextBlockToWrite) continue;
 				it.remove();
+				updateProgressBy(100 / _fileSizeInBlocks);
 				writeBlock(block.bytes.copy());
 				written = true;
 			}
@@ -123,7 +124,6 @@ class FileDownload extends AbstractDownload {
 	
 	private void writeBlock(byte[] bytes) throws IOException {
 		_output.write(bytes);
-		updateProgressBy(100 / _fileSizeInBlocks);
 		++_nextBlockToWrite;
 		if (readyToFinish()) {
 			my(IO.class).crash(_output);
