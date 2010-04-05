@@ -4,7 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Map.Entry;
 
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
@@ -93,13 +92,13 @@ class TrackDownloaderImpl implements TrackDownloader {
 		if (isFromMe(endorsement)) return false;
 
 		boolean isKnown = isKnown(endorsement);
-		updateMusicalTasteMatcher(endorsement, isKnown);
+//		updateMusicalTasteMatcher(endorsement, isKnown);
 		if (isKnown) return false;
 
 		if (isRejected(endorsement)) return false;
 		if (hasSpentDownloadAllowance()) return false;
 
-		killDownloadWithTheLowestRatingWorseThan(matchRatingFor(endorsement));
+//		killDownloadWithTheLowestRatingWorseThan(matchRatingFor(endorsement));
 		if (hasReachedDownloadLimit()) return false;
 
 		return true;
@@ -141,11 +140,11 @@ class TrackDownloaderImpl implements TrackDownloader {
 	}
 
 
-	private void updateMusicalTasteMatcher(TrackEndorsement endorsement, boolean isKnownTrack) {
-		Contact sender = senderOf(endorsement);
-		String folder = new File(endorsement.path).getParent();
-		my(MusicalTasteMatcher.class).processEndorsement(sender, folder, isKnownTrack);
-	}
+//	private void updateMusicalTasteMatcher(TrackEndorsement endorsement, boolean isKnownTrack) {
+//		Contact sender = senderOf(endorsement);
+//		String folder = new File(endorsement.path).getParent();
+//		my(MusicalTasteMatcher.class).processEndorsement(sender, folder, isKnownTrack);
+//	}
 
 
 	private static boolean isRejected(TrackEndorsement endorsement) {
@@ -175,23 +174,23 @@ class TrackDownloaderImpl implements TrackDownloader {
 	}
 
 
-	private void killDownloadWithTheLowestRatingWorseThan(float endorsementMatchRating) {
-		Download sentencedToDeath = null;
-		float minMatchRating = endorsementMatchRating;
-
-		for (Entry<Download, Float> downloadAndMatchRating : _downloadsAndMatchRatings.output().currentElements()) {
-			Float matchRating = downloadAndMatchRating.getValue();
-			if (matchRating < minMatchRating) {
-				minMatchRating = matchRating;
-				sentencedToDeath = downloadAndMatchRating.getKey();
-			}
-		}
-
-		if (sentencedToDeath != null) {
-			_downloadsAndMatchRatings.remove(sentencedToDeath);
-			sentencedToDeath.dispose();
-		}
-	}
+//	private void killDownloadWithTheLowestRatingWorseThan(float endorsementMatchRating) {
+//		Download sentencedToDeath = null;
+//		float minMatchRating = endorsementMatchRating;
+//
+//		for (Entry<Download, Float> downloadAndMatchRating : _downloadsAndMatchRatings.output().currentElements()) {
+//			Float matchRating = downloadAndMatchRating.getValue();
+//			if (matchRating < minMatchRating) {
+//				minMatchRating = matchRating;
+//				sentencedToDeath = downloadAndMatchRating.getKey();
+//			}
+//		}
+//
+//		if (sentencedToDeath != null) {
+//			_downloadsAndMatchRatings.remove(sentencedToDeath);
+//			sentencedToDeath.dispose();
+//		}
+//	}
 
 
 	private boolean hasReachedDownloadLimit() {

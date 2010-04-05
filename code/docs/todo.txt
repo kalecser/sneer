@@ -20,6 +20,8 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	-  Uncomment code at TrackDownloaderImpl and fix NullPointerException 
+
 	- Seals
 		- ContactInfoWindowImpl
 			- Unignore NullParameterTest and fix problem with Prevalent Nature
