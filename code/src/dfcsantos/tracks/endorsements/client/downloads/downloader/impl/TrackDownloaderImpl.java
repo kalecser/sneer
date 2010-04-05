@@ -78,7 +78,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 		_downloadsAndMatchRatings.put(download, matchRatingFor(endorsement));
 
 		WeakContract weakContract = download.finished().addPulseReceiver(new Runnable() { @Override public void run() {
-			my(TrackDownloadCounter.class).conditionalIncrementer(download.hasFinishedSuccessfully()).run();
+			my(TrackDownloadCounter.class).increment(download.hasFinishedSuccessfully());
 			_downloadsAndMatchRatings.remove(download);
 		}});
 

@@ -11,7 +11,6 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.foundation.lang.Closure;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.endorsements.client.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.execution.playlist.Playlist;
@@ -21,8 +20,6 @@ import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 class PeerTracks extends TrackSourceStrategy {
 
 	static final TrackSourceStrategy INSTANCE = new PeerTracks();
-
-	private final Closure _downloadCountDecrementer = my(TrackDownloadCounter.class).decrementer();
 
 	private PeerTracks() {}
 
@@ -70,7 +67,7 @@ class PeerTracks extends TrackSourceStrategy {
 	}
 
 	private void decrementDownloadCounter() {
-		_downloadCountDecrementer.run();
+		my(TrackDownloadCounter.class).decrement();
 	}
 
 }

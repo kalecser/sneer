@@ -8,7 +8,6 @@ import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.counters.Counter;
 import sneer.bricks.pulp.reactive.counters.Counters;
-import sneer.foundation.lang.Closure;
 import dfcsantos.tracks.endorsements.client.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
@@ -22,23 +21,13 @@ class TrackDownloadCounterImpl implements TrackDownloadCounter {
 	}
 
 	@Override
-	public Closure incrementer() {
-		return _delegate.incrementer();
+	public void increment(boolean condition) {
+		_delegate.conditionalIncrementer(condition).run();
 	}
 
 	@Override
-	public Closure conditionalIncrementer(boolean condition) {
-		return _delegate.conditionalIncrementer(condition);
-	}
-
-	@Override
-	public Closure decrementer() {
-		return _delegate.decrementer();
-	}
-
-	@Override
-	public Closure conditionalDecrementer(boolean condition) {
-		return _delegate.conditionalDecrementer(condition);
+	public void decrement() {
+		_delegate.conditionalDecrementer(_delegate.count().currentValue() > 0).run();
 	}
 
 	private int numberOfTracksInTheDownloadsFolder() {
