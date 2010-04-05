@@ -37,6 +37,9 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 	}
 
 	private void handle(final Sighting sighting) {
+		final Contact contact = my(ContactSeals.class).contactGiven(sighting.peersSeal);
+		if (contact == null) throw new IllegalStateException();
+		
 		_addresses.add(new InternetAddress() {
 			
 			@Override
@@ -51,7 +54,7 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 			
 			@Override
 			public Contact contact() {
-				return my(ContactSeals.class).contactGiven(sighting.peersSeal);
+				return contact;
 			}
 		});
 	}
