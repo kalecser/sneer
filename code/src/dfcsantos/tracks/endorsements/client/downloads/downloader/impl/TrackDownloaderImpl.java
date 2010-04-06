@@ -8,7 +8,7 @@ import java.util.Collection;
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.map.FileMap;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
@@ -133,8 +133,8 @@ class TrackDownloaderImpl implements TrackDownloader {
 	}
 
 
-	private Collection<Sneer1024> hashesOfRunningDownloads() {
-		return my(CollectionUtils.class).map(_downloadsAndMatchRatings.output().keys().currentElements(), new Functor<Download, Sneer1024>() { @Override public Sneer1024 evaluate(Download download) throws RuntimeException {
+	private Collection<Hash> hashesOfRunningDownloads() {
+		return my(CollectionUtils.class).map(_downloadsAndMatchRatings.output().keys().currentElements(), new Functor<Download, Hash>() { @Override public Hash evaluate(Download download) throws RuntimeException {
 			return download.hash();
 		}});
 	}

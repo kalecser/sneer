@@ -11,7 +11,7 @@ import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.visitors.FileMapGuide;
 import sneer.bricks.expression.files.map.visitors.FolderStructureVisitor;
 import sneer.bricks.expression.files.protocol.FolderContents;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.Lang.Strings;
 import sneer.bricks.hardware.io.log.Logger;
@@ -26,14 +26,14 @@ class Demolition implements FolderStructureVisitor {
 	private final CacheMap<String, BrickInfo> _bricksByName;
 
 	private final Deque<String> _namePath = new LinkedList<String>();
-	private final Deque<Sneer1024> _hashPath = new LinkedList<Sneer1024>();
+	private final Deque<Hash> _hashPath = new LinkedList<Hash>();
 
 	private final boolean _isCurrent;
 
 	private IOException _firstExceptionFound;
 	
 
-	Demolition(CacheMap<String,BrickInfo> bricksByName, Sneer1024 srcFolderHash, boolean isCurrent) throws IOException {
+	Demolition(CacheMap<String,BrickInfo> bricksByName, Hash srcFolderHash, boolean isCurrent) throws IOException {
 		_bricksByName = bricksByName;
 		_isCurrent = isCurrent;
 		my(FileMapGuide.class).guide(this, folderContents(srcFolderHash));
@@ -42,13 +42,13 @@ class Demolition implements FolderStructureVisitor {
 	}
 
 
-	private FolderContents folderContents(Sneer1024 srcFolderHash) {
+	private FolderContents folderContents(Hash srcFolderHash) {
 		return my(FileMap.class).getFolderContents(srcFolderHash);
 	}
 
 
 	@Override
-	public boolean visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
+	public boolean visitFileOrFolder(String name, long lastModified, Hash hashOfContents) {
 		if (name.equals("impl")) return false;
 		if (name.equals("tests")) return false;
 		
@@ -90,7 +90,7 @@ class Demolition implements FolderStructureVisitor {
 	private void accumulateBrick(String fileName) throws IOException {
 		String packageName = _strings.join(_namePath, ".");
 		final String brickName = _strings.chomp(packageName + "." + fileName, ".java");
-		final Sneer1024 packageHash = _hashPath.peekLast();
+		final Hash packageHash = _hashPath.peekLast();
 
 		BrickInfoImpl existingBrick = (BrickInfoImpl) _bricksByName.get(brickName, new ProducerX<BrickInfo, IOException>() { @Override public BrickInfo produce() throws IOException {
 			return new BrickInfoImpl(brickName, packageHash, _isCurrent);

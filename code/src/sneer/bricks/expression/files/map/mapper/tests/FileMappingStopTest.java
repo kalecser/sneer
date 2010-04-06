@@ -12,7 +12,7 @@ import org.junit.Test;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.map.mapper.MappingStopped;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
@@ -28,7 +28,7 @@ public class FileMappingStopTest extends BrickTest {
 
 		checking(new Expectations() {{
 			oneOf(_fileMap).getLastModified(with(any(File.class))); will(returnValue(-1L));
-			oneOf(_fileMap).putFile(with(any(File.class)), with(any(Sneer1024.class)));
+			oneOf(_fileMap).putFile(with(any(File.class)), with(any(Hash.class)));
 				will(new CustomAction("Call stopFolderMapping") { @Override public Object invoke(Invocation invocation) throws Throwable {
 					_subject.stopFolderMapping(fixturesFolder);
 					return null;

@@ -10,7 +10,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.map.mapper.FileMapper;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -67,7 +67,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 			}});
 
 		File copy = newTmpFile();
-		Sneer1024 hash = null;
+		Hash hash = null;
 		if (fileOrFolder.isDirectory()) {
 			hash = _fileMapper.mapFolder(fileOrFolder);
 			copyFolderFromFileMap(hash, copy);
@@ -80,9 +80,9 @@ public abstract class FileCopyTestBase extends BrickTest {
 		assertSameContents(fileOrFolder, copy);
 	}
 
-	abstract protected void copyFileFromFileMap(Sneer1024 hashOfContents, File destination) throws Exception;
+	abstract protected void copyFileFromFileMap(Hash hashOfContents, File destination) throws Exception;
 
-	abstract protected void copyFolderFromFileMap(Sneer1024 hashOfContents, File destination) throws Exception;
+	abstract protected void copyFolderFromFileMap(Hash hashOfContents, File destination) throws Exception;
 
 	private File zeroLengthFile() throws IOException {
 		return createTmpFile("tmp" + System.nanoTime());

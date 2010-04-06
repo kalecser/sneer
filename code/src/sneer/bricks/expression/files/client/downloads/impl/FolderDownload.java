@@ -13,7 +13,7 @@ import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FileRequest;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.expression.files.writer.folder.FolderContentsWriter;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.tuples.Tuple;
 import sneer.bricks.pulp.tuples.TupleSpace;
@@ -26,12 +26,12 @@ class FolderDownload extends AbstractDownload {
 	@SuppressWarnings("unused") private WeakContract _folderContentConsumerContract;
 
 
-	FolderDownload(File folder, long lastModified, Sneer1024 hashOfFolder) {
+	FolderDownload(File folder, long lastModified, Hash hashOfFolder) {
 		this(folder, lastModified, hashOfFolder, null);
 	}
 
 
-	FolderDownload(File folder, long lastModified, Sneer1024 hashOfFolder, Runnable toCallWhenFinished) {
+	FolderDownload(File folder, long lastModified, Hash hashOfFolder, Runnable toCallWhenFinished) {
 		super(folder, lastModified, hashOfFolder, null, toCallWhenFinished);
 
 		start();
@@ -59,7 +59,7 @@ class FolderDownload extends AbstractDownload {
 	private void tryToReceiveFolder(FolderContents folderContents) throws IOException, TimeoutException {
 		if (isFinished()) return;
 
-	    Sneer1024 hashOfFolder = my(FolderContentsHasher.class).hash(folderContents);
+	    Hash hashOfFolder = my(FolderContentsHasher.class).hash(folderContents);
 	    if (!_hash.equals(hashOfFolder)) return;
 	    _contentsReceived = folderContents;
 
@@ -103,7 +103,7 @@ class FolderDownload extends AbstractDownload {
 
 
 	@Override
-	Object mappedContentsBy(Sneer1024 hashOfContents) {
+	Object mappedContentsBy(Hash hashOfContents) {
 		return my(FileMap.class).getFolderContents(hashOfContents);
 	}
 

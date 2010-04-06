@@ -12,19 +12,19 @@ import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.visitors.FileMapGuide;
 import sneer.bricks.expression.files.map.visitors.FolderStructureVisitor;
 import sneer.bricks.expression.files.protocol.FolderContents;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
 
 class BrickVersionImpl implements BrickVersion {
 
-	private final Sneer1024 _hash;
+	private final Hash _hash;
 	private final List<FileVersion> _files;
 	
 	private Status _status;
 	private boolean _stagedForExecution;
 	
-	BrickVersionImpl(Sneer1024 hashOfPackage, boolean isCurrent) throws IOException {
+	BrickVersionImpl(Hash hashOfPackage, boolean isCurrent) throws IOException {
 		_hash = BrickFilter.mapOnlyFilesFromThisBrick(hashOfPackage);
 		_files = findFiles();
 		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
@@ -32,7 +32,7 @@ class BrickVersionImpl implements BrickVersion {
 
 
 	@Override public List<FileVersion> files() { return _files; }
-	@Override public Sneer1024 hash() { return _hash; }
+	@Override public Hash hash() { return _hash; }
 	@Override public boolean isStagedForExecution() { return _stagedForExecution; }
 	@Override public Status status() { return _status; }
 
@@ -88,7 +88,7 @@ class BrickVersionImpl implements BrickVersion {
 
 		
 		@Override
-		public boolean visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
+		public boolean visitFileOrFolder(String name, long lastModified, Hash hashOfContents) {
 			_path.addLast(name);
 			_lastModified = lastModified;
 			return true;

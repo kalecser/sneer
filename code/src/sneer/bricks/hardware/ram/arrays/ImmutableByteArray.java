@@ -7,7 +7,7 @@ public class ImmutableByteArray {
 	
 	private final byte[] _payload;
 	
-	private transient int _hashCode = -1;
+	private transient int _hashCode = 0;
 
 	public ImmutableByteArray(byte[] bufferToCopy) {
 		_payload = bufferToCopy.clone();
@@ -53,7 +53,7 @@ public class ImmutableByteArray {
 	
 	@Override
 	public int hashCode() {
-		if (_hashCode == -1)
+		if (_hashCode == 0)
 			_hashCode = Arrays.hashCode(_payload); //Yes one in every 4 billion hash codes will be calculated every time (the case when the hash code actually IS -1 :).
 
 		return _hashCode;

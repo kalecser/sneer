@@ -8,7 +8,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 import sneer.bricks.expression.files.map.visitors.FolderStructureVisitor;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.io.IO;
 
 final class FileWritingVisitor implements FolderStructureVisitor {
@@ -23,7 +23,7 @@ final class FileWritingVisitor implements FolderStructureVisitor {
 	}
 
 	
-	@Override public boolean visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents) {
+	@Override public boolean visitFileOrFolder(String name, long lastModified, Hash hashOfContents) {
 		_fileOrFolder = new File(_fileOrFolder, name);
 		_lastModified.push(lastModified);
 		return true;

@@ -9,7 +9,7 @@ import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
@@ -36,7 +36,7 @@ abstract class AbstractDownload implements Download {
 
 	File _path;
 	final long _lastModified;
-	final Sneer1024 _hash;
+	final Hash _hash;
 
 	private final Contact _source;
 
@@ -56,7 +56,7 @@ abstract class AbstractDownload implements Download {
 	private WeakContract _timerContract;
 
 
-	AbstractDownload(File path, long lastModified, Sneer1024 hashOfFile, Contact source, Runnable toCallWhenFinished) {
+	AbstractDownload(File path, long lastModified, Hash hashOfFile, Contact source, Runnable toCallWhenFinished) {
 		_path = dotPartFor(path);
 		_lastModified = lastModified;
 		_hash = hashOfFile;
@@ -92,7 +92,7 @@ abstract class AbstractDownload implements Download {
 
 
 	@Override
-	public Sneer1024 hash() {
+	public Hash hash() {
 		return _hash;
 	}
 
@@ -229,7 +229,7 @@ abstract class AbstractDownload implements Download {
 	}
 
 
-	abstract Object mappedContentsBy(Sneer1024 hashOfContents);
+	abstract Object mappedContentsBy(Hash hashOfContents);
 
 	abstract void copyContents(Object contents) throws IOException;
 

@@ -8,24 +8,24 @@ import java.io.IOException;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.expression.files.writer.atomic.AtomicFileWriter;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.io.IO;
 
 public class LocalCopyTest extends FileCopyTestBase {
 
 	@Override
-	protected void copyFileFromFileMap(Sneer1024 hashOfContents, File destination) throws IOException {
+	protected void copyFileFromFileMap(Hash hashOfContents, File destination) throws IOException {
 		copyFromFileMap(hashOfContents, destination);
 	}
 
 
 	@Override
-	protected void copyFolderFromFileMap(Sneer1024 hashOfContents, File destination) throws IOException {
+	protected void copyFolderFromFileMap(Hash hashOfContents, File destination) throws IOException {
 		copyFromFileMap(hashOfContents, destination);
 	}
 
 
-	private void copyFromFileMap(Sneer1024 hashOfContents, File destination) throws IOException {
+	private void copyFromFileMap(Hash hashOfContents, File destination) throws IOException {
 		File file = my(FileMap.class).getFile(hashOfContents);
 		if (file != null) {
 			copyFile(destination, file);
@@ -36,7 +36,7 @@ public class LocalCopyTest extends FileCopyTestBase {
 	}
 
 
-	private void copyFolder(Sneer1024 hashOfContents, File destination) throws IOException {
+	private void copyFolder(Hash hashOfContents, File destination) throws IOException {
 		FolderContents folder = my(FileMap.class).getFolderContents(hashOfContents);
 		my(AtomicFileWriter.class).writeAtomicallyTo(destination, -1, folder);
 	}

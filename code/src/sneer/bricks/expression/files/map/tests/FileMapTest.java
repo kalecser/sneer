@@ -3,12 +3,14 @@ package sneer.bricks.expression.files.map.tests;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.junit.Test;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 
@@ -19,7 +21,12 @@ public class FileMapTest extends BrickTest {
 	@Test
 	public void fileMapping() {
 		File file = anySmallFile();
-		Sneer1024 hash = hash(42); 
+		Hash hash = hash(42);
+		
+		Map<Hash, File> banana = new ConcurrentHashMap<Hash, File>();
+		banana.put(hash, file);
+		assertEquals(file, banana.get(hash));
+		
 		_subject.putFile(file, hash);
 		assertEquals(file,_subject.getFile(hash));
 
@@ -50,7 +57,7 @@ public class FileMapTest extends BrickTest {
 		assertFileWasRenamed("newFolder/newSub/file2.txt", 42, hash(2));
 	}
 
-	private void assertFileWasRenamed(String fileName, int lastModified, Sneer1024 hash) {
+	private void assertFileWasRenamed(String fileName, int lastModified, Hash hash) {
 		File file = new File(fileName);
 		assertEquals(hash, _subject.getHash(file));
 		assertEquals(lastModified, _subject.getLastModified(file));
@@ -60,7 +67,7 @@ public class FileMapTest extends BrickTest {
 		return my(ClassUtils.class).classFile(getClass());
 	}
 
-	private Sneer1024 hash(int b) {
+	private Hash hash(int b) {
 		return my(Crypto.class).digest(new byte[] { (byte) b });
 	}
 

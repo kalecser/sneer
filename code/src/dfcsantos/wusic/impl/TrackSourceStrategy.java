@@ -8,7 +8,7 @@ import java.util.List;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.clock.timer.Timer;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -72,7 +72,7 @@ abstract class TrackSourceStrategy {
 
 	void deleteTrack(final Track rejected) {
 		my(Logger.class).log("Deleteing track: ", rejected.file());
-		Sneer1024 hash = my(FileMap.class).getHash(rejected.file());
+		Hash hash = my(FileMap.class).getHash(rejected.file());
 		my(FileMap.class).remove(rejected.file());
 		my(RejectedTracksKeeper.class).reject(hash);
 		markForDisposal(rejected);

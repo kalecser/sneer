@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
@@ -88,7 +88,7 @@ class FakeModel {
 				}
 				_status = Status.DIFFERENT;
 			}
-			@Override public Sneer1024 hash() {
+			@Override public Hash hash() {
 				return null;
 			}
 		};

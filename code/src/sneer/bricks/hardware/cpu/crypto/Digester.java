@@ -6,10 +6,8 @@ public interface Digester {
 
 	void update(byte[] bytes, int offset, int length);
 
-	Sneer1024 digest();
+	Hash digest();
 
-	Sneer1024 digest(byte[] bytes);
-
-	void reset();
+	Hash digest(byte[] bytes);
 
 }

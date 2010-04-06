@@ -11,7 +11,7 @@ import sneer.bricks.expression.files.server.FileServer;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
@@ -72,7 +72,7 @@ class TrackEndorserImpl implements TrackEndorser {
 	}
 
 	private void endorseTrack(final File track) {
-		Sneer1024 hash;
+		Hash hash;
 
 		try {
 			hash = my(Crypto.class).digest(track);

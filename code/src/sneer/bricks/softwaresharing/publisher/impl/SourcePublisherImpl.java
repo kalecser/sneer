@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.map.mapper.MappingStopped;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.tuples.TupleSpace;
@@ -21,7 +21,7 @@ class SourcePublisherImpl implements SourcePublisher {
 	public void publishSourceFolder() {
 		GitWorkaround.standardizeLastModifiedDatesWhileWeStillUseGitBecauseGitDoesNotPreserveThem(srcFolder());
 
-		Sneer1024 hash;
+		Hash hash;
 		try {
 			hash = my(FileMapper.class).mapFolder(srcFolder());
 		} catch (MappingStopped e) {

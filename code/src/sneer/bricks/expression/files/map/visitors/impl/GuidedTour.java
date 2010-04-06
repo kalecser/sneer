@@ -9,7 +9,7 @@ import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.visitors.FolderStructureVisitor;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.io.IO;
 
 class GuidedTour {
@@ -22,7 +22,7 @@ class GuidedTour {
 	}
 
 
-	private void showContents(Sneer1024 hashOfContents) throws IOException {
+	private void showContents(Hash hashOfContents) throws IOException {
 		File file = my(FileMap.class).getFile(hashOfContents);
 		if (file != null) {
 			showFile(file);

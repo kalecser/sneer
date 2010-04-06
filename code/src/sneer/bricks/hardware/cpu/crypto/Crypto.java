@@ -9,14 +9,14 @@ import sneer.foundation.brickness.Brick;
 public interface Crypto {
 
 	/**
-	 * SHA512 + Whirpool512 
+	 * SHA512 
 	 */
-	Sneer1024 digest(byte[] input);
+	Hash digest(byte[] input);
 
-	Sneer1024 digest(File file) throws IOException;	
+	Hash digest(File file) throws IOException;	
 
 	Digester newDigester();
 
-	Sneer1024 unmarshallSneer1024(byte[] bytes);
+	Hash unmarshallHash(byte[] bytes);
 
 }

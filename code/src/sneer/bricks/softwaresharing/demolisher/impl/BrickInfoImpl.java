@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickVersion;
@@ -17,10 +17,10 @@ class BrickInfoImpl implements BrickInfo {
 
 	
 	private final String _brickName;
-	private final CacheMap<Sneer1024, BrickVersionImpl> _versionsByHash = CacheMap.newInstance();
+	private final CacheMap<Hash, BrickVersionImpl> _versionsByHash = CacheMap.newInstance();
 
 	
-	public BrickInfoImpl(String brickName, Sneer1024 packageHash, boolean isCurrent) throws IOException {
+	public BrickInfoImpl(String brickName, Hash packageHash, boolean isCurrent) throws IOException {
 		my(Logger.class).log("BrickInfo created: " + brickName);
 		_brickName = brickName;
 		addVersionIfNecessary(packageHash, isCurrent);
@@ -78,7 +78,7 @@ class BrickInfoImpl implements BrickInfo {
 	}
 
 
-	void addVersionIfNecessary(Sneer1024 packageHash, boolean isCurrent) throws IOException {
+	void addVersionIfNecessary(Hash packageHash, boolean isCurrent) throws IOException {
 		final BrickVersionImpl newVersion = new BrickVersionImpl(packageHash, isCurrent);
 		BrickVersionImpl versionKept = _versionsByHash.get(newVersion.hash(), new Producer<BrickVersionImpl>() { @Override public BrickVersionImpl produce() {
 			my(Logger.class).log("Brick version found: " + newVersion.hash() + " version: " + (_versionsByHash.size() + 1));

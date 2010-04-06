@@ -20,7 +20,7 @@ import sneer.bricks.expression.files.protocol.FileRequest;
 import sneer.bricks.expression.files.protocol.Protocol;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
@@ -37,7 +37,7 @@ public class FileClientTest extends BrickTest {
 
 	@Test (timeout = 3000)
 	public void fileAlreadyMappedIsNotDownloaded() throws IOException {
-		Sneer1024 hash = my(Crypto.class).digest(new byte[]{42}); 
+		Hash hash = my(Crypto.class).digest(new byte[]{42}); 
 		my(FileMap.class).putFile(anySmallFile(), hash);
 
 		@SuppressWarnings("unused")
@@ -55,7 +55,7 @@ public class FileClientTest extends BrickTest {
 	@Test (timeout = 4000)
 	public void receiveFileContentBlocksOutOfSequence() throws IOException, TimeoutException {
 		final File smallFile = createTmpFileWithRandomContent(3 * Protocol.FILE_BLOCK_SIZE);
-		final Sneer1024 smallFileHash = my(Crypto.class).digest(smallFile);
+		final Hash smallFileHash = my(Crypto.class).digest(smallFile);
 
 		final Iterator<FileContents> blocksOutOfSequence = createFileContentBlocks(smallFile, smallFileHash).iterator();
 		@SuppressWarnings("unused")
@@ -76,7 +76,7 @@ public class FileClientTest extends BrickTest {
 		return my(ClassUtils.class).classFile(getClass());
 	}
 
-	private List<FileContents> createFileContentBlocks(File file, Sneer1024 fileHash) throws IOException {
+	private List<FileContents> createFileContentBlocks(File file, Hash fileHash) throws IOException {
 		List<FileContents> blocks = new ArrayList<FileContents>();
 
 		blocks.add(new FileContents(me(), fileHash, 1, getFileBlock(file, 1), file.getName())); // 2nd block

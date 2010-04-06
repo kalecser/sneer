@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import sneer.bricks.expression.files.map.FileMap;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -57,7 +57,7 @@ class PeerTracks extends TrackSourceStrategy {
 	}
 
 	private void updateFileMap(File tmpTrack) {
-		Sneer1024 hash = my(FileMap.class).remove(tmpTrack);
+		Hash hash = my(FileMap.class).remove(tmpTrack);
 		File keptTrack = new File(sharedTracksFolder(), tmpTrack.getName());
 		my(FileMap.class).putFile(keptTrack, hash);
 	}

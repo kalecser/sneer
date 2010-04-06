@@ -16,7 +16,7 @@ import sneer.bricks.expression.files.protocol.FileContentsFirstBlock;
 import sneer.bricks.expression.files.protocol.FileRequest;
 import sneer.bricks.expression.files.protocol.Protocol;
 import sneer.bricks.hardware.clock.Clock;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
@@ -39,12 +39,12 @@ class FileDownload extends AbstractDownload {
 	@SuppressWarnings("unused") private WeakContract _fileContentConsumerContract;
 
 
-	FileDownload(File file, long lastModified, Sneer1024 hashOfFile) {
+	FileDownload(File file, long lastModified, Hash hashOfFile) {
 		this(file, lastModified, hashOfFile, null, null);
 	}
 
 
-	FileDownload(File file, long lastModified, Sneer1024 hashOfFile, Contact source, Runnable toCallWhenFinished) {
+	FileDownload(File file, long lastModified, Hash hashOfFile, Contact source, Runnable toCallWhenFinished) {
 		super(file, lastModified, hashOfFile, source, toCallWhenFinished);
 
 		start();
@@ -169,7 +169,7 @@ class FileDownload extends AbstractDownload {
 
 
 	@Override
-	Object mappedContentsBy(Sneer1024 hashOfContents) {
+	Object mappedContentsBy(Hash hashOfContents) {
 		return my(FileMap.class).getFile(hashOfContents);
 	}
 
