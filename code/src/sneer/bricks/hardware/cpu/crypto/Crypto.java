@@ -2,6 +2,7 @@ package sneer.bricks.hardware.cpu.crypto;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.PublicKey;
 
 import sneer.foundation.brickness.Brick;
 
@@ -18,5 +19,7 @@ public interface Crypto {
 	Digester newDigester();
 
 	Hash unmarshallHash(byte[] bytes);
+
+	boolean verifySignature(byte[] message, PublicKey publicKey, byte[] signature);
 
 }

@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
+import java.security.PublicKey;
 import java.security.Security;
+import java.security.Signature;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -66,6 +68,23 @@ class CryptoImpl implements Crypto {
 	@Override
 	public Hash unmarshallHash(byte[] bytes) {
 		return new Hash(new ImmutableByteArray(bytes));
+	}
+
+	@Override
+	public boolean verifySignature(byte[] message, PublicKey publicKey,	byte[] signature) {
+		Signature verifier;
+		try {
+			verifier = Signature.getInstance("SHA512WITHECDSA", "BC");
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+		try {
+			verifier.initVerify(publicKey);
+			verifier.update(message);
+			return verifier.verify(signature);
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 }
