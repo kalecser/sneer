@@ -59,8 +59,10 @@ abstract class TrackSourceStrategy {
 
 
 	Track nextTrack() {
+		disposePendingTracks();
+		
 		Track nextTrack = _playlist.nextTrack();
-		if (nextTrack == null || _tracksToDispose.contains(nextTrack)) {
+		if (nextTrack == null) {
 			my(BlinkingLights.class).turnOnIfNecessary(_noTracksFound, "No Tracks Found", "Please choose a folder with MP3 files by clicking on 'Playing Folder' button	.");
 			return null;
 		}
