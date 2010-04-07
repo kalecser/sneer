@@ -1,5 +1,8 @@
 package sneer.bricks.expression.files.client.downloads.gui;
 
+import java.awt.Dimension;
+import java.awt.Window;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -18,19 +21,33 @@ public class DownloadsPanel extends Box {
 	public DownloadsPanel(SetSignal<Download> downloads) {
 		super(BoxLayout.Y_AXIS);
 
+		setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+
 		_toAvoidGC = downloads.addReceiver(new Consumer<CollectionChange<Download>>() { @Override public void consume(CollectionChange<Download> changes) {
-			for (Download startedDownload : changes.elementsAdded()) {
+			for (Download startedDownload : changes.elementsAdded()) { 
 				add(newDetailsPanelFor(startedDownload));
-				repaint();
+				update();
+				grabFocus();
 			}
 		}});
 	}
 
+	void update() {
+		repaint();
+		((Window) getTopLevelAncestor()).pack(); // Fix: It shouldn't be necessary
+	}
+
 	private JPanel newDetailsPanelFor(Download download) {
 		JPanel subpanel = new DownloadDetailsPanel(this, download);
-		subpanel.setAlignmentX(CENTER_ALIGNMENT);
-		subpanel.setAlignmentY(CENTER_ALIGNMENT);
-		subpanel.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+		subpanel.setMaximumSize(new Dimension(450, 100));
+		subpanel.setBorder(
+			BorderFactory.createTitledBorder(
+				BorderFactory.createCompoundBorder(
+					BorderFactory.createRaisedBevelBorder(), 
+					BorderFactory.createEmptyBorder(0, 3, 1, 3)
+				), "Download:"
+			)
+		);
 		return subpanel;
 	}
 

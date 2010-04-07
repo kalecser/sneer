@@ -2,13 +2,15 @@ package sneer.bricks.expression.files.client.downloads.gui;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.awt.Container;
-import java.awt.Dimension;
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JTextField;
 
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.hardware.cpu.lang.Lang;
@@ -17,54 +19,80 @@ import sneer.foundation.lang.Consumer;
 
 class DownloadDetailsPanel extends JPanel {
 
-	private final Container _parent;
+	private final DownloadsPanel _parent;
 
-	private final JLabel _downloadFile;
+	private final JLabel _downloadFileLabel;
+	private final JTextField _downloadFileField;
 
-	private final JLabel _downloadSource;
+	private final JLabel _downloadSourceLabel;
+	private final JTextField _downloadSourceField;
 
-	private final JProgressBar _downloadProgress;
+	private final JLabel _downloadProgressLabel;
+	private final JProgressBar _downloadProgressBar;
 
-	@SuppressWarnings("unused") private WeakContract _toAvoidGC;
+	@SuppressWarnings("unused") private final WeakContract _toAvoidGC;
 	@SuppressWarnings("unused") private final WeakContract _toAvoidGC2;
 
-	DownloadDetailsPanel(Container parent, Download download) {
-		super(new GridLayout(3, 1, 0, 1));
+	DownloadDetailsPanel(DownloadsPanel parent, Download download) {
+		super(new BorderLayout(4, 0));
 
 		_parent = parent;
 
-		_downloadFile = new JLabel("File: " + my(Lang.class).strings().abbreviate(download.file().getName(), 100));
-		add(_downloadFile);
+		JPanel westPanel = new JPanel(new GridLayout(3, 1));
+		westPanel.setBorder(BorderFactory.createEmptyBorder(0, 1, 2, 1));
 
-		_downloadSource = new JLabel("From: " + download.source().nickname().currentValue());
-		add(_downloadSource);
+		_downloadFileLabel = new JLabel("File:");
+		setAlignmentOf(_downloadFileLabel);
+		westPanel.add(_downloadFileLabel);
 
-		_downloadProgress = newProgressBarFor(download);
-		add(_downloadProgress);
+		_downloadSourceLabel = new JLabel("Source:");
+		setAlignmentOf(_downloadSourceLabel);
+		westPanel.add(_downloadSourceLabel);
 
-		setPreferredSize(new Dimension(500, 100));
+		_downloadProgressLabel = new JLabel("Progress:");
+		setAlignmentOf(_downloadProgressLabel);
+		westPanel.add(_downloadProgressLabel);
+
+
+		JPanel centerPanel = new JPanel(new GridLayout(3, 1));
+		centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 1, 2, 1));
+
+		_downloadFileField = new JTextField(my(Lang.class).strings().abbreviate(download.file().getName(), 80));
+		_downloadFileField.setEditable(false);
+		_downloadFileField.setBorder(BorderFactory.createEmptyBorder());
+		setAlignmentOf(_downloadFileField);
+		centerPanel.add(_downloadFileField);
+
+		_downloadSourceField = new JTextField(download.source().nickname().currentValue());
+		_downloadSourceField.setEditable(false);
+		_downloadSourceField.setBorder(BorderFactory.createEmptyBorder());
+		setAlignmentOf(_downloadSourceField);
+		centerPanel.add(_downloadSourceField);
+
+		_downloadProgressBar = new JProgressBar(0, 100);
+		_toAvoidGC = download.progress().addReceiver(new Consumer<Float>() { @Override public void consume(Float progress) {
+			_downloadProgressBar.setValue(progress.intValue());
+		}});
+		setAlignmentOf(_downloadProgressBar);
+		_downloadProgressBar.setStringPainted(true);
+		centerPanel.add(_downloadProgressBar);
+
+		add(westPanel, BorderLayout.WEST);
+		add(centerPanel, BorderLayout.CENTER);
 
 		_toAvoidGC2 = download.finished().addPulseReceiver(new Runnable() { @Override public void run() {
 			close();
 		}});
 	}
 
-	private JProgressBar newProgressBarFor(Download download) {
-		JProgressBar progressBar = new JProgressBar(0, 100);
-		progressBar.setSize(450, 16);
-		progressBar.setValue(0);
-		progressBar.setStringPainted(true);
-
-		_toAvoidGC = download.progress().addReceiver(new Consumer<Float>() { @Override public void consume(Float progress) {
-			System.out.println("Download progress status: " + progress + "%");
-			_downloadProgress.setValue(progress.intValue());
-		}});
-
-		return progressBar;
+	private void setAlignmentOf(JComponent component) {
+		component.setAlignmentX(LEFT_ALIGNMENT);
+		component.setAlignmentY(CENTER_ALIGNMENT);
 	}
 
 	private void close() {
 		_parent.remove(this);
+		_parent.update();
 	}
 
 }
