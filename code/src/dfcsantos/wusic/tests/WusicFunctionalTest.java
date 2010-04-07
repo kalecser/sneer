@@ -49,7 +49,6 @@ public class WusicFunctionalTest extends BrickTest {
 		waitForSignalValue(_subject1.operatingMode(), OperatingMode.PEERS);
 
 		_subject1.start();
-		if (!my(BlinkingLights.class).lights().currentGet(0).caption().equals("No Tracks Found")) fail();
 		assertEquals(_subject1.playingTrack().currentValue(), null);
 		assertEquals(_subject1.isPlaying().currentValue(), false);
 
@@ -101,7 +100,7 @@ public class WusicFunctionalTest extends BrickTest {
 		waitForSignalValue(_subject1.isPlaying(), false);
 
 		_subject1.pauseResume();
-		if (!my(BlinkingLights.class).lights().currentGet(0).caption().equals("No Tracks Found")) fail();		
+		if (!my(BlinkingLights.class).lights().currentGet(0).caption().equals("No Tracks to Play")) fail();		
 	}
 
 	@Test (timeout = 2000)
