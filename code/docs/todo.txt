@@ -20,18 +20,19 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	-  Uncomment code at TrackDownloaderImpl and fix NullPointerException 
-
 	- Seals
 		- ContactInfoWindowImpl
 			- Unignore NullParameterTest and fix problem with Prevalent Nature
 
 	- Wusic
 		- MusicalTasteMatcher Kernel
+			- Talk to Klaus about folder counter (it's using the whole path from endorsement)
+				- Think about the case that the shared folder points to a 1-level directory 
 			- Implement MusicalTasteMatcherFunctionalTest
 			- Make MusicalTasteMatcher prevalent
-		- Track Downloads Monitor Pane
-			- Implement panel with a progress bar for each download currently running
+		- Downloads' Details Panel
+			- Fix download's progress bar
+			- Fix Box update
 		- Nice-to-have:
 			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
 			- Back Button 
