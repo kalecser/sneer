@@ -79,6 +79,11 @@ abstract class TrackSourceStrategy {
 	}
 
 
+	boolean isMarkedForDisposal(Track suspect) {
+		return _tracksToDispose.contains(suspect);
+	}
+
+
 	void markForDisposal(Track trackToDispose) {
 		_tracksToDispose.add(trackToDispose);
 	}

@@ -34,7 +34,7 @@ class PeerTracks extends TrackSourceStrategy {
 	}
 
 	void meToo(Track trackToKeep) {
-		//Implement Create event to notify listeners (like the MusicalTasteMatcher) of track approval/rejection.
+		if (isMarkedForDisposal(trackToKeep)) return;
 		moveTrackToFolder(trackToKeep, sharedTracksFolder());
 	}
 
