@@ -35,10 +35,10 @@ public class WusicImpl implements Wusic {
 	private Register<Boolean> _isDownloadActive = my(Signals.class).newRegister(false);
 	private final Register<Integer> _downloadAllowance = my(Signals.class).newRegister(DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE);  
 
-	@SuppressWarnings("unused") private final WeakContract _downloadAllowanceConsumerContract;
-	@SuppressWarnings("unused") private final WeakContract _isDownloadEnabledConsumerContract;
+	@SuppressWarnings("unused") private final WeakContract _downloadAllowanceConsumerCtr;
+	@SuppressWarnings("unused") private final WeakContract _isDownloadActiveConsumerCtr;
 
-	@SuppressWarnings("unused") private final WeakContract _operatingModeConsumerContract;
+	@SuppressWarnings("unused") private final WeakContract _operatingModeConsumerCtr;
 
 	WusicImpl() {
 		restore();
@@ -48,15 +48,15 @@ public class WusicImpl implements Wusic {
 
 		my(TrackEndorser.class).setOnOffSwitch(isTrackDownloadActive());
 
-		_isDownloadEnabledConsumerContract = isTrackDownloadActive().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isDownloadAllowed) {
+		_isDownloadActiveConsumerCtr = isTrackDownloadActive().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean notUsed) {
 			save();
 		}});
 
-		_downloadAllowanceConsumerContract = trackDownloadAllowance().addReceiver(new Consumer<Integer>(){ @Override public void consume(Integer downloadAllowance) {
+		_downloadAllowanceConsumerCtr = trackDownloadAllowance().addReceiver(new Consumer<Integer>(){ @Override public void consume(Integer notUsed) {
 			save();
 		}});
 
-		_operatingModeConsumerContract = operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode mode) {
+		_operatingModeConsumerCtr = operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode mode) {
 			reset();
 			_trackSource = (mode.equals(OperatingMode.OWN)) ? OwnTracks.INSTANCE : PeerTracks.INSTANCE;
 		}});
