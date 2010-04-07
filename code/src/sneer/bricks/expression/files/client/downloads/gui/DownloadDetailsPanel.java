@@ -34,12 +34,11 @@ class DownloadDetailsPanel extends JPanel {
 	@SuppressWarnings("unused") private final WeakContract _toAvoidGC2;
 
 	DownloadDetailsPanel(DownloadsPanel parent, Download download) {
-		super(new BorderLayout(4, 0));
+		super(new BorderLayout(6, 0));
 
 		_parent = parent;
 
 		JPanel westPanel = new JPanel(new GridLayout(3, 1));
-		westPanel.setBorder(BorderFactory.createEmptyBorder(0, 1, 2, 1));
 
 		_downloadFileLabel = new JLabel("File:");
 		setAlignmentOf(_downloadFileLabel);
@@ -55,7 +54,6 @@ class DownloadDetailsPanel extends JPanel {
 
 
 		JPanel centerPanel = new JPanel(new GridLayout(3, 1));
-		centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 1, 2, 1));
 
 		_downloadFileField = new JTextField(my(Lang.class).strings().abbreviate(download.file().getName(), 80));
 		_downloadFileField.setEditable(false);
@@ -70,8 +68,8 @@ class DownloadDetailsPanel extends JPanel {
 		centerPanel.add(_downloadSourceField);
 
 		_downloadProgressBar = new JProgressBar(0, 100);
-		_toAvoidGC = download.progress().addReceiver(new Consumer<Float>() { @Override public void consume(Float progress) {
-			_downloadProgressBar.setValue(progress.intValue());
+		_toAvoidGC = download.progress().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer progress) {
+			_downloadProgressBar.setValue(progress);
 		}});
 		setAlignmentOf(_downloadProgressBar);
 		_downloadProgressBar.setStringPainted(true);

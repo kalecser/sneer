@@ -30,17 +30,10 @@ Igor ====================================================
 				- Think about the case that the shared folder points to a 1-level directory 
 			- Implement MusicalTasteMatcherFunctionalTest
 			- Make MusicalTasteMatcher prevalent
-		- Downloads' Details Panel
-			- Fix download's progress bar
-			- Fix Box update
 		- Nice-to-have:
 			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
 			- Back Button 
 			- Find another way to solve pause lag (try to use a smaller frame in player)
-
-	- [Klaus] RapidShare Killer (Transfer Huge Files) - Do this in parallel, when you're bored of Wusic :)
-		- Focus. Keep it simple. Zero sophistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
-		- Announce to community
 
 	- Fix WindowBoundSetter.setBestLocation()
 		- See commented lines at:
@@ -48,6 +41,11 @@ Igor ====================================================
 			- OwnInfo
 			- BlinkingLightsGui
 			- DeleteContactWindow
+
+	- [Klaus] RapidShare Killer (Transfer Huge Files) - Do this in parallel, when you're bored of Wusic :)
+		- Focus. Keep it simple. Zero sophistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
+		- Announce to community
+
 
 Klaus =================================================
 

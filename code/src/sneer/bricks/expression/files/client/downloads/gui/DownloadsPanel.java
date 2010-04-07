@@ -21,30 +21,30 @@ public class DownloadsPanel extends Box {
 	public DownloadsPanel(SetSignal<Download> downloads) {
 		super(BoxLayout.Y_AXIS);
 
-		setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+		setBorder(BorderFactory.createEmptyBorder(6, 9, 9, 9));
 
 		_toAvoidGC = downloads.addReceiver(new Consumer<CollectionChange<Download>>() { @Override public void consume(CollectionChange<Download> changes) {
 			for (Download startedDownload : changes.elementsAdded()) { 
 				add(newDetailsPanelFor(startedDownload));
 				update();
-				grabFocus();
 			}
 		}});
 	}
 
 	void update() {
 		repaint();
-		((Window) getTopLevelAncestor()).pack(); // Fix: It shouldn't be necessary
+		((Window) getTopLevelAncestor()).pack(); // Fix: Is there another way?
+		grabFocus();
 	}
 
 	private JPanel newDetailsPanelFor(Download download) {
 		JPanel subpanel = new DownloadDetailsPanel(this, download);
-		subpanel.setMaximumSize(new Dimension(450, 100));
+		subpanel.setMaximumSize(new Dimension(430, 130));
 		subpanel.setBorder(
 			BorderFactory.createTitledBorder(
 				BorderFactory.createCompoundBorder(
 					BorderFactory.createRaisedBevelBorder(), 
-					BorderFactory.createEmptyBorder(0, 3, 1, 3)
+					BorderFactory.createEmptyBorder(0, 4, 4, 4)
 				), "Download:"
 			)
 		);

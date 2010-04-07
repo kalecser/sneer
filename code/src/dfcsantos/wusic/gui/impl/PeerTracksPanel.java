@@ -73,7 +73,7 @@ class PeerTracksPanel extends AbstractTabPane {
 
         _downloadsDetailsWindow.add(new DownloadsPanel(_controller.activeTrackDownloads()));
         _downloadsDetailsWindow.setLocationRelativeTo(customPanel().getTopLevelAncestor());
-        _downloadsDetailsWindow.setMinimumSize(new Dimension(450, 130));
+        _downloadsDetailsWindow.setMinimumSize(new Dimension(430, 130));
         _downloadsDetailsWindow.setResizable(false);
         _downloadsDetailsWindow.setVisible(false);
 

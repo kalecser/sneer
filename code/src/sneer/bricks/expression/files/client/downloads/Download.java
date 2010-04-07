@@ -17,7 +17,7 @@ public interface Download extends WeakContract {
 
 	Contact source();
 
-	Signal<Float> progress(); // Range: 0 - 100% completed
+	Signal<Integer> progress(); // Range: 0 - 100% completed
 
 	void waitTillFinished() throws IOException, TimeoutException;
 

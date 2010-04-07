@@ -44,7 +44,7 @@ abstract class AbstractDownload implements Download {
 
 	private long _startTime;
 
-	private final Register<Float> _progress = my(Signals.class).newRegister(0f);
+	private final Register<Integer> _progress = my(Signals.class).newRegister(0);
 
 	private final Latch _isFinished = my(Latches.class).produce();
 	private Pulser _finished = my(Pulsers.class).newInstance();
@@ -104,14 +104,13 @@ abstract class AbstractDownload implements Download {
 
 
 	@Override
-	public Signal<Float> progress() {
+	public Signal<Integer> progress() {
 		return _progress.output();
 	}
 
 
-	void updateProgressBy(float increment) {
-		float progress = progress().currentValue() + increment;
-		_progress.setter().consume(Math.min(progress, 100));
+	void setProgress(float newValue) {
+		_progress.setter().consume(Math.round(100 * newValue));
 	}
 
 

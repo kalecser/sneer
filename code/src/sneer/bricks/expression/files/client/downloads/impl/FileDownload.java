@@ -84,7 +84,7 @@ class FileDownload extends AbstractDownload {
 		if (contents.blockNumber - _nextBlockToWrite > MAX_BLOCKS_DOWNLOADED_AHEAD) return; 
 
 		_blocksToWrite.add(contents);
-		updateProgressBy(100 / _fileSizeInBlocks);
+		setProgress((float) _nextBlockToWrite / _fileSizeInBlocks);
 		tryToWriteBlocksInSequence();
 	}
 
