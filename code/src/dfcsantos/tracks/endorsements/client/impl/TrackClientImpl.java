@@ -52,6 +52,8 @@ class TrackClientImpl implements TrackClient {
 		_toAvoidGC2 = onOffSwitch.addPulseReceiver(new Runnable() { @Override public void run() {
 			react();
 		}});
+
+		react();
 	}
 
 	@Override
@@ -85,10 +87,7 @@ class TrackClientImpl implements TrackClient {
 	}
 
 	private void startNewMappingIfNecessary() {
-		if (!shouldStart()) {
-			_downloadActivator.setter().consume(true);
-			return;
-		}
+		if (!shouldStart()) return;
 
 		_tracksFolder = _newTracksFolder;
 		_newTracksFolder = null;
