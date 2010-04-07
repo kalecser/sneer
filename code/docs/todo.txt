@@ -24,13 +24,17 @@ Igor ====================================================
 		- ContactInfoWindowImpl
 			- Unignore NullParameterTest and fix problem with Prevalent Nature
 
+	- DownloadsPanel
+		- Change layout
+			- Eliminate labels
+		- Reactive widget for progress bar
+
 	- Wusic
 		- MusicalTasteMatcher Kernel
-			- Talk to Klaus about folder counter (it's using the whole path from endorsement)
-				- Think about the case that the shared folder points to a 1-level directory 
 			- Implement MusicalTasteMatcherFunctionalTest
 			- Make MusicalTasteMatcher prevalent
 		- Nice-to-have:
+			- Disable meToo after first click
 			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
 			- Back Button 
 			- Find another way to solve pause lag (try to use a smaller frame in player)

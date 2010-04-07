@@ -55,7 +55,7 @@ class DownloadDetailsPanel extends JPanel {
 
 		JPanel centerPanel = new JPanel(new GridLayout(3, 1));
 
-		_downloadFileField = new JTextField(my(Lang.class).strings().abbreviate(download.file().getName(), 80));
+		_downloadFileField = new JTextField(my(Lang.class).strings().abbreviate(download.file().getName(), 50));
 		_downloadFileField.setEditable(false);
 		_downloadFileField.setBorder(BorderFactory.createEmptyBorder());
 		setAlignmentOf(_downloadFileField);

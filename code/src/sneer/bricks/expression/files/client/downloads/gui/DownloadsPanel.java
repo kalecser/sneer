@@ -21,7 +21,7 @@ public class DownloadsPanel extends Box {
 	public DownloadsPanel(SetSignal<Download> downloads) {
 		super(BoxLayout.Y_AXIS);
 
-		setBorder(BorderFactory.createEmptyBorder(6, 9, 9, 9));
+		setBorder(BorderFactory.createEmptyBorder(5, 8, 8, 8));
 
 		_toAvoidGC = downloads.addReceiver(new Consumer<CollectionChange<Download>>() { @Override public void consume(CollectionChange<Download> changes) {
 			for (Download startedDownload : changes.elementsAdded()) { 
@@ -39,12 +39,12 @@ public class DownloadsPanel extends Box {
 
 	private JPanel newDetailsPanelFor(Download download) {
 		JPanel subpanel = new DownloadDetailsPanel(this, download);
-		subpanel.setMaximumSize(new Dimension(430, 130));
+		subpanel.setMaximumSize(new Dimension(420, 110));
 		subpanel.setBorder(
 			BorderFactory.createTitledBorder(
 				BorderFactory.createCompoundBorder(
 					BorderFactory.createRaisedBevelBorder(), 
-					BorderFactory.createEmptyBorder(0, 4, 4, 4)
+					BorderFactory.createEmptyBorder(0, 3, 3, 3)
 				), "Download:"
 			)
 		);
