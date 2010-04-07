@@ -85,7 +85,10 @@ class TrackClientImpl implements TrackClient {
 	}
 
 	private void startNewMappingIfNecessary() {
-		if (!shouldStart()) return;
+		if (!shouldStart()) {
+			_downloadActivator.setter().consume(true);
+			return;
+		}
 
 		_tracksFolder = _newTracksFolder;
 		_newTracksFolder = null;
