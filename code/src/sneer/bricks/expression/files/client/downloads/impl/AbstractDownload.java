@@ -30,7 +30,7 @@ import sneer.foundation.lang.Closure;
 
 abstract class AbstractDownload implements Download {
 
-	private static int TIMEOUT_LIMIT = 10 * 60 * 1000;
+	private static int TIMEOUT_LIMIT = 30 * 60 * 1000;
 
 	static final int REQUEST_INTERVAL = 15 * 1000;
 
