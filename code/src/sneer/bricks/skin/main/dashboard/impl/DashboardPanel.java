@@ -255,7 +255,7 @@ class DashboardPanel extends JPanel {
 		}		
 
 		private boolean isMouseOverToolbar(final Point mousePoint, Toolbar toolbar) {
-			if (toolbar.isVisible()) return false;
+			if (!toolbar.isVisible()) return false;
 
 			JPanel panel = toolbar._toolbarPanel;
 			return new Rectangle(panel.getLocationOnScreen(), panel.getSize()).contains(mousePoint);
