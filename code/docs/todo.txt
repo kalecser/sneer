@@ -29,10 +29,8 @@ Igor ====================================================
 		- Create reactive widget for progress bar
 
 	- Wusic
-		- Fix TrackDownloader activation
 		- MusicalTasteMatcher Kernel
 			- Implement MusicalTasteMatcherFunctionalTest
-			- Make MusicalTasteMatcher prevalent
 		- Nice-to-have:
 			- Disable meToo after first click
 			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
