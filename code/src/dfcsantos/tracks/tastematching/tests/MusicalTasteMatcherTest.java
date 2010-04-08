@@ -36,8 +36,9 @@ public class MusicalTasteMatcherTest extends BrickTest {
 	}
 
 	private void assertRating(float expectedRating, Contact contact, String folder, boolean isKnownTrack) {
-		_subject.processEndorsement(contact, folder, isKnownTrack);
-		assertFloat(expectedRating, _subject.ratingFor(contact, folder));
+		String nickname = contact.nickname().currentValue();
+		_subject.processEndorsement(nickname, folder, isKnownTrack);
+		assertFloat(expectedRating, _subject.ratingFor(nickname, folder));
 	}
 
 }

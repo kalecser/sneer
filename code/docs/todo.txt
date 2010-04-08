@@ -14,6 +14,7 @@ Bamboo =================================================
 			- Batism Problem - Solve. Implement "Membrane, The"
 				- Talk to Klaus. Can be done using proxies exclusively or with instrumentation.
 		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
+			- Change MusicalTasteMatcher's interface to use the contact instead of the nickname (string)
 		- BrickStateStore: retire. Use the prevalent nature instead.
 		- Announce to community
 
@@ -25,11 +26,10 @@ Igor ====================================================
 			- Unignore NullParameterTest and fix problem with Prevalent Nature
 
 	- DownloadsPanel
-		- Change layout
-			- Eliminate labels
-		- Reactive widget for progress bar
+		- Create reactive widget for progress bar
 
 	- Wusic
+		- Fix TrackDownloader activation
 		- MusicalTasteMatcher Kernel
 			- Implement MusicalTasteMatcherFunctionalTest
 			- Make MusicalTasteMatcher prevalent

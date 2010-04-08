@@ -1,13 +1,13 @@
 package dfcsantos.tracks.tastematching;
 
-import sneer.bricks.network.social.Contact;
+import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
 import sneer.foundation.brickness.Brick;
 
-@Brick
+@Brick (Prevalent.class)
 public interface MusicalTasteMatcher {
 
-    void processEndorsement(Contact sender, String folder, boolean isKnownTrack);
+    void processEndorsement(String nickname, String folder, boolean isKnownTrack);
 
-    float ratingFor(Contact sender, String folder);
+    float ratingFor(String nickname, String folder);
 
 }
