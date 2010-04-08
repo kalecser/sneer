@@ -9,7 +9,6 @@ import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.network.computers.authentication.PublicKeyChallenges;
 import sneer.bricks.network.computers.sockets.connections.ContactSighting;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.pulp.events.EventNotifier;
@@ -31,7 +30,11 @@ class IncomingHandShaker {
 		rejectLoopback(contactsSeal);
 		rejectUnknownSeal(contactsSeal);
 
-//		authenticate(contactsSeal, socket);
+//		my(Authenticator.class).authenticate(contactsSeal, socket);
+//		private static void authenticate(final Seal contactsSeal, ByteArraySocket socket) throws IOException {
+//			if (!my(PublicKeyChallenges.class).challenge(contactsSeal, socket))
+//				throw new IOException("Incoming connection failed to authenticate.");
+//		}
 
 		notifySighting(contactsSeal, socket);
 		
@@ -39,11 +42,6 @@ class IncomingHandShaker {
 	}
 
 
-	@SuppressWarnings("unused")
-	private static void authenticate(final Seal contactsSeal, ByteArraySocket socket) throws IOException {
-		if (!my(PublicKeyChallenges.class).challenge(contactsSeal, socket))
-			throw new IOException("Incoming connection failed to authenticate.");
-	}
 
 
 	private static void notifySighting(final Seal contactsSeal, ByteArraySocket socket) {
