@@ -2,6 +2,7 @@ package sneer.bricks.network.computers.addresses.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
@@ -37,6 +38,8 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 	}
 
 	private void handle(final Sighting sighting) {
+		if (isReflexive(sighting)) return;
+
 		final Contact contact = my(ContactSeals.class).contactGiven(sighting.peersSeal);
 		if (contact == null) throw new IllegalStateException();
 		
@@ -57,6 +60,10 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 				return contact;
 			}
 		});
+	}
+
+	private boolean isReflexive(final Sighting sighting) {
+		return sighting.peersSeal.equals(my(OwnSeal.class).get());
 	}
 
 }
