@@ -40,7 +40,7 @@ class ConnectionManagerImpl implements ConnectionManager {
 	@Override
 	public void manageOutgoingSocket(final ByteArraySocket socket, final Contact contact) {
 		manageSocket(socket, "Outgoing", new ClosureX<IOException>() { @Override public void run() throws IOException {
-			OutgoingHandShaker.greet(socket);
+			OutgoingHandShaker.greet(socket, contact);
 			TieBreaker.manageOutgoingSocket(socket, contact);
 		}});
 	}

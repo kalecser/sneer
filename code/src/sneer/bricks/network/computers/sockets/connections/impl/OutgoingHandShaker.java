@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.network.ByteArraySocket;
 
 class OutgoingHandShaker {
@@ -13,7 +14,7 @@ class OutgoingHandShaker {
 	private static final OwnSeal OwnSeal = my(OwnSeal.class);
 
 	
-	static void greet(ByteArraySocket socket) throws IOException {
+	static void greet(ByteArraySocket socket, Contact contact) throws IOException {
 		socket.write(ProtocolTokens.SNEER_WIRE_PROTOCOL_1);
 		socket.write(OwnSeal.get().bytes.copy());
 		
