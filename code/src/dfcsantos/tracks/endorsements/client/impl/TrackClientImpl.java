@@ -41,7 +41,7 @@ class TrackClientImpl implements TrackClient {
 
 		_toAvoidGC = my(TracksFolderKeeper.class).sharedTracksFolder().addReceiver(new Consumer<File>() { @Override public void consume(File newSharedTracksFolder) {
 			_newTracksFolder = newSharedTracksFolder;
-			react();
+			updateMapping();
 		}});
 	}
 
@@ -49,11 +49,9 @@ class TrackClientImpl implements TrackClient {
 	public void setOnOffSwitch(Signal<Boolean> onOffSwitch) {
 		_onOffSwitch.set(onOffSwitch);
 
-		_toAvoidGC2 = onOffSwitch.addPulseReceiver(new Runnable() { @Override public void run() {
-			react();
+		_toAvoidGC2 = onOffSwitch.addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isOn) {
+			_downloadActivator.setter().consume(isOn);
 		}});
-
-		react();
 	}
 
 	@Override
@@ -61,9 +59,8 @@ class TrackClientImpl implements TrackClient {
 		my(TrackDownloader.class).setTrackDownloadAllowance(downloadAllowance);
 	}
 
-
 	synchronized
-	private void react() {
+	private void updateMapping() {
 		stopOldMappingIfNecessary();
 		startNewMappingIfNecessary();
 	}
