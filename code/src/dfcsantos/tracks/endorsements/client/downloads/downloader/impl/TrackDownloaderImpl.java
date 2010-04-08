@@ -141,9 +141,9 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 
 	private void updateMusicalTasteMatcher(TrackEndorsement endorsement, boolean isKnownTrack) {
-		Contact sender = senderOf(endorsement);
+		String nickname = senderOf(endorsement).nickname().currentValue();
 		String folder = new File(endorsement.path).getParent();
-		my(MusicalTasteMatcher.class).processEndorsement(sender, (folder == null) ? "" : folder, isKnownTrack);
+		my(MusicalTasteMatcher.class).processEndorsement(nickname, (folder == null) ? "" : folder, isKnownTrack);
 	}
 
 
@@ -168,9 +168,9 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 
 	private float matchRatingFor(final TrackEndorsement endorsement) {
-		Contact sender = senderOf(endorsement);
+		String nickname = senderOf(endorsement).nickname().currentValue();
 		String folder = new File(endorsement.path).getParent();
-		return my(MusicalTasteMatcher.class).ratingFor(sender, (folder == null) ? "" : folder);
+		return my(MusicalTasteMatcher.class).ratingFor(nickname, (folder == null) ? "" : folder);
 	}
 
 
