@@ -23,14 +23,23 @@ class PublicKeyChallengesImpl implements PublicKeyChallenges {
 	
 	@Override
 	public boolean challenge(Seal contactsSeal, ByteArraySocket socket) throws IOException {
-		byte[] challenge = generateChallenge();
-		socket.write(challenge);
+		byte[] myChallenge = generateChallenge();
+
+		socket.write(ownPublicKey());
+		socket.write(myChallenge);
 		
 		PublicKey publicKey = readPublicKey(socket);
+		@SuppressWarnings("unused")	byte[] hisChallenge = socket.read();
+
 		check(contactsSeal, publicKey);
 		
 		byte[] challengeSignature = socket.read();
-		return my(Crypto.class).verifySignature(challenge, publicKey, challengeSignature);
+		return my(Crypto.class).verifySignature(myChallenge, publicKey, challengeSignature);
+	}
+
+
+	private byte[] ownPublicKey() {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 
