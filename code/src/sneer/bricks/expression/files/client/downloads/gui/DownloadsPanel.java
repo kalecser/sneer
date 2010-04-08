@@ -21,7 +21,7 @@ public class DownloadsPanel extends Box {
 	public DownloadsPanel(SetSignal<Download> downloads) {
 		super(BoxLayout.Y_AXIS);
 
-		setBorder(BorderFactory.createEmptyBorder(5, 8, 8, 8));
+		setBorder(BorderFactory.createEmptyBorder(3, 7, 7, 7));
 
 		_toAvoidGC = downloads.addReceiver(new Consumer<CollectionChange<Download>>() { @Override public void consume(CollectionChange<Download> changes) {
 			for (Download startedDownload : changes.elementsAdded()) { 
@@ -34,20 +34,12 @@ public class DownloadsPanel extends Box {
 	void update() {
 		repaint();
 		((Window) getTopLevelAncestor()).pack(); // Fix: Is there another way?
-		grabFocus();
 	}
 
 	private JPanel newDetailsPanelFor(Download download) {
 		JPanel subpanel = new DownloadDetailsPanel(this, download);
-		subpanel.setMaximumSize(new Dimension(420, 110));
-		subpanel.setBorder(
-			BorderFactory.createTitledBorder(
-				BorderFactory.createCompoundBorder(
-					BorderFactory.createRaisedBevelBorder(), 
-					BorderFactory.createEmptyBorder(0, 3, 3, 3)
-				), "Download:"
-			)
-		);
+		subpanel.setMaximumSize(new Dimension(320, 70));
+		subpanel.setBorder(BorderFactory.createEmptyBorder(1, 4, 3, 4));
 		return subpanel;
 	}
 
