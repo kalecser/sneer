@@ -74,7 +74,7 @@ class PeerTracksPanel extends AbstractTabPane {
         _downloadsDetailsWindow.add(new DownloadsPanel(_controller.activeTrackDownloads()));
         _downloadsDetailsWindow.setLocationRelativeTo(customPanel().getTopLevelAncestor());
         _downloadsDetailsWindow.setMinimumSize(new Dimension(340, 75));
-        _downloadsDetailsWindow.setResizable(false);
+        _downloadsDetailsWindow.setResizable(true);
         _downloadsDetailsWindow.setVisible(false);
 
 		_toAvoidGC = _controller.operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode operatingMode) {
