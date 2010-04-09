@@ -12,14 +12,18 @@ import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.execution.playlist.Playlist;
 import dfcsantos.tracks.storage.rejected.RejectedTracksKeeper;
 
 abstract class TrackSourceStrategy {
 
-	private Playlist _playlist;
+	private Register<Playlist> _playlist = my(Signals.class).newRegister(null);
 
 	private final List<Track> _tracksToDispose = Collections.synchronizedList(new ArrayList<Track>());
 
@@ -41,7 +45,7 @@ abstract class TrackSourceStrategy {
 
 
 	void initPlaylist(File tracksFolder) {
-		_playlist = createPlaylist(tracksFolder);
+		_playlist.setter().consume(createPlaylist(tracksFolder));
 	}
 
 
@@ -54,9 +58,16 @@ abstract class TrackSourceStrategy {
 	}
 
 
+	Signal<Integer> numberOfTracks() {
+		return my(Signals.class).adapt(playlist(), new Functor<Playlist, Integer>() { @Override public Integer evaluate(Playlist playlist) throws RuntimeException {
+			return playlist.numberOfTracks();
+		}}); 
+	}
+
+
 	Track nextTrack() {
 		disposePendingTracks();
-		return _playlist.nextTrack();
+		return playlist().currentValue().nextTrack();
 	}
 
 
@@ -81,7 +92,10 @@ abstract class TrackSourceStrategy {
 
 	abstract Playlist createPlaylist(File tracksFolder);
 
-
 	abstract File tracksFolder();
+
+	private Signal<Playlist> playlist() {
+		return _playlist.output();
+	}
 
 }

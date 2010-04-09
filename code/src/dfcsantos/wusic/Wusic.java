@@ -38,6 +38,7 @@ public interface Wusic {
 	Signal<Track>	playingTrack();
 	Signal<Integer> playingTrackTime();
 
+	Signal<Integer> numberOfOwnTracks();
 	Signal<Integer> numberOfPeerTracks();
 
 	Signal<Boolean> isTrackDownloadActive();

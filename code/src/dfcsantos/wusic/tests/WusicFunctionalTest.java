@@ -52,6 +52,7 @@ public class WusicFunctionalTest extends BrickTest {
 		assertEquals(_subject1.playingTrack().currentValue(), null);
 		assertEquals(_subject1.isPlaying().currentValue(), false);
 
+		assertTrue(_subject1.numberOfOwnTracks().currentValue() == 0);
 		assertTrue(_subject1.numberOfPeerTracks().currentValue() == 0);
 		assertEquals(_subject1.isTrackDownloadActive().currentValue(), false);
 
