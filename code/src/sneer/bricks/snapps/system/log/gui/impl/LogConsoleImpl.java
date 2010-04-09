@@ -51,6 +51,8 @@ import sneer.foundation.lang.Consumer;
 class LogConsoleImpl extends JFrame implements LogConsole {
 
 	private static final String SNEER_LOG_CONSOLE = "Sneer Log Console";
+	private static final int CONSOLE_LINE_LIMIT = 1000;
+
 	private final Synth _synth = my(Synth.class);
 	{_synth.notInGuiThreadLoad(this.getClass());}
 	
@@ -219,7 +221,10 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 
 	private JScrollPane AutoScroll() {
 		JScrollPane scroll = my(ReactiveAutoScroll.class).create(my(LogNotifier.class).loggedMessages(), new Consumer<String>() { @Override public void consume(String message) {
-			_txtLog.append(message);
+			if (_txtLog.getLineCount() == CONSOLE_LINE_LIMIT)
+				_txtLog.setText(message);
+			else
+				_txtLog.append(message);
 		}});
 		scroll.getViewport().add(_txtLog);
 		return scroll;
