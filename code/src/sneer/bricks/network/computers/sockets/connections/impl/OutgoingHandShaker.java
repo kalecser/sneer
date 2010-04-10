@@ -14,7 +14,7 @@ class OutgoingHandShaker {
 	private static final OwnSeal OwnSeal = my(OwnSeal.class);
 
 	
-	static void greet(ByteArraySocket socket, Contact contact) throws IOException {
+	static void greet(ByteArraySocket socket, @SuppressWarnings("unused") Contact contact) throws IOException {
 		socket.write(ProtocolTokens.SNEER_WIRE_PROTOCOL_1);
 		socket.write(OwnSeal.get().bytes.copy());
 		

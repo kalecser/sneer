@@ -7,11 +7,12 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.tuples.TupleSpace;
+import sneer.foundation.lang.Consumer;
 import dfcsantos.wusic.notification.client.PlayingTrackClient;
 import dfcsantos.wusic.notification.keeper.PlayingTrackKeeper;
 import dfcsantos.wusic.notification.protocol.PlayingTrack;
 
-class PlayingTrackClientImpl implements PlayingTrackClient {
+class PlayingTrackClientImpl implements PlayingTrackClient, Consumer<PlayingTrack> {
 
 	private static final PlayingTrackKeeper PlayingTrackKeeper = my(PlayingTrackKeeper.class);
 
