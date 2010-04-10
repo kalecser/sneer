@@ -15,19 +15,25 @@ import dfcsantos.tracks.execution.playlist.Playlist;
 abstract class AbstractPlaylist implements Playlist {
 
 	private final File _tracksFolder;
-	private ListIterator<File> _trackIterator;
+
+	private int _numberOfTracks;
+	private ListIterator<File> _tracksIterator;
 
 	AbstractPlaylist(File tracksFolder) {
 		_tracksFolder = tracksFolder;
-		initTrackIterator();
+
+		load();
 	}
 
-	private void initTrackIterator() {
-		_trackIterator = trackFiles().listIterator();	
+	private void load() {
+		List<File> tracks = trackFilesFrom(_tracksFolder);
+		_numberOfTracks = tracks.size();
+		_tracksIterator = tracks.listIterator();
 	}
 
-	private List<File> trackFiles() {
-		List<File> tracks = my(Tracks.class).listMp3FilesFromFolder(_tracksFolder);
+	private List<File> trackFilesFrom(File folder) {
+		List<File> tracks = my(Tracks.class).listMp3FilesFromFolder(folder);
+
 		sortTracks(tracks);
 
 		return tracks;
@@ -40,21 +46,26 @@ abstract class AbstractPlaylist implements Playlist {
 	}
 
 	@Override
+	public int numberOfTracks() {
+		return _numberOfTracks;
+	}
+
+	@Override
 	public Track nextTrack() {
-		if (!_trackIterator.hasNext()) {
+		if (!_tracksIterator.hasNext()) {
 			rescan();
-			if (!_trackIterator.hasNext())
+			if (!_tracksIterator.hasNext())
 				return null;
 		}
 
-		final Track nextTrack = my(Tracks.class).newTrack(_trackIterator.next());
-		_trackIterator.remove();
+		final Track nextTrack = my(Tracks.class).newTrack(_tracksIterator.next());
+		_tracksIterator.remove();
 
 		return nextTrack;
 	}
 
 	private void rescan() {
-		initTrackIterator();
+		load();
 	}
 
 }

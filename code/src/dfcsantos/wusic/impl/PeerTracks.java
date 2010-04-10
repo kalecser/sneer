@@ -40,7 +40,7 @@ class PeerTracks extends TrackSourceStrategy {
 
 	@Override
 	void deleteTrack(Track rejected) {
-		decrementDownloadCounter();
+		my(TrackDownloadCounter.class).decrement();
 		super.deleteTrack(rejected);
 	}
 
@@ -51,7 +51,7 @@ class PeerTracks extends TrackSourceStrategy {
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.WARNING, "Unable to copy track", "Unable to copy track: " + track.file(), 7000);
 		}
-		decrementDownloadCounter();
+		my(TrackDownloadCounter.class).decrement();
 		markForDisposal(track);
 		updateFileMap(track.file());
 	}
@@ -64,10 +64,6 @@ class PeerTracks extends TrackSourceStrategy {
 
 	private File sharedTracksFolder() {
 		return my(TracksFolderKeeper.class).sharedTracksFolder().currentValue();
-	}
-
-	private void decrementDownloadCounter() {
-		my(TrackDownloadCounter.class).decrement();
 	}
 
 }

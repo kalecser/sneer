@@ -74,7 +74,7 @@ class PeerTracksPanel extends AbstractTabPane {
         _downloadsDetailsWindow.add(new DownloadsPanel(_controller.activeTrackDownloads()));
         _downloadsDetailsWindow.setLocationRelativeTo(customPanel().getTopLevelAncestor());
         _downloadsDetailsWindow.setMinimumSize(new Dimension(340, 75));
-        _downloadsDetailsWindow.setResizable(false);
+        _downloadsDetailsWindow.setResizable(true);
         _downloadsDetailsWindow.setVisible(false);
 
 		_toAvoidGC = _controller.operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode operatingMode) {
@@ -84,11 +84,11 @@ class PeerTracksPanel extends AbstractTabPane {
 
 	@Override
 	boolean isMyOperatingMode(OperatingMode operatingMode) {
-		return OperatingMode.PEERS.equals(operatingMode);
+		return myOperatingMode().equals(operatingMode);
 	}
 
-	private void activateMyOperatingMode() {
-		_controller.setOperatingMode(OperatingMode.PEERS);
+	private OperatingMode myOperatingMode() {
+		return OperatingMode.PEERS;
 	}
 
 	private JLabel newReactiveLabel() {
@@ -127,14 +127,6 @@ class PeerTracksPanel extends AbstractTabPane {
     	_sharedTracksFolderChooser.showOpenDialog(null);
     }
 
-	private void meTooActionPerformed() {
-        _controller.meToo();
-    }
-
-    private void noWayActionPerformed() {
-        _controller.deleteTrack();
-    }
-
 	private void allowDownloadsActionPerformed(boolean isSelected) {
 		if (isSelected) {
 			_downloadAllowanceLabel.setEnabled(true);
@@ -163,11 +155,16 @@ class PeerTracksPanel extends AbstractTabPane {
 
 		private final JButton _meToo = new JButton();
 		private final JButton _noWay = new JButton();
+		@SuppressWarnings("unused") private final WeakContract _toAvoidGC2;
 
 		private PeerTracksControlPanel() {
 	        _meToo.setText("Me Too :)");
 	        _meToo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
 	        	meTooActionPerformed();
+	        }});
+	        _toAvoidGC2 = _controller.playingTrack().addPulseReceiver(new Runnable() { @Override public void run() {
+	        	if (isMyOperatingMode(_controller.operatingMode().currentValue()))
+	        		_meToo.setEnabled(true);
 	        }});
 	        add(_meToo);
 
@@ -185,7 +182,7 @@ class PeerTracksPanel extends AbstractTabPane {
 
 		@Override
 		void activateMyOperatingMode() {
-			PeerTracksPanel.this.activateMyOperatingMode();
+			_controller.setOperatingMode(myOperatingMode());
 		}
 
 		@Override
@@ -201,6 +198,15 @@ class PeerTracksPanel extends AbstractTabPane {
 			_meToo.setEnabled(false);
 			_noWay.setEnabled(false);
 		}
+
+		private void meTooActionPerformed() {
+			_meToo.setEnabled(false);
+	        _controller.meToo();
+	    }
+
+	    private void noWayActionPerformed() {
+	        _controller.deleteTrack();
+	    }
 
 	}
 

@@ -49,7 +49,7 @@ class WusicGuiImpl implements WusicGui {
 		result.add(new MainPanel(PREFERRED_SIZE));
 		// Implement: Set location of Wusic's frame relative to the Dashboard using the WindowBoundSetter
 		result.setLocationRelativeTo(null);
-    	result.setResizable(false);
+    	result.setResizable(true);
 		result.pack();
 
 		return result;

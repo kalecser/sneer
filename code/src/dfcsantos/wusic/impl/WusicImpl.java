@@ -135,8 +135,7 @@ public class WusicImpl implements Wusic {
 	@Override
 	public void skip() {
 		Track nextTrack = _trackSource.nextTrack();
-		if (nextTrack == null) reset(); // track was marked for deletion but hasn't been deleted yet
-		else if (nextTrack.equals(_lastPlayedTrack)) stop(); // only-one-track scenario 
+		if (nextTrack != null && nextTrack.equals(_lastPlayedTrack)) stop(); // one-track scenario
 		play(nextTrack);
 	}
 
@@ -159,6 +158,7 @@ public class WusicImpl implements Wusic {
 
 	@Override
 	public void meToo() {
+		_lastPlayedTrack = null;
 		((PeerTracks)_trackSource).meToo(playingTrack().currentValue());
 	}
 
@@ -167,6 +167,7 @@ public class WusicImpl implements Wusic {
 		final Track currentTrack = playingTrack().currentValue();
 		if (currentTrack == null) return;
 
+		_lastPlayedTrack = null;
 		_trackSource.deleteTrack(currentTrack);
 		skip();
 	}
@@ -184,6 +185,11 @@ public class WusicImpl implements Wusic {
 	@Override
 	public Signal<Integer> playingTrackTime() {
 		return _dj.trackElapsedTime();
+	}
+
+	@Override
+	public Signal<Integer> numberOfOwnTracks() {
+		return _trackSource.numberOfTracks();
 	}
 
 	@Override
