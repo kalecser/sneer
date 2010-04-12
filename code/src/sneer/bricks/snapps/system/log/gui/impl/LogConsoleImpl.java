@@ -222,7 +222,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 	private JScrollPane AutoScroll() {
 		JScrollPane scroll = my(ReactiveAutoScroll.class).create(my(LogNotifier.class).loggedMessages(), new Consumer<String>() { @Override public void consume(String message) {
 			if (_txtLog.getLineCount() == CONSOLE_LINE_LIMIT)
-				_txtLog.setText(message);
+				_txtLog.setText(message); // Does it reset the line count?
 			else
 				_txtLog.append(message);
 		}});
