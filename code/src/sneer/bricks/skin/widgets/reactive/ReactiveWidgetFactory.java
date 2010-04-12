@@ -5,6 +5,7 @@ import java.awt.Image;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListCellRenderer;
@@ -28,6 +29,8 @@ public interface ReactiveWidgetFactory {
 
 	ToggleButtonWidget<JCheckBox> newCheckBox(Signal<Boolean> source, Consumer<Boolean> setter);
 	ToggleButtonWidget<JCheckBox> newCheckBox(Signal<Boolean> source, Consumer<Boolean> setter, Runnable cascadeRefreshOperations);
+
+	Widget<JProgressBar> newProgressBar(Signal<Integer> source);
 
 	TextWidget<JTextField> newEditableLabel(Signal<?> source, PickyConsumer<? super String> setter);
 	TextWidget<JTextField> newEditableLabel(Signal<?> source, PickyConsumer<? super String> setter, NotificationPolicy notificationPolicy);
