@@ -32,7 +32,6 @@ public class DownloadsPanel extends Box {
 	}
 
 	void update() {
-		repaint();
 		((Window) getTopLevelAncestor()).pack(); // Fix: Is there another way?
 	}
 
