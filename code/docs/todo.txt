@@ -21,13 +21,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Seals
-		- ContactInfoWindowImpl
-			- Unignore NullParameterTest and fix problem with Prevalent Nature
-
-	- DownloadsPanel
-		- Create reactive widget for progress bar
-
 	- Wusic
 		- MusicalTasteMatcher Kernel
 			- Implement MusicalTasteMatcherFunctionalTest
@@ -50,7 +43,9 @@ Igor ====================================================
 
 Klaus =================================================
 
-	- Revise WusicTest
+	- Seals
+		- ContactInfoWindowImpl
+			- Unignore NullParameterTest and fix problem with Prevalent Nature
 
 	- Use CustomClockTicker at SneerPartyController.accelerateHeartbeat()
 
