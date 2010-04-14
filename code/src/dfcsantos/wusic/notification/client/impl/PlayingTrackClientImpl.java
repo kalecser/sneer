@@ -14,8 +14,6 @@ import dfcsantos.wusic.notification.protocol.PlayingTrack;
 
 class PlayingTrackClientImpl implements PlayingTrackClient, Consumer<PlayingTrack> {
 
-	private static final PlayingTrackKeeper PlayingTrackKeeper = my(PlayingTrackKeeper.class);
-
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC;
 
 	{
@@ -32,7 +30,7 @@ class PlayingTrackClientImpl implements PlayingTrackClient, Consumer<PlayingTrac
 			return;
 		}
 
-		PlayingTrackKeeper.setPlayingTrack(contact, playingTrack.name);
+		my(PlayingTrackKeeper.class).setPlayingTrack(contact, playingTrack.name);
 	}
 
 }
