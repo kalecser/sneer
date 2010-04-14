@@ -54,6 +54,8 @@ Igor ====================================================
 
 Klaus =================================================
 
+	- BricknessTest.runDependentBrick -> Brick is instantiated in Brickness environment
+
 	- Seals
 		- ContactInfoWindowImpl
 			- Unignore NullParameterTest and fix problem with Prevalent Nature

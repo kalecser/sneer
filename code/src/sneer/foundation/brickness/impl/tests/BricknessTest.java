@@ -1,28 +1,51 @@
 package sneer.foundation.brickness.impl.tests;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.foundation.brickness.BrickLoadingException;
 import sneer.foundation.brickness.Brickness;
+import sneer.foundation.brickness.impl.BricknessImpl;
+import sneer.foundation.brickness.impl.tests.fixtures.InterfaceWithoutBrickAnnotation;
+import sneer.foundation.brickness.impl.tests.fixtures.InterfaceWithoutImplementation;
 import sneer.foundation.brickness.impl.tests.fixtures.a.BrickA;
 import sneer.foundation.brickness.impl.tests.fixtures.b.BrickB;
-import sneer.foundation.brickness.impl.tests.fixtures.noannotation.InterfaceWithoutBrickAnnotation;
 import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.EnvironmentUtils;
 
 
 public class BricknessTest extends Assert {
 	
-	Environment subject = Brickness.newBrickContainer();
-
-	protected void loadBrick(final Class<?> brick) {
-		EnvironmentUtils.retrieveFrom(subject, brick);
-	}
+	Environment _subject = Brickness.newBrickContainer();
 
 	@Test
+	public void provision() {
+		assertSame(_subject, _subject.provide(Object.class));
+		assertSame(_subject, _subject.provide(Environment.class));
+		assertSame(_subject, _subject.provide(BricknessImpl.class));
+	}
+
+
+	@Test(expected = BrickLoadingException.class)
+	public void noBrickInterfaceFound() throws Exception {
+		_subject.provide(InterfaceWithoutBrickAnnotation.class);
+	}
+
+	
+	@Test(expected = BrickLoadingException.class)
+	public void interfaceWithoutImpl() {
+		_subject.provide(InterfaceWithoutImplementation.class);
+	}
+
+	
+	protected void loadBrick(final Class<?> brick) {
+		_subject.provide(brick);
+	}
+
+	
+	@Ignore
+	@Test
 	public void runDependentBrick() throws Exception {
-		
 		loadBrick(BrickA.class);
 
 		System.setProperty("BrickA.property", "");
@@ -67,9 +90,4 @@ public class BricknessTest extends Assert {
 		loadBrick(BrickB.class);
 	}
 	
-	@Test(expected=BrickLoadingException.class)
-	public void noBrickInterfaceFound() throws Exception {
-		loadBrick(InterfaceWithoutBrickAnnotation.class);
-	}
-
 }

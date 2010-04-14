@@ -24,7 +24,16 @@ class BrickImplLoader {
 		ClassLoader nextClassLoader = libsClassLoader == null ? apiClassLoader : libsClassLoader;
 		ClassLoader packageLoader = new ClassLoaderForPackage(path, implPackage, natures, nextClassLoader);
 
-		return (Class<T>)packageLoader.loadClass(implNameFor(brick.getName()));
+		return load(brick, packageLoader);
+	}
+
+	private <T> Class<T> load(Class<T> brick, ClassLoader packageLoader) throws ClassNotFoundException {
+		String implName = implNameFor(brick.getName());
+		try {
+			return (Class<T>)packageLoader.loadClass(implName);
+		} catch (ClassNotFoundException e) {
+			throw new ClassNotFoundException("Impl class " + implName + " not found for brick: " + brick, e);
+		}
 	}
 
 	public static List<Nature> naturesFor(Class<?> brick) {

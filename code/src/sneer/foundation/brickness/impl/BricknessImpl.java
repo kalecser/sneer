@@ -1,7 +1,5 @@
 package sneer.foundation.brickness.impl;
 
-import static sneer.foundation.environments.Environments.my;
-
 import java.lang.reflect.Constructor;
 import java.util.List;
 
@@ -35,8 +33,6 @@ public class BricknessImpl implements Environment {
 	
 	@Override
 	public <T> T provide(Class<T> intrface) {
-		if (my(Environment.class) == null) throw new IllegalStateException("provide() cannot be called outside an environment."); //Delete this line after July 2009 if the exception is never thrown.
-		
 		return _cache.provide(intrface);
 	}
 	
@@ -50,7 +46,7 @@ public class BricknessImpl implements Environment {
 		try {
 			return tryToLoadBrick(brick);
 		} catch (ClassNotFoundException e) {
-			throw new BrickLoadingException("Exception loading brick: " + brick + ": " + e.getMessage(), e);
+			throw new BrickLoadingException("Exception loading brick: " + brick + " - Class not found: " + e.getMessage(), e);
 		}
 	}
 

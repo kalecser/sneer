@@ -19,7 +19,7 @@ public class Environments {
 	public static <T> T my(Class<T> need) {
 		final Environment environment = current();
 		if (need == Environment.class) return (T) environment;
-		if (environment == null) throw new IllegalStateException("Thread " + Thread.currentThread() + " is not running in an environment.");
+		if (environment == null) throw new IllegalStateException("Thread " + Thread.currentThread() + " is not running in an environment. Try inside: Environments.runWith");
 		
 		final T implementation = environment.provide(need);
 		if (null == implementation)	throw new IllegalStateException("Environment failed to provide thread " + Thread.currentThread() + " with implementation for " + need);
