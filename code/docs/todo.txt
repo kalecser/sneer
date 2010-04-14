@@ -21,6 +21,8 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Investigate BrickStateStoreTest
+
 	- Contact's Status
 		- Create the following status:
 			- Off-line
@@ -37,7 +39,7 @@ Igor ====================================================
 			- Implement MusicalTasteMatcherFunctionalTest
 		- Nice-to-have:
 			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
-			- Back Button 
+			- Back Button
 			- Find another way to solve pause lag (try to use a smaller frame in player)
 
 	- Fix WindowBoundSetter.setBestLocation()
