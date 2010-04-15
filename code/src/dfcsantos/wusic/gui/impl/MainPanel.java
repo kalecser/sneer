@@ -21,8 +21,6 @@ class MainPanel extends JPanel {
 		_tabbedPanel.setTabComponentAt(1, _peerTracksPanel.customTabLabel());
 		_tabbedPanel.setMnemonicAt(1, KeyEvent.VK_P);
 
-		_tabbedPanel.setPreferredSize(panelSize);
-
 		add(_tabbedPanel);
 	}
 
