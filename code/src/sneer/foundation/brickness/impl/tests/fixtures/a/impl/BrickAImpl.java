@@ -1,26 +1,34 @@
 package sneer.foundation.brickness.impl.tests.fixtures.a.impl;
 
+import static sneer.foundation.environments.Environments.my;
 import sneer.foundation.brickness.impl.tests.fixtures.a.BrickA;
+import sneer.foundation.environments.Environment;
 
 class BrickAImpl implements BrickA {
 	
-	{
-		System.setProperty("BrickA.ran", "true");
-		System.setProperty("BrickA.classLoader", "" + getClass().getClassLoader().hashCode());
-		System.setProperty("BrickA.lib.classLoader", "" + libClassLoaderHash());
+	private final Environment _instantiationEnvironment = my(Environment.class);
+	
+	
+	@Override
+	public Environment instantiationEnvironment() {
+		return _instantiationEnvironment;
 	}
+
 
 	@Override
-	public void setProperty(String value) {
-		System.setProperty("BrickA.property", value);
+	public ClassLoader classLoader() {
+		return getClass().getClassLoader();
 	}
 
-	private int libClassLoaderHash() {
+
+	@Override
+	public ClassLoader libsClassLoader() {
 		try {
-			Class<?> lib = getClass().getClassLoader().loadClass("foo.ClassInLib");
-			return lib.newInstance().getClass().getClassLoader().hashCode();
+			Class<?> libClass = classLoader().loadClass("foo.ClassInLib");
+			return libClass.getClassLoader();
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
 	}
+
 }

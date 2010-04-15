@@ -5,4 +5,7 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface BrickB {
 
+	ClassLoader classLoader();
+	ClassLoader libsClassLoader();
+
 }
