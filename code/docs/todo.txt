@@ -21,6 +21,8 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Remove warning: MainPanel(@SuppressWarnings("unused") Dimension panelSize)
+
 	- Investigate BrickStateStoreTest
 
 	- Contact's Status

@@ -12,7 +12,7 @@ class MainPanel extends JPanel {
 	private final AbstractTabPane _ownTracksPanel		= new OwnTracksPanel();
 	private final AbstractTabPane _peerTracksPanel		= new PeerTracksPanel();
 
-	MainPanel(Dimension panelSize) {
+	MainPanel(@SuppressWarnings("unused") Dimension panelSize) {
 		_tabbedPanel.addTab(null, _ownTracksPanel);
 		_tabbedPanel.setTabComponentAt(0, _ownTracksPanel.customTabLabel());
 		_tabbedPanel.setMnemonicAt(0, KeyEvent.VK_O);
