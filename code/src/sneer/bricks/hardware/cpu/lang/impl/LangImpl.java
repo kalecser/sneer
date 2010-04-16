@@ -31,6 +31,7 @@ class LangImpl implements Lang {
 
 	private Strings _strings = new Lang.Strings(){
 		@Override public boolean isEmpty(String str) { return str == null || str.isEmpty();	}
+		@Override public String abbreviate(String str, int maxWidth) { return StringUtils.abbreviate(str, maxWidth); }
 		@Override public String join(Collection<?> collection, String separator) { return StringUtils.join(collection, separator); }
 		@Override public String trimToNull(String str) { return StringUtils.trimToNull(str); }
 		@Override public String remove(String str, String remove) { return StringUtils.remove(str, remove); }

@@ -14,7 +14,7 @@ import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -27,7 +27,7 @@ public class FileMapperTest extends BrickTest {
 
 	@Test (timeout = 3000)
 	public void mapFolder() throws Exception {
-		Sneer1024 hash = _subject.mapFolder(fixturesFolder(), "txt");
+		Hash hash = _subject.mapFolder(fixturesFolder(), "txt");
 		FolderContents folderContents = my(FileMap.class).getFolderContents(hash);
 
 		Collection<String> names = my(CollectionUtils.class).map(folderContents.contents, new Functor<FileOrFolder, String>() { @Override public String evaluate(FileOrFolder fileOrFolder) {
@@ -39,10 +39,10 @@ public class FileMapperTest extends BrickTest {
 
 	@Test (timeout = 3000)
 	public void clearFolderMapping() throws IOException, MappingStopped {
-		final Sneer1024 hashOfFolder = _subject.mapFolder(fixturesFolder());
+		final Hash hashOfFolder = _subject.mapFolder(fixturesFolder());
 		assertNotNull(_fileMap.getFolderContents(hashOfFolder));
 
-		final Sneer1024 hashOfFile = my(Crypto.class).digest(fixture("directory1/track1.txt"));
+		final Hash hashOfFile = my(Crypto.class).digest(fixture("directory1/track1.txt"));
 		assertNotNull(_fileMap.getFile(hashOfFile));
 
 		_fileMap.remove(fixturesFolder());

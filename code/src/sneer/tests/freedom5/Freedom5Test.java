@@ -10,7 +10,6 @@ public class Freedom5Test extends SovereignFunctionalTestBase {
 
 	@Test (timeout = 13000)
 	public void shoutToTheWind() {
-		
 		SovereignParty c = createParty("Cid");
 		SovereignParty d = createParty("Dan");
 		

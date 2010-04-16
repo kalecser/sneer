@@ -18,7 +18,7 @@ class SocketCloser {
 		}
 	}
 
-	
+
 	static void close(ByteArraySocket socket, String message, IOException e) {
 		close(socket, message + " " + e.getMessage());
 	}

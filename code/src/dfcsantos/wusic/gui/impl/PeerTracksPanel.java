@@ -1,4 +1,5 @@
 package dfcsantos.wusic.gui.impl;
+
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Dimension;
@@ -9,16 +10,20 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import sneer.bricks.expression.files.client.downloads.gui.DownloadsPanel;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic.OperatingMode;
 
@@ -28,9 +33,12 @@ class PeerTracksPanel extends AbstractTabPane {
 	private final JFileChooser _sharedTracksFolderChooser;
     private final JButton _chooseSharedTracksFolder			= new JButton();
 
-    private final JLabel _tracksDownloadAllowanceLabel		= new JLabel();
-    private final JTextField _tracksDownloadAllowance		= newReactiveTextField();
-    private final JCheckBox _allowTracksDownload			= newReactiveCheckBox();
+    private final JLabel _downloadAllowanceLabel			= new JLabel();
+    private final JTextField _downloadAllowance				= newReactiveTextField();
+    private final JCheckBox _downloadActivity				= newReactiveCheckBox();
+
+    private final JButton _downloadsDetails					= new JButton();
+    private final JFrame _downloadsDetailsWindow			= newReactiveFrame();
 
     @SuppressWarnings("unused")	private final WeakContract _toAvoidGC;
 
@@ -43,19 +51,31 @@ class PeerTracksPanel extends AbstractTabPane {
     	_sharedTracksFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).sharedTracksFolder().currentValue());
 
         _chooseSharedTracksFolder.setText("Shared Folder");
-        _chooseSharedTracksFolder.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent evt) {
-                chooseSharedTracksFolderActionPerformed();
+        _chooseSharedTracksFolder.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
+        	chooseSharedTracksFolderActionPerformed();
         }});
         customPanel().add(_chooseSharedTracksFolder);
 
-        _allowTracksDownload.setText("Allow Tracks Download");
-        customPanel().add(_allowTracksDownload);
+        _downloadActivity.setText("Download Tracks");
+        customPanel().add(_downloadActivity);
 
-        _tracksDownloadAllowanceLabel.setText("-   Limit (MBs):");
-        customPanel().add(_tracksDownloadAllowanceLabel);
+        _downloadAllowanceLabel.setText("-   Limit (MBs):");
+        customPanel().add(_downloadAllowanceLabel);
 
-        _tracksDownloadAllowance.setPreferredSize(new Dimension(42, 18));
-        customPanel().add(_tracksDownloadAllowance);
+        _downloadAllowance.setPreferredSize(new Dimension(42, 18));
+        customPanel().add(_downloadAllowance);
+
+        _downloadsDetails.setText("Details >>");
+        _downloadsDetails.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
+        	downloadsDetailsActionPerformed();
+        }});
+        customPanel().add(_downloadsDetails);
+
+        _downloadsDetailsWindow.add(new DownloadsPanel(_controller.activeTrackDownloads()));
+        _downloadsDetailsWindow.setLocationRelativeTo(customPanel().getTopLevelAncestor());
+        _downloadsDetailsWindow.setMinimumSize(new Dimension(365, 80));
+        _downloadsDetailsWindow.setResizable(false);
+        _downloadsDetailsWindow.setVisible(false);
 
 		_toAvoidGC = _controller.operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode operatingMode) {
 			updateComponents(operatingMode);
@@ -64,24 +84,42 @@ class PeerTracksPanel extends AbstractTabPane {
 
 	@Override
 	boolean isMyOperatingMode(OperatingMode operatingMode) {
-		return OperatingMode.PEERS.equals(operatingMode);
+		return myOperatingMode().equals(operatingMode);
+	}
+
+	private OperatingMode myOperatingMode() {
+		return OperatingMode.PEERS;
 	}
 
 	private JLabel newReactiveLabel() {
-		return my(ReactiveWidgetFactory.class).newLabel(_controller.numberOfPeerTracks()).getMainWidget();
+		return my(ReactiveWidgetFactory.class).newLabel(
+			my(Signals.class).adapt(_controller.numberOfPeerTracks(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
+				return "Peer Tracks (" + numberOfTracks + ")";
+			}})
+		).getMainWidget();
 	}
 
 	private JCheckBox newReactiveCheckBox() {
 		return my(ReactiveWidgetFactory.class).newCheckBox(
-			_controller.isTracksDownloadAllowed(),
-			new Consumer<Boolean>() { @Override public void consume(Boolean isTracksDownloadAllowed) { _controller.allowTracksDownload(isTracksDownloadAllowed); } },
-			new Closure() { @Override public void run() { allowTracksDownloadActionPerformed(_controller.isTracksDownloadAllowed().currentValue()); } }
+			_controller.isTrackDownloadActive(),
+			_controller.trackDownloadActivator(),
+			new Closure() { @Override public void run() {
+				allowDownloadsActionPerformed(_controller.isTrackDownloadActive().currentValue());
+			}}
 		).getMainWidget();
 	}
 
 	private JTextField newReactiveTextField() {
 		return my(ReactiveWidgetFactory.class).newTextField(
-			_controller.tracksDownloadAllowance(), my(IntegerParsers.class).newIntegerParser(_controller.tracksDownloadAllowanceSetter()), NotificationPolicy.OnEnterPressedOrLostFocus
+			_controller.trackDownloadAllowance(), my(IntegerParsers.class).newIntegerParser(_controller.trackDownloadAllowanceSetter()), NotificationPolicy.OnEnterPressedOrLostFocus
+		).getMainWidget();
+	}
+
+	private JFrame newReactiveFrame() {
+		return my(ReactiveWidgetFactory.class).newFrame(
+			my(Signals.class).adapt(_controller.activeTrackDownloads().size(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfDownloadsRunning) throws RuntimeException {
+				return (numberOfDownloadsRunning > 0) ? "Active Downloads' Details:" : "Active Downloads <None>";
+			}})
 		).getMainWidget();
 	}
 
@@ -89,22 +127,18 @@ class PeerTracksPanel extends AbstractTabPane {
     	_sharedTracksFolderChooser.showOpenDialog(null);
     }
 
-	private void meTooActionPerformed() {
-        _controller.meToo();
-    }
-
-    private void noWayActionPerformed() {
-        _controller.deleteTrack();
-    }
-
-	private void allowTracksDownloadActionPerformed(boolean isSelected) {
+	private void allowDownloadsActionPerformed(boolean isSelected) {
 		if (isSelected) {
-			_tracksDownloadAllowanceLabel.setEnabled(true);
-			_tracksDownloadAllowance.setEnabled(true);
+			_downloadAllowanceLabel.setEnabled(true);
+			_downloadAllowance.setEnabled(true);
 		} else {
-			_tracksDownloadAllowanceLabel.setEnabled(false);
-			_tracksDownloadAllowance.setEnabled(false);			
+			_downloadAllowanceLabel.setEnabled(false);
+			_downloadAllowance.setEnabled(false);			
 		}
+	}
+
+	private void downloadsDetailsActionPerformed() {
+		_downloadsDetailsWindow.setVisible(true);
 	}
 
     @Override
@@ -121,28 +155,34 @@ class PeerTracksPanel extends AbstractTabPane {
 
 		private final JButton _meToo = new JButton();
 		private final JButton _noWay = new JButton();
+		@SuppressWarnings("unused") private final WeakContract _toAvoidGC2;
 
 		private PeerTracksControlPanel() {
 	        _meToo.setText("Me Too :)");
-	        _meToo.addActionListener(new ActionListener() {
-	            public void actionPerformed(ActionEvent evt) {
-	                meTooActionPerformed();
-	            }
-	        });
+	        _meToo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
+	        	meTooActionPerformed();
+	        }});
+	        _toAvoidGC2 = _controller.playingTrack().addPulseReceiver(new Runnable() { @Override public void run() {
+	        	if (isMyOperatingMode(_controller.operatingMode().currentValue()))
+	        		_meToo.setEnabled(true);
+	        }});
 	        add(_meToo);
 
 	        _noWay.setText("No Way :(");
-	        _noWay.addActionListener(new ActionListener() {
-	            public void actionPerformed(ActionEvent evt) {
-	                noWayActionPerformed();
-	            }
-	        });
+	        _noWay.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
+	        	noWayActionPerformed();
+	        }});
 	        add(_noWay);
 		}
 
 		@Override
 		boolean isMyOperatingMode(OperatingMode operatingMode) {
 			return PeerTracksPanel.this.isMyOperatingMode(operatingMode);
+		}
+
+		@Override
+		void activateMyOperatingMode() {
+			_controller.setOperatingMode(myOperatingMode());
 		}
 
 		@Override
@@ -158,6 +198,15 @@ class PeerTracksPanel extends AbstractTabPane {
 			_meToo.setEnabled(false);
 			_noWay.setEnabled(false);
 		}
+
+		private void meTooActionPerformed() {
+			_meToo.setEnabled(false);
+	        _controller.meToo();
+	    }
+
+	    private void noWayActionPerformed() {
+	        _controller.deleteTrack();
+	    }
 
 	}
 

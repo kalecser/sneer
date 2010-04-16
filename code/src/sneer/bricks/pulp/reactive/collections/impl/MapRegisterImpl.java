@@ -12,7 +12,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
+import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.MapRegister;
 import sneer.bricks.pulp.reactive.collections.MapSignal;
@@ -89,7 +91,7 @@ class MapRegisterImpl<K,V> implements MapRegister<K,V> {
 		
 		@Override
 		public Signal<Integer> size() {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+			return _size.output();
 		}
 
 		@Override
@@ -106,6 +108,7 @@ class MapRegisterImpl<K,V> implements MapRegister<K,V> {
 	}
 
 	private final Map<K,V> _map = new ConcurrentHashMap<K,V>();
+	private final Register<Integer> _size = my(Signals.class).newRegister(0);
 	private final SetRegister<K> _keys = new SetRegisterImpl<K>(); //Optimize This is redundant with the keys in the map.
 	
 	private MyOutput _output = new MyOutput();
@@ -117,18 +120,19 @@ class MapRegisterImpl<K,V> implements MapRegister<K,V> {
 	}
 	
 	@Override
-	synchronized public void put(K key, V value) {
+	synchronized
+	public void put(K key, V value) {
 		boolean isNewKey = !_map.containsKey(key);
 		
 		V oldValue = _map.put(key, value);
 		if (isNewKey) _keys.add(key);
 
 		Entry<K, V> added = new MyEntry<K,V>(key, value);
-		Entry<K, V> removed = isNewKey
-			? null
-			: new MyEntry<K,V>(key, oldValue);
-		
+		Entry<K, V> removed = isNewKey ? null : new MyEntry<K,V>(key, oldValue);
+
 		notifyReceivers(added, removed);
+
+		updateSize();
 	}
 
 
@@ -139,9 +143,14 @@ class MapRegisterImpl<K,V> implements MapRegister<K,V> {
 		
 		Entry<K, V> removed = new MyEntry<K,V>(key, oldValue);
 		notifyReceivers(null, removed);
+
+		updateSize();
 	}
 
-	
+	private void updateSize() {
+		_size.setter().consume(_map.size());
+	}
+
 	private void notifyReceivers(Entry<K, V> added, Entry<K, V> removed) {
 		_output._notifier.notifyReceivers(new CollectionChangeImpl<Entry<K,V>>(added, removed));
 	}

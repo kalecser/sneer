@@ -32,7 +32,7 @@ abstract class ControlPanel extends JPanel {
 	@SuppressWarnings("unused") private WeakContract toAvoidGC;
 
 	ControlPanel() {
-		super(new FlowLayout(FlowLayout.LEFT, 9, 3));
+		super(new FlowLayout(FlowLayout.LEFT, 6, 5));
 
 	    toAvoidGC = _controller.isPlaying().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isPlaying) {
 	    	if (isMyOperatingMode())
@@ -93,7 +93,7 @@ abstract class ControlPanel extends JPanel {
 	private void switchOperatingModeIfNecessary() {
 		if (isMyOperatingMode()) return;
 
-		_controller.switchOperatingMode();
+		activateMyOperatingMode();
 	}
 
 //	private void backActionPerformed() {
@@ -113,5 +113,7 @@ abstract class ControlPanel extends JPanel {
 	}
 
 	abstract boolean isMyOperatingMode(OperatingMode operatingMode);
+
+	abstract void activateMyOperatingMode();
 
 }

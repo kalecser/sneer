@@ -83,5 +83,4 @@ class BrickImplLoader {
 		return BrickConventions.implClassNameFor(brickInterfaceName);
 	}
 
-	}
-
+}

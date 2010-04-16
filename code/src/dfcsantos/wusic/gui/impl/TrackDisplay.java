@@ -11,6 +11,7 @@ import java.util.Date;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
@@ -28,7 +29,7 @@ class TrackDisplay extends JPanel {
 	private final JLabel _trackTime	 = my(ReactiveWidgetFactory.class).newLabel(playingTrackTime()).getMainWidget();
 
 	TrackDisplay() {
-		super(new FlowLayout(FlowLayout.LEFT, 9, 3));
+		super(new FlowLayout(FlowLayout.LEFT, 9, 5));
 
 		_trackLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		add(_trackLabel);
@@ -40,7 +41,7 @@ class TrackDisplay extends JPanel {
 
 	private Signal<String> playingTrackName() {
 		return my(Signals.class).adapt(_controller.playingTrack(), new Functor<Track, String>() { @Override public String evaluate(Track track) {
-			return (track == null) ? "<No track to play>" : (track.name().length() >= 54) ? track.name().substring(0, 51).concat("...") : track.name();
+			return (track == null) ? "<No track to play>" : my(Lang.class).strings().abbreviate(track.name(), 54);
 		}});
 	}
 

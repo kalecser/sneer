@@ -6,16 +6,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sound.sampled.LineUnavailableException;
 
+import sneer.bricks.expression.tuples.Tuple;
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray2D;
-import sneer.bricks.pulp.keymanager.Seal;
-import sneer.bricks.pulp.keymanager.Seals;
+import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.streams.sequencer.Sequencer;
 import sneer.bricks.pulp.streams.sequencer.Sequencers;
-import sneer.bricks.pulp.tuples.Tuple;
-import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.skin.rooms.ActiveRoomKeeper;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.CacheMap;
@@ -33,7 +33,6 @@ import spikes.sneer.bricks.snapps.whisper.speextuples.SpeexTuples;
 class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the encoding and decoding sides.
 
 	private final TupleSpace _tupleSpace = my(TupleSpace.class);
-	private final Seals _keyManager = my(Seals.class);
 	private final Speex _speex = my(Speex.class);
 
 	private final Signal<String> _room = my(ActiveRoomKeeper.class).room();
@@ -88,7 +87,7 @@ class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the en
 	}
 	
 	private boolean isMine(Tuple packet) {
-		return _keyManager.ownSeal().equals(packet.publisher);
+		return my(OwnSeal.class).get().equals(packet.publisher);
 	}
 	
 	private static byte[][] newFramesArray() {

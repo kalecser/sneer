@@ -1,6 +1,7 @@
 package sneer.bricks.network.computers.sockets.connections;
 
-import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.foundation.brickness.Brick;
 
@@ -13,5 +14,7 @@ public interface ConnectionManager {
 	ByteConnection connectionFor(Contact contact);
 
 	void closeConnectionFor(Contact contact);
+	
+	EventSource<ContactSighting> contactSightings();
 
 }

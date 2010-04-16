@@ -5,25 +5,25 @@ import static sneer.foundation.environments.Environments.my;
 import java.util.HashMap;
 import java.util.Map;
 
+import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
+import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
+import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
-import sneer.bricks.pulp.internetaddresskeeper.InternetAddress;
-import sneer.bricks.pulp.internetaddresskeeper.InternetAddressKeeper;
-import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.foundation.lang.Consumer;
 
 class SocketOriginatorImpl implements SocketOriginator {
 
-	private static final Seals Seals = my(Seals.class);
+	private static final ContactSeals Seals = my(ContactSeals.class);
 	
-	private final InternetAddressKeeper _internetAddressKeeper = my(InternetAddressKeeper.class);
 	@SuppressWarnings("unused")
 	private final Object _refToAvoidGC;
 	private final Map<InternetAddress, OutgoingAttempt> _attemptsByAddress = new HashMap<InternetAddress, OutgoingAttempt>();
 	
 	
 	SocketOriginatorImpl() {
-		_refToAvoidGC = _internetAddressKeeper.addresses().addReceiver(new Consumer<CollectionChange<InternetAddress>>(){ @Override public void consume(CollectionChange<InternetAddress> value) {
+		_refToAvoidGC = my(ContactInternetAddresses.class).addresses().addReceiver(new Consumer<CollectionChange<InternetAddress>>(){ @Override public void consume(CollectionChange<InternetAddress> value) {
 			for (InternetAddress address : value.elementsRemoved()) 
 				stopAddressing(address);
 		
@@ -48,7 +48,7 @@ class SocketOriginatorImpl implements SocketOriginator {
 
 	
 	private boolean isMyOwnAddress(InternetAddress address) {
-		return Seals.ownSeal().equals(Seals.sealGiven(address.contact()));
+		return my(OwnSeal.class).get().equals(Seals.sealGiven(address.contact()).currentValue());
 	}
 	
 }

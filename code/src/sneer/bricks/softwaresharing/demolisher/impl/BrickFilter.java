@@ -10,7 +10,7 @@ import sneer.bricks.expression.files.hasher.FolderContentsHasher;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.ram.arrays.ImmutableArray;
 
 class BrickFilter {
@@ -18,11 +18,11 @@ class BrickFilter {
 	private static final FileMap FileMap = my(FileMap.class);
 	
 
-	static Sneer1024 mapOnlyFilesFromThisBrick(Sneer1024 hashOfPackage) {
+	static Hash mapOnlyFilesFromThisBrick(Hash hashOfPackage) {
 		FolderContents packageContents = packageContents(hashOfPackage);
 		FolderContents brickContents = filterOtherBricksOutOf(packageContents);
 		
-		Sneer1024 result = brickContents.contents.length() == packageContents.contents.length()
+		Hash result = brickContents.contents.length() == packageContents.contents.length()
 			? hashOfPackage
 			: my(FolderContentsHasher.class).hash(brickContents);
 		
@@ -62,7 +62,7 @@ class BrickFilter {
 	}
 
 
-	private static FolderContents packageContents(Sneer1024 hashOfPackage) {
+	private static FolderContents packageContents(Hash hashOfPackage) {
 		return FileMap.getFolderContents(hashOfPackage);
 	}
 

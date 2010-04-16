@@ -43,12 +43,7 @@ class AtomicFileWriterImpl implements AtomicFileWriter {
 			return;
 		}
 
-		if (contents instanceof byte[]) {
-			writeToFile(fileOrFolder, (byte[])contents);
-			return;
-		}
-		
-		throw new IllegalStateException();
+		writeToFile(fileOrFolder, (byte[])contents);
 	}
 	
 	

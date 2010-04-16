@@ -83,7 +83,7 @@ public abstract class LanguageCompilerTestBase extends BrickTest {
 	}
 
 	private File createTempFile() throws IOException {
-		return File.createTempFile(TEST_FILE_PREFIX, fileExtension(), tmpFolder());
+		return createTmpFile(TEST_FILE_PREFIX + fileExtension());
 	}
 
 	private File[] classPathForLibs(File libDir) {

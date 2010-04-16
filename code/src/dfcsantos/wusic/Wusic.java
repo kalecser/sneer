@@ -2,8 +2,11 @@ package dfcsantos.wusic;
 
 import java.io.File;
 
+import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.brickness.Brick;
+import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;
 import dfcsantos.tracks.Track;
 
@@ -11,17 +14,20 @@ import dfcsantos.tracks.Track;
 public interface Wusic {
 
 	enum OperatingMode { OWN, PEERS };
-	void switchOperatingMode();
+	void setOperatingMode(OperatingMode operatingMode);
 	Signal<OperatingMode> operatingMode();
 
+	File playingFolder();
 	void setPlayingFolder(File selectedFolder);
+
+	Signal<File> sharedTracksFolder();
 	void setSharedTracksFolder(File selectedFolder);
 
 	void setShuffle(boolean shuffle);
 
 	void start();
 	void pauseResume();
-	void back();
+//	void back();
 	void skip();
 	void stop();
 
@@ -32,13 +38,16 @@ public interface Wusic {
 	Signal<Track>	playingTrack();
 	Signal<Integer> playingTrackTime();
 
-	Signal<String> numberOfPeerTracks();
+	Signal<Integer> numberOfOwnTracks();
+	Signal<Integer> numberOfPeerTracks();
 
-	Signal<Boolean> isTracksDownloadAllowed();
-	void allowTracksDownload(boolean b);
+	Signal<Boolean> isTrackDownloadActive();
+	Consumer<Boolean> trackDownloadActivator();
+	SetSignal<Download> activeTrackDownloads();
 
 	int DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE = 100; // MBs
-	Signal<Integer> tracksDownloadAllowance();
-	PickyConsumer<Integer> tracksDownloadAllowanceSetter();
+	Signal<Integer> trackDownloadAllowance();
+	PickyConsumer<Integer> trackDownloadAllowanceSetter();
 
 }
+

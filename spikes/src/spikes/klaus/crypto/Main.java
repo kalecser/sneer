@@ -1,5 +1,6 @@
 package spikes.klaus.crypto;
 
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
@@ -10,10 +11,15 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.Signature;
 import java.security.Provider.Service;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import sneer.foundation.brickness.Brickness;
+import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 
 public class Main {
 
@@ -25,12 +31,27 @@ public class Main {
 		
 		printProvidersAndServices();
 		
-		byte[] bytecodeDummy = new SecureRandom().generateSeed(10);
+		byte[] message = new SecureRandom().generateSeed(10);
 		
-		testSHA512(bytecodeDummy);
-		testRSA(bytecodeDummy);
+		testHash(message);
+		testPK(message);
+		
+		testKeySerialization();
 	}
 
+	
+	private static void testKeySerialization() throws Exception {
+		final KeyPair keys = generateKeyPair();
+		
+		Environments.runWith(Brickness.newBrickContainer(), new Closure() { @Override public void run() {
+//			byte[] serialized = my(Serializer.class).serialize(keys.getPublic());
+			byte[] encoded = keys.getPublic().getEncoded();
+			System.out.println("Public key length: " + encoded.length);
+		}});
+		
+	}
+
+	
 	private static void printProvidersAndServices() {
 		HashSet<String> serviceTypes = new HashSet<String>();
 
@@ -55,26 +76,33 @@ public class Main {
 		}
 		}
 
-	private static void testSHA512(byte[] bytecodeDummy) throws Exception {
+	private static void testHash(byte[] message) throws Exception {
 		//MessageDigest digester = MessageDigest.getInstance("SHA-512", "SUN");
 		//MessageDigest digester = MessageDigest.getInstance("WHIRLPOOL", "BC");
 		MessageDigest digester = MessageDigest.getInstance("SHA-512", "BC");
-		byte[] digest = digester.digest(bytecodeDummy);
+		byte[] digest = digester.digest(message);
 		System.out.println("Digest length: " + digest.length * 8 + " bits");
 	}
 
-	private static void testRSA(byte[] bytecodeDummy) throws Exception {
+	private static void testPK(byte[] bytecodeDummy) throws Exception {
 		KeyPair keys = generateKeyPair();
+				
 		byte[] signature = generateSignature(keys.getPrivate(), bytecodeDummy);
 		boolean ok = verifySignature(keys.getPublic(), bytecodeDummy, signature);
-		System.out.println("RSA Signature ok: " + ok);
+		System.out.println("PK Signature ok: " + ok);
 	}
 
+		
 	public static KeyPair generateKeyPair() throws Exception {
-		byte[] seed = "SENHA SECRETA COMPRIDA".getBytes("UTF-8");
-		SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
+		System.out.println(">>>>>>>> Starting to generate key.");
+		
+//		SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
 //		SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "BC");
-		random.setSeed(seed);
+		SecureRandom random = new CountingSecureRandom();
+		System.out.println("Random:" + random.nextInt());
+		
+//		byte[] seed = "SENHA SECRETA COMPRIDA".getBytes("UTF-8");
+//		random.setSeed(seed);
 
 //		KeyPairGenerator keypairgenerator = KeyPairGenerator.getInstance("RSA", "SunRsaSign");
 //		KeyPairGenerator keypairgenerator = KeyPairGenerator.getInstance("RSA", "BC");
@@ -83,13 +111,18 @@ public class Main {
 		KeyPairGenerator keypairgenerator = KeyPairGenerator.getInstance("ECDSA", "BC");
 		keypairgenerator.initialize(256, random);
 
-		return keypairgenerator.generateKeyPair();
+		try {
+			return keypairgenerator.generateKeyPair();
+		} finally {
+			System.out.println(">>>>>>>> Finished generating key with " + ((CountingSecureRandom)random)._bytesRequested + " random bytes.");
+		}
 	}
 
 	public static byte[] generateSignature(PrivateKey privatekey, byte[] message) throws Exception {
 //		Signature signer = Signature.getInstance("SHA512WITHRSA", "SunRsaSign");
 //		Signature signer = Signature.getInstance("SHA512WITHRSA", "BC");
-		Signature signer = Signature.getInstance("SHA512WITHECDSA", "BC");
+//		Signature signer = Signature.getInstance("SHA512WITHECDSA", "BC");
+		Signature signer = Signature.getInstance("ECDSA", "BC");
 		signer.initSign(privatekey);
 	
 		signer.update(message);
@@ -100,8 +133,14 @@ public class Main {
 	public static boolean verifySignature(PublicKey publickey, byte[] message, byte[] signature) throws Exception {
 //		Signature verifier = Signature.getInstance("SHA512WITHRSA", "SunRsaSign");
 //		Signature verifier = Signature.getInstance("SHA512WITHRSA", "BC");
-		Signature verifier = Signature.getInstance("SHA512WITHECDSA", "BC");
-		verifier.initVerify(publickey);
+//		Signature verifier = Signature.getInstance("SHA512WITHECDSA", "BC");
+		Signature verifier = Signature.getInstance("ECDSA", "BC");
+
+		KeyFactory keyFactory = KeyFactory.getInstance("ECDSA", "BC");
+		X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publickey.getEncoded());
+		PublicKey publicKeyDecoded = keyFactory.generatePublic(publicKeySpec);
+
+		verifier.initVerify(publicKeyDecoded);
 	
 		verifier.update(message);
 	

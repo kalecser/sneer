@@ -7,6 +7,7 @@ import java.awt.Image;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListCellRenderer;
@@ -52,6 +53,11 @@ class ReactiveWidgetFactoryImpl implements ReactiveWidgetFactory {
 	public ToggleButtonWidget<JCheckBox> newCheckBox(Signal<Boolean> source, Consumer<Boolean> setter, Runnable cascadeRefreshOperations) {
 		my(GuiThread.class).assertInGuiThread();
 		return new RCheckBoxImpl(source, setter, cascadeRefreshOperations);
+	}
+
+	@Override
+	public Widget<JProgressBar> newProgressBar(Signal<Integer> source) {
+		return new RProgressBarImpl(source);
 	}
 
 	@Override

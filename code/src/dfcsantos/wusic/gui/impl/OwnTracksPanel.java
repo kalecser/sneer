@@ -13,14 +13,16 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
+import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
+import sneer.foundation.lang.Functor;
 import dfcsantos.wusic.Wusic.OperatingMode;
 
 class OwnTracksPanel extends AbstractTabPane {
 
-	private final JLabel _ownTracksTabLabel				= new JLabel("Own Tracks");
+	private final JLabel _ownTracksTabLabel				= newReactiveLabel();
 	private final JFileChooser _playingFolderChooser;
     private final JButton _choosePlayingFolder			= new JButton();
     private final JCheckBox _shuffle					= new JCheckBox();
@@ -32,17 +34,17 @@ class OwnTracksPanel extends AbstractTabPane {
 	    	if (chosenFolder != null)
 	    		_controller.setPlayingFolder(chosenFolder);
 		}}, JFileChooser.DIRECTORIES_ONLY);
-		_playingFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).playingFolder().currentValue());
+		_playingFolderChooser.setCurrentDirectory(_controller.playingFolder());
 
 	    _choosePlayingFolder.setText("Playing Folder");
-	    _choosePlayingFolder.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent evt) {
+	    _choosePlayingFolder.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
 	    	choosePlayingFolderActionPerformed();
 	    }});
 	    customPanel().add(_choosePlayingFolder);
 
 	    _shuffle.setText("Shuffle");
 	    _shuffle.setSelected(false);
-	    _shuffle.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) {
+	    _shuffle.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
 	    	shuffleActionPerformed();
 	    }});
 	    customPanel().add(_shuffle);
@@ -54,7 +56,19 @@ class OwnTracksPanel extends AbstractTabPane {
 
 	@Override
 	boolean isMyOperatingMode(OperatingMode operatingMode) {
-		return OperatingMode.OWN.equals(operatingMode);
+		return myOperatingMode().equals(operatingMode);
+	}
+
+	private OperatingMode myOperatingMode() {
+		return OperatingMode.OWN;
+	}
+
+	private JLabel newReactiveLabel() {
+		return my(ReactiveWidgetFactory.class).newLabel(
+			my(Signals.class).adapt(_controller.numberOfOwnTracks(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfTracks) {
+				return "Own Tracks (" + numberOfTracks + ")";
+			}})
+		).getMainWidget();
 	}
 
 	private void choosePlayingFolderActionPerformed() {
@@ -63,10 +77,6 @@ class OwnTracksPanel extends AbstractTabPane {
 
     private void shuffleActionPerformed() {
     	_controller.setShuffle(_shuffle.isSelected());
-	}
-
-	private void deleteFileActionPerformed() {
-	    _controller.deleteTrack();
 	}
 
 	@Override
@@ -94,17 +104,20 @@ class OwnTracksPanel extends AbstractTabPane {
 
 		private OwnTracksControlPanel() {
 			_deleteFile.setText("Delete File!");
-			_deleteFile.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					deleteFileActionPerformed();
-				}
-			});
+			_deleteFile.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
+				deleteFileActionPerformed();
+			}});
 			add(_deleteFile);
 		}
 
 		@Override
 		boolean isMyOperatingMode(OperatingMode operatingMode) {
 			return OwnTracksPanel.this.isMyOperatingMode(operatingMode);
+		}
+
+		@Override
+		void activateMyOperatingMode() {
+			_controller.setOperatingMode(myOperatingMode());
 		}
 
 		@Override
@@ -117,6 +130,10 @@ class OwnTracksPanel extends AbstractTabPane {
 		void disableButtons() {
 			super.disableButtons();
 			_deleteFile.setEnabled(false);
+		}
+
+		private void deleteFileActionPerformed() {
+		    _controller.deleteTrack();
 		}
 
 	}

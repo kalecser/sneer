@@ -27,7 +27,7 @@ public interface IO {
 		Filter or(Filter[] filters);
 		Filter suffix(String sulfix);
 		Filter name(String name);
-		FileFilter foldersAndExtensions(String... validFileTypes);
+		FileFilter foldersAndExtensions(String... acceptedExtensions);
 
 		Collection<File> listFiles(File folder, Filter fileFilter, Filter folderFilter);
 	}
@@ -38,7 +38,7 @@ public interface IO {
 	
 	interface Files {
 		int fileSizeInBlocks(long fileSizeInBytes, int blockSize);
-		long folderSize(File Folder);
+		long sizeOfFolder(File Folder);
 
 		Collection<File> listFiles(File folder, String[] extensions, boolean recursive);
 		Collection<File> listFiles(File folder, Filter fileFilter, Filter folderFilter);

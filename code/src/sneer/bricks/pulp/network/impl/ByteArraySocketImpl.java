@@ -68,4 +68,8 @@ class ByteArraySocketImpl implements ByteArraySocket {
 			// Yes. The correct thing is to do nothing.
 		}
 	}
+
+	String remoteIP() {
+		return _socket.getInetAddress().getHostAddress();
+	}
 }

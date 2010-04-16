@@ -200,7 +200,7 @@ class DashboardImpl implements Dashboard {
 			_frame.setState(Frame.NORMAL);
 			_frame.setVisible(true);
 			_frame.requestFocusInWindow();
-			my(WindowBoundsSetter.class).setDefaultBaseComponet(_rootPanel);
+			my(WindowBoundsSetter.class).setDefaultBaseComponent(_rootPanel);
 		}
 
 		private Signal<String> reactiveTitle() {

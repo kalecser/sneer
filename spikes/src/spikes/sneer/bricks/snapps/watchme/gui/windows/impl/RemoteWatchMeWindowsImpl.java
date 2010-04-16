@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.Contacts;
+import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.contacts.Contacts;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.foundation.lang.Consumer;
 import spikes.sneer.bricks.snapps.watchme.gui.windows.RemoteWatchMeWindows;

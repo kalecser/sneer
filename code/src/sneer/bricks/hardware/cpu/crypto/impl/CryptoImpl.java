@@ -6,14 +6,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
+import java.security.PublicKey;
 import java.security.Security;
+import java.security.Signature;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Digester;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
+import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 
 class CryptoImpl implements Crypto {
 
@@ -24,13 +27,13 @@ class CryptoImpl implements Crypto {
 	}
 
 	@Override
-	public Sneer1024 digest(byte[] input) {
+	public Hash digest(byte[] input) {
 		return newDigester().digest(input);
 	}
 
 	@Override
 	public Digester newDigester() {
-		return new DigesterImpl(messageDigest("SHA-512", "SUN"), messageDigest("WHIRLPOOL", "BC"));
+		return new DigesterImpl(messageDigest("SHA-512", "BC"));
 	}
 
 	private MessageDigest messageDigest(String algorithm, String provider) {
@@ -43,7 +46,7 @@ class CryptoImpl implements Crypto {
 
 	
 	@Override
-	public Sneer1024 digest(File file) throws IOException {
+	public Hash digest(File file) throws IOException {
 		if (file.isDirectory()) throw new IllegalArgumentException("The parameter cannot be a directory");
 
 		Digester digester = newDigester();
@@ -63,8 +66,25 @@ class CryptoImpl implements Crypto {
 
 
 	@Override
-	public Sneer1024 unmarshallSneer1024(byte[] bytes) {
-		return new Sneer1024Impl(bytes);
+	public Hash unmarshallHash(byte[] bytes) {
+		return new Hash(new ImmutableByteArray(bytes));
+	}
+
+	@Override
+	public boolean verifySignature(byte[] message, PublicKey publicKey,	byte[] signature) {
+		Signature verifier;
+		try {
+			verifier = Signature.getInstance("SHA512WITHECDSA", "BC");
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+		try {
+			verifier.initVerify(publicKey);
+			verifier.update(message);
+			return verifier.verify(signature);
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 }

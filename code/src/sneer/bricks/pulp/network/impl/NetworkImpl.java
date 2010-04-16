@@ -17,4 +17,9 @@ class NetworkImpl implements Network {
 	public ByteArraySocket openSocket(String host, int port) throws IOException {
 		return new ByteArraySocketImpl(host, port);
 	}
+
+	@Override
+	public String remoteIpFor(ByteArraySocket socket) {
+		return ((ByteArraySocketImpl)socket).remoteIP();
+	}
 }

@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -53,7 +52,9 @@ import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.menu.MenuFactory;
 import sneer.bricks.skin.menu.MenuGroup;
 import sneer.bricks.software.bricks.introspection.Introspector;
+import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.Consumer;
 
 class DashboardPanel extends JPanel {
 
@@ -92,8 +93,9 @@ class DashboardPanel extends JPanel {
 		_dashboardLayeredPane.add(_instrumentsContainer);
         _instrumentsContainer.setLayout(new FlowLayout(FlowLayout.CENTER, 0, INTRUMENTS_GAP));
     	addComponentListener(new ComponentAdapter(){ @Override public void componentResized(ComponentEvent e) {
-    		for (InstrumentPanelImpl instrument : _instrumentPanels) 
+    		instrumentsPanelsDo(new Consumer<InstrumentPanelImpl>() { @Override public void consume(InstrumentPanelImpl instrument) {
     			instrument.resizeInstrumentPanel();
+    		}});
 		}});
     }
 
@@ -107,10 +109,18 @@ class DashboardPanel extends JPanel {
 	}
 	
 	void hideAllToolbars() {
-		for (InstrumentPanelImpl panel : _instrumentPanels) 
+		instrumentsPanelsDo(new Consumer<InstrumentPanelImpl>() { @Override public void consume(InstrumentPanelImpl panel) {
 			panel._toolbar.setVisible(false);
+		}}); 
 	}
-	
+
+	private void instrumentsPanelsDo(Consumer<InstrumentPanelImpl> action) {
+		synchronized (_instrumentPanels) {
+			for (InstrumentPanelImpl instrument : _instrumentPanels)
+				action.consume(instrument);
+		}
+	}
+
 	private void addInstrumentPanelResizer() {
 		addComponentListener(new ComponentAdapter(){ @Override public void componentResized(ComponentEvent e) {
 			resizeInstruments();
@@ -121,18 +131,19 @@ class DashboardPanel extends JPanel {
 		int x = 0;
 		int width = getSize().width;
 		int height = getSize().height - TOOLBAR_HEIGHT;
-		
-		int sum = TOOLBAR_HEIGHT;
-		for (InstrumentPanelImpl instrument : _instrumentPanels) 
-			sum = sum + instrument._instrument.defaultHeight() + INTRUMENTS_GAP;
-		int max = sum<height?height:sum;
-		
+
+		final ByRef<Integer> sum = ByRef.newInstance(TOOLBAR_HEIGHT);
+		instrumentsPanelsDo(new Consumer<InstrumentPanelImpl>() { @Override public void consume(InstrumentPanelImpl instrument) {
+			sum.value = sum.value + instrument._instrument.defaultHeight() + INTRUMENTS_GAP;
+		}});
+		int max = sum.value < height ? height : sum.value;
+
 		_scrollBar.getModel().setMinimum(0);
 		_scrollBar.getModel().setMaximum(getSize().height);
-		
-		int hidden = sum-height;
+
+		int hidden = sum.value - height;
 		hidden = (hidden<0)?0:hidden;
-		
+
 		_scrollBar.getModel().setExtent(TOOLBAR_HEIGHT+getSize().height-hidden);
 		_instrumentsContainer.setBounds(x, TOOLBAR_HEIGHT -offset(), width, max);
 	}
@@ -168,7 +179,9 @@ class DashboardPanel extends JPanel {
 			_instrumentGlasspane = new InstrumentGlasspane();
 			_instrumentJXLayer = new JXLayer<JPanel>(this, _instrumentGlasspane);
 			_instrumentsContainer.add(_instrumentJXLayer);
-			_instrumentPanels.add(this);
+			synchronized (_instrumentPanels) {
+				_instrumentPanels.add(this);			
+			}
 			_toolbar.setVisible(false); 
 			
 			initUndockAction();
@@ -222,26 +235,34 @@ class DashboardPanel extends JPanel {
 			}});
 		}
 		
-		private void hideAndShow(Point mousePoint) {
-			for (InstrumentPanelImpl instrument : _instrumentPanels) 
+		private void hideAndShow(final Point mousePoint) {
+			instrumentsPanelsDo(new Consumer<InstrumentPanelImpl>() { @Override public void consume(InstrumentPanelImpl instrument) {
 				instrument._toolbar.setVisible(isMouseOverInstrument(mousePoint, instrument));
+    		}}); 
 
 			_instrumentsContainer.repaint();
 		}
 		
-		private boolean isMouseOverAnyToolbar(Point mousePoint) {
-			for (InstrumentPanelImpl instrument : _instrumentPanels) {
-				Toolbar toolbar = instrument._toolbar;
-				if(toolbar.isVisible()) {
-					JComponent component = instrument._toolbar._toolbarPanel;
-					return new Rectangle(component.getLocationOnScreen(), component.getSize()).contains(mousePoint);
-				}
-			}
-			return false;
+		private boolean isMouseOverAnyToolbar(final Point mousePoint) {
+			final ByRef<Boolean> result = ByRef.newInstance(false);
+
+			instrumentsPanelsDo(new Consumer<InstrumentPanelImpl>() { @Override public void consume(InstrumentPanelImpl instrument) {
+				if(isMouseOverToolbar(mousePoint, instrument._toolbar))
+					result.value = true;
+			}});
+
+			return result.value;
 		}		
 
+		private boolean isMouseOverToolbar(final Point mousePoint, Toolbar toolbar) {
+			if (!toolbar.isVisible()) return false;
+
+			JPanel panel = toolbar._toolbarPanel;
+			return new Rectangle(panel.getLocationOnScreen(), panel.getSize()).contains(mousePoint);
+		}
+
 		private boolean isMouseOverInstrument(Point mousePoint, InstrumentPanelImpl instrument) {
-			return new Rectangle(instrument.getLocationOnScreen(),  instrument.getSize()).contains(mousePoint);
+			return new Rectangle(instrument.getLocationOnScreen(), instrument.getSize()).contains(mousePoint);
 		}
 
 		private class InstrumentGlasspane extends AbstractLayerUI<JPanel> {
@@ -418,6 +439,7 @@ class DashboardPanel extends JPanel {
 		
 		@Override public MenuGroup<JPopupMenu> actions() { return _toolbar._menuActions; }
 		@Override public Container contentPane() {	return _contentPane ; }
+
 	}
 	
 	private class InstrumentInstaller{

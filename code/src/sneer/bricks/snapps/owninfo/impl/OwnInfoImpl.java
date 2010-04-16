@@ -26,11 +26,12 @@ import javax.swing.border.TitledBorder;
 
 import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
+import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.codec.SealCodec;
+import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccount;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccountKeeper;
-import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.own.name.OwnNameKeeper;
-import sneer.bricks.pulp.port.PortKeeper;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.main.menu.MainMenu;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
@@ -56,7 +57,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 	private final JPasswordField _dynDnsPassword = new JPasswordField();
 	
 	private final OwnNameKeeper _nameKeeper = my(OwnNameKeeper.class);
-	private final PortKeeper _portKeeper = my(PortKeeper.class);
+	private final OwnPort _portKeeper = my(OwnPort.class);
 	private final MainMenu _mainMenu = my(MainMenu.class);	
 	
 	@SuppressWarnings("unused")
@@ -82,7 +83,8 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 	private void open() {
 		if(isVisible()) return;
 		
-		my(WindowBoundsSetter.class).setBestBounds(this);
+//		my(WindowBoundsSetter.class).setBestBounds(this);
+		setLocationRelativeTo(_mainMenu.getWidget());
 		setVisible(true);
 		_yourOwnName.getMainWidget().requestFocus();
 	}
@@ -109,7 +111,8 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		
 		_sneerPort = newTextField(_portKeeper.port(), my(IntegerParsers.class).newIntegerParser(_portKeeper.portSetter()));
 
-		_ownSeal = new JTextArea(my(Seals.class).ownSeal().toFormattedHexString());
+		String formattedHexString = my(SealCodec.class).formattedHexEncode(my(OwnSeal.class).get());
+		_ownSeal = new JTextArea(formattedHexString);
 		_ownSeal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 		_ownSeal.setEditable(false);
 		_ownSeal.setTabSize(3);

@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import sneer.bricks.network.httpgateway.HttpGateway;
+import sneer.bricks.network.computers.httpgateway.HttpGateway;
 import sneer.bricks.snapps.gis.location.Location;
 import sneer.bricks.snapps.gis.map.MapRenderer;
 import sneer.foundation.lang.Consumer;

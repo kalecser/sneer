@@ -3,13 +3,14 @@ package sneer.bricks.expression.files.map.tests;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 
@@ -20,7 +21,12 @@ public class FileMapTest extends BrickTest {
 	@Test
 	public void fileMapping() {
 		File file = anySmallFile();
-		Sneer1024 hash = hash(42); 
+		Hash hash = hash(42);
+		
+		Map<Hash, File> banana = new ConcurrentHashMap<Hash, File>();
+		banana.put(hash, file);
+		assertEquals(file, banana.get(hash));
+		
 		_subject.putFile(file, hash);
 		assertEquals(file,_subject.getFile(hash));
 
@@ -28,7 +34,6 @@ public class FileMapTest extends BrickTest {
 		assertNull(_subject.getFile(hash));
 	}
 
-	@Ignore
 	@Test
 	public void rename() {
 		_subject.putFile(new File("folder/sub/file1.txt"),	41, hash(1));
@@ -40,19 +45,19 @@ public class FileMapTest extends BrickTest {
 		_subject.rename(new File("folder"), new File("newFolder"));
 
 		assertFileWasRenamed("newFolder/sub/file1.txt",	41, hash(1));
-		assertFileWasRenamed("newfolder/sub/file2.txt",	42, hash(2));
-		assertFileWasRenamed("newfolder/file3.txt",		43, hash(3));
-		assertFileWasRenamed("newfolder/file4.txt",		44, hash(4));
+		assertFileWasRenamed("newFolder/sub/file2.txt",	42, hash(2));
+		assertFileWasRenamed("newFolder/file3.txt",		43, hash(3));
+		assertFileWasRenamed("newFolder/file4.txt",		44, hash(4));
 
-		assertNull(_subject.getHash(new File("newfolder/file5.txt")));
+		assertNull(_subject.getHash(new File("newFolder/file5.txt")));
 
 		_subject.rename(new File("newFolder/sub"), new File("newFolder/newSub"));
 
 		assertFileWasRenamed("newFolder/newSub/file1.txt", 41, hash(1));
-		assertFileWasRenamed("newfolder/newSub/file2.txt", 42, hash(2));
+		assertFileWasRenamed("newFolder/newSub/file2.txt", 42, hash(2));
 	}
 
-	private void assertFileWasRenamed(String fileName, int lastModified, Sneer1024 hash) {
+	private void assertFileWasRenamed(String fileName, int lastModified, Hash hash) {
 		File file = new File(fileName);
 		assertEquals(hash, _subject.getHash(file));
 		assertEquals(lastModified, _subject.getLastModified(file));
@@ -62,7 +67,7 @@ public class FileMapTest extends BrickTest {
 		return my(ClassUtils.class).classFile(getClass());
 	}
 
-	private Sneer1024 hash(int b) {
+	private Hash hash(int b) {
 		return my(Crypto.class).digest(new byte[] { (byte) b });
 	}
 

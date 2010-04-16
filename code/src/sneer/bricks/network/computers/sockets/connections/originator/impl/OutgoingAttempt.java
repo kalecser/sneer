@@ -7,13 +7,13 @@ import java.io.IOException;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
+import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
-import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.contacts.Contact;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.bricks.pulp.internetaddresskeeper.InternetAddress;
-import sneer.bricks.pulp.keymanager.Seals;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
 import sneer.foundation.lang.Closure;
@@ -44,7 +44,7 @@ class OutgoingAttempt {
 
 		ByteArraySocket socket;
 		try {
-			socket = _network.openSocket(_address.host(), _address.port());
+			socket = _network.openSocket(_address.host(), _address.port().currentValue());
 		} catch (IOException e) {
 			my(Logger.class).log(e.getMessage());
 			return;
@@ -56,7 +56,7 @@ class OutgoingAttempt {
 
 
 	private boolean contactHasSeal() {
-		if (my(Seals.class).sealGiven(contact()) == null) {
+		if (my(ContactSeals.class).sealGiven(contact()).currentValue() == null) {
 			my(BlinkingLights.class).turnOnIfNecessary(_light, "" + contact() + "'s Seal is unknown.", "You will be able to connect to this contact once you have entered his Seal. Right-click on the contact and choose 'Edit Contact' (or something like that :)");
 			return false;
 		}

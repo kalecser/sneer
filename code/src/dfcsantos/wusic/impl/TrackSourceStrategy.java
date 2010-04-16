@@ -9,16 +9,21 @@ import java.util.List;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.clock.timer.Timer;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.execution.playlist.Playlist;
 import dfcsantos.tracks.storage.rejected.RejectedTracksKeeper;
 
 abstract class TrackSourceStrategy {
 
-	private Playlist _playlist;
+	private Register<Playlist> _playlist = my(Signals.class).newRegister(null);
 
 	private final List<Track> _tracksToDispose = Collections.synchronizedList(new ArrayList<Track>());
 
@@ -40,7 +45,7 @@ abstract class TrackSourceStrategy {
 
 
 	void initPlaylist(File tracksFolder) {
-		_playlist = createPlaylist(tracksFolder);
+		_playlist.setter().consume(createPlaylist(tracksFolder));
 	}
 
 
@@ -53,20 +58,30 @@ abstract class TrackSourceStrategy {
 	}
 
 
-	Track nextTrack() {
-		Track nextTrack = _playlist.nextTrack();
-		if (_tracksToDispose.contains(nextTrack))
-			return null;
+	Signal<Integer> numberOfTracks() {
+		return my(Signals.class).adapt(playlist(), new Functor<Playlist, Integer>() { @Override public Integer evaluate(Playlist playlist) throws RuntimeException {
+			return playlist.numberOfTracks();
+		}}); 
+	}
 
-		return nextTrack;
+
+	Track nextTrack() {
+		disposePendingTracks();
+		return playlist().currentValue().nextTrack();
 	}
 
 
 	void deleteTrack(final Track rejected) {
-		Sneer1024 hash = my(FileMap.class).getHash(rejected.file());
+		my(Logger.class).log("Deleteing track: ", rejected.file());
+		Hash hash = my(FileMap.class).getHash(rejected.file());
 		my(FileMap.class).remove(rejected.file());
 		my(RejectedTracksKeeper.class).reject(hash);
 		markForDisposal(rejected);
+	}
+
+
+	boolean isMarkedForDisposal(Track suspect) {
+		return _tracksToDispose.contains(suspect);
 	}
 
 
@@ -77,7 +92,10 @@ abstract class TrackSourceStrategy {
 
 	abstract Playlist createPlaylist(File tracksFolder);
 
-
 	abstract File tracksFolder();
+
+	private Signal<Playlist> playlist() {
+		return _playlist.output();
+	}
 
 }

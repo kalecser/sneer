@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.distribution.filtering.tests;
 
-import sneer.bricks.pulp.tuples.Tuple;
+import sneer.bricks.expression.tuples.Tuple;
 
 public class TupleB extends Tuple {
 

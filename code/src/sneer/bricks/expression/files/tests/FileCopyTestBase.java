@@ -10,8 +10,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.map.mapper.FileMapper;
-import sneer.bricks.expression.files.map.mapper.MappingStopped;
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -29,22 +28,22 @@ public abstract class FileCopyTestBase extends BrickTest {
 
 	@Ignore
 	@Test (timeout = 3000)
-	public void testWithZeroLengthFile() throws IOException, MappingStopped {
+	public void testWithZeroLengthFile() throws Exception {
 		testWith(zeroLengthFile());
 	}
 	
 	@Test (timeout = 4000)
-	public void testWithSmallFile() throws IOException, MappingStopped {
+	public void testWithSmallFile() throws Exception {
 		testWith(anySmallFile());
 	}
 
 	@Test (timeout = 6000)
-	public void testWithFolder() throws IOException, MappingStopped {
+	public void testWithFolder() throws Exception {
 		testWith(folderWithAFewFiles());
 	}
 
 	@Test (timeout = 7000)
-	public void testWithLargeFile() throws IOException, MappingStopped {
+	public void testWithLargeFile() throws Exception {
 		testWith(createLargeFile());
 	}
 
@@ -60,7 +59,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 		return result;
 	}
 
-	private void testWith(File fileOrFolder) throws IOException, MappingStopped {
+	private void testWith(File fileOrFolder) throws Exception {
 		@SuppressWarnings("unused")	WeakContract refToAvoidGc =
 			my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>(){@Override public void consume(CollectionChange<Light> deltas) {
 				if (!deltas.elementsAdded().isEmpty())
@@ -68,7 +67,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 			}});
 
 		File copy = newTmpFile();
-		Sneer1024 hash = null;
+		Hash hash = null;
 		if (fileOrFolder.isDirectory()) {
 			hash = _fileMapper.mapFolder(fileOrFolder);
 			copyFolderFromFileMap(hash, copy);
@@ -81,9 +80,9 @@ public abstract class FileCopyTestBase extends BrickTest {
 		assertSameContents(fileOrFolder, copy);
 	}
 
-	abstract protected void copyFileFromFileMap(Sneer1024 hashOfContents, File destination) throws IOException;
+	abstract protected void copyFileFromFileMap(Hash hashOfContents, File destination) throws Exception;
 
-	abstract protected void copyFolderFromFileMap(Sneer1024 hashOfContents, File destination) throws IOException;
+	abstract protected void copyFolderFromFileMap(Hash hashOfContents, File destination) throws Exception;
 
 	private File zeroLengthFile() throws IOException {
 		return createTmpFile("tmp" + System.nanoTime());

@@ -17,7 +17,7 @@ class SocketHolder {
 	private final Register<Boolean> _isConnected = my(Signals.class).newRegister(false);
 
 	private ByteArraySocket _socket;
-	
+
 	
 	synchronized
 	ByteArraySocket socket() {

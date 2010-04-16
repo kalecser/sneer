@@ -1,6 +1,6 @@
 package sneer.bricks.expression.files.map.visitors;
 
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 
 public interface FolderStructureVisitor {
 
@@ -8,7 +8,7 @@ public interface FolderStructureVisitor {
 	void enterFolder();
 	void leaveFolder();
 	
-	boolean visitFileOrFolder(String name, long lastModified, Sneer1024 hashOfContents);
+	boolean visitFileOrFolder(String name, long lastModified, Hash hashOfContents);
 	void visitFileContents(byte[] fileContents);
 
 	

@@ -13,14 +13,14 @@ import sneer.bricks.expression.files.protocol.FileRequest;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.expression.files.protocol.Protocol;
 import sneer.bricks.expression.files.server.FileServer;
+import sneer.bricks.expression.tuples.Tuple;
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.bricks.pulp.tuples.Tuple;
-import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
 
 public class FileServerImpl implements FileServer, Consumer<FileRequest> {

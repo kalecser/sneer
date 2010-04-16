@@ -4,8 +4,8 @@
 package sneer.bricks.snapps.contacts.gui.comparator.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
+import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.contacts.attributes.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.snapps.contacts.gui.comparator.ContactComparator;
 
 class ContactComparatorImpl implements ContactComparator {

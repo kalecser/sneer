@@ -2,7 +2,7 @@ package sneer.bricks.softwaresharing;
 
 import java.util.List;
 
-import sneer.bricks.hardware.cpu.crypto.Sneer1024;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 
 public interface BrickVersion {
 
@@ -20,7 +20,7 @@ public interface BrickVersion {
 		REJECTED
 	}
 	
-	Sneer1024 hash();
+	Hash hash();
 	
 	Status status();
 	boolean isStagedForExecution();
