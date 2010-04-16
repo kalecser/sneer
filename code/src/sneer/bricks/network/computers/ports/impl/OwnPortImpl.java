@@ -1,10 +1,10 @@
 package sneer.bricks.network.computers.ports.impl;
 
 import static sneer.foundation.environments.Environments.my;
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.ports.PortTuple;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.bricks.statestore.BrickStateStore;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;

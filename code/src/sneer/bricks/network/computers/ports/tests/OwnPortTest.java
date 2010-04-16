@@ -4,9 +4,9 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.ports.PortTuple;
-import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class OwnPortTest extends BrickTest {

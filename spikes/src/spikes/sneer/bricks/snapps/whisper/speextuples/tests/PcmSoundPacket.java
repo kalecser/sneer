@@ -1,7 +1,7 @@
 package spikes.sneer.bricks.snapps.whisper.speextuples.tests;
 
+import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
-import sneer.bricks.pulp.tuples.Tuple;
 
 //This class was deleted. It is here just to make the test compile.
 class PcmSoundPacket extends Tuple {

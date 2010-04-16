@@ -4,8 +4,8 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
-import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.Contacts;
+import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.contacts.Contacts;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.tastematching.MusicalTasteMatcher;

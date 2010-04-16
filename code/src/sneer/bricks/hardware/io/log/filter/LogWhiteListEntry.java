@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.io.log.filter;
 
-import sneer.bricks.pulp.tuples.Tuple;
+import sneer.bricks.expression.tuples.Tuple;
 
 public class LogWhiteListEntry extends Tuple {
 

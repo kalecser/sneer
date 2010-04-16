@@ -6,6 +6,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sound.sampled.LineUnavailableException;
 
+import sneer.bricks.expression.tuples.Tuple;
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray2D;
@@ -14,8 +16,6 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.streams.sequencer.Sequencer;
 import sneer.bricks.pulp.streams.sequencer.Sequencers;
-import sneer.bricks.pulp.tuples.Tuple;
-import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.skin.rooms.ActiveRoomKeeper;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.CacheMap;

@@ -5,18 +5,18 @@ import static sneer.foundation.environments.Environments.my;
 import java.util.HashMap;
 import java.util.Map;
 
+import sneer.bricks.expression.tuples.Tuple;
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
-import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.Contacts;
+import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.contacts.Contacts;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.probe.ProbeManager;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.serialization.Serializer;
-import sneer.bricks.pulp.tuples.Tuple;
-import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
 
 class ProbeManagerImpl implements ProbeManager {

@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
+import sneer.bricks.expression.tuples.Tuple;
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.crypto.Hash;
@@ -15,7 +17,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.contacts.Contact;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.events.pulsers.PulseSource;
@@ -24,8 +26,6 @@ import sneer.bricks.pulp.events.pulsers.Pulsers;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.pulp.tuples.Tuple;
-import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Closure;
 
 abstract class AbstractDownload implements Download {

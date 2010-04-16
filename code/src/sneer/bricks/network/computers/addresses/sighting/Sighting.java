@@ -1,7 +1,7 @@
 package sneer.bricks.network.computers.addresses.sighting;
 
+import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.pulp.tuples.Tuple;
 
 public class Sighting extends Tuple {
 

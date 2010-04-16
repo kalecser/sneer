@@ -4,7 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import javax.swing.JFrame;
 
-import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.contacts.Contact;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.main.menu.MainMenu;

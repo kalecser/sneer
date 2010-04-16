@@ -1,8 +1,8 @@
 package dfcsantos.wusic.notification.server.impl;
 
 import static sneer.foundation.environments.Environments.my;
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.Track;
 import dfcsantos.wusic.Wusic;

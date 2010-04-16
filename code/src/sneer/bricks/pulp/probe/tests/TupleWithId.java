@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.probe.tests;
 
-import sneer.bricks.pulp.tuples.Tuple;
+import sneer.bricks.expression.tuples.Tuple;
 
 public abstract class TupleWithId extends Tuple {
 

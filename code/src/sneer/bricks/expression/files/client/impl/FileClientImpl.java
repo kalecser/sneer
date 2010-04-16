@@ -9,7 +9,7 @@ import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.Downloads;
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.contacts.Contact;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Producer;

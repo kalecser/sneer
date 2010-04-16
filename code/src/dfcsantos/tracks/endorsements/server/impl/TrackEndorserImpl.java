@@ -8,6 +8,7 @@ import java.util.Random;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.server.FileServer;
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
@@ -18,7 +19,6 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.Tracks;

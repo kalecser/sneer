@@ -9,7 +9,7 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
-import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.contacts.Contact;
 import sneer.bricks.pulp.network.ByteArraySocket;
 
 /** When two parties simultaneously open sockets to each other, this guy decides which socket to use by comparing an arbitrary symmetry breaker: each party's seal.*/

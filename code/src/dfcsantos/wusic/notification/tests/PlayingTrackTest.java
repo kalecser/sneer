@@ -7,15 +7,15 @@ import java.io.File;
 import org.jmock.Expectations;
 import org.junit.Test;
 
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.Contacts;
+import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.contacts.Contacts;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.environments.Environment;

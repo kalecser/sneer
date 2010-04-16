@@ -6,8 +6,8 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
-import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.Contacts;
+import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.contacts.Contacts;
 import sneer.bricks.snapps.contacts.hardcoded.HardcodedContacts;
 import sneer.foundation.lang.exceptions.Refusal;
 

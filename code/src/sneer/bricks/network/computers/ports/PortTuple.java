@@ -1,6 +1,6 @@
 package sneer.bricks.network.computers.ports;
 
-import sneer.bricks.pulp.tuples.Tuple;
+import sneer.bricks.expression.tuples.Tuple;
 
 public class PortTuple extends Tuple {
 

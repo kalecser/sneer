@@ -14,6 +14,7 @@ import org.jmock.Expectations;
 import org.jmock.Sequence;
 import org.junit.Test;
 
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
 import sneer.bricks.hardware.cpu.threads.Threads;
@@ -21,7 +22,6 @@ import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.events.EventSource;
-import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.skin.image.ImageFactory;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;

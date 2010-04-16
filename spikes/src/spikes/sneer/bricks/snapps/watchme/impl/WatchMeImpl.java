@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
@@ -21,7 +22,6 @@ import sneer.bricks.pulp.datastructures.cache.CacheFactory;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.EventSource;
-import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.exceptions.FriendlyException;
 import spikes.sneer.bricks.skin.screenshotter.Screenshotter;

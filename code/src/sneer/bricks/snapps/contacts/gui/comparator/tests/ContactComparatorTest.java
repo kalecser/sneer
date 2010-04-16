@@ -5,8 +5,8 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
+import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.contacts.attributes.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;

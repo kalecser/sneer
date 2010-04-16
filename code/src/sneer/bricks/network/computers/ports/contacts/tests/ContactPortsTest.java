@@ -5,13 +5,13 @@ import static sneer.foundation.environments.Environments.my;
 import org.jmock.Expectations;
 import org.junit.Test;
 
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.ports.PortTuple;
 import sneer.bricks.network.computers.ports.contacts.ContactPorts;
 import sneer.bricks.pulp.reactive.SignalUtils;
-import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 

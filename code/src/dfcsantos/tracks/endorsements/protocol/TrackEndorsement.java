@@ -1,7 +1,7 @@
 package dfcsantos.tracks.endorsements.protocol;
 
+import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.bricks.pulp.tuples.Tuple;
 
 public class TrackEndorsement extends Tuple {
 

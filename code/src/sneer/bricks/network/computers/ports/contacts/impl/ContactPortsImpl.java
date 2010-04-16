@@ -1,6 +1,7 @@
 package sneer.bricks.network.computers.ports.contacts.impl;
 
 import static sneer.foundation.environments.Environments.my;
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.ports.PortTuple;
@@ -8,7 +9,6 @@ import sneer.bricks.network.computers.ports.contacts.ContactPorts;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.pulp.tuples.TupleSpace;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Producer;

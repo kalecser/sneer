@@ -5,12 +5,12 @@ import static sneer.foundation.environments.Environments.my;
 import java.util.LinkedList;
 import java.util.List;
 
+import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection.PacketScheduler;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.serialization.Serializer;
-import sneer.bricks.pulp.tuples.Tuple;
 
 class SchedulerImpl implements PacketScheduler {
 

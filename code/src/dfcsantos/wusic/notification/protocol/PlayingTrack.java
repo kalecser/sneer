@@ -1,6 +1,6 @@
 package dfcsantos.wusic.notification.protocol;
 
-import sneer.bricks.pulp.tuples.Tuple;
+import sneer.bricks.expression.tuples.Tuple;
 
 public class PlayingTrack extends Tuple {
 
