@@ -7,7 +7,7 @@ import java.util.Date;
 
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.own.name.OwnNameKeeper;
 import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.snapps.wind.Shout;

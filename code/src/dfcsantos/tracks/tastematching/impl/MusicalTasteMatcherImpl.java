@@ -2,8 +2,8 @@ package dfcsantos.tracks.tastematching.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.network.social.contacts.Contact;
-import sneer.bricks.network.social.contacts.Contacts;
+import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.Contacts;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
 import dfcsantos.tracks.tastematching.MusicalTasteMatcher;

@@ -16,7 +16,7 @@ import sneer.bricks.network.computers.addresses.sighting.SightingPublisher;
 import sneer.bricks.network.computers.addresses.sighting.tests.mock.MockContactSighting;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ContactSighting;
-import sneer.bricks.network.social.contacts.Contacts;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.software.folderconfig.tests.BrickTest;

@@ -4,7 +4,8 @@ import static sneer.foundation.environments.Environments.my;
 
 import javax.swing.JFrame;
 
-import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.main.menu.MainMenu;
@@ -16,7 +17,7 @@ import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.Track;
 import dfcsantos.wusic.Wusic;
 import dfcsantos.wusic.gui.WusicGui;
-import dfcsantos.wusic.notification.keeper.PlayingTrackKeeper;
+import dfcsantos.wusic.notification.playingtrack.PlayingTrack;
 
 /**
  *
@@ -69,8 +70,8 @@ class WusicGuiImpl implements WusicGui {
 
 				@Override
 				public Signal<String> textFor(Contact contact) {
-					return my(Signals.class).adapt(my(PlayingTrackKeeper.class).playingTrack(contact), new Functor<String, String>() { @Override public String evaluate(String playingTrack) throws RuntimeException {
-						return playingTrack.isEmpty() ? "" : MUSICAL_NOTE_ICON + " " + playingTrack;
+					return my(Signals.class).adapt(my(Attributes.class).attributeValueFor(contact, PlayingTrack.class), new Functor<String, String>() { @Override public String evaluate(String playingTrack) throws RuntimeException {
+						return (playingTrack == null || playingTrack.isEmpty()) ? "" : MUSICAL_NOTE_ICON + " " + playingTrack;
 					}});
 				}
 			}

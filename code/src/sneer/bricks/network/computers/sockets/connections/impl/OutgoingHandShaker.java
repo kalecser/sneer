@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
-import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.network.ByteArraySocket;
 
 class OutgoingHandShaker {
