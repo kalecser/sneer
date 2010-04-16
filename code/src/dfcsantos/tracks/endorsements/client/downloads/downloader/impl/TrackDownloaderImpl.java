@@ -122,7 +122,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 
 	private boolean isFromMe(final TrackEndorsement endorsement) {
-		return my(OwnSeal.class).get().equals(endorsement.publisher);
+		return my(OwnSeal.class).oldGet().equals(endorsement.publisher);
 	}
 
 

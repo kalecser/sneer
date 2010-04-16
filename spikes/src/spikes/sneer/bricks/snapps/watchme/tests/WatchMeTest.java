@@ -64,7 +64,7 @@ public class WatchMeTest extends BrickTest {
 		Environment container2 = newTestEnvironment(_sharedSpace); 
 		WatchMe subject2 = EnvironmentUtils.retrieveFrom(container2, WatchMe.class);
 
-		Seal key = my(OwnSeal.class).get();
+		Seal key = my(OwnSeal.class).oldGet();
 		
 		EventSource<BufferedImage> screens = subject2.screenStreamFor(key);
 

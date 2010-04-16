@@ -57,7 +57,7 @@ class IncomingHandShaker {
 
 
 	static private void rejectLoopback(Seal peersSeal) throws IOException {
-		if (peersSeal.equals(my(OwnSeal.class).get()))
+		if (peersSeal.equals(my(OwnSeal.class).oldGet()))
 			throw new IOException("Socket identified as originating from yourself.");
 	}
 

@@ -117,7 +117,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 
 	private boolean isMyOwn(SrcFolderHash srcFolderHash) {
-		return srcFolderHash.publisher.equals(my(OwnSeal.class).get());
+		return srcFolderHash.publisher.equals(my(OwnSeal.class).oldGet());
 	}
 
 	private void publishMySrcFolder() {

@@ -100,7 +100,7 @@ class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Runnable {
 
 
 	private boolean isMyOwn(Heartbeat beat) {
-		return my(OwnSeal.class).get().equals(beat.publisher);
+		return my(OwnSeal.class).oldGet().equals(beat.publisher);
 	}
 
 

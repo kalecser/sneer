@@ -24,7 +24,7 @@ public class ContactPortsTest extends BrickTest {
 	@Test(timeout = 2000)
 	public void contactPorts() {
 		checking(new Expectations(){{
-			oneOf(_ownSeal).get(); will(returnValue(seal(42)));
+			oneOf(_ownSeal).oldGet(); will(returnValue(seal(42)));
 		}});
 		my(TupleSpace.class).acquire(new PortTuple(8081));
 		

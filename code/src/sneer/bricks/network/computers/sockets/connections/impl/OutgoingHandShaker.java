@@ -16,7 +16,7 @@ class OutgoingHandShaker {
 	
 	static void greet(ByteArraySocket socket, @SuppressWarnings("unused") Contact contact) throws IOException {
 		socket.write(ProtocolTokens.SNEER_WIRE_PROTOCOL_1);
-		socket.write(OwnSeal.get().bytes.copy());
+		socket.write(OwnSeal.oldGet().bytes.copy());
 		
 		//Implement: accept and pass pk challenge.
 	}

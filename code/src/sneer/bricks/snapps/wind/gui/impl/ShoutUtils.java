@@ -37,6 +37,6 @@ abstract class ShoutUtils {
 	}
 
 	static boolean isMyOwnShout(Shout shout) {
-		return my(OwnSeal.class).get().equals(shout.publisher);
+		return my(OwnSeal.class).oldGet().equals(shout.publisher);
 	}
 }

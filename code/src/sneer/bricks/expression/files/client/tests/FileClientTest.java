@@ -87,7 +87,7 @@ public class FileClientTest extends BrickTest {
 	}
 
 	private Seal me() {
-		return my(OwnSeal.class).get();
+		return my(OwnSeal.class).oldGet();
 	}
 
 	private ImmutableByteArray getFileBlock(File file, int blockNumber) throws IOException {

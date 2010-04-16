@@ -142,7 +142,7 @@ public class SpeexTuplesTest extends BrickTest {
 	}
 
 	private Seal ownPublicKey() {
-		return my(OwnSeal.class).get();
+		return my(OwnSeal.class).oldGet();
 	}
 
 	@SuppressWarnings("unused")

@@ -37,7 +37,7 @@ class TieBreaker {
 
 
 	private static boolean mySealIsGreaterThanHis(Contact contact) {
-		byte[] bytes1 = my(OwnSeal.class).get().bytes.copy();
+		byte[] bytes1 = my(OwnSeal.class).oldGet().bytes.copy();
 		byte[] bytes2 = Seals.sealGiven(contact).currentValue().bytes.copy();
 		
 		if (bytes1.length != bytes2.length)
