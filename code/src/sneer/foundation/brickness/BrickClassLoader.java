@@ -7,7 +7,7 @@ public interface BrickClassLoader {
 		LIBS
 	}
 
-	Class<?> brick();
+	String brickName();
 
 	Kind kind();
 

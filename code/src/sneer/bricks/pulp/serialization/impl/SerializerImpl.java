@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import sneer.bricks.pulp.serialization.ClassMapper;
 import sneer.bricks.pulp.serialization.Serializer;
+import sneer.foundation.brickness.BrickSerializationMapper;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.binary.BinaryStreamReader;
@@ -89,14 +89,14 @@ class SerializerImpl implements Serializer {
 
 
 	@Override
-	public Object deserialize(InputStream stream, final ClassMapper mapper)
+	public Object deserialize(InputStream stream, final BrickSerializationMapper mapper)
 			throws IOException, ClassNotFoundException {
 		return deserializeWith(stream, xStreamWith(mapper));
 	}
 
 
 	@SuppressWarnings("deprecation")
-	private XStream xStreamWith(final ClassMapper mapper) {
+	private XStream xStreamWith(final BrickSerializationMapper mapper) {
 		Mapper m = new MapperWrapper(new XStream().getMapper()) {
 			@SuppressWarnings("unchecked")
 			@Override
@@ -119,7 +119,7 @@ class SerializerImpl implements Serializer {
 
 
 	@Override
-	public void serialize(OutputStream stream, Object obj, ClassMapper mapper) throws IOException {
+	public void serialize(OutputStream stream, Object obj, BrickSerializationMapper mapper) throws IOException {
 		serializeWith(stream, obj, xStreamWith(mapper));
 	}
 

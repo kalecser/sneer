@@ -8,16 +8,16 @@ import sneer.foundation.brickness.Nature;
 
 abstract class ClassLoaderForBricks extends ClassLoaderWithNatures implements BrickClassLoader {
 
-	private final Class<?> _brick;
+	private final String _brickName;
 
-	ClassLoaderForBricks(Class<?> brick, URL[] urls, ClassLoader next, List<Nature> natures) {
+	ClassLoaderForBricks(String brickName, URL[] urls, ClassLoader next, List<Nature> natures) {
 		super(urls, next, natures);
-		_brick = brick;
+		_brickName = brickName;
 	}
 	
 	@Override
-	public Class<?> brick() {
-		return _brick;
+	public String brickName() {
+		return _brickName;
 	}
 
 }

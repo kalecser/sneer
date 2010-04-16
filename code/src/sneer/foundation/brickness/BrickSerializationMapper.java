@@ -1,7 +1,7 @@
-package sneer.bricks.pulp.serialization;
+package sneer.foundation.brickness;
 
 
-public interface ClassMapper {
+public interface BrickSerializationMapper {
 
 	String serializationHandleFor(Class<?> klass);
 	

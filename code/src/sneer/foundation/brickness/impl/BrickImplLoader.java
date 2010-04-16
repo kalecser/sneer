@@ -10,36 +10,67 @@ import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.BrickConventions;
 import sneer.foundation.brickness.BrickLoadingException;
 import sneer.foundation.brickness.Nature;
+import sneer.foundation.lang.ByRef;
+import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.ProducerX;
 
 
 class BrickImplLoader {
-
-	<T> Class<T> loadImplClassFor(Class<T> brick) throws ClassNotFoundException {
-		File path = ClassFiles.classpathRootFor(brick);
-		String implPackage = BrickConventions.implPackageFor(brick.getName());
-		List<Nature> natures = naturesFor(brick);
-
-		ClassLoader apiClassLoader = brick.getClassLoader();
-<<<<<<< Updated upstream:code/src/sneer/foundation/brickness/impl/BrickImplLoader.java
-		ClassLoader libsClassLoader = ClassLoaderForBrickLibs.newInstanceIfNecessary(path, implPackage, natures, apiClassLoader);
-		ClassLoader nextClassLoader = libsClassLoader == null ? apiClassLoader : libsClassLoader;
-		ClassLoader packageLoader = new ClassLoaderForPackage(path, implPackage, natures, nextClassLoader);
-=======
-		ClassLoader libsClassLoader = ClassLoaderForBrickLibs.newInstanceIfNecessary(brick, path, implPackage, natures, apiClassLoader);
-		ClassLoader nextClassLoader = libsClassLoader == null ? apiClassLoader : libsClassLoader;
-		ClassLoader packageLoader = new ClassLoaderForPackage(brick, path, implPackage, natures, nextClassLoader);
->>>>>>> Stashed changes:code/src/sneer/foundation/brickness/impl/BrickImplLoader.java
-
-		return (Class<T>)packageLoader.loadClass(implNameFor(brick.getName()));
+	
+	private final CacheMap<String, ClassLoaderForPackage> _implClassLoaders = CacheMap.newInstance();
+	private final ByRef<ClassLoader> _apiClassLoader;
+	
+	public BrickImplLoader(ByRef<ClassLoader> apiClassLoader) {
+		_apiClassLoader = apiClassLoader;
 	}
 
-	public static List<Nature> naturesFor(Class<?> brick) {
+	<T> Class<T> loadImplClassFor(final Class<T> brick) throws ClassNotFoundException {
+		final String brickName = brick.getName();
+		return (Class<T>)implClassLoaderFor(brickName).loadClass(implNameFor(brickName));
+	}
+
+
+	protected ClassLoader apiClassLoader() {
+		return _apiClassLoader.value;
+	}
+
+	private <T> ClassLoaderForPackage newImplClassLoaderFor(Class<T> brick) {
+		File path = ClassFiles.classpathRootFor(brick);
+		String brickName = brick.getName();
+		String implPackage = BrickConventions.implPackageFor(brickName);
+		ClassLoader apiClassLoader = brick.getClassLoader();
+		ClassLoader libsClassLoader = ClassLoaderForBrickLibs.newInstanceIfNecessary(brickName, path, implPackage, naturesFor(brick), apiClassLoader);
+		ClassLoader nextClassLoader = libsClassLoader == null ? apiClassLoader : libsClassLoader;
+		ClassLoaderForPackage implClassLoader = new ClassLoaderForPackage(brickName, path, implPackage, naturesFor(brick), nextClassLoader);
+		return implClassLoader;
+	}
+
+	List<Nature> naturesFor(Class<?> brick) {
 		final Brick annotation = brick.getAnnotation (Brick.class);
 		if (annotation == null) throw new BrickLoadingException("Brick '" + brick.getName() + "' is not annotated as such!");
 
 		return naturesImplsFor(annotation.value());
 	}
 	
+	Class<?> loadImplClassFor(String brick, String klass) throws ClassNotFoundException {
+		return implClassLoaderFor(brick).loadClass(klass);
+	}
+
+	private ClassLoaderForPackage implClassLoaderFor(final String brickName) throws ClassNotFoundException {
+		ClassLoaderForPackage implClassLoader = _implClassLoaders.get(brickName, new ProducerX<ClassLoaderForPackage, ClassNotFoundException>() {  @Override public ClassLoaderForPackage produce() throws ClassNotFoundException {
+			return newImplClassLoaderFor(apiClassLoader().loadClass(brickName));
+		}});
+		return implClassLoader;
+	}
+	
+	Class<?> loadLibClassFor(String brick, String klass) throws ClassNotFoundException {
+		return libClassLoaderFor(brick).loadClass(klass);
+	}
+	
+	private ClassLoader libClassLoaderFor(String brick) throws ClassNotFoundException {
+		return implClassLoaderFor(brick)._next;
+	}
+
 	private static List<Nature> naturesImplsFor(final Class<? extends Nature>[] natureClasses) {
 		final ArrayList<Nature> result = new ArrayList<Nature>(natureClasses.length);
 		for (Class<? extends Nature> natureClass : natureClasses)
@@ -52,5 +83,5 @@ class BrickImplLoader {
 		return BrickConventions.implClassNameFor(brickInterfaceName);
 	}
 
-}
+	}
 

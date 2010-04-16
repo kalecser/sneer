@@ -1,7 +1,8 @@
 package sneer.tests.prevalence.fixtures.assertion;
 
-import static sneer.foundation.environments.Environments.my;
+import sneer.foundation.brickness.Brick;
 
+@Brick
 public interface PrevalenceTestAssertion {
 
 }

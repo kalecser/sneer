@@ -71,7 +71,6 @@ public class BrickStateStoreImpl implements BrickStateStore {
 		}
 	}
 
-
 	private void turnSaveLightOn(Class<?> brick, IOException e) {
 		if(!_saveLights.containsKey(brick))
 			_saveLights.put(brick, my(BlinkingLights.class).prepare(LightType.ERROR));

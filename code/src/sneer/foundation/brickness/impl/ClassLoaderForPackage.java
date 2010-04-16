@@ -10,7 +10,7 @@ import sneer.foundation.brickness.Nature;
 /** Loads only classes from a given package and its subpackages. All other loads are deferred to the next classLoader.*/
 class ClassLoaderForPackage extends ClassLoaderForBricks {	
 
-	public ClassLoaderForPackage(Class<?> brick, File classpath, String packageName, List<Nature> natures, ClassLoader next) {
+	public ClassLoaderForPackage(String brick, File classpath, String packageName, List<Nature> natures, ClassLoader next) {
 		super(brick, toURLs(classpath), next, natures);
 		_package = packageName;
 	}

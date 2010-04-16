@@ -2,18 +2,12 @@ package sneer.bricks.hardware.io.prevalence.nature.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
-<<<<<<< Updated upstream:code/src/sneer/bricks/hardware/io/prevalence/nature/tests/PrevalentNatureTest.java
-import org.junit.Test;
-
-import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.SomePrevalentBrick;
-=======
 import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.Item;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.SomePrevalentBrick;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.brick2.PrevalentBrick2;
->>>>>>> Stashed changes:code/src/sneer/bricks/hardware/io/prevalence/nature/tests/PrevalentNatureTest.java
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.Brickness;
@@ -25,20 +19,7 @@ public class PrevalentNatureTest extends BrickTest {
 	
 	Environment subject = Brickness.newBrickContainer();
 	
-<<<<<<< Updated upstream:code/src/sneer/bricks/hardware/io/prevalence/nature/tests/PrevalentNatureTest.java
-	@Test (timeout = 2000)
-	public void stateIsPreserved() {
-		
-		Environments.runWith(newTestEnvironment(my(FolderConfig.class)), new Closure() { @Override public void run() {
-			my(SomePrevalentBrick.class).set("foo");
-		}});
-
-		Environments.runWith(newTestEnvironment(my(FolderConfig.class)), new Closure() { @Override public void run() {
-			assertEquals("foo", my(SomePrevalentBrick.class).get());
-		}});
-	}
-=======
-	@Test //(timeout = 3000)
+	@Test (timeout = 3000)
 	public void stateIsPreserved() {
 		
 		runInNewTestEnvironment(new Closure() { @Override public void run() {
@@ -84,6 +65,5 @@ public class PrevalentNatureTest extends BrickTest {
 	private void runInNewTestEnvironment(Closure closure) {
 		Environments.runWith(newTestEnvironment(my(FolderConfig.class)), closure);
 	}
->>>>>>> Stashed changes:code/src/sneer/bricks/hardware/io/prevalence/nature/tests/PrevalentNatureTest.java
 
 }

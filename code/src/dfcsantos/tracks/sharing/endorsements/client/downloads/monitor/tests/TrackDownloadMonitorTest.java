@@ -2,6 +2,7 @@ package dfcsantos.tracks.sharing.endorsements.client.downloads.monitor.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.client.Download;
@@ -14,6 +15,7 @@ public class TrackDownloadMonitorTest extends BrickTest {
 	private final TrackDownloadMonitor _subject = my(TrackDownloadMonitor.class);
 
 	@Test
+	@Ignore
 	public void downloadTimeout() {
 		_subject.watch(new Download() { 
 			@Override

@@ -11,6 +11,7 @@ public class PrevalenceTest extends SovereignFunctionalTestBase {
 	
 	@Test
 	public void test() {
+		
 		SovereignParty a1 = a();
 		a1.loadBrick(PrevalenceTestSetup.class.getName());
 		
