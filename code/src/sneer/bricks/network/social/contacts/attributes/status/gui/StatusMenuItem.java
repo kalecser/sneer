@@ -1,4 +1,4 @@
-package sneer.bricks.network.social.status.gui;
+package sneer.bricks.network.social.contacts.attributes.status.gui;
 
 // Fix: Feature not activated yet
 //@Snapp
