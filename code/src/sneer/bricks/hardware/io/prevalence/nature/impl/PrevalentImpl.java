@@ -4,7 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,7 +21,7 @@ import sneer.foundation.lang.Producer;
 
 class PrevalentImpl implements Prevalent {
 	
-	private final List<Prevayler> _prevaylers = new ArrayList<Prevayler>();
+	private Prevayler _prevayler;
 
 	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGc;
 
@@ -39,23 +38,37 @@ class PrevalentImpl implements Prevalent {
 		return Arrays.asList(classDef);
 	}
 
-
+	boolean _prevailing;
+	
 	@Override
-	public <T> T instantiate(Class<T> brick, Class<T> implClass, Producer<T> producer) {
-		Prevayler prevayler = createPrevayler(producer.produce(), prevalenceBase(brick));
-		_prevaylers.add(prevayler);
-		return (T)Bubble.wrapStateMachine(prevayler);
+	public synchronized <T> T instantiate(final Class<T> brick, Class<T> implClass, final Producer<T> producer) {
+		
+		if (_prevailing)
+			return Bubble.wrap(_prevayler, brick, producer.produce());
+		
+		_prevailing = true;
+		try {
+			if (null == _prevayler)
+				_prevayler = createPrevayler(prevalenceBase());
+			
+			PrevalentBuilding building = (PrevalentBuilding) _prevayler.prevalentSystem();
+			T existing = building.brick(brick);
+			T instance = existing != null
+				? existing
+				: (T)_prevayler.execute(new InstantiateBrick<T>(brick, producer));
+			
+			return Bubble.wrap(_prevayler, brick, instance);
+		} finally {
+			_prevailing = false;
+		}
 	}
 
-
-	private <T> File prevalenceBase(Class<T> brick) {
-		return my(FolderConfig.class).storageFolderFor(brick);
+	private <T> File prevalenceBase() {
+		return my(FolderConfig.class).storageFolderFor(Prevalent.class);
 	}
 
-
-	private Prevayler createPrevayler(Object system, File prevalenceBase) {
-		PrevaylerFactory factory = createPrevaylerFactory(system, prevalenceBase);
-
+	private Prevayler createPrevayler(File prevalenceBase) {
+		PrevaylerFactory factory = createPrevaylerFactory(new PrevalentBuilding(), prevalenceBase);
 		try {
 			return factory.create();
 		} catch (IOException e) {
@@ -65,26 +78,18 @@ class PrevalentImpl implements Prevalent {
 		}
 	}
 
-
 	private PrevaylerFactory createPrevaylerFactory(Object system, File prevalenceBase) {
 		PrevaylerFactory factory = new PrevaylerFactory();
 		factory.configurePrevalentSystem(system);
 		factory.configurePrevalenceDirectory(prevalenceBase.getAbsolutePath());
 		factory.configureTransactionFiltering(false);
-		factory.configureJournalSerializer("xstreamjournal", new SerializerWithClassLoader(PrevalentImpl.class.getClassLoader()));
+		factory.configureJournalSerializer("xstreamjournal", new SerializerWithClassMapper());
 		return factory;
 	}
-
 	
 	private void crash() {
-		for (Prevayler prevayler : _prevaylers) crash(prevayler);
-		_prevaylers.clear();
-	}
-
-
-	private void crash(Prevayler prevayler) {
 		try {
-			prevayler.close();
+			_prevayler.close();
 		} catch (IOException e) {
 			my(Logger.class).log("Exception closing prevayler: " + e);
 		}

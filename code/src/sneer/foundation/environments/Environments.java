@@ -17,6 +17,7 @@ public class Environments {
 	}
 
 	public static <T> T my(Class<T> need) {
+		if (need == null) throw new IllegalArgumentException("'need' can't be null.");
 		final Environment environment = current();
 		if (need == Environment.class) return (T) environment;
 		if (environment == null) throw new IllegalStateException("Thread " + Thread.currentThread() + " is not running in an environment. Try inside: Environments.runWith");

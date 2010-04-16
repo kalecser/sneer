@@ -45,7 +45,7 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	protected String tmpFolderName() {
 		if (_tmpFolderName == null)
-			_tmpFolderName = System.getProperty("java.io.tmpdir") + File.separator + this.getClass().getSimpleName() + System.nanoTime();
+			_tmpFolderName = System.getProperty("java.io.tmpdir") + "/" + System.nanoTime();
 
 		return _tmpFolderName;
 	}
@@ -81,17 +81,16 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	@After
 	public void afterCleanTest() {
-		try {
-			recoverConsole();
-			if (_failure != null) {
-				afterFailedtest(_failedMethod, _failure);
-				return;
-			}
-			checkConsolePollution();
-			checkThreadLeak();
-		} finally {
-			deleteTmpFolder();
+		recoverConsole();
+
+		if (_failure != null) {
+			afterFailedtest(_failedMethod, _failure);
+			return;
 		}
+		
+		checkConsolePollution();
+		deleteTmpFolder();
+		checkThreadLeak();
 	}
 	
 	
@@ -112,20 +111,15 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	@SuppressWarnings("deprecation")
 	private void stopIfNecessary(Thread thread) {
-		if (_activeThreadsBeforeTest.contains(thread)) return;
-		if (isGUIThread(thread)) return; //Fix: Check for leaking Gui resources too.
+		if(_activeThreadsBeforeTest.contains(thread)) return;
 		if (waitForTermination(thread)) return;
+		if (thread.getName().indexOf("AWT") != -1) return; //Fix: Check for leaking Gui resources too.
+		if (thread.getName().indexOf("Java2D") != -1) return; //Fix: Check for leaking Gui resources too.
 
 		final LeakingThreadStopped plug = new LeakingThreadStopped(thread, "" + thread + " was leaked by test: " + this.getClass() + " and is now being stopped!");
 		thread.stop(plug);
 		
 		throw new IllegalStateException(plug);
-	}
-
-	private boolean isGUIThread(Thread thread) {
-		if (thread.getName().indexOf("AWT") != -1) return true;
-		if (thread.getName().indexOf("Java2D") != -1) return true;
-		return false;
 	}
 
 	private boolean waitForTermination(Thread thread) {
@@ -152,20 +146,16 @@ public abstract class CleanTestBase extends AssertUtils {
 	}
 
 	private void deleteTmpFolder() {
-		if (!isTmpFolderBeingUsed()) return;
-
-		tryToClean(tmpFolder());
 		_tmpFolderName = null;
+		
+		if (_tmpFolder == null) return;
+		tryToClean(_tmpFolder);
 		_tmpFolder = null;
-	}
 
-	private boolean isTmpFolderBeingUsed() {
-		return new File(tmpFolderName()).exists();
 	}
 	
 	private void tryToClean(File tmp) {
 		long t0 = System.currentTimeMillis();
-		int counter = 0;
 		while (true) {
 			try {
 				deleteFolder(tmp);
@@ -176,7 +166,6 @@ public abstract class CleanTestBase extends AssertUtils {
 				}
 				System.gc();
 			}
-			++counter;
 		}
 	}
 	
@@ -220,8 +209,7 @@ public abstract class CleanTestBase extends AssertUtils {
 	void failedWith(Method method, Throwable thrown) {
 		if (_failure != null) return;
 		
-		String message = thrown.getMessage();
-		if (message != null && message.startsWith("test timed out")) //Kent, Erich, please improve the JUnit API for tests with timeouts. JUnit4ClassRunner.invokeTestMethod hides the test instance and the roadie. The TestRunner and TestMethod parallel hierarchies (smell) is the only (clumsy) way to get close to what one needs. Klaus.
+		if (thrown.getMessage().startsWith("test timed out")) //Kent, Erich, please improve the JUnit API for tests with timeouts. JUnit4ClassRunner.invokeTestMethod hides the test instance and the roadie. TestRunner and TestMethod parallel hierarchies is the only (clumsy) way to get close to what one needs. Klaus.
 			tryToWaitForTheFailureFromTheActualTestThread(method, thrown);
 		else
 			keepFailure(method, thrown);
@@ -276,7 +264,6 @@ public abstract class CleanTestBase extends AssertUtils {
 		File file = createTmpFile(fileName);
 		FileOutputStream fileOutputStream = new FileOutputStream(file);
 		fileOutputStream.write(fileName.getBytes());
-		fileOutputStream.close();
 		return file;
 	}
 

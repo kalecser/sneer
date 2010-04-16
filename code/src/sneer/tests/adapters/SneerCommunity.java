@@ -6,25 +6,20 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.io.log.tests.LoggerMocks;
-import sneer.bricks.pulp.network.ByteArrayServerSocket;
-import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.foundation.brickness.Brickness;
-import sneer.foundation.brickness.impl.EagerClassLoader;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.languagesupport.LanguageJarFinder;
 import sneer.tests.SovereignCommunity;
 import sneer.tests.SovereignParty;
+import sneer.tests.adapters.impl.SneerPartyApiClassLoaderImpl;
 import sneer.tests.adapters.impl.utils.network.InProcessNetwork;
 
 public class SneerCommunity implements SovereignCommunity {
@@ -89,7 +84,6 @@ public class SneerCommunity implements SovereignCommunity {
 		_allParties.remove(sneerParty);
 	}
 
-
 	private File makeFolder(File parent, String child) {
 		File result = new File(parent, child);
 		if (!result.exists() && !result.mkdirs())
@@ -106,52 +100,14 @@ public class SneerCommunity implements SovereignCommunity {
 	}
 
 	private URLClassLoader apiClassLoader(File privateBin, File sharedBin, final String name) {
-		return new EagerClassLoader(classpath(privateBin, sharedBin), SneerCommunity.class.getClassLoader()) {
-			@Override
-			protected boolean isEagerToLoad(String className) {
-				return !isSharedByAllParties(className);
-			}
-
-			private boolean isSharedByAllParties(String className) {
-				if (isNetworkClass(className)) return true;
-				if (className.equals(Logger.class.getName())) return true;
-				if (className.equals(SneerPartyController.class.getName())) return false;
-				if (isPublishedByUser(className)) return false;
-				return !isSneerBrick(className); //Foundation classes such as Environments and functional tests classes such as SovereignParty must be shared by all SneerParties.
-			}
-
-			private boolean isSneerBrick(String className) {
-				return className.startsWith("sneer.bricks");
-			}
-
-			private boolean isNetworkClass(String className) {
-				if (className.equals(Network.class.getName())) return true;
-				if (className.equals(ByteArrayServerSocket.class.getName())) return true;
-				if (className.equals(ByteArraySocket.class.getName())) return true;
-				return false;
-			}
-
-			private boolean isPublishedByUser(String className) {
-				return !className.startsWith("sneer");
-			}
-
-			@Override
-			public String toString() {
-				return name;
-			}
-		};
+		URL[] langJars = LanguageJarFinder.langSupportJars(sharedBin);
+		URL[] classPath = new URL[langJars.length + 2];
+		classPath[0] = toURL(privateBin);
+		classPath[1] = toURL(sharedBin);
+		System.arraycopy(langJars, 0, classPath, 2, langJars.length);
+		return new SneerPartyApiClassLoaderImpl(classPath, SneerCommunity.class.getClassLoader(), name);
 	}
 
-
-	private URL[] classpath(File privateBin, File sharedBin) {
-		List<URL> result = new ArrayList<URL>();
-		result.add(toURL(privateBin));
-		result.add(toURL(sharedBin));
-		result.addAll(Arrays.asList(LanguageJarFinder.langSupportJars(sharedBin)));
-		return result.toArray(new URL[0]);
-	}
-
-	
 	private URL toURL(File file) {
 		try {
 			return file.toURI().toURL();

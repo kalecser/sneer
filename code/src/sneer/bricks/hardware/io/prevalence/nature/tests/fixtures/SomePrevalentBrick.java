@@ -8,5 +8,10 @@ public interface SomePrevalentBrick {
 
 	void set(String string);
 	String get();
+	
+	void addItem(String name);
+	void removeItem(Item item);
+	int itemCount();
+	Item getItem(String name);
 
 }

@@ -54,6 +54,7 @@ import sneer.foundation.lang.exceptions.Refusal;
 import sneer.main.SneerVersionUpdater;
 import sneer.tests.SovereignParty;
 import sneer.tests.adapters.SneerParty;
+import sneer.tests.adapters.SneerPartyApiClassLoader;
 import sneer.tests.adapters.SneerPartyController;
 
 class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
@@ -253,12 +254,16 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	@Override
 	public void loadBrick(String brickName) {
 		try {
-			my(Class.forName(brickName));
+			SneerPartyApiClassLoader apiClassLoader = (SneerPartyApiClassLoader) apiClassLoader();
+			my(apiClassLoader.loadUnsharedBrickClass(brickName));
 		} catch (ClassNotFoundException e) {
 			throw new IllegalStateException(e);
 		}
 	}
 
+	private ClassLoader apiClassLoader() {
+		return SneerPartyController.class.getClassLoader();
+	}
 	
 	@Override
 	public boolean isOnline(String nickname) {
