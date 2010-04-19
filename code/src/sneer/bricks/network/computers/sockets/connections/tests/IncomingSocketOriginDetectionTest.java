@@ -9,7 +9,7 @@ import org.junit.Test;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -83,7 +83,7 @@ public class IncomingSocketOriginDetectionTest extends BrickTest {
 
 
 	private Seal newSeal(byte[] bytes) {
-		return new Seal(new ImmutableByteArray(bytes));
+		return new Seal(my(ImmutableArrays.class).newImmutableByteArray(bytes));
 	}
 
 }

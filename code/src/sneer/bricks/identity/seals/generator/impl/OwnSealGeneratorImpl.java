@@ -1,7 +1,7 @@
 package sneer.bricks.identity.seals.generator.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
 import sneer.bricks.identity.seals.Seal;
@@ -20,7 +20,7 @@ class OwnSealGeneratorImpl implements OwnSealGenerator {
 	
 	@Override
 	public void generateOwnSeal(byte[] randomness) {
-		_ownSeal.set(new Seal(new ImmutableByteArray(randomness)));
+		_ownSeal.set(new Seal(my(ImmutableArrays.class).newImmutableByteArray(randomness)));
 	}
 
 	

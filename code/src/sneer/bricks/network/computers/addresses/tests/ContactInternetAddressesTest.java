@@ -6,7 +6,7 @@ import org.jmock.Expectations;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
@@ -66,7 +66,7 @@ public class ContactInternetAddressesTest extends BrickTest {
 	}
 	
 	private Seal seal() {
-		return new Seal(new ImmutableByteArray(new byte[]{42}));
+		return new Seal(my(ImmutableArrays.class).newImmutableByteArray(new byte[]{42}));
 	}
 	
 	private InternetAddress firstKeptAddress() {

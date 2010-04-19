@@ -1,24 +1,28 @@
-package sneer.bricks.hardware.ram.arrays;
+package sneer.bricks.hardware.ram.arrays.impl;
 
 import java.util.Arrays;
 
-public class ImmutableByteArray2D {
-	
+import sneer.bricks.hardware.ram.arrays.Immutable2DByteArray;
+
+class Immutable2DByteArrayImpl implements Immutable2DByteArray {
+
 	private final byte[][] _payload;
-	
-	public ImmutableByteArray2D(byte[][] bufferToCopy) {
+
+	Immutable2DByteArrayImpl(byte[][] bufferToCopy) {
 		_payload = copy(bufferToCopy);
 	}
 
+	@Override
 	public byte[][] copy() {
 		return copy(_payload);
 	}
 
-	public byte[] get(@SuppressWarnings("unused") int index) {
+	@Override
+	public byte[] get(int index) {
 		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
-	static private byte[][] copy(byte[][] original) {
+	private static byte[][] copy(byte[][] original) {
 		byte[][] result = new byte[original.length][0];
 		
 		for (int i = 0; i < original.length; i++)
@@ -26,6 +30,5 @@ public class ImmutableByteArray2D {
 		
 		return result;
 	}
-
 
 }

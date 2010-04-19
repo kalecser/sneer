@@ -1,7 +1,7 @@
 package sneer.bricks.snapps.contacts.hardcoded.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -73,7 +73,7 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 			new ContactInfo("Célio", "ccidral.dyndns.org", 9789),
 			new ContactInfo("Daniel Santos", "dfcsantos.homeip.net", 7777),
 			new ContactInfo("Douglas Giacomini", "dtgiacomini.dyndns.org", 5923),
-			new ContactInfo("Dummy", "localhost", 7777, new Seal(new ImmutableByteArray(new byte[128]))),
+			new ContactInfo("Dummy", "localhost", 7777, new Seal(my(ImmutableArrays.class).newImmutableByteArray(new byte[128]))),
 			new ContactInfo("Igor Arouca", "igorarouca.dyndns.org", 6789),
 			new ContactInfo("Kalecser", "kalecser.dyndns.org", 7770),
 			new ContactInfo("Klaus", "klausw.selfip.net", 5923),

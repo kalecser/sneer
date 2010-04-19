@@ -18,7 +18,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardware.ram.iterables.Iterables;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
@@ -116,7 +116,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
     
 	private Seal newSeal(byte[] bytes) {
-		return new Seal(new ImmutableByteArray(bytes));
+		return new Seal(my(ImmutableArrays.class).newImmutableByteArray(bytes));
 	}
 
 	
@@ -158,7 +158,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	private Contact waitForContactGiven(byte[] seal) {
 		while (true) {
-			Contact contact = my(ContactSeals.class).contactGiven(new Seal(new ImmutableByteArray(seal)));
+			Contact contact = my(ContactSeals.class).contactGiven(new Seal(my(ImmutableArrays.class).newImmutableByteArray(seal)));
 			if (contact != null) return contact;
 			my(Threads.class).sleepWithoutInterruptions(10);
 			my(Clock.class).advanceTime(60 * 1000);

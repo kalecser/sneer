@@ -3,6 +3,7 @@ package sneer.bricks.network.social.attributes.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.identity.seals.OwnSeal;
@@ -57,7 +58,7 @@ class AttributesImpl implements Attributes {
 	}
 
 	private ImmutableByteArray serialize(Object value) {
-		return new ImmutableByteArray(my(Serializer.class).serialize(value));
+		return my(ImmutableArrays.class).newImmutableByteArray(my(Serializer.class).serialize(value));
 	}
 
 	private Object deserialize(byte[] serializedValue) {

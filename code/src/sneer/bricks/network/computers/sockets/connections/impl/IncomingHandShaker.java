@@ -5,7 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.IOException;
 import java.util.Arrays;
 
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -64,7 +64,7 @@ class IncomingHandShaker {
 
 	private static Seal readContactsSeal(ByteArraySocket socket) throws IOException {
 		byte[] result = readContactsSealBytes(socket);
-		return new Seal(new ImmutableByteArray(result));
+		return new Seal(my(ImmutableArrays.class).newImmutableByteArray(result));
 	}
 
 

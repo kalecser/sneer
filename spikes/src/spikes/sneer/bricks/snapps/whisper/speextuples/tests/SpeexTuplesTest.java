@@ -9,8 +9,8 @@ import org.junit.Test;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray2D;
+import sneer.bricks.hardware.ram.arrays.Immutable2DByteArray;
+import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.skin.rooms.ActiveRoomKeeper;
@@ -120,8 +120,8 @@ public class SpeexTuplesTest extends BrickTest {
 		throw new NotImplementedYet("Mock the Seals.ownSeal() method to generate tuples with different publishers.");
 	}
 
-	private ImmutableByteArray2D immutable(byte[][] array2D) {
-		return new ImmutableByteArray2D(array2D);
+	private Immutable2DByteArray immutable(byte[][] array2D) {
+		return my(ImmutableArrays.class).newImmutable2DByteArray(array2D);
 	}
 
 	private void assertFrames(final byte[][] frames) {
@@ -134,7 +134,7 @@ public class SpeexTuplesTest extends BrickTest {
 	}
 	
 	private Seal contactKey() {
-		return new Seal(new ImmutableByteArray("anything".getBytes()));
+		return new Seal(my(ImmutableArrays.class).newImmutableByteArray("anything".getBytes()));
 	}
 
 	private PcmSoundPacket myPacket(byte[] pcm) {
@@ -147,7 +147,7 @@ public class SpeexTuplesTest extends BrickTest {
 
 	@SuppressWarnings("unused")
 	private PcmSoundPacket pcmSoundPacketFrom(Seal publicKey, final byte[] pcmPayload) {
-		PcmSoundPacket result = new PcmSoundPacket(new ImmutableByteArray(pcmPayload));
+		PcmSoundPacket result = new PcmSoundPacket(my(ImmutableArrays.class).newImmutableByteArray(pcmPayload));
 		//result.stamp(publicKey, _clock.time().currentValue());
 		//return result;
 		throw new NotImplementedYet("Mock the Seals.ownSeal() method to generate tuples with different publishers.");

@@ -5,7 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.util.Random;
 
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.generator.OwnSealGenerator;
@@ -45,7 +45,7 @@ class OwnSealImpl implements OwnSeal {
 
 
 	private Seal dummySeal() {
-		return new Seal(new ImmutableByteArray(new byte[128]));
+		return new Seal(my(ImmutableArrays.class).newImmutableByteArray(new byte[128]));
 	}
 
 

@@ -1,10 +1,12 @@
 package sneer.bricks.hardware.cpu.crypto.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.security.MessageDigest;
 
 import sneer.bricks.hardware.cpu.crypto.Digester;
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 
 class DigesterImpl implements Digester {
 
@@ -35,7 +37,7 @@ class DigesterImpl implements Digester {
 	}
 
 	private Hash wrap(byte[] bytes) {
-		return new Hash(new ImmutableByteArray(bytes));
+		return new Hash(my(ImmutableArrays.class).newImmutableByteArray(bytes));
 	}
 
 }

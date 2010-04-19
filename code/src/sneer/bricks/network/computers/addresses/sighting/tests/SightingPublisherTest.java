@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.sighting.Sighting;
@@ -63,7 +63,7 @@ public class SightingPublisherTest extends BrickTest {
 
 	
 	private Seal sealForContact(String contact) {
-		return new Seal(new ImmutableByteArray(contact.getBytes()));
+		return new Seal(my(ImmutableArrays.class).newImmutableByteArray(contact.getBytes()));
 	}
 	
 	

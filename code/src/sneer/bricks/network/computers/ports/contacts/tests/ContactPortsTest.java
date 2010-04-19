@@ -6,7 +6,7 @@ import org.jmock.Expectations;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.ports.PortTuple;
@@ -33,6 +33,6 @@ public class ContactPortsTest extends BrickTest {
 	
 	
 	private Seal seal(int seal) {
-		return new Seal(new ImmutableByteArray(new byte[]{(byte)seal}));
+		return new Seal(my(ImmutableArrays.class).newImmutableByteArray(new byte[]{(byte)seal}));
 	}
 }

@@ -9,8 +9,9 @@ import javax.sound.sampled.LineUnavailableException;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.ram.arrays.Immutable2DByteArray;
+import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray2D;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.reactive.Signal;
@@ -100,8 +101,8 @@ class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the en
 		_frameIndex = 0;
 	}
 
-	private ImmutableByteArray2D immutable(byte[][] array2D) {
-		return new ImmutableByteArray2D(array2D);
+	private Immutable2DByteArray immutable(byte[][] array2D) {
+		return my(ImmutableArrays.class).newImmutable2DByteArray(array2D);
 	}
 
 	private boolean encode(final byte[] pcmBuffer) {

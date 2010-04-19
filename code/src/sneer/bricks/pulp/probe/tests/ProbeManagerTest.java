@@ -8,7 +8,7 @@ import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection;
@@ -87,7 +87,7 @@ public class ProbeManagerTest extends BrickTest {
 
 	
 	private Seal newSeal(byte[] bytes) {
-		return new Seal(new ImmutableByteArray(bytes));
+		return new Seal(my(ImmutableArrays.class).newImmutableByteArray(bytes));
 	}
 
 }
