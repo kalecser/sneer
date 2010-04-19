@@ -35,7 +35,7 @@ class RegisterImpl<T> implements Register<T> {
 	private T _currentValue;
 	private WeakReference<AbstractSignal<T>> _output;
 
-	public RegisterImpl(T initialValue) {
+	RegisterImpl(T initialValue) {
 		setter().consume(initialValue);
 	}
 
