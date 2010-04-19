@@ -40,8 +40,8 @@ public class CycleSentinelTest extends BrickTest {
 		} catch (DependencyCycle e) {
 			assertEquals(
 					"Dependency cycle detected:\n" +
-					"\tmain.banana.lixo.Main -> game.resourses.noob.Game\n" +
-					"\tgame.test.Player -> main.foo.Starter",
+					"	main.banana.lixo.Main -> game.resourses.noob.Game\n" +
+					"	game.test.Player -> main.foo.Starter",
 					e.getMessage());
 		}
 	}
@@ -55,8 +55,8 @@ public class CycleSentinelTest extends BrickTest {
 		} catch (DependencyCycle e) {
 			assertEquals(
 					"Dependency cycle detected:\n" +
-					"\tmain.banana.test.Kart -> main.banana.lixo.Starter\n" +
-					"\tmain.banana.lixo.Main -> main.banana.test.Player", e.getMessage());
+					"	main.banana.test.Kart -> main.banana.lixo.Starter\n" +
+					"	main.banana.lixo.Main -> main.banana.test.Player", e.getMessage());
 		} 
 	}
 
@@ -70,9 +70,9 @@ public class CycleSentinelTest extends BrickTest {
 		} catch (DependencyCycle e) {
 			assertEquals(
 					"Dependency cycle detected:\n" +
-					"\ta -> b\n" +
-					"\tb -> c\n" +
-					"\tc -> a", e.getMessage());
+					"	a -> b\n" +
+					"	b -> c\n" +
+					"	c -> a", e.getMessage());
 		}
 
 		_subject.checkForCycles("foo", "bar");
