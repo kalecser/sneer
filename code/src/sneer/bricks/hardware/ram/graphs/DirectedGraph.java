@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.ram.graphs;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface DirectedGraph<T> {
 
@@ -9,12 +9,12 @@ public interface DirectedGraph<T> {
 
 	/** Adds vertices if not already present and creates a directed edge from vertex to its successorVertex. */
 	void addEdge(T vertex, T successorVertex);
+	void removeEdge(T vertex, T successor);
 
 	/** Returns an empty collection if there are no cycles in this graph. If there are cycles, one of them is arbitrarily chosen and all vertices in that cycle are returned in a collection. */
-	Collection<T> detectCycle();
+	List<T> detectCycle();
 
 	/** Removes from this graph and returns a "leaf" vertex, i.e. a vertex that has no successors. Returns null if there are no more vertices in this graph.
 	 * Precondition: detectCycle().isEmpty() */ 
 	T pluck();
-
 }

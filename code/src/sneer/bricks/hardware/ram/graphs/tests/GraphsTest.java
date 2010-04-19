@@ -71,6 +71,17 @@ public class GraphsTest extends BrickTest {
 		assertSameContents(cycle, "B", "C", "D");
 	}
 
+	@Test
+	public void removeEdge() {
+		_subject.addEdge("A", "B"); 
+		_subject.addEdge("B", "C"); 
+		_subject.addEdge("C", "A");
+		
+		_subject.removeEdge("B", "C");
+		
+		assertTrue(_subject.detectCycle().isEmpty());
+	}
+
 	private void assertPluckOneOfThese(String... vertices) {
 		String plucked = _subject.pluck();
 		if (!Arrays.asList(vertices).contains(plucked))
