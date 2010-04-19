@@ -168,7 +168,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	@Override
     public byte[] seal() {
-		return my(OwnSeal.class).oldGet().bytes.copy();
+		return my(OwnSeal.class).get().currentValue().bytes.copy();
 	}
 
 	
@@ -445,7 +445,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private String print(Seal seal) {
-		return seal.equals(my(OwnSeal.class).oldGet())
+		return seal.equals(my(OwnSeal.class).get().currentValue())
 			? "myself"
 			: my(ContactSeals.class).contactGiven(seal).nickname().toString();
 	}

@@ -48,7 +48,7 @@ public class IncomingSocketTieBreakTest extends BrickTest {
 		checking(new Expectations() {{
 			Sequence sequence = newSequence("main");
 
-			allowing(_ownSealBrick).oldGet(); will(returnValue(_ownSeal));
+			allowing(_ownSealBrick).get().currentValue(); will(returnValue(_ownSeal));
 			
 			allowing(_seals).contactGiven(_smallerSeal); will(returnValue(a));
 			allowing(_seals).contactGiven(_greaterSeal); will(returnValue(b));

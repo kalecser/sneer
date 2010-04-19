@@ -50,7 +50,7 @@ public class PlayingTrackTest extends BrickTest {
 		Environment remote = newTestEnvironment(my(TupleSpace.class), my(Clock.class));
 		configureStorageFolder(remote, "remote/data");
 
-		final Seal localSeal = my(OwnSeal.class).oldGet();
+		final Seal localSeal = my(OwnSeal.class).get().currentValue();
 		Environments.runWith(remote, new ClosureX<Refusal>() { @Override public void run() throws Refusal {
 			_localContact = my(Contacts.class).produceContact("local");
 			my(ContactSeals.class).put("local", localSeal);

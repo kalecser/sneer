@@ -6,8 +6,6 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface OwnSeal {
 
-	Seal oldGet();
-
 	Signal<Seal> get();
-	
+
 }

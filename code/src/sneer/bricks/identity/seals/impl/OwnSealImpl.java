@@ -19,15 +19,9 @@ class OwnSealImpl implements OwnSeal {
 
 	@Override
 	synchronized
-	public Seal oldGet() {
+	public Signal<Seal> get() {
 		if (_ownSeal.output().currentValue() == null)
 			_ownSeal.setter().consume(produceOwnSeal());
-		return _ownSeal.output().currentValue();
-	}
-
-
-	@Override
-	public Signal<Seal> get() {
 		return _ownSeal.output();
 	}
 

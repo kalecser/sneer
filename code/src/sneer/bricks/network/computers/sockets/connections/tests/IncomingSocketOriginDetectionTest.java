@@ -46,7 +46,7 @@ public class IncomingSocketOriginDetectionTest extends BrickTest {
 		
 		checking(new Expectations() {{
 
-			allowing(_ownSealBrick).oldGet(); will(returnValue(_ownSeal));
+			allowing(_ownSealBrick).get().currentValue(); will(returnValue(_ownSeal));
 			
 			allowing(_seals).contactGiven(_otherSeal); will(returnValue(contact));
 			allowing(_seals).sealGiven(contact); will(returnValue(constant(_otherSeal)));

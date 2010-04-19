@@ -23,7 +23,7 @@ class TupleLoggerImpl implements TupleLogger, Consumer<Tuple> {
 	@Override
 	public void consume(Tuple tuple) {
 		Seal publisherSeal = tuple.publisher;
-		String message = my(OwnSeal.class).oldGet().equals(publisherSeal)
+		String message = my(OwnSeal.class).get().currentValue().equals(publisherSeal)
 			? "Tuple published: "
 			: "Tuple acquired: ";
 		my(Logger.class).log(message, tuple);

@@ -88,7 +88,7 @@ class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the en
 	}
 	
 	private boolean isMine(Tuple packet) {
-		return my(OwnSeal.class).oldGet().equals(packet.publisher);
+		return my(OwnSeal.class).get().currentValue().equals(packet.publisher);
 	}
 	
 	private static byte[][] newFramesArray() {

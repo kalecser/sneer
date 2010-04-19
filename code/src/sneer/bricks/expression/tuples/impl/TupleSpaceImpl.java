@@ -146,7 +146,7 @@ class TupleSpaceImpl implements TupleSpace {
 	}
 
 	private boolean dealWithAddressedTuple(Tuple tuple) {
-		Seal me = my(OwnSeal.class).oldGet();
+		Seal me = my(OwnSeal.class).get().currentValue();
 		if (!tuple.addressee.equals(me) && !tuple.publisher.equals(me)) {
 			my(Logger.class).log("Tuple received with incorrect addressee: {} type: ", tuple.addressee, tuple.getClass());
 			return true;

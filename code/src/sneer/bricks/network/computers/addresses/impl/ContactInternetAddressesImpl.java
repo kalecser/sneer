@@ -63,7 +63,7 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 	}
 
 	private boolean isReflexive(final Sighting sighting) {
-		return sighting.peersSeal.equals(my(OwnSeal.class).oldGet());
+		return sighting.peersSeal.equals(my(OwnSeal.class).get().currentValue());
 	}
 
 }
