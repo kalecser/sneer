@@ -1,7 +1,7 @@
 package sneer.bricks.hardware.cpu.crypto;
 
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.foundation.lang.Immutable;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class Hash extends Immutable {
 

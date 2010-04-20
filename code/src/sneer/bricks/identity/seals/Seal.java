@@ -1,7 +1,7 @@
 package sneer.bricks.identity.seals;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class Seal extends Hash {
 

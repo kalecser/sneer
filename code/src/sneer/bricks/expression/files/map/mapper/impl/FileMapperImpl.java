@@ -20,11 +20,10 @@ import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardware.ram.arrays.ImmutableArray;
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Producer;
+import sneer.foundation.lang.arrays.ImmutableArray;
 
 class FileMapperImpl implements FileMapper {
 
@@ -159,7 +158,7 @@ class FileMapperImpl implements FileMapper {
 
 
 		private ImmutableArray<FileOrFolder> immutable(List<FileOrFolder> entries) {
-			return my(ImmutableArrays.class).newImmutableArray(entries);
+			return new ImmutableArray<FileOrFolder>(entries);
 		}
 
 	}

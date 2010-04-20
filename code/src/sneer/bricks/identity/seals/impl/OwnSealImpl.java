@@ -5,13 +5,13 @@ import static sneer.foundation.environments.Environments.my;
 import java.util.Random;
 
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.generator.OwnSealGenerator;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 class OwnSealImpl implements OwnSeal {
 
@@ -39,7 +39,7 @@ class OwnSealImpl implements OwnSeal {
 
 
 	private Seal dummySeal() {
-		return new Seal(my(ImmutableArrays.class).newImmutableByteArray(new byte[128]));
+		return new Seal(new ImmutableByteArray(new byte[128]));
 	}
 
 

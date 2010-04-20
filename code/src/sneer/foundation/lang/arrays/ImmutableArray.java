@@ -1,21 +1,19 @@
-package sneer.bricks.hardware.ram.arrays.impl;
+package sneer.foundation.lang.arrays;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
-import sneer.bricks.hardware.ram.arrays.ImmutableArray;
-
-class ImmutableArrayImpl<T> implements ImmutableArray<T> {
+public class ImmutableArray<T> implements Collection<T> {
 
 	private final T[] _elements;
 
-	ImmutableArrayImpl(Collection<T> elements) {
+	public ImmutableArray(Collection<T> elements) {
 		_elements = (T[]) elements.toArray(new Object[elements.size()]);
 	}
 
-	ImmutableArrayImpl(T[] elements) {
+	public ImmutableArray(T[] elements) {
 		_elements = elements.clone();
 	}
 
@@ -24,7 +22,6 @@ class ImmutableArrayImpl<T> implements ImmutableArray<T> {
 		return Collections.unmodifiableCollection(Arrays.asList(_elements)).iterator();
 	}
 
-	@Override
 	public int length() {
 		return _elements.length;
 	}

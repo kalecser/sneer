@@ -8,11 +8,11 @@ import org.jmock.Expectations;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.authentication.PublicKeyChallenges;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class PublicKeyChallengesTest extends BrickTest {
 
@@ -32,7 +32,7 @@ public class PublicKeyChallengesTest extends BrickTest {
 
 	
 	private Seal seal() {
-		return new Seal(my(ImmutableArrays.class).newImmutableByteArray(new byte[] {42}));
+		return new Seal(new ImmutableByteArray(new byte[] {42}));
 	}
 	
 }

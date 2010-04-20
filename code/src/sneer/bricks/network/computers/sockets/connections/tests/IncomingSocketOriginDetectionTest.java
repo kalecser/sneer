@@ -9,7 +9,6 @@ import org.junit.Test;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -24,6 +23,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class IncomingSocketOriginDetectionTest extends BrickTest {
 
@@ -46,7 +46,7 @@ public class IncomingSocketOriginDetectionTest extends BrickTest {
 		
 		checking(new Expectations() {{
 
-			allowing(_ownSealBrick).get().currentValue(); will(returnValue(_ownSeal));
+			allowing(_ownSealBrick).get().currentValue(); will(returnValue(constant(_ownSeal)));
 			
 			allowing(_seals).contactGiven(_otherSeal); will(returnValue(contact));
 			allowing(_seals).sealGiven(contact); will(returnValue(constant(_otherSeal)));
@@ -83,7 +83,7 @@ public class IncomingSocketOriginDetectionTest extends BrickTest {
 
 
 	private Seal newSeal(byte[] bytes) {
-		return new Seal(my(ImmutableArrays.class).newImmutableByteArray(bytes));
+		return new Seal(new ImmutableByteArray(bytes));
 	}
 
 }

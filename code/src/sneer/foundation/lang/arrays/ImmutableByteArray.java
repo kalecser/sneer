@@ -1,36 +1,31 @@
-package sneer.bricks.hardware.ram.arrays.impl;
+package sneer.foundation.lang.arrays;
 
 import java.util.Arrays;
 
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
-
-class ImmutableByteArrayImpl implements ImmutableByteArray {
+public class ImmutableByteArray {
 
 	private final byte[] _payload;
 
 	private transient int _hashCode = 0;
 
-	ImmutableByteArrayImpl(byte[] bufferToCopy) {
+	public ImmutableByteArray(byte[] bufferToCopy) {
 		_payload = bufferToCopy.clone();
 	}
 
-	ImmutableByteArrayImpl(byte[] bufferToCopy, int bytesToCopy) {
+	public ImmutableByteArray(byte[] bufferToCopy, int bytesToCopy) {
 		_payload = Arrays.copyOf(bufferToCopy, bytesToCopy);
 	}
 
-	@Override
 	public byte get(int index) {
 		return _payload[index];
 	}
 
-	@Override
 	public int copyTo(byte[] dest) {
 		int result = _payload.length;
 		System.arraycopy(_payload, 0, dest, 0, result);
 		return result;
 	}
 
-	@Override
 	public byte[] copy() {
 		return _payload.clone();
 	}
@@ -65,10 +60,10 @@ class ImmutableByteArrayImpl implements ImmutableByteArray {
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) {
-			System.out.println("" + getClass().getClassLoader() + " " + obj.getClass().getClassLoader());
+			System.out.println(" " + getClass().getClassLoader().hashCode() + " " + obj.getClass().getClassLoader().hashCode() + " class: " + obj.getClass());
 			return false;
 		}
-		ImmutableByteArrayImpl other = (ImmutableByteArrayImpl) obj;
+		ImmutableByteArray other = (ImmutableByteArray) obj;
 
 		return (Arrays.equals(_payload, other._payload));
 	}

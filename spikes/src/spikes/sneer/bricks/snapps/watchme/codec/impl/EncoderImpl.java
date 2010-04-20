@@ -14,9 +14,9 @@ import java.util.Map;
 
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
 import sneer.bricks.hardware.gui.images.Images;
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.skin.image.ImageFactory;
 import sneer.foundation.lang.Pair;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageDelta;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageCodec.Encoder;
 
@@ -51,7 +51,7 @@ class EncoderImpl implements Encoder {
 		_previousPixelsByCellCoordinate.put(Pair.of(x, y), currentPixels);
 		
 		byte[] data = _imageFactory.toPngData(img1);
-		result.add(new ImageDelta(my(ImmutableArrays.class).newImmutableByteArray(data), x, y));
+		result.add(new ImageDelta(new ImmutableByteArray(data), x, y));
 	}
 	
 }

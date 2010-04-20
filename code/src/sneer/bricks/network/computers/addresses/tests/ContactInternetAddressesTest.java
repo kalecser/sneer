@@ -6,7 +6,6 @@ import org.jmock.Expectations;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
@@ -19,6 +18,7 @@ import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 import sneer.foundation.lang.exceptions.Refusal;
 
 public class ContactInternetAddressesTest extends BrickTest {
@@ -66,7 +66,7 @@ public class ContactInternetAddressesTest extends BrickTest {
 	}
 	
 	private Seal seal() {
-		return new Seal(my(ImmutableArrays.class).newImmutableByteArray(new byte[]{42}));
+		return new Seal(new ImmutableByteArray(new byte[]{42}));
 	}
 	
 	private InternetAddress firstKeptAddress() {

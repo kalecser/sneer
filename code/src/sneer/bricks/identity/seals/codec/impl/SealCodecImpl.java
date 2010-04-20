@@ -4,9 +4,9 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.codec.Codec;
 import sneer.bricks.hardware.cpu.codec.DecodeException;
 import sneer.bricks.hardware.cpu.lang.Lang;
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.codec.SealCodec;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 class SealCodecImpl implements SealCodec {
 
@@ -36,7 +36,7 @@ class SealCodecImpl implements SealCodec {
 
 	@Override
 	public Seal hexDecode(String seal) throws DecodeException {
-		return new Seal(my(ImmutableArrays.class).newImmutableByteArray(my(Codec.class).hex().decode(seal)));		
+		return new Seal(new ImmutableByteArray(my(Codec.class).hex().decode(seal)));		
 	}
 
 }

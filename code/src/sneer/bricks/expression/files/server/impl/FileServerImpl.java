@@ -18,11 +18,10 @@ import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
@@ -106,7 +105,7 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 	private ImmutableByteArray getFileBlockBytes(File file, int blockNumber) throws IOException {
 		try {
 			byte[] result = my(IO.class).files().readBlock(file, blockNumber, Protocol.FILE_BLOCK_SIZE);
-			return my(ImmutableArrays.class).newImmutableByteArray(result);
+			return new ImmutableByteArray(result);
 		} catch(IOException ioe) {
 			throw new IOException("Error trying to read block " + blockNumber + " from requested file: " + file, ioe);
 		}

@@ -8,7 +8,6 @@ import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.hardware.ram.arrays.ImmutableArrays;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection;
@@ -25,6 +24,7 @@ import sneer.bricks.software.bricks.statestore.tests.BrickStateStoreMock;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class ProbeManagerTest extends BrickTest {
 
@@ -87,7 +87,7 @@ public class ProbeManagerTest extends BrickTest {
 
 	
 	private Seal newSeal(byte[] bytes) {
-		return new Seal(my(ImmutableArrays.class).newImmutableByteArray(bytes));
+		return new Seal(new ImmutableByteArray(bytes));
 	}
 
 }
