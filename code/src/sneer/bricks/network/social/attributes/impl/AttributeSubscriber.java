@@ -23,7 +23,7 @@ class AttributeSubscriber<T> implements Consumer<AttributeValue> {
 
 	private static final ClassLoader API_CLASS_LOADER = Attributes.class.getClassLoader();
 
-	@SuppressWarnings("unused") private final Contact _contact;
+	private final Contact _contact;
 	private final Signal<Seal> _partySeal;
 	private final Class<? extends Attribute<T>> _attribute;
 	private final Class<? super T> _valueType;
@@ -61,16 +61,25 @@ class AttributeSubscriber<T> implements Consumer<AttributeValue> {
 		try {
 			deserializedValue = my(Serializer.class).deserialize(serializedValue, API_CLASS_LOADER);
 		} catch (ClassNotFoundException cnfe) {
-			my(BlinkingLights.class).turnOn(LightType.WARNING, "Attribute class not found", "", cnfe, 7000);
+			my(BlinkingLights.class).turnOn(LightType.WARNING, "Attribute class not found", "Error deserializing attribute of unexpected type.", cnfe, 7000);
 			return;
 		}
 
 		if (!_valueType.isInstance(deserializedValue)) {
-			my(BlinkingLights.class).turnOn(LightType.WARNING, "Invalid attribute type received", "", 7000);
+			String helpMsg = helpMessageFor(deserializedValue.getClass());
+			my(BlinkingLights.class).turnOn(LightType.WARNING, "Invalid attribute type received", helpMsg, 7000);
 			return;
 		}
 
 		_value.setter().consume((T) deserializedValue);	
+	}
+
+	private String helpMessageFor(Class<?> invalidAttributeType) {
+		String helpMsgPrefix	= "Attribute of invalid type '" + invalidAttributeType.getName() + "' received from ";
+		String helpMsgStem		= (_contact == null) ? "myself" : _contact.nickname().currentValue();
+		String helpMsgSuffix	= ". Expected type: '" + _valueType.getName() + "'.";
+
+		return helpMsgPrefix + helpMsgStem + helpMsgSuffix;
 	}
 
 	Signal<T> output() {

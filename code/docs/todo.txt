@@ -21,9 +21,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Create blinking light messages at AttributeSubscriber
-		- Remove supress warning from _contact field 
-
 	- Unignore and investigate:
 		- BrickStateStoreTest
 			- Solve Null problem
