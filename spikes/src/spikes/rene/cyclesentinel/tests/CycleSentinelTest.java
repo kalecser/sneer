@@ -39,7 +39,7 @@ public class CycleSentinelTest extends BrickTest {
 			fail();
 		} catch (DependencyCycle e) {
 			assertEquals(
-					"Dependency cycle detected:\n" +
+					"Dependency cycle detected among packages:\n" +
 					"	main.banana.lixo.Main -> game.resourses.noob.Game\n" +
 					"	game.test.Player -> main.foo.Starter",
 					e.getMessage());
@@ -54,7 +54,7 @@ public class CycleSentinelTest extends BrickTest {
 			fail();
 		} catch (DependencyCycle e) {
 			assertEquals(
-					"Dependency cycle detected:\n" +
+					"Dependency cycle detected among packages:\n" +
 					"	main.banana.test.Kart -> main.banana.lixo.Starter\n" +
 					"	main.banana.lixo.Main -> main.banana.test.Player", e.getMessage());
 		} 
@@ -69,7 +69,7 @@ public class CycleSentinelTest extends BrickTest {
 			fail();
 		} catch (DependencyCycle e) {
 			assertEquals(
-					"Dependency cycle detected:\n" +
+					"Dependency cycle detected among packages:\n" +
 					"	a -> b\n" +
 					"	b -> c\n" +
 					"	c -> a", e.getMessage());

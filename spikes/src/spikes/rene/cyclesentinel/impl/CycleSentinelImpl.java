@@ -64,7 +64,7 @@ public class CycleSentinelImpl implements CycleSentinel {
 
 	
 	private String exceptionMessageFor(String[] cycle) {
-		String result = "Dependency cycle detected:\n";
+		String result = "Dependency cycle detected among packages:\n";
 		
 		for (int i = 0; i < cycle.length - 1; i++) {
 			String current = cycle[i];
