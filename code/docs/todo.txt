@@ -21,11 +21,8 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- ImmutableByteArray: encapsulate in Brick 
-
-	- Remove warning: MainPanel(@SuppressWarnings("unused") Dimension panelSize)
-
-	- Remove OwnSeal.oldGet()
+	- Create blinking light messages at AttributeSubscriber
+		- Remove supress warning from _contact field 
 
 	- Unignore and investigate:
 		- BrickStateStoreTest
@@ -34,11 +31,6 @@ Igor ====================================================
 			- Solve Null problem
 			- Rename this test: AttributesTest
 			- Create new test using a mock of Attributes
-
-	- Attribute hierarchy --> Attribute instances
-		- Create AttributesFacotry:
-			- AttributeFactory { Attribute<T> produce(Class<? extends AttributeId>, Class<T> valueType) }
-			- ThoughOfTheDay, Status and PlayingTrack extends AttributeId
 
 	- Contact's Status
 		- Create the following status:
