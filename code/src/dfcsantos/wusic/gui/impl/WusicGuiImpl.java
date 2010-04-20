@@ -70,7 +70,7 @@ class WusicGuiImpl implements WusicGui {
 
 				@Override
 				public Signal<String> textFor(Contact contact) {
-					return my(Signals.class).adapt(my(Attributes.class).attributeValueFor(contact, PlayingTrack.class), new Functor<String, String>() { @Override public String evaluate(String playingTrack) throws RuntimeException {
+					return my(Signals.class).adapt(my(Attributes.class).attributeValueFor(contact, PlayingTrack.class, String.class), new Functor<String, String>() { @Override public String evaluate(String playingTrack) throws RuntimeException {
 						return (playingTrack == null || playingTrack.isEmpty()) ? "" : MUSICAL_NOTE_ICON + " " + playingTrack;
 					}});
 				}

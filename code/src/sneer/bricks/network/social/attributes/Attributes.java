@@ -12,6 +12,6 @@ public interface Attributes {
 
 	<T> Consumer<T> myAttributeSetter(Class<? extends Attribute<T>> attribute);
 
-	<T> Signal<T> attributeValueFor(Contact contact, Class<? extends Attribute<T>> attribute);
+	<T> Signal<T> attributeValueFor(Contact contact, Class<? extends Attribute<T>> attribute, Class<T> valueType);
 
 }

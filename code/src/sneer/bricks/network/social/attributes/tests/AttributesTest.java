@@ -1,10 +1,9 @@
-package dfcsantos.wusic.notification.playingtrack.tests;
+package sneer.bricks.network.social.attributes.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 
-import org.jmock.Expectations;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -15,37 +14,31 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
+import sneer.bricks.network.social.attributes.Attribute;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
-import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.Tracks;
-import dfcsantos.wusic.Wusic;
 import dfcsantos.wusic.notification.playingtrack.PlayingTrack;
-import dfcsantos.wusic.notification.playingtrack.server.PlayingTrackPublisher;
 
-public class PlayingTrackTest extends BrickTest {
+public class AttributesTest extends BrickTest {
 
-	@Bind private final Wusic _wusic = mock(Wusic.class);
-	private final Register<Track> _playingTrack = my(Signals.class).newRegister(null);
+	private final Class<? extends Attribute<String>> _anyAttribute = new Attribute<String>() {}.getClass();
+	private final Register<Track> _attributeValue = my(Signals.class).newRegister(null);
 
 	private Contact _localContact;
 	private Attributes _remoteAttributes;
 
 	@Ignore
 	@Test
-	public void playingTrackBroadcast() throws Exception {
-		checking(new Expectations() {{
-			oneOf(_wusic).playingTrack(); will(returnValue(_playingTrack.output()));
-		}});
-
-		my(PlayingTrackPublisher.class);
+	public void attributeBroadcast() throws Exception {
+		my(Attributes.class).myAttributeSetter(_anyAttribute);
 
 		Environment remote = newTestEnvironment(my(TupleSpace.class), my(Clock.class));
 		configureStorageFolder(remote, "remote/data");
@@ -77,7 +70,7 @@ public class PlayingTrackTest extends BrickTest {
 
 	private void testNullPlayingTrack() {
 		my(Clock.class).advanceTime(1);
-		_playingTrack.setter().consume(null);
+		_attributeValue.setter().consume(null);
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 		assertEquals("", playingTrackReceivedFromLocal());
 	}
@@ -87,7 +80,7 @@ public class PlayingTrackTest extends BrickTest {
 	}
 
 	private void setPlayingTrack(String trackName) {
-		_playingTrack.setter().consume(my(Tracks.class).newTrack(new File(trackName)));
+		_attributeValue.setter().consume(my(Tracks.class).newTrack(new File(trackName)));
 	}
 
 }
