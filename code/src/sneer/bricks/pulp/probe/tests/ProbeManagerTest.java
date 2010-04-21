@@ -82,7 +82,7 @@ public class ProbeManagerTest extends BrickTest {
 
 
 	private TupleWithId desserialize(byte[] packet) throws Exception {
-		return (TupleWithId)my(Serializer.class).deserialize(packet, TupleWithId.class.getClassLoader());
+		return (TupleWithId)my(Serializer.class).deserialize(packet);
 	}
 
 	

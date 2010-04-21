@@ -9,7 +9,7 @@ class Store {
 	private static final BrickStateStore _delegate = my(BrickStateStore.class);
 
 	static Object[] restore() {
-		Object result = _delegate.readObjectFor(Wusic.class, WusicImpl.class.getClassLoader());
+		Object result = _delegate.readObjectFor(Wusic.class);
 		return (result != null) ? (Object[]) result : null;
 	}
 

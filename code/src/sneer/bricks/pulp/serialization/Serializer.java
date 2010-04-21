@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import sneer.foundation.brickness.Brick;
-import sneer.foundation.brickness.BrickSerializationMapper;
 
 /**
  * A strategy for writing objects to and reading objects from streams. Implementations <b>must</b> be safe for
@@ -31,10 +30,7 @@ public interface Serializer {
 	 * Reads an object from a stream. An implementation can expect that the
 	 * stream is already buffered, so additional buffering is not required for performance.
 	 */
-	Object deserialize(InputStream stream, ClassLoader classloader) throws IOException, ClassNotFoundException;
+	Object deserialize(InputStream stream) throws IOException, ClassNotFoundException;
 
-	Object deserialize(byte[] bytes, ClassLoader classloader) throws ClassNotFoundException;
-	
-	void serialize(OutputStream stream, Object object, BrickSerializationMapper mapper) throws IOException;
-	Object deserialize(InputStream stream, BrickSerializationMapper mapper) throws IOException, ClassNotFoundException;
+	Object deserialize(byte[] serializedValue) throws ClassNotFoundException;
 }

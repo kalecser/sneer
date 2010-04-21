@@ -33,7 +33,7 @@ class RejectedTracksKeeperImpl implements RejectedTracksKeeper {
 
 	private void restore() {
 		List<Hash> restoredTrackHashes =
-			(List<Hash>) my(BrickStateStore.class).readObjectFor(RejectedTracksKeeper.class, getClass().getClassLoader());
+			(List<Hash>) my(BrickStateStore.class).readObjectFor(RejectedTracksKeeper.class);
 
 		if (restoredTrackHashes == null) return;
 

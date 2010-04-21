@@ -13,7 +13,7 @@ import sneer.bricks.software.bricks.statestore.BrickStateStore;
 abstract class Store {
 
 	static Collection<String> restore() {
-		Object result = my(BrickStateStore.class).readObjectFor(Contacts.class, ContactsImpl.class.getClassLoader());
+		Object result = my(BrickStateStore.class).readObjectFor(Contacts.class);
 		return result == null
 			? new ArrayList<String>()
 			: (Collection<String>) result;

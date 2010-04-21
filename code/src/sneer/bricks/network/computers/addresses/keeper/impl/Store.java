@@ -13,7 +13,7 @@ import sneer.bricks.software.bricks.statestore.BrickStateStore;
 abstract class Store {
 	
 	static List<Object[]> restore() {
-		List<Object[]> addresses  = (List<Object[]>) my(BrickStateStore.class).readObjectFor(InternetAddressKeeper.class, InternetAddressKeeperImpl.class.getClassLoader());
+		List<Object[]> addresses  = (List<Object[]>) my(BrickStateStore.class).readObjectFor(InternetAddressKeeper.class);
 		return addresses != null
 			? addresses
 			: new ArrayList<Object[]>();

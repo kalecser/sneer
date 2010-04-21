@@ -10,7 +10,6 @@ import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.attributes.Attribute;
 import sneer.bricks.network.social.attributes.AttributeValue;
-import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Register;
@@ -20,8 +19,6 @@ import sneer.bricks.pulp.serialization.Serializer;
 import sneer.foundation.lang.Consumer;
 
 class AttributeSubscriber<T> implements Consumer<AttributeValue> {
-
-	private static final ClassLoader API_CLASS_LOADER = Attributes.class.getClassLoader();
 
 	private final Contact _contact;
 	private final Signal<Seal> _partySeal;
@@ -59,7 +56,7 @@ class AttributeSubscriber<T> implements Consumer<AttributeValue> {
 	private void deserialize(byte[] serializedValue) {
 		Object deserializedValue;
 		try {
-			deserializedValue = my(Serializer.class).deserialize(serializedValue, API_CLASS_LOADER);
+			deserializedValue = my(Serializer.class).deserialize(serializedValue);
 		} catch (ClassNotFoundException cnfe) {
 			my(BlinkingLights.class).turnOn(LightType.WARNING, "Attribute class not found", "Error deserializing attribute of unexpected type.", cnfe, 7000);
 			return;

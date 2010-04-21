@@ -11,7 +11,6 @@ import org.prevayler.TransactionWithQuery;
 import org.prevayler.foundation.serialization.Serializer;
 
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.foundation.brickness.BrickSerializationMapper;
 
 
 class SerializerWithClassMapper implements Serializer {
@@ -19,12 +18,12 @@ class SerializerWithClassMapper implements Serializer {
 	private static final sneer.bricks.pulp.serialization.Serializer Serializer = my(sneer.bricks.pulp.serialization.Serializer.class);
 	
 	@Override public void writeObject(OutputStream stream, Object object) throws IOException {
-		Serializer.serialize(stream, object, my(BrickSerializationMapper.class));
+		Serializer.serialize(stream, object);
 	}
 	
 	@Override public Object readObject(InputStream stream) throws IOException {
 		try {
-			return Serializer.deserialize(stream, my(BrickSerializationMapper.class));
+			return Serializer.deserialize(stream);
 		} catch (ClassNotFoundException e) {
 			my(Logger.class).log("Transaction skipped. Class not found: ", e.getMessage());
 			return transactionSkip();

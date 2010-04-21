@@ -25,7 +25,7 @@ public class BrickStateStoreTest extends BrickTest {
 		toStore.add(null);
 
 		_subject.writeObjectFor(BrickStateStore.class, toStore);
-		List<Object> restored = (List<Object>) _subject.readObjectFor(BrickStateStore.class, _subject.getClass().getClassLoader());
+		List<Object> restored = (List<Object>) _subject.readObjectFor(BrickStateStore.class);
 		
 		assertEquals(toStore.size(), restored.size());
 		assertTrue(toStore != restored);

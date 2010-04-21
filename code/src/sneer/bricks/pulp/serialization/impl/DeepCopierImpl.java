@@ -35,7 +35,7 @@ class DeepCopierImpl implements DeepCopier {
 		    ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
             serializer.serialize(byteOut, original);
             ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());
-            return (T) serializer.deserialize(byteIn, original.getClass().getClassLoader());
+            return (T) serializer.deserialize(byteIn);
 
 		} catch (Exception shouldNeverHappen) {
 			throw new RuntimeException(shouldNeverHappen);
@@ -63,7 +63,7 @@ class DeepCopierImpl implements DeepCopier {
 		PipedOutputStream outputStream = new PipedOutputStream();
 		PipedInputStream inputStream = new PipedInputStream(outputStream);
 
-		Consumer consumer = new Consumer(inputStream, serializer, original.getClass().getClassLoader());
+		Consumer consumer = new Consumer(inputStream, serializer);
 		consumer.start();
 
 		try {
@@ -81,22 +81,20 @@ class DeepCopierImpl implements DeepCopier {
 
 		private final InputStream _inputStream;
 		private final Serializer _serializer;
-		private final ClassLoader _classLoader;
-
+		
 		private Object _result;
 		private RuntimeException _unexpectedException;
 
-		public Consumer(InputStream inputStream, Serializer serializer, ClassLoader classLoader) {
+		public Consumer(InputStream inputStream, Serializer serializer) {
 			_inputStream = inputStream;
 			_serializer = serializer;
-			_classLoader = classLoader;
 			setDaemon(true);
 		}
 
 		@Override
 		public void run() {
 			try {
-				_result = _serializer.deserialize(_inputStream, _classLoader);
+				_result = _serializer.deserialize(_inputStream);
 			} catch (Throwable t) {
 				_unexpectedException = new RuntimeException(t);
 			}

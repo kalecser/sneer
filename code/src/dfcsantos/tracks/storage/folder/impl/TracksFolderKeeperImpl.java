@@ -88,7 +88,7 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 	}
 
 	private void restore() {
-		List<String> restoredFolderPaths = (List<String>) _store.readObjectFor(TracksFolderKeeper.class, getClass().getClassLoader());
+		List<String> restoredFolderPaths = (List<String>) _store.readObjectFor(TracksFolderKeeper.class);
 		if (restoredFolderPaths == null)
 			return;
 

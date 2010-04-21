@@ -39,7 +39,7 @@ class DynDnsAccountKeeperImpl implements DynDnsAccountKeeper {
 	}
 	
 	private void restore() {
-		String[] data = (String[]) _store.readObjectFor(DynDnsAccountKeeper.class, getClass().getClassLoader());
+		String[] data = (String[]) _store.readObjectFor(DynDnsAccountKeeper.class);
 		
 		if (data != null) accountSetter().consume(new DynDnsAccount(data[0], data[1], data[2]));
 	}

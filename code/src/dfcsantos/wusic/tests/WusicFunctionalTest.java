@@ -16,6 +16,7 @@ import sneer.bricks.hardware.clock.ticker.custom.CustomClockTicker;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -101,7 +102,8 @@ public class WusicFunctionalTest extends BrickTest {
 		waitForSignalValue(_subject1.isPlaying(), false);
 
 		_subject1.pauseResume();
-		if (!my(BlinkingLights.class).lights().currentGet(0).caption().equals("No Tracks to Play")) fail();		
+		Light l = my(BlinkingLights.class).lights().currentGet(0);
+		assertEquals("No Tracks to Play", l.caption());		
 	}
 
 	@Test (timeout = 2000)

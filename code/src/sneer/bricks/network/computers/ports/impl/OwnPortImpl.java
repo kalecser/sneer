@@ -47,7 +47,7 @@ class OwnPortImpl implements OwnPort {
 	}
 	
 	private void restore() {
-		Integer restoredPort = (Integer) _store.readObjectFor(OwnPort.class, getClass().getClassLoader());
+		Integer restoredPort = (Integer) _store.readObjectFor(OwnPort.class);
 		if(restoredPort!=null)
 			try {
 				portSetter().consume(restoredPort);

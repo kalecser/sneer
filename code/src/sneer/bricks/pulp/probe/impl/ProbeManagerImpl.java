@@ -26,9 +26,6 @@ class ProbeManagerImpl implements ProbeManager {
 	private static final Serializer Serializer = my(Serializer.class);
 	private static final TupleSpace TupleSpace = my(TupleSpace.class);
 	
-	private static final ClassLoader CLASSLOADER_FOR_TUPLES = TupleSpace.class.getClassLoader();
-
-	
 	private final Map<Contact, ProbeImpl> _probesByContact = new HashMap<Contact, ProbeImpl>();
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
 
@@ -72,7 +69,7 @@ class ProbeManagerImpl implements ProbeManager {
 	
 	private Object desserialize(byte[] packet, Contact contact) {
 		try {
-			return Serializer.deserialize(packet, CLASSLOADER_FOR_TUPLES);
+			return Serializer.deserialize(packet);
 		} catch (ClassNotFoundException e) {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "Unknown Tuple class received from " + contact, "Your peer might be running a brick version you don't have.", e, 30000);
 			return null;
