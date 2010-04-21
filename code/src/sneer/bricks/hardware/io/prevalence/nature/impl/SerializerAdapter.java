@@ -12,8 +12,7 @@ import org.prevayler.foundation.serialization.Serializer;
 
 import sneer.bricks.hardware.io.log.Logger;
 
-
-class SerializerWithClassMapper implements Serializer {
+class SerializerAdapter implements Serializer {
 
 	private static final sneer.bricks.pulp.serialization.Serializer Serializer = my(sneer.bricks.pulp.serialization.Serializer.class);
 	

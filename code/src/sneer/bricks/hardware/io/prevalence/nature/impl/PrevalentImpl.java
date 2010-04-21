@@ -83,7 +83,7 @@ class PrevalentImpl implements Prevalent {
 		factory.configurePrevalentSystem(system);
 		factory.configurePrevalenceDirectory(prevalenceBase.getAbsolutePath());
 		factory.configureTransactionFiltering(false);
-		factory.configureJournalSerializer("xstreamjournal", new SerializerWithClassMapper());
+		factory.configureJournalSerializer("xstreamjournal", new SerializerAdapter());
 		return factory;
 	}
 	
