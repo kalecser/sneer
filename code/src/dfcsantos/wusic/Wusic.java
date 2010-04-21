@@ -48,6 +48,7 @@ public interface Wusic {
 	int DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE = 100; // MBs
 	Signal<Integer> trackDownloadAllowance();
 	PickyConsumer<Integer> trackDownloadAllowanceSetter();
-
+	void volumePercent(int level);
+	int volumePercent();
 }
 

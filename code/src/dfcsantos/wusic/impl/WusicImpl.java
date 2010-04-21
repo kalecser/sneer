@@ -229,6 +229,15 @@ public class WusicImpl implements Wusic {
 		if (allowanceInMBs == null || allowanceInMBs < 0) throw new Refusal("Invalid tracks' download allowance: it must be positive integer");
 	}
 
+	@Override
+	public void volumePercent(int level) {
+		_dj.volumePercent(level);
+	}
+
+	@Override
+	public int volumePercent() {
+		return _dj.volumePercent();
+	}
 }
 
 

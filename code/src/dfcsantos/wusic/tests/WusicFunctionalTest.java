@@ -32,6 +32,8 @@ import dfcsantos.wusic.Wusic.OperatingMode;
 
 public class WusicFunctionalTest extends BrickTest {
 
+	private final static int DEFAULT_VOLUME_PERCENT = 100;
+	
 	private Wusic _subject1;
 	private Wusic _subject2;
 
@@ -69,7 +71,7 @@ public class WusicFunctionalTest extends BrickTest {
 		createSampleTracks(_subject1.playingFolder(), "track1.mp3");
 
 		checking(new Expectations() {{
-			exactly(4).of(_trackPlayer).startPlaying(with(any(Track.class)), with(any(Signal.class)), with(any(Runnable.class)));
+			exactly(4).of(_trackPlayer).startPlaying(with(any(Track.class)), with(any(Signal.class)), DEFAULT_VOLUME_PERCENT, with(any(Runnable.class)));
 		}});
 
 		_subject1.start(); // Starts 1st TrackContract
@@ -135,7 +137,7 @@ public class WusicFunctionalTest extends BrickTest {
 		createSampleTracks(subdirectory2, "track3.mp3", "track4.mp3");
 
 		checking(new Expectations() {{
-			allowing(_trackPlayer).startPlaying(with(any(Track.class)), with(any(Signal.class)), with(any(Runnable.class)));
+			allowing(_trackPlayer).startPlaying(with(any(Track.class)), with(any(Signal.class)), DEFAULT_VOLUME_PERCENT, with(any(Runnable.class)));
 		}});
 
 		// Play all songs sequentially
@@ -200,7 +202,7 @@ public class WusicFunctionalTest extends BrickTest {
 		waitForSignalValue(_subject1.numberOfPeerTracks(), 3);
 
 		checking(new Expectations() {{
-			exactly(3).of(_trackPlayer).startPlaying(with(any(Track.class)), with(any(Signal.class)), with(any(Runnable.class)));
+			exactly(3).of(_trackPlayer).startPlaying(with(any(Track.class)), with(any(Signal.class)), DEFAULT_VOLUME_PERCENT, with(any(Runnable.class)));
 		}});
 
 		_subject1.setOperatingMode(OperatingMode.PEERS);

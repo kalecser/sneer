@@ -19,13 +19,14 @@ class TrackContractImpl implements TrackContract {
 
 	private PausableInputStream _trackStream;
 	private Player _player;
+	private GainJavaSoundAudioDevice _audioDevice;
 
 	private volatile boolean _isDisposed;
 	
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc;
 
 	
-	TrackContractImpl(final Track track, final Signal<Boolean> isPlaying, final Runnable toCallWhenFinished) {
+	TrackContractImpl(final Track track, final Signal<Boolean> isPlaying, final int volumePercent, final Runnable toCallWhenFinished) {
 		try {
 			_trackStream = new PausableInputStream(new FileInputStream(track.file()), isPlaying);
 		} catch (FileNotFoundException e) {
@@ -33,7 +34,7 @@ class TrackContractImpl implements TrackContract {
 		} 
 		
 		my(Threads.class).startDaemon("Track Player", new Closure() { @Override public void run() {
-			play(toCallWhenFinished);
+			play(volumePercent, toCallWhenFinished);
 		}});
 	}
 
@@ -51,9 +52,10 @@ class TrackContractImpl implements TrackContract {
 	}
 
 	
-	private void play(final Runnable toCallWhenFinished) {
+	private void play(int volumePercent, final Runnable toCallWhenFinished) {
 		try {
-			_player = new Player(_trackStream);
+			_audioDevice = new GainJavaSoundAudioDevice(volumePercent);
+			_player = new Player(_trackStream, _audioDevice);
 			_player.play();
 		} catch (Throwable t) {
 			if (!_isDisposed)
@@ -65,4 +67,8 @@ class TrackContractImpl implements TrackContract {
 		}
 	}
 
+	@Override
+	public void volumePercent(int level) {
+		_audioDevice.volumePercent(level);
+	}
 }

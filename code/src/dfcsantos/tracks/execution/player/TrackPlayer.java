@@ -7,6 +7,6 @@ import dfcsantos.tracks.Track;
 @Brick
 public interface TrackPlayer {
 
-	TrackContract startPlaying(Track track, Signal<Boolean> isPlaying, Runnable toCallWhenFinished);
+	TrackContract startPlaying(Track track, Signal<Boolean> isPlaying, int volumePercent, Runnable toCallWhenFinished);
 
 }

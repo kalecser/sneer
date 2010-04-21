@@ -8,6 +8,10 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.foundation.lang.Consumer;
@@ -15,6 +19,8 @@ import dfcsantos.wusic.Wusic;
 import dfcsantos.wusic.Wusic.OperatingMode;
 
 abstract class ControlPanel extends JPanel {
+
+	private static final int MAX_VOLUME = 10;
 
 	private static final Wusic _controller	= my(Wusic.class);
 
@@ -28,6 +34,7 @@ abstract class ControlPanel extends JPanel {
 //	private final JButton _back				= new JButton();
 	private final JButton _skip				= new JButton();
 	private final JButton _stop				= new JButton();
+	private final JSlider _volume 			= new JSlider(SwingConstants.HORIZONTAL, 0, MAX_VOLUME, 0);
 
 	@SuppressWarnings("unused") private WeakContract toAvoidGC;
 
@@ -40,7 +47,8 @@ abstract class ControlPanel extends JPanel {
 	    	else
 	    		_pauseResume.setText(RESUME_ICON);
 		}});
-
+	    _volume.setValue(volumeLevel(_controller.volumePercent()));
+	    
 	    _pauseResume.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent evt) {
 	    	pauseResumeActionPerformed();
         }});
@@ -66,6 +74,14 @@ abstract class ControlPanel extends JPanel {
 	    	stopActionPerformed();
 	    }});
 	    add(_stop);
+	    
+	    _volume.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent event) {
+				volumeChanged(_volume.getValue());
+			}
+	    });
+	    add(_volume);
 	}
 
 	void update(OperatingMode operatingMode) {
@@ -107,7 +123,19 @@ abstract class ControlPanel extends JPanel {
 	private void stopActionPerformed() {
 	    _controller.stop();
 	}
+	
+	private void volumeChanged(int level) {
+		_controller.volumePercent(volumePercentage(level));
+	}
 
+	private static int volumePercentage(int level) {
+		return 100 * level / MAX_VOLUME;
+	}
+	
+	private static int volumeLevel(int percent) {
+		return percent * MAX_VOLUME / 100;
+	}
+	
 	private boolean isMyOperatingMode() {
 		return isMyOperatingMode(_controller.operatingMode().currentValue());
 	}
