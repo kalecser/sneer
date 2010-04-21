@@ -13,6 +13,7 @@ import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.Producer;
 class Invocation implements TransactionWithQuery {
 
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
@@ -34,16 +35,24 @@ class Invocation implements TransactionWithQuery {
 	private final Class<?>[] _argTypes;
 	private final Object[] _args;
 	
-	public Object executeAndQuery(Object system, Date date) {
-		final PrevalentBuilding building = (PrevalentBuilding)system;
+	private final Producer<Object> SHOULD_NOT_BE_PREVAILING = new Producer<Object>() { @Override public Object produce() throws RuntimeException {
+		throw new IllegalStateException();
+	}};
+	
+	public Object executeAndQuery(final Object system, Date date) {
 		
-		final ByRef<Object> retVal = ByRef.newInstance();
-		Environments.runWith(EnvironmentUtils.compose(building, my(Environment.class)), new Closure() { @Override public void run() {
-			Object brickImpl = building.brick(_brick);
-			Object receiver = navigateToReceiver(brickImpl);
-			retVal.value = invoke(receiver, _methodName, _argTypes, _args);
+		return InPrevailingState.produce(SHOULD_NOT_BE_PREVAILING, new Producer<Object>() { @Override public Object produce() throws RuntimeException {
+			final PrevalentBuilding building = (PrevalentBuilding)system;
+			
+			final ByRef<Object> retVal = ByRef.newInstance();
+			Environments.runWith(EnvironmentUtils.compose(building, my(Environment.class)), new Closure() { @Override public void run() {
+				Object brickImpl = building.brick(_brick);
+				Object receiver = navigateToReceiver(brickImpl);
+				retVal.value = invoke(receiver, _methodName, _argTypes, _args);
+			}});
+			return retVal.value;
 		}});
-		return retVal.value;
+		
 	}
 	
 	private Object navigateToReceiver(Object brick) {

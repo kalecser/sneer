@@ -43,13 +43,10 @@ class PrevalentImpl implements Prevalent {
 	@Override
 	public synchronized <T> T instantiate(final Class<T> brick, Class<T> implClass, final Producer<T> producer) {
 		
-		if (_prevailing)
-			return Bubble.wrap(_prevayler, brick, producer.produce());
+		if (null == _prevayler)
+			_prevayler = createPrevayler(prevalenceBase());
 		
-		_prevailing = true;
-		try {
-			if (null == _prevayler)
-				_prevayler = createPrevayler(prevalenceBase());
+		Producer<T> nonPrevailing = new Producer<T>() { @Override public T produce() throws RuntimeException {			
 			
 			PrevalentBuilding building = (PrevalentBuilding) _prevayler.prevalentSystem();
 			T existing = building.brick(brick);
@@ -57,10 +54,10 @@ class PrevalentImpl implements Prevalent {
 				? existing
 				: (T)_prevayler.execute(new InstantiateBrick<T>(brick, producer));
 			
-			return Bubble.wrap(_prevayler, brick, instance);
-		} finally {
-			_prevailing = false;
-		}
+			return instance;
+		}};
+		
+		return Bubble.wrap(_prevayler, brick, InPrevailingState.produce(producer, nonPrevailing));
 	}
 
 	private <T> File prevalenceBase() {

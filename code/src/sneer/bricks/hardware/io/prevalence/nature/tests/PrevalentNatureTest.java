@@ -44,6 +44,17 @@ public class PrevalentNatureTest extends BrickTest {
 		}});
 	}
 	
+	@Test (timeout = 3000)
+	public void brickCommandCausesAnotherBrickInstantiation() {
+		runInNewTestEnvironment(new Closure() { @Override public void run() {
+			my(PrevalentBrick2.class).rememberItemCount();
+		}});
+		
+		runInNewTestEnvironment(new Closure() { @Override public void run() {
+			assertEquals(0, my(PrevalentBrick2.class).recallItemCount());
+		}});
+	}
+	
 	@Ignore
 	@Test (timeout = 2000)
 	public void baptismProblem() {

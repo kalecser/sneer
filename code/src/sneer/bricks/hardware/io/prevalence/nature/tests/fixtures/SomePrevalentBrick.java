@@ -13,5 +13,4 @@ public interface SomePrevalentBrick {
 	void removeItem(Item item);
 	int itemCount();
 	Item getItem(String name);
-
 }
