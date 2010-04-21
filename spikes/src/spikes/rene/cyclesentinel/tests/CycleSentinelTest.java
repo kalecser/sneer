@@ -1,14 +1,13 @@
 package spikes.rene.cyclesentinel.tests;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.foundation.testsupport.AssertUtils;
+import sneer.bricks.software.folderconfig.tests.BrickTest;
 import spikes.rene.cyclesentinel.CycleSentinel;
 import spikes.rene.cyclesentinel.DependencyCycle;
 import spikes.rene.cyclesentinel.impl.CycleSentinelImpl;
 
-public class CycleSentinelTest extends AssertUtils {
+public class CycleSentinelTest extends BrickTest {
 
 	private CycleSentinel _subject = new CycleSentinelImpl();
 
@@ -31,23 +30,22 @@ public class CycleSentinelTest extends AssertUtils {
 		_subject.checkForCycles("Player", "Game");
 	}
 
-	@Ignore
 	@Test
 	public void packageDependencies() throws DependencyCycle {
-		String[] parts = "a.b.c".split("\\.");
-		for (String part : parts) System.out.println(part);
-		
 		_subject.checkForCycles("main.banana.lixo.Main", "game.resourses.noob.Game"); // "main" depends on "game"
 		
 		try {
 			_subject.checkForCycles("game.test.Player", "main.foo.Starter");  // "game" depends on "main"
 			fail();
 		} catch (DependencyCycle e) {
-			assertEquals("main already depends on game", e.getMessage());
+			assertEquals(
+					"Dependency cycle detected among packages:\n" +
+					"	main.banana.lixo.Main -> game.resourses.noob.Game\n" +
+					"	game.test.Player -> main.foo.Starter",
+					e.getMessage());
 		}
 	}
 
-	@Ignore
 	@Test
 	public void innerPackageDependencies() throws DependencyCycle {
 		_subject.checkForCycles("main.banana.lixo.Main", "main.banana.test.Player"); // "main.banana.lixo" -> "main.banana.test" 
@@ -55,8 +53,29 @@ public class CycleSentinelTest extends AssertUtils {
 			_subject.checkForCycles("main.banana.test.Kart", "main.banana.lixo.Starter"); // "main.banana.test" -> "main.banana.lixo"
 			fail();
 		} catch (DependencyCycle e) {
-			assertEquals("main.banana.lixo already depends on main.banana.test", e.getMessage());
+			assertEquals(
+					"Dependency cycle detected among packages:\n" +
+					"	main.banana.test.Kart -> main.banana.lixo.Starter\n" +
+					"	main.banana.lixo.Main -> main.banana.test.Player", e.getMessage());
 		} 
+	}
+
+	@Test
+	public void indirectCycle() throws DependencyCycle {
+		_subject.checkForCycles("a", "b"); 
+		_subject.checkForCycles("b", "c"); 
+		try {
+			_subject.checkForCycles("c", "a"); 
+			fail();
+		} catch (DependencyCycle e) {
+			assertEquals(
+					"Dependency cycle detected among packages:\n" +
+					"	a -> b\n" +
+					"	b -> c\n" +
+					"	c -> a", e.getMessage());
+		}
+
+		_subject.checkForCycles("foo", "bar");
 	}
 
 	

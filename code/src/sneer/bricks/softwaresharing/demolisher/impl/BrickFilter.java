@@ -11,7 +11,7 @@ import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.bricks.hardware.ram.arrays.ImmutableArray;
+import sneer.foundation.lang.arrays.ImmutableArray;
 
 class BrickFilter {
 

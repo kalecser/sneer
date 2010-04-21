@@ -16,7 +16,7 @@ import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Digester;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 class CryptoImpl implements Crypto {
 

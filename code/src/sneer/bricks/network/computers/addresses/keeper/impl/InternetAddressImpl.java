@@ -2,7 +2,7 @@ package sneer.bricks.network.computers.addresses.keeper.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
-import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 

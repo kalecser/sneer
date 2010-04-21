@@ -111,7 +111,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		
 		_sneerPort = newTextField(_portKeeper.port(), my(IntegerParsers.class).newIntegerParser(_portKeeper.portSetter()));
 
-		String formattedHexString = my(SealCodec.class).formattedHexEncode(my(OwnSeal.class).get());
+		String formattedHexString = my(SealCodec.class).formattedHexEncode(my(OwnSeal.class).get().currentValue());
 		_ownSeal = new JTextArea(formattedHexString);
 		_ownSeal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 		_ownSeal.setEditable(false);

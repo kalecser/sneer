@@ -9,8 +9,6 @@ import javax.sound.sampled.LineUnavailableException;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray2D;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.reactive.Signal;
@@ -21,6 +19,8 @@ import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Producer;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
+import sneer.foundation.lang.arrays.ImmutableByteArray2D;
 import spikes.sneer.bricks.skin.audio.mic.Mic;
 import spikes.sneer.bricks.skin.audio.speaker.Speaker;
 import spikes.sneer.bricks.skin.audio.speaker.Speaker.Line;
@@ -87,7 +87,7 @@ class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the en
 	}
 	
 	private boolean isMine(Tuple packet) {
-		return my(OwnSeal.class).get().equals(packet.publisher);
+		return my(OwnSeal.class).get().currentValue().equals(packet.publisher);
 	}
 	
 	private static byte[][] newFramesArray() {

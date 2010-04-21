@@ -5,7 +5,6 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.IOException;
 import java.util.Arrays;
 
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -16,6 +15,7 @@ import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 class IncomingHandShaker {
 
@@ -57,7 +57,7 @@ class IncomingHandShaker {
 
 
 	static private void rejectLoopback(Seal peersSeal) throws IOException {
-		if (peersSeal.equals(my(OwnSeal.class).get()))
+		if (peersSeal.equals(my(OwnSeal.class).get().currentValue()))
 			throw new IOException("Socket identified as originating from yourself.");
 	}
 

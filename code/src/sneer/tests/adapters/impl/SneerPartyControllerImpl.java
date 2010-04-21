@@ -18,7 +18,6 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.hardware.ram.iterables.Iterables;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
@@ -27,10 +26,10 @@ import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
 import sneer.bricks.network.computers.sockets.connections.receiver.SocketReceiver;
-import sneer.bricks.network.social.contacts.Contact;
-import sneer.bricks.network.social.contacts.Contacts;
-import sneer.bricks.network.social.contacts.attributes.heartbeat.Heart;
-import sneer.bricks.network.social.contacts.attributes.heartbeat.stethoscope.Stethoscope;
+import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.Contacts;
+import sneer.bricks.network.social.heartbeat.Heart;
+import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -49,6 +48,7 @@ import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 import sneer.foundation.lang.exceptions.Refusal;
 import sneer.main.SneerVersionUpdater;
@@ -168,7 +168,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	@Override
     public byte[] seal() {
-		return my(OwnSeal.class).get().bytes.copy();
+		return my(OwnSeal.class).get().currentValue().bytes.copy();
 	}
 
 	
@@ -445,7 +445,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private String print(Seal seal) {
-		return seal.equals(my(OwnSeal.class).get())
+		return seal.equals(my(OwnSeal.class).get().currentValue())
 			? "myself"
 			: my(ContactSeals.class).contactGiven(seal).nickname().toString();
 	}

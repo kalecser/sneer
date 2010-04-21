@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
-import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.network.ByteArraySocket;
 
 class OutgoingHandShaker {
@@ -16,7 +16,7 @@ class OutgoingHandShaker {
 	
 	static void greet(ByteArraySocket socket, @SuppressWarnings("unused") Contact contact) throws IOException {
 		socket.write(ProtocolTokens.SNEER_WIRE_PROTOCOL_1);
-		socket.write(OwnSeal.get().bytes.copy());
+		socket.write(OwnSeal.get().currentValue().bytes.copy());
 		
 		//Implement: accept and pass pk challenge.
 	}

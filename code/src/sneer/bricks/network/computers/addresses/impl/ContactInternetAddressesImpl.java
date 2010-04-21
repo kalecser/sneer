@@ -10,7 +10,7 @@ import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.addresses.sighting.Sighting;
 import sneer.bricks.network.computers.ports.contacts.ContactPorts;
-import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
@@ -63,7 +63,7 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 	}
 
 	private boolean isReflexive(final Sighting sighting) {
-		return sighting.peersSeal.equals(my(OwnSeal.class).get());
+		return sighting.peersSeal.equals(my(OwnSeal.class).get().currentValue());
 	}
 
 }

@@ -1,8 +1,8 @@
 package sneer.bricks.expression.files.protocol;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.Seal;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class FileContentsFirstBlock extends FileContents {
 

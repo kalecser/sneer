@@ -8,14 +8,13 @@ import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection.PacketScheduler;
-import sneer.bricks.network.social.contacts.Contact;
-import sneer.bricks.network.social.contacts.Contacts;
+import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
 import sneer.bricks.pulp.probe.ProbeManager;
 import sneer.bricks.pulp.reactive.Signals;
@@ -25,6 +24,7 @@ import sneer.bricks.software.bricks.statestore.tests.BrickStateStoreMock;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class ProbeManagerTest extends BrickTest {
 

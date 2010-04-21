@@ -1,6 +1,5 @@
 package dfcsantos.wusic.gui.impl;
 
-import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
@@ -12,7 +11,7 @@ class MainPanel extends JPanel {
 	private final AbstractTabPane _ownTracksPanel		= new OwnTracksPanel();
 	private final AbstractTabPane _peerTracksPanel		= new PeerTracksPanel();
 
-	MainPanel(@SuppressWarnings("unused") Dimension panelSize) {
+	MainPanel() {
 		_tabbedPanel.addTab(null, _ownTracksPanel);
 		_tabbedPanel.setTabComponentAt(0, _ownTracksPanel.customTabLabel());
 		_tabbedPanel.setMnemonicAt(0, KeyEvent.VK_O);

@@ -9,8 +9,6 @@ import org.junit.Test;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray2D;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.skin.rooms.ActiveRoomKeeper;
@@ -18,6 +16,8 @@ import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
+import sneer.foundation.lang.arrays.ImmutableByteArray2D;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 import spikes.sneer.bricks.snapps.whisper.speex.Decoder;
 import spikes.sneer.bricks.snapps.whisper.speex.Encoder;
@@ -142,7 +142,7 @@ public class SpeexTuplesTest extends BrickTest {
 	}
 
 	private Seal ownPublicKey() {
-		return my(OwnSeal.class).get();
+		return my(OwnSeal.class).get().currentValue();
 	}
 
 	@SuppressWarnings("unused")

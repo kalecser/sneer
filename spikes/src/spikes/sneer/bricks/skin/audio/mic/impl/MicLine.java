@@ -6,7 +6,7 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 import sneer.foundation.lang.exceptions.FriendlyException;
 import spikes.sneer.bricks.skin.audio.kernel.Audio;
 

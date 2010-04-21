@@ -9,21 +9,21 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
-import sneer.bricks.network.social.contacts.Contact;
-import sneer.bricks.network.social.contacts.Contacts;
+import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class SocketOriginatorTest extends BrickTest {
 

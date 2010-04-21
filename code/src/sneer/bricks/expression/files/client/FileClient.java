@@ -4,7 +4,7 @@ import java.io.File;
 
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.Contact;
 import sneer.foundation.brickness.Brick;
 
 @Brick

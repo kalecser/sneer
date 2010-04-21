@@ -22,7 +22,7 @@ import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.Contact;
 import sneer.foundation.lang.Consumer;
 
 class FileDownload extends AbstractDownload {

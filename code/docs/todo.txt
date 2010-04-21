@@ -21,9 +21,13 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Remove warning: MainPanel(@SuppressWarnings("unused") Dimension panelSize)
-
-	- Investigate BrickStateStoreTest
+	- Unignore and investigate:
+		- BrickStateStoreTest
+			- Solve Null problem
+		- PlayingTrackTest
+			- Solve Null problem
+			- Rename this test: AttributesTest
+			- Create new test using a mock of Attributes
 
 	- Contact's Status
 		- Create the following status:
@@ -33,9 +37,9 @@ Igor ====================================================
 			- Busy
 		- Find a way to solve the problem of the menu items' order
 		- Create StatusTest
-		- Refactorings:
-			- Extract common structure from StatusServer, PlayingTrackServer and other similar bricks
-			- Extract common structure from StatusKeeper, PlayingTrackKeeper and other similar bricks
+
+	- OwnName, OwnPort --> Attribute<T>
+
 	- Wusic
 		- MusicalTasteMatcher Kernel
 			- Implement MusicalTasteMatcherFunctionalTest

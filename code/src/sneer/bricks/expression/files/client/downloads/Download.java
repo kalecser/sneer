@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.events.pulsers.PulseSource;
 import sneer.bricks.pulp.reactive.Signal;
 

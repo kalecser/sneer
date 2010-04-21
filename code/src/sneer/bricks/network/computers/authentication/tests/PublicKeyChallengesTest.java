@@ -8,11 +8,11 @@ import org.jmock.Expectations;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.authentication.PublicKeyChallenges;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class PublicKeyChallengesTest extends BrickTest {
 

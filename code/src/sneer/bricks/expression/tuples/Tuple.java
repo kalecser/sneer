@@ -19,7 +19,7 @@ public abstract class Tuple extends Immutable {
 	}
 
 	
-	public final Seal publisher = my(OwnSeal.class).get();
+	public final Seal publisher = my(OwnSeal.class).get().currentValue();
 	public final long publicationTime = my(Clock.class).time().currentValue();
 	
 	public final Seal addressee;

@@ -1,11 +1,11 @@
 package sneer.bricks.identity.seals.generator.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.generator.OwnSealGenerator;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 class OwnSealGeneratorImpl implements OwnSealGenerator {
 

@@ -3,7 +3,6 @@ package spikes.sneer.bricks.skin.audio.mic.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.EventSource;
@@ -13,6 +12,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.retrier.Retrier;
 import sneer.bricks.pulp.retrier.RetrierManager;
 import sneer.bricks.pulp.retrier.Task;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 import sneer.foundation.lang.exceptions.FriendlyException;
 import spikes.sneer.bricks.skin.audio.mic.Mic;
 

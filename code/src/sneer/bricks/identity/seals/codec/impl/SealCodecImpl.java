@@ -4,9 +4,9 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.codec.Codec;
 import sneer.bricks.hardware.cpu.codec.DecodeException;
 import sneer.bricks.hardware.cpu.lang.Lang;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.codec.SealCodec;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 class SealCodecImpl implements SealCodec {
 

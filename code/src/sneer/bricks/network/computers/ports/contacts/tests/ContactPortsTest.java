@@ -6,14 +6,15 @@ import org.jmock.Expectations;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.ports.PortTuple;
 import sneer.bricks.network.computers.ports.contacts.ContactPorts;
 import sneer.bricks.pulp.reactive.SignalUtils;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class ContactPortsTest extends BrickTest {
 
@@ -24,7 +25,7 @@ public class ContactPortsTest extends BrickTest {
 	@Test(timeout = 2000)
 	public void contactPorts() {
 		checking(new Expectations(){{
-			oneOf(_ownSeal).get(); will(returnValue(seal(42)));
+			oneOf(_ownSeal).get().currentValue(); will(returnValue(my(Signals.class).constant(seal(42))));
 		}});
 		my(TupleSpace.class).acquire(new PortTuple(8081));
 		

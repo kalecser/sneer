@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.contacts.gui;
 
-import sneer.bricks.network.social.contacts.Contact;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Signal;
 
 public interface ContactTextProvider {

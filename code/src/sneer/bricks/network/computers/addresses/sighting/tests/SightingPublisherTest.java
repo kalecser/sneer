@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.sighting.Sighting;
@@ -16,11 +15,12 @@ import sneer.bricks.network.computers.addresses.sighting.SightingPublisher;
 import sneer.bricks.network.computers.addresses.sighting.tests.mock.MockContactSighting;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ContactSighting;
-import sneer.bricks.network.social.contacts.Contacts;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class SightingPublisherTest extends BrickTest {
 

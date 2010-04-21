@@ -24,12 +24,12 @@ import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class FileClientTest extends BrickTest {
 
@@ -87,7 +87,7 @@ public class FileClientTest extends BrickTest {
 	}
 
 	private Seal me() {
-		return my(OwnSeal.class).get();
+		return my(OwnSeal.class).get().currentValue();
 	}
 
 	private ImmutableByteArray getFileBlock(File file, int blockNumber) throws IOException {

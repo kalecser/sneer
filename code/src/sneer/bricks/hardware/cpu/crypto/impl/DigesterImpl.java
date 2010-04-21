@@ -4,7 +4,7 @@ import java.security.MessageDigest;
 
 import sneer.bricks.hardware.cpu.crypto.Digester;
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 class DigesterImpl implements Digester {
 

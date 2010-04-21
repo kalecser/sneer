@@ -14,9 +14,9 @@ import java.util.Map;
 
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
 import sneer.bricks.hardware.gui.images.Images;
-import sneer.bricks.hardware.ram.arrays.ImmutableByteArray;
 import sneer.bricks.skin.image.ImageFactory;
 import sneer.foundation.lang.Pair;
+import sneer.foundation.lang.arrays.ImmutableByteArray;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageDelta;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageCodec.Encoder;
 
