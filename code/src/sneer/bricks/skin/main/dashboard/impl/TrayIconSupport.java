@@ -10,7 +10,9 @@ import sneer.bricks.hardware.gui.trayicon.TrayIcon;
 import sneer.bricks.hardware.gui.trayicon.TrayIcons;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.main.dashboard.impl.DashboardImpl.WindowSupport;
+import sneer.bricks.skin.main.title.ProcessTitle;
 
 class TrayIconSupport {
 	private final WindowSupport _windowSupport;
@@ -19,7 +21,8 @@ class TrayIconSupport {
 		_windowSupport = windowSupport;
 		TrayIcon trayIcon = null;
 		try {
-			trayIcon = my(TrayIcons.class).newTrayIcon(IconUtil.getLogoURL());
+			Signal<String> title = my(ProcessTitle.class).title();
+			trayIcon = my(TrayIcons.class).newTrayIcon(IconUtil.getLogoURL(), title);
 			addOpenWindowAction(trayIcon);
 			addExitAction(trayIcon);
 		} catch (SystemTrayNotSupported e1) {
