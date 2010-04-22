@@ -73,7 +73,6 @@ public class PrevalentNatureTest extends BrickTest {
 	}
 	
 	@Test (timeout = 3000)
-	@Ignore
 	public void bubbleExpandsToQueriedValues() {
 		runInNewTestEnvironment(new Closure() { @Override public void run() {
 			SomePrevalentBrick brick = my(SomePrevalentBrick.class);

@@ -13,15 +13,20 @@ import java.util.Arrays;
 import org.prevayler.Prevayler;
 
 import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
+import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.Producer;
 import sneer.foundation.lang.ReadOnly;
 
 class Bubble implements InvocationHandler {
+	
+	static CacheMap<Object, Object> _proxiesByDelegate = CacheMap.newInstance();
 
-	static <T> T wrap(T object, Prevayler prevayler) {
-		InvocationHandler handler = new Bubble(object, prevayler);
-		return (T)Proxy.newProxyInstance(object.getClass().getClassLoader(), object.getClass().getInterfaces(), handler);
+	static <T> T wrap(final T object, final Prevayler prevayler) {
+		return (T) _proxiesByDelegate.get(object, new Producer<Object>() { @Override public Object produce() {
+			InvocationHandler handler = new Bubble(object, prevayler);
+			return Proxy.newProxyInstance(object.getClass().getClassLoader(), object.getClass().getInterfaces(), handler);
+		}});
 	}
-
 	
 	private Bubble(Object delegate, Prevayler prevayler) {
 		_delegate = delegate;
