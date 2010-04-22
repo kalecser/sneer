@@ -1,21 +1,24 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.io.File;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Date;
+import java.util.Arrays;
 
 import org.prevayler.Prevayler;
 
+import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
 import sneer.foundation.lang.ReadOnly;
 
-
-class Bubble {
+class Bubble implements InvocationHandler {
 
 	static <T> T wrap(T object, Prevayler prevayler) {
-		InvocationHandler handler = new Bubble(object, prevayler).handler();
+		InvocationHandler handler = new Bubble(object, prevayler);
 		return (T)Proxy.newProxyInstance(object.getClass().getClassLoader(), object.getClass().getInterfaces(), handler);
 	}
 
@@ -29,30 +32,60 @@ class Bubble {
 	private final Object _delegate;
 	private final Prevayler _prevayler;
 		
-	private InvocationHandler handler() {
-		return new InvocationHandler() { @Override public Object invoke(Object proxyImplied, Method method, Object[] args) throws Throwable {
-			return method.getReturnType() == Void.TYPE
-				? handleCommand(method, args)
-				: handleQuery(method, args);
-		}};
+	@Override
+	public Object invoke(Object proxyImplied, Method method, Object[] args) throws Throwable {
+		return method.getReturnType() == Void.TYPE
+			? handleCommand(method, args)
+			: handleQuery(method, args);
 	}
 	
 	
 	private Object handleCommand(Method method, Object[] args) {
 		try {
-			_prevayler.execute(new Invocation(idFor(_delegate), method, map(args)));
+			map(args);
+			_prevayler.execute(new Invocation(idFor(_delegate), method, args));
 		} catch (Exception e) {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 		return null;
 	}
 
-	private Object[] map(Object[] args) {
-		return args;
+	
+	public static Object[] unmap(Object[] args) {
+		if (args == null)
+			return null;
+		
+		Object[] copy = Arrays.copyOf(args, args.length);
+		for (int i = 0; i < copy.length; i++)
+			copy[i] = unmap(args[i]);
+		return copy;
+	}
+
+	private static Object unmap(Object object) {
+		return object instanceof OID
+			? my(PrevalentMap.class).objectById(((OID)object)._id)
+			: object;
+	}
+
+	private void map(Object[] args) {
+		if (args == null)
+			return;
+		
+		for (int i = 0; i < args.length; i++)
+			args[i] = map(args[i]);
+	}
+
+	private Object map(Object object) {
+		if (object != null && Proxy.isProxyClass(object.getClass())) {
+			Bubble bubble = (Bubble)Proxy.getInvocationHandler(object);
+			return new OID(idFor(bubble._delegate));
+		}
+		
+		return object;
 	}
 
 	private long idFor(Object object) {
-		return ((PrevalentBuilding)_prevayler.prevalentSystem()).idFor(object);
+		return my(PrevalentMap.class).idByObject(object);
 	}
 
 	private Object handleQuery(Method method, Object[] args) throws Throwable {
@@ -74,6 +107,8 @@ class Bubble {
 
 
 	private Object wrapIfNecessary(Object object, Method method) {
+		
+		if (object == null) return null;
 
 		Class<?> type = method.getReturnType();
 		if (isReadOnly(type)) return object;
@@ -92,5 +127,4 @@ class Bubble {
 
 		return false;
 	}
-
 }

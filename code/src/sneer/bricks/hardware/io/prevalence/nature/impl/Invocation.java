@@ -7,6 +7,7 @@ import java.util.Date;
 
 import org.prevayler.TransactionWithQuery;
 
+import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.environments.Environments;
@@ -39,8 +40,8 @@ class Invocation implements TransactionWithQuery {
 			
 			final ByRef<Object> retVal = ByRef.newInstance();
 			Environments.runWith(EnvironmentUtils.compose(building, my(Environment.class)), new Closure() { @Override public void run() {
-				Object receiver = building.objectById(_id);
-				retVal.value = invoke(receiver, _methodName, _argTypes, _args);
+				Object receiver = my(PrevalentMap.class).objectById(_id);
+				retVal.value = invoke(receiver, _methodName, _argTypes, Bubble.unmap(_args));
 			}});
 			return retVal.value;
 		}});

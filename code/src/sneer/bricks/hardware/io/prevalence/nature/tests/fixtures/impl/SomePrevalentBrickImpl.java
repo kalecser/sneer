@@ -3,8 +3,10 @@ package sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.Item;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.SomePrevalentBrick;
+import static sneer.foundation.environments.Environments.my;
 
 class SomePrevalentBrickImpl implements SomePrevalentBrick {
 
@@ -41,7 +43,7 @@ class SomePrevalentBrickImpl implements SomePrevalentBrick {
 
 	@Override
 	public void addItem(String name) {
-		Item item = new ItemImpl(name);
+		Item item = my(PrevalentMap.class).register(new ItemImpl(name));
 		_items.add(item);
 	}
 
