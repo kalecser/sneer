@@ -19,6 +19,11 @@ class SomePrevalentBrickImpl implements SomePrevalentBrick {
 		public String name() {
 			return _name;
 		}
+
+		@Override
+		public void name(String value) {
+			_name = value;
+		}
 	}
 
 	private String _string;

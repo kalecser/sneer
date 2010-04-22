@@ -57,7 +57,7 @@ class PrevalentImpl implements Prevalent {
 			return instance;
 		}};
 		
-		return Bubble.wrap(_prevayler, brick, InPrevailingState.produce(producer, nonPrevailing));
+		return Bubble.wrap(InPrevailingState.produce(producer, nonPrevailing), _prevayler);
 	}
 
 	private <T> File prevalenceBase() {
