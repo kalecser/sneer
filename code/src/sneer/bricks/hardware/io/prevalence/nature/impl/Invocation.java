@@ -8,11 +8,9 @@ import java.util.Date;
 import org.prevayler.TransactionWithQuery;
 
 import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
+import sneer.bricks.hardware.io.prevalence.state.PrevailingState;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.ByRef;
-import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Producer;
 class Invocation implements TransactionWithQuery {
 		
@@ -29,25 +27,17 @@ class Invocation implements TransactionWithQuery {
 	private final Class<?>[] _argTypes;
 	private final Object[] _args;
 	
-	private final Producer<Object> SHOULD_NOT_BE_PREVAILING = new Producer<Object>() { @Override public Object produce() throws RuntimeException {
-		throw new IllegalStateException();
-	}};
-	
 	public Object executeAndQuery(final Object system, Date date) {
-		
-		return InPrevailingState.produce(SHOULD_NOT_BE_PREVAILING, new Producer<Object>() { @Override public Object produce() throws RuntimeException {
+		Producer<Object> producer = new Producer<Object>() { @Override public Object produce() throws RuntimeException {
 			final PrevalentBuilding building = (PrevalentBuilding)system;
-			
-			final ByRef<Object> retVal = ByRef.newInstance();
-			Environments.runWith(EnvironmentUtils.compose(building, my(Environment.class)), new Closure() { @Override public void run() {
+			return EnvironmentUtils.produceIn(EnvironmentUtils.compose(building, my(Environment.class)), new Producer<Object>() { @Override public Object produce() throws RuntimeException {
 				Object receiver = my(PrevalentMap.class).objectById(_id);
-				retVal.value = invoke(receiver, _methodName, _argTypes, Bubble.unmap(_args));
+//				System.out.println("" + receiver + "[" + _id + "]." + _methodName + "()");
+				return invoke(receiver, _methodName, _argTypes, Bubble.unmap(_args));
 			}});
-			return retVal.value;
-		}});
-		
+		}};
+		return my(PrevailingState.class).produce(producer, producer);
 	}
-
 
 	private Object invoke(Object receiver, String methodName, Class<?>[] argTypes, Object... args) {
 		try {

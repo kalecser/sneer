@@ -9,7 +9,6 @@ import java.util.Date;
 
 import org.prevayler.SureTransactionWithQuery;
 
-import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.environments.Environments;
@@ -34,7 +33,7 @@ final class InstantiateBrick<T> implements
 		final PrevalentBuilding building = (PrevalentBuilding)prevalentSystem;
 		final ByRef<T> retVal = ByRef.newInstance();
 		Environments.runWith(EnvironmentUtils.compose(building, my(Environment.class)), new Closure() { @Override public void run() {
-			retVal.value = my(PrevalentMap.class).register(_producer.produce());
+			retVal.value = _producer.produce();
 		}});
 		building.add(_brick, retVal.value);
 		return retVal.value;

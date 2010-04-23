@@ -13,7 +13,9 @@ import org.prevayler.PrevaylerFactory;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
+import sneer.bricks.hardware.io.prevalence.state.PrevailingState;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.lang.Closure;
@@ -42,12 +44,14 @@ class PrevalentImpl implements Prevalent {
 	boolean _prevailing;
 	
 	@Override
-	public synchronized <T> T instantiate(final Class<T> brick, Class<T> implClass, final Producer<T> producer) {
+	public synchronized <T> T instantiate(final Class<T> brick, Class<T> implClass, final Producer<T> instantiator) {
 		
 		if (null == _prevayler)
 			_prevayler = createPrevayler(prevalenceBase());
 		
-		Producer<T> nonPrevailing = new Producer<T>() { @Override public T produce() throws RuntimeException {			
+		final Producer<T> producer = new RegisteringProducer<T>(instantiator);
+		
+		Producer<T> nonPrevailing = new Producer<T>() { @Override public T produce() {			
 			
 			PrevalentBuilding building = (PrevalentBuilding) _prevayler.prevalentSystem();
 			T existing = building.brick(brick);
@@ -58,22 +62,36 @@ class PrevalentImpl implements Prevalent {
 			return instance;
 		}};
 		
-		return Bubble.wrap(InPrevailingState.produce(producer, nonPrevailing), _prevayler);
+		return Bubble.wrap(my(PrevailingState.class).produce(producer, nonPrevailing), _prevayler);
+	}
+	
+	private static final class RegisteringProducer<T> implements Producer<T> {
+		private final Producer<T> _delegate;
+
+		private RegisteringProducer(Producer<T> instantiator) {
+			_delegate = instantiator;
+		}
+
+		@Override public T produce() {
+			return my(PrevalentMap.class).register(_delegate.produce());
+		}
 	}
 
 	private <T> File prevalenceBase() {
 		return my(FolderConfig.class).storageFolderFor(Prevalent.class);
 	}
 
-	private Prevayler createPrevayler(File prevalenceBase) {
-		PrevaylerFactory factory = createPrevaylerFactory(new PrevalentBuilding(), prevalenceBase);
-		try {
-			return factory.create();
-		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		} catch (ClassNotFoundException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		}
+	private Prevayler createPrevayler(final File prevalenceBase) {
+		return my(PrevailingState.class).produce(new Producer<Prevayler>() { @Override public Prevayler produce() throws RuntimeException {
+			PrevaylerFactory factory = createPrevaylerFactory(new PrevalentBuilding(), prevalenceBase);
+			try {
+				return factory.create();
+			} catch (IOException e) {
+				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			} catch (ClassNotFoundException e) {
+				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			}
+		}});
 	}
 
 	private PrevaylerFactory createPrevaylerFactory(Object system, File prevalenceBase) {
