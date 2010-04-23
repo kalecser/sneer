@@ -1,5 +1,6 @@
 package spikes.rene.cyclesentinel.tests;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -7,6 +8,7 @@ import spikes.rene.cyclesentinel.CycleSentinel;
 import spikes.rene.cyclesentinel.DependencyCycle;
 import spikes.rene.cyclesentinel.impl.CycleSentinelImpl;
 
+@Ignore
 public class CycleSentinelTest extends BrickTest {
 
 	private CycleSentinel _subject = new CycleSentinelImpl();
