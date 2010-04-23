@@ -2,7 +2,6 @@ package sneer.bricks.hardware.io.prevalence.nature.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.Item;
@@ -55,8 +54,7 @@ public class PrevalentNatureTest extends BrickTest {
 		}});
 	}
 	
-	@Ignore
-	@Test (timeout = 2000)
+	@Test (timeout = 3000)
 	public void baptismProblem() {
 		runInNewTestEnvironment(new Closure() { @Override public void run() {
 			SomePrevalentBrick brick = my(SomePrevalentBrick.class);
@@ -72,6 +70,25 @@ public class PrevalentNatureTest extends BrickTest {
 			assertEquals(0, my(SomePrevalentBrick.class).itemCount());
 		}});
 	}
+	
+	@Test (timeout = 3000)
+	public void bubbleExpandsToQueriedValues() {
+		runInNewTestEnvironment(new Closure() { @Override public void run() {
+			SomePrevalentBrick brick = my(SomePrevalentBrick.class);
+			brick.addItem("Foo");
+			
+			Item item = brick.getItem("Foo");
+			item.name("Bar");
+			
+			assertNull(brick.getItem("Foo"));
+			assertSame(item, brick.getItem("Bar"));
+		}});
+		
+		runInNewTestEnvironment(new Closure() { @Override public void run() {
+			assertNotNull(my(SomePrevalentBrick.class).getItem("Bar"));
+		}});
+	}
+
 
 	private void runInNewTestEnvironment(Closure closure) {
 		Environments.runWith(newTestEnvironment(my(FolderConfig.class)), closure);

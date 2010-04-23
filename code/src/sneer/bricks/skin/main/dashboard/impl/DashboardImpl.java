@@ -23,9 +23,7 @@ import javax.swing.border.EmptyBorder;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
-import sneer.bricks.pulp.own.name.OwnNameKeeper;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.skin.main.dashboard.Dashboard;
 import sneer.bricks.skin.main.instrumentregistry.Instrument;
@@ -33,12 +31,12 @@ import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.bricks.skin.main.menu.MainMenu;
 import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
+import sneer.bricks.skin.main.title.ProcessTitle;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.Widget;
 import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
 
 class DashboardImpl implements Dashboard {
 
@@ -204,12 +202,7 @@ class DashboardImpl implements Dashboard {
 		}
 
 		private Signal<String> reactiveTitle() {
-			Signal<String> title = my(Signals.class).adapt(
-				my(OwnNameKeeper.class).name(), 
-				new Functor<String, String>(){	@Override public String evaluate(String ownName) {
-					return "Sneer - " + ownName;
-				}});
-			return title;
+			return my(ProcessTitle.class).title();
 		}
 	}
 }

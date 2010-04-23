@@ -28,15 +28,18 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.io.log.filter.LogFilter;
 import sneer.bricks.hardware.io.log.notifier.LogNotifier;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.skin.main.dashboard.Dashboard;
 import sneer.bricks.skin.main.menu.MainMenu;
 import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
+import sneer.bricks.skin.main.title.ProcessTitle;
 import sneer.bricks.skin.menu.MenuFactory;
 import sneer.bricks.skin.menu.MenuGroup;
 import sneer.bricks.skin.popuptrigger.PopupTrigger;
@@ -50,7 +53,7 @@ import sneer.foundation.lang.Consumer;
 
 class LogConsoleImpl extends JFrame implements LogConsole {
 
-	private static final String SNEER_LOG_CONSOLE = "Sneer Log Console";
+	private static final String TITLE = "Log";
 	private static final int CONSOLE_LINE_LIMIT = 1000;
 
 	private final Synth _synth = my(Synth.class);
@@ -69,8 +72,11 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 	
 	private final JScrollPane _autoScroll = AutoScroll();
 	
+	@SuppressWarnings("unused")
+	private WeakContract refToAvoidGc;
+	
 	LogConsoleImpl(){
-		super(SNEER_LOG_CONSOLE);
+		super();
 		my(Dashboard.class);
 		addMenuAction();
 		my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
@@ -78,6 +84,11 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 //			initTranslucentWindow();
 			initWindowListener();
 		}});
+		
+		Signal<String> processTitle = my(ProcessTitle.class).title();
+		refToAvoidGc = processTitle.addReceiver(new Consumer<String>() {	@Override	public void consume(String processTitleText) {
+				setTitle(TITLE + " - " + processTitleText); }});
+		
 	}
 	
 	protected void initWindowListener() {
@@ -135,7 +146,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		_tab.setTabPlacement(SwingConstants.RIGHT);
 		_tab.addChangeListener(new ChangeListener(){ @Override public void stateChanged(ChangeEvent e) {
 			if(_tab.getSelectedIndex()==0)
-				setTitle(SNEER_LOG_CONSOLE);
+				setTitle(TITLE);
 			else
 				setTitle("Sneer Log Console (Filter)");
 		}});

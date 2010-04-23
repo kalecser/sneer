@@ -21,5 +21,4 @@ class PrevalentBuilding implements Environment {
 	public <T> T provide(Class<T> intrface) {
 		return brick(intrface);
 	}
-	
 }

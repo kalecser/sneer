@@ -15,20 +15,26 @@ import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.security.InvalidParameterException;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.hardware.gui.trayicon.SystemTrayNotSupported;
 import sneer.bricks.hardware.gui.trayicon.TrayIcon;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.Consumer;
 
 class TrayIconImpl implements TrayIcon {
 
 	private final java.awt.TrayIcon _trayIcon;
 
 	private Action _defaultAction;
+	@SuppressWarnings("unused")
+	private WeakContract _refToAvoidGc;
 
-	TrayIconImpl(URL icon) throws SystemTrayNotSupported {
+
+	TrayIconImpl(URL icon, Signal<String> tooltip) throws SystemTrayNotSupported {
 		if (icon == null)
 			throw new InvalidParameterException("Icon cannot be null");
 
@@ -37,7 +43,9 @@ class TrayIconImpl implements TrayIcon {
 
 		SystemTray tray = SystemTray.getSystemTray();
 		Image image = my(Images.class).getImage(icon);
-		java.awt.TrayIcon trayIcon = createTrayIcon(image);
+		final java.awt.TrayIcon trayIcon = createTrayIcon(image);
+		_refToAvoidGc = tooltip.addReceiver(new Consumer<String>() { @Override	public void consume(String text) {
+			trayIcon.setToolTip(text); }});
 		// trayIcon.addMouseListener(mouseListener);
 
 		try {
@@ -50,9 +58,10 @@ class TrayIconImpl implements TrayIcon {
 	}
 
 	private java.awt.TrayIcon createTrayIcon(Image image) {
-		java.awt.TrayIcon trayIcon = new java.awt.TrayIcon(image, "Sneer",
+		java.awt.TrayIcon result = new java.awt.TrayIcon(image, null,
 				new PopupMenu());
-		trayIcon.addMouseListener(new MouseAdapter() {
+		
+		result.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getButton() == 1){
@@ -61,8 +70,8 @@ class TrayIconImpl implements TrayIcon {
 				}
 			}
 		});
-		trayIcon.setImageAutoSize(false);
-		return trayIcon;
+		result.setImageAutoSize(false);
+		return result;
 	}
 
 	
