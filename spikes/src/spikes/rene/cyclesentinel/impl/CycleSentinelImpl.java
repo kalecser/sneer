@@ -16,66 +16,93 @@ public class CycleSentinelImpl implements CycleSentinel {
 	
 	private static final String[] STRING_ARRAY = new String[] {};
 	
-	private Map<Dependency, String> _debugInfosByDependency = new HashMap<Dependency, String>();
+	private Map<Dependency, String> _detailsByDependency = new HashMap<Dependency, String>();
 	DirectedGraph<String> _dependencyGraph = my(Graphs.class).createDirectedGraph();
 
 	
 	@Override
 	public void checkForCycles(String dependentName, String providerName)	throws DependencyCycle {
-		String[] dependentParts = dependentName.split("\\.");
-		String[] providerParts = providerName.split("\\.");
-
-		String commonRoot = "";
-		int i = 0;
-		while (i < providerParts.length) {
-			if (!providerParts[i].equals(dependentParts[i]))
-				break;
-			commonRoot += providerParts[i] + ".";
-			i++;
-		}
-
-		String providerRoot = commonRoot + providerParts[i];
-		String dependentRoot = commonRoot + dependentParts[i];
-
-		Dependency dependency = new Dependency(dependentRoot, providerRoot);
-		if (_debugInfosByDependency.containsKey(dependency))
-			return;
-		String debugInfo = dependentName + " -> " + providerName;
-		_debugInfosByDependency.put(dependency, debugInfo);
-
-		try {
-			checkForRootCycles(dependentRoot, providerRoot);
-		} catch (DependencyCycle e) {
-			_debugInfosByDependency.remove(dependency);
-			throw e;
-		}
-	}
-
-	private void checkForRootCycles(String dependent, String provider) throws DependencyCycle {
-		_dependencyGraph.addEdge(dependent, provider);
-		List<String> cycle = _dependencyGraph.detectCycle();
-		if (cycle.isEmpty())
-			return;
-		
-		_dependencyGraph.removeEdge(dependent, provider);
-		
-		throw new DependencyCycle(exceptionMessageFor(cycle.toArray(STRING_ARRAY)));
+		new CycleCheck(dependentName, providerName);
 	}
 
 	
-	private String exceptionMessageFor(String[] cycle) {
-		String result = "Dependency cycle detected among packages:\n";
+	private class CycleCheck {
+
+		private String _containerPackage;
+		private final String _innermostDependent;   //Ex: "sneer.bricks.hardware.foo"
+		private final String _innermostProvider;   //Ex: "sneer.foundation.lang.Functor"
 		
-		for (int i = 0; i < cycle.length - 1; i++) {
-			String current = cycle[i];
-			String next = cycle[i + 1];
-			result += exceptionMessageLine(current, next) + "\n";
+		private final Dependency _dependency;
+
+		
+		private CycleCheck(String innermostDependent, String innermostProvider) throws DependencyCycle {
+			_innermostDependent = innermostDependent;
+			_innermostProvider = innermostProvider;
+
+			_dependency = computeOutermostDependency();
+
+			if (_detailsByDependency.containsKey(_dependency))
+				return;
+
+			checkForCycle();  // throws DependencyCycle
+
+			String details = _innermostDependent + " -> " + _innermostProvider;
+			_detailsByDependency.put(_dependency, details);
 		}
-		return result + exceptionMessageLine(cycle[cycle.length - 1], cycle[0]);
+
+		
+		private Dependency computeOutermostDependency() {
+			String[] dependentParts = _innermostDependent.split("\\.");
+			String[] providerParts = _innermostProvider.split("\\.");
+
+			_containerPackage = "";
+			int i = 0;
+			while (i < providerParts.length) {
+				if (!providerParts[i].equals(dependentParts[i]))
+					break;
+				_containerPackage += providerParts[i] + ".";
+				i++;
+			}
+
+			String outermostDependent = _containerPackage + dependentParts[i];
+			String outermostProvider = _containerPackage + providerParts[i];
+			
+			return new Dependency(outermostDependent, outermostProvider);
+		}
+
+		
+		private void checkForCycle() throws DependencyCycle {
+			String dependent = _dependency.dependent();
+			String provider = _dependency.provider();
+			
+			_dependencyGraph.addEdge(dependent, provider);
+			List<String> cycle = _dependencyGraph.detectCycle();
+			if (cycle.isEmpty())
+				return;
+			
+			_dependencyGraph.removeEdge(dependent, provider);
+			
+			throw new DependencyCycle(exceptionMessageFor(cycle.toArray(STRING_ARRAY)));
+		}
+
+		
+		private String exceptionMessageFor(String[] cycle) {
+			String result = "Dependency cycle detected among packages:\n";
+			
+			for (int i = 0; i < cycle.length - 1; i++) {
+				String current = cycle[i];
+				String next = cycle[i + 1];
+				result += exceptionMessageLine(current, next) + "\n";
+			}
+			return result + exceptionMessageLine(cycle[cycle.length - 1], cycle[0]);
+		}
+
+		
+		private String exceptionMessageLine(String current, String next) {
+			return "\t" + _detailsByDependency.get(new Dependency(current, next));
+		}
+
 	}
 
-	private String exceptionMessageLine(String current, String next) {
-		return "\t" + _debugInfosByDependency.get(new Dependency(current, next));
-	}
 
 }
