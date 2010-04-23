@@ -55,18 +55,17 @@ public class FileClientTest extends BrickTest {
 	@Test (timeout = 4000)
 	public void receiveFileContentBlocksOutOfSequence() throws IOException, TimeoutException {
 		final File smallFile = createTmpFileWithRandomContent(3 * Protocol.FILE_BLOCK_SIZE);
-		final Hash smallFileHash = my(Crypto.class).digest(smallFile);
+		final Hash fileHash = new Hash(new ImmutableByteArray(new byte[]{42}));
 
-		final Iterator<FileContents> blocksOutOfSequence = createFileContentBlocks(smallFile, smallFileHash).iterator();
+		final Iterator<FileContents> blocksOutOfSequence = createFileContentBlocks(smallFile, fileHash).iterator();
 		@SuppressWarnings("unused")
 		WeakContract toAvoidGC = my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
 			my(TupleSpace.class).acquire(blocksOutOfSequence.next());
-			blocksOutOfSequence.remove();
 			my(Clock.class).advanceTime(1); // To avoid duplicated tuples
 		}});
 
 		final File tmpFile = newTmpFile();
-		_subject.startFileDownload(tmpFile, smallFileHash).waitTillFinished();
+		_subject.startFileDownload(tmpFile, fileHash).waitTillFinished();
 
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 		my(IO.class).files().assertSameContents(tmpFile, smallFile);
