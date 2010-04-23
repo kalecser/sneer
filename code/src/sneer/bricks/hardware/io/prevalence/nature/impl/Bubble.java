@@ -29,6 +29,9 @@ class Bubble implements InvocationHandler {
 	}
 	
 	private Bubble(Object delegate, Prevayler prevayler) {
+		if (!my(PrevalentMap.class).isRegistered(delegate))
+			throw new IllegalStateException();
+		
 		_delegate = delegate;
 		_prevayler = prevayler;
 	}

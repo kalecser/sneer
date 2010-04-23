@@ -1,9 +1,12 @@
 package sneer.bricks.hardware.io.prevalence.map.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
+import sneer.bricks.hardware.io.prevalence.state.PrevailingState;
 
 class PrevalentMapImpl implements PrevalentMap {
 	
@@ -21,6 +24,10 @@ class PrevalentMapImpl implements PrevalentMap {
 
 	@Override
 	public <T> T register(T object) {
+		
+		if (!my(PrevailingState.class).isPrevailing())
+			throw new IllegalStateException();
+		
 		if (_idsByObject.containsKey(object))
 			throw new IllegalStateException();
 		
@@ -37,6 +44,11 @@ class PrevalentMapImpl implements PrevalentMap {
 	@Override
 	public Object objectById(long id) {
 		return _objectsById.get(id);
+	}
+
+	@Override
+	public boolean isRegistered(Object object) {
+		return _idsByObject.containsKey(object);
 	}
 	
 

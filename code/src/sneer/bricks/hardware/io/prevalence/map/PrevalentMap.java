@@ -11,4 +11,6 @@ public interface PrevalentMap {
 
 	Object objectById(long id);
 
+	boolean isRegistered(Object object);
+
 }
