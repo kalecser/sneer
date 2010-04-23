@@ -16,20 +16,20 @@ import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Producer;
 
-final class InstantiateBrick<T> implements
-		SureTransactionWithQuery {
+final class InstantiateBrick<T> implements SureTransactionWithQuery {
 	
 	private final Class<T> _brick;
 	private final Producer<T> _producer;
 
+	
 	InstantiateBrick(Class<T> brick, Producer<T> producer) {
 		_brick = brick;
 		_producer = producer;
 	}
 
+	
 	@Override
 	public Object executeAndQuery(Object prevalentSystem, Date executionTime) {
-		
 		final PrevalentBuilding building = (PrevalentBuilding)prevalentSystem;
 		final ByRef<T> retVal = ByRef.newInstance();
 		Environments.runWith(EnvironmentUtils.compose(building, my(Environment.class)), new Closure() { @Override public void run() {
