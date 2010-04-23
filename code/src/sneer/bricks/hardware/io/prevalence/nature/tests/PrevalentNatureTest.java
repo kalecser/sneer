@@ -2,7 +2,6 @@ package sneer.bricks.hardware.io.prevalence.nature.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.Item;

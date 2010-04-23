@@ -7,13 +7,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.objectweb.asm.ClassAdapter;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodAdapter;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 import org.prevayler.Prevayler;
 import org.prevayler.PrevaylerFactory;
 
@@ -27,73 +20,6 @@ import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Producer;
 
 class PrevalentImpl implements Prevalent {
-	
-	private final class InstantiationProcessor extends ClassAdapter {
-		
-		private final class MethodProcessor extends MethodAdapter {
-			
-			private boolean _new;
-			private boolean _dup;
-
-			private MethodProcessor(MethodVisitor delegate) {
-				super(delegate);
-			}
-
-			@Override
-			public void visitTypeInsn(int opcode, String type) {
-				super.visitTypeInsn(opcode, type);
-				if (opcode == Opcodes.NEW)
-					_new = true;
-				else
-					matchFailed();
-			}
-
-			@Override
-			public void visitInsn(int opcode) {
-				super.visitInsn(opcode);
-				if (_new)
-					_dup = opcode == Opcodes.DUP;
-				else
-					matchFailed();
-			}
-
-			@Override
-			public void visitMethodInsn(int opcode, String owner,
-					String name, String desc) {
-				super.visitMethodInsn(opcode, owner, name, desc);
-				
-				if (_dup && opcode == Opcodes.INVOKESPECIAL)
-					registerInstantiation();
-				
-				matchFailed();
-			}
-
-			private void matchFailed() {
-				_new = _dup = false;
-			}
-			
-			@Override
-			public void visitFieldInsn(int opcode, String owner, String name,
-					String desc) {
-				super.visitFieldInsn(opcode, owner, name, desc);
-				matchFailed();
-			}
-
-			private void registerInstantiation() {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
-			}
-		}
-
-		private InstantiationProcessor(ClassVisitor delegate) {
-			super(delegate);
-		}
-		
-		@Override
-		public MethodVisitor visitMethod(int access, String name, String desc,
-				String signature, String[] exceptions) {
-			return new MethodProcessor(super.visitMethod(access, name, desc, signature, exceptions));
-		}
-	}
 
 	private Prevayler _prevayler;
 
@@ -110,10 +36,7 @@ class PrevalentImpl implements Prevalent {
 	@Override
 	public List<ClassDefinition> realize(ClassDefinition classDef) {
 		
-		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-		ClassReader reader = new ClassReader(classDef.bytes);
-		reader.accept(new InstantiationProcessor(writer), 0);
-		return Arrays.asList(new ClassDefinition(classDef.name, writer.toByteArray()));
+		return Arrays.asList(classDef);
 	}
 
 	boolean _prevailing;
