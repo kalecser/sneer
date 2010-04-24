@@ -26,7 +26,7 @@ class Invocation extends BuildingTransaction {
 	private final Object[] _args;
 	
 	@Override
-	protected Object executeAndQuery(final Building building) {
+	protected Object executeAndQuery(final PrevalentBuilding building) {
 		Producer<Object> producer = new Producer<Object>() { @Override public Object produce() throws RuntimeException {
 			return EnvironmentUtils.produceIn(EnvironmentUtils.compose(building, my(Environment.class)), new Producer<Object>() { @Override public Object produce() throws RuntimeException {
 				Object receiver = my(PrevalentMap.class).objectById(_id);

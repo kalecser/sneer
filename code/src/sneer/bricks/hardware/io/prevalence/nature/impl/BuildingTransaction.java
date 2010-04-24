@@ -8,10 +8,10 @@ abstract class BuildingTransaction implements SureTransactionWithQuery {
 
 	@Override
 	public Object executeAndQuery(Object prevalentSystem, Date executionTime) {
-		return executeAndQuery((Building)prevalentSystem);
+		return executeAndQuery((PrevalentBuilding)prevalentSystem);
 	}
 
-	protected abstract Object executeAndQuery(Building building);
+	protected abstract Object executeAndQuery(PrevalentBuilding building);
 
 
 }

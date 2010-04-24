@@ -21,7 +21,7 @@ final class InstantiateBrick<T> extends BuildingTransaction {
 
 
 	@Override
-	protected Object executeAndQuery(Building building) {
+	protected Object executeAndQuery(PrevalentBuilding building) {
 		Environment environment = EnvironmentUtils.compose(building, my(Environment.class));
 		T result = EnvironmentUtils.produceIn(environment, _producer);
 		building.add(_brick, result);
