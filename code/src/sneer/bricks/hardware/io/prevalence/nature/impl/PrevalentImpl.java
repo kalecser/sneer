@@ -43,20 +43,17 @@ class PrevalentImpl implements Prevalent {
 	
 	@Override
 	public synchronized <T> T instantiate(final Class<T> brick, Class<T> implClass, final Producer<T> instantiator) {
-		final Producer<T> producer = new RegisteringProducer<T>(instantiator);
+		final Producer<T> insidePrevalence = new RegisteringProducer<T>(instantiator);
 		
-		Producer<T> nonPrevailing = new Producer<T>() { @Override public T produce() {			
-			
+		Producer<T> toEnterPrevalence = new Producer<T>() { @Override public T produce() {			
 			PrevalentBuilding building = (PrevalentBuilding) _prevayler.prevalentSystem();
 			T existing = building.brick(brick);
-			T instance = existing != null
+			return existing != null
 				? existing
-				: (T)_prevayler.execute(new InstantiateBrick<T>(brick, producer));
-			
-			return instance;
+				: (T)_prevayler.execute(new InstantiateBrick<T>(brick, insidePrevalence));
 		}};
 		
-		return Bubble.wrap(my(PrevailingState.class).produce(producer, nonPrevailing), _prevayler);
+		return Bubble.wrap(my(PrevailingState.class).produce(toEnterPrevalence, insidePrevalence), _prevayler);
 	}
 	
 	
@@ -80,15 +77,16 @@ class PrevalentImpl implements Prevalent {
 	
 	private Prevayler createPrevayler(final File prevalenceBase) {
 		final PrevaylerFactory factory = createPrevaylerFactory(new PrevalentBuilding(), prevalenceBase);
-			return my(PrevailingState.class).produce(new Producer<Prevayler>() { @Override public Prevayler produce() throws RuntimeException {
-				try {
-					return tryToCreatePrevayler(factory);
-				} catch (IOException e) {
-					throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-				} catch (ClassNotFoundException e) {
-					throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-				}
-			}});
+
+		return my(PrevailingState.class).produce(new Producer<Prevayler>() { @Override public Prevayler produce() throws RuntimeException {
+			try {
+				return factory.create();
+			} catch (IOException e) {
+				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			} catch (ClassNotFoundException e) {
+				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			}
+		}});
 	}
 
 		
@@ -101,15 +99,12 @@ class PrevalentImpl implements Prevalent {
 		return factory;
 	}
 	
+	
 	private void crash() {
 		try {
 			_prevayler.close();
 		} catch (IOException e) {
 			my(Logger.class).log("Exception closing prevayler: " + e);
 		}
-	}
-
-	private Prevayler tryToCreatePrevayler(final PrevaylerFactory factory) throws IOException, ClassNotFoundException {
-		return factory.create();
 	}
 }

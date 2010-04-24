@@ -6,30 +6,33 @@ import sneer.foundation.lang.Producer;
 
 class PrevailingStateImpl implements PrevailingState {
 	
+	
 	boolean _prevailing;
 	
+	
 	@Override
-	public synchronized <T> T produce(final Producer<T> producerThatDoesntEnterPrevalence, Producer<T> producerThatEntersPrevalence) {
-		
+	public synchronized <T> T produce(Producer<T> producerToEnterPrevalence, final Producer<T> producerToRunInsidePrevalence) {
 		if (_prevailing)
-			return producerThatDoesntEnterPrevalence.produce();
+			return producerToRunInsidePrevalence.produce();
 		
 		_prevailing = true;
 		try {
-			return producerThatEntersPrevalence.produce();
+			return producerToEnterPrevalence.produce();
 		} finally {
 			_prevailing = false;
 		}
 	}	
+	
 	
 	@Override
 	public <T> T produce(final Producer<T> producer) {
 		Producer<T> SHOULD_NOT_BE_PREVAILING = new Producer<T>() { @Override public T produce() throws RuntimeException {
 			throw new IllegalStateException();
 		}};
-		return produce(SHOULD_NOT_BE_PREVAILING, producer);
+		return produce(producer, SHOULD_NOT_BE_PREVAILING);
 	}
 
+	
 	@Override
 	public boolean isPrevailing() {
 		return _prevailing;

@@ -8,8 +8,8 @@ public interface PrevailingState {
 
 	boolean isPrevailing();
 
-	<T> T produce(Producer<T> producerThatDoesntEnterPrevalence, Producer<T> producerThatEntersPrevalence);
+	<T> T produce(Producer<T> producerToEnterPrevalence, Producer<T> producerToRunInsidePrevalence);
 
-	<T> T produce(Producer<T> producerThatEntersPrevalence);
+	<T> T produce(Producer<T> producerToEnterPrevalence);
 
 }
