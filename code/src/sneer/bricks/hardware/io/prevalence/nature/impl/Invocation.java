@@ -5,7 +5,6 @@ import static sneer.foundation.environments.Environments.my;
 import java.lang.reflect.Method;
 
 import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
-import sneer.bricks.hardware.io.prevalence.state.PrevalenceDispatcher;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.lang.Producer;
@@ -27,13 +26,10 @@ class Invocation extends BuildingTransaction {
 	
 	@Override
 	protected Object executeAndQuery(final PrevalentBuilding building) {
-		Producer<Object> producer = new Producer<Object>() { @Override public Object produce() throws RuntimeException {
 			return EnvironmentUtils.produceIn(EnvironmentUtils.compose(building, my(Environment.class)), new Producer<Object>() { @Override public Object produce() throws RuntimeException {
 				Object receiver = my(PrevalentMap.class).objectById(_id);
 				return invoke(receiver, _methodName, _argTypes, Bubble.unmap(_args));
 			}});
-		}};
-		return my(PrevalenceDispatcher.class).produce(producer, producer);
 	}
 
 	private Object invoke(Object receiver, String methodName, Class<?>[] argTypes, Object... args) {
