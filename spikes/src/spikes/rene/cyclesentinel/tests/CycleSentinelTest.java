@@ -1,6 +1,5 @@
 package spikes.rene.cyclesentinel.tests;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -8,7 +7,6 @@ import spikes.rene.cyclesentinel.CycleSentinel;
 import spikes.rene.cyclesentinel.DependencyCycle;
 import spikes.rene.cyclesentinel.impl.CycleSentinelImpl;
 
-@Ignore
 public class CycleSentinelTest extends BrickTest {
 
 	private CycleSentinel _subject = new CycleSentinelImpl();
@@ -41,9 +39,9 @@ public class CycleSentinelTest extends BrickTest {
 			fail();
 		} catch (DependencyCycle e) {
 			assertEquals(
-					"Dependency cycle detected among packages:\n" +
-					"	main.banana.lixo.Main -> game.resourses.noob.Game\n" +
-					"	game.test.Player -> main.foo.Starter",
+					"Dependency cycle detected:\n" +
+					"	main -> game  (main.banana.lixo.Main -> game.resourses.noob.Game)\n" +
+					"	game -> main  (game.test.Player -> main.foo.Starter)",
 					e.getMessage());
 		}
 	}
@@ -56,9 +54,9 @@ public class CycleSentinelTest extends BrickTest {
 			fail();
 		} catch (DependencyCycle e) {
 			assertEquals(
-					"Dependency cycle detected among packages:\n" +
-					"	main.banana.test.Kart -> main.banana.lixo.Starter\n" +
-					"	main.banana.lixo.Main -> main.banana.test.Player", e.getMessage());
+					"Dependency cycle detected:\n" +
+					"	main.banana.test -> main.banana.lixo  (main.banana.test.Kart -> main.banana.lixo.Starter)\n" +
+					"	main.banana.lixo -> main.banana.test  (main.banana.lixo.Main -> main.banana.test.Player)", e.getMessage());
 		} 
 	}
 
@@ -71,7 +69,7 @@ public class CycleSentinelTest extends BrickTest {
 			fail();
 		} catch (DependencyCycle e) {
 			assertEquals(
-					"Dependency cycle detected among packages:\n" +
+					"Dependency cycle detected:\n" +
 					"	a -> b\n" +
 					"	b -> c\n" +
 					"	c -> a", e.getMessage());
