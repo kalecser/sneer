@@ -16,6 +16,7 @@ import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
+import sneer.foundation.environments.ProxyInEnvironment;
 import sneer.foundation.languagesupport.LanguageJarFinder;
 import sneer.tests.SovereignCommunity;
 import sneer.tests.SovereignParty;
@@ -57,8 +58,8 @@ public class SneerCommunity implements SovereignCommunity {
 		Environment container = Brickness.newBrickContainer(_network, newLogger(name));
 		URLClassLoader apiClassLoader = apiClassLoader(privateBin, sharedBin, name);
 		
-		Object partyImpl = EnvironmentUtils.retrieveFrom(container, loadProbeClassUsing(apiClassLoader));
-		final SneerParty party = (SneerParty)ProxyInEnvironment.newInstance(container, partyImpl);
+		SneerParty partyImpl = (SneerParty)EnvironmentUtils.retrieveFrom(container, loadProbeClassUsing(apiClassLoader));
+		final SneerParty party = ProxyInEnvironment.newInstance(container, partyImpl);
 		
 		party.configDirectories(dataFolder, tmpFolder, currentCodeFolder, privateSrc, privateBin, stageFolder);
 		party.setOwnName(name);

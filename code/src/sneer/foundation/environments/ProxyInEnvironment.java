@@ -1,22 +1,29 @@
-package sneer.tests.adapters;
+package sneer.foundation.environments;
+
+import static sneer.foundation.environments.Environments.my;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
 
-final class ProxyInEnvironment implements InvocationHandler {
 
-	public static Object newInstance(Environment environment, final Object component) {
+public class ProxyInEnvironment implements InvocationHandler {
+
+	public static <T> T newInstance(T component) {
+		return newInstance(my(Environment.class), component);
+	}
+
+	
+	public static <T> T newInstance(Environment environment, final T component) {
 		final Class<? extends Object> componentClass = component.getClass();
 		final ProxyInEnvironment invocationHandler = new ProxyInEnvironment(environment, component);
-		return Proxy.newProxyInstance(componentClass.getClassLoader(), componentClass.getInterfaces(), invocationHandler);
+		return (T)Proxy.newProxyInstance(componentClass.getClassLoader(), componentClass.getInterfaces(), invocationHandler);
 	}
+	
 	
 	private final Environment _environment;
 	private final Object _delegate;
