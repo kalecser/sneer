@@ -37,6 +37,7 @@ abstract class ControlPanel extends JPanel {
 	private final JSlider _volume 			= new JSlider(SwingConstants.HORIZONTAL, 0, MAX_VOLUME, 0);
 
 	@SuppressWarnings("unused") private WeakContract toAvoidGC;
+	@SuppressWarnings("unused") private WeakContract _volumeListenerContract;
 
 	ControlPanel() {
 		super(new FlowLayout(FlowLayout.LEFT, 6, 5));
@@ -47,7 +48,10 @@ abstract class ControlPanel extends JPanel {
 	    	else
 	    		_pauseResume.setText(RESUME_ICON);
 		}});
-	    _volume.setValue(volumeLevel(_controller.volumePercent()));
+	    _volumeListenerContract = _controller.volumePercent().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer volume) {
+				_volume.setValue(volumeLevel(volume));
+			}
+		});
 	    
 	    _pauseResume.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent evt) {
 	    	pauseResumeActionPerformed();

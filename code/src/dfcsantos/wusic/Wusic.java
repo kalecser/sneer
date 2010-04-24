@@ -49,6 +49,6 @@ public interface Wusic {
 	Signal<Integer> trackDownloadAllowance();
 	PickyConsumer<Integer> trackDownloadAllowanceSetter();
 	void volumePercent(int level);
-	int volumePercent();
+	Signal<Integer> volumePercent();
 }
 

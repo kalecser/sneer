@@ -30,7 +30,7 @@ public class WusicImpl implements Wusic {
 	private final Register<Track> _trackToPlay = my(Signals.class).newRegister(null);
 	private Track _lastPlayedTrack;
 
-	private final DJ _dj = new DJ(_trackToPlay.output(), new Closure() { @Override public void run() { skip(); } } );
+	private final DJ _dj = new DJ(_trackToPlay.output(), new Closure() { @Override public void run() { skip(); } });
 
 	private Register<Boolean> _isDownloadActive = my(Signals.class).newRegister(false);
 	private final Register<Integer> _downloadAllowance = my(Signals.class).newRegister(DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE);  
@@ -235,7 +235,7 @@ public class WusicImpl implements Wusic {
 	}
 
 	@Override
-	public int volumePercent() {
+	public Signal<Integer> volumePercent() {
 		return _dj.volumePercent();
 	}
 }

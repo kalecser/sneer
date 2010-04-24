@@ -27,7 +27,7 @@ public class GainJavaSoundAudioDevice extends JavaSoundAudioDevice {
 	}
 	
 	public void volumePercent(int level) {
-		_volumePercent = level;
+		_volumePercent = Math.max(0, Math.min(100, level));
 		float gain = Math.max(- Float.MAX_VALUE, (float)(20 * Math.log10(_volumePercent / 100.0)));
 	    try {
 			SourceDataLine source = source();

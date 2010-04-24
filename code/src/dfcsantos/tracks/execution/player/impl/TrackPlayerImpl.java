@@ -8,7 +8,7 @@ import dfcsantos.tracks.execution.player.TrackPlayer;
 class TrackPlayerImpl implements TrackPlayer {
 
 	@Override
-	public TrackContract startPlaying(Track track, Signal<Boolean> isPlaying, int volumePercent, final Runnable toCallWhenFinished) {
+	public TrackContract startPlaying(Track track, Signal<Boolean> isPlaying, Signal<Integer> volumePercent, final Runnable toCallWhenFinished) {
 		return new TrackContractImpl(track, isPlaying, volumePercent, toCallWhenFinished);
 	}
 
