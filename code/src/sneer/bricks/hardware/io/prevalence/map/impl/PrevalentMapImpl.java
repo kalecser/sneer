@@ -25,8 +25,7 @@ class PrevalentMapImpl implements PrevalentMap {
 	@Override
 	public <T> T register(T object) {
 		
-		if (!my(PrevalenceDispatcher.class).isPrevailing())
-			throw new IllegalStateException();
+		my(PrevalenceDispatcher.class).checkInsidePrevalence();
 		
 		if (_idsByObject.containsKey(object))
 			throw new IllegalStateException();

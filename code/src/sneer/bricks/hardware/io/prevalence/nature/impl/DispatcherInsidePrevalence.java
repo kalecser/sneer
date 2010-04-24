@@ -11,12 +11,5 @@ final class InternalDispatcher implements PrevalenceDispatcher {
 	}
 
 	@Override
-	public <T> T produceOutsidePrevalence(final Producer<T> producer) {
-		throw new IllegalStateException();
-	}
-
-	@Override
-	public boolean isPrevailing() {
-		return true;
-	}
+	public void checkInsidePrevalence() {}
 }

@@ -78,15 +78,13 @@ class PrevalentImpl implements Prevalent {
 	private Prevayler createPrevayler(final File prevalenceBase) {
 		final PrevaylerFactory factory = createPrevaylerFactory(new PrevalentBuilding(), prevalenceBase);
 
-		return my(PrevalenceDispatcher.class).produceOutsidePrevalence(new Producer<Prevayler>() { @Override public Prevayler produce() throws RuntimeException {
-			try {
-				return factory.create();
-			} catch (IOException e) {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-			} catch (ClassNotFoundException e) {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-			}
-		}});
+		try {
+			return factory.create();
+		} catch (IOException e) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+		} catch (ClassNotFoundException e) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+		}
 	}
 
 		

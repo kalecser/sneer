@@ -6,22 +6,15 @@ import sneer.foundation.lang.Producer;
 
 class PrevalenceDispatcherImpl implements PrevalenceDispatcher {
 	
-	
 	@Override
-	public synchronized <T> T produce(Producer<T> producerToEnterPrevalence, final Producer<T> producerToRunInsidePrevalence) {
-		return producerToEnterPrevalence.produce();
+	public synchronized <T> T produce(Producer<T> producerForOutsidePrevalence, Producer<T> producerForInsidePrevalence) {
+		return producerForOutsidePrevalence.produce();
 	}
 	
 	
 	@Override
-	public <T> T produceOutsidePrevalence(final Producer<T> producerToEnterPrevalence) {
-		return producerToEnterPrevalence.produce();
-	}
-
-	
-	@Override
-	public boolean isPrevailing() {
-		return false;
+	public void checkInsidePrevalence() {
+		throw new IllegalStateException("Should be running inside the Prevalence environment.");
 	}
 	
 }
