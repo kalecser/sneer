@@ -69,9 +69,6 @@ Klaus =================================================
 
 	- @After are not being called by ignored tests so tmpFolder() is not being removed
 
-	- [Rene] Dependency cycle detector.
-		- Git install
-
 	- Freedom7 - "Me Too" for Bricks 
 		- Unignore Freedom7.meToo
 			- BrickSpaceImpl.init() uncomment.
@@ -89,7 +86,3 @@ Klaus =================================================
 		- Remove all calls to Thread.sleep() including indirect.
 
 
-Kalecser =================================================
-
-		- Sneer "DNS".
-			- Unignore ContactInternetAddressesTest
