@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
@@ -16,6 +18,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.foundation.environments.ProxyInEnvironment;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import spikes.klaus.go.GoBoard;
@@ -65,14 +68,14 @@ public class GoBoardPanel extends JPanel {
 	private volatile int _scrollYDelta;
 	private volatile int _scrollXDelta;
 
-	private Register<Move> _moveRegister;
+	private final Register<Move> _moveRegister;
 	private final StoneColor _side;
 
 	@SuppressWarnings("unused")	private final Object _referenceToAvoidGc;
 
 	public GoBoardPanel(Register<Move> moveRegister, StoneColor side) {
 		_side = side;
-		_moveRegister=moveRegister;
+		_moveRegister = moveRegister;
 		_referenceToAvoidGc = _moveRegister.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) { 
 			if (move == null) return; 
 			play(move); 
@@ -88,9 +91,9 @@ public class GoBoardPanel extends JPanel {
 	}
 	
 	private void addMouseListener() {
-		MouseListener listener = new MouseListener();
-		addMouseListener(listener);
-	    addMouseMotionListener(listener);
+		Object listener = ProxyInEnvironment.newInstance(new GoMouseListener());
+		addMouseListener((MouseListener) listener);
+	    addMouseMotionListener((MouseMotionListener) listener);
 	}
 	
 	@Override
@@ -164,7 +167,7 @@ public class GoBoardPanel extends JPanel {
 		return result;
 	}
 
-	private class MouseListener extends MouseAdapter{
+	private class GoMouseListener extends MouseAdapter {
 		
 		@Override
 		public void mouseMoved(final MouseEvent e) {

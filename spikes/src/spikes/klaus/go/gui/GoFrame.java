@@ -16,14 +16,10 @@ import spikes.klaus.go.GoBoard.StoneColor;
 
 public class GoFrame extends JFrame {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private final StoneColor _side;
 
 	public GoFrame(Register<Move> _move, StoneColor side, int horizontalPosition) {
-		
 		_side = side;
 		setTitle("Go - " + _side.name());	  
 	    setResizable(true);

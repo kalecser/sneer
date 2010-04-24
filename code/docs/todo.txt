@@ -8,8 +8,8 @@ Following are the tasks each one of us has on his plate right now:
 Bamboo =================================================
 
 	- Prevalence
-		- Use a single prevayler for all bricks inside PrevalentImpl so that transactions are properly synchronized among all prevalent bricks.
-			- Ignore method calls that are already inside a transaction context.
+		- PrevalentImpl.instantiate is funky. The Producer toEnterPrevalence doesn't always enter prevalence.
+		- Prevalent environment should only provide Prevalent and Stateless bricks.
 		- Make the Contacts brick prevalent.
 			- Batism Problem - Solve. Implement "Membrane, The"
 				- Talk to Klaus. Can be done using proxies exclusively or with instrumentation.
@@ -56,6 +56,11 @@ Igor ====================================================
 		- Announce to community
 
 
+René =================================================
+
+	- Toroidal Go Snapp
+
+
 Klaus =================================================
 
 	- Seals
@@ -63,14 +68,9 @@ Klaus =================================================
 
 	- Prevalent Bubble - not required if already prevailing
 
-	- CycleSentinelTest - Unignore
-
 	- Use CustomClockTicker at SneerPartyController.accelerateHeartbeat()
 
 	- @After are not being called by ignored tests so tmpFolder() is not being removed
-
-	- [Rene] Dependency cycle detector.
-		- Git install
 
 	- Freedom7 - "Me Too" for Bricks 
 		- Unignore Freedom7.meToo
@@ -89,7 +89,3 @@ Klaus =================================================
 		- Remove all calls to Thread.sleep() including indirect.
 
 
-Kalecser =================================================
-
-		- Sneer "DNS".
-			- Unignore ContactInternetAddressesTest

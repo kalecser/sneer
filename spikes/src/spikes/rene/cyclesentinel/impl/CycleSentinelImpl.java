@@ -46,8 +46,7 @@ public class CycleSentinelImpl implements CycleSentinel {
 
 			checkForCycle();  // throws DependencyCycle
 
-			String details = _innermostDependent + " -> " + _innermostProvider;
-			_detailsByDependency.put(_dependency, details);
+			_detailsByDependency.put(_dependency, details());
 		}
 
 		
@@ -71,6 +70,19 @@ public class CycleSentinelImpl implements CycleSentinel {
 		}
 
 		
+		private String details() {  //Ex: "sneer.bricks -> sneer.foundation  (sneer.bricks.hardware.foo -> sneer.foundation.lang.Functor)"
+			String dependent = _dependency.dependent();
+			String provider = _dependency.provider();
+			
+			String result = dependent + " -> " + provider;
+			
+			if (!dependent.equals(_innermostDependent) || !provider.equals(_innermostProvider))
+				result += "  (" + _innermostDependent + " -> " + _innermostProvider + ")";
+				
+			return result;
+		}
+		
+		
 		private void checkForCycle() throws DependencyCycle {
 			String dependent = _dependency.dependent();
 			String provider = _dependency.provider();
@@ -87,7 +99,7 @@ public class CycleSentinelImpl implements CycleSentinel {
 
 		
 		private String exceptionMessageFor(String[] cycle) {
-			String result = "Dependency cycle detected among packages:\n";
+			String result = "Dependency cycle detected:\n";
 			
 			for (int i = 0; i < cycle.length - 1; i++) {
 				String current = cycle[i];
@@ -99,7 +111,15 @@ public class CycleSentinelImpl implements CycleSentinel {
 
 		
 		private String exceptionMessageLine(String current, String next) {
-			return "\t" + _detailsByDependency.get(new Dependency(current, next));
+			return exceptionMessageLine(new Dependency(current, next));
+		}
+
+
+		private String exceptionMessageLine(Dependency currentDependency) {
+			String result = currentDependency.equals(_dependency)
+				? details()
+				: _detailsByDependency.get(currentDependency);
+			return "\t" + result;
 		}
 
 	}

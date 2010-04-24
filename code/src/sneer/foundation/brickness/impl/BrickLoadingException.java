@@ -1,4 +1,4 @@
-package sneer.foundation.brickness;
+package sneer.foundation.brickness.impl;
 
 public class BrickLoadingException extends RuntimeException {
 

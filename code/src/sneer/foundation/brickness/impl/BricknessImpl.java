@@ -3,7 +3,6 @@ package sneer.foundation.brickness.impl;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import sneer.foundation.brickness.BrickLoadingException;
 import sneer.foundation.brickness.Nature;
 import sneer.foundation.environments.Bindings;
 import sneer.foundation.environments.CachingEnvironment;

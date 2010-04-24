@@ -1,8 +1,7 @@
 package sneer.foundation.brickness.impl;
 
-import sneer.foundation.brickness.BrickClassLoader;
 import sneer.foundation.brickness.BrickSerializationMapper;
-import sneer.foundation.brickness.BrickClassLoader.Kind;
+import sneer.foundation.brickness.impl.BrickClassLoader.Kind;
 import sneer.foundation.lang.ByRef;
 
 public class BrickSerializationMapperImpl implements BrickSerializationMapper {
