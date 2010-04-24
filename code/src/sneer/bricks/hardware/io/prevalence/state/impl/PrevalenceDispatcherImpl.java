@@ -14,7 +14,7 @@ class PrevalenceDispatcherImpl implements PrevalenceDispatcher {
 	
 	
 	@Override
-	public <T> T produce(final Producer<T> producerToEnterPrevalence) {
+	public <T> T produceOutsidePrevalence(final Producer<T> producerToEnterPrevalence) {
 		return producerToEnterPrevalence.produce();
 	}
 

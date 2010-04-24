@@ -8,8 +8,8 @@ public interface PrevalenceDispatcher {
 
 	boolean isPrevailing();
 
-	<T> T produce(Producer<T> producerToEnterPrevalence, Producer<T> producerToRunInsidePrevalence);
+	<T> T produce(Producer<T> producerForOutsidePrevalence, Producer<T> producerForInsidePrevalence);
 
-	<T> T produce(Producer<T> producerToEnterPrevalence);
+	<T> T produceOutsidePrevalence(Producer<T> producer);
 
 }

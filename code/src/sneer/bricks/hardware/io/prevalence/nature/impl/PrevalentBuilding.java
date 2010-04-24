@@ -24,6 +24,9 @@ class PrevalentBuilding implements Environment {
 	
 	@Override
 	public <T> T provide(Class<T> brick) {
+		if (brick == PrevalentBuilding.class)
+			return (T)this;
+		
 		return (T)_bricks.get(brick);
 	}
 }

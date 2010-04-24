@@ -50,7 +50,7 @@ class PrevalentImpl implements Prevalent {
 			T existing = building.provide(brick);
 			return existing != null
 				? existing
-				: (T)_prevayler.execute(new InstantiateBrick<T>(brick, insidePrevalence));
+				: (T)_prevayler.execute(new BrickInstantiation<T>(brick, insidePrevalence));
 		}};
 		
 		return Bubble.wrap(my(PrevalenceDispatcher.class).produce(toEnterPrevalence, insidePrevalence), _prevayler);
@@ -78,7 +78,7 @@ class PrevalentImpl implements Prevalent {
 	private Prevayler createPrevayler(final File prevalenceBase) {
 		final PrevaylerFactory factory = createPrevaylerFactory(new PrevalentBuilding(), prevalenceBase);
 
-		return my(PrevalenceDispatcher.class).produce(new Producer<Prevayler>() { @Override public Prevayler produce() throws RuntimeException {
+		return my(PrevalenceDispatcher.class).produceOutsidePrevalence(new Producer<Prevayler>() { @Override public Prevayler produce() throws RuntimeException {
 			try {
 				return factory.create();
 			} catch (IOException e) {
