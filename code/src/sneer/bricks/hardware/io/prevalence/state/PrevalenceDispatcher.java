@@ -4,7 +4,7 @@ import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.Producer;
 
 @Brick
-public interface PrevailingState {
+public interface PrevalenceDispatcher {
 
 	boolean isPrevailing();
 

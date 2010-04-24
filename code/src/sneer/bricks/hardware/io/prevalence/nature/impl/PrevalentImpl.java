@@ -15,7 +15,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
-import sneer.bricks.hardware.io.prevalence.state.PrevailingState;
+import sneer.bricks.hardware.io.prevalence.state.PrevalenceDispatcher;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.lang.Closure;
@@ -53,7 +53,7 @@ class PrevalentImpl implements Prevalent {
 				: (T)_prevayler.execute(new InstantiateBrick<T>(brick, insidePrevalence));
 		}};
 		
-		return Bubble.wrap(my(PrevailingState.class).produce(toEnterPrevalence, insidePrevalence), _prevayler);
+		return Bubble.wrap(my(PrevalenceDispatcher.class).produce(toEnterPrevalence, insidePrevalence), _prevayler);
 	}
 	
 	
@@ -78,7 +78,7 @@ class PrevalentImpl implements Prevalent {
 	private Prevayler createPrevayler(final File prevalenceBase) {
 		final PrevaylerFactory factory = createPrevaylerFactory(new PrevalentBuilding(), prevalenceBase);
 
-		return my(PrevailingState.class).produce(new Producer<Prevayler>() { @Override public Prevayler produce() throws RuntimeException {
+		return my(PrevalenceDispatcher.class).produce(new Producer<Prevayler>() { @Override public Prevayler produce() throws RuntimeException {
 			try {
 				return factory.create();
 			} catch (IOException e) {

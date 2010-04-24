@@ -5,7 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.lang.reflect.Method;
 
 import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
-import sneer.bricks.hardware.io.prevalence.state.PrevailingState;
+import sneer.bricks.hardware.io.prevalence.state.PrevalenceDispatcher;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.lang.Producer;
@@ -33,7 +33,7 @@ class Invocation extends BuildingTransaction {
 				return invoke(receiver, _methodName, _argTypes, Bubble.unmap(_args));
 			}});
 		}};
-		return my(PrevailingState.class).produce(producer, producer);
+		return my(PrevalenceDispatcher.class).produce(producer, producer);
 	}
 
 	private Object invoke(Object receiver, String methodName, Class<?>[] argTypes, Object... args) {

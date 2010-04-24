@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
-import sneer.bricks.hardware.io.prevalence.state.PrevailingState;
+import sneer.bricks.hardware.io.prevalence.state.PrevalenceDispatcher;
 
 class PrevalentMapImpl implements PrevalentMap {
 	
@@ -25,7 +25,7 @@ class PrevalentMapImpl implements PrevalentMap {
 	@Override
 	public <T> T register(T object) {
 		
-		if (!my(PrevailingState.class).isPrevailing())
+		if (!my(PrevalenceDispatcher.class).isPrevailing())
 			throw new IllegalStateException();
 		
 		if (_idsByObject.containsKey(object))
