@@ -8,8 +8,7 @@ Following are the tasks each one of us has on his plate right now:
 Bamboo =================================================
 
 	- Prevalence
-		- Use a single prevayler for all bricks inside PrevalentImpl so that transactions are properly synchronized among all prevalent bricks.
-			- Ignore method calls that are already inside a transaction context.
+		- Consider: Prevalent brick instantiation should be idempotent so it doesnt really need a transaction.
 		- Make the Contacts brick prevalent.
 			- Batism Problem - Solve. Implement "Membrane, The"
 				- Talk to Klaus. Can be done using proxies exclusively or with instrumentation.
