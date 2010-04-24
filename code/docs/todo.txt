@@ -63,8 +63,6 @@ Klaus =================================================
 
 	- Prevalent Bubble - not required if already prevailing
 
-	- CycleSentinelTest - Unignore
-
 	- Use CustomClockTicker at SneerPartyController.accelerateHeartbeat()
 
 	- @After are not being called by ignored tests so tmpFolder() is not being removed
