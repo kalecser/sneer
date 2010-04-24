@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import sneer.foundation.environments.Environment;
 
-class PrevalentBuilding implements Environment {
+class Building implements Environment {
 
 	private Map<Class<?>, Object> _bricks = new ConcurrentHashMap<Class<?>, Object>();
 	
