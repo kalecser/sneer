@@ -3,7 +3,6 @@ package sneer.foundation.brickness.impl;
 import java.net.URL;
 import java.util.List;
 
-import sneer.foundation.brickness.BrickClassLoader;
 import sneer.foundation.brickness.Nature;
 
 abstract class ClassLoaderForBricks extends ClassLoaderWithNatures implements BrickClassLoader {

@@ -1,6 +1,6 @@
-package sneer.foundation.brickness;
+package sneer.foundation.brickness.impl;
 
-public interface BrickClassLoader {
+interface BrickClassLoader {
 	
 	public enum Kind {
 		IMPL,

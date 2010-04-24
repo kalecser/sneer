@@ -8,7 +8,6 @@ import java.util.List;
 
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.BrickConventions;
-import sneer.foundation.brickness.BrickLoadingException;
 import sneer.foundation.brickness.Nature;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.CacheMap;

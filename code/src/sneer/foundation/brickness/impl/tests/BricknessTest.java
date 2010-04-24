@@ -3,8 +3,8 @@ package sneer.foundation.brickness.impl.tests;
 import org.junit.Assert;
 import org.junit.Test;
 
-import sneer.foundation.brickness.BrickLoadingException;
 import sneer.foundation.brickness.Brickness;
+import sneer.foundation.brickness.impl.BrickLoadingException;
 import sneer.foundation.brickness.impl.BricknessImpl;
 import sneer.foundation.brickness.impl.tests.fixtures.InterfaceWithoutBrickAnnotation;
 import sneer.foundation.brickness.impl.tests.fixtures.InterfaceWithoutImplementation;
