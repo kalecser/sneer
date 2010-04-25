@@ -21,6 +21,8 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Solve Hudson VM Fork thing.
+
 	- PlayingTrackTest
 		- Rename this test: AttributesTest
 		- Create new test using a mock of Attributes
