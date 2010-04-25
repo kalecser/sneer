@@ -8,10 +8,11 @@ import sneer.bricks.hardware.io.prevalence.map.ExportMap;
 
 class Invocation extends BuildingTransaction<Object> {
 		
-	Invocation(long id, Method method, Object[] args) {
-		_id = id;
+	Invocation(Object _delegate, Method method, Object[] args) {
+		_id = my(ExportMap.class).marshal(_delegate);
 		_methodName = method.getName();
 		_argTypes = method.getParameterTypes();	
+		my(ExportMap.class).marshal(args);
 		_args = args;	
 	}
 
@@ -24,8 +25,9 @@ class Invocation extends BuildingTransaction<Object> {
 	
 	@Override
 	public Object produce() {
-		Object receiver = my(ExportMap.class).objectById(_id);
-		return invoke(receiver, _methodName, _argTypes, Bubble.unmap(_args));
+		Object receiver = my(ExportMap.class).unmarshal(_id);
+		my(ExportMap.class).unmarshal(_args);
+		return invoke(receiver, _methodName, _argTypes, _args);
 	}
 
 	

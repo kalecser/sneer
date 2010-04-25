@@ -8,7 +8,6 @@ Following are the tasks each one of us has on his plate right now:
 Bamboo =================================================
 
 	- Prevalence
-		- Move map stuff from Bubble to ExportMap. 
 		- Prevalent environment should only provide Prevalent and Stateless bricks.
 		- Make the Contacts brick prevalent.
 			- Batism Problem - Solve. Implement "Membrane, The"

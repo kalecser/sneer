@@ -8,7 +8,10 @@ public interface ExportMap {
 	<T> T register(T object);
 	boolean isRegistered(Object object);
 
-	Object objectById(long id);
-	long idByObject(Object object);
+	long marshal(Object object);
+	Object unmarshal(long id);
+
+	void marshal(Object[] array);
+	void unmarshal(Object[] array);
 
 }

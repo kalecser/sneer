@@ -1,4 +1,4 @@
-package sneer.bricks.hardware.io.prevalence.nature.impl;
+package sneer.bricks.hardware.io.prevalence.map.impl;
 
 class OID {
 

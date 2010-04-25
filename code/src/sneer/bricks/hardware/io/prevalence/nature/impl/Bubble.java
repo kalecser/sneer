@@ -8,7 +8,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Date;
-import java.util.Arrays;
 
 import sneer.bricks.hardware.io.prevalence.map.ExportMap;
 import sneer.foundation.lang.CacheMap;
@@ -53,54 +52,11 @@ class Bubble implements InvocationHandler {
 	
 	private Object handleCommand(Method method, Object[] args) {
 		try {
-			map(args);
-			PrevaylerHolder._prevayler.execute(new Invocation(idFor(_delegate), method, args));
+			PrevaylerHolder._prevayler.execute(new Invocation(_delegate, method, args));
 		} catch (Exception e) {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 		return null;
-	}
-
-	
-	public static Object[] unmap(Object[] args) {
-		if (args == null)
-			return null;
-		
-		Object[] copy = Arrays.copyOf(args, args.length);
-		for (int i = 0; i < copy.length; i++)
-			copy[i] = unmap(args[i]);
-		return copy;
-	}
-
-	
-	private static Object unmap(Object object) {
-		return object instanceof OID
-			? my(ExportMap.class).objectById(((OID)object)._id)
-			: object;
-	}
-
-	
-	private void map(Object[] args) {
-		if (args == null)
-			return;
-		
-		for (int i = 0; i < args.length; i++)
-			args[i] = map(args[i]);
-	}
-
-	
-	private Object map(Object object) {
-		if (object != null && Proxy.isProxyClass(object.getClass())) {
-			Bubble bubble = (Bubble)Proxy.getInvocationHandler(object);
-			return new OID(idFor(bubble._delegate));
-		}
-		
-		return object;
-	}
-
-	
-	private long idFor(Object object) {
-		return my(ExportMap.class).idByObject(object);
 	}
 
 	
