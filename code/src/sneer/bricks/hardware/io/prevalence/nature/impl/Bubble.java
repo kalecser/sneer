@@ -30,16 +30,16 @@ class Bubble implements InvocationHandler {
 	
 	private Bubble(Object delegate) {
 		_delegate = delegate;
-		prepareForExportIfNecessary();
+		checkExport();
 	}
 
 	
 	private final Object _delegate;
 	
 	
-	private void prepareForExportIfNecessary() {
+	private void checkExport() {
 		if (!my(ExportMap.class).isRegistered(_delegate))
-			my(ExportMap.class).register(_delegate);
+			throw new IllegalStateException("Object '" + _delegate + "' was not ready to be exported from the prevalence environment. Use " + ExportMap.class.getSimpleName() + ".register(object).");
 	}
 
 	
@@ -124,7 +124,6 @@ class Bubble implements InvocationHandler {
 
 
 	private Object wrapIfNecessary(Object object, Method method) {
-		
 		if (object == null) return null;
 
 		Class<?> type = method.getReturnType();
