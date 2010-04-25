@@ -6,20 +6,21 @@ import sneer.foundation.lang.Producer;
 final class BrickInstantiation<T> extends BuildingTransaction<T> {
 	
 	private final Class<T> _brick;
-	private final Producer<T> _producer;
+	private final Producer<T> _delegate;
 
 	
-	BrickInstantiation(Class<T> brick, Producer<T> producer) {
+	BrickInstantiation(Class<T> brick, Producer<T> instantiator) {
 		_brick = brick;
-		_producer = producer;
+		_delegate = instantiator;
 	}
 
 
 	@Override
 	public T produce() {
-		T result = _producer.produce();
-		my(PrevalentBuilding.class).add(_brick, result);
-		return result;
+		T brickInstance = _delegate.produce();
+		T bubble = Bubble.wrap(brickInstance);
+		my(PrevalentBuilding.class).add(_brick, bubble);
+		return bubble;
 	}
 	
 }

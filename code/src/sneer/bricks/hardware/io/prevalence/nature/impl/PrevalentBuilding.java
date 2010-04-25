@@ -19,8 +19,8 @@ class PrevalentBuilding implements Environment {
 	}
 	
 	
-	<T> void add(Class<T> brick, T brickImpl) {
-		_bricks.put(brick, brickImpl);
+	<T> void add(Class<T> brick, T brickInstance) {
+		_bricks.put(brick, brickInstance);
 	}
 
 	

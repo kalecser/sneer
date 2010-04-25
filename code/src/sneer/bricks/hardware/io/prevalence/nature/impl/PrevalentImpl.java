@@ -2,38 +2,18 @@ package sneer.bricks.hardware.io.prevalence.nature.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.prevayler.Prevayler;
-import org.prevayler.PrevaylerFactory;
-
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.io.prevalence.flag.PrevalenceFlag;
-import sneer.bricks.hardware.io.prevalence.map.ExportMap;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
-import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.brickness.ClassDefinition;
-import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Producer;
 
 class PrevalentImpl implements Prevalent {
 
-	private final Prevayler _prevayler = createPrevayler(prevalenceBase());
+	private final PrevalentBuilding _building = initBuilding();
 
-	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGc;
-
-
-	{
-		_refToAvoidGc = my(Threads.class).crashing().addPulseReceiver(new Closure() { @Override public void run() {
-			crash();
-		}});
-	}
-	
 	
 	@Override
 	public List<ClassDefinition> realize(ClassDefinition classDef) {
@@ -42,70 +22,21 @@ class PrevalentImpl implements Prevalent {
 
 	
 	@Override
-	public synchronized <T> T instantiate(final Class<T> brick, Class<T> implClassIgnored, final Producer<T> instantiator) {
-		final Producer<T> insidePrevalence = new RegisteringProducer<T>(instantiator);
-		
-		Producer<T> toEnterPrevalence = new Producer<T>() { @Override public T produce() {			
-			PrevalentBuilding building = (PrevalentBuilding) _prevayler.prevalentSystem();
-			T existing = building.provide(brick);
-			return existing != null
-				? existing
-				: (T)_prevayler.execute(new BrickInstantiation<T>(brick, insidePrevalence));
-		}};
-		
-		T result = my(PrevalenceFlag.class).isInsidePrevalence()
-			? insidePrevalence.produce()
-			: toEnterPrevalence.produce();
-		return Bubble.wrap(result, _prevayler);
-	}
-	
-	
-	private static final class RegisteringProducer<T> implements Producer<T> {
-		private final Producer<T> _delegate;
+	public synchronized <T> T instantiate(final Class<T> prevalentBrick, Class<T> implClassIgnored, final Producer<T> instantiator) {
+		T existing = _building.provide(prevalentBrick);
+		if (existing != null)
+			return existing;
 
-		private RegisteringProducer(Producer<T> instantiator) {
-			_delegate = instantiator;
-		}
+		BrickInstantiation<T> instantiation = new BrickInstantiation<T>(prevalentBrick, instantiator);
 
-		@Override public T produce() {
-			return my(ExportMap.class).register(_delegate.produce());
-		}
+		return (T) (my(PrevalenceFlag.class).isInsidePrevalence()
+			? instantiation.executeAndQuery(_building)
+			: PrevaylerHolder._prevayler.execute(instantiation));
 	}
 
-	
-	private <T> File prevalenceBase() {
-		return my(FolderConfig.class).storageFolderFor(Prevalent.class);
-	}
 
-	
-	private Prevayler createPrevayler(final File prevalenceBase) {
-		final PrevaylerFactory factory = createPrevaylerFactory(new PrevalentBuilding(), prevalenceBase);
-
-		try {
-			return factory.create();
-		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		} catch (ClassNotFoundException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		}
-	}
-
-		
-	private PrevaylerFactory createPrevaylerFactory(Object system, File prevalenceBase) {
-		PrevaylerFactory factory = new PrevaylerFactory();
-		factory.configurePrevalentSystem(system);
-		factory.configurePrevalenceDirectory(prevalenceBase.getAbsolutePath());
-		factory.configureTransactionFiltering(false);
-		factory.configureJournalSerializer("xstreamjournal", new SerializerAdapter());
-		return factory;
+	private PrevalentBuilding initBuilding() {
+		return (PrevalentBuilding)PrevaylerHolder._prevayler.prevalentSystem(); 
 	}
 	
-	
-	private void crash() {
-		try {
-			_prevayler.close();
-		} catch (IOException e) {
-			my(Logger.class).log("Exception closing prevayler: " + e);
-		}
-	}
 }
