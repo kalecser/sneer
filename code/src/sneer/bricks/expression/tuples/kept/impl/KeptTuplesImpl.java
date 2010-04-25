@@ -3,7 +3,7 @@ package sneer.bricks.expression.tuples.kept.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.kept.KeptTuples;
-import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
+import sneer.bricks.hardware.io.prevalence.map.ExportMap;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
@@ -52,7 +52,7 @@ public class KeptTuplesImpl implements KeptTuples {
 	}
 	
 	private <T> T register(T object) {
-		return my(PrevalentMap.class).register(object);
+		return my(ExportMap.class).register(object);
 	}
 
 }

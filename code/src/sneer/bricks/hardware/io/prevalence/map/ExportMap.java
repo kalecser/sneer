@@ -3,14 +3,12 @@ package sneer.bricks.hardware.io.prevalence.map;
 import sneer.foundation.brickness.Brick;
 
 @Brick
-public interface PrevalentMap {
+public interface ExportMap {
 
 	<T> T register(T object);
-
-	long idByObject(Object object);
+	boolean isRegistered(Object object);
 
 	Object objectById(long id);
-
-	boolean isRegistered(Object object);
+	long idByObject(Object object);
 
 }

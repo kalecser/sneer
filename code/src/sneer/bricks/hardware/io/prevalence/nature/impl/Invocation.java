@@ -4,7 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.lang.reflect.Method;
 
-import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
+import sneer.bricks.hardware.io.prevalence.map.ExportMap;
 
 class Invocation extends BuildingTransaction<Object> {
 		
@@ -24,7 +24,7 @@ class Invocation extends BuildingTransaction<Object> {
 	
 	@Override
 	public Object produce() {
-		Object receiver = my(PrevalentMap.class).objectById(_id);
+		Object receiver = my(ExportMap.class).objectById(_id);
 		return invoke(receiver, _methodName, _argTypes, Bubble.unmap(_args));
 	}
 

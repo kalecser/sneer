@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 import org.prevayler.Prevayler;
 
-import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
+import sneer.bricks.hardware.io.prevalence.map.ExportMap;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
 import sneer.foundation.lang.ReadOnly;
@@ -29,7 +29,7 @@ class Bubble implements InvocationHandler {
 	}
 	
 	private Bubble(Object delegate, Prevayler prevayler) {
-		if (!my(PrevalentMap.class).isRegistered(delegate))
+		if (!my(ExportMap.class).isRegistered(delegate))
 			throw new IllegalStateException();
 		
 		_delegate = delegate;
@@ -71,7 +71,7 @@ class Bubble implements InvocationHandler {
 
 	private static Object unmap(Object object) {
 		return object instanceof OID
-			? my(PrevalentMap.class).objectById(((OID)object)._id)
+			? my(ExportMap.class).objectById(((OID)object)._id)
 			: object;
 	}
 
@@ -93,7 +93,7 @@ class Bubble implements InvocationHandler {
 	}
 
 	private long idFor(Object object) {
-		return my(PrevalentMap.class).idByObject(object);
+		return my(ExportMap.class).idByObject(object);
 	}
 
 	private Object handleQuery(Method method, Object[] args) throws Throwable {
