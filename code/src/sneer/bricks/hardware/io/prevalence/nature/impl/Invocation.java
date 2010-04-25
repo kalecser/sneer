@@ -8,8 +8,14 @@ import sneer.bricks.hardware.io.prevalence.map.ExportMap;
 
 class Invocation extends BuildingTransaction<Object> {
 		
-	Invocation(Object _delegate, Method method, Object[] args) {
-		_id = my(ExportMap.class).marshal(_delegate);
+	static void preApprove(Object object) {
+		if (!my(ExportMap.class).isRegistered(object))
+			throw new IllegalStateException("Object '" + object + "' was not ready to be exported from the prevalence environment. Use " + ExportMap.class.getSimpleName() + ".register(object).");
+	}
+
+	
+	Invocation(Object object, Method method, Object[] args) {
+		_id = my(ExportMap.class).marshal(object);
 		_methodName = method.getName();
 		_argTypes = method.getParameterTypes();	
 		my(ExportMap.class).marshal(args);

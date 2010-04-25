@@ -1,7 +1,5 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
-import static sneer.foundation.environments.Environments.my;
-
 import java.io.File;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -9,7 +7,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Date;
 
-import sneer.bricks.hardware.io.prevalence.map.ExportMap;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
 import sneer.foundation.lang.ReadOnly;
@@ -29,18 +26,12 @@ class Bubble implements InvocationHandler {
 	
 	private Bubble(Object delegate) {
 		_delegate = delegate;
-		checkExport();
+		Invocation.preApprove(_delegate);
 	}
 
 	
 	private final Object _delegate;
 	
-	
-	private void checkExport() {
-		if (!my(ExportMap.class).isRegistered(_delegate))
-			throw new IllegalStateException("Object '" + _delegate + "' was not ready to be exported from the prevalence environment. Use " + ExportMap.class.getSimpleName() + ".register(object).");
-	}
-
 	
 	@Override
 	public Object invoke(Object proxyImplied, Method method, Object[] args) throws Throwable {
