@@ -8,6 +8,7 @@ Following are the tasks each one of us has on his plate right now:
 Bamboo =================================================
 
 	- Prevalence
+		- Test using bubble as arg for some prevalent method.
 		- Prevalent environment should only provide Prevalent and Stateless bricks.
 		- Make the Contacts brick prevalent.
 			- Batism Problem - Solve. Implement "Membrane, The"
