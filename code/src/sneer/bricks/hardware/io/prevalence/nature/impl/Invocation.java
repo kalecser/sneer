@@ -4,14 +4,21 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.lang.reflect.Method;
 
-import sneer.bricks.hardware.io.prevalence.map.PrevalentMap;
+import sneer.bricks.hardware.io.prevalence.map.ExportMap;
 
 class Invocation extends BuildingTransaction<Object> {
 		
-	Invocation(long id, Method method, Object[] args) {
-		_id = id;
+	static void preApprove(Object object) {
+		if (!my(ExportMap.class).isRegistered(object))
+			throw new IllegalStateException("Object '" + object + "' was not ready to be exported from the prevalence environment. Use " + ExportMap.class.getSimpleName() + ".register(object).");
+	}
+
+	
+	Invocation(Object object, Method method, Object[] args) {
+		_id = my(ExportMap.class).marshal(object);
 		_methodName = method.getName();
 		_argTypes = method.getParameterTypes();	
+		my(ExportMap.class).marshal(args);
 		_args = args;	
 	}
 
@@ -24,8 +31,9 @@ class Invocation extends BuildingTransaction<Object> {
 	
 	@Override
 	public Object produce() {
-		Object receiver = my(PrevalentMap.class).objectById(_id);
-		return invoke(receiver, _methodName, _argTypes, Bubble.unmap(_args));
+		Object receiver = my(ExportMap.class).unmarshal(_id);
+		my(ExportMap.class).unmarshal(_args);
+		return invoke(receiver, _methodName, _argTypes, _args);
 	}
 
 	

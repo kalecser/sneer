@@ -18,6 +18,7 @@ public class PrevalentNatureTest extends BrickTest {
 	
 	Environment subject = Brickness.newBrickContainer();
 	
+	
 	@Test (timeout = 3000)
 	public void stateIsPreserved() {
 		
@@ -30,6 +31,16 @@ public class PrevalentNatureTest extends BrickTest {
 			assertEquals("foo", my(SomePrevalentBrick.class).get());
 		}});
 	}
+
+	
+	@Test (timeout = 2000)
+	public void nullParameter() {
+		my(SomePrevalentBrick.class).set("foo");
+		my(SomePrevalentBrick.class).set(null);
+
+		assertNull(my(SomePrevalentBrick.class).get());
+	}
+
 	
 	@Test (timeout = 3000)
 	public void multipleBricks() {
@@ -43,6 +54,7 @@ public class PrevalentNatureTest extends BrickTest {
 		}});
 	}
 	
+	
 	@Test (timeout = 3000)
 	public void brickCommandCausesAnotherBrickInstantiation() {
 		runInNewTestEnvironment(new Closure() { @Override public void run() {
@@ -53,6 +65,7 @@ public class PrevalentNatureTest extends BrickTest {
 			assertEquals(0, my(PrevalentBrick2.class).recallItemCount());
 		}});
 	}
+	
 	
 	@Test (timeout = 3000)
 	public void baptismProblem() {
@@ -70,6 +83,7 @@ public class PrevalentNatureTest extends BrickTest {
 			assertEquals(0, my(SomePrevalentBrick.class).itemCount());
 		}});
 	}
+	
 	
 	@Test (timeout = 3000)
 	public void bubbleExpandsToQueriedValues() {

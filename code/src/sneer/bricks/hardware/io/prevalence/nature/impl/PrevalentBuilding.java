@@ -3,7 +3,7 @@ package sneer.bricks.hardware.io.prevalence.nature.impl;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import sneer.bricks.hardware.io.prevalence.state.PrevalenceDispatcher;
+import sneer.bricks.hardware.io.prevalence.flag.PrevalenceFlag;
 import sneer.foundation.environments.Environment;
 
 class PrevalentBuilding implements Environment {
@@ -13,12 +13,14 @@ class PrevalentBuilding implements Environment {
 	
 	
 	{
-		_bricks.put(PrevalenceDispatcher.class, new InternalDispatcher());
+		_bricks.put(PrevalenceFlag.class, new PrevalenceFlag() { @Override public boolean isInsidePrevalence() {
+			return true;
+		}});
 	}
 	
 	
-	<T> void add(Class<T> brick, T brickImpl) {
-		_bricks.put(brick, brickImpl);
+	<T> void add(Class<T> brick, T brickInstance) {
+		_bricks.put(brick, brickInstance);
 	}
 
 	

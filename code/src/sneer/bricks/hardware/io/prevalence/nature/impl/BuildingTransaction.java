@@ -17,7 +17,7 @@ abstract class BuildingTransaction<T> implements SureTransactionWithQuery, Produ
 		return executeAndQuery((PrevalentBuilding)prevalentSystem);
 	}
 
-	private Object executeAndQuery(PrevalentBuilding building) {
+	Object executeAndQuery(PrevalentBuilding building) {
 		Environment environment = EnvironmentUtils.compose(building, my(Environment.class));
 		return EnvironmentUtils.produceIn(environment, this);
 	}
