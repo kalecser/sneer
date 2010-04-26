@@ -52,7 +52,7 @@ public class PlayingTrackTest extends BrickTest {
 
 		final Seal localSeal = my(OwnSeal.class).get().currentValue();
 		Environments.runWith(remote, new ClosureX<Refusal>() { @Override public void run() throws Refusal {
-			_localContact = my(Contacts.class).produceContact("local");
+			_localContact = my(Contacts.class).addContact("local");
 			my(ContactSeals.class).put("local", localSeal);
 			_remoteAttributes = my(Attributes.class);
 
