@@ -1,6 +1,5 @@
 package sneer.foundation.brickness.impl;
 
-
 public class Boxing {
 	
 	public static int unboxInt(Object value) { return ((Integer)value).intValue(); }
