@@ -1,6 +1,7 @@
 package spikes.klaus.go.gui;
 
 import static sneer.foundation.environments.Environments.my;
+import sneer.bricks.hardware.clock.ticker.ClockTicker;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
@@ -15,6 +16,7 @@ public class GoMain {
 	
 	public GoMain() {
 		Environments.runWith(Brickness.newBrickContainer(), new Closure() { @Override public void run() {
+			my(ClockTicker.class);
 			my(GuiThread.class).invokeAndWaitForWussies(new Closure(){@Override public void run() {
 				init();
 			}});
