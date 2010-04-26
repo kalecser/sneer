@@ -52,11 +52,7 @@ class Bubble implements InvocationHandler {
 	
 	
 	private Object handleTransaction(Method method, Object[] args) {
-		try {
 			return PrevaylerHolder._prevayler.execute(new Invocation(_delegate, method, args));
-		} catch (Exception e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		}
 	}
 
 	
