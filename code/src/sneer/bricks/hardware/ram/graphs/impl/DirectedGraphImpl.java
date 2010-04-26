@@ -31,13 +31,13 @@ class DirectedGraphImpl<T> implements DirectedGraph<T> {
 
 
 	@Override
-	public void addVertex(T successor) {
-		produceSuccessors(successor); //Registers the vertex in the _successorsByVertex map
+	public void addVertex(T vertex) {
+		produceSuccessors(vertex); //Registers the vertex in the _successorsByVertex map
 	}
 
 	
-	private Set<T> produceSuccessors(final T payload) {
-		return _successorsByVertex.get(payload, new Producer<Set<T>>() { @Override public Set<T> produce() {
+	private Set<T> produceSuccessors(final T vertex) {
+		return _successorsByVertex.get(vertex, new Producer<Set<T>>() { @Override public Set<T> produce() {
 			return new HashSet<T>();
 		}});
 	}
