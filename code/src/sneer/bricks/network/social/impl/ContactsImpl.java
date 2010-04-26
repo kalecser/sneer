@@ -13,17 +13,6 @@ class ContactsImpl implements Contacts {
     
     private final SetRegister<Contact> _contacts = my(CollectionSignals.class).newSetRegister();
     
-    
-    {
-		restore();
-    }
-
-    
-	private void restore() {
-		for (String nick : Store.restore())
-			produceContact(nick);
-	}
-
 	
 	@Override
 	synchronized
@@ -34,15 +23,9 @@ class ContactsImpl implements Contacts {
 	}
 
 	
-	private void save() {
-		Store.save(_contacts.output().currentElements());
-	}
-
-	
 	private Contact doAddContact(String nickname) {
 		Contact result = new ContactImpl(nickname); 
 		_contacts.add(result);
-		save();
 		return result;
 	}
 
@@ -81,7 +64,6 @@ class ContactsImpl implements Contacts {
 	private void changeNickname(Contact contact, String newNickname) throws Refusal {
 		checkAvailability(newNickname);
 		((ContactImpl)contact).nickname(newNickname);
-		save();
 	}
 
 	
@@ -89,7 +71,6 @@ class ContactsImpl implements Contacts {
 	synchronized
 	public void removeContact(Contact contact) {
 		_contacts.remove(contact);
-		save();
 	}
 	
 	
