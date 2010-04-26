@@ -1,12 +1,13 @@
 package sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import sneer.bricks.hardware.io.prevalence.map.ExportMap;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.Item;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.SomePrevalentBrick;
-import static sneer.foundation.environments.Environments.my;
 
 class SomePrevalentBrickImpl implements SomePrevalentBrick {
 
@@ -62,6 +63,12 @@ class SomePrevalentBrickImpl implements SomePrevalentBrick {
 		for (Item item : _items)
 			if (item.name().equals(name)) return item;
 		return null;
+	}
+
+	@Override
+	public Item addItem_AnnotatedAsTransaction(String name) {
+		addItem(name);
+		return getItem(name);
 	}
 	
 }

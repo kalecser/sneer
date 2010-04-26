@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Date;
 
+import sneer.bricks.hardware.io.prevalence.nature.Transaction;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
 import sneer.foundation.lang.ReadOnly;
@@ -35,25 +36,32 @@ class Bubble implements InvocationHandler {
 	
 	@Override
 	public Object invoke(Object proxyImplied, Method method, Object[] args) throws Throwable {
-		return method.getReturnType() == Void.TYPE
-			? handleCommand(method, args)
+		Object result = isTransaction(method)
+			? handleTransaction(method, args)
 			: handleQuery(method, args);
+
+		return wrapIfNecessary(result, method);
+	}
+
+
+	private boolean isTransaction(Method method) {
+		if (method.getReturnType() == Void.TYPE) return true;
+		if (method.getAnnotation(Transaction.class) != null) return true;
+		return false;
 	}
 	
 	
-	private Object handleCommand(Method method, Object[] args) {
+	private Object handleTransaction(Method method, Object[] args) {
 		try {
-			PrevaylerHolder._prevayler.execute(new Invocation(_delegate, method, args));
+			return PrevaylerHolder._prevayler.execute(new Invocation(_delegate, method, args));
 		} catch (Exception e) {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
-		return null;
 	}
 
 	
 	private Object handleQuery(Method method, Object[] args) throws Throwable {
-		Object result = invokeOnDelegate(method, args);
-		return wrapIfNecessary(result, method);
+		return invokeOnDelegate(method, args);
 	}
 
 	

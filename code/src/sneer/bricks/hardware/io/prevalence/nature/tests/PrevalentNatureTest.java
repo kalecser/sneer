@@ -105,6 +105,24 @@ public class PrevalentNatureTest extends BrickTest {
 		}});
 	}
 
+	
+	@Test (timeout = 3000)
+	public void transactionAnnotation() {
+		runInNewTestEnvironment(new Closure() { @Override public void run() {
+			SomePrevalentBrick brick = my(SomePrevalentBrick.class);
+
+			Item item = brick.addItem_AnnotatedAsTransaction("Foo");
+			item.name("Bar");
+			
+			assertNull(brick.getItem("Foo"));
+			assertSame(item, brick.getItem("Bar"));
+		}});
+		
+		runInNewTestEnvironment(new Closure() { @Override public void run() {
+			assertNotNull(my(SomePrevalentBrick.class).getItem("Bar"));
+		}});
+	}
+
 
 	private void runInNewTestEnvironment(Closure closure) {
 		Environments.runWith(newTestEnvironment(my(FolderConfig.class)), closure);
