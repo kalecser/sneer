@@ -73,14 +73,16 @@ public class PrevalentNatureTest extends BrickTest {
 			SomePrevalentBrick brick = my(SomePrevalentBrick.class);
 			brick.addItem("Foo");
 			assertEquals(1, brick.itemCount());
+			brick.addItem("Bar");
+			assertEquals(2, brick.itemCount());
 			
 			Item item = brick.getItem("Foo");
 			brick.removeItem(item);
-			assertEquals(0, brick.itemCount());
+			assertEquals(1, brick.itemCount());
 		}});
 		
 		runInNewTestEnvironment(new Closure() { @Override public void run() {
-			assertEquals(0, my(SomePrevalentBrick.class).itemCount());
+			assertEquals(1, my(SomePrevalentBrick.class).itemCount());
 		}});
 	}
 	
