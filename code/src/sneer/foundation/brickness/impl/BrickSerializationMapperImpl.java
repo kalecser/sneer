@@ -4,12 +4,12 @@ import sneer.foundation.brickness.BrickSerializationMapper;
 import sneer.foundation.brickness.impl.BrickClassLoader.Kind;
 import sneer.foundation.lang.ByRef;
 
-public class BrickSerializationMapperImpl implements BrickSerializationMapper {
+class BrickSerializationMapperImpl implements BrickSerializationMapper {
 	
 	private final ByRef<ClassLoader> _apiClassLoader;
 	private final BrickImplLoader _brickImplLoader;
 
-	public BrickSerializationMapperImpl(ByRef<ClassLoader> apiClassLoader, BrickImplLoader brickImplLoader) {
+	BrickSerializationMapperImpl(ByRef<ClassLoader> apiClassLoader, BrickImplLoader brickImplLoader) {
 		_apiClassLoader = apiClassLoader;
 		_brickImplLoader = brickImplLoader;
 	}
@@ -60,6 +60,5 @@ public class BrickSerializationMapperImpl implements BrickSerializationMapper {
 		String kind = classLoader.kind().toString();
 		return brick + ":" + kind;
 	}
-
 
 }
