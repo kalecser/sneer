@@ -13,7 +13,6 @@ import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.ProducerX;
 
-
 class BrickImplLoader {
 	
 	private final CacheMap<String, ClassLoaderForPackage> _implClassLoaders = CacheMap.newInstance();

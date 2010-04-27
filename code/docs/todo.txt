@@ -18,8 +18,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Solve Hudson VM Fork thing.
-
 	- PlayingTrackTest
 		- Rename this test: AttributesTest
 		- Create new test using a mock of Attributes
@@ -69,7 +67,7 @@ Klaus =================================================
 
 	- Use CustomClockTicker at SneerPartyController.accelerateHeartbeat()
 
-	- @After are not being called by ignored tests so tmpFolder() is not being removed
+	- [Igor] @After are not being called by ignored tests so tmpFolder() is not being removed
 
 	- Freedom7 - "Me Too" for Bricks 
 		- Unignore Freedom7.meToo

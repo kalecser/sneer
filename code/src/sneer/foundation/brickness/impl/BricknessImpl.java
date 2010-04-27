@@ -11,7 +11,6 @@ import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Producer;
 
-
 public class BricknessImpl implements Environment {
 	
 	private static final class BrickImplProducer<T> implements Producer<T> {
@@ -95,4 +94,5 @@ public class BricknessImpl implements Environment {
 		if (brick.getClassLoader() != _apiClassLoader.value)
 			throw new IllegalStateException("" + brick + " was loaded with " + brick.getClassLoader() + " instead of " + _apiClassLoader.value + " like previous bricks.");
 	}
+
 }
