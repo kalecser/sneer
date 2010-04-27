@@ -13,24 +13,24 @@ import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Producer;
 
 class TuplePumpImpl implements TuplePump {
-	
-	private final Environment _env1;
-	private final Environment _env2;
 
-	private final WeakContract _toAvoidGC1;
-	private final WeakContract _toAvoidGC2;
+	private final Environment _tupleWell1;
+	private final Environment _tupleWell2;
 
-	
-	public TuplePumpImpl(Environment env1, Environment env2) {
-		_env1 = env1;
-		_env2 = env2;
+	private final WeakContract _pipe1;
+	private final WeakContract _pipe2;
 
-		_toAvoidGC1 = pump(env1, env2);
-		_toAvoidGC2 = pump(env2, env1);
+
+	public TuplePumpImpl(Environment well1, Environment well2) {
+		_tupleWell1 = well1;
+		_tupleWell2 = well2;
+
+		_pipe1 = pipe(well1, well2);
+		_pipe2 = pipe(well2, well1);
 	}
 
-	
-	private WeakContract pump(Environment from, final Environment to) {
+
+	private WeakContract pipe(Environment from, final Environment to) {
 		return EnvironmentUtils.produceIn(from, new Producer<WeakContract>() { @Override public WeakContract produce() {
 			return my(TupleSpace.class).addSubscription(Tuple.class, new Consumer<Tuple>() { @Override public void consume(final Tuple tuple) {
 				Environments.runWith(to, new Closure() { @Override public void run() {
@@ -40,11 +40,11 @@ class TuplePumpImpl implements TuplePump {
 		}});
 	}
 
-	
+
 	@Override
 	public void waitForAllDispatchingToFinish() {
-		waitForAllDispatchingToFinishIn(_env1);
-		waitForAllDispatchingToFinishIn(_env2);
+		waitForAllDispatchingToFinishIn(_tupleWell1);
+		waitForAllDispatchingToFinishIn(_tupleWell2);
 	}
 
 
@@ -54,11 +54,12 @@ class TuplePumpImpl implements TuplePump {
 		}});
 	}
 
-	
+
 	@Override
 	public void dispose() {
-		_toAvoidGC1.dispose();
-		_toAvoidGC2.dispose();
+		_pipe1.dispose();
+		_pipe2.dispose();
 	}
+
 
 }
