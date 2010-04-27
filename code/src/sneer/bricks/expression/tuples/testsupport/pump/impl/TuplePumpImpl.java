@@ -1,6 +1,10 @@
 package sneer.bricks.expression.tuples.testsupport.pump.impl;
 
 import static sneer.foundation.environments.Environments.my;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.testsupport.pump.TuplePump;
@@ -20,6 +24,7 @@ class TuplePumpImpl implements TuplePump {
 	private final WeakContract _pipe1;
 	private final WeakContract _pipe2;
 
+	private final Set<Tuple> _tuplesThatWillEcho = new HashSet<Tuple>();
 
 	public TuplePumpImpl(Environment aTupleWell, Environment anotherTupleWell) {
 		_well1 = aTupleWell;
@@ -33,6 +38,8 @@ class TuplePumpImpl implements TuplePump {
 	private WeakContract pipe(Environment from, final Environment to) {
 		return EnvironmentUtils.produceIn(from, new Producer<WeakContract>() { @Override public WeakContract produce() {
 			return my(TupleSpace.class).addSubscription(Tuple.class, new Consumer<Tuple>() { @Override public void consume(final Tuple tuple) {
+				if (_tuplesThatWillEcho.remove(tuple)) return; //Tuple that was sent and is returning.
+				_tuplesThatWillEcho.add(tuple);
 				Environments.runWith(to, new Closure() { @Override public void run() {
 					my(TupleSpace.class).acquire(tuple);
 				}});
