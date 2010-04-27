@@ -22,6 +22,7 @@ public interface Contacts {
 	/** Returns a contact with the given nickname. Creates a new one if there was no contact with that nickname before. */
 	@Transaction
 	Contact produceContact(String nickname);
+	
 	PickyConsumer<String> nicknameSetterFor(Contact contact);
 	
 	void removeContact(Contact contact);
