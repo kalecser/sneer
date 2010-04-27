@@ -18,8 +18,12 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- TuplePumps
+		- Look at how produceIn(Environment, Producer) is used in TuplePumpImpl to avoid ByRef.
+		- Convert all other TupleSpace-sharing tests to use the pump.
+
 	- PlayingTrackTest
-		- TuplePump
+		- Unignore.
 		- Rename this test: AttributesTest
 		- Create new test using a mock of Attributes
 
