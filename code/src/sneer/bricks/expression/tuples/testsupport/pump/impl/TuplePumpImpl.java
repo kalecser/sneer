@@ -26,7 +26,7 @@ class TuplePumpImpl implements TuplePump {
 
 	private final Set<Tuple> _tuplesThatWillEcho = new HashSet<Tuple>();
 
-	public TuplePumpImpl(Environment aTupleWell, Environment anotherTupleWell) {
+	TuplePumpImpl(Environment aTupleWell, Environment anotherTupleWell) {
 		_well1 = aTupleWell;
 		_well2 = anotherTupleWell;
 

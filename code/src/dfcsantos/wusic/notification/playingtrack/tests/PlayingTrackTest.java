@@ -54,12 +54,9 @@ public class PlayingTrackTest extends BrickTest {
 		my(PlayingTrackPublisher.class);
 
 		_local = my(Environment.class);
-		Environment remote = newTestEnvironment(my(Clock.class));
-		configureStorageFolder(remote, "remote/data");
-
-		_tuplePump = my(TuplePumps.class).startPumpingWith(remote);
 
 		final Seal localSeal = my(OwnSeal.class).get().currentValue();
+		Environment remote = configureRemoteEnvironment();
 		Environments.runWith(remote, new ClosureX<Refusal>() { @Override public void run() throws Refusal {
 			_localContact = my(Contacts.class).addContact("local");
 			my(ContactSeals.class).put("local", localSeal);
@@ -78,6 +75,13 @@ public class PlayingTrackTest extends BrickTest {
 		}});
 
 		crash(remote);
+	}
+
+	private Environment configureRemoteEnvironment() {
+		Environment remote = newTestEnvironment(my(Clock.class));
+		configureStorageFolder(remote, "remote/data");
+		_tuplePump = my(TuplePumps.class).startPumpingWith(remote);
+		return remote;
 	}
 
 	private void testPlayingTrack(String trackName) {

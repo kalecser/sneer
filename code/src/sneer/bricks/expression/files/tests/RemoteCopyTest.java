@@ -8,7 +8,8 @@ import java.io.IOException;
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
 import sneer.bricks.expression.files.server.FileServer;
-import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.testsupport.pump.TuplePump;
+import sneer.bricks.expression.tuples.testsupport.pump.TuplePumps;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.ticker.custom.CustomClockTicker;
 import sneer.bricks.hardware.cpu.crypto.Hash;
@@ -35,13 +36,21 @@ public class RemoteCopyTest extends FileCopyTestBase {
 
 
 	private void copyFromFileMap(ClosureX<Exception> closure) throws Exception {
-		@SuppressWarnings("unused") FileServer server = my(FileServer.class);
-		avoidDuplicateTuples();
-		Environment remote = newTestEnvironment(my(TupleSpace.class), my(Clock.class));
-		configureStorageFolder(remote, "remote/Data");
+		my(FileServer.class);
 
+		avoidDuplicateTuples();
+
+		Environment remote = configureRemoteEnvironment();
 		Environments.runWith(remote, closure);
 		crash(remote);
+	}
+
+
+	private Environment configureRemoteEnvironment() {
+		Environment remote = newTestEnvironment(my(Clock.class));
+		configureStorageFolder(remote, "remote/Data");
+		@SuppressWarnings("unused") TuplePump tuplePump = my(TuplePumps.class).startPumpingWith(remote);
+		return remote;
 	}
 
 
