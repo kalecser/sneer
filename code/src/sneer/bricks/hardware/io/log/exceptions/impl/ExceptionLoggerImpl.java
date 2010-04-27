@@ -11,14 +11,14 @@ class ExceptionLoggerImpl implements ExceptionLogger {
 
 	@Override
 	public void log(Throwable throwable) {
-		log(throwable, "{} thrown: {}", throwable.getClass(), throwable.getMessage());
+		log(throwable, "{} thrown.", throwable.getClass());
 	}
 
 	
 	@Override
 	public void log(Throwable throwable, String message, Object... messageInsets) {
 		leakIfNecessary(throwable);
-		message += "/n" + my(StackTraceLogger.class).stackToString(throwable);
+		message += "\n" + my(StackTraceLogger.class).stackToString(throwable);
 		my(Logger.class).log(message, messageInsets);
 	}
 
