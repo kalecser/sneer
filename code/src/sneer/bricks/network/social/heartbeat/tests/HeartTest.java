@@ -26,10 +26,13 @@ public class HeartTest extends BrickTest {
 		final ByRef<Runnable> _timerSteppable = ByRef.newInstance();
 		
 		checking(new Expectations() {{
+			allowing(_timer).wakeUpEvery(with(any(Long.class)), with(any(Runnable.class))); //Fix: Delete this line and find a better way. This breaks encapsulation too much.
+
 			allowing(_timer).wakeUpNowAndEvery(with(any(Long.class)), with(any(Runnable.class)));
 			will(new CustomAction("Run timer runnables") { @Override public Object invoke(Invocation invocation) throws Throwable {
+				Runnable runnable = (Runnable)invocation.getParameter(1);
 				assertEquals(10000L, invocation.getParameter(0));
-				_timerSteppable.value = (Runnable)invocation.getParameter(1); return null;
+				_timerSteppable.value = runnable; return null;
 			}});
 
 			exactly(2).of(_tupleSpace).acquire(with(any(Heartbeat.class)));

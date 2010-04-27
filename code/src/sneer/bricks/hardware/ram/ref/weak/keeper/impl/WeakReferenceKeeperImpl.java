@@ -10,7 +10,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.foundation.lang.Closure;
 
-public class WeakReferenceKeeperImpl implements WeakReferenceKeeper { // Refactor: in-line this brick, it's too simple 
+public class WeakReferenceKeeperImpl implements WeakReferenceKeeper { 
 
 	private final Map<Object, Object> _weakMap = new WeakHashMap<Object, Object>();
 	@SuppressWarnings("unused")	private final WeakContract _timerContract;
