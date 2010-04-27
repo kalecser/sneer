@@ -42,7 +42,7 @@ public class PlayingTrackTest extends BrickTest {
 
 	private TuplePump _tuplePump;
 
-	//@Ignore
+	@Ignore
 	@Test
 	public void playingTrackBroadcast() throws Exception {
 		checking(new Expectations() {{

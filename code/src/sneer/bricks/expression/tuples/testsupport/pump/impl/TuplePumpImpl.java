@@ -6,10 +6,11 @@ import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.testsupport.pump.TuplePump;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.foundation.environments.Environment;
+import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Producer;
 
 class TuplePumpImpl implements TuplePump {
 	
@@ -24,33 +25,31 @@ class TuplePumpImpl implements TuplePump {
 		_env1 = env1;
 		_env2 = env2;
 
-		_toAvoidGC1 = pumpFor(env1, env2);
-		_toAvoidGC2 = pumpFor(env2, env1);
+		_toAvoidGC1 = pump(env1, env2);
+		_toAvoidGC2 = pump(env2, env1);
 	}
 
 	
-	private WeakContract pumpFor(Environment env1, final Environment env2) {
-		final ByRef<WeakContract> result = ByRef.newInstance();
-
-		Environments.runWith(env1, new Closure() { @Override public void run() {
-			result.value = my(TupleSpace.class).addSubscription(Tuple.class, new Consumer<Tuple>() { @Override public void consume(final Tuple tuple) {
-				Environments.runWith(env2, new Closure() { @Override public void run() {
+	private WeakContract pump(Environment from, final Environment to) {
+		return EnvironmentUtils.produceIn(from, new Producer<WeakContract>() { @Override public WeakContract produce() {
+			return my(TupleSpace.class).addSubscription(Tuple.class, new Consumer<Tuple>() { @Override public void consume(final Tuple tuple) {
+				Environments.runWith(to, new Closure() { @Override public void run() {
 					my(TupleSpace.class).acquire(tuple);
 				}});
 			}});
 		}});
-
-		return result.value;
 	}
 
 	
 	@Override
 	public void waitForAllDispatchingToFinish() {
-		Environments.runWith(_env1, new Closure() { @Override public void run() {
-			my(TupleSpace.class).waitForAllDispatchingToFinish();
-		}});
-		
-		Environments.runWith(_env2, new Closure() { @Override public void run() {
+		waitForAllDispatchingToFinishIn(_env1);
+		waitForAllDispatchingToFinishIn(_env2);
+	}
+
+
+	private void waitForAllDispatchingToFinishIn(Environment env) {
+		Environments.runWith(env, new Closure() { @Override public void run() {
 			my(TupleSpace.class).waitForAllDispatchingToFinish();
 		}});
 	}
