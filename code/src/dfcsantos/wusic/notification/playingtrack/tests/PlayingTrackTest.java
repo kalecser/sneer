@@ -24,6 +24,7 @@ import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.Consumer;
@@ -106,29 +107,29 @@ public class PlayingTrackTest extends BrickTest {
 		private final Environment _env1;
 		private final Environment _env2;
 
-		private WeakContract _toAvoidGC1;
-		private WeakContract _toAvoidGC2;
+		private final WeakContract _toAvoidGC1;
+		private final WeakContract _toAvoidGC2;
 
-		
 		public TuplePump(Environment env1, Environment env2) {
 			_env1 = env1;
 			_env2 = env2;
 
-			Environments.runWith(_env1, new Closure() { @Override public void run() {
-				_toAvoidGC1 = my(TupleSpace.class).addSubscription(Tuple.class, pumpFor(_env2));
-			}});
-
-			Environments.runWith(_env2, new Closure() { @Override public void run() {
-				_toAvoidGC2 = my(TupleSpace.class).addSubscription(Tuple.class, pumpFor(_env1));
-			}});
+			_toAvoidGC1 = pumpFor(env1, env2);
+			_toAvoidGC2 = pumpFor(env2, env1);
 		}
 
-		private Consumer<Tuple> pumpFor(final Environment env) {
-			return new Consumer<Tuple>() { @Override public void consume(final Tuple tuple) {
-				Environments.runWith(env, new Closure() { @Override public void run() {
-					my(TupleSpace.class).acquire(tuple);
+		private WeakContract pumpFor(Environment env1, final Environment env2) {
+			final ByRef<WeakContract> result = ByRef.newInstance();
+
+			Environments.runWith(env1, new Closure() { @Override public void run() {
+				result.value = my(TupleSpace.class).addSubscription(Tuple.class, new Consumer<Tuple>() { @Override public void consume(final Tuple tuple) {
+					Environments.runWith(env2, new Closure() { @Override public void run() {
+						my(TupleSpace.class).acquire(tuple);
+					}});
 				}});
-			}};
+			}});
+
+			return result.value;
 		}
 
 		public void waitForAllDispatchingToFinish() {
@@ -140,17 +141,11 @@ public class PlayingTrackTest extends BrickTest {
 				my(TupleSpace.class).waitForAllDispatchingToFinish();
 			}});
 		}
-		
+
 		@Override
 		public void dispose() {
-			if (_toAvoidGC1 != null) {
-				_toAvoidGC1.dispose();
-				_toAvoidGC1 = null;
-			}
-			if (_toAvoidGC2 != null) {
-				_toAvoidGC2.dispose();
-				_toAvoidGC2 = null;
-			}
+			_toAvoidGC1.dispose();
+			_toAvoidGC2.dispose();
 		}
 
 	}
