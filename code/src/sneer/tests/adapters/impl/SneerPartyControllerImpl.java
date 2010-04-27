@@ -19,6 +19,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.iterables.Iterables;
+import sneer.bricks.identity.keys.Keys;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -403,11 +404,17 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		
 		installStagedCodeIfNecessary();
 		
+		generatePublicKey();
 		startSnapps();
 		accelerateHeartbeat();
 	}
 
 	
+	private void generatePublicKey() {
+		my(Keys.class).generateKeyPair(my(OwnNameKeeper.class).name().currentValue());
+	}
+
+
 	private void installStagedCodeIfNecessary() {
 		File stageFolder = my(FolderConfig.class).stageFolder().get();
 		try {

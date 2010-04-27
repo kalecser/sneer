@@ -14,6 +14,7 @@ import java.io.File;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.robust.RobustExceptionLogging;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
+import sneer.bricks.identity.keys.gui.PublicKeyDialog;
 import sneer.bricks.snapps.system.log.file.LogToFile;
 import sneer.bricks.snapps.system.log.sysout.LogToSysout;
 import sneer.bricks.software.bricks.snappstarter.SnappStarter;
@@ -36,6 +37,7 @@ public class SneerSession {
 		setContextClassLoader();
 		configure(my(FolderConfig.class));
 		startLogging();
+		my(PublicKeyDialog.class).initPublicKeyIfNecessary();
 		my(SnappStarter.class).startSnapps();
 		my(Threads.class).waitUntilCrash();
 	}

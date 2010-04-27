@@ -83,7 +83,7 @@ public class BricknessImpl implements Environment {
 			constructor.setAccessible(true);
 			return (T)constructor.newInstance();
 		} catch (Exception e) {
-			throw new BrickLoadingException(e);
+			throw new BrickLoadingException(e.getClass().getSimpleName() + " thrown while trying to instantiate " + brickImpl, e);
 		}
 	}
 
