@@ -24,6 +24,7 @@ import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.Track;
@@ -37,6 +38,7 @@ public class PlayingTrackTest extends BrickTest {
 	@Bind private final Wusic _wusic = mock(Wusic.class);
 	private final Register<Track> _playingTrack = my(Signals.class).newRegister(null);
 
+	private Environment _local;
 	private Contact _localContact;
 	private Attributes _remoteAttributes;
 
@@ -51,6 +53,7 @@ public class PlayingTrackTest extends BrickTest {
 
 		my(PlayingTrackPublisher.class);
 
+		_local = my(Environment.class);
 		Environment remote = newTestEnvironment(my(Clock.class));
 		configureStorageFolder(remote, "remote/data");
 
@@ -76,7 +79,7 @@ public class PlayingTrackTest extends BrickTest {
 	}
 
 	private void testPlayingTrack(String trackName) {
-		setPlayingTrack(trackName.isEmpty() ? "" : trackName + ".mp3");
+		setLocalPlayingTrack(trackName.isEmpty() ? "" : trackName + ".mp3");
 		_tuplePump.waitForAllDispatchingToFinish();
 		assertEquals(trackName, playingTrackReceivedFromLocal());
 	}
@@ -92,8 +95,10 @@ public class PlayingTrackTest extends BrickTest {
 		return _remoteAttributes.attributeValueFor(_localContact, PlayingTrack.class, String.class).currentValue();
 	}
 
-	private void setPlayingTrack(String trackName) {
-		_playingTrack.setter().consume(my(Tracks.class).newTrack(new File(trackName)));
+	private void setLocalPlayingTrack(final String trackName) {
+		Environments.runWith(_local, new Closure() { @Override public void run() {
+			_playingTrack.setter().consume(my(Tracks.class).newTrack(new File(trackName)));
+		}});
 	}
 
 }
