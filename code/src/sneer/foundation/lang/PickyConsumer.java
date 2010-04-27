@@ -3,8 +3,8 @@ package sneer.foundation.lang;
 import sneer.foundation.lang.exceptions.Refusal;
 
 
-public interface PickyConsumer<T> {
-
+public interface PickyConsumer<T> extends ConsumerX<T, Refusal> {
+	
 	void consume(T value) throws Refusal; 
 
 }

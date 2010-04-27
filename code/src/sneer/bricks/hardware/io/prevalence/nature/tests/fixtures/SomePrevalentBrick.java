@@ -3,6 +3,7 @@ package sneer.bricks.hardware.io.prevalence.nature.tests.fixtures;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
 import sneer.bricks.hardware.io.prevalence.nature.Transaction;
 import sneer.foundation.brickness.Brick;
+import sneer.foundation.lang.Consumer;
 
 @Brick(Prevalent.class)
 public interface SomePrevalentBrick {
@@ -17,4 +18,6 @@ public interface SomePrevalentBrick {
 	
 	@Transaction
 	Item addItem_AnnotatedAsTransaction(String name);
+	
+	Consumer<String> itemAdder_Idempotent();
 }

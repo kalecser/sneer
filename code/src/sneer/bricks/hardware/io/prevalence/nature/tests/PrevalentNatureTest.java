@@ -2,6 +2,7 @@ package sneer.bricks.hardware.io.prevalence.nature.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.Item;
@@ -102,6 +103,20 @@ public class PrevalentNatureTest extends BrickTest {
 		
 		runInNewTestEnvironment(new Closure() { @Override public void run() {
 			assertNotNull(my(SomePrevalentBrick.class).getItem("Bar"));
+		}});
+	}
+
+	
+	@Ignore
+	@Test (timeout = 3000)
+	public void queriesThatReturnUnregisteredObjectsAreAssumedToBeIdempotent() {
+		runInNewTestEnvironment(new Closure() { @Override public void run() {
+			SomePrevalentBrick brick = my(SomePrevalentBrick.class);
+			brick.itemAdder_Idempotent().consume("Foo");
+		}});
+		
+		runInNewTestEnvironment(new Closure() { @Override public void run() {
+			assertNotNull(my(SomePrevalentBrick.class).getItem("Foo"));
 		}});
 	}
 

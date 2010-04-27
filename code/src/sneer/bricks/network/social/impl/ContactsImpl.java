@@ -24,7 +24,9 @@ class ContactsImpl implements Contacts {
 
 	
 	private Contact doAddContact(String nickname) {
-		Contact result = new ContactImpl(nickname); 
+		final Contact result = new ContactImpl(nickname, new PickyConsumer<String>() { @Override public void consume(String newNickname) throws Refusal {
+			checkAvailability(newNickname);
+		}}); 
 		_contacts.add(result);
 		return result;
 	}
@@ -60,13 +62,6 @@ class ContactsImpl implements Contacts {
 	}
 
 	
-	synchronized
-	private void changeNickname(Contact contact, String newNickname) throws Refusal {
-		checkAvailability(newNickname);
-		((ContactImpl)contact).nickname(newNickname);
-	}
-
-	
 	@Override
 	synchronized
 	public void removeContact(Contact contact) {
@@ -76,9 +71,7 @@ class ContactsImpl implements Contacts {
 	
 	@Override
 	public PickyConsumer<String> nicknameSetterFor(final Contact contact) {
-		return new PickyConsumer<String>(){ @Override public void consume(String newNickname) throws Refusal {
-			changeNickname(contact, newNickname);
-		}};
+		return ((ContactImpl)contact)._nicknameSetter;
 	}
 
 	
