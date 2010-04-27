@@ -63,14 +63,14 @@ class AttributeSubscriber<T> implements Consumer<AttributeValue> {
 			return;
 		}
 
-		if (!_valueType.isInstance(deserializedValue)) {
+		if (deserializedValue != null && !_valueType.isInstance(deserializedValue)) {
 			String helpMsg = helpMessageFor(deserializedValue.getClass());
 			my(BlinkingLights.class).turnOn(LightType.WARNING, "Invalid attribute type received", helpMsg, 7000);
 			return;
 		}
 
 		_value.setter().consume((T) deserializedValue);
-		my(Logger.class).log("New value: {} for: {} attribute received from: {}", _value.output(), _attribute.getSimpleName(), contact());
+		my(Logger.class).log("New value: {} for: {} attribute received from: {}.", _value.output(), _attribute.getSimpleName(), contact());
 	}
 
 	private String helpMessageFor(Class<?> invalidAttributeType) {

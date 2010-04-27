@@ -5,10 +5,8 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 
 import org.jmock.Expectations;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.testsupport.pump.TuplePump;
 import sneer.bricks.expression.tuples.testsupport.pump.TuplePumps;
 import sneer.bricks.hardware.clock.Clock;
@@ -19,6 +17,7 @@ import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
@@ -40,11 +39,12 @@ public class PlayingTrackTest extends BrickTest {
 
 	private Environment _local;
 	private Contact _localContact;
+	private Signal<String> _localPlayingTrack;
+
 	private Attributes _remoteAttributes;
 
 	private TuplePump _tuplePump;
 
-	@Ignore
 	@Test
 	public void playingTrackBroadcast() throws Exception {
 		checking(new Expectations() {{
@@ -65,6 +65,8 @@ public class PlayingTrackTest extends BrickTest {
 			my(ContactSeals.class).put("local", localSeal);
 			_remoteAttributes = my(Attributes.class);
 
+			_localPlayingTrack = _remoteAttributes.attributeValueFor(_localContact, PlayingTrack.class, String.class);
+
 			testPlayingTrack("track1");
 			testPlayingTrack("track2");
 			testPlayingTrack("track2");
@@ -79,26 +81,30 @@ public class PlayingTrackTest extends BrickTest {
 	}
 
 	private void testPlayingTrack(String trackName) {
-		setLocalPlayingTrack(trackName.isEmpty() ? "" : trackName + ".mp3");
+		setLocalPlayingTrack(newTrack(trackName));
 		_tuplePump.waitForAllDispatchingToFinish();
 		assertEquals(trackName, playingTrackReceivedFromLocal());
 	}
 
 	private void testNullPlayingTrack() {
 		my(Clock.class).advanceTime(1);
-		_playingTrack.setter().consume(null);
-		my(TupleSpace.class).waitForAllDispatchingToFinish();
-		assertEquals("", playingTrackReceivedFromLocal());
+		setLocalPlayingTrack(null);
+		_tuplePump.waitForAllDispatchingToFinish();
+		assertNull(playingTrackReceivedFromLocal());
 	}
 
 	private String playingTrackReceivedFromLocal() {
-		return _remoteAttributes.attributeValueFor(_localContact, PlayingTrack.class, String.class).currentValue();
+		return _localPlayingTrack.currentValue();
 	}
 
-	private void setLocalPlayingTrack(final String trackName) {
+	private void setLocalPlayingTrack(final Track track) {
 		Environments.runWith(_local, new Closure() { @Override public void run() {
-			_playingTrack.setter().consume(my(Tracks.class).newTrack(new File(trackName)));
+			_playingTrack.setter().consume(track);
 		}});
+	}
+
+	private Track newTrack(final String name) {
+		return my(Tracks.class).newTrack(new File(name.isEmpty() ? "" : name + ".mp3"));
 	}
 
 }
