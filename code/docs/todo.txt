@@ -19,8 +19,11 @@ Bamboo =================================================
 Igor ====================================================
 
 	- PlayingTrackTest
+		- TuplePump
 		- Rename this test: AttributesTest
 		- Create new test using a mock of Attributes
+
+	- OwnName, OwnPort --> Attribute<T>
 
 	- Contact's Status
 		- Create the following status:
@@ -30,8 +33,6 @@ Igor ====================================================
 			- Busy
 		- Find a way to solve the problem of the menu items' order
 		- Create StatusTest
-
-	- OwnName, OwnPort --> Attribute<T>
 
 	- Wusic
 		- MusicalTasteMatcher Kernel
