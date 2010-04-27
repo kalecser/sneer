@@ -113,8 +113,8 @@ public class GoBoardPanel extends JPanel {
 		buffer.setColor(Color.black);
 	
 		paintGrid(buffer);		
-		paintStones(buffer);
 		drawHoverStone(buffer);
+		paintStones(buffer);
 		
 		graphics.drawImage(_bufferImage, 0, 0, this);
 	}
