@@ -99,7 +99,6 @@ public class Main {
 //		SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
 //		SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "BC");
 		SecureRandom random = new CountingSecureRandom();
-		System.out.println("Random:" + random.nextInt());
 		
 //		byte[] seed = "SENHA SECRETA COMPRIDA".getBytes("UTF-8");
 //		random.setSeed(seed);
