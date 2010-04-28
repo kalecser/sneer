@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 
+import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -58,20 +59,25 @@ class TrackExchangeImpl implements TrackExchange {
 	synchronized
 	private void updateMapping() {
 		_isMappingReady.setter().consume(false);
-		stopOldMappingIfNecessary();
+
+		stopCurrentMappingIfNecessary();
+		cleanOldMapping();
 		startNewMappingIfNecessary();
-		_isMappingReady.setter().consume(true);
 	}
 
-	private void stopOldMappingIfNecessary() {
+	private void stopCurrentMappingIfNecessary() {
 		if (!shouldStop()) return;
 
 		my(FileMapper.class).stopFolderMapping(_currentTracksFolder);
-		_currentTracksFolder = null;
 	}
 
 	private boolean shouldStop() {
-		return _currentTracksFolder != null;
+		return _isMappingReady.output().currentValue(); 
+	}
+
+	private void cleanOldMapping() {
+		my(FileMap.class).remove(_currentTracksFolder);
+		_currentTracksFolder = null;
 	}
 
 	private void startNewMappingIfNecessary() {
@@ -84,7 +90,7 @@ class TrackExchangeImpl implements TrackExchange {
 			mapSharedTracksFolder(_currentTracksFolder);
 		}});
 	}
-	
+
 	private boolean shouldStart() {
 		return _newTracksFolder != null;
 	}
@@ -92,6 +98,7 @@ class TrackExchangeImpl implements TrackExchange {
 	private void mapSharedTracksFolder(File newSharedTracksFolder) {
 		try {
 			my(FileMapper.class).mapFolder(newSharedTracksFolder, "mp3");
+			_isMappingReady.setter().consume(true);
 		} catch (MappingStopped ignored) {
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error while reading tracks.", "", e);
