@@ -24,19 +24,15 @@ class ContactsImpl implements Contacts {
 
 	
 	private Contact doAddContact(String nickname) {
-		final Contact result = new ContactImpl(nickname, new PickyConsumer<String>() { @Override public void consume(String newNickname) throws Refusal {
-			checkAvailability(newNickname);
-		}}); 
+		final Contact result = new ContactImpl(nickname); 
 		_contacts.add(result);
 		return result;
 	}
-
 	
 	private void checkAvailability(String nickname) throws Refusal {
 		if (isNicknameAlreadyUsed(nickname))
 			throw new Refusal("Nickname " + nickname + " is already being used.");
 	}
-
 	
 	@Override
 	public SetSignal<Contact> contacts() {
@@ -71,7 +67,10 @@ class ContactsImpl implements Contacts {
 	
 	@Override
 	public PickyConsumer<String> nicknameSetterFor(final Contact contact) {
-		return ((ContactImpl)contact)._nicknameSetter;
+		return new PickyConsumer<String>() { @Override public void consume(String newNickname) throws Refusal {
+			checkAvailability(newNickname);
+			((ContactImpl)contact).setNickname(newNickname);
+		}};
 	}
 
 	

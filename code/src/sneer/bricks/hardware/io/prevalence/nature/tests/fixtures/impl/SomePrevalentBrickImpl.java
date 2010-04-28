@@ -3,14 +3,22 @@ package sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.prevalence.map.ExportMap;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.Item;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.SomePrevalentBrick;
+import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.lang.Consumer;
 
 class SomePrevalentBrickImpl implements SomePrevalentBrick {
+
+	private static final String INITIAL_VALUE = "FIRST_BAGAÇA";
+
 
 	static final class ItemImpl implements Item {
 		private String _name;
@@ -33,6 +41,7 @@ class SomePrevalentBrickImpl implements SomePrevalentBrick {
 	
 	private String _string;
 	private List<Item> _items = new ArrayList<Item>();
+	private Set<WeakContract> _refToAvoidGC = new HashSet<WeakContract>();
 
 	
 	@Override
@@ -84,8 +93,18 @@ class SomePrevalentBrickImpl implements SomePrevalentBrick {
 	@Override
 	public Consumer<String> itemAdder_Idempotent() {
 		return new Consumer<String>() { @Override public void consume(String name) {
+			if (INITIAL_VALUE.equals(name))
+				return;
 			addItem(name);
 		}};
+	}
+
+
+	@Override
+	public Register<String> itemAdder_Idempotent_Transitive() {
+		final Register<String> register = my(Signals.class).newRegister(INITIAL_VALUE);
+		_refToAvoidGC.add(register.output().addReceiver(itemAdder_Idempotent()));
+		return register;
 	}
 	
 }
