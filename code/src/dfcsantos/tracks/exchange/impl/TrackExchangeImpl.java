@@ -79,10 +79,8 @@ class TrackExchangeImpl implements TrackExchange {
 	private void cleanOldMappingIfNecessary() {
 		if (!shouldClean()) return;
 
-		my(Threads.class).startDaemon("Cleaning Track Mapping", new Closure() { @Override public void run() {
-			my(FileMap.class).remove(_currentTracksFolder);
-			_currentTracksFolder = null;
-		}});
+		my(FileMap.class).remove(_currentTracksFolder);
+		_currentTracksFolder = null;
 	}
 
 	private boolean shouldClean() {
