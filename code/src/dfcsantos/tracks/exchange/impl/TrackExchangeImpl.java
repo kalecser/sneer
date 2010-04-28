@@ -18,6 +18,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.gates.logic.LogicGates;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.exchange.TrackExchange;
 import dfcsantos.tracks.exchange.downloads.downloader.TrackDownloader;
 import dfcsantos.tracks.exchange.endorsements.TrackEndorser;
@@ -30,7 +31,7 @@ class TrackExchangeImpl implements TrackExchange {
 	private File _currentTracksFolder;
 	private File _newTracksFolder;
 
-	private Register<Boolean> _isMappingReady = my(Signals.class).newRegister(false);
+	private Register<Boolean> _isMapping = my(Signals.class).newRegister(false);
 
 	@SuppressWarnings("unused") private WeakContract _toAvoidGC;
 	@SuppressWarnings("unused") private WeakContract _toAvoidGC2;
@@ -46,7 +47,9 @@ class TrackExchangeImpl implements TrackExchange {
 	public void setOnOffSwitch(Signal<Boolean> onOffSwitch) {
 		if (_isInitialized) throw new IllegalStateException("TrackSharing already initialized");
 
-		Signal<Boolean> isTrackExchangeActive = my(LogicGates.class).and(onOffSwitch, _isMappingReady.output());
+		Signal<Boolean> isNotMapping = my(Signals.class).adapt(_isMapping.output(), new Functor<Boolean, Boolean>() { @Override public Boolean evaluate(Boolean isMapping) { return !isMapping; }});
+		Signal<Boolean> isTrackExchangeActive = my(LogicGates.class).and(onOffSwitch, isNotMapping);
+
 		my(TrackDownloader.class).setOnOffSwitch(isTrackExchangeActive);
 		my(TrackEndorser.class).setOnOffSwitch(isTrackExchangeActive);
 	}
@@ -58,10 +61,8 @@ class TrackExchangeImpl implements TrackExchange {
 
 	synchronized
 	private void updateMapping() {
-		_isMappingReady.setter().consume(false);
-
 		stopCurrentMappingIfNecessary();
-		cleanOldMapping();
+		cleanOldMappingIfNecessary();
 		startNewMappingIfNecessary();
 	}
 
@@ -72,16 +73,26 @@ class TrackExchangeImpl implements TrackExchange {
 	}
 
 	private boolean shouldStop() {
-		return _isMappingReady.output().currentValue(); 
+		return _isMapping.output().currentValue(); 
 	}
 
-	private void cleanOldMapping() {
-		my(FileMap.class).remove(_currentTracksFolder);
-		_currentTracksFolder = null;
+	private void cleanOldMappingIfNecessary() {
+		if (!shouldClean()) return;
+
+		my(Threads.class).startDaemon("Cleaning Track Mapping", new Closure() { @Override public void run() {
+			my(FileMap.class).remove(_currentTracksFolder);
+			_currentTracksFolder = null;
+		}});
+	}
+
+	private boolean shouldClean() {
+		return _currentTracksFolder != null;
 	}
 
 	private void startNewMappingIfNecessary() {
 		if (!shouldStart()) return;
+
+		_isMapping.setter().consume(true);
 
 		_currentTracksFolder = _newTracksFolder;
 		_newTracksFolder = null;
@@ -98,7 +109,7 @@ class TrackExchangeImpl implements TrackExchange {
 	private void mapSharedTracksFolder(File newSharedTracksFolder) {
 		try {
 			my(FileMapper.class).mapFolder(newSharedTracksFolder, "mp3");
-			_isMappingReady.setter().consume(true);
+			_isMapping.setter().consume(false);
 		} catch (MappingStopped ignored) {
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error while reading tracks.", "", e);
