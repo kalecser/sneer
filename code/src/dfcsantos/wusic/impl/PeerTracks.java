@@ -12,7 +12,7 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import dfcsantos.tracks.Track;
-import dfcsantos.tracks.endorsements.client.downloads.counter.TrackDownloadCounter;
+import dfcsantos.tracks.exchange.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.execution.playlist.Playlist;
 import dfcsantos.tracks.execution.playlist.Playlists;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;

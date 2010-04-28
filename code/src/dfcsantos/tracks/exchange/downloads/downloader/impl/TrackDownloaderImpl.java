@@ -1,4 +1,4 @@
-package dfcsantos.tracks.endorsements.client.downloads.downloader.impl;
+package dfcsantos.tracks.exchange.downloads.downloader.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -26,9 +26,9 @@ import sneer.bricks.pulp.reactive.collections.MapRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
-import dfcsantos.tracks.endorsements.client.downloads.counter.TrackDownloadCounter;
-import dfcsantos.tracks.endorsements.client.downloads.downloader.TrackDownloader;
-import dfcsantos.tracks.endorsements.protocol.TrackEndorsement;
+import dfcsantos.tracks.exchange.downloads.counter.TrackDownloadCounter;
+import dfcsantos.tracks.exchange.downloads.downloader.TrackDownloader;
+import dfcsantos.tracks.exchange.endorsements.TrackEndorsement;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.tracks.storage.rejected.RejectedTracksKeeper;
 import dfcsantos.tracks.tastematching.MusicalTasteMatcher;
@@ -59,7 +59,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 
 	@Override
-	public void setTrackDownloadAllowance(Signal<Integer> downloadAllowance) {
+	public void setDownloadAllowance(Signal<Integer> downloadAllowance) {
 		_downloadAllowance.set(downloadAllowance);
 	}
 

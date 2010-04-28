@@ -1,4 +1,4 @@
-package dfcsantos.tracks.endorsements.client.downloads.downloader;
+package dfcsantos.tracks.exchange.downloads.downloader;
 
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.pulp.reactive.Signal;
@@ -10,7 +10,7 @@ public interface TrackDownloader {
 
 	void setOnOffSwitch(Signal<Boolean> onOffSwitch);
 
-	void setTrackDownloadAllowance(Signal<Integer> downloadAllowance);
+	void setDownloadAllowance(Signal<Integer> downloadAllowance);
 
 	SetSignal<Download> runningDownloads();
 

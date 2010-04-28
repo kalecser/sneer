@@ -1,4 +1,4 @@
-package dfcsantos.tracks.endorsements.tests;
+package dfcsantos.tracks.exchange.endorsements.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -19,8 +19,8 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.tracks.endorsements.protocol.TrackEndorsement;
-import dfcsantos.tracks.endorsements.server.TrackEndorser;
+import dfcsantos.tracks.exchange.endorsements.TrackEndorsement;
+import dfcsantos.tracks.exchange.endorsements.TrackEndorser;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
 public class TrackEndorserTest extends BrickTest {

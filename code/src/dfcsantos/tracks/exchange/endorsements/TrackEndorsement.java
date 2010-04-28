@@ -1,4 +1,4 @@
-package dfcsantos.tracks.endorsements.protocol;
+package dfcsantos.tracks.exchange.endorsements;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.hardware.cpu.crypto.Hash;

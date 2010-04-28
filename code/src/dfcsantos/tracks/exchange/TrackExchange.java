@@ -1,13 +1,13 @@
-package dfcsantos.tracks.endorsements.client;
+package dfcsantos.tracks.exchange;
 
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.brickness.Brick;
 
 @Brick
-public interface TrackClient {
+public interface TrackExchange {
 
 	void setOnOffSwitch(Signal<Boolean> onOffSwitch);
 
-	void setTrackDownloadAllowance(Signal<Integer> downloadAllowance);
+	void setDownloadAllowance(Signal<Integer> downloadAllowance);
 
 }

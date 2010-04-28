@@ -1,4 +1,4 @@
-package dfcsantos.tracks.endorsements.server.impl;
+package dfcsantos.tracks.exchange.endorsements.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -22,8 +22,8 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.Tracks;
-import dfcsantos.tracks.endorsements.protocol.TrackEndorsement;
-import dfcsantos.tracks.endorsements.server.TrackEndorser;
+import dfcsantos.tracks.exchange.endorsements.TrackEndorsement;
+import dfcsantos.tracks.exchange.endorsements.TrackEndorser;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
 class TrackEndorserImpl implements TrackEndorser {

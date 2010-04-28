@@ -1,4 +1,4 @@
-package dfcsantos.tracks.endorsements.client.downloads.counter.impl;
+package dfcsantos.tracks.exchange.downloads.counter.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -8,7 +8,7 @@ import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.counters.Counter;
 import sneer.bricks.pulp.reactive.counters.Counters;
-import dfcsantos.tracks.endorsements.client.downloads.counter.TrackDownloadCounter;
+import dfcsantos.tracks.exchange.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
 class TrackDownloadCounterImpl implements TrackDownloadCounter {
