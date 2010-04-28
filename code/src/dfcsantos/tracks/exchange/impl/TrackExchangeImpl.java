@@ -57,16 +57,17 @@ class TrackExchangeImpl implements TrackExchange {
 
 	synchronized
 	private void updateMapping() {
+		_isMappingReady.setter().consume(false);
 		stopOldMappingIfNecessary();
 		startNewMappingIfNecessary();
+		_isMappingReady.setter().consume(true);
 	}
 
 	private void stopOldMappingIfNecessary() {
-		if (shouldStop()) {
-			_isMappingReady.setter().consume(false);
-			my(FileMapper.class).stopFolderMapping(_currentTracksFolder);
-			_currentTracksFolder = null;
-		}
+		if (!shouldStop()) return;
+
+		my(FileMapper.class).stopFolderMapping(_currentTracksFolder);
+		_currentTracksFolder = null;
 	}
 
 	private boolean shouldStop() {
@@ -91,7 +92,6 @@ class TrackExchangeImpl implements TrackExchange {
 	private void mapSharedTracksFolder(File newSharedTracksFolder) {
 		try {
 			my(FileMapper.class).mapFolder(newSharedTracksFolder, "mp3");
-			_isMappingReady.setter().consume(true);
 		} catch (MappingStopped ignored) {
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error while reading tracks.", "", e);
