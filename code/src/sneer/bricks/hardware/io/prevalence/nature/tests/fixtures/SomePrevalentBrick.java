@@ -13,6 +13,8 @@ public interface SomePrevalentBrick {
 	String get();
 	
 	void addItem(String name);
+	@Transaction
+	Item addItemAndReturnIt(String name);
 	void removeItem(Item item);
 	int itemCount();
 	Item getItem(String name);

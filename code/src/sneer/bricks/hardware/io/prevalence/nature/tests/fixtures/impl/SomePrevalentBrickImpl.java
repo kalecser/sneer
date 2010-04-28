@@ -61,6 +61,13 @@ class SomePrevalentBrickImpl implements SomePrevalentBrick {
 		Item item = my(ExportMap.class).register(new ItemImpl(name));
 		_items.add(item);
 	}
+	
+	@Override
+	public Item addItemAndReturnIt(String name) {
+		Item item = new ItemImpl(name);
+		_items.add(item);
+		return item;
+	}
 
 	
 	@Override

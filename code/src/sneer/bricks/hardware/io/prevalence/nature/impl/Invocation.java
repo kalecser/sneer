@@ -2,10 +2,13 @@ package sneer.bricks.hardware.io.prevalence.nature.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.File;
 import java.lang.reflect.Method;
+import java.sql.Date;
 import java.util.List;
 
 import sneer.bricks.hardware.io.prevalence.map.ExportMap;
+import sneer.foundation.lang.Immutable;
 
 class Invocation extends BuildingTransaction<Object> {
 		
@@ -34,14 +37,32 @@ class Invocation extends BuildingTransaction<Object> {
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
 	private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];	
 	
+	final static ExportMap _exportMap = my(ExportMap.class);
 	
 	@Override
 	public Object produce() {
-		Object receiver = navigateToReceiver(my(ExportMap.class).unmarshal(_id));
-		my(ExportMap.class).unmarshal(_args);
-		return invoke(receiver, _methodName, _argTypes, _args);
+		
+		Object receiver = navigateToReceiver(_exportMap.unmarshal(_id));
+		_exportMap.unmarshal(_args);
+		Object result = invoke(receiver, _methodName, _argTypes, _args);
+		if (requiresRegistration(result))
+			_exportMap.register(result);
+		return result;
 	}
 
+
+	private boolean requiresRegistration(Object result) {
+		if (result == null) return false;
+		
+		Class<?> type = result.getClass();
+		if (type.isPrimitive()) return false;
+		if (type == String.class) return false;
+		if (type == Date.class) return false;
+		if (type == File.class) return false;
+		if (Immutable.class.isAssignableFrom(type)) return false;
+		
+		return !_exportMap.isRegistered(result);
+	}
 	
 	private Object invoke(Object receiver, String methodName, Class<?>[] argTypes, Object... args) {
 		try {

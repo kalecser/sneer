@@ -115,7 +115,7 @@ class Bubble implements InvocationHandler {
 		return my(ExportMap.class).isRegistered(object);
 	}
 
-	private boolean isReadOnly(Class<?> type) {
+	static boolean isReadOnly(Class<?> type) {
 		if (type.isPrimitive()) return true;
 		if (type == String.class) return true;
 		if (type == Date.class) return true;

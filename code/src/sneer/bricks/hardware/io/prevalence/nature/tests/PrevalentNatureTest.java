@@ -86,6 +86,23 @@ public class PrevalentNatureTest extends BrickTest {
 		}});
 	}
 	
+	@Test (timeout = 3000)
+	public void objectsReturnedFromTransactionsAreAutomaticallyRegistered() {
+		runInNewTestEnvironment(new Closure() { @Override public void run() {
+			SomePrevalentBrick brick = my(SomePrevalentBrick.class);
+			Item foo = brick.addItemAndReturnIt("Foo");
+			brick.addItem("Bar");
+			brick.removeItem(foo);
+			assertEquals(1, brick.itemCount());
+		}});
+		
+		runInNewTestEnvironment(new Closure() { @Override public void run() {
+			SomePrevalentBrick brick = my(SomePrevalentBrick.class);
+			assertEquals(1, brick.itemCount());
+			assertEquals("Bar", brick.getItem("Bar").name());
+		}});
+	}
+	
 	
 	@Test (timeout = 3000)
 	public void bubbleExpandsToQueriedValues() {
