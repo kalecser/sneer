@@ -1,7 +1,6 @@
 package sneer.bricks.network.social.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.hardware.io.prevalence.map.ExportMap;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
@@ -13,7 +12,6 @@ class ContactImpl implements Contact {
 	
 	public ContactImpl(String nickname) {
 		_nickname = my(Signals.class).newRegister(nickname);
-		my(ExportMap.class).register(this);
 	}
 
 	
