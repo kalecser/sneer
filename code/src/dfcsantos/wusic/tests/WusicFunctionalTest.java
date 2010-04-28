@@ -11,7 +11,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import scala.actors.threadpool.Arrays;
-import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.testsupport.pump.TuplePump;
+import sneer.bricks.expression.tuples.testsupport.pump.TuplePumps;
 import sneer.bricks.hardware.clock.ticker.custom.CustomClockTicker;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
@@ -55,12 +56,12 @@ public class WusicFunctionalTest extends BrickTest {
 
 		assertTrue(_subject1.numberOfOwnTracks().currentValue() == 0);
 		assertTrue(_subject1.numberOfPeerTracks().currentValue() == 0);
-		assertEquals(_subject1.isTrackDownloadActive().currentValue(), false);
+		assertEquals(_subject1.isTrackExchangeActive().currentValue(), false);
 
-		_subject1.trackDownloadActivator().consume(true);
-		waitForSignalValue(_subject1.isTrackDownloadActive(), true);		
+		_subject1.trackExchangeActivator().consume(true);
+		waitForSignalValue(_subject1.isTrackExchangeActive(), true);		
 
-		assertTrue(_subject1.trackDownloadAllowance().currentValue().equals(Wusic.DEFAULT_TRACKS_DOWNLOAD_ALLOWANCE));
+		assertTrue(_subject1.downloadAllowance().currentValue().equals(Wusic.DEFAULT_DOWNLOAD_ALLOWANCE));
 	}
 
 	@Test
@@ -187,13 +188,12 @@ public class WusicFunctionalTest extends BrickTest {
 	@Ignore
 	@Test (timeout = 4000)
 	public void peersMode() throws IOException {
-		Environment remoteEnvironment = newTestEnvironment(my(TupleSpace.class));
-		configureFoldersOf(remoteEnvironment);
+		Environment remoteEnvironment = configureRemoteEnvironment();
 
 		activateTrackEndorsementsFrom(remoteEnvironment);
 
 		_subject1 = my(Wusic.class);
-		_subject1.trackDownloadActivator().consume(true);
+		_subject1.trackExchangeActivator().consume(true);
 
 		my(CustomClockTicker.class).start(10, 2000);
 
@@ -240,6 +240,13 @@ public class WusicFunctionalTest extends BrickTest {
 		return _subject1.playingTrack().currentValue().name();
 	}
 
+	private Environment configureRemoteEnvironment() {
+		Environment remoteEnvironment = newTestEnvironment();
+		configureFoldersOf(remoteEnvironment);
+		@SuppressWarnings("unused") TuplePump tuplePump = my(TuplePumps.class).startPumpingWith(remoteEnvironment);
+		return remoteEnvironment;
+	}
+
 	private void configureFoldersOf(Environment remoteEnvironment) {
 		configureStorageFolder(remoteEnvironment, "remote/data");
 		configureTmpFolder(remoteEnvironment, "remote/tmp");
@@ -251,7 +258,7 @@ public class WusicFunctionalTest extends BrickTest {
 			assertEquals(3, sharedTracksFolder().listFiles().length);
 
 			_subject2 = my(Wusic.class);
-			_subject2.trackDownloadActivator().consume(true);
+			_subject2.trackExchangeActivator().consume(true);
 
 			my(CustomClockTicker.class).start(10, 2000);
 		}});

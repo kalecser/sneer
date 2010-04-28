@@ -33,9 +33,9 @@ class PeerTracksPanel extends AbstractTabPane {
 	private final JFileChooser _sharedTracksFolderChooser;
     private final JButton _chooseSharedTracksFolder			= new JButton();
 
+    private final JCheckBox _trackExchange					= newReactiveCheckBox();
     private final JLabel _downloadAllowanceLabel			= new JLabel();
     private final JTextField _downloadAllowance				= newReactiveTextField();
-    private final JCheckBox _downloadActivity				= newReactiveCheckBox();
 
     private final JButton _downloadsDetails					= new JButton();
     private final JFrame _downloadsDetailsWindow			= newReactiveFrame();
@@ -56,8 +56,8 @@ class PeerTracksPanel extends AbstractTabPane {
         }});
         customPanel().add(_chooseSharedTracksFolder);
 
-        _downloadActivity.setText("Download Tracks");
-        customPanel().add(_downloadActivity);
+        _trackExchange.setText("Exchange Tracks");
+        customPanel().add(_trackExchange);
 
         _downloadAllowanceLabel.setText("-   Limit (MBs):");
         customPanel().add(_downloadAllowanceLabel);
@@ -71,7 +71,7 @@ class PeerTracksPanel extends AbstractTabPane {
         }});
         customPanel().add(_downloadsDetails);
 
-        _downloadsDetailsWindow.add(new DownloadsPanel(_controller.activeTrackDownloads()));
+        _downloadsDetailsWindow.add(new DownloadsPanel(_controller.activeDownloads()));
         _downloadsDetailsWindow.setLocationRelativeTo(customPanel().getTopLevelAncestor());
         _downloadsDetailsWindow.setMinimumSize(new Dimension(365, 80));
         _downloadsDetailsWindow.setResizable(false);
@@ -101,23 +101,23 @@ class PeerTracksPanel extends AbstractTabPane {
 
 	private JCheckBox newReactiveCheckBox() {
 		return my(ReactiveWidgetFactory.class).newCheckBox(
-			_controller.isTrackDownloadActive(),
-			_controller.trackDownloadActivator(),
+			_controller.isTrackExchangeActive(),
+			_controller.trackExchangeActivator(),
 			new Closure() { @Override public void run() {
-				allowDownloadsActionPerformed(_controller.isTrackDownloadActive().currentValue());
+				trackExchangeActionPerformed(_controller.isTrackExchangeActive().currentValue());
 			}}
 		).getMainWidget();
 	}
 
 	private JTextField newReactiveTextField() {
 		return my(ReactiveWidgetFactory.class).newTextField(
-			_controller.trackDownloadAllowance(), my(IntegerParsers.class).newIntegerParser(_controller.trackDownloadAllowanceSetter()), NotificationPolicy.OnEnterPressedOrLostFocus
+			_controller.downloadAllowance(), my(IntegerParsers.class).newIntegerParser(_controller.downloadAllowanceSetter()), NotificationPolicy.OnEnterPressedOrLostFocus
 		).getMainWidget();
 	}
 
 	private JFrame newReactiveFrame() {
 		return my(ReactiveWidgetFactory.class).newFrame(
-			my(Signals.class).adapt(_controller.activeTrackDownloads().size(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfDownloadsRunning) throws RuntimeException {
+			my(Signals.class).adapt(_controller.activeDownloads().size(), new Functor<Integer, String>() { @Override public String evaluate(Integer numberOfDownloadsRunning) throws RuntimeException {
 				return (numberOfDownloadsRunning > 0) ? "Active Downloads' Details:" : "Active Downloads <None>";
 			}})
 		).getMainWidget();
@@ -127,7 +127,7 @@ class PeerTracksPanel extends AbstractTabPane {
     	_sharedTracksFolderChooser.showOpenDialog(null);
     }
 
-	private void allowDownloadsActionPerformed(boolean isSelected) {
+	private void trackExchangeActionPerformed(boolean isSelected) {
 		if (isSelected) {
 			_downloadAllowanceLabel.setEnabled(true);
 			_downloadAllowance.setEnabled(true);

@@ -9,6 +9,8 @@ import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latch;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -20,14 +22,16 @@ import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.endorsements.client.TrackClient;
 import dfcsantos.tracks.endorsements.client.downloads.downloader.TrackDownloader;
+import dfcsantos.tracks.endorsements.server.TrackEndorser;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
 class TrackClientImpl implements TrackClient {
 
-	private static final FileMapper _fileMapper = my(FileMapper.class);
+	private boolean _isOn;
+	private Latch _isHandlingFileMap = my(Latches.class).produce();;
 
 	private final ImmutableReference<Signal<Boolean>> _onOffSwitch = my(ImmutableReferences.class).newInstance();
-	private final Register<Boolean> _downloadActivator = my(Signals.class).newRegister(false);
+	private final Register<Boolean> _trackExchangeActivator = my(Signals.class).newRegister(false);
 
 	private File _tracksFolder;
 	private File _newTracksFolder;
@@ -35,9 +39,9 @@ class TrackClientImpl implements TrackClient {
 	@SuppressWarnings("unused") private WeakContract _toAvoidGC;
 	@SuppressWarnings("unused") private WeakContract _toAvoidGC2;
 
-
 	{
-		my(TrackDownloader.class).setOnOffSwitch(_downloadActivator.output());
+		my(TrackDownloader.class).setOnOffSwitch(_trackExchangeActivator.output());
+		my(TrackEndorser.class).setOnOffSwitch(_trackExchangeActivator.output());
 
 		_toAvoidGC = my(TracksFolderKeeper.class).sharedTracksFolder().addReceiver(new Consumer<File>() { @Override public void consume(File newSharedTracksFolder) {
 			_newTracksFolder = newSharedTracksFolder;
@@ -50,7 +54,10 @@ class TrackClientImpl implements TrackClient {
 		_onOffSwitch.set(onOffSwitch);
 
 		_toAvoidGC2 = onOffSwitch.addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isOn) {
-			_downloadActivator.setter().consume(isOn);
+			_isOn = isOn;
+
+			if (_isHandlingFileMap.isOpen())
+				_trackExchangeActivator.setter().consume(isOn);
 		}});
 	}
 
@@ -67,20 +74,15 @@ class TrackClientImpl implements TrackClient {
 
 	private void stopOldMappingIfNecessary() {
 		if (shouldStop()) {
-			_downloadActivator.setter().consume(false);
-			_fileMapper.stopFolderMapping(_tracksFolder);
+			_isHandlingFileMap = my(Latches.class).produce();
+			_trackExchangeActivator.setter().consume(false);			
+			my(FileMapper.class).stopFolderMapping(_tracksFolder);
 			_tracksFolder = null;
 		}
 	}
 
 	private boolean shouldStop() {
-		if (_tracksFolder == null) return false;
-		return !isOn();
-	}
-
-	private Boolean isOn() {
-		if (!_onOffSwitch.isAlreadySet()) return false;
-		return _onOffSwitch.get().currentValue();
+		return _tracksFolder != null;
 	}
 
 	private void startNewMappingIfNecessary() {
@@ -95,14 +97,14 @@ class TrackClientImpl implements TrackClient {
 	}
 	
 	private boolean shouldStart() {
-		if (_newTracksFolder == null) return false;
-		return isOn();
+		return _newTracksFolder != null;
 	}
 
 	private void mapSharedTracksFolder(File newSharedTracksFolder) {
 		try {
-			_fileMapper.mapFolder(newSharedTracksFolder, "mp3");
-			_downloadActivator.setter().consume(true);
+			my(FileMapper.class).mapFolder(newSharedTracksFolder, "mp3");
+			_isHandlingFileMap.open();
+			_trackExchangeActivator.setter().consume(_isOn);
 		} catch (MappingStopped ignored) {
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error while reading tracks.", "", e);
