@@ -6,6 +6,8 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface LogicGates {
 
+	Signal<Boolean> not(Signal<Boolean> b);
+
 	Signal<Boolean> and(Signal<Boolean> a, Signal<Boolean> b);
 
 }

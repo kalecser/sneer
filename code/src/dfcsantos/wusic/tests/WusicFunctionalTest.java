@@ -38,7 +38,7 @@ public class WusicFunctionalTest extends BrickTest {
 
 	@Bind private TrackPlayer _trackPlayer = mock(TrackPlayer.class);
 
-	@Test
+	@Test (timeout = 2000)
 	public void basicStuff() {
 		_subject1 = my(Wusic.class);
 
@@ -64,7 +64,7 @@ public class WusicFunctionalTest extends BrickTest {
 		assertTrue(_subject1.downloadAllowance().currentValue().equals(Wusic.DEFAULT_DOWNLOAD_ALLOWANCE));
 	}
 
-	@Test
+	@Test (timeout = 2000)
 	public void ownModeWithOneTrack() throws IOException {
 		_subject1 = my(Wusic.class);
 		createSampleTracks(_subject1.playingFolder(), "track1.mp3");

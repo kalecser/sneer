@@ -21,8 +21,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Extract not gate from TrackExchangeImpl
-
 	- PlayingTrackTest
 		- Rename this test: AttributesTest
 		- Create new test using a mock of Attributes
