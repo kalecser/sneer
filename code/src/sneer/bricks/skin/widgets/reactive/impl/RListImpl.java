@@ -9,7 +9,6 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JList;
-import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataEvent;
@@ -34,15 +33,12 @@ class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
 	
 	private final Register<ELEMENT> _selectedElement = my(Signals.class).newRegister(null);
 
-	RListImpl(ListSignal<ELEMENT> source, LabelProvider<ELEMENT> labelProvider, ListCellRenderer cellRenderer ) {
+	RListImpl(ListSignal<ELEMENT> source, LabelProvider<ELEMENT> labelProvider) {
 		_source = source;
 		_labelProvider = labelProvider;
 		initModel();
 		
-		setCellRenderer(cellRenderer == null
-			? new RListSimpleCellRenderer<ELEMENT>(this)
-			: cellRenderer
-		);
+		setCellRenderer(new RListCellRenderer<ELEMENT>(this));
 
 		addSelectionSupport();
 	}

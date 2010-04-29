@@ -12,12 +12,12 @@ import javax.swing.ListCellRenderer;
 import sneer.bricks.pulp.reactive.Signal;
 
 
-class RListSimpleCellRenderer<ELEMENT> implements ListCellRenderer {
+class RListCellRenderer<ELEMENT> implements ListCellRenderer {
 
 	protected final RListImpl<ELEMENT> _rlist;
 	private final DefaultListCellRenderer renderer = new DefaultListCellRenderer();
 
-	RListSimpleCellRenderer(RListImpl<ELEMENT> rlist) {
+	RListCellRenderer(RListImpl<ELEMENT> rlist) {
 		_rlist = rlist;
 	}
 	
