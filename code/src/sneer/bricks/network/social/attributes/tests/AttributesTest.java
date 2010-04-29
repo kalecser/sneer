@@ -20,7 +20,8 @@ public class AttributesTest extends BrickTest {
 		assertNull(_subject.myAttributeValue(SomeAttribute.class).currentValue());
 
 		testAttributeValue("1st value");
-		testAttributeValue("2nd vakue");
+		testAttributeValue("2nd value");
+		testAttributeValue(null);
 	}
 
 	private void testAttributeValue(String value) {
