@@ -22,6 +22,7 @@ Bamboo =================================================
 Igor ====================================================
 
 	- PlayingTrackTest
+		- Make it work without holding the attribute value's signal
 		- Rename this test: AttributesTest
 		- Create new test using a mock of Attributes
 
@@ -64,9 +65,6 @@ René =================================================
 Klaus =================================================
 
 	- Crash Prevayler after threads.
-
-	- Analyze PlayingTrackTest
-		- Is it really necessary to keep the attribute value's signal? (see line 65)
 
 	- Analyze WatchMeTest
 		- It didn't work with a TuplePump (though it's a spike, it would be nice to understand what happened)
