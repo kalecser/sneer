@@ -22,17 +22,21 @@ class Bubble implements InvocationHandler {
 	
 	static CacheMap<Object, Object> _proxiesByDelegate = CacheMap.newInstance();
 	
+	static final List<Method> NO_PATH = Collections.emptyList();
+	
+
 	static <T> T wrap(final T object) {
-		List<Method> noPath = Collections.emptyList();
-		return wrap(object, noPath, object);
+		return wrap(object, NO_PATH, object);
 	}
 
-	static <T> T wrap(final Object root, final List<Method> method, final T result) {
-		return (T) _proxiesByDelegate.get(result, new Producer<Object>() { @Override public Object produce() {
-			InvocationHandler handler = new Bubble(root, method);
-			return Proxy.newProxyInstance(result.getClass().getClassLoader(), result.getClass().getInterfaces(), handler);
+	
+	static <T> T wrap(final Object startObject, final List<Method> methodPath, final T endObject) {
+		return (T) _proxiesByDelegate.get(endObject, new Producer<Object>() { @Override public Object produce() {
+			InvocationHandler handler = new Bubble(startObject, methodPath);
+			return Proxy.newProxyInstance(endObject.getClass().getClassLoader(), endObject.getClass().getInterfaces(), handler);
 		}});
 	}
+	
 	
 	private Bubble(Object delegate, List<Method> method) {
 		_delegate = delegate;
@@ -44,6 +48,7 @@ class Bubble implements InvocationHandler {
 	
 	private final Object _delegate;
 	private final List<Method> _getterPath;
+	
 	
 	@Override
 	public Object invoke(Object proxyImplied, Method method, Object[] args) throws Throwable {
@@ -66,15 +71,18 @@ class Bubble implements InvocationHandler {
 		return PrevaylerHolder._prevayler.execute(new Invocation(_delegate, method, args, getterPath()));
 	}
 	
+	
 	private List<String> getterPath() {
 		ArrayList<String> getterPath = new ArrayList<String>(_getterPath.size());
 		for (Method m : _getterPath) getterPath.add(m.getName());
 		return getterPath;
 	}
 
+	
 	private Object handleQuery(Method method, Object[] args) throws Throwable {
 		return invokeOnDelegate(method, args);
 	}
+	
 	
 	private Object invokeOnDelegate(Method method, Object[] args) throws Throwable {
 		try {
@@ -96,6 +104,7 @@ class Bubble implements InvocationHandler {
 		return receiver;
 	}
 
+	
 	private Object wrapIfNecessary(Object result, Method method) {
 		if (result == null) return null;
 
@@ -111,10 +120,12 @@ class Bubble implements InvocationHandler {
 		return wrap(_delegate, newGetterPath, result);
 	}
 
+	
 	private boolean isRegistered(Object object) {
 		return my(ExportMap.class).isRegistered(object);
 	}
 
+	
 	private boolean isReadOnly(Class<?> type) {
 		if (type.isPrimitive()) return true;
 		if (type == String.class) return true;
