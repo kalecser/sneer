@@ -18,7 +18,6 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.gates.logic.LogicGates;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.exchange.TrackExchange;
 import dfcsantos.tracks.exchange.downloads.downloader.TrackDownloader;
 import dfcsantos.tracks.exchange.endorsements.TrackEndorser;
@@ -36,7 +35,7 @@ class TrackExchangeImpl implements TrackExchange {
 	@SuppressWarnings("unused") private WeakContract _toAvoidGC;
 	@SuppressWarnings("unused") private WeakContract _toAvoidGC2;
 
-	
+
 	{
 		_toAvoidGC = my(TracksFolderKeeper.class).sharedTracksFolder().addReceiver(new Consumer<File>() { @Override public void consume(File newSharedTracksFolder) {
 			_newTracksFolder = newSharedTracksFolder;
@@ -44,31 +43,31 @@ class TrackExchangeImpl implements TrackExchange {
 		}});
 	}
 
-	
+
 	@Override
 	public void setOnOffSwitch(Signal<Boolean> onOffSwitch) {
 		checkInitilized();
 
-		Signal<Boolean> isNotMapping = my(Signals.class).adapt(_isMapping.output(), new Functor<Boolean, Boolean>() { @Override public Boolean evaluate(Boolean isMapping) { return !isMapping; }});
+		Signal<Boolean> isNotMapping = my(LogicGates.class).not(_isMapping.output());
 		Signal<Boolean> isTrackExchangeActive = my(LogicGates.class).and(onOffSwitch, isNotMapping);
 
 		my(TrackDownloader.class).setOnOffSwitch(isTrackExchangeActive);
 		my(TrackEndorser.class).setOnOffSwitch(isTrackExchangeActive);
 	}
 
-	
+
 	private void checkInitilized() {
 		if (_isInitialized) throw new IllegalStateException("TrackSharing already initialized");
 		_isInitialized = true;
 	}
 
-	
+
 	@Override
 	public void setDownloadAllowance(Signal<Integer> downloadAllowance) {
 		my(TrackDownloader.class).setDownloadAllowance(downloadAllowance);
 	}
 
-	
+
 	synchronized
 	private void updateMapping() {
 		if (shouldStop()) stopCurrentMapping();
@@ -76,23 +75,23 @@ class TrackExchangeImpl implements TrackExchange {
 		if (shouldStart()) startNewMapping();
 	}
 
-	
+
 	private boolean shouldStop() { return _isMapping.output().currentValue(); }
 	private boolean shouldClean() {	return _currentTracksFolder != null; }
 	private boolean shouldStart() { return _newTracksFolder != null; }
 
-	
+
 	private void stopCurrentMapping() {
 		my(FileMapper.class).stopFolderMapping(_currentTracksFolder);
 	}
-	
-	
+
+
 	private void cleanOldMapping() {
 		my(FileMap.class).remove(_currentTracksFolder);
 		_currentTracksFolder = null;
 	}
 
-	
+
 	private void startNewMapping() {
 		_currentTracksFolder = _newTracksFolder;
 		_newTracksFolder = null;
@@ -103,7 +102,7 @@ class TrackExchangeImpl implements TrackExchange {
 		}});
 	}
 
-	
+
 	private void mapSharedTracksFolder(File newSharedTracksFolder) {
 		try {
 			my(FileMapper.class).mapFolder(newSharedTracksFolder, "mp3");
