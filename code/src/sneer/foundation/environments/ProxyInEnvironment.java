@@ -6,16 +6,13 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
 
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.types.Classes;
 
 
 public class ProxyInEnvironment implements InvocationHandler {
-
-	
-	private static final Class<?>[] CLASS_ARRAY_TYPE = new Class[]{};
 
 	
 	public static <T> T newInstance(T component) {
@@ -26,22 +23,11 @@ public class ProxyInEnvironment implements InvocationHandler {
 	public static <T> T newInstance(Environment environment, final T component) {
 		final Class<? extends Object> componentClass = component.getClass();
 		final ProxyInEnvironment invocationHandler = new ProxyInEnvironment(environment, component);
-		Class<?>[] interfaces = interfacesImplementedBy(componentClass);
+		Class<?>[] interfaces = Classes.allInterfacesOf(componentClass);
 		return (T)Proxy.newProxyInstance(componentClass.getClassLoader(), interfaces, invocationHandler);
 	}
 	
 	
-	private static Class<?>[] interfacesImplementedBy(Class<?> clazz) {
-		ArrayList<Class<?>> result = new ArrayList<Class<?>>();
-		while (clazz != Object.class) {
-			for (Class<?> intrface :clazz.getInterfaces())
-				result.add(intrface);
-			clazz = clazz.getSuperclass();
-		}
-		return result.toArray(CLASS_ARRAY_TYPE);
-	}
-
-
 	private final Environment _environment;
 	private final Object _delegate;
 

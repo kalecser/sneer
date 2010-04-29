@@ -17,6 +17,7 @@ import sneer.bricks.hardware.io.prevalence.nature.Transaction;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
 import sneer.foundation.lang.ReadOnly;
+import sneer.foundation.lang.types.Classes;
 
 class Bubble implements InvocationHandler {
 	
@@ -33,7 +34,7 @@ class Bubble implements InvocationHandler {
 	static <T> T wrap(final Object startObject, final List<Method> methodPath, final T endObject) {
 		return (T) _proxiesByDelegate.get(endObject, new Producer<Object>() { @Override public Object produce() {
 			InvocationHandler handler = new Bubble(startObject, methodPath);
-			return Proxy.newProxyInstance(endObject.getClass().getClassLoader(), endObject.getClass().getInterfaces(), handler);
+			return Proxy.newProxyInstance(endObject.getClass().getClassLoader(), Classes.allInterfacesOf(endObject.getClass()), handler);
 		}});
 	}
 	
