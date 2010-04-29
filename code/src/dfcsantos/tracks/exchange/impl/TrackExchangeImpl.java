@@ -36,6 +36,7 @@ class TrackExchangeImpl implements TrackExchange {
 	@SuppressWarnings("unused") private WeakContract _toAvoidGC;
 	@SuppressWarnings("unused") private WeakContract _toAvoidGC2;
 
+	
 	{
 		_toAvoidGC = my(TracksFolderKeeper.class).sharedTracksFolder().addReceiver(new Consumer<File>() { @Override public void consume(File newSharedTracksFolder) {
 			_newTracksFolder = newSharedTracksFolder;
@@ -43,9 +44,10 @@ class TrackExchangeImpl implements TrackExchange {
 		}});
 	}
 
+	
 	@Override
 	public void setOnOffSwitch(Signal<Boolean> onOffSwitch) {
-		if (_isInitialized) throw new IllegalStateException("TrackSharing already initialized");
+		checkInitilized();
 
 		Signal<Boolean> isNotMapping = my(Signals.class).adapt(_isMapping.output(), new Functor<Boolean, Boolean>() { @Override public Boolean evaluate(Boolean isMapping) { return !isMapping; }});
 		Signal<Boolean> isTrackExchangeActive = my(LogicGates.class).and(onOffSwitch, isNotMapping);
@@ -54,56 +56,54 @@ class TrackExchangeImpl implements TrackExchange {
 		my(TrackEndorser.class).setOnOffSwitch(isTrackExchangeActive);
 	}
 
+	
+	private void checkInitilized() {
+		if (_isInitialized) throw new IllegalStateException("TrackSharing already initialized");
+		_isInitialized = true;
+	}
+
+	
 	@Override
 	public void setDownloadAllowance(Signal<Integer> downloadAllowance) {
 		my(TrackDownloader.class).setDownloadAllowance(downloadAllowance);
 	}
 
+	
 	synchronized
 	private void updateMapping() {
-		stopCurrentMappingIfNecessary();
-		cleanOldMappingIfNecessary();
-		startNewMappingIfNecessary();
+		if (shouldStop()) stopCurrentMapping();
+		if (shouldClean()) cleanOldMapping();
+		if (shouldStart()) startNewMapping();
 	}
 
-	private void stopCurrentMappingIfNecessary() {
-		if (!shouldStop()) return;
+	
+	private boolean shouldStop() { return _isMapping.output().currentValue(); }
+	private boolean shouldClean() {	return _currentTracksFolder != null; }
+	private boolean shouldStart() { return _newTracksFolder != null; }
 
+	
+	private void stopCurrentMapping() {
 		my(FileMapper.class).stopFolderMapping(_currentTracksFolder);
 	}
-
-	private boolean shouldStop() {
-		return _isMapping.output().currentValue(); 
-	}
-
-	private void cleanOldMappingIfNecessary() {
-		if (!shouldClean()) return;
-
+	
+	
+	private void cleanOldMapping() {
 		my(FileMap.class).remove(_currentTracksFolder);
 		_currentTracksFolder = null;
 	}
 
-	private boolean shouldClean() {
-		return _currentTracksFolder != null;
-	}
-
-	private void startNewMappingIfNecessary() {
-		if (!shouldStart()) return;
-
-		_isMapping.setter().consume(true);
-
+	
+	private void startNewMapping() {
 		_currentTracksFolder = _newTracksFolder;
 		_newTracksFolder = null;
 
+		_isMapping.setter().consume(true);
 		my(Threads.class).startDaemon("Track Mapping", new Closure() { @Override public void run() {
 			mapSharedTracksFolder(_currentTracksFolder);
 		}});
 	}
 
-	private boolean shouldStart() {
-		return _newTracksFolder != null;
-	}
-
+	
 	private void mapSharedTracksFolder(File newSharedTracksFolder) {
 		try {
 			my(FileMapper.class).mapFolder(newSharedTracksFolder, "mp3");
