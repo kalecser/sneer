@@ -21,6 +21,8 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Extract not gate from TrackExchangeImpl
+
 	- PlayingTrackTest
 		- Rename this test: AttributesTest
 		- Create new test using a mock of Attributes
@@ -62,6 +64,8 @@ René =================================================
 
 
 Klaus =================================================
+
+	- Crash Prevayler after threads.
 
 	- Analyze PlayingTrackTest
 		- Is it really necessary to keep the attribute value's signal? (see line 65)
