@@ -42,8 +42,8 @@ public class IncomingSocketTieBreakTest extends BrickTest {
 	@Test (timeout = 2000)
 	public void tieBreak() throws Exception {
 		
-		final Contact a = my(Contacts.class).produceContact("Contact A");
-		final Contact b = my(Contacts.class).produceContact("Contact B");
+		final Contact a = my(Contacts.class).addContact("Contact A");
+		final Contact b = my(Contacts.class).addContact("Contact B");
 		
 		checking(new Expectations() {{
 			Sequence sequence = newSequence("main");

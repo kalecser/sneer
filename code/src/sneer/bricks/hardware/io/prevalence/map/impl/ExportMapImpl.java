@@ -12,7 +12,7 @@ class ExportMapImpl implements ExportMap {
 	
 	private Map<Object, Long> _idsByObject = new ConcurrentHashMap<Object, Long>();
 	private Map<Long, Object> _objectsById = new ConcurrentHashMap<Long, Object>();
-	private long _nextId;
+	private long _nextId = 1;
 
 	
 	@Override

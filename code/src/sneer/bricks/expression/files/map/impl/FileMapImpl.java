@@ -80,19 +80,14 @@ class FileMapImpl implements FileMap {
 
 	@Override
 	synchronized
-	public Hash remove(File fileOrFolderToBeRemoved) {
-		Hash removed = getHash(fileOrFolderToBeRemoved);
-
-		if (fileOrFolderToBeRemoved.isDirectory()) {
-			removeFolder(fileOrFolderToBeRemoved);
-		} else {
-			removeFile(fileOrFolderToBeRemoved);
-		}
-
-		return removed;
+	public Hash remove(File fileOrFolder) {
+		return fileOrFolder.isDirectory() ? removeFolder(fileOrFolder) : removeFile(fileOrFolder);
 	}
 
-	private void removeFile(File fileToBeRemoved) {
+	private Hash removeFile(File fileToBeRemoved) {
+		Hash result = getHash(fileToBeRemoved);
+		if(result == null) return null;
+
 		Iterator<File> filesInTheMap = _filesByHash.values().iterator();
 		while (filesInTheMap.hasNext()) {
 			if (filesInTheMap.next().equals(fileToBeRemoved)) {
@@ -103,11 +98,13 @@ class FileMapImpl implements FileMap {
 				break;
 			}
 		}
+
+		return result;
 	}
 
-	private void removeFolder(File folderToBeRemoved) {
+	private Hash removeFolder(File folderToBeRemoved) {
 		final String pathToBeRemoved = folderToBeRemoved.getAbsolutePath();
-		
+
 		Iterator<Entry<Hash, File>> entries = _filesByHash.entrySet().iterator();
 		while (entries.hasNext()) {
 			final Entry<Hash, File> hashAndFile = entries.next();
@@ -117,6 +114,8 @@ class FileMapImpl implements FileMap {
 			entries.remove();
 			_folderContentsByHash.remove(hashAndFile.getKey());
 		}
+
+		return getHash(folderToBeRemoved);
 	}
 	
 	@Override

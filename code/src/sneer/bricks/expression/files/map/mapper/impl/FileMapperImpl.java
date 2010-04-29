@@ -59,7 +59,6 @@ class FileMapperImpl implements FileMapper {
 		if (_mappingsByFolder.get(folder) == null) return;
 		final FolderMapping folderMapping = _mappingsByFolder.remove(folder);
 		folderMapping.stop();
-		FileMap.remove(folder);
 	}
 
 

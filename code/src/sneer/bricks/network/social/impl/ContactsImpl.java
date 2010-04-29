@@ -13,17 +13,6 @@ class ContactsImpl implements Contacts {
     
     private final SetRegister<Contact> _contacts = my(CollectionSignals.class).newSetRegister();
     
-    
-    {
-		restore();
-    }
-
-    
-	private void restore() {
-		for (String nick : Store.restore())
-			produceContact(nick);
-	}
-
 	
 	@Override
 	synchronized
@@ -34,24 +23,16 @@ class ContactsImpl implements Contacts {
 	}
 
 	
-	private void save() {
-		Store.save(_contacts.output().currentElements());
-	}
-
-	
 	private Contact doAddContact(String nickname) {
-		Contact result = new ContactImpl(nickname); 
+		final Contact result = new ContactImpl(nickname); 
 		_contacts.add(result);
-		save();
 		return result;
 	}
-
 	
 	private void checkAvailability(String nickname) throws Refusal {
 		if (isNicknameAlreadyUsed(nickname))
 			throw new Refusal("Nickname " + nickname + " is already being used.");
 	}
-
 	
 	@Override
 	public SetSignal<Contact> contacts() {
@@ -77,26 +58,18 @@ class ContactsImpl implements Contacts {
 	}
 
 	
-	synchronized
-	private void changeNickname(Contact contact, String newNickname) throws Refusal {
-		checkAvailability(newNickname);
-		((ContactImpl)contact).nickname(newNickname);
-		save();
-	}
-
-	
 	@Override
 	synchronized
 	public void removeContact(Contact contact) {
 		_contacts.remove(contact);
-		save();
 	}
 	
 	
 	@Override
 	public PickyConsumer<String> nicknameSetterFor(final Contact contact) {
-		return new PickyConsumer<String>(){ @Override public void consume(String newNickname) throws Refusal {
-			changeNickname(contact, newNickname);
+		return new PickyConsumer<String>() { @Override public void consume(String newNickname) throws Refusal {
+			checkAvailability(newNickname);
+			((ContactImpl)contact).setNickname(newNickname);
 		}};
 	}
 

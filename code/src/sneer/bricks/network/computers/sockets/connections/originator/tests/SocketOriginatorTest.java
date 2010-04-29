@@ -41,7 +41,7 @@ public class SocketOriginatorTest extends BrickTest {
 	@Test (timeout = 2000)
 	public void openConnection() throws Exception {
 		final Latch ready = my(Latches.class).produce();
-		final Contact neide = my(Contacts.class).produceContact("Neide");
+		final Contact neide = my(Contacts.class).addContact("Neide");
 		my(ContactSeals.class).put("Neide", newSeal(new byte[]{42}));
 
 		checking(new Expectations() {{

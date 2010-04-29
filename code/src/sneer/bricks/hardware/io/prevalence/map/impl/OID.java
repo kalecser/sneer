@@ -8,4 +8,10 @@ class OID {
 		_id = id;
 	}
 
+	@Override
+	public String toString() {
+		return "OID:" + _id;
+	}
+
+	
 }

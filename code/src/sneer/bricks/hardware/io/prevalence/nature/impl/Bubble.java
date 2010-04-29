@@ -1,12 +1,19 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.io.File;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import sneer.bricks.hardware.io.prevalence.map.ExportMap;
+import sneer.bricks.hardware.io.prevalence.nature.Transaction;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
 import sneer.foundation.lang.ReadOnly;
@@ -14,52 +21,64 @@ import sneer.foundation.lang.ReadOnly;
 class Bubble implements InvocationHandler {
 	
 	static CacheMap<Object, Object> _proxiesByDelegate = CacheMap.newInstance();
-
 	
 	static <T> T wrap(final T object) {
-		return (T) _proxiesByDelegate.get(object, new Producer<Object>() { @Override public Object produce() {
-			InvocationHandler handler = new Bubble(object);
-			return Proxy.newProxyInstance(object.getClass().getClassLoader(), object.getClass().getInterfaces(), handler);
+		List<Method> noPath = Collections.emptyList();
+		return wrap(object, noPath, object);
+	}
+
+	static <T> T wrap(final Object root, final List<Method> method, final T result) {
+		return (T) _proxiesByDelegate.get(result, new Producer<Object>() { @Override public Object produce() {
+			InvocationHandler handler = new Bubble(root, method);
+			return Proxy.newProxyInstance(result.getClass().getClassLoader(), result.getClass().getInterfaces(), handler);
 		}});
 	}
 	
-	
-	private Bubble(Object delegate) {
+	private Bubble(Object delegate, List<Method> method) {
 		_delegate = delegate;
-		Invocation.preApprove(_delegate);
+		_getterPath = method;
+		if (_getterPath == null)
+			Invocation.preApprove(_delegate);
 	}
 
 	
 	private final Object _delegate;
-	
+	private final List<Method> _getterPath;
 	
 	@Override
 	public Object invoke(Object proxyImplied, Method method, Object[] args) throws Throwable {
-		return method.getReturnType() == Void.TYPE
-			? handleCommand(method, args)
+		Object result = isTransaction(method)
+			? handleTransaction(method, args)
 			: handleQuery(method, args);
-	}
-	
-	
-	private Object handleCommand(Method method, Object[] args) {
-		try {
-			PrevaylerHolder._prevayler.execute(new Invocation(_delegate, method, args));
-		} catch (Exception e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		}
-		return null;
-	}
 
-	
-	private Object handleQuery(Method method, Object[] args) throws Throwable {
-		Object result = invokeOnDelegate(method, args);
 		return wrapIfNecessary(result, method);
 	}
 
+
+	private boolean isTransaction(Method method) {
+		if (method.getReturnType() == Void.TYPE) return true;
+		if (method.getAnnotation(Transaction.class) != null) return true;
+		return false;
+	}
+	
+	
+	private Object handleTransaction(Method method, Object[] args) {
+		return PrevaylerHolder._prevayler.execute(new Invocation(_delegate, method, args, getterPath()));
+	}
+	
+	private List<String> getterPath() {
+		ArrayList<String> getterPath = new ArrayList<String>(_getterPath.size());
+		for (Method m : _getterPath) getterPath.add(m.getName());
+		return getterPath;
+	}
+
+	private Object handleQuery(Method method, Object[] args) throws Throwable {
+		return invokeOnDelegate(method, args);
+	}
 	
 	private Object invokeOnDelegate(Method method, Object[] args) throws Throwable {
 		try {
-			return method.invoke(_delegate, args);
+			return method.invoke(navigateToReceiver(), args);
 		} catch (InvocationTargetException e) {
 			throw e.getCause();
 		} catch (IllegalArgumentException e) {
@@ -70,16 +89,31 @@ class Bubble implements InvocationHandler {
 	}
 
 
-	private Object wrapIfNecessary(Object object, Method method) {
-		if (object == null) return null;
-
-		Class<?> type = method.getReturnType();
-		if (isReadOnly(type)) return object;
-		if (type.isArray()) return object;
-		
-		return wrap(object);
+	private Object navigateToReceiver() throws IllegalAccessException, InvocationTargetException {
+		Object receiver = _delegate;
+		for (Method getter : _getterPath)
+			receiver = getter.invoke(receiver);
+		return receiver;
 	}
 
+	private Object wrapIfNecessary(Object result, Method method) {
+		if (result == null) return null;
+
+		Class<?> type = method.getReturnType();
+		if (isReadOnly(type)) return result;
+		if (type.isArray()) return result;
+		
+		if (isRegistered(result))
+			return wrap(result);
+		
+		List<Method> newGetterPath = new ArrayList<Method>(_getterPath);
+		newGetterPath.add(method);
+		return wrap(_delegate, newGetterPath, result);
+	}
+
+	private boolean isRegistered(Object object) {
+		return my(ExportMap.class).isRegistered(object);
+	}
 
 	private boolean isReadOnly(Class<?> type) {
 		if (type.isPrimitive()) return true;

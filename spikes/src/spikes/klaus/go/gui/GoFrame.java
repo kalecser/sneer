@@ -11,6 +11,7 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 import sneer.bricks.pulp.reactive.Register;
+import sneer.foundation.lang.Closure;
 import spikes.klaus.go.Move;
 import spikes.klaus.go.GoBoard.StoneColor;
 
@@ -34,7 +35,7 @@ public class GoFrame extends JFrame {
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 		
-		GoBoardPanel goBoardPanel=new GoBoardPanel(move, _side);
+		final GoBoardPanel goBoardPanel = new GoBoardPanel(move, _side);
 		contentPane.add(goBoardPanel, BorderLayout.CENTER);
 		
 		JPanel goEastPanel = new JPanel();
@@ -47,7 +48,10 @@ public class GoFrame extends JFrame {
 		space.setPreferredSize(new Dimension(30,0));
 		
 		goEastPanel.add(space);
-		goEastPanel.add(new GoMovesPanel(goBoardPanel));
+		Closure pass = new Closure() { @Override public void run() {
+			goBoardPanel.passTurn();
+		}};
+		goEastPanel.add(new ActionsPanel(pass, _side, goBoardPanel.nextToPlaySignal()));
 				
 		contentPane.add(goEastPanel, BorderLayout.SOUTH);
 	}

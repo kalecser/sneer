@@ -16,9 +16,10 @@ public interface Threads {
 	void waitWithoutInterruptions(Object object);
 	void joinWithoutInterruptions(Thread thread);
 
+	/** Waits until the crashAllThreads method is called.*/
+	void waitUntilCrash();
 	void crashAllThreads();
 	boolean isCrashing();
-	void waitUntilCrash();
 	PulseSource crashing();
 
 }

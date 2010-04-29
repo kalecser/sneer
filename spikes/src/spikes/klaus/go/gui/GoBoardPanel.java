@@ -14,12 +14,11 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.gui.guithread.GuiThread;
+import sneer.bricks.hardware.clock.timer.Timer;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.environments.ProxyInEnvironment;
-import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import spikes.klaus.go.GoBoard;
 import spikes.klaus.go.Move;
@@ -35,14 +34,10 @@ public class GoBoardPanel extends JPanel {
 	public class Scroller implements Runnable {
 
 		public void run() {
-			while (true) {
-				if(_isScrolling == true){
-					scrollX();
-					scrollY();
-					if (_scrollXDelta != 0 || _scrollYDelta != 0) repaint();
-					my(Threads.class).sleepWithoutInterruptions(150);
-				}
-			}
+			if(!_isScrolling) return;
+			scrollX();
+			scrollY();
+			if (_scrollXDelta != 0 || _scrollYDelta != 0) repaint();
 		}
 
 		private void scrollX() {
@@ -63,6 +58,9 @@ public class GoBoardPanel extends JPanel {
 
 	private BufferedImage _bufferImage;
 
+	private int _hoverX;
+	private int _hoverY;
+
 	private volatile int _scrollY;
 	private volatile int _scrollX;
 	private volatile int _scrollYDelta;
@@ -71,22 +69,27 @@ public class GoBoardPanel extends JPanel {
 	private final Register<Move> _moveRegister;
 	private final StoneColor _side;
 
-	@SuppressWarnings("unused")	private final Object _referenceToAvoidGc;
+	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
+	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc2;
 
 	public GoBoardPanel(Register<Move> moveRegister, StoneColor side) {
 		_side = side;
 		_moveRegister = moveRegister;
-		_referenceToAvoidGc = _moveRegister.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) { 
+		_refToAvoidGc = _moveRegister.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) { 
 			if (move == null) return; 
 			play(move); 
 		}});
 		
 		addMouseListener();
-	    my(Threads.class).startDaemon("Go Board Scroller", new Scroller());
+	    _refToAvoidGc2 = my(Timer.class).wakeUpEvery(150, new Scroller());
 	}
 	
 	private void play(Move move) {
-		_board.playStone(move.xCoordinate, move.yCoordinate);
+		if (move.isPass)
+			_board.passTurn();
+		else
+			_board.playStone(move.xCoordinate, move.yCoordinate);
+		
 		repaint();			
 	}
 	
@@ -109,15 +112,32 @@ public class GoBoardPanel extends JPanel {
 		buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		buffer.setColor(Color.black);
 	
+		paintGrid(buffer);		
+		drawHoverStone(buffer);
+		paintStones(buffer);
+		
+		graphics.drawImage(_bufferImage, 0, 0, this);
+	}
+
+	private void drawHoverStone(Graphics2D graphics) {
+		if (_hoverX == -1) return;
+
+		if(_board.nextToPlay() == StoneColor.BLACK)
+			graphics.setColor(new Color(0, 0, 0, 50));
+		else	
+			graphics.setColor(new Color(255, 255, 255, 90));
+			
+		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		paintStoneOnCoordinates(graphics, toCoordinate(_hoverX), toCoordinate(_hoverY));
+
+	}
+
+	private void paintGrid(Graphics2D buffer) {
 		for(int i = 0; i < 270; i += _CELL_SIZE){
 			buffer.setColor(Color.black);
 			buffer.drawLine(i+_MARGIN, 0+_MARGIN, i+_MARGIN, 240+_MARGIN);
 			buffer.drawLine(0+_MARGIN, i+_MARGIN, 240+_MARGIN, i+_MARGIN);
-		}		
-		
-		paintStones(buffer);
-
-		graphics.drawImage(_bufferImage, 0, 0, this);
+		}
 	}
 
 	private void paintStones(Graphics2D graphics) {
@@ -171,17 +191,16 @@ public class GoBoardPanel extends JPanel {
 		
 		@Override
 		public void mouseMoved(final MouseEvent e) {
-		
 			_scrollXDelta = scrollDeltaFor(e.getX());
 			_scrollYDelta = scrollDeltaFor(e.getY());
 			
+			_hoverX = toScreenPosition(e.getX());
+			_hoverY = toScreenPosition(e.getY());
+			
+			if (!_board.canPlayStone(unscrollX(_hoverX), unscrollY(_hoverY)))
+				_hoverX = _hoverY = -1;
+			
 			repaint();
-			my(GuiThread.class).invokeLater(new Closure() { @Override public void run() {
-				int x = toScreenPosition(e.getX());
-				int y = toScreenPosition(e.getY());
-				if(_board.canPlayStone(unscrollX(x), unscrollY(y)))
-					drawTransparentStone(x, y);
-			}});
 		}
 
 		private int scrollDeltaFor(int coordinate) {
@@ -213,18 +232,6 @@ public class GoBoardPanel extends JPanel {
 		
 	}
 
-	private void drawTransparentStone(int x, int y) {
-		Graphics2D graphics = (Graphics2D) getGraphics();
-		
-		if(_board.nextToPlay() == StoneColor.BLACK)
-			graphics.setColor(new Color(0, 0, 0, 50));
-		else	
-			graphics.setColor(new Color(255, 255, 255, 90));
-		
-		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		paintStoneOnCoordinates(graphics, toCoordinate(x), toCoordinate(y));
-	}
-
 	private void paintStoneOnCoordinates(Graphics2D graphics, int x, int y) {
 		graphics.fillOval(x - (_STONE_DIAMETER / 2), y - (_STONE_DIAMETER / 2), _STONE_DIAMETER, _STONE_DIAMETER);
 	}
@@ -237,7 +244,12 @@ public class GoBoardPanel extends JPanel {
 		return _board.whiteCapturedCount();
 	}
 	
-	public void passTurn(){
-		_board.passTurn();
+	public void passTurn() {
+		_moveRegister.setter().consume(new Move(false, true, 0, 0));
 	}
+
+	public Signal<StoneColor> nextToPlaySignal() {
+		return _board.nextToPlaySignal();
+	}
+
 }

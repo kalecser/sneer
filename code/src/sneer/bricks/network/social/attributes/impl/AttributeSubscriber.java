@@ -3,6 +3,7 @@ package sneer.bricks.network.social.attributes.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
@@ -62,21 +63,22 @@ class AttributeSubscriber<T> implements Consumer<AttributeValue> {
 			return;
 		}
 
-		if (!_valueType.isInstance(deserializedValue)) {
+		if (deserializedValue != null && !_valueType.isInstance(deserializedValue)) {
 			String helpMsg = helpMessageFor(deserializedValue.getClass());
 			my(BlinkingLights.class).turnOn(LightType.WARNING, "Invalid attribute type received", helpMsg, 7000);
 			return;
 		}
 
-		_value.setter().consume((T) deserializedValue);	
+		_value.setter().consume((T) deserializedValue);
+		my(Logger.class).log("New value: {} for: {} attribute received from: {}.", _value.output(), _attribute.getSimpleName(), contact());
 	}
 
 	private String helpMessageFor(Class<?> invalidAttributeType) {
-		String helpMsgPrefix	= "Attribute of invalid type '" + invalidAttributeType.getName() + "' received from ";
-		String helpMsgStem		= (_contact == null) ? "myself" : _contact.nickname().currentValue();
-		String helpMsgSuffix	= ". Expected type: '" + _valueType.getName() + "'.";
+		return "Attribute of invalid type '" + invalidAttributeType.getName() + "' received from " + contact() + ". Expected type: '" + _valueType.getName() + "'.";
+	}
 
-		return helpMsgPrefix + helpMsgStem + helpMsgSuffix;
+	private String contact() {
+		return (_contact == null) ? "myself" : _contact.nickname().currentValue();
 	}
 
 	Signal<T> output() {

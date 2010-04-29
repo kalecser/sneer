@@ -34,8 +34,8 @@ public class SightingPublisherTest extends BrickTest {
 			allowingContactGivenSeal("foo");
 		}
 
-		private void allowingContactGivenSeal(String contact) {
-			allowing(_seals).contactGiven(sealForContact(contact)); will(returnValue(my(Contacts.class).produceContact(contact)));
+		private void allowingContactGivenSeal(String nick) {
+			allowing(_seals).contactGiven(sealForContact(nick)); will(returnValue(my(Contacts.class).contactGiven(nick)));
 		}});	
 	}
 	

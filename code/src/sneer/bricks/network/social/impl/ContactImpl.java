@@ -5,6 +5,7 @@ import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+
 class ContactImpl implements Contact {
 
 	private final Register<String> _nickname;
@@ -13,17 +14,21 @@ class ContactImpl implements Contact {
 		_nickname = my(Signals.class).newRegister(nickname);
 	}
 
+	
 	@Override
 	public Signal<String> nickname() {
 		return _nickname.output();
 	}
 
+	
 	@Override
 	public String toString() {
 		return _nickname.output().currentValue();
 	}
-	
-	void nickname(String newNickname) {
+
+
+	void setNickname(String newNickname) {
 		_nickname.setter().consume(newNickname);
 	}
+	
 }

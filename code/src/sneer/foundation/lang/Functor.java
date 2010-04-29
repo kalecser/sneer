@@ -6,4 +6,7 @@ public interface Functor<A, B> extends FunctorX<A, B, RuntimeException> {
 		return obj;
 	}};
 
+	
+	B evaluate(A value);
+	
 }

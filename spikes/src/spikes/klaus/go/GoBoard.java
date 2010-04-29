@@ -35,7 +35,7 @@ public class GoBoard {
 	}
 
 	private Intersection[][] _intersections;
-	private StoneColor _nextToPlay = BLACK;
+	private Register<StoneColor> _nextToPlay = my(Signals.class).newRegister(BLACK);
 	private Intersection[][] _previousSituation;
 	
 	protected Intersection intersection(int x, int y) {
@@ -106,10 +106,10 @@ public class GoBoard {
 	}
 
 	private void tryToPlayStone(int x, int y) throws IllegalMove{
-		intersection(x, y).setStone(_nextToPlay);
+		intersection(x, y).setStone(nextToPlay());
 		
-		killSurroundedStones(other(_nextToPlay));
-		if (killSurroundedStones(_nextToPlay))
+		killSurroundedStones(other(nextToPlay()));
+		if (killSurroundedStones(nextToPlay()))
 			throw new IllegalMove();
 		
 		if(sameSituationAs(_previousSituation))
@@ -136,7 +136,7 @@ public class GoBoard {
 	}
 
 	private void next() {
-		_nextToPlay = other(_nextToPlay);
+		_nextToPlay.setter().consume(other(nextToPlay()));
 	}
 
 	public StoneColor other(StoneColor color) {
@@ -150,7 +150,7 @@ public class GoBoard {
 	}
 
 	public StoneColor nextToPlay() {
-		return _nextToPlay;
+		return _nextToPlay.output().currentValue();
 	}
 	
 	private void setup(String[] setup){
@@ -196,5 +196,9 @@ public class GoBoard {
 
 	public Signal<Integer> whiteCapturedCount() {
 		return _whiteStonesCaptured.output();
+	}
+
+	public Signal<StoneColor> nextToPlaySignal() {
+		return _nextToPlay.output();
 	}
 }

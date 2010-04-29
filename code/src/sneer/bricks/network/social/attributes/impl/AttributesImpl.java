@@ -2,6 +2,7 @@ package sneer.bricks.network.social.attributes.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.attributes.Attribute;
 import sneer.bricks.network.social.attributes.AttributeValue;
@@ -31,6 +32,7 @@ class AttributesImpl implements Attributes {
 	public <T> Consumer<T> myAttributeSetter(final Class<? extends Attribute<T>> attribute) {
 		return new Consumer<T>() { @Override public void consume(T value) {
 			my(TupleSpace.class).acquire(new AttributeValue(attribute.getName(), serialize(value)));
+			my(Logger.class).log("Setting value of my '{}' attribute to: {}", attribute.getSimpleName(), value);
 		}};
 	}
 

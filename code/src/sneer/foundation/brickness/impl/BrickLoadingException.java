@@ -13,7 +13,5 @@ public class BrickLoadingException extends RuntimeException {
 	public BrickLoadingException(String message) {
 		super(message);
 	}
-	
-	
 
 }
