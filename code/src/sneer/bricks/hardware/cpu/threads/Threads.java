@@ -19,7 +19,6 @@ public interface Threads {
 	/** Waits until the crashAllThreads method is called.*/
 	void waitUntilCrash();
 	void crashAllThreads();
-	boolean isCrashing();
-	PulseSource crashing();
+	PulseSource crashed();
 
 }

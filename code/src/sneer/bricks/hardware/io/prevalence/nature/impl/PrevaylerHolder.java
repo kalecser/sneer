@@ -23,7 +23,7 @@ class PrevaylerHolder {
 
 
 	static {
-		_refToAvoidGc = my(Threads.class).crashing().addPulseReceiver(new Closure() { @Override public void run() {
+		_refToAvoidGc = my(Threads.class).crashed().addPulseReceiver(new Closure() { @Override public void run() {
 			crash();
 		}});
 	}

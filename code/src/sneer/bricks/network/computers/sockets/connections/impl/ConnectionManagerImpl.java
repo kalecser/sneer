@@ -16,7 +16,7 @@ import sneer.foundation.lang.ClosureX;
 
 class ConnectionManagerImpl implements ConnectionManager {
 	
-	static final WeakContract crashingContract = my(Threads.class).crashing().addPulseReceiver(new Runnable() { @Override public void run() {
+	static final WeakContract crashingContract = my(Threads.class).crashed().addPulseReceiver(new Runnable() { @Override public void run() {
 		for (ByteConnectionImpl victim : ConnectionsByContact.all())
 			victim.close();
 	}});
@@ -49,8 +49,8 @@ class ConnectionManagerImpl implements ConnectionManager {
 	private void manageSocket(final ByteArraySocket socket, String direction, ClosureX<IOException> closure) {
 		SocketCloser.closeIfUnsuccessful(socket, direction + " socket closed.", closure);
 		
-		if (my(Threads.class).isCrashing())
-			SocketCloser.close(socket, "Closing socket that was " + direction + " while crashing all threads.");
+//		if (my(Threads.class).isCrashing())
+//			SocketCloser.close(socket, "Closing socket that was " + direction + " while crashing all threads.");
 	}
 
 	
