@@ -52,7 +52,7 @@ public class ThreadsTest extends BrickTestWithThreads {
 		
 		final Latch crashingLatch = my(Latches.class).produce();
 		@SuppressWarnings("unused")
-		WeakContract crashingContract = my(Threads.class).crashing().addPulseReceiver(crashingLatch);
+		WeakContract crashingContract = my(Threads.class).crashed().addPulseReceiver(crashingLatch);
 		
 		crashAllThreads();
 

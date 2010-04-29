@@ -20,7 +20,7 @@ class ThreadsImpl implements Threads {
 	private static final ExceptionHandler ExceptionHandler = my(ExceptionHandler.class);
 
 	private final Latch _crash = Latches.produce();
-	private final Pulser _crashingPulser = my(Pulsers.class).newInstance();
+	private final Pulser _crashedPulser = my(Pulsers.class).newInstance();
 	static private boolean _isCrashing = false;
 
 	@Override
@@ -102,18 +102,15 @@ class ThreadsImpl implements Threads {
 	public void crashAllThreads() {
 		_isCrashing = true;
 
-		_crashingPulser.sendPulse();
 		Daemon.killAllInstances();
+
+		_crashedPulser.sendPulse();
 		_crash.open();
 	}
 
 	@Override
-	public PulseSource crashing() {
-		return _crashingPulser.output();
+	public PulseSource crashed() {
+		return _crashedPulser.output();
 	}
 
-	@Override
-	public boolean isCrashing() {
-		return _isCrashing;
-	}
 }
