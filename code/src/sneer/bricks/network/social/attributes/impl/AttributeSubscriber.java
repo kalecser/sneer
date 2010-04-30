@@ -37,6 +37,7 @@ class AttributeSubscriber<T> implements Consumer<AttributeValue> {
 		_valueType = valueType;
 
 		_toAvoidGC = my(TupleSpace.class).addSubscription(AttributeValue.class, this);
+		my(TupleSpace.class).waitForAllDispatchingToFinish(); // Optimize: Find a better way to do the synchronization
 	}
 
 	private Signal<Seal> sealFor(Contact contact) {
