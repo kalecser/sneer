@@ -16,10 +16,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Analyze WatchMeTest
-		- It didn't work with a TuplePump (though it's a spike, it would be nice to understand what happened)
-			- Did it work without the tuple pump at all?
-
 	- PlayingTrackTest
 		- Make it work without holding the attribute value's signal
 		- Rename this test: AttributesTest
