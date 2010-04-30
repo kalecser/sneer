@@ -46,11 +46,15 @@ class FileMapperImpl implements FileMapper {
 
 	@Override
 	public Hash mapFolder(final File folder, final String... acceptedFileExtensions) throws MappingStopped, IOException {
-		FolderMapping folderMapping = _mappingsByFolder.get(folder, new Producer<FolderMapping>() { @Override public FolderMapping produce() {
+		Hash hash = FileMap.getHash(folder);
+		return (hash != null) ? hash : mappingFor(folder, acceptedFileExtensions).result();
+	}
+
+
+	private FolderMapping mappingFor(final File folder, final String... acceptedFileExtensions) {
+		return _mappingsByFolder.get(folder, new Producer<FolderMapping>() { @Override public FolderMapping produce() {
 			return new FolderMapping(folder, acceptedFileExtensions);
 		}});
-
-		return folderMapping.result();
 	}
 
 
