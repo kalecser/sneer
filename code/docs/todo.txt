@@ -16,6 +16,8 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Clean up http://groups.google.com/group/computacaosoberana - You are a manager there now. I have already tightened access settings.
+
 	- PlayingTrackTest
 		- Make it work without holding the attribute value's signal
 		- Rename this test: AttributesTest
