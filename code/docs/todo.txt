@@ -16,8 +16,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Clean up http://groups.google.com/group/computacaosoberana - You are a manager there now. I have already tightened access settings.
-
 	- PlayingTrackTest
 		- Make it work without holding the attribute value's signal
 		- Rename this test: AttributesTest
@@ -33,6 +31,8 @@ Igor ====================================================
 			- Busy
 		- Find a way to solve the problem of the menu items' order
 		- Create StatusTest
+
+	- Add task to the build's script that removes tmpFolders that weren't removed after tests
 
 	- Wusic
 		- MusicalTasteMatcher Kernel
