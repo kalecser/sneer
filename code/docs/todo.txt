@@ -20,6 +20,8 @@ Igor ====================================================
 		- It didn't work with a TuplePump (though it's a spike, it would be nice to understand what happened)
 			- Did it work without the tuple pump at all?
 
+	- Clean up http://groups.google.com/group/computacaosoberana - You are a manager there now. I have already tightened access settings.
+
 	- PlayingTrackTest
 		- Make it work without holding the attribute value's signal
 		- Rename this test: AttributesTest
