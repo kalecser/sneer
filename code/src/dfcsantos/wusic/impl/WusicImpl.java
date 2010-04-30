@@ -60,19 +60,22 @@ public class WusicImpl implements Wusic {
 	}
 
 	private void restore() {
-		Object[] restoredDownloadAllowanceState = Store.restore();
-		if (restoredDownloadAllowanceState == null) return;
+		Object[] restoredState = Store.restore();
+		if (restoredState == null) return;
 
-		_isDownloadActive.setter().consume((Boolean) restoredDownloadAllowanceState[0]);
+		_isDownloadActive.setter().consume((Boolean) restoredState[0]);
 		try {
-			downloadAllowanceSetter().consume((Integer) restoredDownloadAllowanceState[1]);
+			downloadAllowanceSetter().consume((Integer) restoredState[1]);
 		} catch (Refusal e) {
 			throw new IllegalStateException(e);
+		}
+		if(restoredState.length > 2) {
+			volumePercent((Integer)restoredState[2]);
 		}
 	}
 
 	private void save() {
-		Store.save(isTrackExchangeActive().currentValue(), downloadAllowance().currentValue());
+		Store.save(isTrackExchangeActive().currentValue(), downloadAllowance().currentValue(), volumePercent().currentValue());
 	}
 
 	private void reset() {
@@ -229,6 +232,7 @@ public class WusicImpl implements Wusic {
 	@Override
 	public void volumePercent(int level) {
 		_dj.volumePercent(level);
+		save();
 	}
 
 	@Override

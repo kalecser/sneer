@@ -15,6 +15,7 @@ import javazoom.jl.player.JavaSoundAudioDevice;
 public class GainJavaSoundAudioDevice extends JavaSoundAudioDevice {
 
 	private int _volumePercent = 0;
+	private Field _sourceField = null;
 	
 	public GainJavaSoundAudioDevice(int volumePercent) {
 		_volumePercent = volumePercent;
@@ -23,13 +24,16 @@ public class GainJavaSoundAudioDevice extends JavaSoundAudioDevice {
 	@Override
 	protected void createSource() throws JavaLayerException {
 		super.createSource();
-		volumePercent(_volumePercent);
+		forceGain();
 	}
 	
 	public void volumePercent(int level) {
 		_volumePercent = Math.max(0, Math.min(100, level));
-		float gain = Math.max(- Float.MAX_VALUE, (float)(20 * Math.log10(_volumePercent / 100.0)));
-	    try {
+		forceGain();
+	}
+
+	private void forceGain() {
+		try {
 			SourceDataLine source = source();
 			if (source == null) {
 				return;
@@ -38,19 +42,25 @@ public class GainJavaSoundAudioDevice extends JavaSoundAudioDevice {
 		    if(volControl == null) {
 		    	return;
 		    }
-		    float newGain = Math.min(Math.max(gain, volControl.getMinimum()), volControl.getMaximum());
-		    volControl.setValue(newGain);
+		    float gain = Math.min(Math.max(dBGain(), volControl.getMinimum()), volControl.getMaximum());
+		    volControl.setValue(gain);
 		} 
 	    catch (Exception e) {
 	    	e.printStackTrace();
 			my(Logger.class).log(e.getMessage());
 		}
 	}
+
+	private float dBGain() {
+		return Math.max(- Float.MAX_VALUE, (float)(20 * Math.log10(_volumePercent / 100.0)));
+	}
 	
 	private SourceDataLine source() throws Exception {
-		Field sourceField = getClass().getSuperclass().getDeclaredField("source");
-		sourceField.setAccessible(true);
-		return (SourceDataLine) sourceField.get(this);
+		if(_sourceField == null) {
+			_sourceField = getClass().getSuperclass().getDeclaredField("source");
+			_sourceField.setAccessible(true);
+		}
+		return (SourceDataLine) _sourceField.get(this);
 	}
 	
 }
