@@ -27,8 +27,9 @@ import spikes.klaus.go.GoBoard.StoneColor;
 
 public class GoBoardPanel extends JPanel {
 	
+	static final int _boardSize=5;
 	private static final int _SCREEN_SIZE = 500;
-	private static final int _CELL_SIZE = 30;
+	private static final int _CELL_SIZE = 300/(_boardSize-1);
 	volatile boolean _isScrolling;
 	
 	public class Scroller implements Runnable {
@@ -41,20 +42,20 @@ public class GoBoardPanel extends JPanel {
 		}
 
 		private void scrollX() {
-			_scrollX = (_scrollX + _scrollXDelta + 9) % 9;
+			_scrollX = (_scrollX + _scrollXDelta + _boardSize) % _boardSize;
 		}
 		
 		private void scrollY() {
-			_scrollY = (_scrollY + _scrollYDelta + 9) % 9;
+			_scrollY = (_scrollY + _scrollYDelta + _boardSize) % _boardSize;
 		}
 
 	}
 
 	private static final int _MARGIN = 100;
-	private static final int _STONE_DIAMETER = 28;
+	private static final int _STONE_DIAMETER = _CELL_SIZE;
 	private static final long serialVersionUID = 1L;
 
-	private final GoBoard _board = new ToroidalGoBoard(9);
+	private final GoBoard _board = new ToroidalGoBoard(_boardSize);
 
 	private BufferedImage _bufferImage;
 
@@ -107,7 +108,7 @@ public class GoBoardPanel extends JPanel {
 		buffer.fillRect(0, 0, _SCREEN_SIZE, _SCREEN_SIZE);
 		
 		buffer.setColor(new Color(228,205,152));
-		buffer.fillRect(_MARGIN, _MARGIN, _CELL_SIZE * 8, _CELL_SIZE * 8);
+		buffer.fillRect(_MARGIN, _MARGIN, _CELL_SIZE * (_boardSize-1), _CELL_SIZE * (_boardSize-1));
 	    
 		buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		buffer.setColor(Color.black);
@@ -133,10 +134,12 @@ public class GoBoardPanel extends JPanel {
 	}
 
 	private void paintGrid(Graphics2D buffer) {
-		for(int i = 0; i < 270; i += _CELL_SIZE){
+		int c=0;
+		for(int i = 0; i < _boardSize; i ++ ){
 			buffer.setColor(Color.black);
-			buffer.drawLine(i+_MARGIN, 0+_MARGIN, i+_MARGIN, 240+_MARGIN);
-			buffer.drawLine(0+_MARGIN, i+_MARGIN, 240+_MARGIN, i+_MARGIN);
+			buffer.drawLine(c+_MARGIN, 0+_MARGIN, c+_MARGIN, 300+_MARGIN);
+			buffer.drawLine(0+_MARGIN, c+_MARGIN, 300+_MARGIN, c+_MARGIN);
+			c+=_CELL_SIZE;
 		}
 	}
 
@@ -164,11 +167,11 @@ public class GoBoardPanel extends JPanel {
 		return color == StoneColor.BLACK? Color.black: Color.white;
 	}
 
-	private int scrollX(int x) { return (x + _scrollX) % 9; }
-	private int unscrollX(int x) { return (9 + x - _scrollX) % 9; }
+	private int scrollX(int x) { return (x + _scrollX) % _boardSize; }
+	private int unscrollX(int x) { return (_boardSize + x - _scrollX) % _boardSize; }
 
-	private int scrollY(int y) { return (y + _scrollY) % 9; }
-	private int unscrollY(int y) { return (9 + y - _scrollY) % 9; }
+	private int scrollY(int y) { return (y + _scrollY) % _boardSize; }
+	private int unscrollY(int y) { return (_boardSize + y - _scrollY) % _boardSize; }
 	
 	private Graphics2D getBuffer() {
 		_bufferImage = (BufferedImage)createImage(_SCREEN_SIZE, _SCREEN_SIZE);
@@ -183,7 +186,7 @@ public class GoBoardPanel extends JPanel {
 	private int toScreenPosition(int coordinate) {
 		int result = (coordinate - _MARGIN + (_CELL_SIZE / 2)) / _CELL_SIZE;
 		if (result < 0) return 0;
-		if (result > 8) return 8;
+		if (result > _boardSize-1) return _boardSize-1;
 		return result;
 	}
 
@@ -204,7 +207,7 @@ public class GoBoardPanel extends JPanel {
 		}
 
 		private int scrollDeltaFor(int coordinate) {
-			if (coordinate > 9 * _CELL_SIZE + _MARGIN) return -1;
+			if (coordinate > _boardSize * _CELL_SIZE + _MARGIN) return -1;
 			if (coordinate < _MARGIN) return 1;
 			return 0;
 		}
