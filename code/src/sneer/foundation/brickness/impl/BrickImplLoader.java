@@ -12,6 +12,7 @@ import sneer.foundation.brickness.Nature;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.ProducerX;
+import sneer.foundation.lang.types.Classes;
 
 class BrickImplLoader {
 	
@@ -33,7 +34,7 @@ class BrickImplLoader {
 	}
 
 	private <T> ClassLoaderForPackage newImplClassLoaderFor(Class<T> brick) {
-		File path = ClassFiles.classpathRootFor(brick);
+		File path = Classes.classpathRootFor(brick);
 		String brickName = brick.getName();
 		String implPackage = BrickConventions.implPackageFor(brickName);
 		ClassLoader apiClassLoader = brick.getClassLoader();

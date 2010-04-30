@@ -8,11 +8,6 @@ Following are the tasks each one of us has on his plate right now:
 Bamboo =================================================
 
 	- Prevalence
-		- PrevalentNatureTest
-			- queriesThatReturnUnregisteredObjectsAreAssumedToBeIdempotent test - Unignore
-				- No longer register Contacts.nicknameSetterFor()
-			- Objects returned by the brick in the same transaction that creates them are registered automatically.
-				- No longer register Contact
 		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
 			- Change MusicalTasteMatcher's interface to use the contact instead of the nickname (string)
 		- BrickStateStore: retire. Use the prevalent nature instead.
@@ -22,6 +17,7 @@ Bamboo =================================================
 Igor ====================================================
 
 	- PlayingTrackTest
+		- Make it work without holding the attribute value's signal
 		- Rename this test: AttributesTest
 		- Create new test using a mock of Attributes
 
@@ -35,6 +31,8 @@ Igor ====================================================
 			- Busy
 		- Find a way to solve the problem of the menu items' order
 		- Create StatusTest
+
+	- Add task to the build's script that removes tmpFolders that weren't removed after tests
 
 	- Wusic
 		- MusicalTasteMatcher Kernel
@@ -63,19 +61,11 @@ René =================================================
 
 Klaus =================================================
 
-	- Crash Prevayler after threads.
-
-	- Analyze PlayingTrackTest
-		- Is it really necessary to keep the attribute value's signal? (see line 65)
-
-	- Analyze WatchMeTest
-		- It didn't work with a TuplePump (though it's a spike, it would be nice to understand what happened)
+	- Refactor Bubble - immutable types
 
 	- Seals
 		- Unignore DynDnsClientTest.
 		- Freedom2 - Revert old timeouts. Use pre-generated key pairs to be faster.
-
-	- Prevalent Bubble - not required if already prevailing
 
 	- Use CustomClockTicker at SneerPartyController.accelerateHeartbeat()
 
