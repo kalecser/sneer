@@ -33,9 +33,9 @@ class PeerTracksPanel extends AbstractTabPane {
 	private final JFileChooser _sharedTracksFolderChooser;
     private final JButton _chooseSharedTracksFolder			= new JButton();
 
-    private final JCheckBox _trackExchange					= newReactiveCheckBox();
     private final JLabel _downloadAllowanceLabel			= new JLabel();
     private final JTextField _downloadAllowance				= newReactiveTextField();
+    private final JCheckBox _trackExchange					= newReactiveCheckBox();
 
     private final JButton _downloadsDetails					= new JButton();
     private final JFrame _downloadsDetailsWindow			= newReactiveFrame();
