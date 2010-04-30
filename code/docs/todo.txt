@@ -61,6 +61,8 @@ René =================================================
 
 Klaus =================================================
 
+	- Optimize RListCellRenderer to keep the signals and not ask for them all the time.
+	
 	- Refactor Bubble - immutable types
 
 	- Seals
