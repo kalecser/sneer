@@ -63,6 +63,8 @@ René =================================================
 
 Klaus =================================================
 
+	- Refactor Bubble - immutable types
+
 	- Seals
 		- Unignore DynDnsClientTest.
 		- Freedom2 - Revert old timeouts. Use pre-generated key pairs to be faster.

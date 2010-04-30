@@ -8,7 +8,6 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 
 import sneer.bricks.pulp.reactive.Signal;
@@ -43,6 +42,6 @@ public interface ReactiveWidgetFactory {
 
 	<T> ListWidget<T> newList(ListSignal<T> source);
 	<T> ListWidget<T> newList(ListSignal<T> source, LabelProvider<T> labelProvider);
-	<T> ListWidget<T> newList(ListSignal<T> source, LabelProvider<T> labelProvider,	ListCellRenderer cellRenderer);
+	
 	<T> ListModel newListSignalModel(ListSignal<T> input, SignalChooser<T> chooser);
 }

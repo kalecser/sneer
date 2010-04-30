@@ -4,13 +4,8 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 import javax.swing.JList;
 import javax.swing.JPopupMenu;
@@ -18,16 +13,12 @@ import javax.swing.JScrollPane;
 
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
-import sneer.bricks.hardware.gui.images.Images;
-import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.collections.listsorter.ListSorter;
-import sneer.bricks.pulp.reactive.gates.strings.StringGates;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
@@ -36,42 +27,30 @@ import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
 import sneer.bricks.skin.menu.MenuFactory;
 import sneer.bricks.skin.menu.MenuGroup;
 import sneer.bricks.skin.popuptrigger.PopupTrigger;
-import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.skin.widgets.reactive.ListWidget;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
-import sneer.bricks.snapps.contacts.gui.ContactImageProvider;
 import sneer.bricks.snapps.contacts.gui.ContactTextProvider;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.bricks.snapps.contacts.gui.comparator.ContactComparator;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
 
 class ContactsGuiImpl implements ContactsGui {
 
 	private final Synth _synth = my(Synth.class);
 	{ _synth.notInGuiThreadLoad(this.getClass()); }
 
-	private final Image ONLINE = getImage("ContactsGuiImpl.onlineIconName");
-	private final Image OFFLINE = getImage("ContactsGuiImpl.offlineIconName");
-
-	private ContactImageProvider _contactImageProvider;
-	private List<ContactTextProvider> _contactTextProviders = new ArrayList<ContactTextProvider>();
-
 	private final ListWidget<Contact> _contactList;
 
 	private Container _container;
 
+	private final ContactLabelProvider _labelProvider = new ContactLabelProvider();
+
+	
 	ContactsGuiImpl() {
-		_contactImageProvider = new ContactImageProvider() { @Override public Signal<Image> imageFor(Contact contact) {
-			Signal<Boolean> isOnline = my(Stethoscope.class).isAlive(contact);
-			return my(Signals.class).adapt(isOnline, new Functor<Boolean, Image>(){ @Override public Image evaluate(Boolean value) {
-				return value ? ONLINE : OFFLINE;
-			}});
-		}};
 
 		registerContactTextProvider(new ContactTextProvider() {
 				@Override public Position position() { return ContactTextProvider.Position.CENTER; }
@@ -85,16 +64,12 @@ class ContactsGuiImpl implements ContactsGui {
 
 		final ByRef<ListWidget<Contact>> ref = ByRef.newInstance();
 		my(GuiThread.class).invokeAndWait(new Closure() { @Override public void run() {
-			ref.value = my(ReactiveWidgetFactory.class).newList(_sortedList, new ContactLabelProvider(), new ContactsGuiCellRenderer(new ContactLabelProvider()));
+			ref.value = my(ReactiveWidgetFactory.class).newList(_sortedList, _labelProvider);
 		}});
 		_contactList = ref.value;
 
 		my(InstrumentRegistry.class).registerInstrument(this);
 	} 
-
-	private Image getImage(String key) {
-		return my(Images.class).getImage(ContactsGuiImpl.class.getResource((String) _synth.getDefaultProperty(key)));
-	}
 
 	@Override
 	public void init(InstrumentPanel window) {
@@ -154,22 +129,6 @@ class ContactsGuiImpl implements ContactsGui {
 		return (JList)_contactList.getComponent();
 	}	
 
-	final class ContactLabelProvider implements LabelProvider<Contact> {
-
-		@Override public Signal<Image> imageFor(final Contact contact) {
-			return _contactImageProvider.imageFor(contact);
-		}
-
-		@Override public Signal<String> textFor(final Contact contact) {
-			Signal<String>[] texts = my(CollectionUtils.class).map(_contactTextProviders, new Functor<ContactTextProvider, Signal<String>>() { @Override public Signal<String> evaluate(ContactTextProvider textProvider) throws RuntimeException {
-				return textProvider.textFor(contact);
-			}}).toArray(new Signal[0]);
-
-			return my(StringGates.class).concat(" ", texts);
-		}
-
-	}
-	
 	private final class ListContactsPopUpSupport {
 		private ListContactsPopUpSupport() {
 			final JList list = _contactList.getMainWidget();
@@ -196,10 +155,7 @@ class ContactsGuiImpl implements ContactsGui {
 
 	@Override
 	public void registerContactTextProvider(ContactTextProvider textProvider) {
-		_contactTextProviders.add(textProvider);
-		Collections.sort(_contactTextProviders, new Comparator<ContactTextProvider>() { @Override public int compare(ContactTextProvider provider1, ContactTextProvider provider2) {
-			return provider1.position().compareTo(provider2.position());
-		}});
+		_labelProvider.register(textProvider);
 	}
 
 }
