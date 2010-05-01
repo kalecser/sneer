@@ -16,10 +16,7 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- PlayingTrackTest
-		- Make it work without holding the attribute value's signal
-		- Rename this test: AttributesTest
-		- Create new test using a mock of Attributes
+	- Refactor PlayingTrackTest to use a mock of Attributes
 
 	- OwnName, OwnPort --> Attribute<T>
 
