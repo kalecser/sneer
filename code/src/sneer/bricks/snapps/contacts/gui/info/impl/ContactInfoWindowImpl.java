@@ -62,7 +62,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 		my(GuiThread.class).invokeAndWait(new Closure(){ @Override public void run() {//Fix Use GUI Nature
 			ref[0] = my(ReactiveWidgetFactory.class).newList(_contactAddresses.addresses(), 
 			new LabelProvider<InternetAddress>(){
-				@Override public Signal<? extends Image> imageFor(InternetAddress element) {
+				@Override public Signal<Image> imageFor(InternetAddress element) {
 					return my(Signals.class).constant(null);
 				}
 

@@ -38,7 +38,7 @@ class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
 		_labelProvider = labelProvider;
 		initModel();
 		
-		setCellRenderer(new RListCellRenderer<ELEMENT>(this));
+		setCellRenderer(new RListCellRenderer<ELEMENT>(_labelProvider));
 
 		addSelectionSupport();
 	}
