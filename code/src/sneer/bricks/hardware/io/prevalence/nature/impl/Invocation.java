@@ -3,22 +3,17 @@ package sneer.bricks.hardware.io.prevalence.nature.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import sneer.bricks.hardware.io.prevalence.map.ExportMap;
 
 class Invocation extends BuildingTransaction<Object> {
 		
-	static void preApprove(Object object) {
-		if (!my(ExportMap.class).isRegistered(object))
-			throw new IllegalStateException("Object '" + object + "' was not ready to be exported from the prevalence environment. Use " + ExportMap.class.getSimpleName() + ".register(object).");
-	}
-
-	
-	Invocation(Object object, Method method, Object[] args, List<String> getterPath) {
+	Invocation(Object object, Method method, Object[] args, List<Method> queryPath) {
 		_id = my(ExportMap.class).marshal(object);
 		_methodName = method.getName();
-		_getterPath = getterPath.toArray(EMPTY_STRING_ARRAY);
+		_queryPath = toMethodNames(queryPath);
 		_argTypes = method.getParameterTypes();	
 		my(ExportMap.class).marshal(args);
 		_args = args;	
@@ -27,7 +22,7 @@ class Invocation extends BuildingTransaction<Object> {
 
 	private final long _id;
 	private final String _methodName;
-	private final String[] _getterPath;
+	private final String[] _queryPath;
 	private final Class<?>[] _argTypes;
 	private final Object[] _args;
 	
@@ -55,9 +50,16 @@ class Invocation extends BuildingTransaction<Object> {
 	
 	private Object navigateToReceiver(Object brick) {
 		Object result = brick;
-		for (int i = 0; i < _getterPath.length; i++)
-			result = invoke(result, _getterPath[i], EMPTY_CLASS_ARRAY);
+		for (int i = 0; i < _queryPath.length; i++)
+			result = invoke(result, _queryPath[i], EMPTY_CLASS_ARRAY);
 		return result;
+	}
+
+	private String[] toMethodNames(List<Method> queryPath) {
+		ArrayList<String> getterPath = new ArrayList<String>(queryPath.size());
+		for (Method m : queryPath) getterPath.add(m.getName());
+		
+		return getterPath.toArray(EMPTY_STRING_ARRAY);
 	}
 
 }

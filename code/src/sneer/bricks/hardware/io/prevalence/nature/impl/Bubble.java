@@ -21,43 +21,47 @@ import sneer.foundation.lang.types.Classes;
 
 class Bubble implements InvocationHandler {
 	
-	static CacheMap<Object, Object> _proxiesByDelegate = CacheMap.newInstance();
+	static CacheMap<Object, Object> _proxiesByObject = CacheMap.newInstance();
 	
 	static final List<Method> NO_PATH = Collections.emptyList();
-	
+	static final List<Object[]> NO_PATH_ARGS = Collections.emptyList();
 
-	static <T> T wrap(final T object) {
-		return wrap(object, NO_PATH, object);
+
+	static <T> T wrap(T newObject) {
+		T result = proxyFor(newObject);
+		_proxiesByObject.put(newObject, result);
+		return result;
+	}
+
+
+	private static <T> T proxyFor(T object) {
+		return proxyFor(object, NO_PATH, NO_PATH_ARGS, object);
 	}
 
 	
-	static <T> T wrap(final Object startObject, final List<Method> methodPath, final T endObject) {
-		return (T) _proxiesByDelegate.get(endObject, new Producer<Object>() { @Override public Object produce() {
-			InvocationHandler handler = new Bubble(startObject, methodPath);
-			return Proxy.newProxyInstance(endObject.getClass().getClassLoader(), Classes.allInterfacesOf(endObject.getClass()), handler);
-		}});
-	}
-	
-	
-	private Bubble(Object delegate, List<Method> method) {
-		_delegate = delegate;
-		_getterPath = method;
-		if (_getterPath == null)
-			Invocation.preApprove(_delegate);
+	private static <T> T proxyFor(final Object startObject, final List<Method> queryPath, final List<Object[]> queryPathArgs, final T endObject) {
+		InvocationHandler handler = new Bubble(startObject, queryPath, queryPathArgs);
+		return (T)Proxy.newProxyInstance(endObject.getClass().getClassLoader(), Classes.allInterfacesOf(endObject.getClass()), handler);
 	}
 
 	
-	private final Object _delegate;
-	private final List<Method> _getterPath;
+	private Bubble(Object startObject, List<Method> queryPath, List<Object[]> queryPathArgs) {
+		_startObject = startObject;
+		_queryPath = queryPath;
+		_queryPathArgs = queryPathArgs;
+	}
+
+
+	private final Object _startObject;
+	private final List<Method> _queryPath;
+	private final List<Object[]> _queryPathArgs;
 	
 	
 	@Override
 	public Object invoke(Object proxyImplied, Method method, Object[] args) throws Throwable {
-		Object result = isTransaction(method)
+		return isTransaction(method)
 			? handleTransaction(method, args)
 			: handleQuery(method, args);
-
-		return wrapIfNecessary(result, method);
 	}
 
 
@@ -69,19 +73,15 @@ class Bubble implements InvocationHandler {
 	
 	
 	private Object handleTransaction(Method method, Object[] args) {
-		return PrevaylerHolder._prevayler.execute(new Invocation(_delegate, method, args, getterPath()));
-	}
-	
-	
-	private List<String> getterPath() {
-		ArrayList<String> getterPath = new ArrayList<String>(_getterPath.size());
-		for (Method m : _getterPath) getterPath.add(m.getName());
-		return getterPath;
+		Object result = PrevaylerHolder._prevayler.execute(new Invocation(_startObject, method, args, _queryPath));
+		return wrapIfNecessary(result, method, null, true);
 	}
 
 	
-	private Object handleQuery(Method method, Object[] args) throws Throwable {
-		return invokeOnDelegate(method, args);
+	private Object handleQuery(Method query, Object[] args) throws Throwable {
+		Object result = invokeOnDelegate(query, args);
+		return wrapIfNecessary(result, query, args, false);
+
 	}
 	
 	
@@ -99,26 +99,34 @@ class Bubble implements InvocationHandler {
 
 
 	private Object navigateToReceiver() throws IllegalAccessException, InvocationTargetException {
-		Object receiver = _delegate;
-		for (Method getter : _getterPath)
+		Object receiver = _startObject;
+		for (Method getter : _queryPath)
 			receiver = getter.invoke(receiver);
 		return receiver;
 	}
 
 	
-	private Object wrapIfNecessary(Object result, Method method) {
-		if (result == null) return null;
+	private Object wrapIfNecessary(final Object returned, final Method method, final Object[] args, final boolean isTransaction) {
+		if (returned == null) return null;
 
 		Class<?> type = method.getReturnType();
-		if (isReadOnly(type)) return result;
-		if (type.isArray()) return result;
+		if (isReadOnly(type)) return returned;
+		if (type.isArray()) return returned;
 		
-		if (isRegistered(result))
-			return wrap(result);
+		return _proxiesByObject.get(returned, new Producer<Object>() { @Override public Object produce() {
+			if (isRegistered(returned))
+				return proxyFor(returned);
 		
-		List<Method> newGetterPath = new ArrayList<Method>(_getterPath);
-		newGetterPath.add(method);
-		return wrap(_delegate, newGetterPath, result);
+			if (isTransaction) throw new IllegalStateException("Transaction returned unregistered object: " + returned + ". Should have used " + ExportMap.class.getSimpleName() + " to register it before returning it.");
+			
+			List<Method> extendedQueryPath = new ArrayList<Method>(_queryPath);
+			List<Object[]> extendedQueryPathArgs = new ArrayList<Object[]>(_queryPathArgs);
+			
+			extendedQueryPath.add(method);
+			extendedQueryPathArgs.add(args);
+			
+			return proxyFor(_startObject, extendedQueryPath, extendedQueryPathArgs, returned);
+		}});
 	}
 
 	
