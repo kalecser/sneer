@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Collections;
 
 import org.junit.Test;
@@ -45,6 +46,15 @@ public abstract class LanguageCompilerTestBase extends BrickTest {
 
 	@Test
 	public void testWithExternalDependencies() throws Exception {
+		try {
+			tryToTestWithExternalDependencies();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void tryToTestWithExternalDependencies() throws IOException,
+			URISyntaxException {
 		final File libFolder = createLibFolder();
 		JarUtils.createJar(new File(libFolder, "lib.jar"), TestLib.class);
 		Result result = compile("class Foo extends " + TestLib.class.getName() + " {}", libFolder);
