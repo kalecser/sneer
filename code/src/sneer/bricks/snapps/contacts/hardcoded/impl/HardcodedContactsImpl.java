@@ -74,7 +74,7 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 			new ContactInfo("Bamboo","rbo.selfip.net",5923),
 			new ContactInfo("Bihaiko", "bihaiko.dyndns.org", 6789),
 			new ContactInfo("Daniel Santos", "dfcsantos.homeip.net", 7777),
-			new ContactInfo("Dummy", "localhost", 7777, new Seal(new ImmutableByteArray(new byte[128]))),
+			new ContactInfo("Dummy", "localhost", 7777, new Seal(new ImmutableByteArray(new byte[64]))),
 			new ContactInfo("Igor Arouca", "igorarouca.dyndns.org", 6789),
 			new ContactInfo("Kalecser", "kalecser.dyndns.org", 7770),
 			new ContactInfo("Klaus", "klausw.selfip.net", 5923),
