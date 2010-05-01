@@ -60,7 +60,10 @@ Klaus =================================================
 
 	- Optimize RListCellRenderer to keep the signals and not ask for them all the time.
 	
-	- Refactor Bubble - immutable types
+	- Bubble
+		- Implement getter paths with args
+		- Refactor - immutable types
+		
 
 	- Seals
 		- Unignore DynDnsClientTest.
