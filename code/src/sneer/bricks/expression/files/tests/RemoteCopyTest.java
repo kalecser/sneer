@@ -19,6 +19,9 @@ import sneer.foundation.lang.ClosureX;
 
 public class RemoteCopyTest extends FileCopyTestBase {
 
+	@SuppressWarnings("unused")	private TuplePump _refToAvoidGc;
+
+
 	@Override
 	protected void copyFileFromFileMap(final Hash hashOfContents, final File destination) throws Exception {
 		copyFromFileMap(new ClosureX<Exception>() { @Override public void run() throws IOException, TimeoutException {
@@ -49,7 +52,7 @@ public class RemoteCopyTest extends FileCopyTestBase {
 	private Environment configureRemoteEnvironment() {
 		Environment remote = newTestEnvironment(my(Clock.class));
 		configureStorageFolder(remote, "remote/Data");
-		@SuppressWarnings("unused") TuplePump tuplePump = my(TuplePumps.class).startPumpingWith(remote);
+		_refToAvoidGc = my(TuplePumps.class).startPumpingWith(remote);
 		return remote;
 	}
 

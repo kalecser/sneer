@@ -29,7 +29,7 @@ public class WusicImpl implements Wusic {
 	private final Register<Track> _trackToPlay = my(Signals.class).newRegister(null);
 	private Track _lastPlayedTrack;
 
-	private final DJ _dj = new DJ(_trackToPlay.output(), new Closure() { @Override public void run() { skip(); } } );
+	private final DJ _dj = new DJ(_trackToPlay.output(), new Closure() { @Override public void run() { skip(); } });
 
 	private Register<Boolean> _isDownloadActive = my(Signals.class).newRegister(false);
 	private final Register<Integer> _downloadAllowance = my(Signals.class).newRegister(DEFAULT_DOWNLOAD_ALLOWANCE);  
@@ -60,19 +60,22 @@ public class WusicImpl implements Wusic {
 	}
 
 	private void restore() {
-		Object[] restoredDownloadAllowanceState = Store.restore();
-		if (restoredDownloadAllowanceState == null) return;
+		Object[] restoredState = Store.restore();
+		if (restoredState == null) return;
 
-		_isDownloadActive.setter().consume((Boolean) restoredDownloadAllowanceState[0]);
+		_isDownloadActive.setter().consume((Boolean) restoredState[0]);
 		try {
-			downloadAllowanceSetter().consume((Integer) restoredDownloadAllowanceState[1]);
+			downloadAllowanceSetter().consume((Integer) restoredState[1]);
 		} catch (Refusal e) {
 			throw new IllegalStateException(e);
+		}
+		if(restoredState.length > 2) {
+			volumePercent((Integer)restoredState[2]);
 		}
 	}
 
 	private void save() {
-		Store.save(isTrackExchangeActive().currentValue(), downloadAllowance().currentValue());
+		Store.save(isTrackExchangeActive().currentValue(), downloadAllowance().currentValue(), volumePercent().currentValue());
 	}
 
 	private void reset() {
@@ -226,6 +229,16 @@ public class WusicImpl implements Wusic {
 		if (allowanceInMBs == null || allowanceInMBs < 0) throw new Refusal("Invalid tracks' download allowance: it must be positive integer");
 	}
 
+	@Override
+	public void volumePercent(int level) {
+		_dj.volumePercent(level);
+		save();
+	}
+
+	@Override
+	public Signal<Integer> volumePercent() {
+		return _dj.volumePercent();
+	}
 }
 
 

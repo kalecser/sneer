@@ -15,12 +15,16 @@ import dfcsantos.tracks.execution.player.TrackPlayer;
 
 public class DJ implements Consumer<Track> {
 
+	private final static int INITIAL_VOLUME_PERCENT = 50;
+
 	private final Runnable _toCallWhenDonePlayingATrack;
 
 	private TrackContract _currentTrackContract;
 	private Register<Integer> _trackElapsedTime = my(Signals.class).newRegister(0);
 	private Register<Boolean> _isPlaying = my(Signals.class).newRegister(false);
 
+	private Register<Integer> _volumeInPercent = my(Signals.class).newRegister(INITIAL_VOLUME_PERCENT);
+	
 	@SuppressWarnings("unused") private final WeakContract _djContract;
 	@SuppressWarnings("unused") private final WeakContract _timerContract;
 
@@ -67,7 +71,7 @@ public class DJ implements Consumer<Track> {
 
 	private void play(final Track track) {
 		setPlaying(true);
-		_currentTrackContract = my(TrackPlayer.class).startPlaying(track, isPlaying(), _toCallWhenDonePlayingATrack);
+		_currentTrackContract = my(TrackPlayer.class).startPlaying(track, isPlaying(), volumePercent(), _toCallWhenDonePlayingATrack);
 	}
 
 
@@ -77,6 +81,15 @@ public class DJ implements Consumer<Track> {
 
 	Signal<Boolean> isPlaying() {
 		return _isPlaying.output();
+	}
+
+	public void volumePercent(int level) {
+		level = Math.min(100, Math.max(0, level));
+		_volumeInPercent.setter().consume(level);
+	}
+
+	public Signal<Integer> volumePercent() {
+		return _volumeInPercent.output();
 	}
 
 }

@@ -1,6 +1,8 @@
 package sneer.bricks.snapps.contacts.hardcoded.impl;
 
 import static sneer.foundation.environments.Environments.my;
+import sneer.bricks.hardware.cpu.codec.Codec;
+import sneer.bricks.hardware.cpu.codec.DecodeException;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -74,7 +76,17 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 			new ContactInfo("Igor Arouca", "igorarouca.dyndns.org", 6789),
 			new ContactInfo("Kalecser", "kalecser.dyndns.org", 7770),
 			new ContactInfo("Klaus", "klausw.selfip.net", 5923),
+			new ContactInfo("Patrick Roemer", "judgefang.dontexist.net", 4711, newSeal("7413fe5a316c22970a4b1dc44a686a176f743618be4437131986d17df6841ec4443ec22994672322ed0c0ae78ba921072dd60c9d8e3adbfae9d6f9e16381ef5e")),
 		};
+	}
+
+
+	private Seal newSeal(String sealString) {
+		try {
+			return new Seal(new ImmutableByteArray(my(Codec.class).hex().decode(sealString)));
+		} catch (DecodeException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 

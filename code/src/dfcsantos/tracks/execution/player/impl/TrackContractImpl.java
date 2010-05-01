@@ -12,6 +12,7 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.execution.player.TrackContract;
 
@@ -19,13 +20,14 @@ class TrackContractImpl implements TrackContract {
 
 	private PausableInputStream _trackStream;
 	private Player _player;
+	private GainJavaSoundAudioDevice _audioDevice;
 
 	private volatile boolean _isDisposed;
 	
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc;
 
 	
-	TrackContractImpl(final Track track, final Signal<Boolean> isPlaying, final Runnable toCallWhenFinished) {
+	TrackContractImpl(final Track track, final Signal<Boolean> isPlaying, final Signal<Integer> volumePercent, final Runnable toCallWhenFinished) {
 		try {
 			_trackStream = new PausableInputStream(new FileInputStream(track.file()), isPlaying);
 		} catch (FileNotFoundException e) {
@@ -33,7 +35,7 @@ class TrackContractImpl implements TrackContract {
 		} 
 		
 		my(Threads.class).startDaemon("Track Player", new Closure() { @Override public void run() {
-			play(toCallWhenFinished);
+			play(volumePercent, toCallWhenFinished);
 		}});
 	}
 
@@ -51,9 +53,16 @@ class TrackContractImpl implements TrackContract {
 	}
 
 	
-	private void play(final Runnable toCallWhenFinished) {
+	private void play(Signal<Integer> volumePercent, final Runnable toCallWhenFinished) {
 		try {
-			_player = new Player(_trackStream);
+			_audioDevice = new GainJavaSoundAudioDevice(volumePercent.currentValue());
+			@SuppressWarnings("unused") WeakContract volumePercentContract = volumePercent.addReceiver(new Consumer<Integer>() {
+				@Override
+				public void consume(Integer value) {
+					_audioDevice.volumePercent(value);
+				}
+			});
+			_player = new Player(_trackStream, _audioDevice);
 			_player.play();
 		} catch (Throwable t) {
 			if (!_isDisposed)
@@ -65,4 +74,8 @@ class TrackContractImpl implements TrackContract {
 		}
 	}
 
+	@Override
+	public void volumePercent(int level) {
+		_audioDevice.volumePercent(level);
+	}
 }

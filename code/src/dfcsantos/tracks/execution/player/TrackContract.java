@@ -7,4 +7,6 @@ public interface TrackContract extends Contract {
 
 	int trackElapsedTime();
 
+	void volumePercent(int level);
+
 }
