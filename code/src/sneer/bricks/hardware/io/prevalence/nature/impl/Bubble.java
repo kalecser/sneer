@@ -123,8 +123,9 @@ class Bubble implements InvocationHandler {
 		return _proxiesByObject.get(returned, new Producer<Object>() { @Override public Object produce() {
 			if (isRegistered(returned))
 				return proxyFor(returned);
-		
-			if (isTransaction) throw new IllegalStateException("Transaction returned unregistered object: " + returned + ". Should have used " + ExportMap.class.getSimpleName() + " to register it before returning it.");
+
+			if (isTransaction)
+				throw new IllegalStateException();
 			
 			List<Method> extendedQueryPath = new ArrayList<Method>(_queryPath);
 			List<Object[]> extendedQueryPathArgs = new ArrayList<Object[]>(_queryPathArgs);

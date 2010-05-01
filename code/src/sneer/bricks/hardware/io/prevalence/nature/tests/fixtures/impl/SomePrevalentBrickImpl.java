@@ -17,7 +17,8 @@ import sneer.foundation.lang.Consumer;
 
 class SomePrevalentBrickImpl implements SomePrevalentBrick {
 
-	private static final String INITIAL_VALUE = "FIRST_BAGAÇA";
+	private static final String INITIAL_VALUE = "INITIAL_VALUE" +
+			"";
 
 
 	static final class ItemImpl implements Item {
@@ -58,8 +59,15 @@ class SomePrevalentBrickImpl implements SomePrevalentBrick {
 	
 	@Override
 	public void addItem(String name) {
-		Item item = my(ExportMap.class).register(new ItemImpl(name));
-		_items.add(item);
+		ItemImpl item = addItemWithoutRegistering(name);
+		my(ExportMap.class).register(item);
+	}
+
+
+	private ItemImpl addItemWithoutRegistering(String name) {
+		ItemImpl result = new ItemImpl(name);
+		_items.add(result);
+		return result;
 	}
 
 	
@@ -85,8 +93,7 @@ class SomePrevalentBrickImpl implements SomePrevalentBrick {
 	
 	@Override
 	public Item addItem_AnnotatedAsTransaction(String name) {
-		addItem(name);
-		return getItem(name);
+		return addItemWithoutRegistering(name);
 	}
 
 	

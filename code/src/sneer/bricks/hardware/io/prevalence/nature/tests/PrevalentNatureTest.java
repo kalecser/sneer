@@ -4,6 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.prevalence.map.ExportMap;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.Item;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.SomePrevalentBrick;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.brick2.PrevalentBrick2;
@@ -147,6 +148,19 @@ public class PrevalentNatureTest extends BrickTest {
 		runInNewTestEnvironment(new Closure() { @Override public void run() {
 			assertNotNull(my(SomePrevalentBrick.class).getItem("Bar"));
 		}});
+	}
+
+	
+	@Test (timeout = 3000)
+	public void objectsReturnedByTransactionsAreRegistered() {
+		Item item = my(SomePrevalentBrick.class).addItem_AnnotatedAsTransaction("Foo");
+		assertTrue("Item should be registered.", my(ExportMap.class).isRegistered(item));
+	}
+
+	
+	@Test (timeout = 3000)
+	public void invocationPathWithArgs() {
+		
 	}
 
 
