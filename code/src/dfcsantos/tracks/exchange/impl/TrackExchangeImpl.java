@@ -48,11 +48,15 @@ class TrackExchangeImpl implements TrackExchange {
 	public void setOnOffSwitch(Signal<Boolean> onOffSwitch) {
 		checkInitilized();
 
-		Signal<Boolean> isNotMapping = my(LogicGates.class).not(_isMapping.output());
-		Signal<Boolean> isTrackExchangeActive = my(LogicGates.class).and(onOffSwitch, isNotMapping);
+		Signal<Boolean> isReady = my(LogicGates.class).and(onOffSwitch, isNotMapping());
 
-		my(TrackDownloader.class).setOnOffSwitch(isTrackExchangeActive);
-		my(TrackEndorser.class).setOnOffSwitch(isTrackExchangeActive);
+		my(TrackDownloader.class).setOnOffSwitch(isReady);
+		my(TrackEndorser.class).setOnOffSwitch(isReady);
+	}
+
+
+	private Signal<Boolean> isNotMapping() {
+		return my(LogicGates.class).not(_isMapping.output());
 	}
 
 
