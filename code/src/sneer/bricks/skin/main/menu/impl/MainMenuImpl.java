@@ -26,7 +26,9 @@ class MainMenuImpl implements MainMenu {
 	}
 	
 	@Override public void addAction(Action action) { delegate().addAction(action); }
+	@Override public void addAction(Action action, Integer index) { delegate().addAction(action, index); }
 	@Override public void addAction(String caption, Runnable action) { delegate().addAction(caption, action); }
+	@Override public void addAction(String caption, Runnable action, Integer index) { delegate().addAction(caption, action, index); }
 	@Override public void addGroup(MenuGroup<? extends JComponent> group) { delegate().addGroup(group); }
 	@Override public JMenu getWidget() { return delegate().getWidget(); }
 	
@@ -40,4 +42,5 @@ class MainMenuImpl implements MainMenu {
 		_delegate.getWidget().setName("MainMenu");
 		_menuBar.addGroup(_delegate);
 	}
+
 }

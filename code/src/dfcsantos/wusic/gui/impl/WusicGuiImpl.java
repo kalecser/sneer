@@ -39,7 +39,7 @@ class WusicGuiImpl implements WusicGui {
 				_controller.start();
 			}
 			_frame.setVisible(true);
-		}});
+		}}, 30);
 
 		registerPlayingTrackTextProvider();
 	}

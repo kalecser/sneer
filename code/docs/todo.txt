@@ -26,7 +26,6 @@ Igor ====================================================
 			- On-line
 			- Away
 			- Busy
-		- Find a way to solve the problem of the menu items' order
 		- Create StatusTest
 
 	- Add task to the build's script that removes tmpFolders that weren't removed after tests

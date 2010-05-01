@@ -9,6 +9,6 @@ class ExitMenuItemImpl implements ExitMenuItem{
 	{
 		my(MainMenu.class).addAction("Exit", new Closure() { @Override public void run() {
 			System.exit(0);
-		}});
+		}}, 50);
 	}
 }

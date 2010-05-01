@@ -198,7 +198,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 	private void addOpenWindowAction() {
 		_mainMenu.addAction("Own Info...", new Closure() { @Override public void run() {
 			open();
-		}});
+		}}, 10);
 	}
 
 }
