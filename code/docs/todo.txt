@@ -58,10 +58,8 @@ René =================================================
 
 Klaus =================================================
 
-	- Optimize RListCellRenderer to keep the signals and not ask for them all the time.
-	
 	- Bubble
-		- Implement getter paths with args
+		- Implement getter paths with args - Test using contact nickname change.
 		- Refactor - immutable types
 		
 

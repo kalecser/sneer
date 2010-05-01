@@ -73,7 +73,15 @@ class Bubble implements InvocationHandler {
 	
 	
 	private Object handleTransaction(Method method, Object[] args) {
-		Object result = PrevaylerHolder._prevayler.execute(new Invocation(_startObject, method, args, _queryPath));
+		List<Method> extendedMethodPath = new ArrayList<Method>(_queryPath);
+		List<Object[]> extendedMethodPathArgs = new ArrayList<Object[]>(_queryPathArgs);
+
+		extendedMethodPath.add(method);
+		extendedMethodPathArgs.add(args);
+
+		InvocationChain invocation = new InvocationChain(_startObject, extendedMethodPath, extendedMethodPathArgs);
+		Object result = PrevaylerHolder._prevayler.execute(invocation);
+		
 		return wrapIfNecessary(result, method, null, true);
 	}
 
@@ -81,7 +89,6 @@ class Bubble implements InvocationHandler {
 	private Object handleQuery(Method query, Object[] args) throws Throwable {
 		Object result = invokeOnDelegate(query, args);
 		return wrapIfNecessary(result, query, args, false);
-
 	}
 	
 	
