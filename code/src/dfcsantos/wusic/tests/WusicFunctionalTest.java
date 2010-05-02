@@ -75,7 +75,7 @@ public class WusicFunctionalTest extends BrickTest {
 	}
 
 	
-	@Test (timeout = 2000)
+	@Test (timeout = 4000)
 	public void ownModeWithOneTrack() throws IOException {
 		_subject1 = my(Wusic.class);
 		createSampleTracks(_subject1.playingFolder(), "track1.mp3");
