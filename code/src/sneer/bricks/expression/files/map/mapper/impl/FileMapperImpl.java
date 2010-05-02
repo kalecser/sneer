@@ -20,6 +20,8 @@ import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Producer;
@@ -33,12 +35,18 @@ class FileMapperImpl implements FileMapper {
 
 
 	@Override
-	public Hash mapFile(File file) throws IOException {
+	public Hash mapFile(File file) {
 		long lastModified = FileMap.getLastModified(file);
 		if (lastModified == file.lastModified())
 			return FileMap.getHash(file);
 
-		Hash hash = my(Crypto.class).digest(file);
+		Hash hash;
+		try {
+			hash = my(Crypto.class).digest(file);
+		} catch (IOException e) {
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "File Mapping Error", "This can happen if your file has weird characters in the name or if your disk is failing.", e);
+			return my(Crypto.class).digest(new byte[0]);
+		}
 		FileMap.putFile(file, hash);
 		return hash;
 	}
@@ -138,7 +146,9 @@ class FileMapperImpl implements FileMapper {
 
 
 		private FileOrFolder mapFolderEntry(File fileOrFolder, String... acceptedExtensions) throws IOException, MappingStopped {
-			Hash hash = (fileOrFolder.isDirectory()) ? mapFolder(fileOrFolder, acceptedExtensions) : mapFile(fileOrFolder);
+			Hash hash = (fileOrFolder.isDirectory())
+				? mapFolder(fileOrFolder, acceptedExtensions)
+				: mapFile(fileOrFolder);
 			return new FileOrFolder(fileOrFolder.getName(), fileOrFolder.lastModified(), hash, fileOrFolder.isDirectory());
 		}
 

@@ -5,6 +5,12 @@
 Following are the tasks each one of us has on his plate right now:
 
 
+Kalecser =================================================
+
+	- WindGuiImpl will no longer steal focus. If new shouts arrive and the window is not active a tray icon message will show.
+	- LogConsole filters in textfield instead of list.
+
+
 Bamboo =================================================
 
 	- Prevalence
