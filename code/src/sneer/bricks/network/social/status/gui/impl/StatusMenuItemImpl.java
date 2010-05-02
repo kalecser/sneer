@@ -25,14 +25,15 @@ class StatusMenuItemImpl implements StatusMenuItem {
 		for (StatusFactory.Status status : StatusFactory.Status.values()) {
 			JRadioButtonMenuItem statusMenuItem = new JRadioButtonMenuItem(status.toString());
 			statusMenuItem.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent event) {
-				my(Attributes.class).myAttributeSetter(Status.class);
+				System.out.println("Changing status to: " + event.getActionCommand());
+				my(Attributes.class).myAttributeSetter(Status.class).consume(event.getActionCommand());
 			}});
 			statusGroup.add(statusMenuItem);
-			if (status.equals(StatusFactory.Status.ONLINE)) statusMenuItem.setSelected(true);
+			if (status.equals(StatusFactory.DEFAULT_STATUS)) statusMenuItem.setSelected(true);
 			statusSubmenu.getWidget().add(statusMenuItem);
 		}
-		statusSubmenu.getWidget().addSeparator();
-		my(MainMenu.class).addGroup(statusSubmenu);
+		statusSubmenu.getWidget().addSeparator(); // Fix: innocuous while using Synth LAF
+		my(MainMenu.class).addGroup(statusSubmenu, 0);
 	}
 
 }

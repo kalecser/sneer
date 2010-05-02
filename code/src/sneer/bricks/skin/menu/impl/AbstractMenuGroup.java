@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.JComponent;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import sneer.bricks.hardware.gui.actions.Action;
@@ -56,15 +57,22 @@ public abstract class AbstractMenuGroup<T extends JComponent> implements MenuGro
 	}
 
 	@Override
-	public void addGroup(MenuGroup<? extends JComponent> group) {
-		getWidget().add(group.getWidget());
+	public void addGroup(MenuGroup<JMenu> group) {
+		addGroup(group, null);
+	}
+
+	@Override
+	public void addGroup(MenuGroup<JMenu> group, Integer index) {
+		addMenuItem(null, group.getWidget(), index);
 	}
 
 	synchronized
 	private void addMenuItem(final Action action, final JMenuItem menuItem, Integer index) {
-		menuItem.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent ignored) {
-			action.run();
-		}});
+		if (action != null)
+			menuItem.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent ignored) {
+				action.run();
+			}});
+
 		if (index != null) {
 			_menuItemsByIndex.put(index, menuItem);
 			rebuildMenu();
