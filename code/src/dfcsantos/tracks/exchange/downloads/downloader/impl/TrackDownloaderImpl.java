@@ -73,7 +73,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 	private void consumeTrackEndorsement(final TrackEndorsement endorsement) {
 		if (!prepareForDownload(endorsement)) return;
 
-		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash, senderOf(endorsement));
+		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash, endorsement.publisher);
 		_downloadsAndMatchRatings.put(download, matchRatingFor(endorsement));
 
 		WeakContract weakContract = download.finished().addPulseReceiver(new Runnable() { @Override public void run() {

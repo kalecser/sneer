@@ -17,7 +17,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.network.social.Contact;
+import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.events.pulsers.PulseSource;
@@ -38,7 +38,7 @@ abstract class AbstractDownload implements Download {
 	final long _lastModified;
 	final Hash _hash;
 
-	private final Contact _source;
+	private final Seal _source;
 
 	private final File _actualPath;
 
@@ -56,7 +56,7 @@ abstract class AbstractDownload implements Download {
 	private WeakContract _timerContract;
 
 
-	AbstractDownload(File path, long lastModified, Hash hashOfFile, Contact source, Runnable toCallWhenFinished) {
+	AbstractDownload(File path, long lastModified, Hash hashOfFile, Seal source, Runnable toCallWhenFinished) {
 		_path = dotPartFor(path);
 		_lastModified = lastModified;
 		_hash = hashOfFile;
@@ -98,7 +98,7 @@ abstract class AbstractDownload implements Download {
 
 
 	@Override
-	public Contact source() {
+	public Seal source() {
 		return _source;
 	}
 

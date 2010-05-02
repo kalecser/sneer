@@ -9,7 +9,7 @@ import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.Downloads;
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.bricks.network.social.Contact;
+import sneer.bricks.identity.seals.Seal;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Producer;
@@ -25,7 +25,7 @@ class FileClientImpl implements FileClient {
 
 
 	@Override
-	public Download startFileDownload(final File file, final long lastModified, final Hash hashOfFile, final Contact source) {
+	public Download startFileDownload(final File file, final long lastModified, final Hash hashOfFile, final Seal source) {
 		return _downloadsByHash.get(hashOfFile, new Producer<WeakReference<Download>>() { @Override public WeakReference<Download> produce() throws RuntimeException {
 			return my(Downloads.class).newFileDownload(file, lastModified, hashOfFile, source, downloadCleaner(hashOfFile));
 		}}).get();

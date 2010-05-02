@@ -11,6 +11,7 @@ import javax.swing.JProgressBar;
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.Widget;
 
@@ -28,7 +29,7 @@ class DownloadDetailsPanel extends JPanel {
 
 		_parent = parent;
 
-		String source = download.source().nickname().currentValue();
+		String source = my(ContactSeals.class).contactGiven(download.source()).nickname().currentValue();
 		String file = my(Lang.class).strings().abbreviate(download.file().getName(), 50);
 		_sourceAndfile = new JLabel(source + " :: " + file);
 		add(_sourceAndfile);

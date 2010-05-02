@@ -90,7 +90,7 @@ class FolderDownload extends AbstractDownload {
 	Tuple requestToPublishIfNecessary() {
 		return _contentsReceived != null
 			? null
-			: new FileRequest(_hash, 0, _path.getAbsolutePath());
+			: new FileRequest(source(), _hash, 0, _path.getAbsolutePath());
 	}
 
 
