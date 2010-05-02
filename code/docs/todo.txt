@@ -31,6 +31,10 @@ Igor ====================================================
 	- Add task to the build's script that removes tmpFolders that weren't removed after tests
 
 	- Wusic
+		- Change DownloadPanelDetails to allow the track's label to be copied
+		- Change TrackDownloader to:
+			- Give preference to tracks from different peers
+			- Give preference to tracks from different folders
 		- MusicalTasteMatcher Kernel
 			- Implement MusicalTasteMatcherFunctionalTest
 		- Nice-to-have:
