@@ -22,9 +22,12 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Less than 3 Downloads - Bug
+		- Add logs to TrackDownloaderImpl.prepareForDownload() so we can see why each Endorsement is rejected.
+
 	- Refactor PlayingTrackTest to use a mock of Attributes
 
-	- OwnName, OwnPort --> Attribute<T>
+	- OwnName, OwnPort --> Attribute
 
 	- Contact's Status
 		- Create the following status:
@@ -33,17 +36,30 @@ Igor ====================================================
 			- Away
 			- Busy
 		- Create StatusTest
+			
+	- Fabio's Chat - Incorporate
+		- Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
 
 	- Add task to the build's script that removes tmpFolders that weren't removed after tests
 
+	- sovereigncomputing.net - Moralize
+		- Talk to Klaus 
+
 	- Wusic
-		- Change DownloadPanelDetails to allow the track's label to be copied
-		- Change TrackDownloader to:
-			- Give preference to tracks from different peers
-			- Give preference to tracks from different folders
-		- MusicalTasteMatcher Kernel
-			- Implement MusicalTasteMatcherFunctionalTest
+		- TrackDownloader:
+			- Download candidate from folder that is not being downloaded gets +0.1
+			- Download candidate from peer   that is not being downloaded gets +0.1 (cumulative with folder bonus above)
+		- MusicalTasteMatcher
+			- FunctionalTest - Not necessary. Unit test is enough because there is no remoteness going on and only a single brick is involved in the logic.
+			- Buttons - Talk to Klaus
+				- First Group: (I want this track. (Today's "Me Too"))
+					:D    
+				- Second Group: (I dont want this particular track...)
+					:)    (...but I like it. Bring me similar ones.)
+					:|    (...and that's it.)
+					:(    (...or any similar tracks.)
 		- Nice-to-have:
+			- Change DownloadPanelDetails to allow the track's label to be copied
 			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
 			- Back Button
 			- Find another way to solve pause lag (try to use a smaller frame in player)
@@ -55,10 +71,6 @@ Igor ====================================================
 			- BlinkingLightsGui
 			- DeleteContactWindow
 
-	- [Klaus] RapidShare Killer (Transfer Huge Files) - Do this in parallel, when you're bored of Wusic :)
-		- Focus. Keep it simple. Zero sophistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
-		- Announce to community
-
 
 René =================================================
 
@@ -67,14 +79,17 @@ René =================================================
 
 Klaus =================================================
 
+
+	- Stillborn Download - Bug reported by Junynes
+		- Include probability of finishing soon to download rating. 
+
 	- Bubble
 		- Implement getter paths with args - Test using contact nickname change.
 			- implement junit test
 		- Refactor
 			- Extract SimpleMethod or implement Invocation delegation along the chain.
 			- immutable types
-		
-
+	
 	- Seals
 		- Unignore DynDnsClientTest.
 		- Freedom2 - Revert old timeouts. Use pre-generated key pairs to be faster.
