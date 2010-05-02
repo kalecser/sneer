@@ -162,8 +162,8 @@ class TrackDownloaderImpl implements TrackDownloader {
 	}
 
 
-	private int downloadAllowanceInBytes() {
-		return 1024 * 1024 * _downloadAllowance.get().currentValue();
+	private long downloadAllowanceInBytes() {
+		return 1024l * 1024l * _downloadAllowance.get().currentValue();
 	}
 
 
