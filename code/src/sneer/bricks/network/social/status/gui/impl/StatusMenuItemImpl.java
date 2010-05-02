@@ -16,6 +16,7 @@ import sneer.bricks.network.social.status.gui.StatusMenuItem;
 import sneer.bricks.skin.main.menu.MainMenu;
 import sneer.bricks.skin.menu.MenuFactory;
 import sneer.bricks.skin.menu.MenuGroup;
+import sneer.foundation.environments.Environment;
 
 class StatusMenuItemImpl implements StatusMenuItem {
 
@@ -23,10 +24,11 @@ class StatusMenuItemImpl implements StatusMenuItem {
 		MenuGroup<JMenu> statusSubmenu = my(MenuFactory.class).createMenuGroup("Status");
 		ButtonGroup statusGroup = new ButtonGroup();
 		for (StatusFactory.Status status : StatusFactory.Status.values()) {
-			JRadioButtonMenuItem statusMenuItem = new JRadioButtonMenuItem(status.toString());
+			final String statusName = status.name();
+			JRadioButtonMenuItem statusMenuItem = new JRadioButtonMenuItem(statusName);
 			statusMenuItem.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent event) {
-				System.out.println("Changing status to: " + event.getActionCommand());
-				my(Attributes.class).myAttributeSetter(Status.class).consume(event.getActionCommand());
+				System.out.println(my(Environment.class));
+				my(Attributes.class).myAttributeSetter(Status.class).consume(statusName);
 			}});
 			statusGroup.add(statusMenuItem);
 			if (status.equals(StatusFactory.DEFAULT_STATUS)) statusMenuItem.setSelected(true);
