@@ -24,15 +24,14 @@ Igor ====================================================
 
 	- Refactor PlayingTrackTest to use a mock of Attributes
 
-	- OwnName, OwnPort --> Attribute
-
 	- Add task to the build's script that removes tmpFolders that weren't removed after tests
+
+	- OwnName, OwnPort --> Attribute
 
 	- New Contact Stati (Test Driven, of course)
 		- Away
 			- Presence detection spike based on TimeboxedEventQueue that already intercepts all gui activity. 
 		- Busy
-		
 			
 	- Fabio's Chat - Incorporate
 		- Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
