@@ -145,12 +145,6 @@ public class GoTest extends BrickTest {
 
 	
 	@Test
-	@Ignore
-	public void testKoWithPass() {
-		throw new NotImplementedYet();
-	}
-	
-	@Test
 	public void testMultipleGroupKill() {
 		String[] setup = new String[]{
 			    "+ + + + + + + + +",
