@@ -34,7 +34,6 @@ class Intersection implements Serializable {
 		if (group.contains(this)) return;
 		group.add(this);
 		
-		if(_stone == null) return;
 		if(_stone != stoneColor) return;
 		
 		if (_up != null) _up.fillGroupWithNeighbours(stoneColor, group);
