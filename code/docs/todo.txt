@@ -22,9 +22,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Less than 3 Downloads - Bug
-		- Add logs to TrackDownloaderImpl.prepareForDownload() so we can see why each Endorsement is rejected.
-
 	- Refactor PlayingTrackTest to use a mock of Attributes
 
 	- OwnName, OwnPort --> Attribute
