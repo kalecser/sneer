@@ -22,9 +22,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Less than 3 Downloads - Bug
-		- Add logs to TrackDownloaderImpl.prepareForDownload() so we can see why each Endorsement is rejected.
-
 	- Stillborn Download - Bug reported by Junynes
 		- 30 seconds since last FileContents? Timeout! 
 

@@ -13,6 +13,7 @@ import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
@@ -86,22 +87,27 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 
 	private boolean prepareForDownload(final TrackEndorsement endorsement) {
-		if (!isOn()) return false;
+		if (!isOn()) { log("TrackDownloader Off"); return false; }
 
-		if (isFromUnknownPublisher(endorsement)) return false;
-		if (isFromMe(endorsement)) return false;
+		if (isFromUnknownPublisher(endorsement)) { log("Unkown Publisher"); return false; }
+		if (isFromMe(endorsement)) { log("Loopback"); return false; }
 
 		boolean isKnown = isKnown(endorsement);
 		updateMusicalTasteMatcher(endorsement, isKnown);
-		if (isKnown) return false;
+		if (isKnown) { log("Duplicated Track"); return false; }
 
-		if (isRejected(endorsement)) return false;
-		if (hasSpentDownloadAllowance()) return false;
+		if (isRejected(endorsement)) { log("Rejected Track"); return false; }
+		if (hasSpentDownloadAllowance()) { log("Allowance Limit Reached"); return false; }
 
 		killDownloadWithTheLowestRatingWorseThan(matchRatingFor(endorsement));
-		if (hasReachedDownloadLimit()) return false;
+		if (hasReachedDownloadLimit()) { log("Download Limit Reached"); return false; }
 
 		return true;
+	}
+
+
+	private void log(String cause) {
+		my(Logger.class).log("TrackEndorsement Refusal: ", cause);
 	}
 
 
@@ -187,6 +193,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 		}
 
 		if (sentencedToDeath != null) {
+			my(Logger.class).log("Killing download with the lowest rating: {} ({})", sentencedToDeath.file(), minMatchRating);
 			_downloadsAndMatchRatings.remove(sentencedToDeath);
 			sentencedToDeath.dispose();
 		}
