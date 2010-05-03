@@ -26,6 +26,8 @@ Igor ====================================================
 
 	- OwnName, OwnPort --> Attribute
 
+	- Add task to the build's script that removes tmpFolders that weren't removed after tests
+
 	- Contact's Status
 		- Create the following status:
 			- Off-line
@@ -36,8 +38,6 @@ Igor ====================================================
 			
 	- Fabio's Chat - Incorporate
 		- Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
-
-	- Add task to the build's script that removes tmpFolders that weren't removed after tests
 
 	- sovereigncomputing.net - Moralize
 		- Talk to Klaus 
