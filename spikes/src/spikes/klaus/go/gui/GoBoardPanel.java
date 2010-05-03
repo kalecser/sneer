@@ -207,7 +207,7 @@ public class GoBoardPanel extends JPanel {
 		}
 
 		private int scrollDeltaFor(int coordinate) {
-			if (coordinate > _boardSize * _CELL_SIZE + _MARGIN) return -1;
+			if (coordinate > (_boardSize-1) * _CELL_SIZE + _MARGIN) return -1;
 			if (coordinate < _MARGIN) return 1;
 			return 0;
 		}
