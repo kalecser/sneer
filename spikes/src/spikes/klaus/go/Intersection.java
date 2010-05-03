@@ -56,6 +56,20 @@ class Intersection implements Serializable {
 		
 		return true;
 	}
+	
+	int countPoints(HashSet<Intersection> checkedStones) {
+		if (_stone != null) return 0;
+		
+		HashSet<Intersection> groupWithNeighbours = new HashSet<Intersection>();
+		fillGroupWithNeighbours(_stone, groupWithNeighbours);
+		
+		int count=0;
+		for (Intersection intersection : groupWithNeighbours) {
+			checkedStones.add(intersection);
+			if (intersection.isLiberty()) count++;
+		}
+		return count;
+	}
 
 	private boolean isLiberty() {
 		return _stone == null;
