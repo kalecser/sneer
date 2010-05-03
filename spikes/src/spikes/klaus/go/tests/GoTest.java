@@ -4,7 +4,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.software.folderconfig.tests.BrickTest;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 import spikes.klaus.go.GoBoard;
 import spikes.klaus.go.ToroidalGoBoard;
 import spikes.klaus.go.GoBoard.StoneColor;
@@ -143,12 +142,6 @@ public class GoTest extends BrickTest {
 		assertFalse(_board.canPlayStone(4, 2));
 	}
 
-	
-	@Test
-	@Ignore
-	public void testKoWithPass() {
-		throw new NotImplementedYet();
-	}
 	
 	@Test
 	public void testMultipleGroupKill() {

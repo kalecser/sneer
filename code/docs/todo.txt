@@ -28,6 +28,8 @@ Igor ====================================================
 
 	- OwnName, OwnPort --> Attribute
 
+	- Add task to the build's script that removes tmpFolders that weren't removed after tests
+
 	- Contact's Status
 		- Create the following status:
 			- Off-line
