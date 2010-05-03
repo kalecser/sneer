@@ -60,6 +60,8 @@ class FileDownload extends AbstractDownload {
 
 	
 	private void receiveFileBlock(FileContents contents) {
+		registerAnswerTime();
+
 		if (isFinished()) return;
 
 		try {
