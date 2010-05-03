@@ -99,10 +99,11 @@ public class GoBoardPanel extends JPanel {
 	}
 	
 	private void play(Move move) {
-		if (move.isPass)
-			_board.passTurn();
-		else
-			_board.playStone(move.xCoordinate, move.yCoordinate);
+		if (move.isResign) _board.resignTurn();
+		else {
+			if (move.isPass) _board.passTurn();
+			else _board.playStone(move.xCoordinate, move.yCoordinate);
+		}
 		
 		repaint();			
 	}
@@ -263,15 +264,19 @@ public class GoBoardPanel extends JPanel {
 	}
 	
 	public Signal<Integer> countCapturedBlack(){
-		return _board.blackCapturedCount();
+		return _board.blackScore();
 	}
 	
 	public Signal<Integer> countCapturedWhite(){
-		return _board.whiteCapturedCount();
+		return _board.whiteScore();
 	}
 	
 	public void passTurn() {
 		_moveRegister.setter().consume(new Move(false, true, 0, 0));
+	}
+	
+	public void resignTurn() {
+		_moveRegister.setter().consume(new Move(true, false, 0, 0));
 	}
 
 	public Signal<StoneColor> nextToPlaySignal() {

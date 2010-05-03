@@ -7,6 +7,7 @@ import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 import spikes.klaus.go.GoBoard;
 import spikes.klaus.go.ToroidalGoBoard;
+import spikes.klaus.go.GoBoard.StoneColor;
 
 public class GoTest extends BrickTest {
 
@@ -41,8 +42,8 @@ public class GoTest extends BrickTest {
 	}
 
 	private void assertCaptured(int black, int white) {
-		assertSame(black, _board.blackCapturedCount().currentValue());
-		assertSame(white, _board.whiteCapturedCount().currentValue());
+		assertSame(black, _board.blackScore().currentValue());
+		assertSame(white, _board.whiteScore().currentValue());
 	}
 
 	@Test
@@ -177,4 +178,37 @@ public class GoTest extends BrickTest {
 		);
 		assertCaptured(0, 2);
 	}
+
+	@Test
+	public void testPass() {
+		ToroidalGoBoard subject = new ToroidalGoBoard(new String[]{});
+		assertSame(StoneColor.BLACK, subject.nextToPlay());
+		subject.passTurn();
+		assertSame(StoneColor.WHITE, subject.nextToPlay());
+	}
+
+	@Test
+	@Ignore
+	public void testScore() {
+		String[] setup = new String[]{
+			    "+ + + + + + + + +",
+				"+ + + + x + + + +",
+				"+ + + x + x + + +",
+				"+ + x + x + + + +",
+				"+ + + x + + + + +",
+				"+ + + + o o o + +",
+				"+ + + + o + o + +",
+				"+ + + + + o + + +",
+				"+ + + + + + + + +"};
+		_board = new ToroidalGoBoard(setup);
+		ToroidalGoBoard subject = new ToroidalGoBoard(new String[]{});
+		assertSame(StoneColor.BLACK, subject.nextToPlay());
+		subject.passTurn();
+		assertSame(StoneColor.WHITE, subject.nextToPlay());
+		subject.passTurn();
+		assertSame(2, subject.blackScore().currentValue());
+		assertSame(1, subject.blackScore().currentValue());
+	}
+
+
 }
