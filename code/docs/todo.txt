@@ -24,6 +24,8 @@ Igor ====================================================
 
 	- Refactor PlayingTrackTest to use a mock of Attributes
 
+	- Add task to the build's script that removes tmpFolders that weren't removed after tests
+
 	- OwnName, OwnPort --> Attribute
 
 	- Contact's Status
@@ -36,8 +38,6 @@ Igor ====================================================
 			
 	- Fabio's Chat - Incorporate
 		- Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
-
-	- Add task to the build's script that removes tmpFolders that weren't removed after tests
 
 	- sovereigncomputing.net - Moralize
 		- Talk to Klaus 
