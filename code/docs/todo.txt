@@ -22,9 +22,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Stillborn Download - Bug reported by Junynes
-		- 30 seconds since last FileContents? Timeout! 
-
 	- Refactor PlayingTrackTest to use a mock of Attributes
 
 	- OwnName, OwnPort --> Attribute

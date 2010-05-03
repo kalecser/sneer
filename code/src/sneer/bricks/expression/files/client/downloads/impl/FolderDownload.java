@@ -48,6 +48,8 @@ class FolderDownload extends AbstractDownload {
 	
 	synchronized
 	private void receiveFolder(FolderContents contents) {
+		registerAnswerTime();
+
 		try {
 			tryToReceiveFolder(contents);
 		} catch (Exception e) {
