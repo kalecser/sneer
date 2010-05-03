@@ -22,6 +22,9 @@ Bamboo =================================================
 
 Igor ====================================================
 
+	- Stillborn Download - Bug reported by Junynes
+		- 30 seconds since last FileContents? Timeout! 
+
 	- Refactor PlayingTrackTest to use a mock of Attributes
 
 	- OwnName, OwnPort --> Attribute
@@ -76,13 +79,7 @@ René =================================================
 
 Klaus =================================================
 
-
-	- Stillborn Download - Bug reported by Junynes
-		- Include probability of finishing soon to download rating. 
-
 	- Bubble
-		- Implement getter paths with args - Test using contact nickname change.
-			- implement junit test
 		- Refactor
 			- Extract SimpleMethod or implement Invocation delegation along the chain.
 			- immutable types

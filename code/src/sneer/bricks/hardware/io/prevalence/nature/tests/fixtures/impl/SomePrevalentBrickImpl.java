@@ -13,12 +13,12 @@ import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.Item;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.SomePrevalentBrick;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class SomePrevalentBrickImpl implements SomePrevalentBrick {
 
-	private static final String INITIAL_VALUE = "INITIAL_VALUE" +
-			"";
+	private static final String INITIAL_VALUE = "INITIAL_VALUE";
 
 
 	static final class ItemImpl implements Item {
@@ -112,6 +112,14 @@ class SomePrevalentBrickImpl implements SomePrevalentBrick {
 		final Register<String> register = my(Signals.class).newRegister(INITIAL_VALUE);
 		_refToAvoidGC.add(register.output().addReceiver(itemAdder_Idempotent()));
 		return register;
+	}
+
+
+	@Override
+	public Closure removerFor(final Item item) {
+		return new Closure() { @Override public void run() {
+			removeItem(item);
+		}};
 	}
 	
 }
