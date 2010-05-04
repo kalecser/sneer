@@ -24,25 +24,17 @@ Igor ====================================================
 
 	- Refactor PlayingTrackTest to use a mock of Attributes
 
-	- PrettyPrinter - finish implementation. Call toString from Immutable. Call register from ContactSeals.
-
 	- Add task to the build's script that removes tmpFolders that weren't removed after tests
 
 	- OwnName, OwnPort --> Attribute
+
+	- PrettyPrinter - finish implementation. Call toString from Immutable. Call register from ContactSeals.
 
 	- Chat
 		- Fabio's One-on-one Chat - Incorporate
 		- Chat Gui - Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
 			- Enter bug - Fix.
 			- Focus bug - Fix.
-
-	- New Contact Stati (Test Driven, of course)
-		- Away
-			- Presence detection spike based on TimeboxedEventQueue that already intercepts all gui activity. 
-		- Busy
-			
-	- sovereigncomputing.net - Moralize
-		- Talk to Klaus 
 
 	- Wusic
 		- TrackDownloader:
@@ -57,18 +49,14 @@ Igor ====================================================
 					:)    (...but I like it. Bring me similar ones.)
 					:|    (...and that's it.)
 					:(    (...or any similar tracks.)
-		- Nice-to-have:
-			- Change DownloadPanelDetails to allow the track's label to be copied
-			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
-			- Back Button
-			- Find another way to solve pause lag (try to use a smaller frame in player)
 
-	- Fix WindowBoundSetter.setBestLocation()
-		- See commented lines at:
-			- ContactInfoWindow
-			- OwnInfo
-			- BlinkingLightsGui
-			- DeleteContactWindow
+	- sovereigncomputing.net - Moralize. This is necessary to help promote Wusic.
+		- Talk to Klaus 
+
+	- New Contact Stati (Test Driven, of course)
+		- Away
+			- Presence detection spike based on TimeboxedEventQueue that already intercepts all gui activity. 
+		- Busy
 
 
 René =================================================
