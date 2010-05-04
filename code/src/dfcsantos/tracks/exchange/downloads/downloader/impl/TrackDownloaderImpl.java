@@ -97,10 +97,10 @@ class TrackDownloaderImpl implements TrackDownloader {
 		if (isKnown) { log("Duplicated Track"); return false; }
 
 		if (isRejected(endorsement)) { log("Rejected Track"); return false; }
-		if (hasSpentDownloadAllowance()) { log("Allowance Limit Reached"); return false; }
+		if (hasSpentDownloadAllowance()) { log("Download Space Allowance Reached"); return false; }
 
 		killDownloadWithTheLowestRatingWorseThan(matchRatingFor(endorsement));
-		if (hasReachedDownloadLimit()) { log("Download Limit Reached"); return false; }
+		if (hasReachedDownloadLimit()) { log("Concurrent Download Limit Reached"); return false; }
 
 		return true;
 	}
