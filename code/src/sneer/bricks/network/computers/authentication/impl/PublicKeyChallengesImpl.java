@@ -13,7 +13,7 @@ import org.bouncycastle.util.Arrays;
 
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.bricks.identity.keys.Keys;
+import sneer.bricks.identity.keys.signatures.Signatures;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.authentication.PublicKeyChallenges;
 import sneer.bricks.pulp.network.ByteArraySocket;
@@ -35,7 +35,7 @@ class PublicKeyChallengesImpl implements PublicKeyChallenges {
 		check(contactsSeal, publicKey);
 		
 		byte[] challengeSignature = socket.read();
-		return my(Keys.class).verifySignature(myChallenge, publicKey, challengeSignature);
+		return my(Signatures.class).verifySignature(myChallenge, publicKey, challengeSignature);
 	}
 
 

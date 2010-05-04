@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.security.Signature;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -98,5 +99,14 @@ class CryptoImpl implements Crypto {
 			throw new IllegalStateException(e);
 		}
 
+	}
+
+	@Override
+	public Signature getSHA512WithECDSA() {
+		try {
+			return Signature.getInstance("SHA512WITHECDSA", "BC");
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
 	}
 }

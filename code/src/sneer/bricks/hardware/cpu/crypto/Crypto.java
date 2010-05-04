@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.KeyPairGenerator;
 import java.security.SecureRandom;
+import java.security.Signature;
 
 import sneer.foundation.brickness.Brick;
 
@@ -20,5 +21,7 @@ public interface Crypto {
 	SecureRandom newSecureRandom();
 	
 	KeyPairGenerator newKeyPairGeneratorForECDSA();
+	
+	Signature getSHA512WithECDSA();
 
 }

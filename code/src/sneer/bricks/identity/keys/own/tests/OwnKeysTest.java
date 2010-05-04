@@ -1,16 +1,16 @@
-package sneer.bricks.identity.keys.tests;
+package sneer.bricks.identity.keys.own.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
-import sneer.bricks.identity.keys.Keys;
+import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 
-public class KeysTest extends BrickTest {
+public class OwnKeysTest extends BrickTest {
 
-	Keys _subject = my(Keys.class);
+	OwnKeys _subject = my(OwnKeys.class);
 	
 	@Test
 	public void keyGeneration() {

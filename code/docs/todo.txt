@@ -64,10 +64,6 @@ René =================================================
 
 Klaus =================================================
 
-	- Seals
-		- Unignore DynDnsClientTest.
-		- Freedom2 - Revert old timeouts. Use pre-generated key pairs to be faster.
-
 	- Prevalence
 		- Refactor Bubble
 			- Extract SimpleMethod or implement Invocation delegation along the chain.

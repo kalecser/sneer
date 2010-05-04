@@ -1,4 +1,4 @@
-package sneer.bricks.identity.keys.impl;
+package sneer.bricks.identity.keys.own.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -8,15 +8,14 @@ import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.Signature;
 
 import sneer.bricks.hardware.cpu.crypto.Crypto;
-import sneer.bricks.identity.keys.Keys;
+import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 
-class KeysImpl implements Keys {
+class OwnKeysImpl implements OwnKeys {
 	
 	private static final Charset UTF8 = initUTF8();
 	
@@ -51,24 +50,6 @@ class KeysImpl implements Keys {
 	}
 
 	
-	@Override
-	public boolean verifySignature(byte[] message, PublicKey publicKey,	byte[] signature) {
-		Signature verifier;
-		try {
-			verifier = Signature.getInstance("SHA512WITHECDSA", "BC");
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-		try {
-			verifier.initVerify(publicKey);
-			verifier.update(message);
-			return verifier.verify(signature);
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-
 	private static Charset initUTF8() {
 		return Charset.forName("UTF-8");
 	}
