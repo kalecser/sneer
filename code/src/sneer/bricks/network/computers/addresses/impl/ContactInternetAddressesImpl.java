@@ -41,7 +41,7 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 		if (isReflexive(sighting)) return;
 
 		final Contact contact = my(ContactSeals.class).contactGiven(sighting.peersSeal);
-		if (contact == null) throw new IllegalStateException();
+		if (contact == null) return;
 		
 		_addresses.add(new InternetAddress() {
 			
