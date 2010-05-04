@@ -198,7 +198,7 @@ public class WusicFunctionalTest extends BrickTest {
 	}
 
 	
-	@Test (timeout = 6000)
+	@Test (timeout = 8000)
 	public void peersMode() throws IOException {
 		Environment remote = configureRemoteEnvironment();
 		makeFriendsWith(remote);
