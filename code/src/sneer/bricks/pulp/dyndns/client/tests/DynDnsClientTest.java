@@ -5,13 +5,9 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.IOException;
 
 import org.jmock.Expectations;
-import org.jmock.api.Invocation;
-import org.jmock.lib.action.CustomAction;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
-import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.threads.mocks.ThreadsMock;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
@@ -31,10 +27,8 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.environments.EnvironmentUtils;
-import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.exceptions.FriendlyException;
 
-@Ignore
 public class DynDnsClientTest extends BrickTest {
 	
 	/*
@@ -54,16 +48,16 @@ Unacceptable Client Behavior
     * Attempt to update after receiving the notfqdn, abuse, nohost, badagent, badauth, badsys return codes or repeated nochg return codes without user intervention.
     * Perform DNS updates to determine whether the client IP needs to be updated.
     * Access our web-based IP detection script (http://checkip.dyndns.com/) more than once every 10 minutes
-
-	 */
+    */
+	
 	
 	@Bind final OwnIpDiscoverer _ownIpDiscoverer = mock(OwnIpDiscoverer.class);
 	@Bind final DynDnsAccountKeeper _ownAccountKeeper = mock(DynDnsAccountKeeper.class);
 	@Bind final Updater _updater = mock(Updater.class);
 	@Bind final TransientPropertyStore _propertyStore = new TransientPropertyStore();
 	@Bind final ThreadsMock _threads = new ThreadsMock();
-	@Bind final Timer _timer = mock(Timer.class);
 
+	
 	final Register<String> _ownIp = my(Signals.class).newRegister("123.45.67.89");
 	final DynDnsAccount _account = new DynDnsAccount("test.dyndns.org", "test", "test");
 	final Register<DynDnsAccount> _ownAccount = my(Signals.class).newRegister(_account);
@@ -72,8 +66,6 @@ Unacceptable Client Behavior
 	@Test
 	public void updateOnIpChange() throws Exception {
 		checking(new Expectations() {{
-			allowing(_timer).wakeUpEvery(with(any(Long.class)), with(any(Runnable.class))); //Fix: Delete this line and find a better way. This breaks encapsulation too much.
-
 			allowing(_ownIpDiscoverer).ownIp();
 				will(returnValue(_ownIp.output()));
 				
@@ -85,28 +77,28 @@ Unacceptable Client Behavior
 		}});
 		
 		startDynDnsClientOnNewEnvironment();
-		_threads.runDaemonWithNameStartingWith("DynDns Requesting");
+		_threads.runDaemonWithNameContaining("DynDns Requesting");
 	}
 
+	
 	private void startDynDnsClientOnNewEnvironment() {
 		EnvironmentUtils.retrieveFrom(newTestEnvironment(), DynDnsClient.class);
 	}
 	
-	@Test (timeout = 4000)
+	
+	@Test //(timeout = 4000)
 	public void retryAfterIOException() throws Exception {
 	
 		final IOException error = new IOException();
 		
-		final ByRef<Runnable> _timerRunnable = ByRef.newInstance();
+//		final ByRef<Runnable> _timerRunnable = ByRef.newInstance();
 		
 		checking(new Expectations() {{
-			allowing(_timer).wakeUpEvery(with(any(Long.class)), with(any(Runnable.class))); //Fix: Delete this line and find a better way. This breaks encapsulation too much.
-
-			allowing(_timer).wakeUpInAtLeast(with(any(Long.class)), with(any(Runnable.class)));
-				will(new CustomAction("Run timer runnables") { @Override public Object invoke(Invocation invocation) throws Throwable {
-					assertEquals(300000L, invocation.getParameter(0));
-					_timerRunnable.value = (Runnable)invocation.getParameter(1); return null;
-				}});
+//			allowing(_timer).wakeUpInAtLeast(with(any(Long.class)), with(any(Runnable.class)));
+//				will(new CustomAction("Run timer runnables") { @Override public Object invoke(Invocation invocation) throws Throwable {
+//					assertEquals(300000L, invocation.getParameter(0));
+//					_timerRunnable.value = (Runnable)invocation.getParameter(1); return null;
+//				}});
 			
 			allowing(_ownIpDiscoverer).ownIp();
 				will(returnValue(_ownIp.output()));
@@ -123,17 +115,18 @@ Unacceptable Client Behavior
 		
 
 		startDynDnsClient();
-		_threads.runDaemonWithNameStartingWith("DynDns Requesting");
+		_threads.runDaemonWithNameContaining("DynDns Requesting");
 		
 		final Light light = assertBlinkingLight(error);
+
+		my(Clock.class).advanceTime(300000);
 		
-		my(Clock.class).advanceTime(300001);
-		_timerRunnable.value.run();
-		
-		_threads.runDaemonWithNameStartingWith("DynDns Requesting");
-		
+		_threads.runDaemonWithNameContaining("DynDns");
+		_threads.runDaemonWithNameContaining("DynDns");
+
 		my(SignalUtils.class).waitForValue(light.isOn(), false);
 	}
+	
 	
 	@Test
 	public void userInterventionRequiredAfterFailure() throws UpdaterException, IOException {
@@ -143,8 +136,6 @@ Unacceptable Client Behavior
 		final String newIp = "111.111.111.111";
 		
 		checking(new Expectations() {{
-			allowing(_timer).wakeUpEvery(with(any(Long.class)), with(any(Runnable.class))); //Fix: Delete this line and find a better way. This breaks encapsulation too much.
-
 			allowing(_ownIpDiscoverer).ownIp();
 				will(returnValue(_ownIp.output()));
 			allowing(_ownAccountKeeper).ownAccount();
@@ -157,7 +148,7 @@ Unacceptable Client Behavior
 		}});
 		
 		startDynDnsClient();
-		_threads.runDaemonWithNameStartingWith("DynDns Requesting");
+		_threads.runDaemonWithNameContaining("DynDns Requesting");
 		
 		final Light light = assertBlinkingLight(error);
 		
@@ -167,11 +158,12 @@ Unacceptable Client Behavior
 		DynDnsAccount changed = new DynDnsAccount("test.dyndns.org", "test", "*test");
 		_ownAccount.setter().consume(changed);
 
-		_threads.runDaemonWithNameStartingWith("DynDns Requesting");
+		_threads.runDaemonWithNameContaining("DynDns Requesting");
 		assertFalse(light.isOn().currentValue());
 		
 	}
 
+	
 	@Test
 	public void redundantUpdate() throws UpdaterException, IOException {
 		
@@ -179,8 +171,6 @@ Unacceptable Client Behavior
 		final DynDnsAccount account = _ownAccount.output().currentValue();
 		
 		checking(new Expectations() {{
-			allowing(_timer).wakeUpEvery(with(any(Long.class)), with(any(Runnable.class))); //Fix: Delete this line and find a better way. This breaks encapsulation too much.
-
 			allowing(_ownIpDiscoverer).ownIp();	will(returnValue(_ownIp.output()));
 			allowing(_ownAccountKeeper).ownAccount(); will(returnValue(_ownAccount.output()));
 			
@@ -189,7 +179,7 @@ Unacceptable Client Behavior
 		}});
 		
 		startDynDnsClient();
-		_threads.runDaemonWithNameStartingWith("DynDns Requesting");
+		_threads.runDaemonWithNameContaining("DynDns Requesting");
 		
 		assertBlinkingLight(error);
 	}
@@ -207,6 +197,7 @@ Unacceptable Client Behavior
 		return light;
 	}
 
+	
 	private void startDynDnsClient() {
 		my(DynDnsClient.class);
 	}

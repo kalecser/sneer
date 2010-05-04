@@ -4,6 +4,6 @@ public interface StatusFactory {
 
 	public static enum Status { ONLINE, OFFLINE, AWAY, BUSY };
 
-	public static final Status DEFAULT_STATUS = Status.OFFLINE; 
+	public static final Status DEFAULT_STATUS = Status.ONLINE; 
 
 }

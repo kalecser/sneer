@@ -22,7 +22,7 @@ import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.network.social.Contact;
+import sneer.bricks.identity.seals.Seal;
 import sneer.foundation.lang.Consumer;
 
 class FileDownload extends AbstractDownload {
@@ -44,7 +44,7 @@ class FileDownload extends AbstractDownload {
 	}
 
 
-	FileDownload(File file, long lastModified, Hash hashOfFile, Contact source, Runnable toCallWhenFinished) {
+	FileDownload(File file, long lastModified, Hash hashOfFile, Seal source, Runnable toCallWhenFinished) {
 		super(file, lastModified, hashOfFile, source, toCallWhenFinished);
 
 		start();
@@ -60,6 +60,8 @@ class FileDownload extends AbstractDownload {
 
 	
 	private void receiveFileBlock(FileContents contents) {
+		registerActivity();
+
 		if (isFinished()) return;
 
 		try {
@@ -164,7 +166,7 @@ class FileDownload extends AbstractDownload {
 	
 	private Tuple nextBlockRequest() {
 		_lastRequestTime = my(Clock.class).time().currentValue();
-		return new FileRequest(_hash, _nextBlockToWrite, _path.getAbsolutePath());
+		return new FileRequest(source(), _hash, _nextBlockToWrite, _path.getAbsolutePath());
 	}
 
 

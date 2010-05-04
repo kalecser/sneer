@@ -29,7 +29,7 @@ class SocketAccepterImpl implements SocketAccepter {
 	private final BlinkingLights _lights = my(BlinkingLights.class);
 	private final Threads _threads = my(Threads.class);
 	@SuppressWarnings("unused")
-	private final WeakContract _crashingContract = _threads.crashing().addPulseReceiver(new Closure() { @Override public void run() {
+	private final WeakContract _crashingContract = _threads.crashed().addPulseReceiver(new Closure() { @Override public void run() {
 		crashServerSocketIfNecessary();
 	}});
 	

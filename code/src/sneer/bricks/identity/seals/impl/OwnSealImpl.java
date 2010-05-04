@@ -7,7 +7,7 @@ import java.security.PublicKey;
 
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.bricks.identity.keys.Keys;
+import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.reactive.Signal;
@@ -27,7 +27,7 @@ class OwnSealImpl implements OwnSeal {
 
 	
 	private Signal<Seal> init() {
-		return adapt(my(Keys.class).ownPublicKey());
+		return adapt(my(OwnKeys.class).ownPublicKey());
 	}
 
 

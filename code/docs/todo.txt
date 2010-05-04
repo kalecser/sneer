@@ -5,74 +5,79 @@
 Following are the tasks each one of us has on his plate right now:
 
 
+Kalecser =================================================
+
+	- WindGuiImpl will no longer steal focus. If new shouts arrive and the window is not active a tray icon message will show.
+	- LogConsole filters in textfield instead of list.
+
+
 Bamboo =================================================
 
-	- Prevalence
-		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
-			- Change MusicalTasteMatcher's interface to use the contact instead of the nickname (string)
-		- BrickStateStore: retire. Use the prevalent nature instead.
-		- Announce to community
+	- GUI Nature
+		- "Finish Him"
 
 
 Igor ====================================================
 
-	- PlayingTrackTest
-		- Rename this test: AttributesTest
-		- Create new test using a mock of Attributes
+	- OwnName, OwnPort --> Attribute
 
-	- OwnName, OwnPort --> Attribute<T>
+	- PrettyPrinter - finish implementation. Call toString from Immutable. Call register from ContactSeals.
 
-	- Contact's Status
-		- Create the following status:
-			- Off-line
-			- On-line
-			- Away
-			- Busy
-		- Find a way to solve the problem of the menu items' order
-		- Create StatusTest
+	- Chat
+		- Fabio's One-on-one Chat - Incorporate
+		- Chat Gui - Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
+			- Enter bug - Fix.
+			- Focus bug - Fix.
 
 	- Wusic
-		- MusicalTasteMatcher Kernel
-			- Implement MusicalTasteMatcherFunctionalTest
-		- Nice-to-have:
-			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
-			- Back Button
-			- Find another way to solve pause lag (try to use a smaller frame in player)
+		- TrackDownloader:
+			- Download candidate from folder that is not being downloaded gets +0.1
+			- Download candidate from peer   that is not being downloaded gets +0.1 (cumulative with folder bonus above)
+		- MusicalTasteMatcher
+			- FunctionalTest - Not necessary. Unit test is enough because there is no remoteness going on and only a single brick is involved in the logic.
+			- Buttons - Talk to Klaus
+				- First Group: (I want this track. (Today's "Me Too"))
+					:D    
+				- Second Group: (I dont want this particular track...)
+					:)    (...but I like it. Bring me similar ones.)
+					:|    (...and that's it.)
+					:(    (...or any similar tracks.)
 
-	- Fix WindowBoundSetter.setBestLocation()
-		- See commented lines at:
-			- ContactInfoWindow
-			- OwnInfo
-			- BlinkingLightsGui
-			- DeleteContactWindow
+	- sovereigncomputing.net - Moralize. This is necessary to help promote Wusic.
+		- Talk to Klaus 
 
-	- [Klaus] RapidShare Killer (Transfer Huge Files) - Do this in parallel, when you're bored of Wusic :)
-		- Focus. Keep it simple. Zero sophistication. Simplest possible solution. No crash-recovery, for example. No bugs. Decent design.
-		- Announce to community
+	- New Contact Stati (Test Driven, of course)
+		- Away
+			- Presence detection spike based on TimeboxedEventQueue that already intercepts all gui activity. 
+		- Busy
 
 
 René =================================================
 
 	- Toroidal Go Snapp
+		- Unignore scoreTest
 
 
 Klaus =================================================
 
-	- Analyze PlayingTrackTest
-		- Is it really necessary to keep the attribute value's signal? (see line 65)
-
-	- Analyze WatchMeTest
-		- It didn't work with a TuplePump (though it's a spike, it would be nice to understand what happened)
-
-	- Seals
-		- Unignore DynDnsClientTest.
-		- Freedom2 - Revert old timeouts. Use pre-generated key pairs to be faster.
-
-	- Prevalent Bubble - not required if already prevailing
-
-	- Use CustomClockTicker at SneerPartyController.accelerateHeartbeat()
+	- Prevalence
+		- Refactor Bubble
+			- Reentrant Prevayler
+			- Extract SimpleMethod or implement Invocation delegation along the chain.
+			- immutable types
+		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
+			- Change MusicalTasteMatcher's interface to use the contact instead of the nickname (string)
+		- Announce to community
+			- Document
+		- BrickStateStore: retire. Use the prevalent nature instead.
 
 	- [Igor] @After are not being called by ignored tests so tmpFolder() is not being removed
+
+	- GUI Nature
+		- [Klaus] Announce to community
+	
+	- Revise entire package structure.
+		- Remove all calls to Thread.sleep() including indirect.
 
 	- Freedom7 - "Me Too" for Bricks 
 		- Unignore Freedom7.meToo
@@ -83,11 +88,3 @@ Klaus =================================================
 			- Hierarchical View - Consider groups of bricks (brick package at any level, examples: bricks.hardware, bricks.software, bricks.hardware.io, etc) as an optional grouping for versioning and downloading from friends, not only individual bricks.
 				- Do not allow circular dependencies among any level of groups of bricks and voila: the world is free of cyclic dependencies.
 	
-	- GUI Nature
-		- "Finish Him"
-		- Announce to community
-
-	- Revise entire package structure.
-		- Remove all calls to Thread.sleep() including indirect.
-
-

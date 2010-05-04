@@ -2,7 +2,6 @@ package sneer.bricks.skin.main.menu.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
@@ -26,8 +25,11 @@ class MainMenuImpl implements MainMenu {
 	}
 	
 	@Override public void addAction(Action action) { delegate().addAction(action); }
+	@Override public void addAction(Action action, Integer index) { delegate().addAction(action, index); }
 	@Override public void addAction(String caption, Runnable action) { delegate().addAction(caption, action); }
-	@Override public void addGroup(MenuGroup<? extends JComponent> group) { delegate().addGroup(group); }
+	@Override public void addAction(String caption, Runnable action, Integer index) { delegate().addAction(caption, action, index); }
+	@Override public void addGroup(MenuGroup<JMenu> group) { delegate().addGroup(group); }
+	@Override public void addGroup(MenuGroup<JMenu> group, Integer index) { delegate().addGroup(group, index); }
 	@Override public JMenu getWidget() { return delegate().getWidget(); }
 	
 	private synchronized MenuGroup<JMenu> delegate() {
@@ -40,4 +42,5 @@ class MainMenuImpl implements MainMenu {
 		_delegate.getWidget().setName("MainMenu");
 		_menuBar.addGroup(_delegate);
 	}
+
 }

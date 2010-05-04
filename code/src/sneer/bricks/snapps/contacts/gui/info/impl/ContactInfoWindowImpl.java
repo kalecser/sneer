@@ -62,7 +62,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 		my(GuiThread.class).invokeAndWait(new Closure(){ @Override public void run() {//Fix Use GUI Nature
 			ref[0] = my(ReactiveWidgetFactory.class).newList(_contactAddresses.addresses(), 
 			new LabelProvider<InternetAddress>(){
-				@Override public Signal<? extends Image> imageFor(InternetAddress element) {
+				@Override public Signal<Image> imageFor(InternetAddress element) {
 					return my(Signals.class).constant(null);
 				}
 
@@ -106,6 +106,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 	
 	private void initGui() {
 		setTitle("Contact Info:");
+		setResizable(false);
 
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder("Internet Adresses:"));
@@ -157,7 +158,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 		setGridBagLayout(panel, labNickname, labSeal, sealScroll, labPort, labHost, addressesScroll, btnNew, btnSave, btnDel);
 		addListSelectionListestener();
 
-		this.setSize(400, 350);
+		this.setSize(330, 310);
 	}
 
 	private Signal<String> contactsFormattedSealString() {
@@ -203,14 +204,14 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 		getContentPane().add(labSeal,  new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, 
 				GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5,5,0,5), 0, 0) );
 
-		getContentPane().add(sealScroll,  new GridBagConstraints(0, 2, 5, 1, 1.0, 1.0, 
+		getContentPane().add(sealScroll,  new GridBagConstraints(0, 2, 5, 1, 0.5, 0.5, 
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
 
 		getContentPane().add(panel,  new GridBagConstraints(0, 3, 2, 1, 1.0, 0.2, 
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
 		
 		panel.setLayout(new GridBagLayout());
-		panel.add(addressesScroll,  new GridBagConstraints(0, 1, 12, 1, 0.6, 0.6, 
+		panel.add(addressesScroll,  new GridBagConstraints(0, 1, 12, 1, 1.0, 1.0, 
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
 
 		panel.add(labHost, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, 

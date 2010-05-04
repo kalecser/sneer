@@ -4,14 +4,14 @@ import static sneer.foundation.environments.Environments.my;
 
 import javax.swing.JOptionPane;
 
-import sneer.bricks.identity.keys.Keys;
 import sneer.bricks.identity.keys.gui.PublicKeyDialog;
+import sneer.bricks.identity.keys.own.OwnKeys;
 
 public class PublicKeyDialogImpl implements PublicKeyDialog {
 
 	@Override
 	public void initPublicKeyIfNecessary() {
-		if (my(Keys.class).ownPublicKey().currentValue() == null)
+		if (my(OwnKeys.class).ownPublicKey().currentValue() == null)
 			initPublicKey();
 	}
 
@@ -21,7 +21,7 @@ public class PublicKeyDialogImpl implements PublicKeyDialog {
 			? "Dummy"
 			: promptForPassphrase();
 			
-		my(Keys.class).generateKeyPair(seed);
+		my(OwnKeys.class).generateKeyPair(seed);
 	}
 
 	

@@ -5,6 +5,7 @@ import static spikes.klaus.go.GoBoard.StoneColor.BLACK;
 import static spikes.klaus.go.GoBoard.StoneColor.WHITE;
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
@@ -14,8 +15,8 @@ import sneer.bricks.pulp.serialization.DeepCopier;
 public class GoBoard {
 
 	public static enum StoneColor { BLACK,	WHITE; }
-	private final Register<Integer> _blackStonesCaptured = my(Signals.class).newRegister(0);
-	private final Register<Integer> _whiteStonesCaptured = my(Signals.class).newRegister(0);
+	private final Register<Integer> _blackScore = my(Signals.class).newRegister(0);
+	private final Register<Integer> _whiteScore = my(Signals.class).newRegister(0);
 	
 	public GoBoard(int size) {
 		_intersections = new Intersection[size][size];
@@ -37,6 +38,7 @@ public class GoBoard {
 	private Intersection[][] _intersections;
 	private Register<StoneColor> _nextToPlay = my(Signals.class).newRegister(BLACK);
 	private Intersection[][] _previousSituation;
+	private int _numPasses=0;
 	
 	protected Intersection intersection(int x, int y) {
 		return _intersections[x][y];
@@ -83,8 +85,8 @@ public class GoBoard {
 	}
 
 	private void countCapturedStones() {
-		countCapturedStones(_blackStonesCaptured, BLACK);
-		countCapturedStones(_whiteStonesCaptured, WHITE);
+		countCapturedStones(_blackScore, BLACK);
+		countCapturedStones(_whiteScore, WHITE);
 	}
 
 	private void countCapturedStones(Register<Integer> counter,	StoneColor color) {
@@ -133,6 +135,27 @@ public class GoBoard {
 
 	public void passTurn() {
 		next();
+		_numPasses++;
+		if (_numPasses==2) 
+			resignTurn();
+	}
+
+	public void resignTurn() {
+		//conta pontos...
+		_numPasses=-1;
+		HashSet<Intersection> checkedStones = new HashSet<Intersection>();
+		int pointsBlack=0;
+		int pointsWhite=0;
+		for(Intersection[] column : _intersections)
+			for(Intersection intersection : column) {
+				if (!checkedStones.contains(intersection)) {
+					if (intersection._stone == BLACK)
+					pointsBlack += intersection.countPoints(checkedStones);
+					if (intersection._stone == WHITE)
+					pointsWhite += intersection.countPoints(checkedStones);
+				}
+			}
+		System.out.println("BK: "+pointsBlack+"\nWH: "+pointsWhite);
 	}
 
 	private void next() {
@@ -190,15 +213,16 @@ public class GoBoard {
 		return result.toString();
 	}
 	
-	public Signal<Integer> blackCapturedCount() {
-		return _blackStonesCaptured.output();
+	public Signal<Integer> blackScore() {
+		return _blackScore.output();
 	}
 
-	public Signal<Integer> whiteCapturedCount() {
-		return _whiteStonesCaptured.output();
+	public Signal<Integer> whiteScore() {
+		return _whiteScore.output();
 	}
 
 	public Signal<StoneColor> nextToPlaySignal() {
 		return _nextToPlay.output();
 	}
+
 }

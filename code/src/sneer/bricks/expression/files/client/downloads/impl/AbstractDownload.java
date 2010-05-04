@@ -17,7 +17,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.network.social.Contact;
+import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.events.pulsers.PulseSource;
@@ -30,7 +30,8 @@ import sneer.foundation.lang.Closure;
 
 abstract class AbstractDownload implements Download {
 
-	private static int TIMEOUT_LIMIT = 30 * 60 * 1000;
+	private static int ACTIVITY_TIMEOUT = 30 * 1000;
+	private static int DURATION_TIMEOUT = 30 * 60 * 1000;
 
 	static final int REQUEST_INTERVAL = 15 * 1000;
 
@@ -38,11 +39,12 @@ abstract class AbstractDownload implements Download {
 	final long _lastModified;
 	final Hash _hash;
 
-	private final Contact _source;
+	private final Seal _source;
 
 	private final File _actualPath;
 
 	private long _startTime;
+	private long _lastActivityTime;
 
 	private final Register<Integer> _progress = my(Signals.class).newRegister(0);
 
@@ -56,7 +58,7 @@ abstract class AbstractDownload implements Download {
 	private WeakContract _timerContract;
 
 
-	AbstractDownload(File path, long lastModified, Hash hashOfFile, Contact source, Runnable toCallWhenFinished) {
+	AbstractDownload(File path, long lastModified, Hash hashOfFile, Seal source, Runnable toCallWhenFinished) {
 		_path = dotPartFor(path);
 		_lastModified = lastModified;
 		_hash = hashOfFile;
@@ -98,7 +100,7 @@ abstract class AbstractDownload implements Download {
 
 
 	@Override
-	public Contact source() {
+	public Seal source() {
 		return _source;
 	}
 
@@ -233,9 +235,20 @@ abstract class AbstractDownload implements Download {
 	abstract void copyContents(Object contents) throws IOException;
 
 
+	protected void registerActivity() {
+		_lastActivityTime = my(Clock.class).time().currentValue();
+	}
+
+
 	void checkForTimeOut() {
-		if (my(Clock.class).time().currentValue() - _startTime >= TIMEOUT_LIMIT)
-			finishWith(new TimeoutException("Timeout downloading " + _actualPath.getAbsolutePath()));
+		Long currentTime = my(Clock.class).time().currentValue();
+		if (currentTime - _lastActivityTime > ACTIVITY_TIMEOUT) timeout("Activity");
+		if (currentTime - _startTime > DURATION_TIMEOUT) timeout("Duration");
+	}
+
+
+	private void timeout(String timeoutCase) {
+		finishWith(new TimeoutException(timeoutCase + " Timeout downloading " + _actualPath.getAbsolutePath()));
 	}
 
 	

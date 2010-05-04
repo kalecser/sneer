@@ -31,22 +31,22 @@ public class ThreadsMock implements Threads {
 		return _steppers.get(i);
 	}
 
-	public synchronized void runDaemonWithNameStartingWith(String prefix) {
+	public synchronized void runDaemonWithNameContaining(String partOfName) {
 		Collection<Runnable> daemonsCopy = new ArrayList<Runnable>(_daemonNamesByRunnable.keySet());
 
 		boolean wasRun = false;
 		
 		for (Runnable daemon : daemonsCopy) {
 			String daemonName = _daemonNamesByRunnable.get(daemon);
-			if (!daemonName.startsWith(prefix)) continue;
+			if (daemonName.indexOf(partOfName) == -1) continue;
 			
 			_daemonNamesByRunnable.remove(daemon);
 			daemon.run();
-			if (wasRun) throw new IllegalStateException("Found more than one daemon named: " + prefix);
+			if (wasRun) throw new IllegalStateException("Found more than one daemon named: " + partOfName);
 			wasRun = true;
 		}
 		
-		if (!wasRun) throw new IllegalStateException("Daemon not found: " + prefix);
+		if (!wasRun) throw new IllegalStateException("Daemon not found: " + partOfName);
 	}
 
 	@Override
@@ -90,12 +90,8 @@ public class ThreadsMock implements Threads {
 	}
 
 	@Override
-	public PulseSource crashing() {
+	public PulseSource crashed() {
 		return _crashingPulser.output();
 	}
 
-	@Override
-	public boolean isCrashing() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
-	}
 }

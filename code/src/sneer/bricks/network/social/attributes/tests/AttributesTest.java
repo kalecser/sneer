@@ -2,13 +2,10 @@ package sneer.bricks.network.social.attributes.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.File;
-
-import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.hardware.clock.Clock;
+import sneer.bricks.expression.tuples.testsupport.pump.TuplePump;
+import sneer.bricks.expression.tuples.testsupport.pump.TuplePumps;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -16,71 +13,83 @@ import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attribute;
 import sneer.bricks.network.social.attributes.Attributes;
-import sneer.bricks.pulp.reactive.Register;
-import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.network.social.attributes.tests.fixtures.AnotherAttribute;
+import sneer.bricks.network.social.attributes.tests.fixtures.SomeAttribute;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.environments.Environment;
+import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.ClosureX;
+import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.Producer;
 import sneer.foundation.lang.exceptions.Refusal;
-import dfcsantos.tracks.Track;
-import dfcsantos.tracks.Tracks;
-import dfcsantos.wusic.notification.playingtrack.PlayingTrack;
 
 public class AttributesTest extends BrickTest {
 
-	private final Class<? extends Attribute<String>> _anyAttribute = new Attribute<String>() {}.getClass();
-	private final Register<Track> _attributeValue = my(Signals.class).newRegister(null);
+	private final Attributes _subject = my(Attributes.class);
 
-	private Contact _localContact;
-	private Attributes _remoteAttributes;
+	private Environment _remoteEnvironment;
+	private Contact _remoteContact;
+	private TuplePump _tuplePump;
 
-	@Ignore
 	@Test
-	public void attributeBroadcast() throws Exception {
-		my(Attributes.class).myAttributeSetter(_anyAttribute);
+	public void ownAttribute() {
+		assertNull(_subject.myAttributeValue(SomeAttribute.class).currentValue());
 
-		Environment remote = newTestEnvironment(my(TupleSpace.class), my(Clock.class));
+		testOwnAttribute("aValue");
+		testOwnAttribute("anotherValue");
+		testOwnAttribute(null);
+	}
+
+	private void testOwnAttribute(String value) {
+		_subject.myAttributeSetter(SomeAttribute.class).consume(value);
+		assertEquals(value, _subject.myAttributeValue(SomeAttribute.class).currentValue());
+	}
+
+	@Test
+	public void peerAttribute() throws Refusal {
+		_remoteEnvironment	= configureRemoteEnvironment();
+		_remoteContact		= configureRemoteContact();
+
+		assertNull(_subject.attributeValueFor(_remoteContact, SomeAttribute.class, String.class).currentValue());
+
+		testPeerAttribute(SomeAttribute.class, "aValue");
+		testPeerAttribute(SomeAttribute.class, "anotherValue");
+		testPeerAttribute(SomeAttribute.class, null);
+
+		testPeerAttribute(AnotherAttribute.class, 0);
+		testPeerAttribute(AnotherAttribute.class, 'X');
+		testPeerAttribute(AnotherAttribute.class, "anObject");
+		testPeerAttribute(AnotherAttribute.class, null);
+
+		crash(_remoteEnvironment);
+	}
+
+	private Environment configureRemoteEnvironment() {
+		Environment remote = newTestEnvironment();
 		configureStorageFolder(remote, "remote/data");
+		_tuplePump = my(TuplePumps.class).startPumpingWith(remote);
+		return remote;
+	}
 
-		final Seal localSeal = my(OwnSeal.class).get().currentValue();
-		Environments.runWith(remote, new ClosureX<Refusal>() { @Override public void run() throws Refusal {
-			_localContact = my(Contacts.class).addContact("local");
-			my(ContactSeals.class).put("local", localSeal);
-			_remoteAttributes = my(Attributes.class);
-
-			testPlayingTrack("track1");
-			testPlayingTrack("track2");
-			testPlayingTrack("track2");
-			testPlayingTrack("track3");
-			testPlayingTrack("");
-			testPlayingTrack("track4");
-
-			testNullPlayingTrack();
+	private Contact configureRemoteContact() throws Refusal {
+		Contact peer = my(Contacts.class).addContact("Peer");
+		Seal peerSeal = EnvironmentUtils.produceIn(_remoteEnvironment, new Producer<Seal>() { @Override public Seal produce() {
+			return my(OwnSeal.class).get().currentValue();
 		}});
-
-		crash(remote);
+		my(ContactSeals.class).put("Peer",	peerSeal);
+		return peer;
 	}
 
-	private void testPlayingTrack(String trackName) {
-		setPlayingTrack(trackName.isEmpty() ? "" : trackName + ".mp3");
-		my(TupleSpace.class).waitForAllDispatchingToFinish();
-		assertEquals(trackName, playingTrackReceivedFromLocal());
+	private <T> void testPeerAttribute(Class<? extends Attribute<T>> attribute, T value) {
+		setPeerAttribute(attribute, value);
+		_tuplePump.waitForAllDispatchingToFinish();
+		Class<T> valueType = (Class<T>) (value != null ? value.getClass() : Object.class);
+		assertEquals(value, _subject.attributeValueFor(_remoteContact, attribute, valueType).currentValue());
 	}
 
-	private void testNullPlayingTrack() {
-		my(Clock.class).advanceTime(1);
-		_attributeValue.setter().consume(null);
-		my(TupleSpace.class).waitForAllDispatchingToFinish();
-		assertEquals("", playingTrackReceivedFromLocal());
+	private <T> void setPeerAttribute(final Class<? extends Attribute<T>> attribute, final T value) {
+		Environments.runWith(_remoteEnvironment, new Closure() { @Override public void run() {
+			my(Attributes.class).myAttributeSetter(attribute).consume(value);
+		}});
 	}
-
-	private String playingTrackReceivedFromLocal() {
-		return _remoteAttributes.attributeValueFor(_localContact, PlayingTrack.class, String.class).currentValue();
-	}
-
-	private void setPlayingTrack(String trackName) {
-		_attributeValue.setter().consume(my(Tracks.class).newTrack(new File(trackName)));
-	}
-
 }

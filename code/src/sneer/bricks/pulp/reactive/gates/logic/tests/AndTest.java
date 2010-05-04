@@ -16,10 +16,8 @@ import sneer.foundation.lang.Consumer;
 
 public class AndTest extends BrickTest {
 
-	private final Signals SIGNALS = my(Signals.class);
-
-	private final Register<Boolean> _input1 = SIGNALS.newRegister(false);
-	private final Register<Boolean> _input2 = SIGNALS.newRegister(false);
+	private final Register<Boolean> _input1 = my(Signals.class).newRegister(false);
+	private final Register<Boolean> _input2 = my(Signals.class).newRegister(false);
 	private final Signal<Boolean> _andResult = my(LogicGates.class).and(_input1.output(), _input2.output());
 	private final List<Boolean> _recorded = new ArrayList<Boolean>();
 

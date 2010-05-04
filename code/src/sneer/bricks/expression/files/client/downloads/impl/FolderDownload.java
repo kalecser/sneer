@@ -48,6 +48,8 @@ class FolderDownload extends AbstractDownload {
 	
 	synchronized
 	private void receiveFolder(FolderContents contents) {
+		registerActivity();
+
 		try {
 			tryToReceiveFolder(contents);
 		} catch (Exception e) {
@@ -90,7 +92,7 @@ class FolderDownload extends AbstractDownload {
 	Tuple requestToPublishIfNecessary() {
 		return _contentsReceived != null
 			? null
-			: new FileRequest(_hash, 0, _path.getAbsolutePath());
+			: new FileRequest(source(), _hash, 0, _path.getAbsolutePath());
 	}
 
 

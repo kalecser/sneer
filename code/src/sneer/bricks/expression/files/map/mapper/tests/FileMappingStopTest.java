@@ -27,6 +27,7 @@ public class FileMappingStopTest extends BrickTest {
 		final File fixturesFolder = new File(myClassFile().getParent(), "fixtures");
 
 		checking(new Expectations() {{
+			oneOf(_fileMap).getHash(with(any(File.class)));
 			oneOf(_fileMap).getLastModified(with(any(File.class))); will(returnValue(-1L));
 			oneOf(_fileMap).putFile(with(any(File.class)), with(any(Hash.class)));
 				will(new CustomAction("Call stopFolderMapping") { @Override public Object invoke(Invocation invocation) throws Throwable {

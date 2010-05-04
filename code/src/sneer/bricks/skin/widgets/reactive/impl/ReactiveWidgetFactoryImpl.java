@@ -10,7 +10,6 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
@@ -111,11 +110,10 @@ class ReactiveWidgetFactoryImpl implements ReactiveWidgetFactory {
 			@Override public Signal<String> textFor(T element) { return my(Signals.class).constant(element.toString());
 			}});
 	}
-	@Override
-	public <T> ListWidget<T> newList(ListSignal<T> source, LabelProvider<T> provider, ListCellRenderer cellRenderer) {
+
+	@Override public <T> ListWidget<T> newList(ListSignal<T> source, LabelProvider<T> provider) {
 		my(GuiThread.class).assertInGuiThread();
-		return new RListImpl<T>(source, provider, cellRenderer);
+		return new RListImpl<T>(source, provider);
 	}
-	@Override public <T> ListWidget<T> newList(ListSignal<T> source, LabelProvider<T> provider) { return newList(source, provider, null); }
 
 }

@@ -34,7 +34,6 @@ class Intersection implements Serializable {
 		if (group.contains(this)) return;
 		group.add(this);
 		
-		if(_stone == null) return;
 		if(_stone != stoneColor) return;
 		
 		if (_up != null) _up.fillGroupWithNeighbours(stoneColor, group);
@@ -56,6 +55,20 @@ class Intersection implements Serializable {
 			if (intersection._stone == color) intersection._stone = null;
 		
 		return true;
+	}
+	
+	int countPoints(HashSet<Intersection> checkedStones) {
+		if (_stone != null) return 0;
+		
+		HashSet<Intersection> groupWithNeighbours = new HashSet<Intersection>();
+		fillGroupWithNeighbours(_stone, groupWithNeighbours);
+		
+		int count=0;
+		for (Intersection intersection : groupWithNeighbours) {
+			checkedStones.add(intersection);
+			if (intersection.isLiberty()) count++;
+		}
+		return count;
 	}
 
 	private boolean isLiberty() {

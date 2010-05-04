@@ -49,5 +49,7 @@ public interface Wusic {
 	PickyConsumer<Integer> downloadAllowanceSetter();
 	SetSignal<Download> activeDownloads();
 
+	void volumePercent(int level);
+	Signal<Integer> volumePercent();
 }
 

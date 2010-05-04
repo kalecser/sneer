@@ -15,7 +15,6 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.binary.BinaryStreamReader;
 import com.thoughtworks.xstream.io.binary.BinaryStreamWriter;
 import com.thoughtworks.xstream.io.xml.XppDriver;
-import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
 
@@ -75,8 +74,8 @@ class SerializerImpl implements Serializer {
 		} catch (RuntimeException rx) {
 			Throwable cause = rx;
 			while (cause != null) {
-				if (cause instanceof CannotResolveClassException)
-					throw new ClassNotFoundException(cause.getMessage());
+				if (cause instanceof ClassNotFoundException)
+					throw (ClassNotFoundException)cause;
 				cause = cause.getCause();
 			}
 			
