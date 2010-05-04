@@ -42,9 +42,9 @@ class MemoryMeterGuiImpl implements MemoryMeterGui {
 	} 
 
 	private void initSynth() {
-		_synth.notInGuiThreadLoad(this.getClass());
-		_synth.notInGuiThreadAttach(_gc, "GCButton");
-		_synth.notInGuiThreadAttach(_maxMemory, "TotalMemoryLabel");
+		_synth.load(this.getClass());
+		_synth.attach(_gc, "GCButton");
+		_synth.attach(_maxMemory, "TotalMemoryLabel");
 	}
 	
 	@Override

@@ -32,10 +32,10 @@ class BandwidthMeterGuiImpl implements BandwidthMeterGui {
 	} 
 	
 	private void initSynth() {
-		_synth.notInGuiThreadLoad(this.getClass());
-		_synth.notInGuiThreadAttach(_bpsPeakLabel, "KbsPeakLabel");
-		_synth.notInGuiThreadAttach(_uploadIcon,"UploadIcon");
-		_synth.notInGuiThreadAttach(_downloadIcon,"DownloadIcon");
+		_synth.load(this.getClass());
+		_synth.attach(_bpsPeakLabel, "KbsPeakLabel");
+		_synth.attach(_uploadIcon,"UploadIcon");
+		_synth.attach(_downloadIcon,"DownloadIcon");
 	}
 	
 	private class MaxHolderFunctor implements Functor<Integer, String>{

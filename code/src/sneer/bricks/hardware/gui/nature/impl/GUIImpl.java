@@ -41,8 +41,8 @@ class GUIImpl implements GUI {
 	
 	
 	@Override
-	public List<ClassDefinition> realize(ClassDefinition classDef) {
-		return my(InterceptionEnhancer.class).realize(GUI.class, classDef);
+	public List<ClassDefinition> realize(Class<?> brick, ClassDefinition classDef) {
+		return my(InterceptionEnhancer.class).realize(brick, GUI.class, classDef);
 	}
 
 	

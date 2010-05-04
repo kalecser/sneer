@@ -26,6 +26,11 @@ class ClassLoaderForBrickLibs extends ClassLoaderForBricks {
 	private ClassLoaderForBrickLibs(Class<?> brick, URL[] jars, List<Nature> natures, ClassLoader next) {
 		super(brick, jars, next, natures);
 	}
+	
+	@Override
+	protected boolean shouldRealizeNatures() {
+		return false;
+	}
 
 	private static URL[] jars(File classpath, String implPackage) {
 		List<URL> result = new ArrayList<URL>();

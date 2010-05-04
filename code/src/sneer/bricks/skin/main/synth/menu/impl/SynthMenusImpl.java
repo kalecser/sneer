@@ -16,7 +16,7 @@ import sneer.foundation.lang.Closure;
 class SynthMenusImpl implements SynthMenus {
 	
 	SynthMenusImpl(){
-		my(Synth.class).loadForWussies(this.getClass());
+		my(Synth.class).load(this.getClass());
 	}
 
 	@Override public JMenuBar createMenuBar(){ return attach(new JMenuBar()); }

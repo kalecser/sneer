@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -59,16 +60,23 @@ abstract class ClassLoaderForBricks extends EagerClassLoader implements BrickCla
 	}
 
 	private List<ClassDefinition> realizeNatures(ClassDefinition originalClassDef) {
+		if (!shouldRealizeNatures())
+			return Arrays.asList(originalClassDef);
+		
 		List<ClassDefinition> classDefs = Collections.singletonList(originalClassDef);
 		for (Nature nature : _natures)
 			classDefs = realizeNature(classDefs, nature);
 		return classDefs;
 	}
 
+	protected boolean shouldRealizeNatures() {
+		return true;
+	}
+
 	private List<ClassDefinition> realizeNature(List<ClassDefinition> classDefs, Nature nature) {
 		ArrayList<ClassDefinition> resultingDefs = new ArrayList<ClassDefinition>();
 		for (ClassDefinition classDef : classDefs)
-			resultingDefs.addAll(nature.realize(classDef));
+			resultingDefs.addAll(nature.realize(_brick, classDef));
 		return resultingDefs;
 		
 	}

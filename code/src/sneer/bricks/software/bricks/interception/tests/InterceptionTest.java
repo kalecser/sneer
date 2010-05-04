@@ -88,8 +88,8 @@ public class InterceptionTest extends BrickTestWithThreads {
 			}
 			
 			@Override
-			public List<ClassDefinition> realize(ClassDefinition classDef) {
-				return my(InterceptionEnhancer.class).realize(SomeInterceptingNature.class, classDef);
+			public List<ClassDefinition> realize(Class<?> brick, ClassDefinition classDef) {
+				return my(InterceptionEnhancer.class).realize(brick, SomeInterceptingNature.class, classDef);
 			}
 		};
 			
@@ -188,10 +188,10 @@ public class InterceptionTest extends BrickTestWithThreads {
 	
 	private void allowingRealizeAndInstantiate(final Class<?> brickClass) {
 		mockery.checking(new Expectations() {{
-			allowing(interceptingNatureMock).realize(with(any(ClassDefinition.class)));
+			allowing(interceptingNatureMock).realize(with(brickClass), with(any(ClassDefinition.class)));
 			will(new CustomAction("realize") { @Override public Object invoke(Invocation invocation) throws Throwable {
-				ClassDefinition classDef = (ClassDefinition) invocation.getParameter(0);
-				return my(InterceptionEnhancer.class).realize(SomeInterceptingNature.class, classDef);
+				ClassDefinition classDef = (ClassDefinition) invocation.getParameter(1);
+				return my(InterceptionEnhancer.class).realize(brickClass, SomeInterceptingNature.class, classDef);
 			}});
 			
 			oneOf(interceptingNatureMock).instantiate(

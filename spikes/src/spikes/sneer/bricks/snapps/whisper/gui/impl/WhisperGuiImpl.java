@@ -40,14 +40,14 @@ class WhisperGuiImpl implements WhisperGui {
 	@SuppressWarnings("unused") private Object _referenceToAvoidGc;
 
 	WhisperGuiImpl(){
-		_synth.notInGuiThreadLoad(this.getClass());
+		_synth.load(this.getClass());
 		initSynth();
 		_instrumentManager.registerInstrument(this);
 	}
 
 	private void initSynth() {
-		_synth.notInGuiThreadAttach(_whisperButton, "WhisperButton");
-		_synth.notInGuiThreadAttach(_loopBackButton, "LoopbackButton");
+		_synth.attach(_whisperButton, "WhisperButton");
+		_synth.attach(_loopBackButton, "LoopbackButton");
 	}
 	
 	private Signal<Boolean> isRunning() {

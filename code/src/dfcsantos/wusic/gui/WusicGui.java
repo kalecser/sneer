@@ -1,10 +1,11 @@
 package dfcsantos.wusic.gui;
 
+import sneer.bricks.hardware.gui.nature.GUI;
 import sneer.bricks.software.bricks.snappstarter.Snapp;
 import sneer.foundation.brickness.Brick;
 
 @Snapp
-@Brick
+@Brick(GUI.class)
 public interface WusicGui {
 
 	String MUSICAL_NOTE_ICON = "\u266A"; 

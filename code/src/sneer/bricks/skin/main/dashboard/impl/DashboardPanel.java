@@ -104,8 +104,8 @@ class DashboardPanel extends JPanel {
 	}
 
 	private void initSynth() {
-		_synth.notInGuiThreadAttach(this, "DashboardPanel");
-		_synth.notInGuiThreadAttach(_instrumentsContainer, "InstrumentsContainer");
+		_synth.attach(this, "DashboardPanel");
+		_synth.attach(_instrumentsContainer, "InstrumentsContainer");
 	}
 	
 	void hideAllToolbars() {
@@ -172,7 +172,7 @@ class DashboardPanel extends JPanel {
 			setLayout(new BorderLayout());
 			add(_contentPane, BorderLayout.CENTER);
 			
-			_synth.notInGuiThreadAttach(this, "InstrumentPanel");
+			_synth.attach(this, "InstrumentPanel");
 			_instrument = instrument;
 			_toolbar = new Toolbar(_instrument.title());
 			
@@ -333,10 +333,10 @@ class DashboardPanel extends JPanel {
 			}
 
 			private void initSynth() {
-				_synth.notInGuiThreadAttach(_toolbarPanel, "InstrumentToolbar");
-				_synth.notInGuiThreadAttach(_title, "InstrumentTitle");
-				_synth.notInGuiThreadAttach(_menu, "InstrumentMenuButton");
-				_synth.notInGuiThreadAttach(_mouseBlockButton);
+				_synth.attach(_toolbarPanel, "InstrumentToolbar");
+				_synth.attach(_title, "InstrumentTitle");
+				_synth.attach(_menu, "InstrumentMenuButton");
+				_synth.attach(_mouseBlockButton);
 			}
 			
 			private void initGui(String title) {
