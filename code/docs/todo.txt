@@ -13,11 +13,8 @@ Kalecser =================================================
 
 Bamboo =================================================
 
-	- Prevalence
-		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
-			- Change MusicalTasteMatcher's interface to use the contact instead of the nickname (string)
-		- BrickStateStore: retire. Use the prevalent nature instead.
-		- Announce to community
+	- GUI Nature
+		- "Finish Him"
 
 
 Igor ====================================================
@@ -67,18 +64,27 @@ René =================================================
 
 Klaus =================================================
 
-	- Bubble
-		- Refactor
-			- Extract SimpleMethod or implement Invocation delegation along the chain.
-			- immutable types
-	
 	- Seals
 		- Unignore DynDnsClientTest.
 		- Freedom2 - Revert old timeouts. Use pre-generated key pairs to be faster.
 
-	- Use CustomClockTicker at SneerPartyController.accelerateHeartbeat()
+	- Prevalence
+		- Refactor Bubble
+			- Extract SimpleMethod or implement Invocation delegation along the chain.
+			- immutable types
+		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
+			- Change MusicalTasteMatcher's interface to use the contact instead of the nickname (string)
+		- Announce to community
+			- Document
+		- BrickStateStore: retire. Use the prevalent nature instead.
 
 	- [Igor] @After are not being called by ignored tests so tmpFolder() is not being removed
+
+	- GUI Nature
+		- [Klaus] Announce to community
+	
+	- Revise entire package structure.
+		- Remove all calls to Thread.sleep() including indirect.
 
 	- Freedom7 - "Me Too" for Bricks 
 		- Unignore Freedom7.meToo
@@ -89,11 +95,3 @@ Klaus =================================================
 			- Hierarchical View - Consider groups of bricks (brick package at any level, examples: bricks.hardware, bricks.software, bricks.hardware.io, etc) as an optional grouping for versioning and downloading from friends, not only individual bricks.
 				- Do not allow circular dependencies among any level of groups of bricks and voila: the world is free of cyclic dependencies.
 	
-	- GUI Nature
-		- "Finish Him"
-		- Announce to community
-
-	- Revise entire package structure.
-		- Remove all calls to Thread.sleep() including indirect.
-
-
