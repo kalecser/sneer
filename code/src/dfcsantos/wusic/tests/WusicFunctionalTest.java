@@ -207,7 +207,7 @@ public class WusicFunctionalTest extends BrickTest {
 		_subject1 = my(Wusic.class);
 		_subject1.trackExchangeActivator().consume(true);
 
-		my(CustomClockTicker.class).start(10, 2000);
+		my(CustomClockTicker.class).start(10, 200);
 
 		waitForSignalValue(_subject1.numberOfPeerTracks(), 3);
 

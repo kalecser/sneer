@@ -30,8 +30,8 @@ import sneer.foundation.lang.Closure;
 
 abstract class AbstractDownload implements Download {
 
-	private static int ANSWER_TIMEOUT_LIMIT = 30 * 1000;
-	private static int EXECUTION_TIMEOUT_LIMIT = 30 * 60 * 1000;
+	private static int ACTIVITY_TIMEOUT = 30 * 1000;
+	private static int DURATION_TIMEOUT = 30 * 60 * 1000;
 
 	static final int REQUEST_INTERVAL = 15 * 1000;
 
@@ -44,8 +44,7 @@ abstract class AbstractDownload implements Download {
 	private final File _actualPath;
 
 	private long _startTime;
-
-	private long _lastAnswerTime;
+	private long _lastActivityTime;
 
 	private final Register<Integer> _progress = my(Signals.class).newRegister(0);
 
@@ -236,16 +235,20 @@ abstract class AbstractDownload implements Download {
 	abstract void copyContents(Object contents) throws IOException;
 
 
-	void registerAnswerTime() {
-		_lastAnswerTime = my(Clock.class).time().currentValue();
+	protected void registerActivity() {
+		_lastActivityTime = my(Clock.class).time().currentValue();
 	}
 
 
 	void checkForTimeOut() {
 		Long currentTime = my(Clock.class).time().currentValue();
-		if (currentTime - _lastAnswerTime < ANSWER_TIMEOUT_LIMIT) return;
-		if (currentTime - _startTime < EXECUTION_TIMEOUT_LIMIT) return;
-		finishWith(new TimeoutException("Timeout downloading " + _actualPath.getAbsolutePath()));
+		if (currentTime - _lastActivityTime > ACTIVITY_TIMEOUT) timeout("Activity");
+		if (currentTime - _startTime > DURATION_TIMEOUT) timeout("Duration");
+	}
+
+
+	private void timeout(String timeoutCase) {
+		finishWith(new TimeoutException(timeoutCase + " Timeout downloading " + _actualPath.getAbsolutePath()));
 	}
 
 	
