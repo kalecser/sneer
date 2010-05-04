@@ -19,8 +19,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Refactor PlayingTrackTest to use a mock of Attributes
-
 	- OwnName, OwnPort --> Attribute
 
 	- PrettyPrinter - finish implementation. Call toString from Immutable. Call register from ContactSeals.
