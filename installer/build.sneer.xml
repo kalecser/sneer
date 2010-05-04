@@ -34,7 +34,7 @@
 	</taskdef>
 
 
-	<target name="test" depends="makejar, test-execution, test-verification">
+	<target name="test" depends="makejar, test-execution, test-verification, test-cleanup">
 		<antcall target="finalize"/>
 	</target>
 
@@ -77,6 +77,10 @@
 				<include name='TEST-*.xml' />
 			</fileset>
 		</move>
+	</target>
+
+	<target name="test-cleanup">
+		<delete dir="${java.io.tmpdir}" deleteonexit="true" quiet="true" verbose="true" />
 	</target>
 
 	<target name="test-verification" if="junit.failures">

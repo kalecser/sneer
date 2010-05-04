@@ -21,8 +21,6 @@ Igor ====================================================
 
 	- Refactor PlayingTrackTest to use a mock of Attributes
 
-	- Add task to the build's script that removes tmpFolders that weren't removed after tests
-
 	- OwnName, OwnPort --> Attribute
 
 	- PrettyPrinter - finish implementation. Call toString from Immutable. Call register from ContactSeals.
