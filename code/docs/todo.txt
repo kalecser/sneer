@@ -66,6 +66,7 @@ Klaus =================================================
 
 	- Prevalence
 		- Refactor Bubble
+			- Reentrant Prevayler
 			- Extract SimpleMethod or implement Invocation delegation along the chain.
 			- immutable types
 		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
