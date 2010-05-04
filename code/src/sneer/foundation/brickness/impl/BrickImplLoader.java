@@ -38,9 +38,9 @@ class BrickImplLoader {
 		String brickName = brick.getName();
 		String implPackage = BrickConventions.implPackageFor(brickName);
 		ClassLoader apiClassLoader = brick.getClassLoader();
-		ClassLoader libsClassLoader = ClassLoaderForBrickLibs.newInstanceIfNecessary(brickName, path, implPackage, naturesFor(brick), apiClassLoader);
+		ClassLoader libsClassLoader = ClassLoaderForBrickLibs.newInstanceIfNecessary(brick, path, implPackage, naturesFor(brick), apiClassLoader);
 		ClassLoader nextClassLoader = libsClassLoader == null ? apiClassLoader : libsClassLoader;
-		ClassLoaderForPackage implClassLoader = new ClassLoaderForPackage(brickName, path, implPackage, naturesFor(brick), nextClassLoader);
+		ClassLoaderForPackage implClassLoader = new ClassLoaderForPackage(brick, path, implPackage, naturesFor(brick), nextClassLoader);
 		return implClassLoader;
 	}
 
