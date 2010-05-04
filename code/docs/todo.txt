@@ -28,17 +28,17 @@ Igor ====================================================
 
 	- OwnName, OwnPort --> Attribute
 
-	- Contact's Status
-		- Create the following status:
-			- Off-line
-			- On-line
-			- Away
-			- Busy
-		- Create StatusTest
-			
-	- Fabio's Chat - Incorporate
-		- Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
+	- Chat
+		- Fabio's One-on-one Chat - Incorporate
+		- Chat Gui - Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
+			- Enter bug - Fix.
+			- Focus bug - Fix.
 
+	- New Contact Stati (Test Driven, of course)
+		- Away
+			- Presence detection spike based on TimeboxedEventQueue that already intercepts all gui activity. 
+		- Busy
+			
 	- sovereigncomputing.net - Moralize
 		- Talk to Klaus 
 

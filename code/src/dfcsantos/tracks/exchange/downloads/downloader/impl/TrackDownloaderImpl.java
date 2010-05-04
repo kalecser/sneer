@@ -89,18 +89,18 @@ class TrackDownloaderImpl implements TrackDownloader {
 	private boolean prepareForDownload(final TrackEndorsement endorsement) {
 		if (!isOn()) { log("TrackDownloader Off"); return false; }
 
+		if (isFromMe(endorsement)) { log("Published by Myself"); return false; }
 		if (isFromUnknownPublisher(endorsement)) { log("Unkown Publisher"); return false; }
-		if (isFromMe(endorsement)) { log("Loopback"); return false; }
 
 		boolean isKnown = isKnown(endorsement);
 		updateMusicalTasteMatcher(endorsement, isKnown);
 		if (isKnown) { log("Duplicated Track"); return false; }
 
 		if (isRejected(endorsement)) { log("Rejected Track"); return false; }
-		if (hasSpentDownloadAllowance()) { log("Allowance Limit Reached"); return false; }
+		if (hasSpentDownloadAllowance()) { log("Download Space Allowance Reached"); return false; }
 
 		killDownloadWithTheLowestRatingWorseThan(matchRatingFor(endorsement));
-		if (hasReachedDownloadLimit()) { log("Download Limit Reached"); return false; }
+		if (hasReachedDownloadLimit()) { log("Concurrent Download Limit Reached"); return false; }
 
 		return true;
 	}
