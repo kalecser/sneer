@@ -89,8 +89,8 @@ class TrackDownloaderImpl implements TrackDownloader {
 	private boolean prepareForDownload(final TrackEndorsement endorsement) {
 		if (!isOn()) { log("TrackDownloader Off"); return false; }
 
+		if (isFromMe(endorsement)) { log("Published by Myself"); return false; }
 		if (isFromUnknownPublisher(endorsement)) { log("Unkown Publisher"); return false; }
-		if (isFromMe(endorsement)) { log("Loopback"); return false; }
 
 		boolean isKnown = isKnown(endorsement);
 		updateMusicalTasteMatcher(endorsement, isKnown);
