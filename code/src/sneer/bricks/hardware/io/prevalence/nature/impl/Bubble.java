@@ -8,9 +8,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import sneer.bricks.hardware.io.prevalence.map.ExportMap;
 import sneer.bricks.hardware.io.prevalence.nature.Transaction;
@@ -23,9 +20,6 @@ class Bubble implements InvocationHandler {
 	
 	static CacheMap<Object, Object> _proxiesByObject = CacheMap.newInstance();
 	
-	static final List<Method> NO_PATH = Collections.emptyList();
-	static final List<Object[]> NO_PATH_ARGS = Collections.emptyList();
-
 
 	static <T> T wrap(T newObject) {
 		T result = proxyFor(newObject);
@@ -35,26 +29,30 @@ class Bubble implements InvocationHandler {
 
 
 	private static <T> T proxyFor(T object) {
-		return proxyFor(object, NO_PATH, NO_PATH_ARGS, object);
+		return proxyFor(object, null, null, null, object);
 	}
 
 	
-	private static <T> T proxyFor(final Object startObject, final List<Method> queryPath, final List<Object[]> queryPathArgs, final T endObject) {
-		InvocationHandler handler = new Bubble(startObject, queryPath, queryPathArgs);
+	private static <T> T proxyFor(Object startObject, Bubble previousBubble, Method query, Object[] queryArgs, T endObject) {
+		InvocationHandler handler = new Bubble(startObject, previousBubble, query, queryArgs);
 		return (T)Proxy.newProxyInstance(endObject.getClass().getClassLoader(), Classes.allInterfacesOf(endObject.getClass()), handler);
 	}
 
 	
-	private Bubble(Object startObject, List<Method> queryPath, List<Object[]> queryPathArgs) {
-		_startObject = startObject;
-		_queryPath = queryPath;
-		_queryPathArgs = queryPathArgs;
+	private Bubble(Object delegate, Bubble previousBubble, Method query, Object[] queryArgs) {
+		_delegate = delegate;
+		
+		_previousBubble = previousBubble;
+		_query = query;
+		_queryArgs = queryArgs;
 	}
 
 
-	private final Object _startObject;
-	private final List<Method> _queryPath;
-	private final List<Object[]> _queryPathArgs;
+	private final Object _delegate;
+	
+	private final Bubble _previousBubble;
+	private final Method _query;
+	private final Object[] _queryArgs;
 	
 	
 	@Override
@@ -73,19 +71,20 @@ class Bubble implements InvocationHandler {
 	
 	
 	private Object handleTransaction(Method method, Object[] args) {
-		List<Method> extendedMethodPath = new ArrayList<Method>(_queryPath);
-		List<Object[]> extendedMethodPathArgs = new ArrayList<Object[]>(_queryPathArgs);
-
-		extendedMethodPath.add(method);
-		extendedMethodPathArgs.add(args);
-
-		InvocationChain invocation = new InvocationChain(_startObject, extendedMethodPath, extendedMethodPathArgs);
-		Object result = PrevaylerHolder._prevayler.execute(invocation);
+		Invocation transaction = new Invocation(tillHere(), method, args);
+		Object result = PrevaylerHolder._prevayler.execute(transaction);
 		
 		return wrapIfNecessary(result, method, null, true);
 	}
 
 	
+	private Invocation tillHere() {
+		return (_delegate != null)
+			? new Invocation(_delegate)
+			: new Invocation(_previousBubble.tillHere(), _query, _queryArgs);
+	}
+
+
 	private Object handleQuery(Method query, Object[] args) throws Throwable {
 		Object result = invokeOnDelegate(query, args);
 		return wrapIfNecessary(result, query, args, false);
@@ -106,10 +105,9 @@ class Bubble implements InvocationHandler {
 
 
 	private Object navigateToReceiver() throws IllegalAccessException, InvocationTargetException {
-		Object receiver = _startObject;
-		for (Method getter : _queryPath)
-			receiver = getter.invoke(receiver);
-		return receiver;
+		return _delegate != null
+			? _delegate
+			: _query.invoke(_previousBubble.navigateToReceiver(), _queryArgs);
 	}
 
 	
@@ -127,13 +125,7 @@ class Bubble implements InvocationHandler {
 			if (isTransaction)
 				throw new IllegalStateException();
 			
-			List<Method> extendedQueryPath = new ArrayList<Method>(_queryPath);
-			List<Object[]> extendedQueryPathArgs = new ArrayList<Object[]>(_queryPathArgs);
-			
-			extendedQueryPath.add(method);
-			extendedQueryPathArgs.add(args);
-			
-			return proxyFor(_startObject, extendedQueryPath, extendedQueryPathArgs, returned);
+			return proxyFor(null, Bubble.this, method, args, returned);
 		}});
 	}
 
