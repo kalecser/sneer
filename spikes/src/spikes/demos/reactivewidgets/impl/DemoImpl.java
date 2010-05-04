@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 
 import javax.swing.JFrame;
 
-import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
@@ -18,9 +17,7 @@ import spikes.demos.reactivewidgets.Demo;
 class DemoImpl implements Demo {
 
 	private DemoImpl(){
-
-		my(TimeboxedEventQueue.class).startQueueing(500000);
-		
+	
 		final ReactiveWidgetFactory rfactory = my(ReactiveWidgetFactory.class);
 		final Register<String> register = my(Signals.class).newRegister("Jose das Coves");
 		
