@@ -13,11 +13,8 @@ Kalecser =================================================
 
 Bamboo =================================================
 
-	- Prevalence
-		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
-			- Change MusicalTasteMatcher's interface to use the contact instead of the nickname (string)
-		- BrickStateStore: retire. Use the prevalent nature instead.
-		- Announce to community
+	- GUI Nature
+		- "Finish Him"
 
 
 Igor ====================================================
@@ -28,19 +25,13 @@ Igor ====================================================
 
 	- OwnName, OwnPort --> Attribute
 
+	- PrettyPrinter - finish implementation. Call toString from Immutable. Call register from ContactSeals.
+
 	- Chat
 		- Fabio's One-on-one Chat - Incorporate
 		- Chat Gui - Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
 			- Enter bug - Fix.
 			- Focus bug - Fix.
-
-	- New Contact Stati (Test Driven, of course)
-		- Away
-			- Presence detection spike based on TimeboxedEventQueue that already intercepts all gui activity. 
-		- Busy
-			
-	- sovereigncomputing.net - Moralize
-		- Talk to Klaus 
 
 	- Wusic
 		- TrackDownloader:
@@ -55,18 +46,14 @@ Igor ====================================================
 					:)    (...but I like it. Bring me similar ones.)
 					:|    (...and that's it.)
 					:(    (...or any similar tracks.)
-		- Nice-to-have:
-			- Change DownloadPanelDetails to allow the track's label to be copied
-			- Implement toolTip functionality for TrackDisplay._trackLabel to display the track's full name
-			- Back Button
-			- Find another way to solve pause lag (try to use a smaller frame in player)
 
-	- Fix WindowBoundSetter.setBestLocation()
-		- See commented lines at:
-			- ContactInfoWindow
-			- OwnInfo
-			- BlinkingLightsGui
-			- DeleteContactWindow
+	- sovereigncomputing.net - Moralize. This is necessary to help promote Wusic.
+		- Talk to Klaus 
+
+	- New Contact Stati (Test Driven, of course)
+		- Away
+			- Presence detection spike based on TimeboxedEventQueue that already intercepts all gui activity. 
+		- Busy
 
 
 René =================================================
@@ -77,18 +64,27 @@ René =================================================
 
 Klaus =================================================
 
-	- Bubble
-		- Refactor
-			- Extract SimpleMethod or implement Invocation delegation along the chain.
-			- immutable types
-	
 	- Seals
 		- Unignore DynDnsClientTest.
 		- Freedom2 - Revert old timeouts. Use pre-generated key pairs to be faster.
 
-	- Use CustomClockTicker at SneerPartyController.accelerateHeartbeat()
+	- Prevalence
+		- Refactor Bubble
+			- Extract SimpleMethod or implement Invocation delegation along the chain.
+			- immutable types
+		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
+			- Change MusicalTasteMatcher's interface to use the contact instead of the nickname (string)
+		- Announce to community
+			- Document
+		- BrickStateStore: retire. Use the prevalent nature instead.
 
 	- [Igor] @After are not being called by ignored tests so tmpFolder() is not being removed
+
+	- GUI Nature
+		- [Klaus] Announce to community
+	
+	- Revise entire package structure.
+		- Remove all calls to Thread.sleep() including indirect.
 
 	- Freedom7 - "Me Too" for Bricks 
 		- Unignore Freedom7.meToo
@@ -99,11 +95,3 @@ Klaus =================================================
 			- Hierarchical View - Consider groups of bricks (brick package at any level, examples: bricks.hardware, bricks.software, bricks.hardware.io, etc) as an optional grouping for versioning and downloading from friends, not only individual bricks.
 				- Do not allow circular dependencies among any level of groups of bricks and voila: the world is free of cyclic dependencies.
 	
-	- GUI Nature
-		- "Finish Him"
-		- Announce to community
-
-	- Revise entire package structure.
-		- Remove all calls to Thread.sleep() including indirect.
-
-
