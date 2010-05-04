@@ -43,10 +43,10 @@ class OwnTracksPanel extends AbstractTabPane {
 	    customPanel().add(_choosePlayingFolder);
 
 	    _shuffle.setText("Shuffle");
-	    _shuffle.setSelected(false);
 	    _shuffle.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
 	    	shuffleActionPerformed();
 	    }});
+	    _shuffle.setSelected(true);
 	    customPanel().add(_shuffle);
 
 		_toAvoidGC = _controller.operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode operatingMode) {
