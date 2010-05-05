@@ -104,9 +104,9 @@ public abstract class CleanTestBase extends AssertUtils {
 			return;
 		}
 		
+		checkThreadLeak();
 		deleteTmpFolder();
 		checkConsolePollution();
-		checkThreadLeak();
 	}
 	
 	
