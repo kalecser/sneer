@@ -14,7 +14,7 @@ public class OwnKeysTest extends BrickTest {
 	
 	@Test
 	public void keyGeneration() {
-		_subject.generateKeyPair("long passphrase 123456789012345678901234567890123456789012345678901234567890");
+		_subject.generateKeyPair("long passphrase 123456789012345678901234567890123456789012345678901234567890".getBytes());
 		assertNotNull(_subject.ownPublicKey().currentValue());
 	}
 	

@@ -4,6 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -411,7 +412,16 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private void generatePublicKey() {
-		my(OwnKeys.class).generateKeyPair(my(OwnNameKeeper.class).name().currentValue());
+		my(OwnKeys.class).generateKeyPair(pkSeed());
+	}
+
+
+	private byte[] pkSeed() {
+		try {
+			return ownName().getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 

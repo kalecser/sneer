@@ -2,6 +2,8 @@ package sneer.bricks.identity.keys.gui.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.UnsupportedEncodingException;
+
 import javax.swing.JOptionPane;
 
 import sneer.bricks.identity.keys.gui.PublicKeyDialog;
@@ -21,7 +23,7 @@ public class PublicKeyDialogImpl implements PublicKeyDialog {
 			? "Dummy"
 			: promptForPassphrase();
 			
-		my(OwnKeys.class).generateKeyPair(seed);
+		my(OwnKeys.class).generateKeyPair(utf8(seed));
 	}
 
 	
@@ -38,4 +40,13 @@ public class PublicKeyDialogImpl implements PublicKeyDialog {
 		}
 	}
 
+	
+	private byte[] utf8(String seed) {
+		try {
+			return seed.getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+	
 }

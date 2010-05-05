@@ -9,7 +9,7 @@ import sneer.foundation.brickness.Brick;
 @Brick(Prevalent.class)
 public interface OwnKeys {
 
-	void generateKeyPair(String passphraseSeed);
+	void generateKeyPair(byte[] seed);
 	
 	Signal<PublicKey> ownPublicKey();
 
