@@ -36,6 +36,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		return _tmpFolder;
 	}
 
+	
 	private File createFolder(String folderName) {
 		File result = new File(folderName);
 		if (!result.exists())
@@ -43,18 +44,30 @@ public abstract class CleanTestBase extends AssertUtils {
 		return result;
 	}
 
+	
 	protected String tmpFolderName() {
-		if (_tmpFolderName == null)
-			_tmpFolderName = System.getProperty("java.io.tmpdir") + File.separator + this.getClass().getSimpleName() + System.nanoTime();
+		if (_tmpFolderName == null) {
+			String tmp = System.getProperty("java.io.tmpdir");
+			_tmpFolderName = appendSeparator(tmp) + this.getClass().getSimpleName() + System.nanoTime();
+		}
 
 		return _tmpFolderName;
 	}
 
+	
+	private String appendSeparator(String path) {
+		return path.endsWith(File.separator)
+			? path
+			: path + File.separator;
+	}
+
+	
 	protected void assertTmpFilesExist(String... fileNames) {
 		for (String fileName : fileNames)
 			assertTmpFileExists(fileName);
 	}
 
+	
 	protected void assertTmpFilesDontExist(String... fileNames) {
 		for (String fileName : fileNames)
 			assertTmpFileDoesntExist(fileName);
@@ -66,11 +79,13 @@ public abstract class CleanTestBase extends AssertUtils {
 		assertExists(file);
 	}
 
+	
 	private void assertTmpFileDoesntExist(String fileName) {
 		File file = new File(tmpFolder(), fileName);
 		assertDoesNotExist(file);
 	}
 
+	
 	@Before
 	public void beforeCleanTest() {
 		_activeThreadsBeforeTest = Thread.getAllStackTraces().keySet();
@@ -79,6 +94,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		System.setErr(_errSentinel);
 	}
 
+	
 	@After
 	public void afterCleanTest() {
 		recoverConsole();
@@ -88,8 +104,8 @@ public abstract class CleanTestBase extends AssertUtils {
 			return;
 		}
 		
-		checkConsolePollution();
 		deleteTmpFolder();
+		checkConsolePollution();
 		checkThreadLeak();
 	}
 	
@@ -109,6 +125,7 @@ public abstract class CleanTestBase extends AssertUtils {
 			stopIfNecessary(thread);
 	}
 
+	
 	@SuppressWarnings("deprecation")
 	private void stopIfNecessary(Thread thread) {
 		if(_activeThreadsBeforeTest.contains(thread)) return;
@@ -122,6 +139,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		throw new IllegalStateException(plug);
 	}
 
+	
 	private boolean waitForTermination(Thread thread) {
 		long t0 = System.currentTimeMillis();
 		while (true) {
@@ -132,6 +150,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		}
 	}
 
+	
 	private void sleep(long millis) {
 		try {
 			Thread.sleep(millis);
@@ -140,11 +159,13 @@ public abstract class CleanTestBase extends AssertUtils {
 		}
 	}
 
+	
 	private void checkConsolePollution() {
 		_outSentinel.complainIfUsed();
 		_errSentinel.complainIfUsed();
 	}
 
+	
 	private void deleteTmpFolder() {
 		_tmpFolderName = null;
 		
@@ -153,6 +174,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		_tmpFolder = null;
 
 	}
+
 	
 	private void tryToClean(File tmp) {
 		long t0 = System.currentTimeMillis();
@@ -169,6 +191,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		}
 	}
 	
+	
 	class LeakingThreadStopped extends Throwable {
 
 		public LeakingThreadStopped(Thread leakingThread, String message) {
@@ -182,6 +205,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		}
 	}
 
+	
 	void deleteFolder(File folder) throws IOException {
 		if (!folder.exists()) return;
 		if (!folder.isDirectory()) 
@@ -193,6 +217,7 @@ public abstract class CleanTestBase extends AssertUtils {
 			throw new IOException("Unable to delete folder: " + folder.getAbsolutePath());
 	}
 
+	
 	private void recursiveDelete(File folder) throws IOException, FileNotFoundException {
 		for (File file : folder.listFiles()) {
 			if (!file.exists()) 
@@ -215,6 +240,7 @@ public abstract class CleanTestBase extends AssertUtils {
 			keepFailure(method, thrown);
 	}
 
+	
 	private void keepFailure(Method method, Throwable thrown) {
 		synchronized (_failureMonitor) {
 			_failure = thrown;
@@ -223,6 +249,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		}
 	}
 
+	
 	private void tryToWaitForTheFailureFromTheActualTestThread(Method method, Throwable thrown) {
 		synchronized (_failureMonitor) {
 			try {
@@ -234,11 +261,13 @@ public abstract class CleanTestBase extends AssertUtils {
 		}
 	}
 
+	
 	protected void createTmpFiles(String... fileNames) throws IOException {
 		for (String fileName : fileNames)
 			createTmpFile(fileName);
 	}
 
+	
 	protected File createTmpFile(String fileName) throws IOException {
 		File file = newTmpFile(fileName);
 		if (!file.getParentFile().exists())
@@ -247,19 +276,23 @@ public abstract class CleanTestBase extends AssertUtils {
 		return file;
 	}
 
+	
 	protected File newTmpFile() {
 		return newTmpFile("tmp" + System.nanoTime());
 	}
 
+	
 	protected File newTmpFile(String fileName) {
 		return new File(tmpFolder(), fileName);
 	}
 
+	
 	protected void createTmpFilesWithFileNameAsContent(String... fileNames) throws IOException {
 		for (String fileName : fileNames)
 			createTmpFileWithFileNameAsContent(fileName);
 	}
 
+	
 	protected File createTmpFileWithFileNameAsContent(String fileName) throws IOException {
 		File file = createTmpFile(fileName);
 		FileOutputStream fileOutputStream = new FileOutputStream(file);
@@ -269,15 +302,18 @@ public abstract class CleanTestBase extends AssertUtils {
 
 }
 
+
 class PrintStreamSentinel extends PrintStream {
 	
 	IllegalStateException _exception;
 	final PrintStream _delegate;
 	
+	
 	PrintStreamSentinel(PrintStream delegate) {
 		super(delegate);
 		_delegate = delegate;
 	}
+	
 	
 	@Override public void write(byte[] buf, int off, int len) {
 		try {
@@ -287,6 +323,7 @@ class PrintStreamSentinel extends PrintStream {
 		}
 		super.write(buf, off, len);
 	}
+	
 	
 	void complainIfUsed() {
 		if (_exception != null)	throw _exception;
