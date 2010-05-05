@@ -25,9 +25,6 @@ public abstract class LanguageCompilerTestBase extends BrickTest {
 
 	protected abstract Language language();
 
-	public LanguageCompilerTestBase() {
-		super();
-	}
 
 	@Test
 	public void testCompile() throws Exception {
@@ -36,7 +33,12 @@ public abstract class LanguageCompilerTestBase extends BrickTest {
 	}
 
 	@Test
-	public abstract void testBadCode() throws Exception;
+	public void testBadCode() throws Exception {
+		doTestBadCode();
+	};
+
+	protected abstract void doTestBadCode() throws Exception;
+
 
 	@Test
 	public void testEmptyDir() throws Exception {

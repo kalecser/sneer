@@ -21,7 +21,7 @@ public class JavaCompilerTest extends LanguageCompilerTestBase {
 
 	@Override
 	@Test
-	public void testBadCode() throws Exception {
+	public void doTestBadCode() throws Exception {
 		Result result = compile("\nclass \n { public void foo() {} }", null);
 		assertFalse(result.success());
 		CompilationError error = result.errors().get(0);
