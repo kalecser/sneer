@@ -11,6 +11,8 @@ public interface OwnKeys {
 
 	void generateKeyPair(byte[] seed);
 	
+	//showing git to leo
+	
 	Signal<PublicKey> ownPublicKey();
 
 }
