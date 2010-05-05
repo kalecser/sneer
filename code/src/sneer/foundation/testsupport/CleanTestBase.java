@@ -167,12 +167,11 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	
 	private void deleteTmpFolder() {
-		_tmpFolderName = null;
-		
-		if (_tmpFolder == null) return;
-		tryToClean(_tmpFolder);
-		_tmpFolder = null;
+		if (_tmpFolderName == null) return;
 
+		tryToClean(new File(_tmpFolderName));
+		_tmpFolderName = null;
+		_tmpFolder = null;
 	}
 
 	

@@ -71,8 +71,6 @@ Klaus =================================================
 			- Document
 		- BrickStateStore: retire. Use the prevalent nature instead.
 
-	- [Igor] @After are not being called by ignored tests so tmpFolder() is not being removed
-
 	- GUI Nature
 		- [Klaus] Announce to community
 	

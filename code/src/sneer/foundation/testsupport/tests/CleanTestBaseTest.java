@@ -8,7 +8,7 @@ import sneer.foundation.testsupport.CleanTestBase;
 
 public class CleanTestBaseTest extends CleanTestBase {
 
-	private static File _TMP_FOLDER;
+	private static String _TMP_FOLDER_NAME;
 
 	@Test
 	public void consistentTmpFolderName() {
@@ -18,21 +18,20 @@ public class CleanTestBaseTest extends CleanTestBase {
 	
 	@Test
 	public void tmpFolderIsDeleted1() {
-		_TMP_FOLDER = tmpFolder();
-		assertTrue(_TMP_FOLDER.isDirectory());
-		assertTrue(_TMP_FOLDER.exists());
+		_TMP_FOLDER_NAME = tmpFolderName();
+		assertTrue(new File(_TMP_FOLDER_NAME).mkdirs());
 	}
 
 	
 	@Test
 	public void tmpFolderIsDeleted2() {
 		if (wasRunInSeparateVM()) return;
-		assertFalse(_TMP_FOLDER.exists());
+		assertFalse(new File(_TMP_FOLDER_NAME).exists());
 	}
 
 
 	private boolean wasRunInSeparateVM() {
-		return _TMP_FOLDER == null;
+		return _TMP_FOLDER_NAME == null;
 	}
 	
 }
