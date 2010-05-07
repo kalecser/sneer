@@ -1,6 +1,9 @@
 package sneer.bricks.network.social.attributes.impl;
 
 import static sneer.foundation.environments.Environments.my;
+
+import java.lang.reflect.Field;
+
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
@@ -26,7 +29,7 @@ class AttributeSubscriber<T> implements Consumer<AttributeValue> {
 	private final Class<? extends Attribute<T>> _attribute;
 	private final Class<? super T> _valueType;
 
-	private final Register<T> _value = my(Signals.class).newRegister(null);
+	private final Register<T> _value;
 
 	@SuppressWarnings("unused") private final WeakContract _toAvoidGC;
 
@@ -36,14 +39,13 @@ class AttributeSubscriber<T> implements Consumer<AttributeValue> {
 		_attribute = attribute;
 		_valueType = valueType;
 
+		_value = my(Signals.class).newRegister(defaultValue());
+		
 		_toAvoidGC = my(TupleSpace.class).addSubscription(AttributeValue.class, this);
 		my(TupleSpace.class).waitForAllDispatchingToFinish(); // Optimize: Find a better way to do the synchronization
 	}
 
-	private Signal<Seal> sealFor(Contact contact) {
-		return contact == null ? my(OwnSeal.class).get() : my(ContactSeals.class).sealGiven(contact);
-	}
-
+	
 	@Override
 	public void consume(AttributeValue tuple) {
 		if (!_attribute.getName().equals(tuple.attributeName)) return;
@@ -55,6 +57,22 @@ class AttributeSubscriber<T> implements Consumer<AttributeValue> {
 		deserialize(tuple.serializedValue.copy());
 	}
 
+	
+	private T defaultValue() {
+		try {
+			Field field = _attribute.getField("DEFAULT");
+			return (T) field.get(null);
+		} catch (Exception e) {
+			throw new IllegalStateException("Exception trying to get DEFAULT value from Attribute: " + _attribute, e);
+		}
+	}
+
+	
+	private Signal<Seal> sealFor(Contact contact) {
+		return contact == null ? my(OwnSeal.class).get() : my(ContactSeals.class).sealGiven(contact);
+	}
+
+	
 	private void deserialize(byte[] serializedValue) {
 		Object deserializedValue;
 		try {
@@ -74,14 +92,17 @@ class AttributeSubscriber<T> implements Consumer<AttributeValue> {
 		my(Logger.class).log("New value: {} for: {} attribute received from: {}.", _value.output(), _attribute.getSimpleName(), contact());
 	}
 
+	
 	private String helpMessageFor(Class<?> invalidAttributeType) {
 		return "Attribute of invalid type '" + invalidAttributeType.getName() + "' received from " + contact() + ". Expected type: '" + _valueType.getName() + "'.";
 	}
 
+	
 	private String contact() {
 		return (_contact == null) ? "myself" : _contact.nickname().currentValue();
 	}
 
+	
 	Signal<T> output() {
 		return my(WeakReferenceKeeper.class).keep(_value.output(), this);
 	}
