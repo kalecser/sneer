@@ -35,7 +35,7 @@ class PeerTracks extends TrackSourceStrategy {
 
 	void meToo(Track trackToKeep) {
 		if (isMarkedForDisposal(trackToKeep)) return;
-		moveTrackToFolder(trackToKeep, sharedTracksFolder());
+		moveTrackToFolder(trackToKeep, sharedTracksDownloadsSubfolder());
 	}
 
 	@Override
@@ -58,12 +58,12 @@ class PeerTracks extends TrackSourceStrategy {
 
 	private void updateFileMap(File tmpTrack) {
 		Hash hash = my(FileMap.class).remove(tmpTrack);
-		File keptTrack = new File(sharedTracksFolder(), tmpTrack.getName());
+		File keptTrack = new File(sharedTracksDownloadsSubfolder(), tmpTrack.getName());
 		my(FileMap.class).putFile(keptTrack, hash);
 	}
 
-	private File sharedTracksFolder() {
-		return my(TracksFolderKeeper.class).sharedTracksFolder().currentValue();
+	private File sharedTracksDownloadsSubfolder() {
+		return new File(my(TracksFolderKeeper.class).sharedTracksFolder().currentValue(), "downloads");
 	}
 
 }
