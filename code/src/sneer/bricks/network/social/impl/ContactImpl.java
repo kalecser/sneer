@@ -11,6 +11,9 @@ class ContactImpl implements Contact {
 	private final Register<String> _nickname;
 	
 	public ContactImpl(String nickname) {
+		if (nickname == null)
+			throw new IllegalArgumentException("Nickname cannot be null");
+
 		_nickname = my(Signals.class).newRegister(nickname);
 	}
 	
