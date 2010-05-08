@@ -62,9 +62,8 @@ Klaus =================================================
 
 	- Prevalence
 		- Refactor Bubble
-			- Reentrant Prevayler
-			- Extract SimpleMethod or implement Invocation delegation along the chain.
 			- immutable types
+			- Extract SimpleMethod or implement Invocation delegation along the chain.
 		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
 			- Change MusicalTasteMatcher's interface to use the contact instead of the nickname (string)
 		- Announce to community
