@@ -1,6 +1,8 @@
 package sneer.foundation.lang;
 
+import java.io.File;
 import java.lang.reflect.Field;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -113,6 +115,16 @@ public abstract class Immutable implements ReadOnly {
 			result.append(getFieldValue(field, this));
 		}
 		return result.toString();
+	}
+
+
+	public static boolean isImmutable(Class<?> type) {
+		if (type.isPrimitive()) return true;
+		if (type == String.class) return true;
+		if (type == Date.class) return true;
+		if (type == File.class) return true;
+		if (Immutable.class.isAssignableFrom(type)) return true;
+		return false;
 	}
 
 }

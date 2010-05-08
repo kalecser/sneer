@@ -2,16 +2,15 @@ package sneer.bricks.hardware.io.prevalence.nature.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.File;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.sql.Date;
 
-import sneer.bricks.hardware.io.prevalence.map.ExportMap;
+import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
 import sneer.bricks.hardware.io.prevalence.nature.Transaction;
 import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.Immutable;
 import sneer.foundation.lang.Producer;
 import sneer.foundation.lang.ReadOnly;
 import sneer.foundation.lang.types.Classes;
@@ -131,14 +130,12 @@ class Bubble implements InvocationHandler {
 
 	
 	private boolean isRegistered(Object object) {
-		return my(ExportMap.class).isRegistered(object);
+		return my(PrevalenceMap.class).isRegistered(object);
 	}
 
+	
 	static boolean isReadOnly(Class<?> type) {
-		if (type.isPrimitive()) return true;
-		if (type == String.class) return true;
-		if (type == Date.class) return true;
-		if (type == File.class) return true;
+		if (Immutable.isImmutable(type)) return true;
 		if (ReadOnly.class.isAssignableFrom(type)) return true;
 
 		return false;

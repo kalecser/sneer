@@ -3,7 +3,7 @@ package sneer.bricks.hardware.io.prevalence.map;
 import sneer.foundation.brickness.Brick;
 
 @Brick
-public interface ExportMap {
+public interface PrevalenceMap {
 
 	<T> T register(T object);
 	boolean isRegistered(Object object);

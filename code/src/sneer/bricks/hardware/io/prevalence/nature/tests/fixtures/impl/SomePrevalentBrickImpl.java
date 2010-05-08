@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.io.prevalence.map.ExportMap;
+import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.Item;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.SomePrevalentBrick;
 import sneer.bricks.pulp.reactive.Register;
@@ -60,7 +60,7 @@ class SomePrevalentBrickImpl implements SomePrevalentBrick {
 	@Override
 	public void addItem(String name) {
 		ItemImpl item = addItemWithoutRegistering(name);
-		my(ExportMap.class).register(item);
+		my(PrevalenceMap.class).register(item);
 	}
 
 

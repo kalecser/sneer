@@ -1,7 +1,7 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.hardware.io.prevalence.map.ExportMap;
+import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
 import sneer.foundation.lang.Producer;
 
 final class BrickInstantiation<T> extends BuildingTransaction<T> {
@@ -19,7 +19,7 @@ final class BrickInstantiation<T> extends BuildingTransaction<T> {
 	@Override
 	public T produce() {
 		T brickInstance = _delegate.produce();
-		my(ExportMap.class).register(brickInstance);
+		my(PrevalenceMap.class).register(brickInstance);
 		T bubble = Bubble.wrap(brickInstance);
 		my(PrevalentBuilding.class).add(_brick, bubble);
 		return bubble;

@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import sneer.bricks.hardware.io.prevalence.flag.PrevalenceFlag;
-import sneer.bricks.hardware.io.prevalence.map.ExportMap;
+import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
 
-class ExportMapImpl implements ExportMap {
+class PrevalenceMapImpl implements PrevalenceMap {
 	
 	private Map<Object, Long> _idsByObject = new ConcurrentHashMap<Object, Long>();
 	private Map<Long, Object> _objectsById = new ConcurrentHashMap<Long, Object>();

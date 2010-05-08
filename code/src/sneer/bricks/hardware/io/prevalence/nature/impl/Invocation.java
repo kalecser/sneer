@@ -2,22 +2,20 @@ package sneer.bricks.hardware.io.prevalence.nature.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.File;
 import java.lang.reflect.Method;
-import java.sql.Date;
 import java.util.Arrays;
 
-import sneer.bricks.hardware.io.prevalence.map.ExportMap;
+import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
 import sneer.foundation.lang.Immutable;
 
 class Invocation extends BuildingTransaction<Object> {
 		
-	private static final ExportMap ExportMap = my(ExportMap.class);
+	private static final PrevalenceMap PrevalenceMap = my(PrevalenceMap.class);
 
 
 
 	Invocation(Object delegate) {
-		_id = ExportMap.marshal(delegate);
+		_id = PrevalenceMap.marshal(delegate);
 
 		_previous = null;
 		_method = null;
@@ -43,7 +41,7 @@ class Invocation extends BuildingTransaction<Object> {
 	private final Class<?>[] _argsTypes;
 	private final Object[] _args;
 	
-	final static ExportMap _exportMap = my(ExportMap.class);
+	final static PrevalenceMap _exportMap = my(PrevalenceMap.class);
 	
 	@Override
 	public Object produce() {
@@ -54,10 +52,10 @@ class Invocation extends BuildingTransaction<Object> {
 
 	private Object produceFromStart() {
 		if (_previous == null)
-			return ExportMap.unmarshal(_id);
+			return PrevalenceMap.unmarshal(_id);
 		
 		Object previousResult = _previous.produceFromStart();
-		ExportMap.unmarshal(_args);
+		PrevalenceMap.unmarshal(_args);
 		return invoke(previousResult, _method, _argsTypes, _args);
 	}
 
@@ -77,22 +75,18 @@ class Invocation extends BuildingTransaction<Object> {
 		if (result == null) return;
 		
 		Class<?> type = result.getClass();
-		if (type.isPrimitive()) return;
-		if (type == String.class) return;
-		if (type == Date.class) return;
-		if (type == File.class) return;
-		if (Immutable.class.isAssignableFrom(type)) return;
+		if (Immutable.isImmutable(type)) return;
 		
-		if (ExportMap.isRegistered(result)) return;
+		if (PrevalenceMap.isRegistered(result)) return;
 		
-		ExportMap.register(result);
+		PrevalenceMap.register(result);
 	}
 
 	
 	static private Object[] marshal(Object[] args) {
 		if (args == null) return null;
 		Object[] result = Arrays.copyOf(args, args.length);
-		ExportMap.marshal(result);
+		PrevalenceMap.marshal(result);
 		return result;
 	}
 
