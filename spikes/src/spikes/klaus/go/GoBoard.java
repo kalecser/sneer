@@ -159,8 +159,6 @@ public class GoBoard {
 	public void resign() {
 		_nextToPlay.setter().consume(null);
 		countPointsR();
-		//Missing reaction to a resign move, currently it just adds score and goes on with the game
-		
 	}
 
 	private void countPointsR() {
