@@ -26,7 +26,7 @@ public class Sneer {
 	}
 	
 	private URL[] classpath() {
-		URL[] langSupportJars = LanguageJarFinder.langSupportJars(SneerCodeFolders.BIN);
+		URL[] langSupportJars = LanguageJarFinder.langSupportJarURLs(SneerCodeFolders.BIN);
 		URL[] classpath = new URL[langSupportJars.length + 2];
 		classpath[0] = toURL(SneerFolders.OWN_BIN);
 		classpath[1] = toURL(SneerCodeFolders.BIN);

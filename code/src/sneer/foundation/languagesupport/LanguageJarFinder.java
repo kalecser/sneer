@@ -10,9 +10,9 @@ import java.util.List;
 
 public class LanguageJarFinder {
 
-	public static URL[] langSupportJars(File root) {
+	public static File[] langSupportJarFiles(File root) {
 		File langRoot = new File(root, "sneer/foundation/languagesupport");
-		List<URL> jarURLs = new ArrayList<URL>();
+		List<File> jarFiles = new ArrayList<File>();
 		LinkedList<File> folderQueue = new LinkedList<File>();
 		folderQueue.add(langRoot);
 		while(!folderQueue.isEmpty()) {
@@ -24,7 +24,7 @@ public class LanguageJarFinder {
 				}
 			});
 			for (File curJar : curJars) {
-				jarURLs.add(toURL(curJar));
+				jarFiles.add(curJar);
 			}
 			File[] subFolders = curFolder.listFiles(new FileFilter() {
 				@Override
@@ -36,7 +36,16 @@ public class LanguageJarFinder {
 				folderQueue.add(subFolder);
 			}
 		}
-		return jarURLs.toArray(new URL[jarURLs.size()]);
+		return jarFiles.toArray(new File[jarFiles.size()]);
+	}
+
+	public static URL[] langSupportJarURLs(File root) {
+		File[] langSupportFiles = langSupportJarFiles(root);
+		URL[] langSupportURLs = new URL[langSupportFiles.length];
+		for (int fileIdx = 0; fileIdx < langSupportFiles.length; fileIdx++) {
+			langSupportURLs[fileIdx] = toURL(langSupportFiles[fileIdx]);
+		}
+		return langSupportURLs;
 	}
 	
 	private static URL toURL(File file) {

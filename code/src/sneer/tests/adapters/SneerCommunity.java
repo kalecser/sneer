@@ -101,7 +101,7 @@ public class SneerCommunity implements SovereignCommunity {
 	}
 
 	private URLClassLoader apiClassLoader(File privateBin, File sharedBin, final String name) {
-		URL[] langJars = LanguageJarFinder.langSupportJars(sharedBin);
+		URL[] langJars = LanguageJarFinder.langSupportJarURLs(sharedBin);
 		URL[] classPath = new URL[langJars.length + 2];
 		classPath[0] = toURL(privateBin);
 		classPath[1] = toURL(sharedBin);
