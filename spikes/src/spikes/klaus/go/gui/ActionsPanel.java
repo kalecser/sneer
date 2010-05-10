@@ -22,7 +22,7 @@ public class ActionsPanel extends JPanel {
 	private final WeakContract _refToAvoidGc;
 
 	
-	public ActionsPanel(final Closure pass, StoneColor side, Signal<StoneColor> nextToPlay) {
+	public ActionsPanel(final Closure pass, final Closure resign, StoneColor side, Signal<StoneColor> nextToPlay) {
 		_side = side;
 		
 		final JButton passButton= new JButton();
@@ -38,9 +38,14 @@ public class ActionsPanel extends JPanel {
 			pass.run();
 		}};
 		passButton.addActionListener(ProxyInEnvironment.newInstance(listener));
+		
+		listener = new ActionListener() { @Override public void actionPerformed(ActionEvent arg0) {
+			resign.run();
+		}};
+		resignButton.addActionListener(ProxyInEnvironment.newInstance(listener));
 	
 		_refToAvoidGc = nextToPlay.addReceiver(new Consumer<StoneColor>() { @Override public void consume(StoneColor nextColor) {
-			boolean isMyTurn = nextColor.equals(_side);
+			boolean isMyTurn = nextColor == _side;
 			passButton.setEnabled(isMyTurn);
 			resignButton.setEnabled(isMyTurn);
 		}});
@@ -48,5 +53,6 @@ public class ActionsPanel extends JPanel {
 		setVisible(true);
 
 	}
+
 
 }
