@@ -65,10 +65,10 @@ public class SneerVersionUpdater {
 			existingFile(codeFolder, BACKUP),
 			existingFile(codeFolder, "src/sneer/main/Sneer.java"),
 			existingFile(codeFolder, "bin/sneer/main/Sneer.class"),
-			existingFile(codeFolder, "bin/sneer/main/Sneer$ExclusionFilter.class"),
 			
 			existingFile(codeFolder, "src/sneer/main/SneerVersionUpdater.java"),
 			existingFile(codeFolder, "bin/sneer/main/SneerVersionUpdater.class"),
+			existingFile(codeFolder, "bin/sneer/main/SneerVersionUpdater$ExclusionFilter.class"),
 
 			existingFile(codeFolder, "src/sneer/main/SneerCodeFolders.java"),
 			existingFile(codeFolder, "bin/sneer/main/SneerCodeFolders.class")
