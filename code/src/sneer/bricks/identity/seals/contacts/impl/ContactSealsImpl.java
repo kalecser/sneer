@@ -9,10 +9,24 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.Producer;
 import sneer.foundation.lang.exceptions.Refusal;
+import sneer.foundation.testsupport.PrettyPrinter;
 
 class ContactSealsImpl implements ContactSeals {
+
+	{
+		PrettyPrinter.registerFor(Seal.class, new Functor<Seal, String>() { @Override public String evaluate(Seal seal) {
+			Contact contact = contactGiven(seal);
+			if (contact == null) return seal.toString();
+
+			String nickname = contact.nickname().currentValue();
+			if (nickname.isEmpty()) return seal.toString();
+
+			return nickname;
+		}});
+	}
 
 
 	private final CacheMap<Contact, Register<Seal>> _sealsByContact = CacheMap.newInstance();
