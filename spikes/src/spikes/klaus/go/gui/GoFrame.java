@@ -19,9 +19,10 @@ public class GoFrame extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	private final StoneColor _side;
-
+	
 	public GoFrame(Register<Move> _move, StoneColor side, int horizontalPosition) {
 		_side = side;
+	
 		setTitle("Go - " + _side.name());	  
 	    setResizable(true);
 	    setBounds(horizontalPosition, 0, 500, 575);
@@ -51,7 +52,10 @@ public class GoFrame extends JFrame {
 		Closure pass = new Closure() { @Override public void run() {
 			goBoardPanel.passTurn();
 		}};
-		goEastPanel.add(new ActionsPanel(pass, _side, goBoardPanel.nextToPlaySignal()));
+		Closure resign = new Closure() { @Override public void run() {
+			goBoardPanel.resignTurn();
+		}};
+		goEastPanel.add(new ActionsPanel(pass,resign, _side, goBoardPanel.nextToPlaySignal()));
 				
 		contentPane.add(goEastPanel, BorderLayout.SOUTH);
 	}

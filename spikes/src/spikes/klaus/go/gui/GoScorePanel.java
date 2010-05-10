@@ -33,9 +33,9 @@ public class GoScorePanel extends JPanel {
 		add(new JLabel("Points:"));
 		add(space);
 		add(new JLabel("Black"));
-		add(newLabelWhite.getComponent());
-		add(new JLabel("White"));
 		add(newLabelBlack.getComponent());
+		add(new JLabel("White"));
+		add(newLabelWhite.getComponent());
 
 		setVisible(true);
 	}

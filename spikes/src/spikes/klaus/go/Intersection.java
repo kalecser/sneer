@@ -30,7 +30,7 @@ class Intersection implements Serializable {
 		_stone = stoneColor;
 	}
 	
-	private void fillGroupWithNeighbours(StoneColor stoneColor, HashSet<Intersection> group) {
+	void fillGroupWithNeighbours(StoneColor stoneColor, HashSet<Intersection> group) {
 		if (group.contains(this)) return;
 		group.add(this);
 		

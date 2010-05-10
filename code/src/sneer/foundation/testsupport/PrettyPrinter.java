@@ -1,16 +1,23 @@
 package sneer.foundation.testsupport;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 public class PrettyPrinter {
 
-	static public String toString(@SuppressWarnings("unused") Object object) {
-		throw new NotImplementedYet();
+	private static Map<Class<?>, Functor<?, String>> _printersByType = new HashMap<Class<?>, Functor<?,String>>();
+
+	public static <T> String toString(T object) {
+		if (object == null) return null;
+
+		Functor<?, String> printer = _printersByType.get(object.getClass());
+		return (printer == null) ? object.toString() : ((Functor<T, String>) printer).evaluate(object);
 	}
 	
-	static public <T> void registerFor(@SuppressWarnings("unused") Class<T> type, @SuppressWarnings("unused") Functor<T, String> prettyPrinter) {
-		throw new NotImplementedYet();
+	public static <T> void registerFor(Class<T> type, Functor<T, String> prettyPrinter) {
+		_printersByType.put(type, prettyPrinter);
 	};
 	
 }
