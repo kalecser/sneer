@@ -11,8 +11,8 @@ public class PrettyPrinterTest extends AssertUtils {
 	@Test
 	public void callToStringWithoutRegisteringPrettyPrinters() {
 		assertEquals("null", PrettyPrinter.toString(null));
-		assertEquals(0, PrettyPrinter.toString(0));
-		assertEquals(0, PrettyPrinter.toString(0));
+		assertEquals("A", PrettyPrinter.toString('A'));
+		assertEquals("0", PrettyPrinter.toString(0));
 		assertEquals("a string", PrettyPrinter.toString("a string"));
 	}
 
