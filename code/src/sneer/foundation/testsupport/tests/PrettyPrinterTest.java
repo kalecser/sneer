@@ -9,18 +9,26 @@ import sneer.foundation.testsupport.PrettyPrinter;
 public class PrettyPrinterTest extends AssertUtils {
 
 	@Test
-	public void capitalizeStrings() {
-		// Register "Capitalizer"
-		PrettyPrinter.registerFor(String.class, new Functor<String, String>() { @Override public String evaluate(String string) {
-			return string.toUpperCase();
-		}});
-		assertEquals("TEST PHRASE", PrettyPrinter.toString("test phrase"));
+	public void callToStringWithoutRegisteringPrettyPrinters() {
+		assertEquals("null", PrettyPrinter.toString(null));
+		assertEquals(0, PrettyPrinter.toString(0));
+		assertEquals(0, PrettyPrinter.toString(0));
+		assertEquals("a string", PrettyPrinter.toString("a string"));
+	}
 
-		// Back to original behavior
-		PrettyPrinter.registerFor(String.class, new Functor<String, String>() { @Override public String evaluate(String string) {
+	@Test
+	public void usePrettyPrinterToCapitalizeStrings() {
+		Functor<String, String> capitalizer = new Functor<String, String>() { @Override public String evaluate(String string) {
+			return string.toUpperCase();
+		}};
+		PrettyPrinter.registerFor(String.class, capitalizer);
+		assertEquals("SOME STRING", PrettyPrinter.toString("some string"));
+
+		Functor<String, String> originalToString = new Functor<String, String>() { @Override public String evaluate(String string) {
 			return string;
-		}});
-		assertEquals("test phrase", PrettyPrinter.toString("test phrase"));
+		}};
+		PrettyPrinter.registerFor(String.class, originalToString);
+		assertEquals("some string", PrettyPrinter.toString("some string"));
 	}
 
 }
