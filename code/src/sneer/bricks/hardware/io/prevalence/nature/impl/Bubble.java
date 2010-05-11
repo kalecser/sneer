@@ -70,16 +70,16 @@ class Bubble implements InvocationHandler {
 	
 	
 	private Object handleTransaction(Method method, Object[] args) {
-		Invocation transaction = new Invocation(tillHere(), method, args);
+		BuildingTransaction transaction = new Invocation(tillHere(), method, args);
 		Object result = PrevaylerHolder._prevayler.execute(transaction);
 		
 		return wrapIfNecessary(result, method, null, true);
 	}
 
 	
-	private Invocation tillHere() {
+	private BuildingTransaction tillHere() {
 		return (_delegate != null)
-			? new Invocation(_delegate)
+			? new MapLookup(_delegate)
 			: new Invocation(_previousBubble.tillHere(), _query, _queryArgs);
 	}
 
