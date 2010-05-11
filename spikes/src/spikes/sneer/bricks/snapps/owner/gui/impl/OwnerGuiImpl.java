@@ -13,20 +13,21 @@ import java.awt.event.MouseEvent;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
-import sneer.bricks.pulp.own.name.OwnNameKeeper;
+import sneer.bricks.identity.name.OwnName;
+import sneer.bricks.network.social.attributes.Attributes;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.imgselector.ImageSelector;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.bricks.skin.widgets.reactive.ImageWidget;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
+import sneer.foundation.lang.Consumer;
 import spikes.sneer.bricks.pulp.own.avatar.OwnAvatarKeeper;
 import spikes.sneer.bricks.pulp.own.tagline.OwnTaglineKeeper;
 import spikes.sneer.bricks.snapps.owner.gui.OwnerGui;
 
 class OwnerGuiImpl implements OwnerGui {
-
-	private final OwnNameKeeper _ownNameKeeper = my(OwnNameKeeper.class);
 
 	private final OwnTaglineKeeper _ownTaglineKeeper = my(OwnTaglineKeeper.class);
 
@@ -60,13 +61,22 @@ class OwnerGuiImpl implements OwnerGui {
 		GridBagConstraints c;
 		c = getConstraints(0, 5,10,0,10);
 		_editableLabel = _rfactory.newEditableLabel(
-				_ownNameKeeper.name(), 
-				_ownNameKeeper.nameSetter());
+				ownName(), 
+				ownNameSetter()
+		);
 		c.anchor = GridBagConstraints.SOUTHEAST;
 		
 		container.add(_editableLabel.getComponent(), c);
 	}
-	
+
+	private Signal<?> ownName() {
+		return my(Attributes.class).myAttributeValue(OwnName.class);
+	}
+
+	private Consumer<String> ownNameSetter() {
+		return my(Attributes.class).myAttributeSetter(OwnName.class);
+	}
+
 	private void initOwnTaglineKeeper(Container container) {
 		GridBagConstraints c;
 		c = getConstraints(1, 0,10,0,0);

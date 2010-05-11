@@ -21,6 +21,7 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.iterables.Iterables;
 import sneer.bricks.identity.keys.own.OwnKeys;
+import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -36,7 +37,6 @@ import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.bricks.pulp.own.name.OwnNameKeeper;
 import sneer.bricks.pulp.probe.ProbeManager;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
@@ -125,13 +125,13 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	@Override
 	public String ownName() {
-		return my(OwnNameKeeper.class).name().currentValue();
+		return my(Attributes.class).myAttributeValue(OwnName.class).currentValue();
 	}
 
 	
 	@Override
 	public void setOwnName(String newName) {
-		my(OwnNameKeeper.class).nameSetter().consume(newName);
+		my(Attributes.class).myAttributeSetter(OwnName.class).consume(newName);
 	}
 	
 	

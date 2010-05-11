@@ -19,7 +19,7 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- OwnName --> Attribute
+	- Find out cause of TupleSpaceTest.subscriptionRemoval()'s intermittence
 
 	- Chat
 		- Fabio's One-on-one Chat - Incorporate

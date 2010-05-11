@@ -26,13 +26,13 @@ import javax.swing.border.TitledBorder;
 
 import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
+import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.codec.SealCodec;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccount;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccountKeeper;
-import sneer.bricks.pulp.own.name.OwnNameKeeper;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.main.menu.MainMenu;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
@@ -44,6 +44,7 @@ import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;
 
 class OwnInfoImpl extends JFrame implements OwnInfo {
@@ -56,8 +57,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 	private final JTextField _dynDnsHost = new JTextField();
 	private final JTextField _dynDnsUser = new JTextField();
 	private final JPasswordField _dynDnsPassword = new JPasswordField();
-	
-	private final OwnNameKeeper _nameKeeper = my(OwnNameKeeper.class);
+
 	private final MainMenu _mainMenu = my(MainMenu.class);	
 	
 	@SuppressWarnings("unused")
@@ -76,7 +76,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 	}
 
 	protected void openIfNeedConfig() {
-		if(_nameKeeper.name().currentValue().trim().isEmpty()) 
+		if(ownName().currentValue().trim().isEmpty()) 
 			open();
 	}
 
@@ -107,7 +107,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		
 		java.awt.Container pnl = getContentPane();
 		
-		_yourOwnName = newTextField(_nameKeeper.name(), _nameKeeper.nameSetter());
+		_yourOwnName = newTextField(ownName(), ownNameSetter());
 		
 		_sneerPort = newTextField(ownPort(), ownPortSetter());
 
@@ -147,6 +147,14 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 			setVisible(false);
 		}});
 		pack();
+	}
+
+	private Consumer<String> ownNameSetter() {
+		return my(Attributes.class).myAttributeSetter(OwnName.class);
+	}
+
+	private Signal<String> ownName() {
+		return my(Attributes.class).myAttributeValue(OwnName.class);
 	}
 
 	private PickyConsumer<String> ownPortSetter() {
