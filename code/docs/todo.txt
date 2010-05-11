@@ -19,9 +19,9 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- OwnName, OwnPort --> Attribute
+	- OwnPort --> Attribute
 
-	- PrettyPrinter - finish implementation. Call toString from Immutable. Call register from ContactSeals.
+	- OwnName --> Attribute
 
 	- Chat
 		- Fabio's One-on-one Chat - Incorporate
@@ -55,7 +55,8 @@ Igor ====================================================
 René =================================================
 
 	- Toroidal Go Snapp
-		- Unignore scoreTest
+		- Refactor - simplify score, delete unused code
+		- Dead groups phase - Example: kiseido.com
 
 
 Klaus =================================================

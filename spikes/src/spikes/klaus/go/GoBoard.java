@@ -15,8 +15,6 @@ import sneer.bricks.pulp.serialization.DeepCopier;
 public class GoBoard {
 
 	public static enum StoneColor { BLACK,	WHITE; }
-	private final Register<Integer> _blackScore = my(Signals.class).newRegister(0);
-	private final Register<Integer> _whiteScore = my(Signals.class).newRegister(0);
 	
 	public GoBoard(int size) {
 		_intersections = new Intersection[size][size];
@@ -38,7 +36,10 @@ public class GoBoard {
 	private Intersection[][] _intersections;
 	private Register<StoneColor> _nextToPlay = my(Signals.class).newRegister(BLACK);
 	private Intersection[][] _previousSituation;
-	private int _numPasses=0;
+	private boolean _previousWasPass = false;
+	private final Register<Integer> _blackScore = my(Signals.class).newRegister(0);
+	private final Register<Integer> _whiteScore = my(Signals.class).newRegister(0);
+	
 	
 	protected Intersection intersection(int x, int y) {
 		return _intersections[x][y];
@@ -49,6 +50,8 @@ public class GoBoard {
 	}
 	
 	public boolean canPlayStone(int x, int y) {
+		if (nextToPlay() == null) return false;
+		
 		Intersection[][] situation = copySituation();
 		try {
 			tryToPlayStone(x, y);
@@ -78,12 +81,23 @@ public class GoBoard {
 		} catch (IllegalMove e) {
 			throw new IllegalArgumentException(e);
 		}
-		
+		_previousWasPass = false;
 		_previousSituation = situationFound;
 		countCapturedStones();
 		next();
 	}
-
+	
+	
+	private HashSet<Intersection> getIntersections() {
+		HashSet<Intersection> set = new HashSet<Intersection>();
+		
+		for (Intersection[] column: _intersections )
+			for(Intersection inter : column)
+				set.add(inter);
+		
+		return set;
+	}
+	
 	private void countCapturedStones() {
 		countCapturedStones(_blackScore, BLACK);
 		countCapturedStones(_whiteScore, WHITE);
@@ -135,27 +149,44 @@ public class GoBoard {
 
 	public void passTurn() {
 		next();
-		_numPasses++;
-		if (_numPasses==2) 
-			resignTurn();
+		
+		if (_previousWasPass)
+			resign();
+
+		_previousWasPass = true;
 	}
 
-	public void resignTurn() {
-		//conta pontos...
-		_numPasses=-1;
-		HashSet<Intersection> checkedStones = new HashSet<Intersection>();
-		int pointsBlack=0;
-		int pointsWhite=0;
-		for(Intersection[] column : _intersections)
-			for(Intersection intersection : column) {
-				if (!checkedStones.contains(intersection)) {
-					if (intersection._stone == BLACK)
-					pointsBlack += intersection.countPoints(checkedStones);
-					if (intersection._stone == WHITE)
-					pointsWhite += intersection.countPoints(checkedStones);
+	public void resign() {
+		_nextToPlay.setter().consume(null);
+		countPointsR();
+	}
+
+	private void countPointsR() {
+		HashSet<Intersection> all = getIntersections();
+		HashSet<Intersection> smallgroup = new HashSet<Intersection>();
+		HashSet<Intersection> checked = new HashSet<Intersection>();
+		int bs=0, ws=0;
+		
+		for (Intersection upper : all) {
+			smallgroup.clear();
+			upper.fillGroupWithNeighbours(null, smallgroup);
+			boolean hasW=false, hasB=false;
+			int numEmpty=0;
+			for (Intersection lower : smallgroup)
+				if (!checked.contains(lower)) {
+					if (lower._stone==null) {
+						checked.add(lower);
+						numEmpty++;
+					} else {
+						if (lower._stone==BLACK) hasB=true;
+						if (lower._stone==WHITE) hasW=true;
+					}
 				}
-			}
-		System.out.println("BK: "+pointsBlack+"\nWH: "+pointsWhite);
+			if (hasB & !hasW) bs+=numEmpty;
+			if (hasW & !hasB) ws+=numEmpty;	
+		}
+		_blackScore.setter().consume(_blackScore.output().currentValue() + bs	);
+		_whiteScore.setter().consume(_whiteScore.output().currentValue() + ws);
 	}
 
 	private void next() {

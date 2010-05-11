@@ -1,6 +1,5 @@
 package spikes.klaus.go.tests;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -181,7 +180,24 @@ public class GoTest extends BrickTest {
 	}
 
 	@Test
-	@Ignore
+	public void testEndByPass() {
+		ToroidalGoBoard subject = new ToroidalGoBoard(new String[]{});
+		assertSame(StoneColor.BLACK, subject.nextToPlay());
+		subject.passTurn();
+		assertSame(StoneColor.WHITE, subject.nextToPlay());
+		subject.passTurn();
+		assertNull(subject.nextToPlay());
+	}
+	
+	@Test
+	public void testResignByButton() {
+		ToroidalGoBoard subject = new ToroidalGoBoard(new String[]{});
+		subject.resign();
+		assertNull(subject.nextToPlay());
+	}
+	
+	@Test
+	//@Ignore
 	public void testScore() {
 		String[] setup = new String[]{
 			    "+ + + + + + + + +",
@@ -194,13 +210,9 @@ public class GoTest extends BrickTest {
 				"+ + + + + o + + +",
 				"+ + + + + + + + +"};
 		_board = new ToroidalGoBoard(setup);
-		ToroidalGoBoard subject = new ToroidalGoBoard(new String[]{});
-		assertSame(StoneColor.BLACK, subject.nextToPlay());
-		subject.passTurn();
-		assertSame(StoneColor.WHITE, subject.nextToPlay());
-		subject.passTurn();
-		assertSame(2, subject.blackScore().currentValue());
-		assertSame(1, subject.blackScore().currentValue());
+		_board.resign();
+		assertSame(2, _board.blackScore().currentValue());
+		assertSame(1, _board.whiteScore().currentValue());
 	}
 
 

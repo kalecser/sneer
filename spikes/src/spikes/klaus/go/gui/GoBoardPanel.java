@@ -67,7 +67,7 @@ public class GoBoardPanel extends JPanel {
 
 	private volatile boolean _isScrolling;
 
-	private final GoBoard _board = new ToroidalGoBoard(BOARD_SIZE);
+	final GoBoard _board = new ToroidalGoBoard(BOARD_SIZE);
 
 	private BufferedImage _bufferImage;
 
@@ -99,7 +99,7 @@ public class GoBoardPanel extends JPanel {
 	}
 	
 	private void play(Move move) {
-		if (move.isResign) _board.resignTurn();
+		if (move.isResign) _board.resign();
 		else {
 			if (move.isPass) _board.passTurn();
 			else _board.playStone(move.xCoordinate, move.yCoordinate);

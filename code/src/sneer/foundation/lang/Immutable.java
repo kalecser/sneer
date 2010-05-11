@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import sneer.foundation.testsupport.PrettyPrinter;
+
 public abstract class Immutable implements ReadOnly {
 
 	@Override
@@ -112,7 +114,7 @@ public abstract class Immutable implements ReadOnly {
 			result.append("|");
 			result.append(field.getName());
 			result.append(":");
-			result.append(getFieldValue(field, this));
+			result.append(PrettyPrinter.toString(getFieldValue(field, this)));
 		}
 		return result.toString();
 	}
