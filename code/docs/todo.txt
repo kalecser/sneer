@@ -61,6 +61,8 @@ René =================================================
 
 Klaus =================================================
 
+	- Fix Threads.startDaemon
+
 	- Prevalence
 		- Refactor Bubble
 			- 
