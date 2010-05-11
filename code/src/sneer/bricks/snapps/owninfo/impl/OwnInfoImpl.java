@@ -29,6 +29,7 @@ import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.codec.SealCodec;
 import sneer.bricks.network.computers.ports.OwnPort;
+import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccount;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccountKeeper;
 import sneer.bricks.pulp.own.name.OwnNameKeeper;
@@ -57,7 +58,6 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 	private final JPasswordField _dynDnsPassword = new JPasswordField();
 	
 	private final OwnNameKeeper _nameKeeper = my(OwnNameKeeper.class);
-	private final OwnPort _portKeeper = my(OwnPort.class);
 	private final MainMenu _mainMenu = my(MainMenu.class);	
 	
 	@SuppressWarnings("unused")
@@ -109,7 +109,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		
 		_yourOwnName = newTextField(_nameKeeper.name(), _nameKeeper.nameSetter());
 		
-		_sneerPort = newTextField(_portKeeper.port(), my(IntegerParsers.class).newIntegerParser(_portKeeper.portSetter()));
+		_sneerPort = newTextField(ownPort(), ownPortSetter());
 
 		String formattedHexString = my(SealCodec.class).formattedHexEncode(my(OwnSeal.class).get().currentValue());
 		_ownSeal = new JTextArea(formattedHexString);
@@ -147,6 +147,16 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 			setVisible(false);
 		}});
 		pack();
+	}
+
+	private PickyConsumer<String> ownPortSetter() {
+		return my(IntegerParsers.class).newIntegerParser(
+			my(Attributes.class).myAttributeSetter(OwnPort.class)
+		);
+	}
+
+	private Signal<Integer> ownPort() {
+		return my(Attributes.class).myAttributeValue(OwnPort.class);
 	}
 
 	private void addWidget(JComponent widget, String label, int y) { addWidget(getContentPane(), widget, label, y);	}
