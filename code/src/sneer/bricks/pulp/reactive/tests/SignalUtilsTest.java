@@ -5,6 +5,8 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latch;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
@@ -27,17 +29,27 @@ public class SignalUtilsTest extends BrickTest {
 
 	@Test (timeout = 2000)
 	public void waitForNewElementWithPredicate() {
+		final Latch latch1 = my(Latches.class).produce();
+		final Latch latch2 = my(Latches.class).produce();
+
 		final SetRegister<String> setRegister = my(CollectionSignals.class).newSetRegister();
+		setRegister.add("one");
 		
 		my(Threads.class).startDaemon("SignalUtils Test", new Closure() { @Override public void run() {
-			my(Threads.class).sleepWithoutInterruptions(200);
-			setRegister.add("foo");
+			my(SignalUtils.class).waitForElement(setRegister.output(), new Predicate<String>() { @Override public boolean evaluate(String value) {
+				if (value.equals("one")) {
+					latch1.open();
+					return false;
+				}
+				
+				latch2.open();
+				return true;
+			}});
 		}});
 		
-		my(SignalUtils.class).waitForElement(setRegister.output(), new Predicate<String>() { @Override public boolean evaluate(String value) {
-			return value.equals("foo");
-		}});
-		
+		latch1.waitTillOpen();
+		setRegister.add("two");
+		latch2.waitTillOpen();
 	}
 
 }
