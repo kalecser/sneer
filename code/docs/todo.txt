@@ -19,8 +19,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Fix WusicFunctionalTest
-
 	- Find out cause of TupleSpaceTest.subscriptionRemoval()'s intermittence
 
 	- Chat
