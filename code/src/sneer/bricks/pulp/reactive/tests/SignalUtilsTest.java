@@ -37,14 +37,10 @@ public class SignalUtilsTest extends BrickTest {
 		
 		my(Threads.class).startDaemon("SignalUtils Test", new Closure() { @Override public void run() {
 			my(SignalUtils.class).waitForElement(setRegister.output(), new Predicate<String>() { @Override public boolean evaluate(String value) {
-				if (value.equals("one")) {
-					latch1.open();
-					return false;
-				}
-				
-				latch2.open();
-				return true;
+				latch1.open();
+				return value.equals("two");
 			}});
+			latch2.open();
 		}});
 		
 		latch1.waitTillOpen();
