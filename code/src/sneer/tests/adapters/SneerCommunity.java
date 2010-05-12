@@ -62,11 +62,9 @@ public class SneerCommunity implements SovereignCommunity {
 		final SneerParty party = ProxyInEnvironment.newInstance(container, partyImpl);
 		
 		party.configDirectories(dataFolder, tmpFolder, currentCodeFolder, privateSrc, privateBin, stageFolder);
-		party.setOwnName(name);
-		party.setSneerPort(port);
 
-		party.start();
-		
+		party.start(name, port);
+
 		_allParties.add(party);
 		return party;
 	}
@@ -75,8 +73,12 @@ public class SneerCommunity implements SovereignCommunity {
 	@Override
 	public SovereignParty newSession(SovereignParty party) {
 		SneerParty sneerParty = (SneerParty)party;
+		String ownName = sneerParty.ownName();
+		int ownPort = sneerParty.sneerPort();
+
 		crash(sneerParty);
-		return createParty(sneerParty.ownName(), sneerParty.sneerPort());
+
+		return createParty(ownName, ownPort);
 	}
 
 

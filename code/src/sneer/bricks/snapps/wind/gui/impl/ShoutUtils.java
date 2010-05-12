@@ -5,10 +5,11 @@ import static sneer.foundation.environments.Environments.my;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.pulp.own.name.OwnNameKeeper;
+import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.snapps.wind.Shout;
 
@@ -16,8 +17,8 @@ abstract class ShoutUtils {
 
 	private static final SimpleDateFormat FORMAT = new SimpleDateFormat((String) my(Synth.class).getDefaultProperty("ShoutUtils.dateFormat"));
 	
-	private static OwnNameKeeper ownName() {
-		return my(OwnNameKeeper.class);
+	private static String ownName() {
+		return my(Attributes.class).myAttributeValue(OwnName.class).currentValue();
 	}
 	
 	private static ContactSeals keyManager() {
@@ -25,7 +26,7 @@ abstract class ShoutUtils {
 	}
 
 	static String publisherNick(Shout shout) {
-		if(isMyOwnShout(shout)) return ownName().name().currentValue();
+		if(isMyOwnShout(shout)) return ownName();
 		Contact contact = keyManager().contactGiven(shout.publisher);
 		return contact == null
 			? "Unknown Public Key: " + shout.publisher + " "

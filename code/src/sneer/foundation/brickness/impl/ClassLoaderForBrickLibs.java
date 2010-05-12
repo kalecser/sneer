@@ -10,7 +10,6 @@ import java.util.List;
 
 import sneer.foundation.brickness.Nature;
 
-/** To be implemented.*/
 class ClassLoaderForBrickLibs extends ClassLoaderForBricks {
 
 	static ClassLoader newInstanceIfNecessary(String brick, File classpath, String implPackage, List<Nature> natures, ClassLoader apiClassLoader) {

@@ -21,6 +21,7 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.iterables.Iterables;
 import sneer.bricks.identity.keys.own.OwnKeys;
+import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -30,12 +31,12 @@ import sneer.bricks.network.computers.sockets.connections.originator.SocketOrigi
 import sneer.bricks.network.computers.sockets.connections.receiver.SocketReceiver;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
+import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.network.social.heartbeat.Heart;
 import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.bricks.pulp.own.name.OwnNameKeeper;
 import sneer.bricks.pulp.probe.ProbeManager;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
@@ -72,11 +73,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	@Override
 	public void setSneerPort(int port) {
-		try {
-			my(OwnPort.class).portSetter().consume(port);
-		} catch (Refusal e) {
-			throw new IllegalArgumentException(e);
-		}
+		my(Attributes.class).myAttributeSetter(OwnPort.class).consume(port);
 	}
 
 	
@@ -84,9 +81,8 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	public void startConnectingTo(SneerParty other) {
 		Contact contact = produceContact(other.ownName());
 
-		SneerParty sneerParty = other;
 		putSeal(other, contact);
-		my(InternetAddressKeeper.class).add(contact, MOCK_ADDRESS, sneerParty.sneerPort());
+		my(InternetAddressKeeper.class).add(contact, MOCK_ADDRESS, other.sneerPort());
 	}
 
 
@@ -129,13 +125,13 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	@Override
 	public String ownName() {
-		return my(OwnNameKeeper.class).name().currentValue();
+		return my(Attributes.class).myAttributeValue(OwnName.class).currentValue();
 	}
 
 	
 	@Override
 	public void setOwnName(String newName) {
-		my(OwnNameKeeper.class).nameSetter().consume(newName);
+		my(Attributes.class).myAttributeSetter(OwnName.class).consume(newName);
 	}
 	
 	
@@ -184,7 +180,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	@Override
 	public int sneerPort() {
-        return my(OwnPort.class).port().currentValue();
+        return my(Attributes.class).myAttributeValue(OwnPort.class).currentValue();
     }
 
 	
@@ -400,25 +396,28 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	@Override
-	public void start() {
+	public void start(String name, int port) {
+		generatePublicKey(name);
+
 		throwOnBlinkingErrors();
-		
 		installStagedCodeIfNecessary();
-		
-		generatePublicKey();
+
+		setOwnName(name);
+		setSneerPort(port);
+
 		startSnapps();
 		accelerateHeartbeat();
 	}
 
 	
-	private void generatePublicKey() {
-		my(OwnKeys.class).generateKeyPair(pkSeed());
+	private void generatePublicKey(String name) {
+		my(OwnKeys.class).generateKeyPair(pkSeedFrom(name));
 	}
 
 
-	private byte[] pkSeed() {
+	private byte[] pkSeedFrom(String name) {
 		try {
-			return ownName().getBytes("UTF-8");
+			return name.getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalStateException(e);
 		}

@@ -7,9 +7,11 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.sockets.accepter.SocketAccepter;
 import sneer.bricks.network.computers.sockets.reachability.ReachabilitySentinel;
+import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
@@ -21,6 +23,8 @@ class ReachabilitySentinelImpl implements ReachabilitySentinel {
 	private final SocketAccepter _socketAccepter = my(SocketAccepter.class);
 	private final BlinkingLights _lights = my(BlinkingLights.class);
 	private final Clock _clock = my(Clock.class);	
+
+	private final Signal<Integer>_ownPort = my(Attributes.class).myAttributeValue(OwnPort.class);
 
 	private long _lastIncomingSocketTime = _clock.time().currentValue();
 
@@ -34,7 +38,7 @@ class ReachabilitySentinelImpl implements ReachabilitySentinel {
 
 		_timerContract = my(Timer.class).wakeUpEvery(THIRTY_SECONDS, new Closure() { @Override public void run() {
 			if (_clock.time().currentValue() - _lastIncomingSocketTime >= THIRTY_SECONDS)
-				_lights.turnOnIfNecessary(unreachableLight(), "Unreachable", "You have not received any incoming sockets recently. Either none of your contacts are online or your machine is unreachable from the internet on your current Sneer TCP Port: " + my(OwnPort.class).port().currentValue() + ". You can change your Sneer TCP Port using the Menu > Own Info dialog.");
+				_lights.turnOnIfNecessary(unreachableLight(), "Unreachable", "You have not received any incoming sockets recently. Either none of your contacts are online or your machine is unreachable from the internet on your current Sneer TCP Port: " + _ownPort.currentValue() + ". You can change your Sneer TCP Port using the Menu > Own Info dialog.");
 		}});		
 	}
 

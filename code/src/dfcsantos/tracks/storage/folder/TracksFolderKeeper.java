@@ -15,5 +15,6 @@ public interface TracksFolderKeeper {
 	void setSharedTracksFolder(File sharedTracksFolder);
 
 	File peerTracksFolder();
+	File noveltiesFolder();
 
 }

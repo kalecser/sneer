@@ -197,7 +197,6 @@ public class GoTest extends BrickTest {
 	}
 	
 	@Test
-	//@Ignore
 	public void testScore() {
 		String[] setup = new String[]{
 			    "+ + + + + + + + +",

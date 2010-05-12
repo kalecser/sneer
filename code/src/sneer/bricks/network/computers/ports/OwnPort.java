@@ -1,14 +1,9 @@
 package sneer.bricks.network.computers.ports;
 
-import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.PickyConsumer;
+import sneer.bricks.network.social.attributes.Attribute;
 
-@Brick
-public interface OwnPort {
+public interface OwnPort extends Attribute<Integer> {
 
-	Signal<Integer> port();
-
-	PickyConsumer<Integer> portSetter();
+	Integer DEFAULT = 0; 
 
 }
