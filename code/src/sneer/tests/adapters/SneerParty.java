@@ -13,7 +13,7 @@ public interface SneerParty extends SovereignParty {
 	void startConnectingTo(SneerParty other);
 	void waitUntilOnline(SneerParty other);
 	
-	void start();
+	void start(String name, int port);
 	void crash();
 
 }

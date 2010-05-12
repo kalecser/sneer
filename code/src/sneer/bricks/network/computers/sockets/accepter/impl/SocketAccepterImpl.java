@@ -10,6 +10,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.sockets.accepter.SocketAccepter;
+import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -19,12 +20,13 @@ import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.network.ByteArrayServerSocket;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class SocketAccepterImpl implements SocketAccepter {
 	
-	private final OwnPort _portKeeper = my(OwnPort.class);
+	private final Signal<Integer> _ownPort = my(Attributes.class).myAttributeValue(OwnPort.class);
 	private final Network _network = my(Network.class);
 	private final BlinkingLights _lights = my(BlinkingLights.class);
 	private final Threads _threads = my(Threads.class);
@@ -50,7 +52,7 @@ class SocketAccepterImpl implements SocketAccepter {
 	private Contract _stepperContract;
 
 	SocketAccepterImpl() {
-		_receptionRefToAvoidGc = _portKeeper.port().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer port) {
+		_receptionRefToAvoidGc = _ownPort.addReceiver(new Consumer<Integer>() { @Override public void consume(Integer port) {
 			setPort(port);
 		}});
 

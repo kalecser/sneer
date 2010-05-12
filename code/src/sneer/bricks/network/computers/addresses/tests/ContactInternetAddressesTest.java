@@ -12,9 +12,10 @@ import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.addresses.sighting.Sighting;
-import sneer.bricks.network.computers.ports.contacts.ContactPorts;
+import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
+import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
@@ -24,13 +25,13 @@ import sneer.foundation.lang.exceptions.Refusal;
 public class ContactInternetAddressesTest extends BrickTest {
 
 	@Bind private final ContactSeals _contactSeals = mock(ContactSeals.class);
-	private final Contact contact = produceContact("Neide");
+	private final Contact _contact = produceContact("Neide");
 	{
 		checking(new Expectations(){{
-			allowing(_contactSeals).contactGiven(seal()); will(returnValue(contact));
+			allowing(_contactSeals).contactGiven(seal()); will(returnValue(_contact));
 		}});
 	}
-	@Bind private final ContactPorts _contactPorts = mock(ContactPorts.class);
+	@Bind private final Attributes _attributes = mock(Attributes.class);
 	
 	
 	private final ContactInternetAddresses _subject = my(ContactInternetAddresses.class);
@@ -38,10 +39,10 @@ public class ContactInternetAddressesTest extends BrickTest {
 		
 	@Test
 	public void keptAddressesAreFound(){
-		my(InternetAddressKeeper.class).add(contact, "10.42.10.42", 42);
+		my(InternetAddressKeeper.class).add(_contact, "10.42.10.42", 42);
 		
 		InternetAddress kept = firstKeptAddress();
-		assertEquals(contact, kept.contact());
+		assertEquals(_contact, kept.contact());
 		assertEquals("10.42.10.42", kept.host());
 		assertEquals(42, (int)kept.port().currentValue());
 	}
@@ -50,7 +51,7 @@ public class ContactInternetAddressesTest extends BrickTest {
 	public void dnsAddressesAreFound() {
 		see("10.42.10.42", 8081);
 		InternetAddress kept = firstKeptAddress();
-		assertEquals(contact, kept.contact());
+		assertEquals(_contact, kept.contact());
 		assertEquals("10.42.10.42", kept.host());
 		assertEquals(8081, (int)kept.port().currentValue());
 	}
@@ -59,14 +60,14 @@ public class ContactInternetAddressesTest extends BrickTest {
 		my(TupleSpace.class).acquire(new Sighting(seal(), ip));
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 		
-		checking(new Expectations(){{
-			oneOf(_contactPorts).portGiven(seal()); 
+		checking(new Expectations() {{
+			oneOf(_attributes).attributeValueFor(_contact, OwnPort.class, Integer.class); 
 			will(returnValue(my(Signals.class).constant(port)));
 		}});
 	}
 	
 	private Seal seal() {
-		return new Seal(new ImmutableByteArray(new byte[]{42}));
+		return new Seal(new ImmutableByteArray(new byte[] { 42 }));
 	}
 	
 	private InternetAddress firstKeptAddress() {

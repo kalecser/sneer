@@ -9,8 +9,9 @@ import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.addresses.sighting.Sighting;
-import sneer.bricks.network.computers.ports.contacts.ContactPorts;
+import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
@@ -47,7 +48,7 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 			
 			@Override
 			public Signal<Integer> port() {
-				return my(ContactPorts.class).portGiven(sighting.peersSeal);
+				return my(Attributes.class).attributeValueFor(contact, OwnPort.class, Integer.class);
 			}
 			
 			@Override

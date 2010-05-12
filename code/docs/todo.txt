@@ -19,9 +19,9 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- OwnPort --> Attribute
+	- Fix WusicFunctionalTest
 
-	- OwnName --> Attribute
+	- Find out cause of TupleSpaceTest.subscriptionRemoval()'s intermittence
 
 	- Chat
 		- Fabio's One-on-one Chat - Incorporate
@@ -60,6 +60,8 @@ René =================================================
 
 
 Klaus =================================================
+
+	- Fix Threads.startDaemon
 
 	- Prevalence
 		- Refactor Bubble
