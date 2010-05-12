@@ -76,7 +76,7 @@ public class WusicFunctionalTest extends BrickTest {
 	}
 
 	
-	@Test (timeout = 4000)
+	@Test (timeout = 3000)
 	public void ownModeWithOneTrack() throws IOException {
 		_subject1 = my(Wusic.class);
 		createSampleTracks(_subject1.playingFolder(), "track1.mp3");
@@ -199,7 +199,7 @@ public class WusicFunctionalTest extends BrickTest {
 	}
 
 	
-	@Test (timeout = 6000)
+	@Test (timeout = 4000)
 	public void peersMode() throws IOException {
 		Environment remote = configureRemoteEnvironment();
 		makeFriendsWith(remote);
