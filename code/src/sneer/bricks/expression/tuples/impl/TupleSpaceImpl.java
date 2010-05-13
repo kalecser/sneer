@@ -44,6 +44,7 @@ class TupleSpaceImpl implements TupleSpace {
 		private final Contract _stepperContract;
 		private boolean _isDisposed = false;
 		
+		
 		Subscription(Consumer<? super T> subscriber, Class<T> tupleType, Predicate<? super T> filter) {
 			_subscriber = (Consumer<? super Tuple>)subscriber;
 			_tupleType = tupleType;
@@ -53,15 +54,18 @@ class TupleSpaceImpl implements TupleSpace {
 			_stepperContract = _threads.startStepping(notifier());
 		}
 
+		
 		private Runnable notifier() {
 			return new Closure() { @Override public void run() {
 				Tuple nextTuple = waitToPopTuple();
-				if (!_isDisposed)
-					notifySubscriber(nextTuple);
+				if (_isDisposed) return;
+				notifySubscriber(nextTuple);
 				dispatchCounterDecrement();
 			}};
 		}
 
+		
+		
 		private void notifySubscriber(final Tuple tuple) {
 			final Consumer<? super Tuple> subscriber = _subscriber;
 			if (subscriber == null) return;
@@ -73,6 +77,7 @@ class TupleSpaceImpl implements TupleSpace {
 			}});
 		}
 
+		
 		void filterAndNotify(final Tuple tuple) {
 			if (!_tupleType.isInstance(tuple)) return;
 			if (!_filter.evaluate((T)tuple)) return;
@@ -80,6 +85,7 @@ class TupleSpaceImpl implements TupleSpace {
 			dispatchCounterIncrement();
 			pushTuple(tuple);
 		}
+		
 		
 		private Tuple waitToPopTuple() {
 			synchronized (_tuplesToNotify) {
@@ -92,6 +98,7 @@ class TupleSpaceImpl implements TupleSpace {
 			}
 		}
 
+		
 		private void pushTuple(Tuple tuple) {
 			synchronized (_tuplesToNotify) {
 				_tuplesToNotify.add(tuple);
@@ -99,6 +106,7 @@ class TupleSpaceImpl implements TupleSpace {
 			}
 		}
 
+		
 		@Override
 		/** Removes this subscription as soon as possible. The subscription might still receive tuple notifications from other threads AFTER this method returns, though. It is impossible to guarantee synchronicity of this method without risking deadlocks, especially with the GUI thread. If you really need to know when the subscription was removed, get in touch with us. We can change the API to provide for a callback.*/
 		public void dispose() {
@@ -106,12 +114,20 @@ class TupleSpaceImpl implements TupleSpace {
 			_subscriptions.remove(this);
 			synchronized(_tuplesToNotify) {
 				_isDisposed = true;
+				decrementPendingTuplesFromDispatchCounter();
 				_tuplesToNotify.notify();
 			}
+		}
+
+		
+		private void decrementPendingTuplesFromDispatchCounter() {
+			for (int i = 0; i < _tuplesToNotify.size(); i++)
+				dispatchCounterDecrement();
 		}
 	
 	}
 
+	
 	private static final int FLOODED_CACHE_SIZE = 1000;
 	private static final Subscription<?>[] SUBSCRIPTION_ARRAY = new Subscription[0];
 
@@ -127,9 +143,11 @@ class TupleSpaceImpl implements TupleSpace {
 	private final Set<Class<? extends Tuple>> _typesToKeep = new HashSet<Class<? extends Tuple>>();
 	private final ListRegister<Tuple> _keptTuples;
 
+	
 	TupleSpaceImpl() {
 		_keptTuples = my(KeptTuples.class);
 	}
+	
 	
 	@Override
 	public synchronized void acquire(Tuple tuple) {
@@ -144,6 +162,7 @@ class TupleSpaceImpl implements TupleSpace {
 		notifySubscriptions(tuple);
 	}
 
+	
 	private boolean dealWithAddressedTuple(Tuple tuple) {
 		Seal me = my(OwnSeal.class).get().currentValue();
 		if (!tuple.addressee.equals(me) && !tuple.publisher.equals(me)) {
@@ -153,6 +172,7 @@ class TupleSpaceImpl implements TupleSpace {
 		return false;
 	}
 
+	
 
 	private boolean dealWithFloodedTuple(Tuple tuple) {
 		if (_floodedTupleCache.contains(tuple)) {
@@ -246,6 +266,7 @@ class TupleSpaceImpl implements TupleSpace {
 		return FLOODED_CACHE_SIZE;
 	}
 
+	
 	@Override	
 	public void waitForAllDispatchingToFinish() {
 		synchronized (_dispatchCounterMonitor ) {
@@ -255,12 +276,14 @@ class TupleSpaceImpl implements TupleSpace {
 		
 	}
 
+	
 	private void dispatchCounterIncrement() {
 		synchronized (_dispatchCounterMonitor ) {
 			_dispatchCounter++;
 		}
 	}
 
+	
 	private void dispatchCounterDecrement() {
 		synchronized (_dispatchCounterMonitor ) {
 			_dispatchCounter--;
