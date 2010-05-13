@@ -46,7 +46,7 @@ class OutgoingAttempt {
 		try {
 			socket = _network.openSocket(_address.host(), _address.port().currentValue());
 		} catch (IOException e) {
-			my(Logger.class).log(e.getMessage());
+			my(Logger.class).log("{} host: {} port: ", e.getMessage(),_address.host(), _address.port().currentValue());
 			return;
 		}
 

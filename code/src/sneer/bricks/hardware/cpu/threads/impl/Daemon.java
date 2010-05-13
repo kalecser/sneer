@@ -21,7 +21,7 @@ abstract class Daemon extends Thread {
 				allDaemons.add((Daemon)cadidate);
 
 		for (Daemon victim : allDaemons)
-			victim.dieQuietly();
+			killQuietly(victim);
 
 		for (Daemon victim : allDaemons)
 			try {
@@ -38,12 +38,12 @@ abstract class Daemon extends Thread {
 
 	
 	@SuppressWarnings("deprecation")
-	private void dieQuietly() {
-		setUncaughtExceptionHandler(new UncaughtExceptionHandler() { @Override public void uncaughtException(Thread t, Throwable ignored) {
+	static void killQuietly(Thread thread) {
+		thread.setUncaughtExceptionHandler(new UncaughtExceptionHandler() { @Override public void uncaughtException(Thread t, Throwable ignored) {
 			//Shhhh.
 		}});
 		
-		stop();
+		thread.stop();
 	}
 
 	

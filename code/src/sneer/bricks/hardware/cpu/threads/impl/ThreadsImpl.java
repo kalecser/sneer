@@ -56,7 +56,7 @@ class ThreadsImpl implements Threads {
 	@Override
 	public void startDaemon(final String threadName, final Runnable runnable) {
 		if (_isCrashing)
-			throw new UnsupportedOperationException();
+			Daemon.killQuietly(Thread.currentThread());
 
 		final Environment environment = my(Environment.class);
 		final int maxCpuUsage = my(CpuThrottle.class).maxCpuUsage();

@@ -6,6 +6,7 @@ import org.jmock.Expectations;
 import org.jmock.Sequence;
 import org.junit.Test;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
@@ -63,7 +64,8 @@ public class IncomingSocketOriginDetectionTest extends BrickTest {
 		}});
 
 		final Latch ipDetected = my(Latches.class).produce();
-		_subject.contactSightings().addReceiver(new Consumer<ContactSighting>() { @Override public void consume(ContactSighting sighting) {
+		@SuppressWarnings("unused")
+		WeakContract refToAvoidGc = _subject.contactSightings().addReceiver(new Consumer<ContactSighting>() { @Override public void consume(ContactSighting sighting) {
 			assertEquals(_otherSeal, sighting.seal());
 			assertEquals("10.42.10.42", sighting.ip());
 			ipDetected.open();

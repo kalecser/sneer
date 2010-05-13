@@ -80,6 +80,7 @@ abstract class AbstractDownload implements Download {
 
 		subscribeToContents();
 		_startTime = my(Clock.class).time().currentValue();
+		_lastActivityTime = _startTime;
 		startSendingRequests();
 	}
 
@@ -278,6 +279,7 @@ abstract class AbstractDownload implements Download {
 
 	@Override
 	protected void finalize() throws Throwable {
+		my(Logger.class).log("Download garbage collected: " + _path);
 		this.dispose();
 	}
 

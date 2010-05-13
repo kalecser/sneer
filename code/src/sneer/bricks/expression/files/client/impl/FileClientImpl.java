@@ -10,6 +10,7 @@ import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.Downloads;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.identity.seals.Seal;
+import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Producer;
@@ -26,8 +27,10 @@ class FileClientImpl implements FileClient {
 
 	@Override
 	public Download startFileDownload(final File file, final long lastModified, final Hash hashOfFile, final Seal source) {
+		final ByRef<Download> refToAvoidGc = ByRef.newInstance();
 		return _downloadsByHash.get(hashOfFile, new Producer<WeakReference<Download>>() { @Override public WeakReference<Download> produce() throws RuntimeException {
-			return my(Downloads.class).newFileDownload(file, lastModified, hashOfFile, source, downloadCleaner(hashOfFile));
+			refToAvoidGc.value = my(Downloads.class).newFileDownload(file, lastModified, hashOfFile, source, downloadCleaner(hashOfFile));
+			return new WeakReference<Download>(refToAvoidGc.value);
 		}}).get();
 	}
 
@@ -40,8 +43,10 @@ class FileClientImpl implements FileClient {
 
 	@Override
 	public Download startFolderDownload(final File folder, final long lastModified, final Hash hashOfFolder) {
+		final ByRef<Download> refToAvoidGc = ByRef.newInstance();
 		return _downloadsByHash.get(hashOfFolder, new Producer<WeakReference<Download>>() { @Override public WeakReference<Download> produce() throws RuntimeException {
-			return my(Downloads.class).newFolderDownload(folder, lastModified, hashOfFolder, downloadCleaner(hashOfFolder));
+			refToAvoidGc.value = my(Downloads.class).newFolderDownload(folder, lastModified, hashOfFolder, downloadCleaner(hashOfFolder));
+			return new WeakReference<Download>(refToAvoidGc.value);
 		}}).get();
 	}
 

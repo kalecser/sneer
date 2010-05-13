@@ -5,6 +5,11 @@
 Following are the tasks each one of us has on his plate right now:
 
 
+Patrick =================================================
+
+	- ScalaCompilerTest - Permgen issue. Unignore.
+
+
 Kalecser =================================================
 
 	- WindGuiImpl will no longer steal focus. If new shouts arrive and the window is not active a tray icon message will show.
@@ -19,27 +24,38 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Find out cause of TupleSpaceTest.subscriptionRemoval()'s intermittence
+	- Fixed by Klaus: Find out cause of TupleSpaceTest.subscriptionRemoval()'s intermittence
 
+	- FileClientImpl
+		- Study the last change made to it (Downloads brick no longer returns weak refs)
+		- Use a regular Map instead of a cache map to avoid having to keep an external ref to avoid gc. Synchronize on the Map.
+		- Treat the case where the WeakRef.get() returns null (was gc'd).
+		- Eliminate duplication between startFileDownload and startFolderDownload.
+		- Ask Klaus to revise.
+
+	- WusicFunctionalTest.peersMode - It is failing intermittently on Klaus's machine (Timeout (Expected: 3 Seen: 0, 1, 2,)). Fix it in a solid way, with a clear understanding of the problem, not just trial-and-error with CustomClockTicker values.
+		- Unignore
+		
+	- Wusic - TrackDownloader:
+		- Download candidate from folder that is not being downloaded gets +0.1
+		- Download candidate from peer   that is not being downloaded gets +0.1 (cumulative with folder bonus above)
+		
 	- Chat
 		- Fabio's One-on-one Chat - Incorporate
-		- Chat Gui - Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
-			- Enter bug - Fix.
-			- Focus bug - Fix.
+			- WindGui - Make it a Snapp again.
+				- Chat Gui - Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
+					- Enter bug - Fix.
+					- Focus bug - Fix.
 
-	- Wusic
-		- TrackDownloader:
-			- Download candidate from folder that is not being downloaded gets +0.1
-			- Download candidate from peer   that is not being downloaded gets +0.1 (cumulative with folder bonus above)
-		- MusicalTasteMatcher
-			- FunctionalTest - Not necessary. Unit test is enough because there is no remoteness going on and only a single brick is involved in the logic.
-			- Buttons - Talk to Klaus
-				- First Group: (I want this track. (Today's "Me Too"))
-					:D    
-				- Second Group: (I dont want this particular track...)
-					:)    (...but I like it. Bring me similar ones.)
-					:|    (...and that's it.)
-					:(    (...or any similar tracks.)
+	- Wusic - MusicalTasteMatcher
+		- FunctionalTest - Not necessary. Unit test is enough because there is no remoteness going on and only a single brick is involved in the logic.
+		- Buttons - Talk to Klaus
+			- First Group: (I want this track. (Today's "Me Too"))
+				:D    
+			- Second Group: (I dont want this particular track...)
+				:)    (...but I like it. Bring me similar ones.)
+				:|    (...and that's it.)
+				:(    (...or any similar tracks.)
 
 	- sovereigncomputing.net - Moralize. This is necessary to help promote Wusic.
 		- Talk to Klaus 
@@ -59,11 +75,10 @@ René =================================================
 
 Klaus =================================================
 
-	- Fix Threads.startDaemon
+	- OwnKeysImpl - Debug with leo and remove logging
 
 	- Prevalence
 		- Refactor Bubble
-			- 
 		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
 			- Change MusicalTasteMatcher's interface to use the contact instead of the nickname (string)
 		- Announce to community
