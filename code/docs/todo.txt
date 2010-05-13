@@ -59,11 +59,12 @@ René =================================================
 
 Klaus =================================================
 
+	- OwnKeysImpl - Debug with leo and remove logging
+
 	- Fix Threads.startDaemon
 
 	- Prevalence
 		- Refactor Bubble
-			- 
 		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
 			- Change MusicalTasteMatcher's interface to use the contact instead of the nickname (string)
 		- Announce to community

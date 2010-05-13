@@ -22,6 +22,7 @@ class LogFilterImpl implements LogFilter {
 		_phrases.add("Track");
 		_phrases.add("File");
 		_phrases.add("Mapping");
+		_phrases.add("key");
 //		_phrases.add("Shout");
 //		_phrases.add("Stepper");
 //		_phrases.add("Sending");
