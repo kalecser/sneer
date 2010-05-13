@@ -5,6 +5,10 @@
 Following are the tasks each one of us has on his plate right now:
 
 
+Patrick =================================================
+
+	- ScalaCompilerTest - Permgen issue. Unignore.
+
 Kalecser =================================================
 
 	- WindGuiImpl will no longer steal focus. If new shouts arrive and the window is not active a tray icon message will show.
