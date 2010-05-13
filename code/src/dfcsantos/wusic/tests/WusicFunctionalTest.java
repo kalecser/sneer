@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.jmock.Expectations;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import scala.actors.threadpool.Arrays;
@@ -199,6 +200,7 @@ public class WusicFunctionalTest extends BrickTest {
 	}
 
 	
+	@Ignore
 	@Test (timeout = 4000)
 	public void peersMode() throws IOException {
 		Environment remote = configureRemoteEnvironment();
