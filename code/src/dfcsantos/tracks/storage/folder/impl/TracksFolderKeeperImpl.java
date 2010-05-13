@@ -51,6 +51,11 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 	}
 
 	@Override
+	public File noveltiesFolder() {
+		return new File(sharedTracksFolder().currentValue(), "novelties");
+	}
+
+	@Override
 	public void setSharedTracksFolder(File sharedTracksFolder) {
 		_sharedTracksFolder.setter().consume(sharedTracksFolder);
 	}

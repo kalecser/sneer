@@ -35,6 +35,7 @@ import sneer.foundation.lang.Producer;
 import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.execution.player.TrackPlayer;
+import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.wusic.Wusic;
 import dfcsantos.wusic.Wusic.OperatingMode;
 
@@ -75,7 +76,7 @@ public class WusicFunctionalTest extends BrickTest {
 	}
 
 	
-	@Test (timeout = 4000)
+	@Test (timeout = 3000)
 	public void ownModeWithOneTrack() throws IOException {
 		_subject1 = my(Wusic.class);
 		createSampleTracks(_subject1.playingFolder(), "track1.mp3");
@@ -114,8 +115,8 @@ public class WusicFunctionalTest extends BrickTest {
 		waitForSignalValue(_subject1.isPlaying(), false);
 
 		_subject1.pauseResume();
-		Light l = my(BlinkingLights.class).lights().currentGet(0);
-		assertEquals("No Tracks to Play", l.caption());		
+		Light light = my(BlinkingLights.class).lights().currentGet(0);
+		assertEquals("No Tracks to Play", light.caption());		
 	}
 
 	
@@ -198,7 +199,7 @@ public class WusicFunctionalTest extends BrickTest {
 	}
 
 	
-	@Test (timeout = 8000)
+	@Test (timeout = 4000)
 	public void peersMode() throws IOException {
 		Environment remote = configureRemoteEnvironment();
 		makeFriendsWith(remote);
@@ -207,7 +208,7 @@ public class WusicFunctionalTest extends BrickTest {
 		_subject1 = my(Wusic.class);
 		_subject1.trackExchangeActivator().consume(true);
 
-		my(CustomClockTicker.class).start(10, 200);
+		my(CustomClockTicker.class).start(10, 100);
 
 		waitForSignalValue(_subject1.numberOfPeerTracks(), 3);
 
@@ -231,10 +232,12 @@ public class WusicFunctionalTest extends BrickTest {
 		_subject1.meToo(); // Keeps last played track
 
 		waitForSignalValue(_subject1.numberOfPeerTracks(), 0);
+		_subject1.skip();
+		assertFalse(_subject1.isPlaying().currentValue());
 
-		File[] sharedTracks = sharedTracksFolder().listFiles();
-		assertEquals(2, sharedTracks.length);
-		assertElementsInAnyOrder(trackNames(keptTracks), trackNames(sharedTracks).toArray(new String[0]));
+		File[] novelties = my(TracksFolderKeeper.class).noveltiesFolder().listFiles();
+		assertEquals(2, novelties.length);
+		assertElementsInAnyOrder(trackNames(keptTracks), trackNames(novelties).toArray(new String[0]));
 
 		crash(remote);
 	}

@@ -18,6 +18,7 @@ import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Consumer;
@@ -44,10 +45,16 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 
 	private void tryToReply(FileRequest request) throws IOException {
+		if (isFromMyself(request)) return;
+
 		Tuple response = createResponseFor(request);
 		if (response == null) return;
 		my(TupleSpace.class).acquire(response);
-		logFolderActivity(response);
+	}
+
+
+	private boolean isFromMyself(FileRequest request) {
+		return my(OwnSeal.class).get().currentValue().equals(request.publisher);
 	}
 
 
@@ -84,7 +91,9 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 
 	private Tuple newFolderContents(Object response) {
-		return new FolderContents(((FolderContents)response).contents);
+		FolderContents folderContents = new FolderContents(((FolderContents)response).contents);
+		log(folderContents);
+		return folderContents;
 	}
 
 
@@ -92,13 +101,13 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 		ImmutableByteArray bytes = null;
 		if (requestedFile.length() > 0)
 			bytes = getFileBlockBytes(requestedFile, request.blockNumber);
-		
+
 		String debugInfo = requestedFile.getName();
-		return request.blockNumber == 0
-			? new FileContentsFirstBlock(
-				request.publisher, request.hashOfContents, requestedFile.length(), bytes, debugInfo)
-			: new FileContents(
-				request.publisher, request.hashOfContents, request.blockNumber,    bytes, debugInfo);
+		FileContents fileContents = request.blockNumber == 0
+			? new FileContentsFirstBlock(request.publisher, request.hashOfContents, requestedFile.length(), bytes, debugInfo)
+			: new FileContents			(request.publisher, request.hashOfContents, request.blockNumber, 	bytes, debugInfo);
+		log(fileContents);
+		return fileContents;
 	}
 
 
@@ -112,13 +121,14 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 	}
 
 
-	private void logFolderActivity(Tuple reply) {
-		if (reply instanceof FolderContents) {
-			my(Logger.class).log("Sending Folder Contents:");
-			for (FileOrFolder fileOrFolder : ((FolderContents)reply).contents)
-				my(Logger.class).log("   FileOrFolder: {} date: {} hash: {}", fileOrFolder.name, fileOrFolder.lastModified, fileOrFolder.hashOfContents);
-		}
+	private void log(FolderContents reply) {
+		my(Logger.class).log("Sending Folder Contents:");
+		for (FileOrFolder fileOrFolder : reply.contents)
+			my(Logger.class).log("   FileOrFolder: {} date: {} hash: {}", fileOrFolder.name, fileOrFolder.lastModified, fileOrFolder.hashOfContents);
 	}
 
+	private void log(FileContents reply) {
+		my(Logger.class).log("Sending File Contents --> File: {} block: {} hash: {} addressee: ", reply.debugInfo, reply.blockNumber, reply.hashOfFile, reply.addressee);
+	}
 
 }

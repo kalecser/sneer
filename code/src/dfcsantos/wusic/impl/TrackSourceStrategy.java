@@ -52,8 +52,10 @@ abstract class TrackSourceStrategy {
 	void disposePendingTracks() {
 		List<Track> copy = new ArrayList<Track>(_tracksToDispose);
 		for (Track victim : copy) {
-			if (victim.file().delete())
+			if (victim.file().delete()) {
+				my(Logger.class).log("Track disposed: ", victim.file());
 				_tracksToDispose.remove(victim);
+			}
 		}
 	}
 
@@ -72,7 +74,7 @@ abstract class TrackSourceStrategy {
 
 
 	void deleteTrack(final Track rejected) {
-		my(Logger.class).log("Deleteing track: ", rejected.file());
+		my(Logger.class).log("Rejecting track: ", rejected.file());
 		Hash hash = my(FileMap.class).getHash(rejected.file());
 		my(FileMap.class).remove(rejected.file());
 		my(RejectedTracksKeeper.class).reject(hash);
@@ -86,6 +88,7 @@ abstract class TrackSourceStrategy {
 
 
 	void markForDisposal(Track trackToDispose) {
+		my(Logger.class).log("Track marked for disposal: ", trackToDispose.file());
 		_tracksToDispose.add(trackToDispose);
 	}
 
