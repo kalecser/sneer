@@ -23,27 +23,30 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Find out cause of TupleSpaceTest.subscriptionRemoval()'s intermittence
+	- Fixed by Klaus: Find out cause of TupleSpaceTest.subscriptionRemoval()'s intermittence
 
+	- WusicFunctionalTest.peersMode - It is failing intermittently on Klaus's machine (Timeout (Expected: 3 Seen: 0, 1, 2,)). Fix it in a solid way, with a clear understanding of the problem, not just trial-and-error with CustomClockTicker values.
+
+	- Wusic - TrackDownloader:
+		- Download candidate from folder that is not being downloaded gets +0.1
+		- Download candidate from peer   that is not being downloaded gets +0.1 (cumulative with folder bonus above)
+		
 	- Chat
 		- Fabio's One-on-one Chat - Incorporate
-		- Chat Gui - Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
-			- Enter bug - Fix.
-			- Focus bug - Fix.
+			- WindGui - Make it a Snapp again.
+				- Chat Gui - Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
+					- Enter bug - Fix.
+					- Focus bug - Fix.
 
-	- Wusic
-		- TrackDownloader:
-			- Download candidate from folder that is not being downloaded gets +0.1
-			- Download candidate from peer   that is not being downloaded gets +0.1 (cumulative with folder bonus above)
-		- MusicalTasteMatcher
-			- FunctionalTest - Not necessary. Unit test is enough because there is no remoteness going on and only a single brick is involved in the logic.
-			- Buttons - Talk to Klaus
-				- First Group: (I want this track. (Today's "Me Too"))
-					:D    
-				- Second Group: (I dont want this particular track...)
-					:)    (...but I like it. Bring me similar ones.)
-					:|    (...and that's it.)
-					:(    (...or any similar tracks.)
+	- Wusic - MusicalTasteMatcher
+		- FunctionalTest - Not necessary. Unit test is enough because there is no remoteness going on and only a single brick is involved in the logic.
+		- Buttons - Talk to Klaus
+			- First Group: (I want this track. (Today's "Me Too"))
+				:D    
+			- Second Group: (I dont want this particular track...)
+				:)    (...but I like it. Bring me similar ones.)
+				:|    (...and that's it.)
+				:(    (...or any similar tracks.)
 
 	- sovereigncomputing.net - Moralize. This is necessary to help promote Wusic.
 		- Talk to Klaus 
@@ -64,8 +67,6 @@ René =================================================
 Klaus =================================================
 
 	- OwnKeysImpl - Debug with leo and remove logging
-
-	- Fix Threads.startDaemon
 
 	- Prevalence
 		- Refactor Bubble
