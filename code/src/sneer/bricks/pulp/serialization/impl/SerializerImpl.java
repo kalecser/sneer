@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.SoftReference;
 
 import sneer.bricks.pulp.serialization.Serializer;
 import sneer.foundation.brickness.BrickSerializationMapper;
@@ -20,12 +21,8 @@ import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 class SerializerImpl implements Serializer {
 	
-	private ThreadLocal<XStream> _xstreams = new ThreadLocal<XStream>() {
-		@Override
-		protected XStream initialValue() {
-			return createXStream();
-		}
-	};
+	private ThreadLocal<SoftReference<XStream>> _xstreams = new ThreadLocal<SoftReference<XStream>>();
+	
 
 	@Override
 	public void serialize(OutputStream stream, Object object) throws IOException {
@@ -63,7 +60,13 @@ class SerializerImpl implements Serializer {
 	}
 	
 	private XStream xStream() {
-		return _xstreams.get();
+		XStream result = null;
+		while (true) {
+			SoftReference<XStream> ref = _xstreams.get();
+			if (ref != null) result = ref.get();
+			if (result != null) return result;
+			_xstreams.set(new SoftReference<XStream>(createXStream()));
+		}
 	}
 
 
