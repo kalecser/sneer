@@ -102,10 +102,10 @@ class FileMapImpl implements FileMap {
 
 	private Hash removeFolder(File folderToBeRemoved) {
 		final Hash hashOfFolder = getHash(folderToBeRemoved); // It may be null if the folder's mapping didn't finish successfully
+		_folderContentsByHash.remove(hashOfFolder);
 
 		final String pathToBeRemoved = folderToBeRemoved.getAbsolutePath();
 		loopFilesThatStartWithAndDo(pathToBeRemoved, new Consumer<File>() { @Override public void consume(File fileInTheMap) {
-			_folderContentsByHash.remove(hashOfFolder);
 			removeFile(fileInTheMap);
 		}});
 
