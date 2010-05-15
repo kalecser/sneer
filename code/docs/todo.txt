@@ -24,8 +24,6 @@ Bamboo =================================================
 
 Igor ====================================================
 
-	- Fixed by Klaus: Find out cause of TupleSpaceTest.subscriptionRemoval()'s intermittence
-
 	- FileClientImpl
 		- Study the last change made to it (Downloads brick no longer returns weak refs)
 		- Use a regular Map instead of a cache map to avoid having to keep an external ref to avoid gc. Synchronize on the Map.

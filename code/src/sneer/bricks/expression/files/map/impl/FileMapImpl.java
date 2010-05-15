@@ -3,10 +3,7 @@ package sneer.bricks.expression.files.map.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import sneer.bricks.expression.files.map.FileMap;
@@ -14,7 +11,7 @@ import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardware.ram.collections.CollectionUtils;
+import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Predicate;
 
 class FileMapImpl implements FileMap {
@@ -23,7 +20,7 @@ class FileMapImpl implements FileMap {
 	private final Map<File, Hash> _hashesByFile				= new ConcurrentHashMap<File, Hash>();
 	private final Map<File, Long> _lastModifiedDatesByFile	= new ConcurrentHashMap<File, Long>();
 
-	private final Map<Hash, FolderContents>	_folderContentsByHash		= new ConcurrentHashMap<Hash, FolderContents>();
+	private final Map<Hash, FolderContents>	_folderContentsByHash = new ConcurrentHashMap<Hash, FolderContents>();
 
 	@Override
 	synchronized
@@ -34,16 +31,16 @@ class FileMapImpl implements FileMap {
 	@Override
 	synchronized
 	public void putFile(File file, long lastModified, Hash hash) {
-		if (file.isDirectory()) throw new IllegalArgumentException("Parameter 'file' cannot be a directory: " + file.getAbsolutePath());
+		if (isFolder(file)) throw new IllegalArgumentException("Parameter 'file' cannot be a directory: " + file.getAbsolutePath());
 
-		my(Logger.class).log("Mapping " + file + fileSizeInKB(file));
+		my(Logger.class).log("Mapping {} ({} KB)", file, fileSizeInKB(file));
 		_filesByHash.put(hash, file);
 		_hashesByFile.put(file, hash);
 		_lastModifiedDatesByFile.put(file, lastModified);
 	}
 
-	private String fileSizeInKB(File fileOrFolder) {
-		return fileOrFolder.isDirectory() ? "" : "(" + fileOrFolder.length() / 1024 + " KB)";
+	private long fileSizeInKB(File file) {
+		return file.length() / 1024;
 	}
 
 	@Override
@@ -68,6 +65,7 @@ class FileMapImpl implements FileMap {
 	@Override
 	synchronized
 	public void putFolderContents(File folder, FolderContents contents, Hash hash) {
+		my(Logger.class).log("Mapping {} Hash: ", folder, hash);
 		_folderContentsByHash.put(hash, contents); 
 		_filesByHash.put(hash, folder);
 		_hashesByFile.put(folder, hash);
@@ -81,71 +79,77 @@ class FileMapImpl implements FileMap {
 	@Override
 	synchronized
 	public Hash remove(File fileOrFolder) {
-		return fileOrFolder.isDirectory() ? removeFolder(fileOrFolder) : removeFile(fileOrFolder);
+		return isFolder(fileOrFolder) ? removeFolder(fileOrFolder) : removeFile(fileOrFolder);
+	}
+
+	private boolean isFolder(File fileOrFolder) {
+//		return getFolderContents(getHash(fileOrFolder)) != null;
+		return fileOrFolder.isDirectory();
 	}
 
 	private Hash removeFile(File fileToBeRemoved) {
-		Hash result = getHash(fileToBeRemoved);
-		if(result == null) return null;
+		Hash hashOfFile = getHash(fileToBeRemoved);
+		if (hashOfFile == null) return null;
 
-		Iterator<File> filesInTheMap = _filesByHash.values().iterator();
-		while (filesInTheMap.hasNext()) {
-			if (filesInTheMap.next().equals(fileToBeRemoved)) {
-				my(Logger.class).log("Unmapping " + fileToBeRemoved + fileSizeInKB(fileToBeRemoved));
-				_hashesByFile.remove(fileToBeRemoved);
-				_lastModifiedDatesByFile.remove(fileToBeRemoved);
-				filesInTheMap.remove();
-				break;
-			}
-		}
+		my(Logger.class).log("Unmapping " + fileToBeRemoved + fileSizeInKB(fileToBeRemoved));
 
-		return result;
+		_filesByHash.remove(hashOfFile);
+		_hashesByFile.remove(fileToBeRemoved);
+		_lastModifiedDatesByFile.remove(fileToBeRemoved);
+
+		return hashOfFile;
 	}
 
 	private Hash removeFolder(File folderToBeRemoved) {
+		final Hash hashOfFolder = getHash(folderToBeRemoved); // It may be null if the folder's mapping didn't finish successfully
+
 		final String pathToBeRemoved = folderToBeRemoved.getAbsolutePath();
-
-		Iterator<Entry<Hash, File>> entries = _filesByHash.entrySet().iterator();
-		while (entries.hasNext()) {
-			final Entry<Hash, File> hashAndFile = entries.next();
-			if (!hashAndFile.getValue().getAbsolutePath().startsWith(pathToBeRemoved))
-				continue;
-
-			entries.remove();
-			_folderContentsByHash.remove(hashAndFile.getKey());
-		}
-
-		return getHash(folderToBeRemoved);
-	}
-	
-	@Override
-	synchronized
-	public void rename(File from, File to) {
-		final String fromPath =
-			from.getAbsolutePath().endsWith(File.separator)
-				? from.getAbsolutePath()
-				: from.getAbsolutePath() + File.separator;
-
-		Collection<File> filesToBeRenamed = my(CollectionUtils.class).filter(_filesByHash.values(), new Predicate<File>() { @Override public boolean evaluate(File candidate) {
-			return (candidate.getAbsolutePath() + File.separator).startsWith(fromPath);
+		loopFilesThatStartWithAndDo(pathToBeRemoved, new Consumer<File>() { @Override public void consume(File fileInTheMap) {
+			_folderContentsByHash.remove(hashOfFolder);
+			removeFile(fileInTheMap);
 		}});
 
-		for (File file : filesToBeRenamed)
-			renameEntry(fromPath, to, file);
+		return hashOfFolder;
 	}
 
-	private void renameEntry(final String fromParent, File toParent, File file) {
-		String relativePath = my(Lang.class).strings().removeStart(file.getAbsolutePath(), fromParent);
-		File renamedFile = new File(toParent, relativePath);
-		Hash hash = getHash(file);
-		if(getFolderContents(hash) != null) {
+	private void loopFilesThatStartWithAndDo(final String pathPrefix, Consumer<File> toDo) {
+		loopFilesAndDo(toDo, new Predicate<File>() { @Override public boolean evaluate(File file) {
+			return file.getAbsolutePath().startsWith(pathPrefix);
+		}});
+	}
+
+	private void loopFilesAndDo(Consumer<File> toDo, Predicate<File> condition) {
+		for (File fileInTheMap : _filesByHash.values().toArray(new File[0]))
+			if (condition.evaluate(fileInTheMap))
+				toDo.consume(fileInTheMap);
+	}
+
+	@Override
+	synchronized
+	public void rename(final File from, final File to) {
+		final String fromPath = from.getAbsolutePath();
+		loopFilesThatStartWithAndDo(fromPath, new Consumer<File>() { @Override public void consume(File fileInTheMap) {
+			renameEntry(fileInTheMap, fromPath, to);			
+		}});
+	}
+
+	private void renameEntry(File from, final String fromParent, File toParent) {
+		String relativePath = my(Lang.class).strings().removeStart(from.getAbsolutePath(), fromParent);
+		File to = new File(toParent, relativePath);
+		renameEntry(from, to);
+	}
+
+	private void renameEntry(File from, File to) {
+		Hash hash = getHash(from);
+		my(Logger.class).log("Renaming from: {} to: ", from, to);
+		if (isFolder(to)) {
 			FolderContents folderContents = getFolderContents(hash);
-			putFolderContents(renamedFile, folderContents, hash);
+			putFolderContents(to, folderContents, hash);
+		} else {
+			putFile(to, getLastModified(from), hash);
+			_lastModifiedDatesByFile.remove(from);
 		}
-		else {
-			putFile(renamedFile, getLastModified(file), hash);
-		}
-		remove(file);
+		_hashesByFile.remove(from);
 	}
 
 }
