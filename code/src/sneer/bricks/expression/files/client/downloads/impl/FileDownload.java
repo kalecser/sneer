@@ -136,7 +136,7 @@ class FileDownload extends AbstractDownload {
 
 	@Override
 	void updateFileMapWith(File tmpFile, File actualFile) {
-		my(FileMap.class).putFile(actualFile, _hash);
+		my(FileMap.class).putFile(actualFile, actualFile.lastModified(), _hash);
 	}
 
 

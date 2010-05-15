@@ -59,7 +59,7 @@ class PeerTracks extends TrackSourceStrategy {
 	private void updateFileMap(File tmpTrack) {
 		Hash hash = my(FileMap.class).remove(tmpTrack);
 		File keptTrack = new File(noveltiesFolder(), tmpTrack.getName());
-		my(FileMap.class).putFile(keptTrack, hash);
+		my(FileMap.class).putFile(keptTrack, keptTrack.lastModified(), hash);
 	}
 
 	private File noveltiesFolder() {

@@ -10,7 +10,6 @@ import sneer.foundation.brickness.Brick;
 @Brick (Prevalent.class)
 public interface FileMap {
 
-	void putFile(File file, Hash hash);
 	void putFile(File file, long lastModified, Hash hash);
 	File getFile(Hash hash);
 	Hash getHash(File file);

@@ -32,7 +32,7 @@ public class FileMapTest extends BrickTest {
 		banana.put(hash, file);
 		assertEquals(file, banana.get(hash));
 		
-		_subject.putFile(file, hash);
+		_subject.putFile(file, file.lastModified(), hash);
 		assertEquals(file,_subject.getFile(hash));
 
 		_subject.remove(file);

@@ -75,6 +75,8 @@ René =================================================
 
 Klaus =================================================
 
+	- Immutable.isImmutable(File) - return false.
+
 	- OwnKeysImpl - Debug with leo and remove logging
 
 	- Prevalence

@@ -23,13 +23,6 @@ class FileMapImpl implements FileMap {
 	private final Map<Hash, FolderContents>	_folderContentsByHash = new ConcurrentHashMap<Hash, FolderContents>();
 
 	@Override
-	synchronized
-	public void putFile(File file, Hash hash) {
-		this.putFile(file, file.lastModified(), hash);
-	}
-
-	@Override
-	synchronized
 	public void putFile(File file, long lastModified, Hash hash) {
 		if (isFolder(file)) throw new IllegalArgumentException("Parameter 'file' cannot be a directory: " + file.getAbsolutePath());
 
@@ -44,7 +37,6 @@ class FileMapImpl implements FileMap {
 	}
 
 	@Override
-	synchronized
 	public File getFile(Hash hash) {
 		return _folderContentsByHash.get(hash) != null
 		? null
@@ -63,7 +55,6 @@ class FileMapImpl implements FileMap {
 	}
 
 	@Override
-	synchronized
 	public void putFolderContents(File folder, FolderContents contents, Hash hash) {
 		my(Logger.class).log("Mapping {} Hash: ", folder, hash);
 		_folderContentsByHash.put(hash, contents); 
@@ -77,7 +68,6 @@ class FileMapImpl implements FileMap {
 	}
 
 	@Override
-	synchronized
 	public Hash remove(File fileOrFolder) {
 		return isFolder(fileOrFolder) ? removeFolder(fileOrFolder) : removeFile(fileOrFolder);
 	}
@@ -125,7 +115,6 @@ class FileMapImpl implements FileMap {
 	}
 
 	@Override
-	synchronized
 	public void rename(final File from, final File to) {
 		final String fromPath = from.getAbsolutePath();
 		loopFilesThatStartWithAndDo(fromPath, new Consumer<File>() { @Override public void consume(File fileInTheMap) {

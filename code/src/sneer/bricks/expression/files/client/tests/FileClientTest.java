@@ -38,7 +38,8 @@ public class FileClientTest extends BrickTest {
 	@Test (timeout = 3000)
 	public void fileAlreadyMappedIsNotDownloaded() throws IOException {
 		Hash hash = my(Crypto.class).digest(new byte[]{42}); 
-		my(FileMap.class).putFile(anySmallFile(), hash);
+		File file = anySmallFile();
+		my(FileMap.class).putFile(file, file.lastModified(), hash);
 
 		@SuppressWarnings("unused")
 		WeakContract contractToAvoidGc = my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
@@ -49,7 +50,7 @@ public class FileClientTest extends BrickTest {
 		_subject.startFileDownload(tmpFile, hash);
 
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
-		my(IO.class).files().assertSameContents(tmpFile, anySmallFile());
+		my(IO.class).files().assertSameContents(tmpFile, file);
 	}
 
 	@Test (timeout = 4000)

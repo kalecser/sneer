@@ -47,7 +47,7 @@ class FileMapperImpl implements FileMapper {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "File Mapping Error", "This can happen if your file has weird characters in the name or if your disk is failing.", e);
 			return my(Crypto.class).digest(new byte[0]);
 		}
-		FileMap.putFile(file, hash);
+		FileMap.putFile(file, file.lastModified(), hash);
 		return hash;
 	}
 
