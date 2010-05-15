@@ -13,6 +13,7 @@ import sneer.bricks.software.bricks.compiler.BrickCompilerException;
 import sneer.bricks.software.bricks.compiler.Builder;
 import sneer.bricks.software.bricks.compiler.tests.fixtures.Foo;
 import sneer.bricks.software.code.classutils.ClassUtils;
+import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.jar.JarBuilder;
 import sneer.bricks.software.code.jar.Jars;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -23,7 +24,12 @@ import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
+
 public class BuilderTest extends BrickTest {
+	
+	{
+		my(JavaCompiler.class);
+	}
 	
 	private final Builder _subject = my(Builder.class);
 	

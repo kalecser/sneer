@@ -16,6 +16,7 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.software.code.compilers.CompilerException;
+import sneer.bricks.software.code.compilers.LanguageRegistry;
 import sneer.bricks.software.code.compilers.Result;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.foundation.lang.Functor;
@@ -24,6 +25,11 @@ import com.sun.tools.javac.Main;
 
 class JavaCompilerImpl implements JavaCompiler {
 
+	{
+		my(LanguageRegistry.class).addLanguage("java", this);
+	}
+	
+	
 	@Override
 	public Result compile(Collection<File> sourceFiles, File destination, File... classpath) throws IOException, CompilerException {
 		
@@ -45,6 +51,7 @@ class JavaCompilerImpl implements JavaCompiler {
 		return result;
 	}
 
+	
 	private List<String> asJavacArguments(File destination, File tmpFile,
 			File... classpath) {
 		List<String> parameters = new ArrayList<String>();
@@ -72,6 +79,7 @@ class JavaCompilerImpl implements JavaCompiler {
 		return my(Lang.class).strings().join(result, File.pathSeparator);
 	}
 
+	
 	private File createArgsFileForJavac(Collection<File> files) throws IOException {
 		File args = File.createTempFile("javac-", ".args");
 			
@@ -79,6 +87,7 @@ class JavaCompilerImpl implements JavaCompiler {
 		return args;
 	}
 
+	
 //	private List<File> buildSourceList(File source) {
 //		JavaDirectoryWalker walker = new JavaDirectoryWalker(source);
 //		List<File> files;
@@ -90,6 +99,7 @@ class JavaCompilerImpl implements JavaCompiler {
 //		return files;
 //	}
 
+	
 //	private String buildClassPath(File libDir) {
 //		StringBuffer sb = new StringBuffer();
 //		sb.append(System.getProperty("java.home")).append(File.separator).append("lib").append(File.separator).append("rt.jar");
