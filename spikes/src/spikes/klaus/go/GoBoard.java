@@ -7,10 +7,10 @@ import static spikes.klaus.go.GoBoard.StoneColor.WHITE;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import sneer.bricks.hardware.ram.deepcopy.DeepCopier;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.pulp.serialization.DeepCopier;
 
 public class GoBoard {
 

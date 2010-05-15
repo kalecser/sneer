@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.pulp.serialization.DeepCopier;
+import sneer.bricks.hardware.ram.deepcopy.DeepCopier;
 import spikes.wheel.io.network.ObjectSocket;
 
 

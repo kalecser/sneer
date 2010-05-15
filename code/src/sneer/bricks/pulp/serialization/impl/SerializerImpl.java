@@ -1,7 +1,5 @@
 package sneer.bricks.pulp.serialization.impl;
 
-import static sneer.foundation.environments.Environments.my;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,37 +7,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import sneer.bricks.pulp.serialization.Serializer;
-import sneer.foundation.brickness.BrickSerializationMapper;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.binary.BinaryStreamReader;
 import com.thoughtworks.xstream.io.binary.BinaryStreamWriter;
-import com.thoughtworks.xstream.io.xml.XppDriver;
-import com.thoughtworks.xstream.mapper.Mapper;
-import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 class SerializerImpl implements Serializer {
-	
-//	private ThreadLocal<SoftReference<XStream>> _xstreams = new ThreadLocal<SoftReference<XStream>>();
-	
-
-	@Override
-	public void serialize(OutputStream stream, Object object) throws IOException {
-		serializeWith(stream, object, xStream());
-	}
-
-
-	private void serializeWith(OutputStream stream, Object object,
-			XStream xstream) throws IOException {
-		try {
-			BinaryStreamWriter writer = new BinaryStreamWriter(stream);
-			xstream.marshal(object, writer);
-			writer.flush();
-		} catch (RuntimeException rx) {
-			throw new IOException(rx);
-		}
-	}
-
 	
 	@Override
 	public byte[] serialize(Object object) {
@@ -51,27 +24,52 @@ class SerializerImpl implements Serializer {
 		}
 		return result.toByteArray();
 	}
+	
+	
+	@Override
+	public void serialize(OutputStream stream, Object object) throws IOException {
+		XStream xstream = XStreamPool.borrowWorker();
+		try {
+			serializeWith(stream, object, xstream);
+		} finally {
+			XStreamPool.returnWorker(xstream);
+		}
+	}
+
+
+	private void serializeWith(OutputStream stream, Object object, XStream xstream) throws IOException {
+		try {
+			BinaryStreamWriter writer = new BinaryStreamWriter(stream);
+			xstream.marshal(object, writer);
+			writer.flush();
+		} catch (RuntimeException rx) {
+			throw new IOException(rx);
+		}
+	}
 
 	
 	@Override
-	public Object deserialize(InputStream stream) throws IOException, ClassNotFoundException {
-		return deserializeWith(stream, xStream());
+	public Object deserialize(byte[] serializedValue) throws ClassNotFoundException {
+		try {
+			return deserialize(new ByteArrayInputStream(serializedValue));
+		} catch (IOException ioe) {
+			throw new IllegalStateException(ioe);
+		}
 	}
 	
-	private XStream xStream() {
-//		XStream result = null;
-//		while (true) {
-//			SoftReference<XStream> ref = _xstreams.get();
-//			if (ref != null) result = ref.get();
-//			if (result != null) return result;
-//			_xstreams.set(new SoftReference<XStream>(createXStream()));
-//		}
-		return createXStream();
+	
+	@Override
+	public Object deserialize(final InputStream stream) throws IOException, ClassNotFoundException {
+		XStream xstream = XStreamPool.borrowWorker();
+		try {
+			return deserializeWith(stream, xstream);
+		} finally {
+			XStreamPool.returnWorker(xstream);
+		}
 	}
 
 
-	private Object deserializeWith(InputStream stream, XStream xstream)
-			throws ClassNotFoundException, IOException {
+	private Object deserializeWith(InputStream stream, XStream xstream)	throws ClassNotFoundException, IOException {
 		try {
 			return xstream.unmarshal(new BinaryStreamReader(stream));
 		} catch (RuntimeException rx) {
@@ -85,41 +83,5 @@ class SerializerImpl implements Serializer {
 			throw new IOException(rx);
 		}
 	}
-
-	@Override
-	public Object deserialize(byte[] serializedValue) throws ClassNotFoundException {
-		try {
-			return deserialize(new ByteArrayInputStream(serializedValue));
-		} catch (IOException ioe) {
-			throw new IllegalStateException(ioe);
-		}
-	}
-
-	@SuppressWarnings("deprecation")
-	private XStream createXStream() {
-		Mapper m = new MapperWrapper(new XStream().getMapper()) {
-			
-			private BrickSerializationMapper mapper = my(BrickSerializationMapper.class);
-			
-			@SuppressWarnings("unchecked")
-			@Override
-			public String serializedClass(Class type) {
-				return type != null
-					? mapper.serializationHandleFor(type)
-					: super.serializedClass(type);
-			}
-			
-			@SuppressWarnings("unchecked")
-			@Override
-			public Class realClass(String elementName) {
-				try {
-					return mapper.classGiven(elementName);
-				} catch (Exception e) {
-					return super.realClass(elementName);
-				}
-			}
-		};
-		return new XStream(null, m, new XppDriver());
-	}
-
+	
 }
