@@ -7,6 +7,7 @@ import java.security.PublicKey;
 
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
@@ -47,6 +48,7 @@ class OwnSealImpl implements OwnSeal {
 
 	
 	private Seal newTemporarySealForTests() {
+		my(Logger.class).log("Public key not found. Generating tmp seal for tests.");
 		try {
 			return new Seal(new ImmutableByteArray(Long.toHexString(System.nanoTime()).getBytes("UTF-8")));
 		} catch (UnsupportedEncodingException e) {

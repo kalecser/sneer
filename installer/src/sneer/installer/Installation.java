@@ -113,7 +113,6 @@ class Installation {
 	}
 	
 	private void extractFiles(File src, File toDir) throws IOException {
-		IOUtils.write(LOG_FILE, "expand files from: " + src.getAbsolutePath());
 		if(!(src.exists()))
 			throw new IOException("File '" + src.getAbsolutePath() + "' not found!");	
 
