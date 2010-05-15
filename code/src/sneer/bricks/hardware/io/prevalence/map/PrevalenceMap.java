@@ -5,7 +5,7 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface PrevalenceMap {
 
-	<T> T register(T object);
+	void register(Object object);
 	boolean isRegistered(Object object);
 
 	long marshal(Object object);
