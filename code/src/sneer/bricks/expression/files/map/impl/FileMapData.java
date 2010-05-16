@@ -18,7 +18,7 @@ class FileMapData {
 
 
 	static class Entry {
-		Entry(Hash hash_, long lastModified_) { hash = hash_;	lastModified = lastModified_;}
+		Entry(Hash hash_, long lastModified_) { hash = hash_; lastModified = lastModified_; }
 		final Hash hash;
 		final long lastModified;
 	}
