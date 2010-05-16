@@ -30,6 +30,7 @@ class NormalizedFileMap implements FileMap {
 
 	private static final Strings Strings = my(Lang.class).strings();
 
+	private final FileMapData _data = new FileMapData();
 
 	@Override
 	public void putFile(String file, long lastModified, Hash hash) {
@@ -46,13 +47,13 @@ class NormalizedFileMap implements FileMap {
 	
 	private void putPath(String path, long lastModified, Hash hash) {
 		my(Logger.class).log("Mapping", path);
-		FileMapData.put(path, lastModified, hash);
+		_data.put(path, lastModified, hash);
 	}
 	
 	
 	@Override
 	public String getFile(Hash hash) {
-		String path = FileMapData.getPath(hash);
+		String path = _data.getPath(hash);
 		if (path == null) return null;
 		return isFolder(path)
 			? null
@@ -62,13 +63,13 @@ class NormalizedFileMap implements FileMap {
 	
 	@Override
 	public Hash getHash(String path) {
-		return FileMapData.getHash(path);
+		return _data.getHash(path);
 	}
 
 	
 	@Override
 	public long getLastModified(String file) {
-		Long result = FileMapData.getLastModified(file);
+		Long result = _data.getLastModified(file);
 		if (result == null) throw new IllegalArgumentException("File not found in map: " + file);
 		if (result == -1) throw new IllegalArgumentException("Path mapped as a folder, not a file: " + file);
 		return result;
@@ -77,14 +78,14 @@ class NormalizedFileMap implements FileMap {
 	
 	@Override
 	public FolderContents getFolderContents(Hash hash) {
-		String path = FileMapData.getPath(hash);
+		String path = _data.getPath(hash);
 		if (path == null) return null;
 		if (!isFolder(path)) return null;
 
 		String folder = path + "/";
 		
 		List<FileOrFolder> contents = new ArrayList<FileOrFolder>();
-		for (String candidate : FileMapData.allPaths())
+		for (String candidate : _data.allPaths())
 			accumulateDirectChildren(candidate, folder, contents);
 		
 		Collections.sort(contents, new Comparator<FileOrFolder>() { @Override public int compare(FileOrFolder f1, FileOrFolder f2) {
@@ -134,14 +135,14 @@ class NormalizedFileMap implements FileMap {
 
 	
 	private boolean isFolder(String path) {
-		Long lastModified = FileMapData.getLastModified(path);
+		Long lastModified = _data.getLastModified(path);
 		if (lastModified == null) return false;
 		return lastModified == -1;
 	}
 
 	
 	private Hash replaceSinglePath(String from, String to) {
-		Entry entry = FileMapData.remove(from);
+		Entry entry = _data.remove(from);
 		
 		if (to != null)
 			putPath(to, entry.lastModified, entry.hash);
@@ -154,7 +155,7 @@ class NormalizedFileMap implements FileMap {
 		from += "/";
 		if (to != null) to += "/";
 		
-		for (String candidate : FileMapData.allPaths())
+		for (String candidate : _data.allPaths())
 			replacePrefix(candidate, from, to);
 	}
 

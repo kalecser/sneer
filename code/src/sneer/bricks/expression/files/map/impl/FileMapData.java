@@ -24,34 +24,34 @@ class FileMapData {
 	}
 
 
-	static private final Map<Hash, String> _pathsByHash				= new ConcurrentHashMap<Hash, String>();
-	static private final Map<String, Hash> _hashesByPath			= new ConcurrentHashMap<String, Hash>();
-	static private final Map<String, Long> _lastModifiedDatesByPath	= new ConcurrentHashMap<String, Long>();
+	private final Map<Hash, String> _pathsByHash				= new ConcurrentHashMap<Hash, String>();
+	private final Map<String, Hash> _hashesByPath			= new ConcurrentHashMap<String, Hash>();
+	private final Map<String, Long> _lastModifiedDatesByPath	= new ConcurrentHashMap<String, Long>();
 
 
-	static void put(String path, long lastModified, Hash hash) {
+	void put(String path, long lastModified, Hash hash) {
 		_pathsByHash.put(hash, path);
 		_hashesByPath.put(path, hash);
 		_lastModifiedDatesByPath.put(path, lastModified);
 	}
 
 
-	static String getPath(Hash hash) {
+	String getPath(Hash hash) {
 		return _pathsByHash.get(hash);
 	}
 
 
-	static Hash getHash(String path) {
+	Hash getHash(String path) {
 		return _hashesByPath.get(path);
 	}
 
 
-	static Long getLastModified(String path) {
+	Long getLastModified(String path) {
 		return _lastModifiedDatesByPath.get(path);
 	}
 
 
-	static Entry remove(String path) {
+	Entry remove(String path) {
 		Hash hash = _hashesByPath.remove(path);
 		if (hash == null) throw new IllegalArgumentException("Path to be replaced is not mapped: " + path);
 		_pathsByHash.remove(hash);
@@ -61,7 +61,7 @@ class FileMapData {
 	}
 
 
-	static String[] allPaths() {
+	String[] allPaths() {
 		return _hashesByPath.keySet().toArray(EMPTY_STRING_ARRAY);
 	}
 
