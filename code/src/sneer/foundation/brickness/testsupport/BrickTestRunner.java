@@ -2,21 +2,28 @@ package sneer.foundation.brickness.testsupport;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.internal.runners.InitializationError;
 import org.junit.internal.runners.TestMethod;
 import org.junit.runner.notification.RunNotifier;
 
 import sneer.foundation.brickness.Brickness;
+import sneer.foundation.brickness.impl.EagerClassLoader;
 import sneer.foundation.environments.Bindings;
 import sneer.foundation.environments.CachingEnvironment;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.types.Classes;
+import sneer.foundation.languagesupport.JarFinder;
 import sneer.foundation.testsupport.CleanTestRunner;
 
 public class BrickTestRunner extends CleanTestRunner {
@@ -28,6 +35,7 @@ public class BrickTestRunner extends CleanTestRunner {
 		}});
 	}
 
+	
 	
 	@Override
 	protected TestMethod wrapMethod(Method method) {
@@ -78,11 +86,59 @@ public class BrickTestRunner extends CleanTestRunner {
 	
 	private final Field[] _contributedFields;
 	
+	
 	public BrickTestRunner(Class<?> testClass) throws InitializationError {
-		super(testClass);
-		_contributedFields = contributedFields(testClass);
+		super(independentClassLoader(testClass));
+		_contributedFields = contributedFields(getTestClass().getJavaClass());
 	}
 	
+	
+	private static Class<?> independentClassLoader(Class<?> testClass) {
+		ClassLoader classLoader = new EagerClassLoader(classpath(), testClass.getClassLoader()) {
+
+			@Override
+			protected synchronized Class<?> doLoadClass(String name) throws ClassNotFoundException {
+//				if (name.indexOf(".impl.") != -1) throw new IllegalStateException("Brick impl loaded in test classloader instead of in its own classloader: " + name);
+				return super.doLoadClass(name);
+			}
+
+			@Override
+			protected boolean isEagerToLoad(String className) {
+				if (className.startsWith("sneer.bricks")) return true;
+				if (className.startsWith("dfcsantos")) return true;
+				return false;
+			}
+			
+		};
+			
+		try {
+			return classLoader.loadClass(testClass.getName());
+		} catch (ClassNotFoundException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+	
+
+	static private URL[] classpath() {
+		List<URL> result = new ArrayList<URL>();
+		File bin = Classes.classpathRootFor(BrickTestRunner.class);
+		result.add(toURL(bin));
+		for (URL jar : JarFinder.languageSupportJars(bin))
+			result.add(jar);
+		for (URL jar : JarFinder.testSupportJars(bin))
+			result.add(jar);
+		return result.toArray(new URL[0]);
+	}
+
+	
+	static private URL toURL(File file) {
+		try {
+			return file.toURI().toURL();
+		} catch (MalformedURLException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
 	
 	private static Field[] contributedFields(Class<? extends Object> klass) {
 		final ArrayList<Field> result = new ArrayList<Field>();
