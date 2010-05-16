@@ -1,11 +1,11 @@
 package sneer.bricks.expression.files.map.impl;
 
+import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.IO.Filenames;
-import static sneer.foundation.environments.Environments.my;
 
 class FileMapImpl implements FileMap {
 

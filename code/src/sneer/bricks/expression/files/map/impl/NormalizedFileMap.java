@@ -1,21 +1,13 @@
 package sneer.bricks.expression.files.map.impl;
 
 import static sneer.foundation.environments.Environments.my;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.impl.FileMapData.Entry;
-import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.Lang.Strings;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.foundation.lang.arrays.ImmutableArray;
 
 
 /**
@@ -81,32 +73,7 @@ class NormalizedFileMap implements FileMap {
 		String path = _data.getPath(hash);
 		if (path == null) return null;
 		if (!isFolder(path)) return null;
-
-		String folder = path + "/";
-		
-		List<FileOrFolder> contents = new ArrayList<FileOrFolder>();
-		for (String candidate : _data.allPaths())
-			accumulateDirectChildren(candidate, folder, contents);
-		
-		Collections.sort(contents, new Comparator<FileOrFolder>() { @Override public int compare(FileOrFolder f1, FileOrFolder f2) {
-			return f1.name.compareTo(f2.name);
-		}});
-		
-		return new FolderContents(new ImmutableArray<FileOrFolder>(contents));
-	}
-
-	
-	private void accumulateDirectChildren(String candidate, String folder, List<FileOrFolder> result) {
-		if (!candidate.startsWith(folder)) return;
-		
-		String name = Strings.removeStart(candidate, folder);
-		if (name.indexOf('/') != -1) return; //Not a direct child.
-		
-		Hash hash = getHash(candidate);
-		result.add(isFolder(candidate)
-			? new FileOrFolder(name, hash)
-			: new FileOrFolder(name, getLastModified(candidate), hash) 
-		);
+		return new FolderContentsGetter(_data, path).result();
 	}
 
 
@@ -131,13 +98,6 @@ class NormalizedFileMap implements FileMap {
 			replacePrefixes(from, to);
 		
 		return result;
-	}
-
-	
-	private boolean isFolder(String path) {
-		Long lastModified = _data.getLastModified(path);
-		if (lastModified == null) return false;
-		return lastModified == -1;
 	}
 
 	
@@ -171,6 +131,13 @@ class NormalizedFileMap implements FileMap {
 		if (newPrefix == null) return null;
 		String relativePath = Strings.removeStart(path, prefix);
 		return newPrefix + relativePath;
+	}
+
+	
+	private boolean isFolder(String path) {
+		Long lastModified = _data.getLastModified(path);
+		if (lastModified == null) return false;
+		return lastModified == -1;
 	}
 
 }
