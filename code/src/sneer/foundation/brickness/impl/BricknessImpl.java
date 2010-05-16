@@ -26,7 +26,6 @@ public class BricknessImpl implements Environment {
 	}
 
 	public BricknessImpl(Object... bindings) {
-		
 		_brickImplLoader = new BrickImplLoader(_apiClassLoader);
 		
 		_bindings = new Bindings();
