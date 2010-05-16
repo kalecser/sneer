@@ -6,10 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import sneer.bricks.expression.files.map.FileMap;
+import sneer.bricks.expression.files.map.impl.FileMapData.Entry;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
@@ -31,11 +30,6 @@ class NormalizedFileMap implements FileMap {
 
 	private static final Strings Strings = my(Lang.class).strings();
 
-	
-	private final Map<Hash, String> _pathsByHash			 = new ConcurrentHashMap<Hash, String>();
-	private final Map<String, Hash> _hashesByPath			 = new ConcurrentHashMap<String, Hash>();
-	private final Map<String, Long> _lastModifiedDatesByPath = new ConcurrentHashMap<String, Long>();
-
 
 	@Override
 	public void putFile(String file, long lastModified, Hash hash) {
@@ -52,15 +46,13 @@ class NormalizedFileMap implements FileMap {
 	
 	private void putPath(String path, long lastModified, Hash hash) {
 		my(Logger.class).log("Mapping", path);
-		_pathsByHash.put(hash, path);
-		_hashesByPath.put(path, hash);
-		_lastModifiedDatesByPath.put(path, lastModified);
+		FileMapData.put(path, lastModified, hash);
 	}
 	
 	
 	@Override
 	public String getFile(Hash hash) {
-		String path = _pathsByHash.get(hash);
+		String path = FileMapData.getPath(hash);
 		if (path == null) return null;
 		return isFolder(path)
 			? null
@@ -70,13 +62,13 @@ class NormalizedFileMap implements FileMap {
 	
 	@Override
 	public Hash getHash(String path) {
-		return _hashesByPath.get(path);
+		return FileMapData.getHash(path);
 	}
 
 	
 	@Override
 	public long getLastModified(String file) {
-		Long result = _lastModifiedDatesByPath.get(file);
+		Long result = FileMapData.getLastModified(file);
 		if (result == null) throw new IllegalArgumentException("File not found in map: " + file);
 		if (result == -1) throw new IllegalArgumentException("Path mapped as a folder, not a file: " + file);
 		return result;
@@ -85,24 +77,20 @@ class NormalizedFileMap implements FileMap {
 	
 	@Override
 	public FolderContents getFolderContents(Hash hash) {
-		String path = _pathsByHash.get(hash);
+		String path = FileMapData.getPath(hash);
 		if (path == null) return null;
 		if (!isFolder(path)) return null;
 
 		String folder = path + "/";
 		
 		List<FileOrFolder> contents = new ArrayList<FileOrFolder>();
-		for (String candidate : allPaths())
+		for (String candidate : FileMapData.allPaths())
 			accumulateDirectChildren(candidate, folder, contents);
 		
 		Collections.sort(contents, new Comparator<FileOrFolder>() { @Override public int compare(FileOrFolder f1, FileOrFolder f2) {
 			return f1.name.compareTo(f2.name);
 		}});
 		
-//		FolderContents result = new FolderContents(new ImmutableArray<FileOrFolder>(contents));
-//		if (!my(FolderContentsHasher.class).hash(result).equals(hash)) throw new IllegalStateException();
-//		return result;
-
 		return new FolderContents(new ImmutableArray<FileOrFolder>(contents));
 	}
 
@@ -116,7 +104,7 @@ class NormalizedFileMap implements FileMap {
 		Hash hash = getHash(candidate);
 		result.add(isFolder(candidate)
 			? new FileOrFolder(name, hash)
-			: new FileOrFolder(name, _lastModifiedDatesByPath.get(candidate), hash) 
+			: new FileOrFolder(name, getLastModified(candidate), hash) 
 		);
 	}
 
@@ -146,22 +134,19 @@ class NormalizedFileMap implements FileMap {
 
 	
 	private boolean isFolder(String path) {
-		Long lastModified = _lastModifiedDatesByPath.get(path);
+		Long lastModified = FileMapData.getLastModified(path);
 		if (lastModified == null) return false;
 		return lastModified == -1;
 	}
 
 	
 	private Hash replaceSinglePath(String from, String to) {
-		Hash hash = _hashesByPath.remove(from);
-		if (hash == null) throw new IllegalArgumentException("Path to be replaced is not mapped: " + from);
-		_pathsByHash.remove(hash);
-		long lastModified = _lastModifiedDatesByPath.remove(from);
+		Entry entry = FileMapData.remove(from);
 		
 		if (to != null)
-			putPath(to, lastModified, hash);
+			putPath(to, entry.lastModified, entry.hash);
 		
-		return hash;
+		return entry.hash;
 	}
 	
 
@@ -169,7 +154,7 @@ class NormalizedFileMap implements FileMap {
 		from += "/";
 		if (to != null) to += "/";
 		
-		for (String candidate : allPaths())
+		for (String candidate : FileMapData.allPaths())
 			replacePrefix(candidate, from, to);
 	}
 
@@ -185,11 +170,6 @@ class NormalizedFileMap implements FileMap {
 		if (newPrefix == null) return null;
 		String relativePath = Strings.removeStart(path, prefix);
 		return newPrefix + relativePath;
-	}
-
-
-	private String[] allPaths() {
-		return _hashesByPath.keySet().toArray(new String[0]);
 	}
 
 }
