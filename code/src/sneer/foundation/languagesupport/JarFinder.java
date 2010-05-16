@@ -8,13 +8,23 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class LanguageJarFinder {
+public class JarFinder {
 
-	public static URL[] langSupportJars(File root) {
-		File langRoot = new File(root, "sneer/foundation/languagesupport");
+	public static URL[] languageSupportJars(File root) {
+		return findJars(root, "sneer/foundation/languagesupport");
+	}
+
+	
+	public static URL[] testSupportJars(File root) {
+		return findJars(root, "sneer/foundation/testsupport");
+	}
+
+	
+	private static URL[] findJars(File root, String relative) {
+		File jarRoot = new File(root, relative);
 		List<URL> jarURLs = new ArrayList<URL>();
 		LinkedList<File> folderQueue = new LinkedList<File>();
-		folderQueue.add(langRoot);
+		folderQueue.add(jarRoot);
 		while(!folderQueue.isEmpty()) {
 			File curFolder = folderQueue.removeFirst();
 			File[] curJars = curFolder.listFiles(new FileFilter() {

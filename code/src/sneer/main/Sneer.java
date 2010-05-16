@@ -4,8 +4,10 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 
-import sneer.foundation.languagesupport.LanguageJarFinder;
+import sneer.foundation.languagesupport.JarFinder;
 
 public class Sneer {
 
@@ -26,13 +28,19 @@ public class Sneer {
 	}
 	
 	private URL[] classpath() {
-		URL[] langSupportJars = LanguageJarFinder.langSupportJars(SneerCodeFolders.BIN);
-		URL[] classpath = new URL[langSupportJars.length + 2];
-		classpath[0] = toURL(SneerFolders.OWN_BIN);
-		classpath[1] = toURL(SneerCodeFolders.BIN);
-		System.arraycopy(langSupportJars, 0, classpath, 2, langSupportJars.length);
-		return classpath;
+		List<URL> result = new ArrayList<URL>();
+		result.add(toURL(SneerFolders.OWN_BIN));
+		result.add(toURL(SneerCodeFolders.BIN));
+		for (URL jar : langSupportJars())
+			result.add(jar);
+		return result.toArray(new URL[0]);
 	}
+
+
+	private URL[] langSupportJars() {
+		return JarFinder.languageSupportJars(SneerCodeFolders.BIN);
+	}
+	
 	
 	private URL toURL(File file) {
 		try {
