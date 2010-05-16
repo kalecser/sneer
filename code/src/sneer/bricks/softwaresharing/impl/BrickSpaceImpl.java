@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import sneer.bricks.expression.files.client.FileClient;
+import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -83,9 +84,9 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 			File tmpFolder = new File(tmpFolderRoot, String.valueOf(System.nanoTime()));
 			
 			try {
-				my(FileClient.class).startFolderDownload(tmpFolder, srcFolderHash.value).waitTillFinished();
-			} 
-			catch (TimeoutException e) {
+				Download download = my(FileClient.class).startFolderDownload(tmpFolder, srcFolderHash.value);
+				download.waitTillFinished();
+			} catch (TimeoutException e) {
 				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 			}
 			

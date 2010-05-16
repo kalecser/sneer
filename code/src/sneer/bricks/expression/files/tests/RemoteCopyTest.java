@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import sneer.bricks.expression.files.client.FileClient;
+import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
 import sneer.bricks.expression.files.server.FileServer;
 import sneer.bricks.expression.tuples.testsupport.pump.TuplePump;
@@ -21,11 +22,17 @@ public class RemoteCopyTest extends FileCopyTestBase {
 
 	@SuppressWarnings("unused")	private TuplePump _refToAvoidGc;
 
-
+//	{
+//		LoggerMocks.showLog = true;
+//		my(TupleLogger.class);
+//	}
+	
+	
 	@Override
 	protected void copyFileFromFileMap(final Hash hashOfContents, final File destination) throws Exception {
 		copyFromFileMap(new ClosureX<Exception>() { @Override public void run() throws IOException, TimeoutException {
-			my(FileClient.class).startFileDownload(destination, hashOfContents).waitTillFinished();
+			Download download = my(FileClient.class).startFileDownload(destination, hashOfContents);
+			download.waitTillFinished();
 		}});
 	}
 
@@ -33,7 +40,8 @@ public class RemoteCopyTest extends FileCopyTestBase {
 	@Override
 	protected void copyFolderFromFileMap(final Hash hashOfContents, final File destination) throws Exception {
 		copyFromFileMap(new ClosureX<Exception>() { @Override public void run() throws IOException, TimeoutException {
-			my(FileClient.class).startFolderDownload(destination, hashOfContents).waitTillFinished();
+			Download download = my(FileClient.class).startFolderDownload(destination, hashOfContents);
+			download.waitTillFinished();
 		}});
 	}
 

@@ -75,9 +75,12 @@ abstract class TrackSourceStrategy {
 
 	void deleteTrack(final Track rejected) {
 		my(Logger.class).log("Rejecting track: ", rejected.file());
-		Hash hash = my(FileMap.class).getHash(rejected.file());
-		my(FileMap.class).remove(rejected.file());
-		my(RejectedTracksKeeper.class).reject(hash);
+		String path = rejected.file().getAbsolutePath();
+		Hash hash = my(FileMap.class).getHash(path);
+		if (hash != null) {
+			my(FileMap.class).remove(path);
+			my(RejectedTracksKeeper.class).reject(hash);
+		}
 		markForDisposal(rejected);
 	}
 

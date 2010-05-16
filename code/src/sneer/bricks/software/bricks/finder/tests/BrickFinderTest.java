@@ -26,7 +26,7 @@ public class BrickFinderTest extends BrickTest {
 		
 		Collection<String> bricks = _subject.findBricks();
 
-		AssertUtils.assertSameContents(bricks,
+		AssertUtils.assertContents(bricks,
 			sneer.bricks.software.bricks.finder.tests.fixtures.brick1.BrickWithoutNature.class.getName(),
 			sneer.bricks.software.bricks.finder.tests.fixtures.brick2.BrickWithNature.class.getName(),
 			sneer.bricks.software.bricks.finder.tests.fixtures.nature.SomeNature.class.getName()

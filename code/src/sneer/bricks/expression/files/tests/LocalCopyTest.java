@@ -26,18 +26,15 @@ public class LocalCopyTest extends FileCopyTestBase {
 
 
 	private void copyFromFileMap(Hash hashOfContents, File destination) throws IOException {
-		File file = my(FileMap.class).getFile(hashOfContents);
-		if (file != null) {
-			copyFile(destination, file);
-			return;
-		}
-		
-		copyFolder(hashOfContents, destination);
+		FolderContents folder = my(FileMap.class).getFolderContents(hashOfContents);
+		if (folder == null)
+			copyFile(destination, new File(my(FileMap.class).getFile(hashOfContents)));
+		else
+			copyFolder(folder, destination);
 	}
 
 
-	private void copyFolder(Hash hashOfContents, File destination) throws IOException {
-		FolderContents folder = my(FileMap.class).getFolderContents(hashOfContents);
+	private void copyFolder(FolderContents folder, File destination) throws IOException {
 		my(AtomicFileWriter.class).writeAtomicallyTo(destination, -1, folder);
 	}
 

@@ -36,26 +36,30 @@ class FileMapperImpl implements FileMapper {
 
 	@Override
 	public Hash mapFile(File file) {
-		long lastModified = FileMap.getLastModified(file);
-		if (lastModified == file.lastModified())
-			return FileMap.getHash(file);
+		String path = file.getAbsolutePath();
+		long lastModified = file.lastModified();
 
-		Hash hash;
+		Hash result = FileMap.getHash(path);
+		if (result != null && lastModified == FileMap.getLastModified(path))
+			return result;
+
 		try {
-			hash = my(Crypto.class).digest(file);
+			result = my(Crypto.class).digest(file);
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "File Mapping Error", "This can happen if your file has weird characters in the name or if your disk is failing.", e);
 			return my(Crypto.class).digest(new byte[0]);
 		}
-		FileMap.putFile(file, file.lastModified(), hash);
-		return hash;
+		FileMap.putFile(path, file.lastModified(), result);
+		return result;
 	}
 
 
 	@Override
 	public Hash mapFolder(final File folder, final String... acceptedFileExtensions) throws MappingStopped, IOException {
-		Hash hash = FileMap.getHash(folder);
-		return (hash != null) ? hash : mappingFor(folder, acceptedFileExtensions).result();
+		Hash hash = FileMap.getHash(folder.getAbsolutePath());
+		return (hash != null)
+			? hash
+			: mappingFor(folder, acceptedFileExtensions).result();
 	}
 
 
@@ -130,7 +134,7 @@ class FileMapperImpl implements FileMapper {
 		private Hash mapFolder(File folder, String... acceptedFileExtensions) throws MappingStopped, IOException {
 			FolderContents contents = new FolderContents(immutable(mapFolderEntries(folder, acceptedFileExtensions)));
 			Hash hash = my(FolderContentsHasher.class).hash(contents);
-			FileMap.putFolderContents(folder, contents, hash);
+			FileMap.putFolder(folder.getAbsolutePath(), hash);
 			return hash;
 		}
 
@@ -146,10 +150,16 @@ class FileMapperImpl implements FileMapper {
 
 
 		private FileOrFolder mapFolderEntry(File fileOrFolder, String... acceptedExtensions) throws IOException, MappingStopped {
-			Hash hash = (fileOrFolder.isDirectory())
-				? mapFolder(fileOrFolder, acceptedExtensions)
-				: mapFile(fileOrFolder);
-			return new FileOrFolder(fileOrFolder.getName(), fileOrFolder.lastModified(), hash, fileOrFolder.isDirectory());
+			Hash hash;
+			String name = fileOrFolder.getName();
+			
+			if (fileOrFolder.isDirectory()) {
+				hash = mapFolder(fileOrFolder, acceptedExtensions);
+				return new FileOrFolder(name, hash);
+			}
+			
+			hash = mapFile(fileOrFolder);
+			return new FileOrFolder(name, fileOrFolder.lastModified(), hash);
 		}
 
 

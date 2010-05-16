@@ -16,7 +16,7 @@ public class ImmutableArrayTest extends BrickTest {
 	@Test
 	public void iterable() {
 		final ImmutableArray<Integer> array = new ImmutableArray<Integer>(Arrays.asList(1, 2, 3));
-		AssertUtils.assertSameContents(array, 1, 2, 3);
+		AssertUtils.assertContents(array, 1, 2, 3);
 	}
 
 	@Test
@@ -25,7 +25,7 @@ public class ImmutableArrayTest extends BrickTest {
 		final ImmutableArray<Integer> array = new ImmutableArray<Integer>(original);
 
 		original.add(4);
-		AssertUtils.assertSameContents(array, 1, 2, 3);
+		AssertUtils.assertContents(array, 1, 2, 3);
 	}
 
 	@Test
@@ -34,7 +34,7 @@ public class ImmutableArrayTest extends BrickTest {
 		final ImmutableArray<Integer> array = new ImmutableArray<Integer>(original);
 
 		original[2] = 4;
-		AssertUtils.assertSameContents(array, 1, 2, 3);
+		AssertUtils.assertContents(array, 1, 2, 3);
 	}
 
 	@Test

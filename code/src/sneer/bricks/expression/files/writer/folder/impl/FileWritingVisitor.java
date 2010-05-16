@@ -56,6 +56,7 @@ final class FileWritingVisitor implements FolderStructureVisitor {
 	
 	private void setLastModified(File file, long lastModified) {
 		try {
+			if (lastModified == -1) return;
 			if (!file.setLastModified(lastModified)) throw new IOException("Unable to set last modified time: " + file);
 		} catch (IOException e) {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.

@@ -68,7 +68,7 @@ public class GraphsTest extends BrickTest {
 		
 		List<String> cycle = new ArrayList<String>(_subject.detectCycle());
 		Collections.sort(cycle);
-		assertSameContents(cycle, "B", "C", "D");
+		assertContents(cycle, "B", "C", "D");
 	}
 
 	@Test

@@ -39,7 +39,7 @@ public class FileClientTest extends BrickTest {
 	public void fileAlreadyMappedIsNotDownloaded() throws IOException {
 		Hash hash = my(Crypto.class).digest(new byte[]{42}); 
 		File file = anySmallFile();
-		my(FileMap.class).putFile(file, file.lastModified(), hash);
+		my(FileMap.class).putFile(file.getAbsolutePath(), file.lastModified(), hash);
 
 		@SuppressWarnings("unused")
 		WeakContract contractToAvoidGc = my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {

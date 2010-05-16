@@ -14,7 +14,7 @@ public abstract class AssertUtils extends Assert {
 		Assert.assertEquals(expected, actual, 0.001f);
 	}
 
-	public static <T> void assertSameContents(Iterable<T> actual, T... expected) {
+	public static <T> void assertContents(Iterable<T> actual, T... expected) {
 		int i = 0;
 		for (T actualItem : actual) {
 			if (i == expected.length) {
@@ -26,7 +26,7 @@ public abstract class AssertUtils extends Assert {
 		assertEquals("Collections not same size", expected.length, i);
 	}
 
-	public static <T> void assertElementsInAnyOrder(Iterable<T> actual, T... expectedInAnyOrder) {
+	public static <T> void assertContentsInAnyOrder(Iterable<T> actual, T... expectedInAnyOrder) {
 		Collection<T> collection = new ArrayList<T>();
 		for (T element : actual) collection.add(element);
 		

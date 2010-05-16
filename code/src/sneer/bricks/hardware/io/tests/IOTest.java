@@ -45,11 +45,11 @@ public class IOTest extends BrickTest {
 		createTmpSubfolder();
 		createTmpFiles("file1.txt", "file2.rtf", "file3.doc", "file4.htm", "file5.txt");
 
-		assertSameContents(listFileNames(tmpFolder()), "subdirectory");
-		assertElementsInAnyOrder(listFileNames(tmpFolder(), "rtf"), "subdirectory", "file2.rtf");
-		assertElementsInAnyOrder(listFileNames(tmpFolder(), "doc"), "subdirectory", "file3.doc");
-		assertElementsInAnyOrder(listFileNames(tmpFolder(), "htm"), "subdirectory", "file4.htm");
-		assertElementsInAnyOrder(listFileNames(tmpFolder(), "txt"), "subdirectory", "file1.txt", "file5.txt");
+		assertContents(listFileNames(tmpFolder()), "subdirectory");
+		assertContentsInAnyOrder(listFileNames(tmpFolder(), "rtf"), "subdirectory", "file2.rtf");
+		assertContentsInAnyOrder(listFileNames(tmpFolder(), "doc"), "subdirectory", "file3.doc");
+		assertContentsInAnyOrder(listFileNames(tmpFolder(), "htm"), "subdirectory", "file4.htm");
+		assertContentsInAnyOrder(listFileNames(tmpFolder(), "txt"), "subdirectory", "file1.txt", "file5.txt");
 	}
 
 	private void createTmpSubfolder() {

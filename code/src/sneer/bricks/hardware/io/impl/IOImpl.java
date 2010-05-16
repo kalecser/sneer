@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
@@ -111,6 +112,7 @@ class IOImpl implements IO {
 		}
 
 		private void assertDateEquals(File file1, File file2) {
+			if (file1.isDirectory()) return; // We don't care about directory dates.
 			if (file1.lastModified() != file2.lastModified())
 				throw new IllegalStateException("Different modification dates for: '" + file1 + "' and '" + file2 + "'");
 		}
@@ -228,9 +230,11 @@ class IOImpl implements IO {
 	}
 	
 	
-	
-	
-	
-	
+	@Override
+	public Filenames filenames() {
+		return new Filenames() {
+			@Override public String separatorsToUnix(String path) { return FilenameUtils.separatorsToUnix(path); }
+		};
+	}
 	
 }

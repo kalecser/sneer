@@ -34,16 +34,16 @@ public class SetRegisterTest extends BrickTest {
 
 		@SuppressWarnings("unused") final Object changeContract = _subject.output().addReceiver(new Consumer<CollectionChange<String>>() {@Override public void consume(CollectionChange<String> change) {
 			if (change.elementsAdded().isEmpty()) return; //First time.
-			AssertUtils.assertSameContents(sorted(change.elementsAdded()), "bacon", "eggs", "spam");
+			AssertUtils.assertContents(sorted(change.elementsAdded()), "bacon", "eggs", "spam");
 			latch.open();
 		}});
 
 		assertEquals(0, _subject.output().size().currentValue().intValue());
-		assertSameContents(_sizes, 0);
+		assertContents(_sizes, 0);
 
 		_subject.addAll(Arrays.asList("spam", "eggs", "bacon"));
 		assertEquals(3, _subject.output().size().currentValue().intValue());
-		assertSameContents(_sizes, 0, 3);
+		assertContents(_sizes, 0, 3);
 		
 		latch.waitTillOpen();
 	}
@@ -57,19 +57,19 @@ public class SetRegisterTest extends BrickTest {
 		}});
 
 		assertEquals(0, _subject.output().size().currentValue().intValue());
-		assertSameContents(_sizes, 0);
+		assertContents(_sizes, 0);
 
 		_subject.add("spam");
 		assertEquals(1, _subject.output().size().currentValue().intValue());
-		assertSameContents(_sizes, 0, 1);
+		assertContents(_sizes, 0, 1);
 
 		_subject.add("eggs");
 		assertEquals(2, _subject.output().size().currentValue().intValue());
-		assertSameContents(_sizes, 0, 1, 2);
+		assertContents(_sizes, 0, 1, 2);
 
 		_subject.remove("spam");
 		assertEquals(1, _subject.output().size().currentValue().intValue());
-		assertSameContents(_sizes, 0, 1, 2, 1);
+		assertContents(_sizes, 0, 1, 2, 1);
 	}
 
 	private Iterable<String> sorted(Collection<String> elements) {

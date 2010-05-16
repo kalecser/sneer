@@ -136,7 +136,7 @@ class FileDownload extends AbstractDownload {
 
 	@Override
 	void updateFileMapWith(File tmpFile, File actualFile) {
-		my(FileMap.class).putFile(actualFile, actualFile.lastModified(), _hash);
+		my(FileMap.class).putFile(actualFile.getAbsolutePath(), actualFile.lastModified(), _hash);
 	}
 
 
@@ -178,8 +178,8 @@ class FileDownload extends AbstractDownload {
 
 	@Override
 	void copyContents(Object contents) throws IOException {
-		if (!(contents instanceof File)) throw new IOException("Wrong type of contents received. Should be File but was " + contents.getClass());
-		my(IO.class).files().copyFile((File) contents, _path);
+		if (!(contents instanceof String)) throw new IOException("Wrong type of contents received. Should be String but was " + contents.getClass());
+		my(IO.class).files().copyFile(new File((String)contents), _path);
 	}
 
 }

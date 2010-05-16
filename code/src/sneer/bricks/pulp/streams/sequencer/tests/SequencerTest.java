@@ -73,7 +73,7 @@ public class SequencerTest extends BrickTest {
 		};
 
 		feedInputSequence(input);
-		assertSameContents(_recordedSequence,
+		assertContents(_recordedSequence,
 				0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 20, 21, 600, 601, 602, -3, -2, -1,
 				Short.MAX_VALUE-2, Short.MAX_VALUE-1, (int)Short.MAX_VALUE,
 				(int)Short.MIN_VALUE, Short.MIN_VALUE+1, Short.MIN_VALUE+2);

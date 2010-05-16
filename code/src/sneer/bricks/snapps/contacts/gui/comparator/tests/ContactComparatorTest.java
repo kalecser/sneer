@@ -52,7 +52,7 @@ public class ContactComparatorTest extends BrickTest {
 		_contacts.add(falseB);
 		_contacts.add(truea);
 		
-		AssertUtils.assertSameContents(sortedList, truea, trueA, trueB, falseA, falseB);
+		AssertUtils.assertContents(sortedList, truea, trueA, trueB, falseA, falseB);
 	}
 }
 

@@ -98,19 +98,19 @@ public class ListSorterTest extends BrickTest {
 		src.add(_60);
 
 		// src = [ 20, 10, 30, 50, 40, 5, 60 ]
-		AssertUtils.assertSameContents(sortedList, _05, _10, _20, _30, _40, _50, _60);
+		AssertUtils.assertContents(sortedList, _05, _10, _20, _30, _40, _50, _60);
 
 		src.remove(_20); // src = [ 10, 30, 50, 40, 5, 60 ]
-		AssertUtils.assertSameContents(sortedList, _05, _10, _30, _40, _50, _60);
+		AssertUtils.assertContents(sortedList, _05, _10, _30, _40, _50, _60);
 
 		src.remove(_10); // src = [ 30, 50, 40, 5, 60 ]
-		AssertUtils.assertSameContents(sortedList, _05, _30, _40, _50, _60);
+		AssertUtils.assertContents(sortedList, _05, _30, _40, _50, _60);
 
 		src.removeAt(2); // src = [ 30, 50, 5, 60 ]
-		AssertUtils.assertSameContents(sortedList, _05, _30, _50, _60);
+		AssertUtils.assertContents(sortedList, _05, _30, _50, _60);
 
 		src.removeAt(3); // src = [ 30, 50, 5 ]
-		AssertUtils.assertSameContents(sortedList, _05, _30, _50);
+		AssertUtils.assertContents(sortedList, _05, _30, _50);
 	}
 
 	private Signal<Integer> signal(Register<Integer> register) {
@@ -132,19 +132,19 @@ public class ListSorterTest extends BrickTest {
 		src.add(_40);
 
 		// src = [ 30, 20, 10, 0, 40 ]
-		AssertUtils.assertSameContents(sortedList, _00, _10, _20, _30, _40);
+		AssertUtils.assertContents(sortedList, _00, _10, _20, _30, _40);
 
 		src.replace(0, _60); // src = [ 60, 20, 10, 0, 40 ]
-		AssertUtils.assertSameContents(sortedList, _00, _10, _20, _40, _60);
+		AssertUtils.assertContents(sortedList, _00, _10, _20, _40, _60);
 
 		src.replace(2, _50); // src = [ 60, 20, 50, 0, 40 ]
-		AssertUtils.assertSameContents(sortedList, _00, _20, _40, _50, _60);
+		AssertUtils.assertContents(sortedList, _00, _20, _40, _50, _60);
 
 		src.replace(4, _01); // src = [ 60, 20, 50, 0, 1 ]
-		AssertUtils.assertSameContents(sortedList, _00, _01, _20, _50, _60);
+		AssertUtils.assertContents(sortedList, _00, _01, _20, _50, _60);
 
 		src.replace(3, _05); // src = [ 60, 20, 50, 5, 1 ]
-		AssertUtils.assertSameContents(sortedList, _01, _05, _20, _50, _60);
+		AssertUtils.assertContents(sortedList, _01, _05, _20, _50, _60);
 	}	
 
 	@Test
@@ -158,23 +158,23 @@ public class ListSorterTest extends BrickTest {
 		ListSignal<Signal<Integer>> sortedList = _sorter.sort(src.output(), integerComparator(), _chooser);
 
 		assertEquals(2 , listSize(sortedList));
-		AssertUtils.assertSameContents(sortedList, _10, _20);
+		AssertUtils.assertContents(sortedList, _10, _20);
 
 		src.addAt(1, _05); // src = [ 20, 5, 10 ]
 		assertEquals(3 , listSize(sortedList));
-		AssertUtils.assertSameContents(sortedList, _05, _10, _20);
+		AssertUtils.assertContents(sortedList, _05, _10, _20);
 
 		src.add(_50); // src = [ 20, 5, 10, 50 ]
 		assertEquals(4 , listSize(sortedList));
-		AssertUtils.assertSameContents(sortedList, _05, _10, _20, _50);
+		AssertUtils.assertContents(sortedList, _05, _10, _20, _50);
 
 		src.add(_30); // src = [ 20, 5, 10, 50, 30 ] 
 		assertEquals(5 , listSize(sortedList));
-		AssertUtils.assertSameContents(sortedList, _05, _10, _20, _30, _50);
+		AssertUtils.assertContents(sortedList, _05, _10, _20, _30, _50);
 
 		src.add(_01); // src = [ 20, 5, 10, 50, 30, 1 ]
 		assertEquals(6 , listSize(sortedList));
-		AssertUtils.assertSameContents(sortedList, _01, _05, _10, _20, _30, _50);
+		AssertUtils.assertContents(sortedList, _01, _05, _10, _20, _30, _50);
 	}
 
 	private int listSize(ListSignal<Signal<Integer>> sortedList) {
@@ -209,19 +209,19 @@ public class ListSorterTest extends BrickTest {
 		src.add(_40);
 
 		// src = [ 35, 45, 15, 25, 10, 20, 30, 40 ]
-		AssertUtils.assertSameContents(sortedList, _10, s15, _20, s25, _30, s35, _40, s45);
+		AssertUtils.assertContents(sortedList, _10, s15, _20, s25, _30, s35, _40, s45);
 
 		r15.setter().consume(50); // src = [ 35, 45, 50, 25, 10, 20, 30, 40 ]
-		AssertUtils.assertSameContents(sortedList, _10, _20, s25, _30, s35, _40, s45, s15);
+		AssertUtils.assertContents(sortedList, _10, _20, s25, _30, s35, _40, s45, s15);
 
 		r25.setter().consume(5); // src = [ 35, 45, 50, 5, 10, 20, 30, 40 ]
-		AssertUtils.assertSameContents(sortedList,  s25, _10, _20, _30, s35, _40, s45, s15);
+		AssertUtils.assertContents(sortedList,  s25, _10, _20, _30, s35, _40, s45, s15);
 
 		r35.setter().consume(29); // src = [ 29, 45, 50, 25, 10, 20, 30, 40 ]
-		AssertUtils.assertSameContents(sortedList,  s25, _10, _20, s35, _30, _40, s45, s15);
+		AssertUtils.assertContents(sortedList,  s25, _10, _20, s35, _30, _40, s45, s15);
 
 		r45.setter().consume(60); // src = [ 29, 60, 50, 25, 10, 20, 30, 40 ]
-		AssertUtils.assertSameContents(sortedList,  s25, _10, _20, s35, _30, _40, s15, s45);
+		AssertUtils.assertContents(sortedList,  s25, _10, _20, s35, _30, _40, s15, s45);
 	}
 	
 	private Comparator<Signal<Integer>> integerComparator() {
