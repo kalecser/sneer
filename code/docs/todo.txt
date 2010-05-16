@@ -18,6 +18,9 @@ Kalecser =================================================
 
 Bamboo =================================================
 
+	- XStream loading in Eclipse classloader during tests - Fix
+		- Uncomment in BrickTestRunner the following line (around line 100):  //  if (name.indexOf(".impl.")...
+
 	- GUI Nature
 		- "Finish Him"
 
@@ -75,8 +78,8 @@ René =================================================
 
 Klaus =================================================
 
-	- Immutable.isImmutable(File) - return false.
-
+	- FileMapData - make static again after XStream classloader issues are solved.
+	
 	- OwnKeysImpl - Debug with leo and remove logging
 
 	- Prevalence
