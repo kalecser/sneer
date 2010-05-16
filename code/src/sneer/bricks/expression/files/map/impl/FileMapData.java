@@ -6,12 +6,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 
 
-/**
- * 
- * IMPORTANT: Folders are represented with lastModifiedDate -1.
- *
- *   
- **/
 class FileMapData {
 
 	private static final String[] EMPTY_STRING_ARRAY = new String[0];
