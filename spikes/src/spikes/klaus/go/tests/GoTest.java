@@ -1,5 +1,6 @@
 package spikes.klaus.go.tests;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -11,35 +12,8 @@ public class GoTest extends BrickTest {
 
 	private GoBoard _board;
 	
-	@Test
-	public void testSingleStoneCaptureNew() {
-		String[] setup = new String[]{
-			    "+ + + + + + + + +",
-				"+ + + + + + + + +",
-				"+ + + + x + + + +",
-				"+ + + x o x + + +",
-				"+ + + o + o + + +",
-				"+ + + + + + + + +",
-				"+ + + + + + + + +",
-				"+ + + + + + + + +",
-				"+ + + + + + + + +"};
-		_board = new ToroidalGoBoard(setup);
-		
-		assertTrue(_board.stoneAt(4, 3) != null);
-		_board.playStone(4,4);
-		assertTrue(_board.stoneAt(4, 3) == null);
-		assertCaptured(0, 1);
-		
-		_board.playStone(4,5);
-		_board.playStone(0,1);
-		
-		assertTrue(_board.stoneAt(4, 4) != null);
-		_board.playStone(4,3);
-		assertTrue(_board.stoneAt(4, 4) == null);
-		assertCaptured(1, 1);
-	}
 
-	private void assertCaptured(int black, int white) {
+	private void assertScore(int black, int white) {
 		assertSame(black, _board.blackScore().currentValue());
 		assertSame(white, _board.whiteScore().currentValue());
 	}
@@ -76,7 +50,7 @@ public class GoTest extends BrickTest {
 		
 		_board.playStone(5, 5);
 		
-		assertEquals(_board.printOut(),
+		assertEquals(
 		    " + + + + + + + + +\n" +
 			" + + + + + + + + +\n" +
 			" + + + + x x + + +\n" +
@@ -85,9 +59,11 @@ public class GoTest extends BrickTest {
 			" + + + + + x + + +\n" +
 			" + + + + + + + + +\n" +
 			" + + + + + + + + +\n" +
-			" + + + + + + + + +\n"
+			" + + + + + + + + +\n",
+			_board.printOut()
 		);
-		assertCaptured(0, 3);
+		
+		assertScore(3, 0);
 	}
 	
 	@Test
@@ -168,7 +144,7 @@ public class GoTest extends BrickTest {
 				" + + + + + + + + +\n"+
 				" + + + + + + + + +\n"
 		);
-		assertCaptured(0, 2);
+		assertScore(2, 0);
 	}
 
 	@Test
@@ -190,10 +166,38 @@ public class GoTest extends BrickTest {
 	}
 	
 	@Test
-	public void testResignByButton() {
+	public void testResign() {
 		ToroidalGoBoard subject = new ToroidalGoBoard(new String[]{});
 		subject.resign();
 		assertNull(subject.nextToPlay());
+	}
+
+	@Test
+	public void testSingleStoneCaptureScore() {
+		String[] setup = new String[]{
+			    "+ + + + + + + + +",
+				"+ + + + + + + + +",
+				"+ + + + x + + + +",
+				"+ + + x o x + + +",
+				"+ + + o + o + + +",
+				"+ + + + + + + + +",
+				"+ + + + + + + + +",
+				"+ + + + + + + + +",
+				"+ + + + + + + + +"};
+		_board = new ToroidalGoBoard(setup);
+		
+		assertTrue(_board.stoneAt(4, 3) != null);
+		_board.playStone(4,4);
+		assertTrue(_board.stoneAt(4, 3) == null);
+		assertScore(1, 0);
+		
+		_board.playStone(4,5);
+		_board.playStone(0,1);
+		
+		assertTrue(_board.stoneAt(4, 4) != null);
+		_board.playStone(4,3);
+		assertTrue(_board.stoneAt(4, 4) == null);
+		assertScore(1, 1);
 	}
 	
 	@Test
@@ -209,10 +213,47 @@ public class GoTest extends BrickTest {
 				"+ + + + + o + + +",
 				"+ + + + + + + + +"};
 		_board = new ToroidalGoBoard(setup);
-		_board.resign();
-		assertSame(2, _board.blackScore().currentValue());
-		assertSame(1, _board.whiteScore().currentValue());
+		_board.passTurn();
+		_board.passTurn();
+		assertScore(2, 1);
 	}
 
+	@Ignore
+	@Test
+	public void testDeadGroup() {
+		String[] setup = new String[]{
+			    "+ + + + + + + + +",
+				"+ + + + x x + + +",
+				"+ + + x + + x + +",
+				"+ + x + + + o x +",
+				"+ + + x + o o x +",
+				"+ + + + x o x + +",
+				"+ + + + x x x + +",
+				"+ o + + + + + + +",
+				"+ + + + + + + + +"};
+		_board = new ToroidalGoBoard(setup);
+		_board.passTurn();
+		_board.passTurn();
+//		_board.toggleDeadStone(5, 4);
+//		_board.finish();
+		assertScore(14, 0);
+		
+		setup = new String[]{
+			    "+ + + + + + + + +",
+				"+ + + + x x + + +",
+				"+ x x x + o x + +",
+				"x o + o + o o x +",
+				"+ x x x + o o x +",
+				"+ + + + x o x + +",
+				"+ + o + x x x + +",
+				"+ o + o + + + + +",
+				"+ + o + + + + + +"};
+		_board = new ToroidalGoBoard(setup);
+		_board.passTurn();
+		_board.passTurn();
+//		_board.toggleDeadStone(5, 4);
+//		_board.finish();
+		assertScore(20, 1);
+	}
 
 }

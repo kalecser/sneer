@@ -263,12 +263,12 @@ public class GoBoardPanel extends JPanel {
 		graphics.fill(stone);
 	}
 	
-	public Signal<Integer> countCapturedBlack(){
-		return _board.blackScore();
+	public Signal<Integer> scoreWhite(){
+		return _board.whiteScore();
 	}
 	
-	public Signal<Integer> countCapturedWhite(){
-		return _board.whiteScore();
+	public Signal<Integer> scoreBlack(){
+		return _board.blackScore();
 	}
 	
 	public void passTurn() {

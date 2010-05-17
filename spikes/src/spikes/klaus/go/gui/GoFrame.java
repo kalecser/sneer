@@ -42,8 +42,7 @@ public class GoFrame extends JFrame {
 		JPanel goEastPanel = new JPanel();
 		
 		goEastPanel.setLayout(new FlowLayout());
-		goEastPanel.add(new GoScorePanel(goBoardPanel.countCapturedBlack(),
-				goBoardPanel.countCapturedWhite()));
+		goEastPanel.add(new GoScorePanel(goBoardPanel.scoreBlack(), goBoardPanel.scoreWhite()));
 		
 		JSeparator space= new JSeparator(SwingConstants.VERTICAL);
 		space.setPreferredSize(new Dimension(30,0));

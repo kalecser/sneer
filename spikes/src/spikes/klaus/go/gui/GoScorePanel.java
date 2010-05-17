@@ -17,20 +17,17 @@ import sneer.foundation.lang.Functor;
 
 public class GoScorePanel extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	public GoScorePanel(Signal<Integer> countCapturedBlack, Signal<Integer> countCapturedWhite) {
+	public GoScorePanel(Signal<Integer> scoreBlack, Signal<Integer> scoreWhite) {
 		ReactiveWidgetFactory rfactory = my(ReactiveWidgetFactory.class);
 
-		TextWidget<?> newLabelBlack = rfactory.newLabel(adaptToString(countCapturedBlack));
-		TextWidget<?> newLabelWhite = rfactory.newLabel(adaptToString(countCapturedWhite));
+		TextWidget<?> newLabelBlack = rfactory.newLabel(adaptToString(scoreBlack));
+		TextWidget<?> newLabelWhite = rfactory.newLabel(adaptToString(scoreWhite));
 		
 		JSeparator space= new JSeparator(SwingConstants.VERTICAL);
 		space.setPreferredSize(new Dimension(8,0));
-		add(new JLabel("Points:"));
+		add(new JLabel("Score:"));
 		add(space);
 		add(new JLabel("Black"));
 		add(newLabelBlack.getComponent());

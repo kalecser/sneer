@@ -99,8 +99,8 @@ public class GoBoard {
 	}
 	
 	private void countCapturedStones() {
-		countCapturedStones(_blackScore, BLACK);
-		countCapturedStones(_whiteScore, WHITE);
+		countCapturedStones(_blackScore, WHITE);
+		countCapturedStones(_whiteScore, BLACK);
 	}
 
 	private void countCapturedStones(Register<Integer> counter,	StoneColor color) {
