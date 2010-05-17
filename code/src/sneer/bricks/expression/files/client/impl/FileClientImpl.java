@@ -48,30 +48,22 @@ class FileClientImpl implements FileClient {
 
 
 	private Download startDownload(final Hash hash, Producer<Download> downloadFactory) {
-		Download download;
+		Download result;
 
-		WeakReference<Download> downloadRef = downloadBy(hash);
-		if (downloadRef != null) {
-			download = downloadRef.get();
-			if (download == null) {
-				downloadCleaner(hash).run();
-				return null;
-			}
-			return download;
-		}
-
-		download = downloadFactory.produce();
 		synchronized (_downloadsByHash) {
-			_downloadsByHash.put(hash, new WeakReference<Download>(download));
+			WeakReference<Download> weakRef = _downloadsByHash.get(hash);
+			
+			if (weakRef != null) {
+				result = weakRef.get();
+				if (result != null)
+					return result;
+			}
+
+			result = downloadFactory.produce();
+			_downloadsByHash.put(hash, new WeakReference<Download>(result));
 		}
 
-		return download;
-	}
-
-
-	synchronized
-	private WeakReference<Download> downloadBy(final Hash hash) {
-		return _downloadsByHash.get(hash);
+		return result;
 	}
 
 
