@@ -158,36 +158,38 @@ public class GoBoard {
 
 	public void resign() {
 		_nextToPlay.setter().consume(null);
-		countPoints();
+		countTerritories();
 	}
 
-	private void countPoints() {
-		HashSet<Intersection> all = getIntersections();
-		HashSet<Intersection> checked = new HashSet<Intersection>();
-		int bs=0, ws=0;
+	private void countTerritories() {
+		HashSet<Intersection> pending = getIntersections();
 		
-		for (Intersection upper : all) {
-			HashSet<Intersection> smallgroup = new HashSet<Intersection>();
-			upper.fillGroupWithNeighbours(null, smallgroup);
+		while (!pending.isEmpty()) {
+			Intersection starting = pending.iterator().next();
+			
+			HashSet<Intersection> group = new HashSet<Intersection>();
+			starting.fillGroupWithNeighbours(null, group);
+			
 			boolean hasW=false, hasB=false;
 			int numEmpty=0;
-			for (Intersection lower : smallgroup)
-				if (!checked.contains(lower)) {
-					if (lower._stone==null) {
-						checked.add(lower);
-						numEmpty++;
-					} else {
-						if (lower._stone==BLACK) hasB=true;
-						if (lower._stone==WHITE) hasW=true;
-					}
-				}
-			if (hasB & !hasW) bs+=numEmpty;
-			if (hasW & !hasB) ws+=numEmpty;	
+			for (Intersection groupee : group) {
+				pending.remove(groupee);
+				if (groupee._stone == BLACK) hasB = true;
+				if (groupee._stone ==WHITE) hasW = true;
+				if (groupee.isLiberty()) numEmpty++;
+			}
+			if (hasB & !hasW) add(_blackScore, numEmpty);
+			if (!hasB & hasW) add(_whiteScore, numEmpty);
 		}
-		_blackScore.setter().consume(_blackScore.output().currentValue() + bs	);
-		_whiteScore.setter().consume(_whiteScore.output().currentValue() + ws);
+
 	}
 
+	
+	private void add(Register<Integer> register, int ammount) {
+		register.setter().consume(register.output().currentValue() + ammount);
+	}
+
+	
 	private void next() {
 		_nextToPlay.setter().consume(other(nextToPlay()));
 	}

@@ -71,7 +71,7 @@ class Intersection implements Serializable {
 		return count;
 	}
 
-	private boolean isLiberty() {
+	boolean isLiberty() {
 		return _stone == null;
 	}
 
