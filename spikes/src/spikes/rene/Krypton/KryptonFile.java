@@ -1,3 +1,5 @@
+package spikes.rene.Krypton;
+
 import java.util.Random;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
