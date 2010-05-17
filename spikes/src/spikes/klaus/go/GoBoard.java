@@ -170,21 +170,20 @@ public class GoBoard {
 			HashSet<Intersection> group = new HashSet<Intersection>();
 			starting.fillGroupWithNeighbours(null, group);
 			
-			boolean hasW=false, hasB=false;
+			boolean belongsToW=false, belongsToB=false;
 			int numEmpty=0;
 			for (Intersection groupee : group) {
 				pending.remove(groupee);
-				if (groupee._stone == BLACK) hasB = true;
-				if (groupee._stone ==WHITE) hasW = true;
+				if (groupee._stone == BLACK) belongsToB = true;
+				if (groupee._stone ==WHITE) belongsToW = true;
 				if (groupee.isLiberty()) numEmpty++;
 			}
-			if (hasB & !hasW) add(_blackScore, numEmpty);
-			if (!hasB & hasW) add(_whiteScore, numEmpty);
+			if (belongsToB & !belongsToW) add(_blackScore, numEmpty);
+			if (!belongsToB & belongsToW) add(_whiteScore, numEmpty);
 		}
-
 	}
 
-	
+
 	private void add(Register<Integer> register, int ammount) {
 		register.setter().consume(register.output().currentValue() + ammount);
 	}
