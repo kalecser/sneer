@@ -63,7 +63,7 @@ Igor ====================================================
 René =================================================
 
 	- Toroidal Go Snapp
-		- Dead groups phase - Unignore testDeadGroup
+		- Dead groups phase - Gui
 
 
 Klaus =================================================

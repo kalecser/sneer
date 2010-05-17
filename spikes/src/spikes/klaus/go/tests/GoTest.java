@@ -1,6 +1,5 @@
 package spikes.klaus.go.tests;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.software.folderconfig.tests.BrickTest;
@@ -220,7 +219,6 @@ public class GoTest extends BrickTest {
 	}
 
 
-	@Ignore
 	@Test
 	public void testDeadGroup() {
 		String[] setup = new String[]{
@@ -238,8 +236,7 @@ public class GoTest extends BrickTest {
 		_board.passTurn();
 		_board.toggleDeadStone(5, 4);
 		_board.finish();
-//		assertScore(14, 0);
-		assertScore(10, 0);
+		assertScore(14, 0);
 		
 		setup = new String[]{
 			    "+ + + + + + + + +",
@@ -256,10 +253,7 @@ public class GoTest extends BrickTest {
 		_board.passTurn();
 		_board.toggleDeadStone(5, 4);
 		_board.finish();
-//		assertScore(20, 1);
-		assertScore(12, 1);
-		
-		fail("Take captured stones into account. See commented lines above.");
+		assertScore(20, 1);
 	}
 
 }

@@ -88,7 +88,7 @@ public class GoBoard {
 	}
 	
 	
-	private HashSet<Intersection> getIntersections() {
+	private HashSet<Intersection> allIntersections() {
 		HashSet<Intersection> set = new HashSet<Intersection>();
 		
 		for (Intersection[] column: _intersections )
@@ -161,15 +161,30 @@ public class GoBoard {
 	}
 
 	private void stopAcceptingMoves() {
+		_previousSituation = copySituation();
 		_nextToPlay.setter().consume(null);
 	}
 
 	public void finish() {
+		countDeadStones();
 		countTerritories();
 	}
 	
+	private void countDeadStones() {
+		int size = _intersections.length;
+		for (int x = 0; x < size; x++) {
+			for (int y = 0; y < size; y++) {
+				if (!_intersections[x][y].isLiberty())
+					continue;
+				StoneColor previousStone = _previousSituation[x][y]._stone;
+				if (previousStone == BLACK) add(_whiteScore, 1);
+				if (previousStone == WHITE) add(_blackScore, 1);
+			}
+		}
+	}
+
 	private void countTerritories() {
-		HashSet<Intersection> pending = getIntersections();
+		HashSet<Intersection> pending = allIntersections();
 		
 		while (!pending.isEmpty()) {
 			Intersection starting = pending.iterator().next();
