@@ -40,9 +40,7 @@ Igor ====================================================
 					- Enter bug - Fix.
 					- Focus bug - Fix.
 
-	- Wusic - MusicalTasteMatcher
-		- FunctionalTest - Not necessary. Unit test is enough because there is no remoteness going on and only a single brick is involved in the logic.
-		- Buttons - Talk to Klaus
+	- Wusic - MusicalTasteMatcher Buttons - Talk to Klaus
 			- First Group: (I want this track. (Today's "Me Too"))
 				:D    
 			- Second Group: (I dont want this particular track...)
@@ -69,18 +67,22 @@ Klaus =================================================
 
 	- FileMapData - make static again after prevalence classloader issues are solved.
 	
+	- GUI Nature
+		- [Klaus] Announce to community
+	
 	- OwnKeysImpl - Debug with leo and remove logging
 
 	- Prevalence
 		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
 			- Change MusicalTasteMatcher's interface to use the contact instead of the nickname (string)
+		- [Igor] BrickStateStore: retire. Use the prevalent nature instead.
 		- Announce to community
 			- Document
-		- BrickStateStore: retire. Use the prevalent nature instead.
 
-	- GUI Nature
-		- [Klaus] Announce to community
-	
+	- Wusic - MusicalTasteMatcher
+		- Business Logic
+			- FunctionalTest not necessary. Unit test is enough because there is no remoteness going on and only a single brick is involved in the logic.
+
 	- Revise entire package structure.
 		- Remove all calls to Thread.sleep() including indirect.
 
