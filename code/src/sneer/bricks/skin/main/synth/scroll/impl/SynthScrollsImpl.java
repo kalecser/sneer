@@ -9,13 +9,13 @@ import static sneer.foundation.environments.Environments.my;
 public class SynthScrollsImpl implements SynthScrolls {
 
 	SynthScrollsImpl(){
-		my(Synth.class).loadForWussies(this.getClass());
+		my(Synth.class).load(this.getClass());
 	}
 	
 	@Override
 	public JScrollPane create() {
 		JScrollPane scroll = new JScrollPane();
-		my(Synth.class).attachForWussies(scroll);
+		my(Synth.class).attach(scroll);
 		return scroll;
 	}
 

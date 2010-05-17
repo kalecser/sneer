@@ -13,7 +13,6 @@ import javax.swing.plaf.synth.SynthLookAndFeel;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.skin.main.synth.Synth;
-import sneer.foundation.lang.Closure;
 
 class SynthImpl implements Synth {
 	
@@ -21,35 +20,18 @@ class SynthImpl implements Synth {
 	private final MetalLookAndFeel _default = new MetalLookAndFeel();
 	
 	SynthImpl(){
-		my(GuiThread.class).invokeAndWait(new Closure(){ @Override public void run() {
-			try {
-				UIManager.setLookAndFeel(_synth);
-				load(SynthImpl.class);
-				UIManager.setLookAndFeel(_default);
-			} catch (Exception e) {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-			}
-		}});
+		try {
+			UIManager.setLookAndFeel(_synth);
+			load(SynthImpl.class);
+			UIManager.setLookAndFeel(_default);
+		} catch (Exception e) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+		}
 	}
 	
 	@Override
 	public Object getDefaultProperty(String key){
 		return  _synth.getDefaults().get(key);
-	}
-	
-	@Override
-	public void notInGuiThreadLoad(final Class<?> resourceBase){
-		my(GuiThread.class).assertNotInGuiThread();
-		my(GuiThread.class).invokeAndWaitForWussies(new Closure(){ @Override public void run() {
-			load(resourceBase);
-		}});		
-	}
-
-	@Override
-	public void loadForWussies(final Class<?> resourceBase){
-		my(GuiThread.class).invokeAndWaitForWussies(new Closure(){ @Override public void run() {
-			load(resourceBase);
-		}});	
 	}
 	
 	@Override
@@ -83,35 +65,5 @@ class SynthImpl implements Synth {
 		attach(component);
 		component.setName(synthName);
 	}
-	
-	@Override
-	public void notInGuiThreadAttach(final JComponent component) {
-		my(GuiThread.class).assertNotInGuiThread();
-		my(GuiThread.class).invokeAndWait(new Closure(){ @Override public void run() {
-			attach(component);
-		}});
-	}
-	
-	@Override
-	public void notInGuiThreadAttach(final JComponent component, final String synthName) {
-		my(GuiThread.class).assertNotInGuiThread();
-		my(GuiThread.class).invokeAndWait(new Closure(){ @Override public void run() {
-			attach(component);
-			component.setName(synthName);
-		}});		
-	}
 
-	@Override
-	public void attachForWussies(final JComponent component) {
-		my(GuiThread.class).invokeAndWaitForWussies(new Closure(){ @Override public void run() {
-			attach(component);
-		}});
-	}
-
-	@Override
-	public void attachForWussies(final JComponent component, final String synthName) {
-		my(GuiThread.class).invokeAndWaitForWussies(new Closure(){ @Override public void run() {
-			attach(component, synthName);
-		}});
-	}
 }

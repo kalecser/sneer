@@ -33,8 +33,8 @@ public class ContinuationBenchmark {
 		}
 		
 		@Override
-		public List<ClassDefinition> realize(ClassDefinition classDef) {
-			return my(InterceptionEnhancer.class).realize(SomeInterceptingNature.class, classDef);
+		public List<ClassDefinition> realize(Class<?> brick, ClassDefinition classDef) {
+			return my(InterceptionEnhancer.class).realize(brick, SomeInterceptingNature.class, classDef);
 		}
 		
 	}

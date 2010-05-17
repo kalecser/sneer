@@ -16,7 +16,7 @@ class PrevalentImpl implements Prevalent {
 
 	
 	@Override
-	public List<ClassDefinition> realize(ClassDefinition classDef) {
+	public List<ClassDefinition> realize(Class<?> brick, ClassDefinition classDef) {
 		return Arrays.asList(classDef);
 	}
 

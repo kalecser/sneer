@@ -35,7 +35,7 @@ class InterceptionEnhancerImpl implements InterceptionEnhancer {
 	}
 
 	@Override
-	public List<ClassDefinition> realize(Class<? extends Interceptor> interceptorClass, final ClassDefinition classDef) {
+	public List<ClassDefinition> realize(Class<?> targetBrick, Class<? extends Interceptor> interceptorClass, final ClassDefinition classDef) {
 		final ArrayList<ClassDefinition> result = new ArrayList<ClassDefinition>();
 		try {
 			final CtClass ctClass = _classPool.makeClass(new ByteArrayInputStream(classDef.bytes));
@@ -115,6 +115,7 @@ class InterceptionEnhancerImpl implements InterceptionEnhancer {
 
 	private boolean isAccessibleInstanceMethod(CtMethod m) {
 		int modifiers = m.getModifiers();
+		if (Modifier.isAbstract(modifiers)) return false;
 		if (Modifier.isStatic(modifiers)) return false;
 		if (Modifier.isPublic(modifiers)) return true;
 		if (Modifier.isProtected(modifiers)) return true;

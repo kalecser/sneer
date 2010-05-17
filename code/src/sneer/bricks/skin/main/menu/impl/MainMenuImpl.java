@@ -17,7 +17,7 @@ class MainMenuImpl implements MainMenu {
 	private MenuGroup<JMenu> _delegate;
 	
 	MainMenuImpl(){
-		my(Synth.class).loadForWussies(this.getClass());
+		my(Synth.class).load(this.getClass());
 	}
 	
 	@Override public JMenuBar getMenuBarWidget() {

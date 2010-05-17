@@ -12,7 +12,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
 import sneer.bricks.hardware.gui.actions.Action;
-import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
@@ -34,14 +33,12 @@ import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactTextProvider;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.bricks.snapps.contacts.gui.comparator.ContactComparator;
-import sneer.foundation.lang.ByRef;
-import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class ContactsGuiImpl implements ContactsGui {
 
 	private final Synth _synth = my(Synth.class);
-	{ _synth.notInGuiThreadLoad(this.getClass()); }
+	{ _synth.load(this.getClass()); }
 
 	private final ListWidget<Contact> _contactList;
 
@@ -62,11 +59,7 @@ class ContactsGuiImpl implements ContactsGui {
 			return new Signal<?>[] { my(Stethoscope.class).isAlive(contact), contact.nickname() };
 		}});
 
-		final ByRef<ListWidget<Contact>> ref = ByRef.newInstance();
-		my(GuiThread.class).invokeAndWait(new Closure() { @Override public void run() {
-			ref.value = my(ReactiveWidgetFactory.class).newList(_sortedList, _labelProvider);
-		}});
-		_contactList = ref.value;
+		_contactList = my(ReactiveWidgetFactory.class).newList(_sortedList, _labelProvider);
 
 		my(InstrumentRegistry.class).registerInstrument(this);
 	} 
