@@ -27,13 +27,6 @@ Bamboo =================================================
 
 Igor ==================================================== 
 
-	- FileClientImpl
-		- Study the last change made to it (Downloads brick no longer returns weak refs)
-		- Use a regular Map instead of a cache map to avoid having to keep an external ref to avoid gc. Synchronize on the Map.
-		- Treat the case where the WeakRef.get() returns null (was gc'd).
-		- Eliminate duplication between startFileDownload and startFolderDownload.
-		- Ask Klaus to revise.
-
 	- WusicFunctionalTest.peersMode - It is failing intermittently on Klaus's machine (Timeout (Expected: 3 Seen: 0, 1, 2,)). Fix it in a solid way, with a clear understanding of the problem, not just trial-and-error with CustomClockTicker values.
 		- Unignore
 		
@@ -75,6 +68,9 @@ René =================================================
 
 
 Klaus =================================================
+
+	- [Igor] Revise FileClientImpl changes
+		- With your new version of FileMap, I guess FileClient.startFileDownload(File, Hash) should be removed, shouldn't it?
 
 	- FileMapData - make static again after XStream classloader issues are solved.
 	
