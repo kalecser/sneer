@@ -67,7 +67,7 @@ René =================================================
 
 Klaus =================================================
 
-	- FileMapData - make static again after XStream classloader issues are solved.
+	- FileMapData - make static again after prevalence classloader issues are solved.
 	
 	- OwnKeysImpl - Debug with leo and remove logging
 
