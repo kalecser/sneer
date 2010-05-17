@@ -25,9 +25,7 @@ Bamboo =================================================
 		- "Finish Him"
 
 
-Igor ====================================================
-
-	- hudson tests - instead of adding all the jars to the classpath, add only the jars inside foundation/languagesupport and foundation/testsupport 
+Igor ==================================================== 
 
 	- FileClientImpl
 		- Study the last change made to it (Downloads brick no longer returns weak refs)
