@@ -158,17 +158,16 @@ public class GoBoard {
 
 	public void resign() {
 		_nextToPlay.setter().consume(null);
-		countPointsR();
+		countPoints();
 	}
 
-	private void countPointsR() {
+	private void countPoints() {
 		HashSet<Intersection> all = getIntersections();
-		HashSet<Intersection> smallgroup = new HashSet<Intersection>();
 		HashSet<Intersection> checked = new HashSet<Intersection>();
 		int bs=0, ws=0;
 		
 		for (Intersection upper : all) {
-			smallgroup.clear();
+			HashSet<Intersection> smallgroup = new HashSet<Intersection>();
 			upper.fillGroupWithNeighbours(null, smallgroup);
 			boolean hasW=false, hasB=false;
 			int numEmpty=0;
