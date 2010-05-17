@@ -215,8 +215,10 @@ public class GoTest extends BrickTest {
 		_board = new ToroidalGoBoard(setup);
 		_board.passTurn();
 		_board.passTurn();
+		_board.finish();
 		assertScore(2, 1);
 	}
+
 
 	@Ignore
 	@Test
@@ -234,9 +236,10 @@ public class GoTest extends BrickTest {
 		_board = new ToroidalGoBoard(setup);
 		_board.passTurn();
 		_board.passTurn();
-//		_board.toggleDeadStone(5, 4);
-//		_board.finish();
-		assertScore(14, 0);
+		_board.toggleDeadStone(5, 4);
+		_board.finish();
+//		assertScore(14, 0);
+		assertScore(10, 0);
 		
 		setup = new String[]{
 			    "+ + + + + + + + +",
@@ -251,9 +254,12 @@ public class GoTest extends BrickTest {
 		_board = new ToroidalGoBoard(setup);
 		_board.passTurn();
 		_board.passTurn();
-//		_board.toggleDeadStone(5, 4);
-//		_board.finish();
-		assertScore(20, 1);
+		_board.toggleDeadStone(5, 4);
+		_board.finish();
+//		assertScore(20, 1);
+		assertScore(12, 1);
+		
+		fail("Take captured stones into account. See commented lines above.");
 	}
 
 }

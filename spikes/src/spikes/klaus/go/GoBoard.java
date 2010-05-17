@@ -151,16 +151,23 @@ public class GoBoard {
 		next();
 		
 		if (_previousWasPass)
-			resign();
+			stopAcceptingMoves();
 
 		_previousWasPass = true;
 	}
 
 	public void resign() {
-		_nextToPlay.setter().consume(null);
-		countTerritories();
+		stopAcceptingMoves();
 	}
 
+	private void stopAcceptingMoves() {
+		_nextToPlay.setter().consume(null);
+	}
+
+	public void finish() {
+		countTerritories();
+	}
+	
 	private void countTerritories() {
 		HashSet<Intersection> pending = getIntersections();
 		
@@ -255,5 +262,11 @@ public class GoBoard {
 	public Signal<StoneColor> nextToPlaySignal() {
 		return _nextToPlay.output();
 	}
+
+	public void toggleDeadStone(int x, int y) {
+		_intersections[x][y].toggleDeadStone();
+	}
+
+
 
 }

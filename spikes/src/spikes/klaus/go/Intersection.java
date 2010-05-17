@@ -2,6 +2,7 @@ package spikes.klaus.go;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Set;
 
 import spikes.klaus.go.GoBoard.StoneColor;
 
@@ -30,7 +31,7 @@ class Intersection implements Serializable {
 		_stone = stoneColor;
 	}
 	
-	void fillGroupWithNeighbours(StoneColor stoneColor, HashSet<Intersection> group) {
+	void fillGroupWithNeighbours(StoneColor stoneColor, Set<Intersection> group) {
 		if (group.contains(this)) return;
 		group.add(this);
 		
@@ -45,7 +46,7 @@ class Intersection implements Serializable {
 	boolean killGroupIfSurrounded(StoneColor color) {
 		if (_stone != color) return false;
 		
-		HashSet<Intersection> groupWithNeighbours = new HashSet<Intersection>();
+		Set<Intersection> groupWithNeighbours = new HashSet<Intersection>();
 		fillGroupWithNeighbours(_stone, groupWithNeighbours);
 		
 		for (Intersection intersection : groupWithNeighbours)
@@ -55,20 +56,6 @@ class Intersection implements Serializable {
 			if (intersection._stone == color) intersection._stone = null;
 		
 		return true;
-	}
-	
-	int countPoints(HashSet<Intersection> checkedStones) {
-		if (_stone != null) return 0;
-		
-		HashSet<Intersection> groupWithNeighbours = new HashSet<Intersection>();
-		fillGroupWithNeighbours(_stone, groupWithNeighbours);
-		
-		int count=0;
-		for (Intersection intersection : groupWithNeighbours) {
-			checkedStones.add(intersection);
-			if (intersection.isLiberty()) count++;
-		}
-		return count;
 	}
 
 	boolean isLiberty() {
@@ -81,6 +68,22 @@ class Intersection implements Serializable {
 		if (_stone == null) 
 			return (other._stone == null);
 		return _stone.equals(other._stone);
+	}
+
+	void toggleDeadStone() {
+		if (isLiberty()) return;
+		StoneColor colorToKill = _stone;
+		boolean killed;
+		do {
+			killed = false;
+			Set<Intersection> group = new HashSet<Intersection>();
+			fillGroupWithNeighbours(_stone, group);
+			for (Intersection intersection : group)
+				if (intersection._stone == colorToKill) {
+					intersection._stone = null;
+					killed = true;
+				}
+		} while (killed);
 	}
 
 }

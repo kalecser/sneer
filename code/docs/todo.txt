@@ -63,8 +63,7 @@ Igor ====================================================
 René =================================================
 
 	- Toroidal Go Snapp
-		- Refactor - simplify score, delete unused code
-		- Dead groups phase - Example: kiseido.com
+		- Dead groups phase - Unignore testDeadGroup
 
 
 Klaus =================================================
