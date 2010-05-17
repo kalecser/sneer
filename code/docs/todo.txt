@@ -27,6 +27,9 @@ Bamboo =================================================
 
 Igor ==================================================== 
 
+	- With your new version of FileMap, I guess FileClient.startFileDownload(File, Hash) should be removed, shouldn't it?
+		- Yes.
+
 	- WusicFunctionalTest.peersMode - It is failing intermittently on Klaus's machine (Timeout (Expected: 3 Seen: 0, 1, 2,)). Fix it in a solid way, with a clear understanding of the problem, not just trial-and-error with CustomClockTicker values.
 		- Unignore
 		
@@ -63,9 +66,6 @@ René =================================================
 
 
 Klaus =================================================
-
-	- [Igor] Revise FileClientImpl changes
-		- With your new version of FileMap, I guess FileClient.startFileDownload(File, Hash) should be removed, shouldn't it?
 
 	- FileMapData - make static again after XStream classloader issues are solved.
 	
