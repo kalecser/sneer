@@ -23,14 +23,14 @@ public class ListRegisterTest extends BrickTest {
 		}});
 
 		assertEquals(0, _subject.output().size().currentValue().intValue());
-		assertSameContents(_sizes, 0);
+		assertContents(_sizes, 0);
 
 		_subject.add("spam");
 		assertEquals(1, _subject.output().size().currentValue().intValue());
-		assertSameContents(_sizes, 0, 1);
+		assertContents(_sizes, 0, 1);
 
 		_subject.add("eggs");
 		assertEquals(2, _subject.output().size().currentValue().intValue());
-		assertSameContents(_sizes, 0, 1, 2);
+		assertContents(_sizes, 0, 1, 2);
 	}
 }

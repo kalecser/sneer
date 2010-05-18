@@ -79,10 +79,12 @@ public abstract class BrickTestWithLogger extends BrickTestBase {
 			"$Proxy",
 			"org.junit",
 			"org.eclipse.jdt.internal",
+			"org.prevayler",
+			"sneer.bricks.hardware.io.prevalence.nature.impl",
 			"sneer.foundation.testsupport",
 			"sneer.foundation.brickness.testsupport",
-			"sneer.tests.adapters.ProxyInEnvironment",
-			"sneer.foundation.environments.Environments"
+			"sneer.foundation.environments.Environments",
+			"sneer.tests.adapters.ProxyInEnvironment"
 		);
 	}
 

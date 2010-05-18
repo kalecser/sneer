@@ -8,13 +8,23 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class LanguageJarFinder {
+public class JarFinder {
 
-	public static File[] langSupportJarFiles(File root) {
-		File langRoot = new File(root, "sneer/foundation/languagesupport");
-		List<File> jarFiles = new ArrayList<File>();
+	public static URL[] languageSupportJars(File root) {
+		return findJars(root, "sneer/foundation/languagesupport");
+	}
+
+	
+	public static URL[] testSupportJars(File root) {
+		return findJars(root, "sneer/foundation/testsupport");
+	}
+
+	
+	private static URL[] findJars(File root, String relative) {
+		File jarRoot = new File(root, relative);
+		List<URL> jarURLs = new ArrayList<URL>();
 		LinkedList<File> folderQueue = new LinkedList<File>();
-		folderQueue.add(langRoot);
+		folderQueue.add(jarRoot);
 		while(!folderQueue.isEmpty()) {
 			File curFolder = folderQueue.removeFirst();
 			File[] curJars = curFolder.listFiles(new FileFilter() {
@@ -24,7 +34,7 @@ public class LanguageJarFinder {
 				}
 			});
 			for (File curJar : curJars) {
-				jarFiles.add(curJar);
+				jarURLs.add(toURL(curJar));
 			}
 			File[] subFolders = curFolder.listFiles(new FileFilter() {
 				@Override
@@ -36,16 +46,7 @@ public class LanguageJarFinder {
 				folderQueue.add(subFolder);
 			}
 		}
-		return jarFiles.toArray(new File[jarFiles.size()]);
-	}
-
-	public static URL[] langSupportJarURLs(File root) {
-		File[] langSupportFiles = langSupportJarFiles(root);
-		URL[] langSupportURLs = new URL[langSupportFiles.length];
-		for (int fileIdx = 0; fileIdx < langSupportFiles.length; fileIdx++) {
-			langSupportURLs[fileIdx] = toURL(langSupportFiles[fileIdx]);
-		}
-		return langSupportURLs;
+		return jarURLs.toArray(new URL[jarURLs.size()]);
 	}
 	
 	private static URL toURL(File file) {

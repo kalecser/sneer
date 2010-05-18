@@ -7,10 +7,10 @@ import static spikes.klaus.go.GoBoard.StoneColor.WHITE;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import sneer.bricks.hardware.ram.deepcopy.DeepCopier;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.pulp.serialization.DeepCopier;
 
 public class GoBoard {
 
@@ -88,7 +88,7 @@ public class GoBoard {
 	}
 	
 	
-	private HashSet<Intersection> getIntersections() {
+	private HashSet<Intersection> allIntersections() {
 		HashSet<Intersection> set = new HashSet<Intersection>();
 		
 		for (Intersection[] column: _intersections )
@@ -99,8 +99,8 @@ public class GoBoard {
 	}
 	
 	private void countCapturedStones() {
-		countCapturedStones(_blackScore, BLACK);
-		countCapturedStones(_whiteScore, WHITE);
+		countCapturedStones(_blackScore, WHITE);
+		countCapturedStones(_whiteScore, BLACK);
 	}
 
 	private void countCapturedStones(Register<Integer> counter,	StoneColor color) {
@@ -151,44 +151,66 @@ public class GoBoard {
 		next();
 		
 		if (_previousWasPass)
-			resign();
+			stopAcceptingMoves();
 
 		_previousWasPass = true;
 	}
 
 	public void resign() {
+		stopAcceptingMoves();
+	}
+
+	private void stopAcceptingMoves() {
+		_previousSituation = copySituation();
 		_nextToPlay.setter().consume(null);
-		countPointsR();
 	}
 
-	private void countPointsR() {
-		HashSet<Intersection> all = getIntersections();
-		HashSet<Intersection> smallgroup = new HashSet<Intersection>();
-		HashSet<Intersection> checked = new HashSet<Intersection>();
-		int bs=0, ws=0;
-		
-		for (Intersection upper : all) {
-			smallgroup.clear();
-			upper.fillGroupWithNeighbours(null, smallgroup);
-			boolean hasW=false, hasB=false;
-			int numEmpty=0;
-			for (Intersection lower : smallgroup)
-				if (!checked.contains(lower)) {
-					if (lower._stone==null) {
-						checked.add(lower);
-						numEmpty++;
-					} else {
-						if (lower._stone==BLACK) hasB=true;
-						if (lower._stone==WHITE) hasW=true;
-					}
-				}
-			if (hasB & !hasW) bs+=numEmpty;
-			if (hasW & !hasB) ws+=numEmpty;	
+	public void finish() {
+		countDeadStones();
+		countTerritories();
+	}
+	
+	private void countDeadStones() {
+		int size = _intersections.length;
+		for (int x = 0; x < size; x++) {
+			for (int y = 0; y < size; y++) {
+				if (!_intersections[x][y].isLiberty())
+					continue;
+				StoneColor previousStone = _previousSituation[x][y]._stone;
+				if (previousStone == BLACK) add(_whiteScore, 1);
+				if (previousStone == WHITE) add(_blackScore, 1);
+			}
 		}
-		_blackScore.setter().consume(_blackScore.output().currentValue() + bs	);
-		_whiteScore.setter().consume(_whiteScore.output().currentValue() + ws);
 	}
 
+	private void countTerritories() {
+		HashSet<Intersection> pending = allIntersections();
+		
+		while (!pending.isEmpty()) {
+			Intersection starting = pending.iterator().next();
+			
+			HashSet<Intersection> group = new HashSet<Intersection>();
+			starting.fillGroupWithNeighbours(null, group);
+			
+			boolean belongsToW=false, belongsToB=false;
+			int numEmpty=0;
+			for (Intersection groupee : group) {
+				pending.remove(groupee);
+				if (groupee._stone == BLACK) belongsToB = true;
+				if (groupee._stone ==WHITE) belongsToW = true;
+				if (groupee.isLiberty()) numEmpty++;
+			}
+			if (belongsToB & !belongsToW) add(_blackScore, numEmpty);
+			if (!belongsToB & belongsToW) add(_whiteScore, numEmpty);
+		}
+	}
+
+
+	private void add(Register<Integer> register, int ammount) {
+		register.setter().consume(register.output().currentValue() + ammount);
+	}
+
+	
 	private void next() {
 		_nextToPlay.setter().consume(other(nextToPlay()));
 	}
@@ -255,5 +277,11 @@ public class GoBoard {
 	public Signal<StoneColor> nextToPlaySignal() {
 		return _nextToPlay.output();
 	}
+
+	public void toggleDeadStone(int x, int y) {
+		_intersections[x][y].toggleDeadStone();
+	}
+
+
 
 }

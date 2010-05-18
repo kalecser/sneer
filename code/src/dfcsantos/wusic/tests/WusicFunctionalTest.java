@@ -239,7 +239,7 @@ public class WusicFunctionalTest extends BrickTest {
 
 		File[] novelties = my(TracksFolderKeeper.class).noveltiesFolder().listFiles();
 		assertEquals(2, novelties.length);
-		assertElementsInAnyOrder(trackNames(keptTracks), trackNames(novelties).toArray(new String[0]));
+		assertContentsInAnyOrder(trackNames(keptTracks), trackNames(novelties).toArray(new String[0]));
 
 		crash(remote);
 	}

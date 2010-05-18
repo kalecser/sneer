@@ -2,70 +2,100 @@ package sneer.bricks.expression.files.map.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.File;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.junit.Test;
 
 import sneer.bricks.expression.files.map.FileMap;
+import sneer.bricks.expression.files.protocol.FileOrFolder;
+import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.tests.BrickTest;
 
 public class FileMapTest extends BrickTest {
 
 	private final FileMap _subject = my(FileMap.class);
 
+	
 	@Test
 	public void fileMapping() {
-		File file = anySmallFile();
 		Hash hash = hash(42);
 		
-		Map<Hash, File> banana = new ConcurrentHashMap<Hash, File>();
-		banana.put(hash, file);
-		assertEquals(file, banana.get(hash));
-		
-		_subject.putFile(file, hash);
-		assertEquals(file,_subject.getFile(hash));
+		_subject.putFile("hello.txt", 1234, hash);
+		assertEquals("hello.txt", _subject.getFile(hash));
+		assertEquals(hash, _subject.getHash("hello.txt"));
+		assertEquals(1234, _subject.getLastModified("hello.txt"));
 
-		_subject.remove(file);
+		_subject.remove("hello.txt");
 		assertNull(_subject.getFile(hash));
+		assertNull(_subject.getHash("hello.txt"));
 	}
 
+	
 	@Test
 	public void rename() {
-		_subject.putFile(new File("folder/sub/file1.txt"),	41, hash(1));
-		_subject.putFile(new File("folder/sub/file2.txt"),	42, hash(2));
-		_subject.putFile(new File("folder/file3.txt"),		43, hash(3));
-		_subject.putFile(new File("folder/file4.txt"),		44, hash(4));
-		_subject.putFile(new File("folder2/file5.txt"),		45, hash(5));
-
-		_subject.rename(new File("folder"), new File("newFolder"));
-
-		assertFileWasRenamed("newFolder/sub/file1.txt",	41, hash(1));
-		assertFileWasRenamed("newFolder/sub/file2.txt",	42, hash(2));
-		assertFileWasRenamed("newFolder/file3.txt",		43, hash(3));
-		assertFileWasRenamed("newFolder/file4.txt",		44, hash(4));
-
-		assertNull(_subject.getHash(new File("newFolder/file5.txt")));
-
-		_subject.rename(new File("newFolder/sub"), new File("newFolder/newSub"));
-
-		assertFileWasRenamed("newFolder/newSub/file1.txt", 41, hash(1));
-		assertFileWasRenamed("newFolder/newSub/file2.txt", 42, hash(2));
+		populateSubject();
+		
+		_subject.rename("1/1", "1/1b");
+		
+		assertNull(_subject.getHash("1/1/1"));
+		assertNull(_subject.getHash("1/1/2"));
+		assertEquals(hash( 11), _subject.getHash("1/1b"));
+		assertEquals(hash(117), _subject.getHash("1/1b/7"));
+		assertEquals(hash(118), _subject.getHash("1/1b/8"));
+		assertEquals(hash(121), _subject.getHash("1/2/1"));
+		assertEquals(hash(131), _subject.getHash("1/3/1"));
+		assertEquals(117, _subject.getLastModified("1/1b/7"));
+		assertEquals(118, _subject.getLastModified("1/1b/8"));
+		assertEquals(121, _subject.getLastModified("1/2/1"));
+		assertEquals(131, _subject.getLastModified("1/3/1"));
 	}
 
-	private void assertFileWasRenamed(String fileName, int lastModified, Hash hash) {
-		File file = new File(fileName);
-		assertEquals(hash, _subject.getHash(file));
-		assertEquals(lastModified, _subject.getLastModified(file));
+	
+	@Test
+	public void remove() {
+		populateSubject();
+		
+		assertNotNull(_subject.getHash("1/1"));
+		assertNotNull(_subject.getHash("1/1/7"));
+		assertNotNull(_subject.getHash("1/1/8"));
+
+		_subject.remove("1/1");
+		
+		assertNull(_subject.getHash("1/1"));
+		assertNull(_subject.getHash("1/1/7"));
+		assertNull(_subject.getHash("1/1/8"));
 	}
 
-	private File anySmallFile() {
-		return my(ClassUtils.class).classFile(getClass());
+	
+	@Test
+	public void getFolderContents() {
+		populateSubject();
+		
+		FolderContents folder = _subject.getFolderContents(hash(1));
+		assertContents(folder.contents,
+			new FileOrFolder("1", hash(11))
+		);
+		
+		folder = _subject.getFolderContents(hash(11));
+		assertContents(folder.contents,
+			new FileOrFolder("7", 117, hash(117)),
+			new FileOrFolder("8", 118, hash(118)),
+			new FileOrFolder("9",      hash(119))
+		);
+		
 	}
+
+
+	private void populateSubject() {
+		_subject.putFile(  "1/1/7", 117, hash(117));
+		_subject.putFile(  "1/1/8", 118, hash(118));
+		_subject.putFolder("1/1/9",      hash(119));
+		_subject.putFolder("1/1"  ,      hash( 11));
+		_subject.putFolder("1"    ,      hash(  1));
+		_subject.putFile(  "1/2/1", 121, hash(121));
+		_subject.putFile(  "1/3/1", 131, hash(131));
+	}
+
 
 	private Hash hash(int b) {
 		return my(Crypto.class).digest(new byte[] { (byte) b });

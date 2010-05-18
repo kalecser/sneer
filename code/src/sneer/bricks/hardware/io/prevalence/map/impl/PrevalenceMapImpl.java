@@ -16,7 +16,7 @@ class PrevalenceMapImpl implements PrevalenceMap {
 
 	
 	@Override
-	public <T> T register(T object) {
+	public void register(Object object) {
 		checkInsidePrevalence(object);
 		
 		if (_idsByObject.containsKey(object))
@@ -25,7 +25,6 @@ class PrevalenceMapImpl implements PrevalenceMap {
 		long id = _nextId++;
 		_idsByObject.put(object, id);
 		_objectsById.put(id, object);
-		return object;
 	}
 
 	

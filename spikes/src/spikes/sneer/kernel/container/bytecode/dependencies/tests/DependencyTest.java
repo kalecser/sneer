@@ -21,7 +21,7 @@ public class DependencyTest extends BrickTest {
 	public void testFindDependencies() throws IOException {
 		
 		List<String> dependencies = my(DependencyFinder.class).findDependencies(classInputStreamFor(Foo.class));
-		AssertUtils.assertSameContents(dependencies, "java.util.Map", "java.util.Set");
+		AssertUtils.assertContents(dependencies, "java.util.Map", "java.util.Set");
 		
 	}
 

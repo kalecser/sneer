@@ -91,7 +91,7 @@ class TrackExchangeImpl implements TrackExchange {
 
 
 	private void cleanOldMapping() {
-		my(FileMap.class).remove(_currentTracksFolder);
+		my(FileMap.class).remove(_currentTracksFolder.getAbsolutePath());
 		_currentTracksFolder = null;
 	}
 

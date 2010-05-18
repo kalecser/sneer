@@ -23,9 +23,9 @@ class GuidedTour {
 
 
 	private void showContents(Hash hashOfContents) throws IOException {
-		File file = my(FileMap.class).getFile(hashOfContents);
+		String file = my(FileMap.class).getFile(hashOfContents);
 		if (file != null) {
-			showFile(file);
+			showFile(new File(file));
 			return;
 		}
 

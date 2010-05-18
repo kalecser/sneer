@@ -56,10 +56,9 @@ class BrickImplLoader {
 	}
 
 	private ClassLoaderForPackage implClassLoaderFor(final String brickName) throws ClassNotFoundException {
-		ClassLoaderForPackage implClassLoader = _implClassLoaders.get(brickName, new ProducerX<ClassLoaderForPackage, ClassNotFoundException>() {  @Override public ClassLoaderForPackage produce() throws ClassNotFoundException {
+		return _implClassLoaders.get(brickName, new ProducerX<ClassLoaderForPackage, ClassNotFoundException>() {  @Override public ClassLoaderForPackage produce() throws ClassNotFoundException {
 			return newImplClassLoaderFor(apiClassLoader().loadClass(brickName));
 		}});
-		return implClassLoader;
 	}
 	
 	Class<?> loadLibClassFor(String brick, String klass) throws ClassNotFoundException {

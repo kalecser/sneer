@@ -71,10 +71,11 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 
 	private Object getContents(FileRequest request) {
-		Object response = my(FileMap.class).getFile(request.hashOfContents);
-		return response == null
-			? my(FileMap.class).getFolderContents(request.hashOfContents)
-			: response;
+		Object response = my(FileMap.class).getFolderContents(request.hashOfContents);
+		if (response != null) return response;
+		
+		String path = my(FileMap.class).getFile(request.hashOfContents);
+		return path == null ? null : new File(path);
 	}
 
 
@@ -83,10 +84,10 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 			return newFolderContents(response);
 
 		if (response instanceof File) {
-			return newFileContents((File) response, request);
+			return newFileContents((File)response, request);
 		}
 
-		throw new IllegalStateException("I don know how to obtain a tuple from type: " + response.getClass());
+		throw new IllegalStateException("I dont know how to obtain a tuple from type: " + response.getClass());
 	}
 
 

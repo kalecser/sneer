@@ -10,4 +10,6 @@ public interface LanguageRegistry {
 
 	Language languageByFileExtension(String fileExtension);
 
+	void addLanguage(String fileExtension, LanguageCompiler compiler);
+
 }

@@ -17,7 +17,7 @@ import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.environments.ProxyInEnvironment;
-import sneer.foundation.languagesupport.LanguageJarFinder;
+import sneer.foundation.languagesupport.JarFinder;
 import sneer.tests.SovereignCommunity;
 import sneer.tests.SovereignParty;
 import sneer.tests.adapters.impl.SneerPartyApiClassLoaderImpl;
@@ -103,7 +103,7 @@ public class SneerCommunity implements SovereignCommunity {
 	}
 
 	private URLClassLoader apiClassLoader(File privateBin, File sharedBin, final String name) {
-		URL[] langJars = LanguageJarFinder.langSupportJarURLs(sharedBin);
+		URL[] langJars = JarFinder.languageSupportJars(sharedBin);
 		URL[] classPath = new URL[langJars.length + 2];
 		classPath[0] = toURL(privateBin);
 		classPath[1] = toURL(sharedBin);

@@ -2,7 +2,6 @@ package sneer.bricks.softwaresharing.demolisher.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.foundation.lang.arrays.ImmutableArray;
+import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 class BrickFilter {
 
@@ -22,13 +22,14 @@ class BrickFilter {
 		FolderContents packageContents = packageContents(hashOfPackage);
 		FolderContents brickContents = filterOtherBricksOutOf(packageContents);
 		
+		@SuppressWarnings("unused")
 		Hash result = brickContents.contents.length() == packageContents.contents.length()
 			? hashOfPackage
 			: my(FolderContentsHasher.class).hash(brickContents);
 		
-		FileMap.putFolderContents(new File("BogusFileBecauseBrickMappingRemovalIsNotImplementedYet"), brickContents, result);
-
-		return result;
+		//FileMap.putFolderContents(new File("BogusFileBecauseBrickMappingRemovalIsNotImplementedYet"), brickContents, result);
+		//return result;
+		throw new NotImplementedYet();
 	}
 
 

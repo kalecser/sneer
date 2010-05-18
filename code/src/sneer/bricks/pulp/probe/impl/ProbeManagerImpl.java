@@ -70,8 +70,8 @@ class ProbeManagerImpl implements ProbeManager {
 	private Object desserialize(byte[] packet, Contact contact) {
 		try {
 			return Serializer.deserialize(packet);
-		} catch (ClassNotFoundException e) {
-			my(BlinkingLights.class).turnOn(LightType.ERROR, "Unknown Tuple class received from " + contact, "Your peer might be running a brick version you don't have.", e, 30000);
+		} catch (Exception e) {
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error receiving tuple from " + contact, "Your peer might be running a brick version you don't have.", e, 30000);
 			return null;
 		}
 	}

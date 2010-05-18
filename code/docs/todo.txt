@@ -18,27 +18,20 @@ Kalecser =================================================
 
 Bamboo =================================================
 
+	- Prevalence loading impls in API classloader during tests - Fix
+		- Uncomment in BrickTestRunner the following line (around line 100):  //  if (name.indexOf(".impl.")...
+
 	- GUI Nature
 		- "Finish Him"
 
 
-Igor ====================================================
+Igor ==================================================== 
 
-	- Fixed by Klaus: Find out cause of TupleSpaceTest.subscriptionRemoval()'s intermittence
-
-	- FileClientImpl
-		- Study the last change made to it (Downloads brick no longer returns weak refs)
-		- Use a regular Map instead of a cache map to avoid having to keep an external ref to avoid gc. Synchronize on the Map.
-		- Treat the case where the WeakRef.get() returns null (was gc'd).
-		- Eliminate duplication between startFileDownload and startFolderDownload.
-		- Ask Klaus to revise.
+	- With your new version of FileMap, I guess FileClient.startFileDownload(File, Hash) should be removed, shouldn't it?
+		- Yes.
 
 	- WusicFunctionalTest.peersMode - It is failing intermittently on Klaus's machine (Timeout (Expected: 3 Seen: 0, 1, 2,)). Fix it in a solid way, with a clear understanding of the problem, not just trial-and-error with CustomClockTicker values.
 		- Unignore
-		
-	- Wusic - TrackDownloader:
-		- Download candidate from folder that is not being downloaded gets +0.1
-		- Download candidate from peer   that is not being downloaded gets +0.1 (cumulative with folder bonus above)
 		
 	- Chat
 		- Fabio's One-on-one Chat - Incorporate
@@ -47,9 +40,7 @@ Igor ====================================================
 					- Enter bug - Fix.
 					- Focus bug - Fix.
 
-	- Wusic - MusicalTasteMatcher
-		- FunctionalTest - Not necessary. Unit test is enough because there is no remoteness going on and only a single brick is involved in the logic.
-		- Buttons - Talk to Klaus
+	- Wusic - MusicalTasteMatcher Buttons - Talk to Klaus
 			- First Group: (I want this track. (Today's "Me Too"))
 				:D    
 			- Second Group: (I dont want this particular track...)
@@ -69,25 +60,29 @@ Igor ====================================================
 René =================================================
 
 	- Toroidal Go Snapp
-		- Refactor - simplify score, delete unused code
-		- Dead groups phase - Example: kiseido.com
+		- Dead groups phase - Gui
 
 
 Klaus =================================================
 
-	- OwnKeysImpl - Debug with leo and remove logging
-
-	- Prevalence
-		- Refactor Bubble
-		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
-			- Change MusicalTasteMatcher's interface to use the contact instead of the nickname (string)
-		- Announce to community
-			- Document
-		- BrickStateStore: retire. Use the prevalent nature instead.
-
+	- FileMapData - make static again after prevalence classloader issues are solved.
+	
 	- GUI Nature
 		- [Klaus] Announce to community
 	
+	- OwnKeysImpl - Debug with leo and remove logging
+
+	- Prevalence
+		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
+			- Change MusicalTasteMatcher's interface to use the contact instead of the nickname (string)
+		- [Igor] BrickStateStore: retire. Use the prevalent nature instead.
+		- Announce to community
+			- Document
+
+	- Wusic - MusicalTasteMatcher
+		- Business Logic
+			- FunctionalTest not necessary. Unit test is enough because there is no remoteness going on and only a single brick is involved in the logic.
+
 	- Revise entire package structure.
 		- Remove all calls to Thread.sleep() including indirect.
 

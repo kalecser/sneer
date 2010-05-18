@@ -6,7 +6,7 @@ public class TestTuple extends Tuple {
 
 	public final int intValue;
 	
-	TestTuple(int intValue_) {
+	public TestTuple(int intValue_) {
 		intValue = intValue_;
 	}
 	

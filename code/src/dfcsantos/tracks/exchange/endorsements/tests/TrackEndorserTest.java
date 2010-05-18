@@ -46,7 +46,7 @@ public class TrackEndorserTest extends BrickTest {
 		}});
 
 		checking(new Expectations(){{
-			oneOf(_fileMap).getFile(hash); will(returnValue(track));
+			oneOf(_fileMap).getFile(hash); will(returnValue(track.getAbsolutePath()));
 		}});
 
 		my(TracksFolderKeeper.class).setSharedTracksFolder(tmpFolder());

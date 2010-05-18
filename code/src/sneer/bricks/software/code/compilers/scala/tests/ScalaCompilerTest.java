@@ -11,6 +11,7 @@ import sneer.bricks.software.code.compilers.CompilationError;
 import sneer.bricks.software.code.compilers.Language;
 import sneer.bricks.software.code.compilers.LanguageRegistry;
 import sneer.bricks.software.code.compilers.Result;
+import sneer.bricks.software.code.compilers.scala.ScalaCompiler;
 import sneer.bricks.software.code.compilers.tests.LanguageCompilerTestBase;
 
 @Ignore
@@ -18,6 +19,7 @@ public class ScalaCompilerTest extends LanguageCompilerTestBase {
 
 	@Override
 	protected Language language() {
+		my(ScalaCompiler.class);
 		return my(LanguageRegistry.class).languageByFileExtension("scala");
 	}
 

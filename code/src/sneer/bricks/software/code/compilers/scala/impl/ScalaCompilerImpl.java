@@ -1,5 +1,7 @@
 package sneer.bricks.software.code.compilers.scala.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,11 +14,17 @@ import scala.tools.nsc.reporters.Reporter;
 import scala.tools.nsc.util.Position;
 import scala.tools.nsc.util.SourceFile;
 import sneer.bricks.software.code.compilers.CompilationError;
+import sneer.bricks.software.code.compilers.LanguageRegistry;
 import sneer.bricks.software.code.compilers.Result;
 import sneer.bricks.software.code.compilers.scala.ScalaCompiler;
 
 public class ScalaCompilerImpl implements ScalaCompiler {
 
+	{
+		my(LanguageRegistry.class).addLanguage("scala", this);
+	}
+	
+	
 	@Override
 	public Result compile(Collection<File> sourceFiles, File destination, File... classpath) {
         CollectingReporter reporter = new CollectingReporter();

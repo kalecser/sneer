@@ -34,7 +34,7 @@ public class FileMapperTest extends BrickTest {
 			return fileOrFolder.name;
 		}});
 
-		assertElementsInAnyOrder(names, "directory1", "directory2", "track4.txt", "track5.txt");
+		assertContentsInAnyOrder(names, "directory1", "directory2", "track4.txt", "track5.txt");
 	}
 
 	@Test (timeout = 3000)
@@ -45,7 +45,7 @@ public class FileMapperTest extends BrickTest {
 		final Hash hashOfFile = my(Crypto.class).digest(fixture("directory1/track1.txt"));
 		assertNotNull(_fileMap.getFile(hashOfFile));
 
-		_fileMap.remove(fixturesFolder());
+		_fileMap.remove(fixturesFolder().getAbsolutePath());
 		assertNull(_fileMap.getFolderContents(hashOfFolder));
 		assertNull(_fileMap.getFile(hashOfFile));
 	}

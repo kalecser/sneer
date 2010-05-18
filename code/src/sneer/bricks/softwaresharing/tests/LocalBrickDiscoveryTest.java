@@ -51,7 +51,7 @@ public class LocalBrickDiscoveryTest extends BrickTest {
 		Collection<String> names = my(CollectionUtils.class).map(singleVersion.files(), new Functor<FileVersion, String>() { @Override public String evaluate(FileVersion file) {
 			return file.name();
 		}});
-		AssertUtils.assertSameContents(names, expectedFileNames);
+		AssertUtils.assertContents(names, expectedFileNames);
 	}
 
 	

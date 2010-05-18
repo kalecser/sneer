@@ -10,12 +10,14 @@ import sneer.bricks.software.code.compilers.CompilationError;
 import sneer.bricks.software.code.compilers.Language;
 import sneer.bricks.software.code.compilers.LanguageRegistry;
 import sneer.bricks.software.code.compilers.Result;
+import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.compilers.tests.LanguageCompilerTestBase;
 
 public class JavaCompilerTest extends LanguageCompilerTestBase {
 
 	@Override
 	protected Language language() {
+		my(JavaCompiler.class);
 		return my(LanguageRegistry.class).languageByFileExtension("java");
 	}
 

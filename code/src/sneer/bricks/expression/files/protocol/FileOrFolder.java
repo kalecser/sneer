@@ -10,11 +10,18 @@ public class FileOrFolder extends Tuple {
 	public final Hash hashOfContents;
 	public final boolean isFolder;
 
-	public FileOrFolder(String name_, long lastModified_, Hash hashOfContents_, boolean isFolder_) {
+	public FileOrFolder(String name_, long lastModified_, Hash hashOfContents_) {
 		name = name_;
 		lastModified = lastModified_;
 		hashOfContents = hashOfContents_;
-		isFolder = isFolder_;
+		isFolder = false;
+	}
+
+	public FileOrFolder(String name_, Hash hashOfContents_) {
+		name = name_;
+		lastModified = -1;
+		hashOfContents = hashOfContents_;
+		isFolder = true;
 	}
 
 }

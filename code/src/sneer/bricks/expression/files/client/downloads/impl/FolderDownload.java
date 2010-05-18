@@ -83,8 +83,8 @@ class FolderDownload extends AbstractDownload {
 
 	@Override
 	void updateFileMapWith(File tmpFolder, File actualFolder) {
-		my(FileMap.class).rename(tmpFolder, actualFolder);
-		my(FileMap.class).putFolderContents(actualFolder, _contentsReceived, _hash);
+		my(FileMap.class).putFolder(tmpFolder.getAbsolutePath(), _hash);
+		my(FileMap.class).rename(tmpFolder.getAbsolutePath(), actualFolder.getAbsolutePath());
 	}
 
 

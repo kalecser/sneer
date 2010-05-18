@@ -63,7 +63,7 @@ public abstract class FileCopyTestBase extends BrickTest {
 		@SuppressWarnings("unused")	WeakContract refToAvoidGc =
 			my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>(){@Override public void consume(CollectionChange<Light> deltas) {
 				if (!deltas.elementsAdded().isEmpty())
-					fail();
+					deltas.elementsAdded().iterator().next().error().printStackTrace();
 			}});
 
 		File copy = newTmpFile();

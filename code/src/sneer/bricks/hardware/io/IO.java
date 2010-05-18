@@ -17,6 +17,7 @@ public interface IO {
 	void crash(Closeable closeable);
 	
 	Files files();
+	Filenames filenames();
 	FileFilters fileFilters();
 	Streams streams();
 	
@@ -66,6 +67,12 @@ public interface IO {
 
 		void assertSameContents(File file1, File file2) throws IOException;
 	}
+
+	
+	interface Filenames {
+		String separatorsToUnix(String path);
+	}
+	
 	
 	interface Streams {
 		String toString(InputStream input) throws IOException;

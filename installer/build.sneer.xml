@@ -10,7 +10,6 @@
 
 	<property name="sneer.home" location="../code" />
 	<property name="sneer.src" location="../code/src" />
-	<property name="sneer.lib" location="../code/src" />
 	<property name="sneer.bin" location="../code/bin" />
 
 	<path id="classpath">
@@ -18,8 +17,17 @@
 		<fileset dir="${sneer.src}">
 			<include name='**/*.jar' />
 		</fileset>
-		<fileset dir="${sneer.lib}">
+		<fileset dir="lib">
 			<include name='**/*.jar' />
+		</fileset>
+	</path>
+
+	<path id="test-classpath">
+		<pathelement path="${bin.dir}"/>
+		<fileset dir="${sneer.src}">
+			<include name='sneer/foundation/languagesupport/**/*.jar' />
+			<include name='sneer/foundation/testsupport/**/*.jar' />
+			<include name='sneer/bricks/hardware/cpu/crypto/impl/lib/bcprov-jdk16-139.jar' />
 		</fileset>
 		<fileset dir="lib">
 			<include name='**/*.jar' />
@@ -43,7 +51,7 @@
 			<fileset dir="lib/pmd">
 				<include name="*.jar" />
 			</fileset>
-			<fileset dir="${sneer.lib}">
+			<fileset dir="${sneer.src}">
 				<include name="**/*.jar" />
 			</fileset>
 		</path>
@@ -95,7 +103,7 @@
 			<formatter type="xml"/>
 			<sysproperty key="java.awt.headless" value="${java.awt.headless}" />
 			<classpath>
-				<path refid="classpath" />
+				<path refid="test-classpath" />
 				<pathelement location="${clover.jar}" />
 			</classpath>
 			<batchtest todir="${bin.dir}">
