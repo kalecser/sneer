@@ -114,11 +114,11 @@ class ContactsGuiImpl implements ContactsGui {
 	}
 	
 	private void addContactActions(MenuGroup<JPopupMenu> menuGroup) {
-		menuGroup.addAction(new Action() {
-			@Override public String caption() { return "New Contact..."; }
-			@Override public void run() {
-				contactList().setSelectedValue(newContact(), true);
-			}});
+		menuGroup.addAction(-100, new Action() {
+				@Override public String caption() { return "New Contact..."; }
+				@Override public void run() {
+					contactList().setSelectedValue(newContact(), true);
+				}});
 	}
 	
 	private Contact newContact() {
@@ -146,7 +146,7 @@ class ContactsGuiImpl implements ContactsGui {
 			MenuGroup<JPopupMenu> popupMain = my(MenuFactory.class).createPopupMenu();
 			for (ContactAction action : my(ContactActionManager.class).actions())
 				if (action.isVisible())
-					popupMain.addAction(action);
+					popupMain.addAction(action.positionInMenu(), action);
 
 			if (popupMain.getWidget().getSubElements().length>0)
 				popupMain.getWidget().show(e.getComponent(),e.getX(),e.getY());

@@ -22,13 +22,8 @@ public abstract class AbstractMenuGroup<T extends JComponent> implements MenuGro
 	private Map<Integer, JMenuItem> _menuItemsByIndex = new TreeMap<Integer, JMenuItem>();
 
 	@Override
-	public void addAction(final String caption, final Runnable delegate) {
-		addAction(caption, delegate, null);
-	}
-
-	@Override
-	public void addAction(final String caption, final Runnable delegate, Integer index) {
-		addAction(new Action(){
+	public void addAction(int index, final String caption, final Runnable delegate) {
+		addAction(index, new Action(){
 			@Override
 			public String caption() {
 				return caption;
@@ -38,49 +33,39 @@ public abstract class AbstractMenuGroup<T extends JComponent> implements MenuGro
 			public void run() {
 				delegate.run();
 			}
-		}, index);
+		});
 	}
 
 	@Override
-	public void addAction(final Action action) {
-		addAction(action, null);
-	}
-
-	@Override
-	public void addAction(final Action action, Integer index) {
+	public void addAction(int positionInMenu, final Action action) {
+		System.err.println("Adding " + action.caption());
+		
 		final JMenuItem menuItem = my(SynthMenus.class).createMenuItem();
 		menuItem.setText(action.caption());
-		addMenuItem(action, menuItem, index);
-		menuItem.addPropertyChangeListener(new PropertyChangeListener(){ @Override public void propertyChange(PropertyChangeEvent evt) {
+		menuItem.addPropertyChangeListener(new PropertyChangeListener(){ @Override public void propertyChange(PropertyChangeEvent ignored) {
 			menuItem.setText(action.caption());
 		}});
+		menuItem.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent ignored) {
+			action.run();
+		}});
+		
+		addMenuItem(positionInMenu, menuItem);
 	}
 
 	@Override
-	public void addGroup(MenuGroup<JMenu> group) {
-		addGroup(group, null);
-	}
-
-	@Override
-	public void addGroup(MenuGroup<JMenu> group, Integer index) {
-		addMenuItem(null, group.getWidget(), index);
+	public void addGroup(int positionInMenu, MenuGroup<JMenu> group) {
+		addMenuItem(positionInMenu, group.getWidget());
 	}
 
 	synchronized
-	private void addMenuItem(final Action action, final JMenuItem menuItem, Integer index) {
-		if (action != null)
-			menuItem.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent ignored) {
-				action.run();
-			}});
-
-		if (index != null) {
-			_menuItemsByIndex.put(index, menuItem);
-			rebuildMenu();
-		} else {
-			getWidget().add(menuItem);
-		}
+	private void addMenuItem(Integer positionInMenu, final JMenuItem menuItem) {
+		while (_menuItemsByIndex.containsKey(positionInMenu))
+			positionInMenu++;
+		_menuItemsByIndex.put(positionInMenu, menuItem);
+		rebuildMenu();
 	}
 
+	
 	private void rebuildMenu() {
 		removeAllIntems();
 		insertItemsInAscendingOrder();

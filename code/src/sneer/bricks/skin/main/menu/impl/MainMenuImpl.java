@@ -24,12 +24,9 @@ class MainMenuImpl implements MainMenu {
 		return _menuBar.getWidget();
 	}
 	
-	@Override public void addAction(Action action) { delegate().addAction(action); }
-	@Override public void addAction(Action action, Integer index) { delegate().addAction(action, index); }
-	@Override public void addAction(String caption, Runnable action) { delegate().addAction(caption, action); }
-	@Override public void addAction(String caption, Runnable action, Integer index) { delegate().addAction(caption, action, index); }
-	@Override public void addGroup(MenuGroup<JMenu> group) { delegate().addGroup(group); }
-	@Override public void addGroup(MenuGroup<JMenu> group, Integer index) { delegate().addGroup(group, index); }
+	@Override public void addAction(int positionInMenu, Action action) { delegate().addAction(positionInMenu, action); }
+	@Override public void addAction(int positionInMenu, String caption, Runnable action) { delegate().addAction(positionInMenu, caption, action); }
+	@Override public void addGroup(int positionInMenu, MenuGroup<JMenu> group) { delegate().addGroup(positionInMenu, group); }
 	@Override public JMenu getWidget() { return delegate().getWidget(); }
 	
 	private synchronized MenuGroup<JMenu> delegate() {
@@ -38,9 +35,10 @@ class MainMenuImpl implements MainMenu {
 	}
 
 	private void initMenu() {
+		System.err.println("Creating main menu");
 		_delegate = my(MenuFactory.class).createMenuGroup("Menu");
 		_delegate.getWidget().setName("MainMenu");
-		_menuBar.addGroup(_delegate);
+		_menuBar.addGroup(0, _delegate);
 	}
 
 }

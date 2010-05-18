@@ -188,13 +188,13 @@ class DashboardPanel extends JPanel {
 		}
 
 		private void initUndockAction() {
-			_toolbar._menuActions.addAction(new Action(){
-				@Override public String caption() { return (_isDocked)?"Undock":"Dock";}
-				@Override public void run() { 
-					if(_isDocked) undock();
-					else dock();
-					repaintInstruments();
-				}});
+			_toolbar._menuActions.addAction(0, new Action(){
+					@Override public String caption() { return (_isDocked)?"Undock":"Dock";}
+					@Override public void run() { 
+						if(_isDocked) undock();
+						else dock();
+						repaintInstruments();
+					}});
 		}
 
 		private void repaintInstruments() {
@@ -312,16 +312,16 @@ class DashboardPanel extends JPanel {
 			}
 
 			private void initCopyClassNameToClipboardAction() {
-				_menuActions.addAction(new Action(){
-					@Override public String caption() { 
-						return "Copy Instrument Name (" + instrumentName() + ")";
-					}
+				_menuActions.addAction(100, new Action(){
+						@Override public String caption() { 
+							return "Copy Instrument Name (" + instrumentName() + ")";
+						}
 
-					@Override public void run() {
-						StringSelection stringSelection = new StringSelection(instrumentInterface().getName());
-						Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-						clipboard.setContents(stringSelection, new ClipboardOwner(){ @Override public void lostOwnership(Clipboard clipboard_, Transferable contents) {}});
-					}});
+						@Override public void run() {
+							StringSelection stringSelection = new StringSelection(instrumentInterface().getName());
+							Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+							clipboard.setContents(stringSelection, new ClipboardOwner(){ @Override public void lostOwnership(Clipboard clipboard_, Transferable contents) {}});
+						}});
 			}
 			
 			private String instrumentName() {
