@@ -1,8 +1,13 @@
-/${user.home}/sneer
-	/code
+/(home folder)/sneer
+	/code (Eclipse project - Sneer bricks - Second in classpath)
+		/docs
+			README.txt (This file)
 		/own (Eclipse project - User's bricks - First in classpath)
-		/platform (Eclipse project - Sneer bricks - Second in classpath)
+		license.txt - Licensing information. 
 	/data
-	/logs
+	/logs - Log files.
+	/tmp - Tmp files.
 	/dummydata (Used for testing with SneerDummy)
 	/dummylogs (Used for testing with SneerDummy)
+	/dummytmp (Used for testing with SneerDummy)
+	
