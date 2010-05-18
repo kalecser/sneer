@@ -16,6 +16,10 @@ import org.junit.runner.RunWith;
 @RunWith(CleanTestRunner.class)
 public abstract class CleanTestBase extends AssertUtils {
 
+	static {
+		System.out.println("CleanTestBase loaded at: " + System.currentTimeMillis());
+	}
+	
 	private static final String PROJECT_NAME = "sneer";
 
 	private File _tmpFolder;
