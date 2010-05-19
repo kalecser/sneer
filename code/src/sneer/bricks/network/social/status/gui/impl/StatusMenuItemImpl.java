@@ -35,7 +35,7 @@ class StatusMenuItemImpl implements StatusMenuItem {
 			statusSubmenu.getWidget().add(statusMenuItem);
 		}
 		statusSubmenu.getWidget().addSeparator(); // Fix: innocuous while using Synth LAF
-		my(MainMenu.class).addGroup(statusSubmenu, 0);
+		my(MainMenu.class).addGroup(0, statusSubmenu);
 	}
 
 }

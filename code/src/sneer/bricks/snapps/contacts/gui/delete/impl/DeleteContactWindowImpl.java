@@ -46,7 +46,9 @@ class DeleteContactWindowImpl extends JFrame implements DeleteContactWindow {
 				
 				if(contact==null) return;
 				open(contact);
-			}});
+			}
+			@Override public int positionInMenu() { return 200; }
+		});
 	}
 
 	private void initGui() {

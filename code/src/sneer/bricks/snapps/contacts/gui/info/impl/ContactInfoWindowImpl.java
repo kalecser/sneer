@@ -91,6 +91,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 			@Override public boolean isVisible() { return true; }
 			@Override public String caption() { return "Edit Contact...";}
 			@Override public void run() { open(); }
+			@Override public int positionInMenu() { return 100;	};
 		}, true);
 	}
 	
