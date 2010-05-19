@@ -1,3 +1,1 @@
-See license.txt in this same folder for licensing information.   
-
-See the docs folder for project documentation.
+See sneer/code/docs folder for licensing information and project documentation.
