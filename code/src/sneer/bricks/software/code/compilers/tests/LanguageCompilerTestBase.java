@@ -17,9 +17,9 @@ import sneer.bricks.software.code.compilers.LanguageCompiler;
 import sneer.bricks.software.code.compilers.Result;
 import sneer.bricks.software.code.compilers.java.tests.JarUtils;
 import sneer.bricks.software.code.compilers.java.tests.TestLib;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 
-public abstract class LanguageCompilerTestBase extends BrickTest {
+public abstract class LanguageCompilerTestBase extends BrickTestWithFiles {
 
 	protected static final String TEST_FILE_PREFIX = "sneer-test-";
 

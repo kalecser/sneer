@@ -2,10 +2,10 @@ package sneer.bricks.expression.files.map.visitors.tests;
 
 import org.junit.Test;
 
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 
 
-public class FileCacheVisitorsTest extends BrickTest {
+public class FileCacheVisitorsTest extends BrickTestWithFiles {
 
 //	private final FileCacheVisitors _subject = my(FileCacheVisitors.class);
 	

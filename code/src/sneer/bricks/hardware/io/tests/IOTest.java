@@ -12,10 +12,10 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.lang.Functor;
 
-public class IOTest extends BrickTest {
+public class IOTest extends BrickTestWithFiles {
 	
 	private IO _subject = my(IO.class);
 

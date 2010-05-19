@@ -8,10 +8,10 @@ import org.junit.Test;
 import sneer.bricks.hardware.cpu.profiler.Profiler;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.MapSignal;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 
 @Ignore
-public class ProfilerTest extends BrickTest {
+public class ProfilerTest extends BrickTestWithFiles {
 
 	private final Profiler _subject = my(Profiler.class);
 

@@ -12,10 +12,10 @@ import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.bricks.pulp.reactive.collections.setfilter.SetFilter;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.lang.Functor;
 
-public class SetFilterTest extends BrickTest {
+public class SetFilterTest extends BrickTestWithFiles {
 	
 	private final SetFilter _subject = my(SetFilter.class);
 

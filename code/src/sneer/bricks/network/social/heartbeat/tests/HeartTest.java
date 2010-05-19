@@ -11,11 +11,11 @@ import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.network.social.heartbeat.Heart;
 import sneer.bricks.network.social.heartbeat.Heartbeat;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.ByRef;
 
-public class HeartTest extends BrickTest {
+public class HeartTest extends BrickTestWithFiles {
 
 	@Bind TupleSpace _tupleSpace = mock(TupleSpace.class);
 	@Bind Timer _timer = mock(Timer.class);

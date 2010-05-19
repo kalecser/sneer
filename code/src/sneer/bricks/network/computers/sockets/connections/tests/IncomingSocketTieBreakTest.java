@@ -18,11 +18,11 @@ import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
 
-public class IncomingSocketTieBreakTest extends BrickTest {
+public class IncomingSocketTieBreakTest extends BrickTestWithFiles {
 
 	@Bind private final ContactSeals _seals = mock(ContactSeals.class);
 	@Bind private final OwnSeal _ownSealBrick = mock(OwnSeal.class);

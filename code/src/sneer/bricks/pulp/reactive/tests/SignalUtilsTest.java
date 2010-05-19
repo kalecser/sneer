@@ -10,12 +10,12 @@ import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Predicate;
 
 
-public class SignalUtilsTest extends BrickTest {
+public class SignalUtilsTest extends BrickTestWithFiles {
 	
 	@Test (timeout = 2000)
 	public void waitForExistingElementWithPredicate() {

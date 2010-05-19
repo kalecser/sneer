@@ -11,10 +11,10 @@ import org.junit.Test;
 
 import sneer.bricks.pulp.streams.sequencer.Sequencer;
 import sneer.bricks.pulp.streams.sequencer.Sequencers;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.lang.Consumer;
 
-public class SequencerTest extends BrickTest {
+public class SequencerTest extends BrickTestWithFiles {
 	
 	private static final short MAX_GAP = (short)500;
 

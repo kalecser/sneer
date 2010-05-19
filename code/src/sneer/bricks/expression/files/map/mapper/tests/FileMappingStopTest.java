@@ -14,10 +14,10 @@ import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.software.code.classutils.ClassUtils;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.brickness.testsupport.Bind;
 
-public class FileMappingStopTest extends BrickTest {
+public class FileMappingStopTest extends BrickTestWithFiles {
 
 	@Bind private final FileMap _fileMap = mock(FileMap.class);
 	private final FileMapper _subject = my(FileMapper.class);

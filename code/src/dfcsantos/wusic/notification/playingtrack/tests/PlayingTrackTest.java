@@ -10,7 +10,7 @@ import org.junit.Test;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.brickness.testsupport.Bind;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.Tracks;
@@ -18,7 +18,7 @@ import dfcsantos.wusic.Wusic;
 import dfcsantos.wusic.notification.playingtrack.PlayingTrack;
 import dfcsantos.wusic.notification.playingtrack.server.PlayingTrackPublisher;
 
-public class PlayingTrackTest extends BrickTest {
+public class PlayingTrackTest extends BrickTestWithFiles {
 
 	@Bind private final Wusic _wusic = mock(Wusic.class);
 	@Bind private final Attributes _attributes = mock(Attributes.class);

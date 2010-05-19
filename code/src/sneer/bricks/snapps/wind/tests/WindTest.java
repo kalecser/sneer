@@ -8,9 +8,9 @@ import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.snapps.wind.Shout;
 import sneer.bricks.snapps.wind.Wind;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 
-public class WindTest extends BrickTest {
+public class WindTest extends BrickTestWithFiles {
 
 	private static final int YEAR_ONE = 1000 * 60 * 60 * 24 * 356;
 	private final Wind _subject = my(Wind.class);

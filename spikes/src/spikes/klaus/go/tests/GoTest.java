@@ -2,12 +2,12 @@ package spikes.klaus.go.tests;
 
 import org.junit.Test;
 
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import spikes.klaus.go.GoBoard;
 import spikes.klaus.go.ToroidalGoBoard;
 import spikes.klaus.go.GoBoard.StoneColor;
 
-public class GoTest extends BrickTest {
+public class GoTest extends BrickTestWithFiles {
 
 	private GoBoard _board;
 	

@@ -10,7 +10,7 @@ import org.junit.Test;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.environments.Environments;
@@ -19,7 +19,7 @@ import dfcsantos.tracks.execution.playlist.Playlist;
 import dfcsantos.tracks.execution.playlist.Playlists;
 import dfcsantos.tracks.storage.rejected.RejectedTracksKeeper;
 
-public class RejectedTracksKeeperTest extends BrickTest {
+public class RejectedTracksKeeperTest extends BrickTestWithFiles {
 
 	private RejectedTracksKeeper _subject = my(RejectedTracksKeeper.class);
 

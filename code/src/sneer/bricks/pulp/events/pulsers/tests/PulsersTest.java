@@ -7,10 +7,10 @@ import org.junit.Test;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.events.pulsers.Pulser;
 import sneer.bricks.pulp.events.pulsers.Pulsers;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.lang.Closure;
 
-public class PulsersTest extends BrickTest {
+public class PulsersTest extends BrickTestWithFiles {
 
 	private final Pulsers _subject = my(Pulsers.class);
 	private int _counter = 0;

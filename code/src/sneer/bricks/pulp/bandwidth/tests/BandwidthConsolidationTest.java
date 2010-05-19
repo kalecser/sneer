@@ -7,9 +7,9 @@ import org.junit.Test;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.pulp.bandwidth.BandwidthCounter;
 import sneer.bricks.pulp.reactive.SignalUtils;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 
-public class BandwidthConsolidationTest extends BrickTest {
+public class BandwidthConsolidationTest extends BrickTestWithFiles {
 	
 	
 	private final BandwidthCounter _subject = my(BandwidthCounter.class);

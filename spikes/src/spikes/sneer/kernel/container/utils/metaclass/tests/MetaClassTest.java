@@ -6,11 +6,11 @@ import org.junit.Test;
 
 import sneer.bricks.software.code.metaclass.MetaClass;
 import sneer.bricks.software.code.metaclass.MetaClasses;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import spikes.sneer.kernel.container.utils.metaclass.tests.bean.Bean;
 
 
-public class MetaClassTest extends BrickTest {
+public class MetaClassTest extends BrickTestWithFiles {
 
 	@Test
 	public void testMetaClass() throws Exception {

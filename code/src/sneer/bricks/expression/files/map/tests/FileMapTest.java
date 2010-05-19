@@ -9,9 +9,9 @@ import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 
-public class FileMapTest extends BrickTest {
+public class FileMapTest extends BrickTestWithFiles {
 
 	private final FileMap _subject = my(FileMap.class);
 

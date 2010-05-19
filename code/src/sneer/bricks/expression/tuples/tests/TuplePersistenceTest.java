@@ -12,12 +12,12 @@ import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
-public class TuplePersistenceTest extends BrickTest {
+public class TuplePersistenceTest extends BrickTestWithFiles {
 
 	@Test (timeout = 2000)
 	public void tuplePersistence() {

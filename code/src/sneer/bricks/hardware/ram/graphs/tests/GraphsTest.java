@@ -11,9 +11,9 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.ram.graphs.DirectedGraph;
 import sneer.bricks.hardware.ram.graphs.Graphs;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 
-public class GraphsTest extends BrickTest {
+public class GraphsTest extends BrickTestWithFiles {
 
 	DirectedGraph<String> _subject = my(Graphs.class).createDirectedGraph();
 

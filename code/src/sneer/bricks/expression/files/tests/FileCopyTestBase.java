@@ -10,6 +10,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.map.mapper.FileMapper;
+import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
@@ -17,12 +18,11 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.software.code.classutils.ClassUtils;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.lang.Consumer;
 
 /** Abstract test class names must not end in "Test" or else Hudson will try to instantiate them and fail. :P */
 
-public abstract class FileCopyTestBase extends BrickTest {
+public abstract class FileCopyTestBase extends BrickTestWithTuples {
 
 	protected final FileMapper _fileMapper = my(FileMapper.class);
 

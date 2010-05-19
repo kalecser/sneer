@@ -11,10 +11,10 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.gates.logic.LogicGates;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.lang.Consumer;
 
-public class AndTest extends BrickTest {
+public class AndTest extends BrickTestWithFiles {
 
 	private final Register<Boolean> _input1 = my(Signals.class).newRegister(false);
 	private final Register<Boolean> _input2 = my(Signals.class).newRegister(false);

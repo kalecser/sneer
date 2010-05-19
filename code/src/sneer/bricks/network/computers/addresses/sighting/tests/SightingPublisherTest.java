@@ -18,11 +18,11 @@ import sneer.bricks.network.computers.sockets.connections.ContactSighting;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
 
-public class SightingPublisherTest extends BrickTest {
+public class SightingPublisherTest extends BrickTestWithFiles {
 
 	@Bind private final ConnectionManager _connectionManager = mock(ConnectionManager.class);
 	@Bind private final ContactSeals _seals = mock(ContactSeals.class);

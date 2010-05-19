@@ -6,12 +6,12 @@ import org.junit.Test;
 
 import sneer.bricks.pulp.propertystore.PropertyStore;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
-public class PropertyStoreTest extends BrickTest {
+public class PropertyStoreTest extends BrickTestWithFiles {
 
 	@Test
 	public void testPropertyStore() {

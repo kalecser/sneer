@@ -7,11 +7,11 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.lang.arrays.ImmutableArray;
 import sneer.foundation.testsupport.AssertUtils;
 
-public class ImmutableArrayTest extends BrickTest {
+public class ImmutableArrayTest extends BrickTestWithFiles {
 
 	@Test
 	public void iterable() {
