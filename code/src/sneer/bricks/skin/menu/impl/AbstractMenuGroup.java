@@ -38,8 +38,6 @@ public abstract class AbstractMenuGroup<T extends JComponent> implements MenuGro
 
 	@Override
 	public void addAction(int positionInMenu, final Action action) {
-		System.err.println("Adding " + action.caption());
-		
 		final JMenuItem menuItem = my(SynthMenus.class).createMenuItem();
 		menuItem.setText(action.caption());
 		menuItem.addPropertyChangeListener(new PropertyChangeListener(){ @Override public void propertyChange(PropertyChangeEvent ignored) {
