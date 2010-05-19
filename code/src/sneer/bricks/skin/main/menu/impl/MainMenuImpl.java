@@ -35,7 +35,6 @@ class MainMenuImpl implements MainMenu {
 	}
 
 	private void initMenu() {
-		System.err.println("Creating main menu");
 		_delegate = my(MenuFactory.class).createMenuGroup("Menu");
 		_delegate.getWidget().setName("MainMenu");
 		_menuBar.addGroup(0, _delegate);
