@@ -8,11 +8,12 @@ import org.junit.Test;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.skin.rooms.ActiveRoomKeeper;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Consumer;
@@ -27,7 +28,7 @@ import spikes.sneer.bricks.snapps.whisper.speextuples.SpeexTuples;
 
 
 @Ignore //SpeexTuples no longer produces PcmSoundPacket tuples. It uses Mic.sound() and Speaker.acquireLine() directly. This test must be fixed accordingly.
-public class SpeexTuplesTest extends BrickTest {
+public class SpeexTuplesTest extends BrickTestWithFiles {
 
 	private final TupleSpace _tupleSpace = my(TupleSpace.class);
 	
@@ -59,7 +60,7 @@ public class SpeexTuplesTest extends BrickTest {
 		
 		final ByRef<SpeexPacket> packet = ByRef.newInstance();
 		@SuppressWarnings("unused")
-		WeakContract contract = _tupleSpace.addSubscription(SpeexPacket.class, new Consumer<SpeexPacket>() { @Override public void consume(SpeexPacket value) {
+		WeakContract contract = my(RemoteTuples.class).addSubscription(SpeexPacket.class, new Consumer<SpeexPacket>() { @Override public void consume(SpeexPacket value) {
 			assertNull(packet.value);
 			packet.value = value;
 		}});
@@ -90,7 +91,7 @@ public class SpeexTuplesTest extends BrickTest {
 		
 		final ByRef<PcmSoundPacket> packet = ByRef.newInstance();
 		@SuppressWarnings("unused")
-		WeakContract contract = _tupleSpace.addSubscription(PcmSoundPacket.class, new Consumer<PcmSoundPacket>() { @Override public void consume(PcmSoundPacket value) {
+		WeakContract contract = my(RemoteTuples.class).addSubscription(PcmSoundPacket.class, new Consumer<PcmSoundPacket>() { @Override public void consume(PcmSoundPacket value) {
 			assertNull(packet.value);
 			packet.value = value;
 		}});

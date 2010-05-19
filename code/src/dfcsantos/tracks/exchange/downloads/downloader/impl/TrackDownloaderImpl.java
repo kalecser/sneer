@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.map.FileMap;
-import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
@@ -18,7 +18,6 @@ import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
-import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Signal;
@@ -47,7 +46,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 	@SuppressWarnings("unused") private final WeakContract _toAvoidGC;
 
 	{
-		_toAvoidGC = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement endorsement) {
+		_toAvoidGC = my(RemoteTuples.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement endorsement) {
 			consumeTrackEndorsement(endorsement);
 		}});
 	}
@@ -89,7 +88,6 @@ class TrackDownloaderImpl implements TrackDownloader {
 	private boolean prepareForDownload(final TrackEndorsement endorsement) {
 		if (!isOn()) { log("TrackDownloader Off"); return false; }
 
-		if (isFromMe(endorsement)) { log("Published by Myself"); return false; }
 		if (isFromUnknownPublisher(endorsement)) { log("Unkown Publisher"); return false; }
 
 		boolean isKnown = isKnown(endorsement);
@@ -124,11 +122,6 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 	private static Contact senderOf(TrackEndorsement endorsement) {
 		return my(ContactSeals.class).contactGiven(endorsement.publisher);
-	}
-
-
-	private boolean isFromMe(final TrackEndorsement endorsement) {
-		return my(OwnSeal.class).get().currentValue().equals(endorsement.publisher);
 	}
 
 

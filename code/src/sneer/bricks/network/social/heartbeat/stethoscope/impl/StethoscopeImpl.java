@@ -1,12 +1,11 @@
 package sneer.bricks.network.social.heartbeat.stethoscope.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.heartbeat.Heartbeat;
@@ -34,7 +33,7 @@ class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Runnable {
 	
 	
 	{
-		_tupleSpaceContract = my(TupleSpace.class).addSubscription(Heartbeat.class, this);
+		_tupleSpaceContract = my(RemoteTuples.class).addSubscription(Heartbeat.class, this);
 		_timerContract = my(Timer.class).wakeUpEvery(TIME_TILL_DEATH, this);
 	}
 	
@@ -88,7 +87,6 @@ class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Runnable {
 
 	@Override
 	synchronized public void consume(Heartbeat beat) {
-		if (isMyOwn(beat)) return;
 		if (isTooOld(beat)) return;
 		
 		Contact contact = contact(beat);
@@ -96,11 +94,6 @@ class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Runnable {
 		_lastBeatTimesByContact.put(contact, now());
 
 		setAlive(contact);
-	}
-
-
-	private boolean isMyOwn(Heartbeat beat) {
-		return my(OwnSeal.class).get().currentValue().equals(beat.publisher);
 	}
 
 

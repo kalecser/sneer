@@ -6,10 +6,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sound.sampled.LineUnavailableException;
 
-import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.streams.sequencer.Sequencer;
@@ -32,7 +31,6 @@ import spikes.sneer.bricks.snapps.whisper.speextuples.SpeexTuples;
 
 class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the encoding and decoding sides.
 
-	private final TupleSpace _tupleSpace = my(TupleSpace.class);
 	private final Speex _speex = my(Speex.class);
 
 	private final Signal<String> _room = my(ActiveRoomKeeper.class).room();
@@ -56,8 +54,7 @@ class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the en
 				flush();
 		}});
 
-		_tupleSpaceContract = _tupleSpace.addSubscription(SpeexPacket.class, new Consumer<SpeexPacket>() { @Override public void consume(SpeexPacket packet) {
-			if (isMine(packet))	return;
+		_tupleSpaceContract = my(RemoteTuples.class).addSubscription(SpeexPacket.class, new Consumer<SpeexPacket>() { @Override public void consume(SpeexPacket packet) {
 			if (!_room.currentValue().equals(packet.room)) return;
 
 			playInSequence(packet);
@@ -85,17 +82,13 @@ class SpeexTuplesImpl implements SpeexTuples { //Refactor Break this into the en
 			return Short.MIN_VALUE;
 		return (short)_ids.incrementAndGet();
 	}
-	
-	private boolean isMine(Tuple packet) {
-		return my(OwnSeal.class).get().currentValue().equals(packet.publisher);
-	}
-	
+
 	private static byte[][] newFramesArray() {
 		return new byte[FRAMES_PER_AUDIO_PACKET][];
 	}
 
 	private void flush() {
-		_tupleSpace.acquire(new SpeexPacket(immutable(_frames), _room.currentValue(), nextShort()));
+		my(TupleSpace.class).acquire(new SpeexPacket(immutable(_frames), _room.currentValue(), nextShort()));
 		_frames = newFramesArray();
 		_frameIndex = 0;
 	}
