@@ -38,7 +38,7 @@ class NormalizedFileMap implements FileMap {
 
 	
 	private void putPath(String path, long lastModified, Hash hash) {
-		my(Logger.class).log("Mapping", path);
+		my(Logger.class).log("Mapping ", path);
 		_data.put(path, lastModified, hash);
 	}
 	
