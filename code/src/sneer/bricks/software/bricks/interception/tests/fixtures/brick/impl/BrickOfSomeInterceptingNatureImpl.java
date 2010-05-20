@@ -9,11 +9,6 @@ public class BrickOfSomeInterceptingNatureImpl implements BrickOfSomeInterceptin
 	public int add(int i, int j) {
 		return i + j;
 	}
-
-	@Override
-	public String bar() {
-		return "42";
-	}
 	
 	@Override
 	public int baz() {

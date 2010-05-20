@@ -19,6 +19,7 @@ import sneer.bricks.software.bricks.interception.Interceptor.Continuation;
 import sneer.bricks.software.bricks.interception.tests.fixtures.brick.BrickOfSomeInterceptingNature;
 import sneer.bricks.software.bricks.interception.tests.fixtures.brickwithlib.BrickWithLib;
 import sneer.bricks.software.bricks.interception.tests.fixtures.nature.SomeInterceptingNature;
+import sneer.bricks.software.bricks.interception.tests.fixtures.refmethods.noargs.RefMethodsNoArgs;
 import sneer.bricks.software.bricks.interception.tests.fixtures.voidmethods.noargs.VoidMethodsNoArgs;
 import sneer.bricks.software.bricks.interception.tests.fixtures.voidmethods.onearg.VoidMethodsRefArg;
 import sneer.foundation.brickness.Brickness;
@@ -53,8 +54,8 @@ public class InterceptionTest extends BrickTestWithThreads {
 	
 	@Test
 	public void referenceReturnValue() {
-		checkingMethodIsInvoked("bar", new Object[0], new Closure() { @Override public void run() {
-			assertEquals("42", my(BrickOfSomeInterceptingNature.class).bar());
+		checkingMethodIsInvoked(RefMethodsNoArgs.class, "bar", new Object[0], new Closure() { @Override public void run() {
+			assertEquals("42", my(RefMethodsNoArgs.class).bar());
 		}});
 	}
 	

@@ -32,6 +32,7 @@ final class ClassEnhancer extends ClassAdapter {
 		final String signature;
 		final String[] exceptions;
 		final Type[] argumentTypes;
+		final Type returnType;
 
 		public MethodDescriptor(String name_, String desc_, String signature_, String[] exceptions_) {
 			name = name_;
@@ -39,6 +40,11 @@ final class ClassEnhancer extends ClassAdapter {
 			signature = signature_;
 			exceptions = exceptions_;
 			argumentTypes = Type.getArgumentTypes(desc);
+			returnType = Type.getReturnType(desc);
+		}
+		
+		boolean isVoidMethod() {
+			return returnType == Type.VOID_TYPE;
 		}
 	}
 
@@ -113,9 +119,13 @@ final class ClassEnhancer extends ClassAdapter {
 		mv.visitMethodInsn(INVOKESTATIC, Type.getInternalName(InterceptionRuntime.class), "dispatch", Type.getMethodDescriptor(interceptionRuntimeDispatchMethod()));
 		
 		// box/unbox return value here
-		
-		mv.visitInsn(POP);
-		mv.visitInsn(RETURN);
+		if (m.isVoidMethod()) {
+			mv.visitInsn(POP);
+			mv.visitInsn(RETURN);
+		} else {
+			mv.visitTypeInsn(CHECKCAST, m.returnType.getInternalName());
+			mv.visitInsn(ARETURN);
+		}
 		
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
@@ -183,7 +193,8 @@ final class ClassEnhancer extends ClassAdapter {
 		}
 		
 		invoke.visitMethodInsn(INVOKEVIRTUAL, internalClassName(), privateNameFor(m.name), m.desc);
-		invoke.visitInsn(ACONST_NULL);
+		if (m.isVoidMethod())
+			invoke.visitInsn(ACONST_NULL);
 		invoke.visitInsn(ARETURN);
 		invoke.visitMaxs(0, 0);
 		invoke.visitEnd();
@@ -219,7 +230,7 @@ final class ClassEnhancer extends ClassAdapter {
 	}
 
 	private String classDescriptor() {
-		return "L" + internalClassName() + ";";
+		return _className.getDescriptor();
 	}
 
 	private boolean isConstructor(String name) {
