@@ -6,6 +6,10 @@ public class BrickWithLibImpl implements BrickWithLib {
 
 	@Override
 	public int fooBar() {
-		return new foo.Foo().bar();
+		return useLibType(new foo.Foo());
+	}
+
+	public int useLibType(foo.Foo foo) {
+		return foo.bar();
 	}
 }
