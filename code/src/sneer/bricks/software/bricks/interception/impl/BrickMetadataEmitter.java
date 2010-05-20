@@ -26,7 +26,7 @@ class BrickMetadataEmitter {
 
 		cw.visit(V1_6, ACC_PUBLIC + ACC_SUPER, BrickMetadataDefinition.CLASS_NAME, null, "java/lang/Object", null);
 		cw.visitField(ACC_PUBLIC + ACC_FINAL + ACC_STATIC, BrickMetadataDefinition.Fields.BRICK, BrickMetadataDefinition.Fields.BRICK_TYPE, null, null).visitEnd();
-		cw.visitField(ACC_PUBLIC + ACC_FINAL + ACC_STATIC, BrickMetadataDefinition.Fields.INTERCEPTOR, BrickMetadataDefinition.Fields.INTERCEPTOR_TYPE, null, null);
+		cw.visitField(ACC_PUBLIC + ACC_FINAL + ACC_STATIC, BrickMetadataDefinition.Fields.INTERCEPTOR, BrickMetadataDefinition.Fields.INTERCEPTOR_TYPE, null, null).visitEnd();
 		
 		writeEmptyConstructor(cw);
 		writeBrickMetadataInitializer(cw);
@@ -51,7 +51,7 @@ class BrickMetadataEmitter {
 		mv.visitFieldInsn(PUTSTATIC, BrickMetadataDefinition.CLASS_NAME, BrickMetadataDefinition.Fields.INTERCEPTOR, BrickMetadataDefinition.Fields.INTERCEPTOR_TYPE);
 		
 		mv.visitInsn(RETURN);		
-		mv.visitMaxs(1, 0);
+		mv.visitMaxs(0, 0);
 		mv.visitEnd();
 	}
 	
