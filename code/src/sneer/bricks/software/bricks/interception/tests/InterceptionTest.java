@@ -19,7 +19,8 @@ import sneer.bricks.software.bricks.interception.Interceptor.Continuation;
 import sneer.bricks.software.bricks.interception.tests.fixtures.brick.BrickOfSomeInterceptingNature;
 import sneer.bricks.software.bricks.interception.tests.fixtures.brickwithlib.BrickWithLib;
 import sneer.bricks.software.bricks.interception.tests.fixtures.nature.SomeInterceptingNature;
-import sneer.bricks.software.bricks.interception.tests.fixtures.voidmethods.VoidMethods;
+import sneer.bricks.software.bricks.interception.tests.fixtures.voidmethods.noargs.VoidMethodsNoArgs;
+import sneer.bricks.software.bricks.interception.tests.fixtures.voidmethods.onearg.VoidMethodsRefArg;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.environments.Environment;
@@ -36,9 +37,16 @@ public class InterceptionTest extends BrickTestWithThreads {
 	
 	
 	@Test
-	public void voidMethod() {
-		checkingMethodIsInvoked(VoidMethods.class, "foo", new Object[0], new Closure() { @Override public void run() {
-			my(VoidMethods.class).foo();
+	public void voidMethodNoArgs() {
+		checkingMethodIsInvoked(VoidMethodsNoArgs.class, "foo", new Object[0], new Closure() { @Override public void run() {
+			my(VoidMethodsNoArgs.class).foo();
+		}});
+	}
+	
+	@Test
+	public void voidMethodRefArg() {
+		checkingMethodIsInvoked(VoidMethodsRefArg.class, "foo", new Object[] { "42" }, new Closure() { @Override public void run() {
+			my(VoidMethodsRefArg.class).foo("42");
 		}});
 	}
 	
@@ -57,15 +65,6 @@ public class InterceptionTest extends BrickTestWithThreads {
 			assertEquals(42, my(BrickOfSomeInterceptingNature.class).baz());
 		}});
 	}
-	
-	
-	@Test
-	public void referenceParameters() {
-		checkingMethodIsInvoked("foo", new Object[] { "42" }, new Closure() { @Override public void run() {
-			my(BrickOfSomeInterceptingNature.class).foo("42");
-		}});
-	}
-	
 	
 	@Test
 	public void primitiveParameters() {
@@ -104,10 +103,10 @@ public class InterceptionTest extends BrickTestWithThreads {
 	
 	@Test
 	public void environmentIsNotRequired() {
-		checkingMethodIsInvoked("add", new Object[] { 1, 2 }, new Closure() { @Override public void run() {
-			final BrickOfSomeInterceptingNature brick = my(BrickOfSomeInterceptingNature.class);
+		checkingMethodIsInvoked(VoidMethodsNoArgs.class, "foo", new Object[0], new Closure() { @Override public void run() {
+			final VoidMethodsNoArgs brick = my(VoidMethodsNoArgs.class);
 			Environments.runWith(null, new Closure() { @Override public void run() {
-				brick.add(1, 2);
+				brick.foo();
 			}});
 		}});
 	}

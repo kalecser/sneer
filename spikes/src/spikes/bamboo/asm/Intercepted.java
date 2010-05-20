@@ -34,18 +34,24 @@ class BrickMetadata {
 
 public class Intercepted {
 	
-	public void foo() {
-		InterceptionRuntime.dispatch(BrickMetadata.BRICK, BrickMetadata.INTERCEPTOR, this, "foo", new Object[0], new fooContinuation());
+	public void foo(String arg) {
+		InterceptionRuntime.dispatch(BrickMetadata.BRICK, BrickMetadata.INTERCEPTOR, this, "foo", new Object[] { arg }, new fooContinuation(arg));
 	}
 	
 	class fooContinuation implements Interceptor.Continuation {
+		private final String _arg;
+
+		public fooContinuation(String arg) {
+			_arg = arg;
+		}
+
 		@Override
 		public Object invoke(Object[] args) {
-			_foo();
+			_foo(_arg);
 			return null;
 		}
 	}
 	
-	void _foo() {
+	void _foo(@SuppressWarnings("unused") String arg) {
 	}
 }

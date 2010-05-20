@@ -10,8 +10,6 @@ public interface BrickOfSomeInterceptingNature {
 	
 	int baz();
 
-	void foo(String arg);
-
 	int add(int i, int j);
 	
 	Greeter newGreeter();
