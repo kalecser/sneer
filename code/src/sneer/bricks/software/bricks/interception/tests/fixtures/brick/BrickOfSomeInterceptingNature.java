@@ -6,8 +6,6 @@ import sneer.foundation.brickness.Brick;
 @Brick(SomeInterceptingNature.class)
 public interface BrickOfSomeInterceptingNature {
 
-	void foo();
-
 	String bar();
 	
 	int baz();

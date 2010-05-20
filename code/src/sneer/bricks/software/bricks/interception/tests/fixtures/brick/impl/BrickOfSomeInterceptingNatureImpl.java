@@ -6,10 +6,6 @@ import sneer.bricks.software.bricks.interception.tests.fixtures.brick.Greeter;
 public class BrickOfSomeInterceptingNatureImpl implements BrickOfSomeInterceptingNature {
 
 	@Override
-	public void foo() {
-	}
-	
-	@Override
 	public void foo(String arg) {
 	}
 	

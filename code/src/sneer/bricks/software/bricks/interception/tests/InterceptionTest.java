@@ -1,6 +1,6 @@
 package sneer.bricks.software.bricks.interception.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static sneer.foundation.environments.Environments.*;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -19,6 +19,7 @@ import sneer.bricks.software.bricks.interception.Interceptor.Continuation;
 import sneer.bricks.software.bricks.interception.tests.fixtures.brick.BrickOfSomeInterceptingNature;
 import sneer.bricks.software.bricks.interception.tests.fixtures.brickwithlib.BrickWithLib;
 import sneer.bricks.software.bricks.interception.tests.fixtures.nature.SomeInterceptingNature;
+import sneer.bricks.software.bricks.interception.tests.fixtures.voidmethods.VoidMethods;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.environments.Environment;
@@ -35,9 +36,9 @@ public class InterceptionTest extends BrickTestWithThreads {
 	
 	
 	@Test
-	public void runtimeNatureInterceptsInvocations() {
-		checkingMethodIsInvoked("foo", new Object[0], new Closure() { @Override public void run() {
-			my(BrickOfSomeInterceptingNature.class).foo();
+	public void voidMethod() {
+		checkingMethodIsInvoked(VoidMethods.class, "foo", new Object[0], new Closure() { @Override public void run() {
+			my(VoidMethods.class).foo();
 		}});
 	}
 	
