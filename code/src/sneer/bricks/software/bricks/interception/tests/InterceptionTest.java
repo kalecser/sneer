@@ -162,6 +162,17 @@ public class InterceptionTest extends BrickTestWithThreads {
 	@Test
 	public void brickWithLib() throws Exception {
 		checkingMethodIsInvoked(BrickWithLib.class, "fooBar", new Object[0], new Closure() { @Override public void run() {
+			mockery.checking(new Expectations() {{
+				
+				oneOf(interceptingNatureMock).invoke(
+						with(BrickWithLib.class),
+						with(any(BrickWithLib.class)),
+						with("useLibType"),
+						with(any(Object[].class)),
+						with(any(Interceptor.Continuation.class)));
+				will(returnValue(42));
+			}});
+			
 			my(BrickWithLib.class).fooBar();
 		}});
 	}

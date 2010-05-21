@@ -31,6 +31,7 @@ final class ClassEnhancer extends ClassAdapter {
 	
 	static class MethodDescriptor {
 
+		final int access;
 		final String name;
 		final String desc;
 		final String signature;
@@ -38,7 +39,8 @@ final class ClassEnhancer extends ClassAdapter {
 		final Type[] argumentTypes;
 		final Type returnType;
 
-		public MethodDescriptor(String name_, String desc_, String signature_, String[] exceptions_) {
+		public MethodDescriptor(int access_, String name_, String desc_, String signature_, String[] exceptions_) {
+			access = access_;
 			name = name_;
 			desc = desc_;
 			signature = signature_;
@@ -52,7 +54,7 @@ final class ClassEnhancer extends ClassAdapter {
 		}
 
 		public boolean isPrimitiveMethod() {
-			return returnType.getDescriptor().length() == 1;
+			return Types.isPrimitive(returnType);
 		}
 	}
 
@@ -68,20 +70,16 @@ final class ClassEnhancer extends ClassAdapter {
 		super.visit(version, access, name, signature, superName, interfaces);
 		_className = Type.getType("L" + name + ";");
 		if (containsBrickInterface(interfaces))
-			new BrickMetadataEmitter(_brick, _interceptorClass).emitBrickMetadataInitializer(this);
-	}
-	
-	private boolean containsBrickInterface(String[] interfaces) {
-		return Arrays.asList(interfaces).contains(Type.getInternalName(_brick)); 
+			emitBrickMetadata();
 	}
 
 	@Override
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 		
 		if (isAccessibleInstanceMethod(access) && !isConstructor(name)) {
-			_interceptedMethods.add(new MethodDescriptor(name, desc, signature, exceptions));
+			_interceptedMethods.add(new MethodDescriptor(access, name, desc, signature, exceptions));
 			// original method gets renamed 
-			return super.visitMethod(access, privateNameFor(name), desc, signature, exceptions);
+			return super.visitMethod(ACC_PUBLIC, privateNameFor(name), desc, signature, exceptions);
 		}
 		return super.visitMethod(access, name, desc, signature, exceptions);
 	}
@@ -106,35 +104,48 @@ final class ClassEnhancer extends ClassAdapter {
 		
 		String continuationInternalName = internalNameFromClassName(continuationClass);
 		
-		MethodVisitor mv = super.visitMethod(ACC_PUBLIC, m.name, m.desc, m.signature, m.exceptions);
+		MethodVisitor mv = super.visitMethod(m.access, m.name, m.desc, m.signature, m.exceptions);
 		mv.visitCode();
+		
+		// brick
 		mv.visitFieldInsn(GETSTATIC, BrickMetadataDefinition.CLASS_NAME, BrickMetadataDefinition.Fields.BRICK, BrickMetadataDefinition.Fields.BRICK_TYPE);
+		
+		// interceptor
 		mv.visitFieldInsn(GETSTATIC, BrickMetadataDefinition.CLASS_NAME, BrickMetadataDefinition.Fields.INTERCEPTOR, BrickMetadataDefinition.Fields.INTERCEPTOR_TYPE);
+		
+		// targetObject
 		mv.visitVarInsn(ALOAD, 0);
+		
+		// methodName
 		mv.visitLdcInsn(m.name);
 		
+		// args
 		mv.visitLdcInsn(m.argumentTypes.length);
 		mv.visitTypeInsn(ANEWARRAY, "java/lang/Object");
 		
 		for (int i=0; i<m.argumentTypes.length; ++i) {
 			mv.visitInsn(DUP);
 			mv.visitLdcInsn(i);
-			mv.visitVarInsn(ALOAD, i + 1);
+			Type argumentType = m.argumentTypes[i];
+			emitLoad(mv, argumentType, i + 1);
+			if (Types.isPrimitive(argumentType))
+				emitAutoBoxing(mv, argumentType);
+			
 			mv.visitInsn(AASTORE);
 		}
 		
+		// continuation
 		mv.visitTypeInsn(NEW, continuationInternalName);
 		mv.visitInsn(DUP);
-		
 		mv.visitVarInsn(ALOAD, 0);
-
 		for (int i=0; i<m.argumentTypes.length; ++i)
-			mv.visitVarInsn(ALOAD, i + 1);
+			emitLoad(mv, m.argumentTypes[i], i + 1);
 		
 		mv.visitMethodInsn(INVOKESPECIAL, continuationInternalName, "<init>", constructorDescriptor(continuationConstructorArgTypesFor(m)));
+		
+		// InterceptionRuntime.dispatch(...)
 		mv.visitMethodInsn(INVOKESTATIC, Type.getInternalName(InterceptionRuntime.class), "dispatch", Type.getMethodDescriptor(interceptionRuntimeDispatchMethod()));
 		
-		// box/unbox return value here
 		if (m.isVoidMethod()) {
 			mv.visitInsn(POP);
 			mv.visitInsn(RETURN);
@@ -149,6 +160,13 @@ final class ClassEnhancer extends ClassAdapter {
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
 		
+	}
+
+	private void emitLoad(MethodVisitor mv, Type argumentType, int local) {
+		if (Types.isPrimitive(argumentType))
+			mv.visitVarInsn(argumentType.getOpcode(ILOAD), local);
+		else
+			mv.visitVarInsn(ALOAD, local);
 	}
 
 	private Method interceptionRuntimeDispatchMethod() {
@@ -183,21 +201,21 @@ final class ClassEnhancer extends ClassAdapter {
 		cw.visit(V1_6, ACC_SUPER | ACC_PUBLIC | ACC_FINAL, continuationName, null, "java/lang/Object", new String[] { Type.getInternalName(Interceptor.Continuation.class) });
 		cw.visitInnerClass(continuationName, internalClassName(), continuationName, 0);
 		
-		String self = "self";
-		cw.visitField(ACC_FINAL + ACC_SYNTHETIC, self, classDescriptor(), null, null).visitEnd();
-		
-		for (Type type : m.argumentTypes)
-			cw.visitField(ACC_FINAL + ACC_SYNTHETIC, self, type.getDescriptor(), null, null).visitEnd();
-		
 		Type[] ctorArgs = continuationConstructorArgTypesFor(m);
+		
+		for (int i = 0; i < ctorArgs.length; i++) {
+			Type ctorArg = ctorArgs[i];
+			cw.visitField(ACC_FINAL + ACC_SYNTHETIC, fieldName(i), ctorArg.getDescriptor(), null, null).visitEnd();
+		}
+		
 		MethodVisitor ctor = cw.visitMethod(ACC_PUBLIC, "<init>", constructorDescriptor(ctorArgs), null, null);
 		ctor.visitCode();
 		
 		for (int i = 0; i < ctorArgs.length; i++) {
 			Type ctorArg = ctorArgs[i];
 			ctor.visitVarInsn(ALOAD, 0);
-			ctor.visitVarInsn(ALOAD, i + 1);
-			ctor.visitFieldInsn(PUTFIELD, continuationName, self, ctorArg.getDescriptor());
+			emitLoad(ctor, ctorArg, i + 1);
+			ctor.visitFieldInsn(PUTFIELD, continuationName, fieldName(i), ctorArg.getDescriptor());
 		}
 		
 		ctor.visitVarInsn(ALOAD, 0);
@@ -208,12 +226,11 @@ final class ClassEnhancer extends ClassAdapter {
 		
 		MethodVisitor invoke = cw.visitMethod(ACC_PUBLIC, "invoke", "([Ljava/lang/Object;)Ljava/lang/Object;", null, null);
 		invoke.visitCode();
-		invoke.visitVarInsn(ALOAD, 0);
-		invoke.visitFieldInsn(GETFIELD, continuationName, self, classDescriptor());
 		
-		for (Type argType : m.argumentTypes) {
+		for (int i = 0; i < ctorArgs.length; i++) {
+			Type ctorArg = ctorArgs[i];
 			invoke.visitVarInsn(ALOAD, 0);
-			invoke.visitFieldInsn(GETFIELD, continuationName, self, argType.getDescriptor());
+			invoke.visitFieldInsn(GETFIELD, continuationName, fieldName(i), ctorArg.getDescriptor());
 		}
 		
 		invoke.visitMethodInsn(INVOKEVIRTUAL, internalClassName(), privateNameFor(m.name), m.desc);
@@ -230,6 +247,10 @@ final class ClassEnhancer extends ClassAdapter {
 
 		return new ClassDefinition(continuationName, cw.toByteArray());
 
+	}
+
+	private String fieldName(int i) {
+		return "_" + i;
 	}
 
 	private void emitAutoBoxing(MethodVisitor mv, Type type) {
@@ -261,15 +282,7 @@ final class ClassEnhancer extends ClassAdapter {
 	}
 
 	private Type[] continuationConstructorArgTypesFor(MethodDescriptor m) {
-		return insertBefore(m.argumentTypes, classType());
-	}
-
-	private Type[] insertBefore(Type[] array, Type prefix) {
-		int newSize = array.length + 1;
-		ArrayList<Type> list = new ArrayList<Type>(newSize);
-		list.add(prefix);
-		for (Type type : array) list.add(type);
-		return list.toArray(new Type[newSize]);
+		return Types.insertBefore(m.argumentTypes, classType());
 	}
 
 	private Type classType() {
@@ -279,13 +292,19 @@ final class ClassEnhancer extends ClassAdapter {
 	private String internalClassName() {
 		return _className.getInternalName();
 	}
-
-	private String classDescriptor() {
-		return _className.getDescriptor();
-	}
-
+	
 	private boolean isConstructor(String name) {
 		return "<init>".equals(name);
+	}
+
+	private void emitBrickMetadata() {
+		BrickMetadataEmitter emitter = new BrickMetadataEmitter(_brick, _interceptorClass);
+		emitter.emitBrickMetadataInitializer(this);
+		_resultingClasses.add(emitter.emit());
+	}
+	
+	private boolean containsBrickInterface(String[] interfaces) {
+		return Arrays.asList(interfaces).contains(Type.getInternalName(_brick)); 
 	}
 	
 	private boolean isAccessibleInstanceMethod(int modifiers) {
