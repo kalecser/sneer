@@ -1,0 +1,57 @@
+===============================
+   Sneer Marketing Campaign
+===============================
+
+	Rough Task List Draft:
+
+	1) Get priorities straight
+		- Discuss tasks priorities with Klaus
+		- Marketing X Development allocation
+	2) Refactor old www.sovereigncomputing.net
+		- Contact Priscila to discuss site redesign
+	3) Build Sovereign Computing "brand" 
+		- Implement a simple JSP + FrontControllerServlet to explain the sovereign computing concept and point to "candidate" implementations
+		- Create wikipedia entry about sovereing computing
+	4) Develop a new Portal for Sneer
+		- Make a draft of the site to discuss with friends from Inspira (inspira.com.br) and Anfibia (www.anfibia.com.br)
+			- Produce a rough GUI storyboard
+				- Suggest topics for screens and contents:
+					- Home: introduction and definition of the project
+					- History of the project
+					- News & Events
+						- Upcoming features and releases
+						- Past events
+						- Forthcoming Events
+					- Forum: a view backed by Google Groups
+					- Project Tracking
+						- Git Repository View/Link
+						- Hudson Build View/Link
+					- Videos
+						- Promotional
+							- Klaus' vision
+								- The building of a dream
+								- Breaking the shackles and spreading the word
+								- What was once an augury/herald/omen/portent has become reality 
+							- Igor testimonial
+								- The project experience: learning & coolness
+							- Rodrigo testimonial
+						- Tutorials and how-to shorts
+					- Team Profile
+					- Sneer Nights Announcements
+					- References to external resources
+						- Articles
+						- Links to projects with similar ideas
+	5) 2nd Sneer Summit/Conference
+	6) JavaMagazine article
+		- Contact Doederlein 
+	7) Globacolde Open4Education mini-course
+		- Contact Yara and Vinicius Senger
+	8) Folha de Sao Paulo article
+		- Contact guy that wrote about the Diaspora project
+	9) Design T-shirts & Stickers
+		- Slogans:
+			- "Yes, my grandson"
+			- "You're a looking at sovereign peer"
+			- "Break the shackles / go sovereign / regain your sovereignty at: www.sovereingcomputing.net"
+			- It's good to be the king (History of the world)
+	
