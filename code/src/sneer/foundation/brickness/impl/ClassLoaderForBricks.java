@@ -55,7 +55,7 @@ abstract class ClassLoaderForBricks extends EagerClassLoader implements BrickCla
 				mainClass = clazz;
 			}
 		}
-		if (mainClass == null)throw new IllegalStateException();
+		if (mainClass == null) throw new IllegalStateException();
 		return mainClass;
 	}
 
