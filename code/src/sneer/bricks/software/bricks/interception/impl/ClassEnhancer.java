@@ -15,6 +15,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
+import scala.actors.threadpool.Arrays;
 import sneer.bricks.software.bricks.interception.InterceptionRuntime;
 import sneer.bricks.software.bricks.interception.Interceptor;
 import sneer.foundation.brickness.ClassDefinition;
@@ -24,6 +25,8 @@ final class ClassEnhancer extends ClassAdapter {
 	private final ArrayList<ClassDefinition> _resultingClasses;
 	private final ArrayList<MethodDescriptor> _interceptedMethods = new ArrayList<MethodDescriptor>();
 	private Type _className;
+	private final Class<?> _brick;
+	private final Class<? extends Interceptor> _interceptorClass;
 	
 	static class MethodDescriptor {
 
@@ -48,8 +51,10 @@ final class ClassEnhancer extends ClassAdapter {
 		}
 	}
 
-	ClassEnhancer(ClassVisitor delegate, ArrayList<ClassDefinition> resultingClasses) {
+	ClassEnhancer(ClassVisitor delegate, Class<?> brick, Class<? extends Interceptor> interceptorClass, ArrayList<ClassDefinition> resultingClasses) {
 		super(delegate);
+		_brick = brick;
+		_interceptorClass = interceptorClass;
 		_resultingClasses = resultingClasses;
 	}
 	
@@ -57,8 +62,14 @@ final class ClassEnhancer extends ClassAdapter {
 	public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 		super.visit(version, access, name, signature, superName, interfaces);
 		_className = Type.getType("L" + name + ";");
+		if (containsBrickInterface(interfaces))
+			new BrickMetadataEmitter(_brick, _interceptorClass).emitBrickMetadataInitializer(this);
 	}
 	
+	private boolean containsBrickInterface(String[] interfaces) {
+		return Arrays.asList(interfaces).contains(Type.getInternalName(_brick)); 
+	}
+
 	@Override
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 		

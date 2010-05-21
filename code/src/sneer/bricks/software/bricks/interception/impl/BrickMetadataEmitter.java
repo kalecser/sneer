@@ -2,6 +2,7 @@ package sneer.bricks.software.bricks.interception.impl;
 
 import static org.objectweb.asm.Opcodes.*;
 
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
@@ -25,18 +26,17 @@ class BrickMetadataEmitter {
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 
 		cw.visit(V1_6, ACC_PUBLIC + ACC_SUPER, BrickMetadataDefinition.CLASS_NAME, null, "java/lang/Object", null);
-		cw.visitField(ACC_PUBLIC + ACC_FINAL + ACC_STATIC, BrickMetadataDefinition.Fields.BRICK, BrickMetadataDefinition.Fields.BRICK_TYPE, null, null).visitEnd();
-		cw.visitField(ACC_PUBLIC + ACC_FINAL + ACC_STATIC, BrickMetadataDefinition.Fields.INTERCEPTOR, BrickMetadataDefinition.Fields.INTERCEPTOR_TYPE, null, null).visitEnd();
+		cw.visitField(ACC_PUBLIC + ACC_STATIC, BrickMetadataDefinition.Fields.BRICK, BrickMetadataDefinition.Fields.BRICK_TYPE, null, null).visitEnd();
+		cw.visitField(ACC_PUBLIC + ACC_STATIC, BrickMetadataDefinition.Fields.INTERCEPTOR, BrickMetadataDefinition.Fields.INTERCEPTOR_TYPE, null, null).visitEnd();
 		
 		writeEmptyConstructor(cw);
-		writeBrickMetadataInitializer(cw);
 		
 		cw.visitEnd();
 		
 		return new ClassDefinition(BrickMetadataDefinition.CLASS_NAME, cw.toByteArray());
 	}
 
-	private void writeBrickMetadataInitializer(ClassWriter cw) {
+	public void emitBrickMetadataInitializer(ClassVisitor cw) {
 		MethodVisitor mv = cw.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
 		mv.visitCode();
 		

@@ -18,7 +18,7 @@ class InterceptionEnhancerImpl implements InterceptionEnhancer {
 	@Override
 	public List<ClassDefinition> realize(Class<?> targetBrick, Class<? extends Interceptor> interceptorClass, final ClassDefinition classDef) {
 		
-		ArrayList<ClassDefinition> resultingClasses = enhanceClassDefinition(classDef);
+		ArrayList<ClassDefinition> resultingClasses = enhanceClassDefinition(classDef, targetBrick, interceptorClass);
 		
 		if (!_initializedBricks.contains(targetBrick)) {
 			resultingClasses.add(generateBrickMetadataFor(targetBrick, interceptorClass));
@@ -28,13 +28,13 @@ class InterceptionEnhancerImpl implements InterceptionEnhancer {
 		
 	}
 
-	private ArrayList<ClassDefinition> enhanceClassDefinition(final ClassDefinition classDef) {
+	private ArrayList<ClassDefinition> enhanceClassDefinition(final ClassDefinition classDef, Class<?> targetBrick, Class<? extends Interceptor> interceptorClass) {
 		ArrayList<ClassDefinition> resultingClasses = new ArrayList<ClassDefinition>();
 		
         ClassReader cr = new ClassReader(classDef.bytes);            
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         
-        ClassEnhancer transformer = new ClassEnhancer(cw, resultingClasses);
+        ClassEnhancer transformer = new ClassEnhancer(cw, targetBrick, interceptorClass, resultingClasses);
 		cr.accept(transformer, ClassReader.EXPAND_FRAMES);
 		
 		resultingClasses.add(new ClassDefinition(classDef.name, cw.toByteArray()));
