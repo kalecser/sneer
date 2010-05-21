@@ -11,11 +11,6 @@ public class BrickOfSomeInterceptingNatureImpl implements BrickOfSomeInterceptin
 	}
 	
 	@Override
-	public int baz() {
-		return 42;
-	}
-
-	@Override
 	public Greeter newGreeter() {
 		return new Greeter2();
 	}

@@ -19,6 +19,7 @@ import scala.actors.threadpool.Arrays;
 import sneer.bricks.software.bricks.interception.InterceptionRuntime;
 import sneer.bricks.software.bricks.interception.Interceptor;
 import sneer.foundation.brickness.ClassDefinition;
+import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 final class ClassEnhancer extends ClassAdapter {
 	
@@ -48,6 +49,10 @@ final class ClassEnhancer extends ClassAdapter {
 		
 		boolean isVoidMethod() {
 			return returnType == Type.VOID_TYPE;
+		}
+
+		public boolean isPrimitiveMethod() {
+			return returnType.getDescriptor().length() == 1;
 		}
 	}
 
@@ -133,6 +138,9 @@ final class ClassEnhancer extends ClassAdapter {
 		if (m.isVoidMethod()) {
 			mv.visitInsn(POP);
 			mv.visitInsn(RETURN);
+		} else if (m.isPrimitiveMethod()) {
+			emitUnboxing(mv, m.returnType);
+			mv.visitInsn(m.returnType.getOpcode(IRETURN));
 		} else {
 			mv.visitTypeInsn(CHECKCAST, m.returnType.getInternalName());
 			mv.visitInsn(ARETURN);
@@ -144,15 +152,20 @@ final class ClassEnhancer extends ClassAdapter {
 	}
 
 	private Method interceptionRuntimeDispatchMethod() {
+		Class<?> klass = InterceptionRuntime.class;
+		return getMethod(klass, "dispatch",
+				Class.class,
+				Interceptor.class,
+				Object.class,
+				String.class,
+				Object[].class,
+				Interceptor.Continuation.class);
+	}
+
+	private Method getMethod(Class<?> klass, String methodName,
+			Class<?>... parameterTypes) {
 		try {
-			return InterceptionRuntime.class.getMethod(
-					"dispatch",
-					Class.class,
-					Interceptor.class,
-					Object.class,
-					String.class,
-					Object[].class,
-					Interceptor.Continuation.class);
+			return klass.getMethod(methodName, parameterTypes);
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
@@ -206,6 +219,9 @@ final class ClassEnhancer extends ClassAdapter {
 		invoke.visitMethodInsn(INVOKEVIRTUAL, internalClassName(), privateNameFor(m.name), m.desc);
 		if (m.isVoidMethod())
 			invoke.visitInsn(ACONST_NULL);
+		else if (m.isPrimitiveMethod())
+			emitAutoBoxing(invoke, m.returnType);
+		
 		invoke.visitInsn(ARETURN);
 		invoke.visitMaxs(0, 0);
 		invoke.visitEnd();
@@ -214,6 +230,30 @@ final class ClassEnhancer extends ClassAdapter {
 
 		return new ClassDefinition(continuationName, cw.toByteArray());
 
+	}
+
+	private void emitAutoBoxing(MethodVisitor mv, Type type) {
+		if (type == Type.INT_TYPE)
+			emitMethodInsn(mv, INVOKESTATIC, Integer.class, "valueOf", int.class);
+		else
+			throw new NotImplementedYet(type.toString());
+	}
+	
+	private void emitUnboxing(MethodVisitor mv, Type type) {
+		if (type == Type.INT_TYPE)
+			emitUnboxingSequence(mv, Integer.class, "intValue");
+		else
+			throw new NotImplementedYet(type.toString());
+	}
+
+	private void emitUnboxingSequence(MethodVisitor mv, Class<Integer> owner, String methodName) {
+		mv.visitTypeInsn(CHECKCAST, Type.getInternalName(owner));
+		emitMethodInsn(mv, INVOKEVIRTUAL, owner, methodName);
+	}
+
+	private void emitMethodInsn(MethodVisitor mv, int opcode, Class<?> owner, String methodName, Class<?>... parameterTypes) {
+		Method method = getMethod(owner, methodName, parameterTypes);
+		mv.visitMethodInsn(opcode, Type.getInternalName(method.getDeclaringClass()), method.getName(), Type.getMethodDescriptor(method));
 	}
 
 	private String constructorDescriptor(Type[] ctorArgs) {
