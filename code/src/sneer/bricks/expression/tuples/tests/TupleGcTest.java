@@ -6,9 +6,9 @@ import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 
-public class TupleGcTest extends BrickTest {
+public class TupleGcTest extends BrickTestWithFiles {
 
 	private final TupleSpace _subject = my(TupleSpace.class);
 	

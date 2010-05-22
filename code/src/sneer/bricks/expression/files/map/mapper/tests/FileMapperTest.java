@@ -17,10 +17,10 @@ import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.software.code.classutils.ClassUtils;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.lang.Functor;
 
-public class FileMapperTest extends BrickTest {
+public class FileMapperTest extends BrickTestWithFiles {
 
 	private final FileMapper _subject = my(FileMapper.class);
 	private final FileMap _fileMap = my(FileMap.class);

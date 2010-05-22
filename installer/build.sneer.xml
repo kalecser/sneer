@@ -88,7 +88,7 @@
 	</target>
 
 	<target name="test-cleanup">
-		<delete dir="${java.io.tmpdir}/${ant.project.name}" deleteonexit="true" quiet="true" verbose="true" />
+		<delete dir="${java.io.tmpdir}/cleantest" deleteonexit="true" quiet="true" verbose="true" />
 	</target>
 
 	<target name="test-verification" if="junit.failures">

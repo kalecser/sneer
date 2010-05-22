@@ -19,6 +19,8 @@ import sneer.bricks.expression.files.protocol.FileContentsFirstBlock;
 import sneer.bricks.expression.files.protocol.FileRequest;
 import sneer.bricks.expression.files.protocol.Protocol;
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.remote.RemoteTuples;
+import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
@@ -27,13 +29,16 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.software.code.classutils.ClassUtils;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
 
-public class FileClientTest extends BrickTest {
+public class FileClientTest extends BrickTestWithTuples {
 
-	private final FileClient _subject = my(FileClient.class);;
+	private final FileClient _subject = my(FileClient.class);
+
+	@SuppressWarnings("unused") private WeakContract _toAvoidGC;
 
 	@Test (timeout = 3000)
 	public void fileAlreadyMappedIsNotDownloaded() throws IOException {
@@ -42,7 +47,7 @@ public class FileClientTest extends BrickTest {
 		my(FileMap.class).putFile(file.getAbsolutePath(), file.lastModified(), hash);
 
 		@SuppressWarnings("unused")
-		WeakContract contractToAvoidGc = my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
+		WeakContract contractToAvoidGc = my(RemoteTuples.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
 			throw new IllegalStateException();
 		}});
 
@@ -56,19 +61,18 @@ public class FileClientTest extends BrickTest {
 	@Test (timeout = 4000)
 	public void receiveFileContentBlocksOutOfSequence() throws IOException, TimeoutException {
 		final File smallFile = createTmpFileWithRandomContent(3 * Protocol.FILE_BLOCK_SIZE);
-		final Hash fileHash = new Hash(new ImmutableByteArray(new byte[]{42}));
+		final Hash fileHash = new Hash(new ImmutableByteArray(new byte[]{ 42 }));
 
-		final Iterator<FileContents> blocksOutOfSequence = createFileContentBlocks(smallFile, fileHash).iterator();
-		@SuppressWarnings("unused")
-		WeakContract toAvoidGC = my(TupleSpace.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
-			my(TupleSpace.class).acquire(blocksOutOfSequence.next());
-			my(Clock.class).advanceTime(1); // To avoid duplicated tuples
+		final Seal addressee = my(OwnSeal.class).get().currentValue();
+		Environments.runWith(remote(my(Clock.class)), new ClosureX<IOException>() { @Override public void run() throws IOException {
+			final Iterator<FileContents> blocksOutOfSequence = createFileContentBlocks(addressee, smallFile, fileHash).iterator();
+			sendFileContentBlocksUponRequest(blocksOutOfSequence);
 		}});
 
 		final File tmpFile = newTmpFile();
 		_subject.startFileDownload(tmpFile, fileHash).waitTillFinished();
 
-		my(TupleSpace.class).waitForAllDispatchingToFinish();
+		waitForAllDispatchingToFinish();
 		my(IO.class).files().assertSameContents(tmpFile, smallFile);
 	}
 
@@ -76,18 +80,21 @@ public class FileClientTest extends BrickTest {
 		return my(ClassUtils.class).classFile(getClass());
 	}
 
-	private List<FileContents> createFileContentBlocks(File file, Hash fileHash) throws IOException {
+	private List<FileContents> createFileContentBlocks(Seal addressee, File file, Hash fileHash) throws IOException {
 		List<FileContents> blocks = new ArrayList<FileContents>();
 
-		blocks.add(new FileContents(me(), fileHash, 1, getFileBlock(file, 1), file.getName())); // 2nd block
-		blocks.add(new FileContentsFirstBlock(me(), fileHash, file.length(), getFileBlock(file, 0), file.getName())); // 1st block
-		blocks.add(new FileContents(me(), fileHash, 2, getFileBlock(file, 2), file.getName())); // 3rd block
+		blocks.add(new FileContents(addressee, fileHash, 1, getFileBlock(file, 1), file.getName())); // 2nd block
+		blocks.add(new FileContentsFirstBlock(addressee, fileHash, file.length(), getFileBlock(file, 0), file.getName())); // 1st block
+		blocks.add(new FileContents(addressee, fileHash, 2, getFileBlock(file, 2), file.getName())); // 3rd block
 
 		return blocks;
 	}
 
-	private Seal me() {
-		return my(OwnSeal.class).get().currentValue();
+	private void sendFileContentBlocksUponRequest(final Iterator<FileContents> blocks) {
+		_toAvoidGC = my(RemoteTuples.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
+			my(TupleSpace.class).acquire(blocks.next());
+			my(Clock.class).advanceTime(1); // To avoid duplicated tuples
+		}});
 	}
 
 	private ImmutableByteArray getFileBlock(File file, int blockNumber) throws IOException {

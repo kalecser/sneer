@@ -9,21 +9,23 @@ import org.jmock.Expectations;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.map.FileMap;
-import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.remote.RemoteTuples;
+import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
 import sneer.foundation.brickness.testsupport.Bind;
+import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.exchange.endorsements.TrackEndorsement;
 import dfcsantos.tracks.exchange.endorsements.TrackEndorser;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
-public class TrackEndorserTest extends BrickTest {
+public class TrackEndorserTest extends BrickTestWithTuples {
 
 	@Bind private final FileMap _fileMap = mock(FileMap.class);
 
@@ -39,7 +41,7 @@ public class TrackEndorserTest extends BrickTest {
 		final Latch latch = my(Latches.class).produce();
 
 		@SuppressWarnings("unused")
-		WeakContract refToAvoidGC = my(TupleSpace.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement trackEndorsement) {
+		WeakContract refToAvoidGC = my(RemoteTuples.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement trackEndorsement) {
 			assertEquals("rocknroll/thunderstruck.mp3", trackEndorsement.path);
 			assertEquals(hash, trackEndorsement.hash);
 			latch.open();
@@ -49,8 +51,11 @@ public class TrackEndorserTest extends BrickTest {
 			oneOf(_fileMap).getFile(hash); will(returnValue(track.getAbsolutePath()));
 		}});
 
-		my(TracksFolderKeeper.class).setSharedTracksFolder(tmpFolder());
-		activateTrackEndorser();
+		Environments.runWith(remote(), new Closure() { @Override public void run() {
+			my(TracksFolderKeeper.class).setSharedTracksFolder(tmpFolder());
+			activateTrackEndorser();
+		}});
+
 		latch.waitTillOpen();
 	}
 

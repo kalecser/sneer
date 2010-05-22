@@ -5,9 +5,9 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 
-public class StringUtilsTest extends BrickTest {
+public class StringUtilsTest extends BrickTestWithFiles {
 
 	@Test
 	public void testSplitRight() {

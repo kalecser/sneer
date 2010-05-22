@@ -4,10 +4,10 @@ import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import spikes.sneer.bricks.pulp.own.tagline.OwnTaglineKeeper;
 
-public class OwnTaglineKeeperTest extends BrickTest {
+public class OwnTaglineKeeperTest extends BrickTestWithFiles {
 
 	private final OwnTaglineKeeper _taglineKeeper = my(OwnTaglineKeeper.class);
 	

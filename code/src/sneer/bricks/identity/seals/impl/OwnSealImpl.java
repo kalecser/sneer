@@ -48,9 +48,10 @@ class OwnSealImpl implements OwnSeal {
 
 	
 	private Seal newTemporarySealForTests() {
-		my(Logger.class).log("Public key not found. Generating tmp seal for tests.");
 		try {
-			return new Seal(new ImmutableByteArray(Long.toHexString(System.nanoTime()).getBytes("UTF-8")));
+			Seal tmpSeal = new Seal(new ImmutableByteArray(Long.toHexString(System.nanoTime()).getBytes("UTF-8")));
+			my(Logger.class).log("Public key not found. Created tmp seal for tests: " + tmpSeal);
+			return tmpSeal;
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalStateException(e);
 		}

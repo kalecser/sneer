@@ -18,13 +18,13 @@ import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.widgets.autoscroll.AutoScroll;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 @Ignore
-public class AutoScrollTest extends BrickTest {	
+public class AutoScrollTest extends BrickTestWithFiles {	
 
 	protected JFrame _window;
 	

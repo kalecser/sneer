@@ -6,11 +6,11 @@ import org.junit.Test;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Predicate;
 
-public class TupleFilterManagerTest extends BrickTest {
+public class TupleFilterManagerTest extends BrickTestWithFiles {
 
 	private final TupleFilterManager _subject = my(TupleFilterManager.class);
 

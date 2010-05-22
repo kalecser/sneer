@@ -16,7 +16,7 @@ import sneer.bricks.expression.files.protocol.FileContentsFirstBlock;
 import sneer.bricks.expression.files.protocol.FileRequest;
 import sneer.bricks.expression.files.protocol.Protocol;
 import sneer.bricks.expression.tuples.Tuple;
-import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -53,7 +53,7 @@ class FileDownload extends AbstractDownload {
 
 	@Override
 	void subscribeToContents() {
-		_fileContentConsumerContract = my(TupleSpace.class).addSubscription(FileContents.class, new Consumer<FileContents>() { @Override public void consume(FileContents contents) {
+		_fileContentConsumerContract = my(RemoteTuples.class).addSubscription(FileContents.class, new Consumer<FileContents>() { @Override public void consume(FileContents contents) {
 			receiveFileBlock(contents);
 		}});
 	}
@@ -75,8 +75,6 @@ class FileDownload extends AbstractDownload {
 	private void tryToReceiveFileBlock(FileContents contents) throws IOException {
 		if (!contents.hashOfFile.equals(_hash)) return;
 
-		my(Logger.class).log("File block received. File: {}, Block: ", contents.debugInfo, contents.blockNumber);
-
 		if (contents instanceof FileContentsFirstBlock) {
 			receiveFirstBlock((FileContentsFirstBlock) contents);
 			if (isFinished()) return;  // Empty file case.
@@ -84,6 +82,8 @@ class FileDownload extends AbstractDownload {
 
 		if (contents.blockNumber < _nextBlockToWrite) return;
 		if (contents.blockNumber - _nextBlockToWrite > MAX_BLOCKS_DOWNLOADED_AHEAD) return; 
+
+		my(Logger.class).log("File block received. File: {}, Block: ", contents.debugInfo, contents.blockNumber);
 
 		_blocksToWrite.add(contents);
 		setProgress((float) _nextBlockToWrite / _fileSizeInBlocks);

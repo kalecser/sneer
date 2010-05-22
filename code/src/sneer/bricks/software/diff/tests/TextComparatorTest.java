@@ -14,9 +14,9 @@ import org.junit.Test;
 import sneer.bricks.software.diff.TextComparator;
 import sneer.bricks.software.diff.TextComparator.TextBlock;
 import sneer.bricks.software.diff.TextComparator.TextBlockType;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 
-public class TextComparatorTest extends BrickTest {
+public class TextComparatorTest extends BrickTestWithFiles {
 	
 	private final TextComparator _subject = my(TextComparator.class);
 	private final List<Object[]> _expectations = new ArrayList<Object[]>();

@@ -2,8 +2,9 @@ package sneer.foundation.environments;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.foundation.lang.ByRef;
-import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.Producer;
+import sneer.foundation.lang.ProducerX;
 
 public class EnvironmentUtils {
 
@@ -24,9 +25,9 @@ public class EnvironmentUtils {
 		}});
 	}
 
-	public static <T> T produceIn(Environment environment, final Producer<T> producer) {
+	public static <T, X extends Throwable> T produceIn(Environment environment, final ProducerX<T, X> producer) throws X {
 		final ByRef<T> result = ByRef.newInstance();
-		Environments.runWith(environment, new Closure() { @Override public void run() {
+		Environments.runWith(environment, new ClosureX<X>() { @Override public void run() throws X {
 			result.value = producer.produce();
 		}});
 		return result.value;

@@ -18,7 +18,7 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
@@ -29,7 +29,7 @@ import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 import sneer.foundation.testsupport.AssertUtils;
 
-public class LocalBrickDiscoveryTest extends BrickTest {
+public class LocalBrickDiscoveryTest extends BrickTestWithFiles {
 
 	@Ignore
 	@Test (timeout = 4000)

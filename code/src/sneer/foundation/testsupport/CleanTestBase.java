@@ -16,8 +16,6 @@ import org.junit.runner.RunWith;
 @RunWith(CleanTestRunner.class)
 public abstract class CleanTestBase extends AssertUtils {
 
-	private static final String PROJECT_NAME = "sneer";
-
 	private File _tmpFolder;
 	private String _tmpFolderName;
 	
@@ -50,7 +48,7 @@ public abstract class CleanTestBase extends AssertUtils {
 	protected String tmpFolderName() {
 		if (_tmpFolderName == null) {
 			String tmp = System.getProperty("java.io.tmpdir");
-			_tmpFolderName = appendSeparator(tmp) + appendSeparator(PROJECT_NAME) + this.getClass().getSimpleName() + System.nanoTime();
+			_tmpFolderName = appendSeparator(tmp) + appendSeparator("cleantest") + this.getClass().getSimpleName() + System.nanoTime();
 		}
 
 		return _tmpFolderName;

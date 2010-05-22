@@ -32,14 +32,14 @@ class WusicGuiImpl implements WusicGui {
     private boolean _isInitialized = false;
 
     {
-		my(MainMenu.class).addAction("Wusic", new Closure() { @Override public void run() {
+		my(MainMenu.class).addAction(30, "Wusic", new Closure() { @Override public void run() {
 			if (!_isInitialized){
 				_isInitialized = true;
 				_frame = initFrame();
 				_controller.start();
 			}
 			_frame.setVisible(true);
-		}}, 30);
+		}});
 
 		registerPlayingTrackTextProvider();
 	}

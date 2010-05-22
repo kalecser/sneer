@@ -25,7 +25,7 @@ import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.bricks.softwaresharing.BrickInfo;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
@@ -34,7 +34,7 @@ import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Predicate;
 
 @Ignore
-public class BrickInstallerTest extends BrickTest {
+public class BrickInstallerTest extends BrickTestWithFiles {
 
 	{
 		my(FolderConfig.class).stageFolder().set(stageFolder());

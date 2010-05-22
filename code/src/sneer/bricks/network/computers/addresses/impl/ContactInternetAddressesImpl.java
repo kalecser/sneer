@@ -1,9 +1,8 @@
 package sneer.bricks.network.computers.addresses.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
@@ -24,7 +23,7 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 	SetRegister<InternetAddress> _addresses = my(CollectionSignals.class).newSetRegister();
 	
 	@SuppressWarnings("unused")
-	private final WeakContract _refToAvoidGc = my(TupleSpace.class).addSubscription(Sighting.class, new Consumer<Sighting>() { @Override public void consume(Sighting sighting) {
+	private final WeakContract _refToAvoidGc = my(RemoteTuples.class).addSubscription(Sighting.class, new Consumer<Sighting>() { @Override public void consume(Sighting sighting) {
 		handle(sighting);
 	}});
 
@@ -39,8 +38,6 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 	}
 
 	private void handle(final Sighting sighting) {
-		if (isReflexive(sighting)) return;
-
 		final Contact contact = my(ContactSeals.class).contactGiven(sighting.peersSeal);
 		if (contact == null) return;
 		
@@ -61,10 +58,6 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 				return contact;
 			}
 		});
-	}
-
-	private boolean isReflexive(final Sighting sighting) {
-		return sighting.peersSeal.equals(my(OwnSeal.class).get().currentValue());
 	}
 
 }

@@ -13,10 +13,10 @@ import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.reactive.SignalUtils;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.brickness.testsupport.Bind;
 
-public class ReachabilityTest extends BrickTest {
+public class ReachabilityTest extends BrickTestWithFiles {
 	
 	@Bind private final SocketAccepter _accepter = mock(SocketAccepter.class);
 	private final EventNotifier<ByteArraySocket> _notifier = my(EventNotifiers.class).newInstance();

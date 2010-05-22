@@ -7,9 +7,9 @@ import org.junit.Test;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.counters.Counter;
 import sneer.bricks.pulp.reactive.counters.Counters;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 
-public class CounterTest extends BrickTest {
+public class CounterTest extends BrickTestWithFiles {
 
 	@Test
 	public void countTest() {

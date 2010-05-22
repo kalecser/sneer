@@ -28,6 +28,7 @@ class ContactActionManagerImpl implements ContactActionManager {
 		@Override public boolean isVisible() {return false; }
 		@Override public String caption() { return "";}
 		@Override public void run() {/* ignore */}
+		@Override public int positionInMenu() { return 0; }
 	};
 
 	@Override

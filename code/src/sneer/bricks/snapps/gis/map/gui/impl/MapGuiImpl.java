@@ -98,7 +98,7 @@ class MapGuiImpl implements MapGui{
 		_scroll.getViewport().add(_mapHolder);
 		updateAddress(DEFAULT_ADDRESS, _zoom);
 		
-		container.actions().addAction(new Action(){
+		container.actions().addAction(10, new Action(){
 			@Override public String caption() { return "Zoom In";}
 			@Override public void run() { 
 				_zoom=_zoom+1;
@@ -106,7 +106,7 @@ class MapGuiImpl implements MapGui{
 			}
 		});
 		
-		container.actions().addAction(new Action(){
+		container.actions().addAction(20, new Action(){
 			@Override public String caption() { return "Zoom Out";}
 			@Override public void run() { 
 				_zoom=_zoom-1;

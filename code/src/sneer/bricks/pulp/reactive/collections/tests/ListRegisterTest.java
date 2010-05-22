@@ -8,10 +8,10 @@ import org.junit.Test;
 
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.lang.Consumer;
 
-public class ListRegisterTest extends BrickTest {
+public class ListRegisterTest extends BrickTestWithFiles {
 
 	@Test
 	public void testSize() {

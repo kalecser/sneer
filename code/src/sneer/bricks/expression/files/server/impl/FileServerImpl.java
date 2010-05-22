@@ -15,10 +15,10 @@ import sneer.bricks.expression.files.protocol.Protocol;
 import sneer.bricks.expression.files.server.FileServer;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Consumer;
@@ -30,7 +30,7 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 
 	{
-		_fileRequestContract = my(TupleSpace.class).addSubscription(FileRequest.class, this);
+		_fileRequestContract = my(RemoteTuples.class).addSubscription(FileRequest.class, this);
 	}
 
 
@@ -45,16 +45,9 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 
 	private void tryToReply(FileRequest request) throws IOException {
-		if (isFromMyself(request)) return;
-
 		Tuple response = createResponseFor(request);
 		if (response == null) return;
 		my(TupleSpace.class).acquire(response);
-	}
-
-
-	private boolean isFromMyself(FileRequest request) {
-		return my(OwnSeal.class).get().currentValue().equals(request.publisher);
 	}
 
 

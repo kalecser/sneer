@@ -1,4 +1,4 @@
-package sneer.bricks.software.folderconfig.tests;
+package sneer.bricks.software.folderconfig.testsupport;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -11,7 +11,7 @@ import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
 
-public abstract class BrickTest extends BrickTestWithThreads {
+public abstract class BrickTestWithFiles extends BrickTestWithThreads {
 
 	{
 		my(FolderConfig.class).storageFolder().set(new File(tmpFolderName(), "data"));

@@ -2,12 +2,12 @@ package sneer.tests;
 
 import org.junit.After;
 
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.tests.adapters.SneerCommunity;
 
 
 /** Abstract test class names must not end in "Test" or else Hudson will try to instantiate them and fail. :P */
-public abstract class SovereignFunctionalTestBase extends BrickTest {
+public abstract class SovereignFunctionalTestBase extends BrickTestWithFiles {
 
 	private SovereignCommunity _subject = createNewCommunity();
 	

@@ -10,12 +10,12 @@ import org.jmock.Expectations;
 import org.junit.Test;
 
 import sneer.bricks.pulp.reactive.SignalUtils;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.brickness.testsupport.Bind;
 import spikes.sneer.bricks.skin.audio.kernel.Audio;
 import spikes.sneer.bricks.skin.audio.mic.Mic;
 
-public class MicTest extends BrickTest {
+public class MicTest extends BrickTestWithFiles {
 
 	private final Mic _subject = my(Mic.class);
 	private final TargetDataLine _line = mock(TargetDataLine.class);

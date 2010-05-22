@@ -6,9 +6,9 @@ import org.junit.Test;
 
 import sneer.bricks.pulp.datastructures.cache.Cache;
 import sneer.bricks.pulp.datastructures.cache.CacheFactory;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 
-public class CachePerformanceTest extends BrickTest{
+public class CachePerformanceTest extends BrickTestWithFiles{
 
 	private final Cache<Object> _subject= my(CacheFactory.class).createWithCapacity(3000);
 	

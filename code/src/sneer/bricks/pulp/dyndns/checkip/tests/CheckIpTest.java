@@ -9,10 +9,10 @@ import org.junit.Test;
 
 import sneer.bricks.pulp.dyndns.checkip.CheckIp;
 import sneer.bricks.pulp.httpclient.HttpClient;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.foundation.brickness.testsupport.Bind;
 
-public class CheckIpTest extends BrickTest {
+public class CheckIpTest extends BrickTestWithFiles {
 	
 	@Bind final HttpClient _client = mock(HttpClient.class);
 	

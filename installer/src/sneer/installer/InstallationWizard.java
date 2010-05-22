@@ -70,8 +70,8 @@ public class InstallationWizard extends JFrame {
 	private void congratulations() {
 		Dialogs.show(WIZARD_TITLE,
 		"Congratulations!\n\n" +
-		"You are no longer a slave. You have just\n" +
-		"claimed your own share of the internet.", systemExit(),
+		"You have just claimed your own\n" +
+		"share of the internet.", systemExit(),
 				
 		"Start Sneer");
 	}

@@ -7,14 +7,14 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.bricks.software.folderconfig.tests.BrickTest;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import spikes.klaus.Daemon;
 import spikes.sneer.pulp.things.Thing;
 import spikes.sneer.pulp.things.ThingHome;
 import spikes.wheel.testutil.TestDashboard;
 
 @SuppressWarnings("deprecation")
-public class ThingsTest extends BrickTest {
+public class ThingsTest extends BrickTestWithFiles {
 	
 	private final ThingHome _subject = my(ThingHome.class);
 

@@ -125,9 +125,9 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 //	}
 	
 	private void addMenuAction() {
-		_mainMenu.addAction("Open Log Console", new Closure() { @Override public void run() {
+		_mainMenu.addAction(40, "Open Log Console", new Closure() { @Override public void run() {
 			open();
-		}}, 40);
+		}});
 	}
 
 	private void open() {
@@ -220,7 +220,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 
 	private void initClearLogAction() {
 		
-		_popupMenu.addAction(new Action(){
+		_popupMenu.addAction(100, new Action(){
 			@Override public String caption() { return "Clear Log";	}
 			@Override public void run() { _txtLog.setText("");}
 		});
