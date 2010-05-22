@@ -14,4 +14,5 @@ public interface ContactSeals {
 
 	Signal<Seal> sealGiven(Contact contact);
 	Contact contactGiven(Seal peersSeal);
+	Signal<String> nicknameGiven(Seal peersSeal);
 }

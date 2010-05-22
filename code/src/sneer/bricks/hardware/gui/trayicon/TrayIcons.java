@@ -10,4 +10,6 @@ public interface TrayIcons {
 
 	TrayIcon newTrayIcon(URL userIcon, Signal<String> tooltip) throws SystemTrayNotSupported;
 
+	void messageBalloon(String title, String message);
+
 }
