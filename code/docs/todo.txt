@@ -12,7 +12,6 @@ Patrick =================================================
 
 Kalecser =================================================
 
-	- WindGuiImpl will no longer steal focus. If new shouts arrive and the window is not active a tray icon message will show.
 	- LogConsole filters in textfield instead of list.
 
 
