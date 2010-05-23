@@ -132,7 +132,7 @@ final class ClassEnhancer extends ClassAdapter {
 			Type argumentType = m.argumentTypes[i];
 			emitLoad(mv, argumentType, i + 1);
 			if (Types.isPrimitive(argumentType))
-				emitAutoBoxing(mv, argumentType);
+				emitBoxing(mv, argumentType);
 			
 			mv.visitInsn(AASTORE);
 		}
@@ -241,7 +241,7 @@ final class ClassEnhancer extends ClassAdapter {
 		if (m.isVoidMethod())
 			invoke.visitInsn(ACONST_NULL);
 		else if (m.isPrimitiveMethod())
-			emitAutoBoxing(invoke, m.returnType);
+			emitBoxing(invoke, m.returnType);
 		
 		invoke.visitInsn(ARETURN);
 		invoke.visitMaxs(0, 0);
@@ -261,14 +261,16 @@ final class ClassEnhancer extends ClassAdapter {
 		return "_" + i;
 	}
 
-	private void emitAutoBoxing(MethodVisitor mv, Type type) {
-		// Boxing.box
-		mv.visitMethodInsn(INVOKESTATIC, getInternalName(Boxing.class), "box", Type.getMethodDescriptor(Type.getType(Object.class), new Type[] { type }));
+	private void emitBoxing(MethodVisitor mv, Type type) {
+		emitAutoBoxingInsn(mv, "box", type, Type.getType(Object.class));
 	}
 	
 	private void emitUnboxing(MethodVisitor mv, Type type) {
-		// Boxing.unbox$type
-		mv.visitMethodInsn(INVOKESTATIC, getInternalName(Boxing.class), "unbox" + capitalize(type.getClassName()), Type.getMethodDescriptor(type, new Type[] { Type.getType(Object.class) }));
+		emitAutoBoxingInsn(mv, "unbox" + capitalize(type.getClassName()), Type.getType(Object.class), type);
+	}
+
+	private void emitAutoBoxingInsn(MethodVisitor mv, String methodName, Type argType, Type returnType) {
+		mv.visitMethodInsn(INVOKESTATIC, getInternalName(Boxing.class), methodName, Type.getMethodDescriptor(returnType, new Type[] { argType }));
 	}
 
 	private String capitalize(String className) {
