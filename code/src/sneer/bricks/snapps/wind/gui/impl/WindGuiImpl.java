@@ -50,7 +50,7 @@ import sneer.foundation.lang.Consumer;
 
 class WindGuiImpl implements WindGui {
 
-	{ my(Synth.class).notInGuiThreadLoad(this.getClass()); }
+	{ my(Synth.class).load(this.getClass()); }
 
 	private Container _container;
 	private final Wind _wind = my(Wind.class);

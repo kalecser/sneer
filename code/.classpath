@@ -2,8 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/code/compilers/java/impl/lib/compiler-7-ea-b17-02_aug_2007.jar"/>
-	<classpathentry kind="lib" path="src/sneer/bricks/software/bricks/interception/impl/lib/javassist.jar" sourcepath="src/sneer/bricks/software/bricks/interception/impl/lib/javassist-src.zip"/>
-	<classpathentry kind="lib" path="src/sneer/bricks/software/bricks/interception/tests/fixtures/brickwithlib/impl/lib/foo.jar"/>
+	
 	<classpathentry kind="lib" path="src/dfcsantos/tracks/execution/player/impl/lib/jl1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/sneer/foundation/testsupport/lib/hamcrest-core-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/sneer/foundation/testsupport/lib/hamcrest-library-1.1.jar"/>

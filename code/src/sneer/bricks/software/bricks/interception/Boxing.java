@@ -1,4 +1,4 @@
-package sneer.foundation.brickness.impl;
+package sneer.bricks.software.bricks.interception;
 
 public class Boxing {
 	
@@ -6,8 +6,8 @@ public class Boxing {
 
 	public static boolean unboxBoolean(Object value) { return ((Boolean)value).booleanValue(); }
 	
-	public static Integer box(int value) { return new Integer(value); }
+	public static Object box(int value) { return new Integer(value); }
 	
-	public static Boolean box(boolean value) { return new Boolean(value); }
+	public static Object box(boolean value) { return new Boolean(value); }
 
 }

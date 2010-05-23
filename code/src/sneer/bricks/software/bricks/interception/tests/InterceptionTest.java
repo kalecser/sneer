@@ -1,6 +1,6 @@
 package sneer.bricks.software.bricks.interception.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static sneer.foundation.environments.Environments.*;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -16,9 +16,13 @@ import sneer.bricks.hardware.cpu.threads.tests.BrickTestWithThreads;
 import sneer.bricks.software.bricks.interception.InterceptionEnhancer;
 import sneer.bricks.software.bricks.interception.Interceptor;
 import sneer.bricks.software.bricks.interception.Interceptor.Continuation;
-import sneer.bricks.software.bricks.interception.tests.fixtures.brick.BrickOfSomeInterceptingNature;
 import sneer.bricks.software.bricks.interception.tests.fixtures.brickwithlib.BrickWithLib;
+import sneer.bricks.software.bricks.interception.tests.fixtures.combinedmethods.BrickOfSomeInterceptingNature;
 import sneer.bricks.software.bricks.interception.tests.fixtures.nature.SomeInterceptingNature;
+import sneer.bricks.software.bricks.interception.tests.fixtures.primitivemethods.noargs.PrimitiveMethodNoArgs;
+import sneer.bricks.software.bricks.interception.tests.fixtures.refmethods.noargs.RefMethodsNoArgs;
+import sneer.bricks.software.bricks.interception.tests.fixtures.voidmethods.noargs.VoidMethodsNoArgs;
+import sneer.bricks.software.bricks.interception.tests.fixtures.voidmethods.onearg.VoidMethodsRefArg;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.environments.Environment;
@@ -35,39 +39,37 @@ public class InterceptionTest extends BrickTestWithThreads {
 	
 	
 	@Test
-	public void runtimeNatureInterceptsInvocations() {
-		checkingMethodIsInvoked("foo", new Object[0], new Closure() { @Override public void run() {
-			my(BrickOfSomeInterceptingNature.class).foo();
+	public void voidMethodNoArgs() {
+		checkingMethodIsInvoked(VoidMethodsNoArgs.class, "foo", new Object[0], new Closure() { @Override public void run() {
+			my(VoidMethodsNoArgs.class).foo();
+		}});
+	}
+	
+	@Test
+	public void voidMethodRefArg() {
+		checkingMethodIsInvoked(VoidMethodsRefArg.class, "foo", new Object[] { "42" }, new Closure() { @Override public void run() {
+			my(VoidMethodsRefArg.class).foo("42");
 		}});
 	}
 	
 	
 	@Test
 	public void referenceReturnValue() {
-		checkingMethodIsInvoked("bar", new Object[0], new Closure() { @Override public void run() {
-			assertEquals("42", my(BrickOfSomeInterceptingNature.class).bar());
+		checkingMethodIsInvoked(RefMethodsNoArgs.class, "bar", new Object[0], new Closure() { @Override public void run() {
+			assertEquals("42", my(RefMethodsNoArgs.class).bar());
 		}});
 	}
 	
 	
 	@Test
 	public void primitiveReturnValue() {
-		checkingMethodIsInvoked("baz", new Object[0], new Closure() { @Override public void run() {
-			assertEquals(42, my(BrickOfSomeInterceptingNature.class).baz());
+		checkingMethodIsInvoked(PrimitiveMethodNoArgs.class, "baz", new Object[0], new Closure() { @Override public void run() {
+			assertEquals(42, my(PrimitiveMethodNoArgs.class).baz());
 		}});
 	}
 	
-	
 	@Test
-	public void referenceParameters() {
-		checkingMethodIsInvoked("foo", new Object[] { "42" }, new Closure() { @Override public void run() {
-			my(BrickOfSomeInterceptingNature.class).foo("42");
-		}});
-	}
-	
-	
-	@Test
-	public void primitiveParameters() {
+	public void primitiveParametersWithPrimitiveReturnValue() {
 		checkingMethodIsInvoked("add", new Object[] { 1, 2 }, new Closure() { @Override public void run() {
 			my(BrickOfSomeInterceptingNature.class).add(1, 2);
 		}});
@@ -88,8 +90,8 @@ public class InterceptionTest extends BrickTestWithThreads {
 			}
 			
 			@Override
-			public List<ClassDefinition> realize(ClassDefinition classDef) {
-				return my(InterceptionEnhancer.class).realize(SomeInterceptingNature.class, classDef);
+			public List<ClassDefinition> realize(Class<?> brick, ClassDefinition classDef) {
+				return my(InterceptionEnhancer.class).realize(brick, SomeInterceptingNature.class, classDef);
 			}
 		};
 			
@@ -103,10 +105,10 @@ public class InterceptionTest extends BrickTestWithThreads {
 	
 	@Test
 	public void environmentIsNotRequired() {
-		checkingMethodIsInvoked("add", new Object[] { 1, 2 }, new Closure() { @Override public void run() {
-			final BrickOfSomeInterceptingNature brick = my(BrickOfSomeInterceptingNature.class);
+		checkingMethodIsInvoked(VoidMethodsNoArgs.class, "foo", new Object[0], new Closure() { @Override public void run() {
+			final VoidMethodsNoArgs brick = my(VoidMethodsNoArgs.class);
 			Environments.runWith(null, new Closure() { @Override public void run() {
-				brick.add(1, 2);
+				brick.foo();
 			}});
 		}});
 	}
@@ -160,6 +162,17 @@ public class InterceptionTest extends BrickTestWithThreads {
 	@Test
 	public void brickWithLib() throws Exception {
 		checkingMethodIsInvoked(BrickWithLib.class, "fooBar", new Object[0], new Closure() { @Override public void run() {
+			mockery.checking(new Expectations() {{
+				
+				oneOf(interceptingNatureMock).invoke(
+						with(BrickWithLib.class),
+						with(any(BrickWithLib.class)),
+						with("useLibType"),
+						with(any(Object[].class)),
+						with(any(Interceptor.Continuation.class)));
+				will(returnValue(42));
+			}});
+			
 			my(BrickWithLib.class).fooBar();
 		}});
 	}
@@ -188,10 +201,10 @@ public class InterceptionTest extends BrickTestWithThreads {
 	
 	private void allowingRealizeAndInstantiate(final Class<?> brickClass) {
 		mockery.checking(new Expectations() {{
-			allowing(interceptingNatureMock).realize(with(any(ClassDefinition.class)));
+			allowing(interceptingNatureMock).realize(with(brickClass), with(any(ClassDefinition.class)));
 			will(new CustomAction("realize") { @Override public Object invoke(Invocation invocation) throws Throwable {
-				ClassDefinition classDef = (ClassDefinition) invocation.getParameter(0);
-				return my(InterceptionEnhancer.class).realize(SomeInterceptingNature.class, classDef);
+				ClassDefinition classDef = (ClassDefinition) invocation.getParameter(1);
+				return my(InterceptionEnhancer.class).realize(brickClass, SomeInterceptingNature.class, classDef);
 			}});
 			
 			oneOf(interceptingNatureMock).instantiate(

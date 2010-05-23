@@ -233,7 +233,8 @@ public abstract class CleanTestBase extends AssertUtils {
 	void failedWith(Method method, Throwable thrown) {
 		if (_failure != null) return;
 		
-		if (thrown.getMessage().startsWith("test timed out")) //Kent, Erich, please improve the JUnit API for tests with timeouts. JUnit4ClassRunner.invokeTestMethod hides the test instance and the roadie. TestRunner and TestMethod parallel hierarchies is the only (clumsy) way to get close to what one needs. Klaus.
+		String message = thrown.getMessage();
+		if (message != null && message.startsWith("test timed out")) //Kent, Erich, please improve the JUnit API for tests with timeouts. JUnit4ClassRunner.invokeTestMethod hides the test instance and the roadie. TestRunner and TestMethod parallel hierarchies is the only (clumsy) way to get close to what one needs. Klaus.
 			tryToWaitForTheFailureFromTheActualTestThread(method, thrown);
 		else
 			keepFailure(method, thrown);

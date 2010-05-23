@@ -57,7 +57,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 	private static final int CONSOLE_LINE_LIMIT = 1000;
 
 	private final Synth _synth = my(Synth.class);
-	{_synth.notInGuiThreadLoad(this.getClass());}
+	{_synth.load(this.getClass());}
 	
 	private final Integer _OFFSET_X = (Integer) _synth.getDefaultProperty("LodConsoleImpl.offsetX");
 	private final Integer _OFFSET_Y = (Integer) _synth.getDefaultProperty("LodConsoleImpl.offsetY");
