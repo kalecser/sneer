@@ -15,7 +15,6 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
-import scala.actors.threadpool.Arrays;
 import sneer.bricks.software.bricks.interception.Boxing;
 import sneer.bricks.software.bricks.interception.InterceptionRuntime;
 import sneer.bricks.software.bricks.interception.Interceptor;
@@ -197,7 +196,7 @@ final class ClassEnhancer extends ClassAdapter {
 	}
 
 	private ClassDefinition emitContinuationFor(InterceptedMethod m) {
-		String continuationInternalName = internalClassName() + uniqueName(m.name);
+		String continuationInternalName = internalClassName() + "$" + uniqueName(m.name);
 		
 		super.visitInnerClass(continuationInternalName, internalClassName(), null, 0);
 		
@@ -308,7 +307,7 @@ final class ClassEnhancer extends ClassAdapter {
 	}
 	
 	private boolean containsBrickInterface(String[] interfaces) {
-		return Arrays.asList(interfaces).contains(Type.getInternalName(_brick)); 
+		return java.util.Arrays.asList(interfaces).contains(Type.getInternalName(_brick)); 
 	}
 	
 	private boolean isAccessibleInstanceMethod(int modifiers) {
