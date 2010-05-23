@@ -37,8 +37,18 @@ class BrickMetadataEmitter {
 	}
 
 	public void emitBrickMetadataInitializer(ClassVisitor cw) {
+		
 		MethodVisitor mv = cw.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
 		mv.visitCode();
+		
+		emitBrickMetadataInitializationCode(mv);
+		
+		mv.visitInsn(RETURN);		
+		mv.visitMaxs(0, 0);
+		mv.visitEnd();
+	}
+
+	public void emitBrickMetadataInitializationCode(MethodVisitor mv) {
 		
 		// BrickMetadata.BRICK = targetBrick;
 		mv.visitLdcInsn(Type.getType(_targetBrick));
@@ -49,10 +59,6 @@ class BrickMetadataEmitter {
 		mv.visitMethodInsn(INVOKESTATIC, Type.getInternalName(Environments.class), "my", "(Ljava/lang/Class;)Ljava/lang/Object;");
 		mv.visitTypeInsn(CHECKCAST, BrickMetadataDefinition.Fields.INTERCEPTOR_TYPE_NAME);		
 		mv.visitFieldInsn(PUTSTATIC, BrickMetadataDefinition.CLASS_NAME, BrickMetadataDefinition.Fields.INTERCEPTOR, BrickMetadataDefinition.Fields.INTERCEPTOR_TYPE);
-		
-		mv.visitInsn(RETURN);		
-		mv.visitMaxs(0, 0);
-		mv.visitEnd();
 	}
 	
 	private void writeEmptyConstructor(ClassWriter cw) {

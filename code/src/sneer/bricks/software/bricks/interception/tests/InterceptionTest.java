@@ -21,6 +21,7 @@ import sneer.bricks.software.bricks.interception.tests.fixtures.combinedmethods.
 import sneer.bricks.software.bricks.interception.tests.fixtures.nature.SomeInterceptingNature;
 import sneer.bricks.software.bricks.interception.tests.fixtures.primitivemethods.noargs.PrimitiveMethodNoArgs;
 import sneer.bricks.software.bricks.interception.tests.fixtures.refmethods.noargs.RefMethodsNoArgs;
+import sneer.bricks.software.bricks.interception.tests.fixtures.staticinitializer.StaticInitializer;
 import sneer.bricks.software.bricks.interception.tests.fixtures.voidmethods.noargs.VoidMethodsNoArgs;
 import sneer.bricks.software.bricks.interception.tests.fixtures.voidmethods.onearg.VoidMethodsRefArg;
 import sneer.foundation.brickness.Brickness;
@@ -37,11 +38,17 @@ public class InterceptionTest extends BrickTestWithThreads {
 	
 	final SomeInterceptingNature interceptingNatureMock = mockery.mock(SomeInterceptingNature.class);
 	
-	
 	@Test
 	public void voidMethodNoArgs() {
 		checkingMethodIsInvoked(VoidMethodsNoArgs.class, "foo", new Object[0], new Closure() { @Override public void run() {
 			my(VoidMethodsNoArgs.class).foo();
+		}});
+	}
+	
+	@Test
+	public void existingStaticInitializer() {
+		checkingMethodIsInvoked(StaticInitializer.class, "foo", new Object[0], new Closure() { @Override public void run() {
+			my(StaticInitializer.class).foo();
 		}});
 	}
 	

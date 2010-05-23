@@ -20,8 +20,7 @@ class InterceptionEnhancerImpl implements InterceptionEnhancer {
 		ClassReader cr = new ClassReader(classDef.bytes);            
 		ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 		
-		ClassEnhancer transformer = new ClassEnhancer(cw, targetBrick, interceptorClass, resultingClasses);
-		cr.accept(transformer, ClassReader.EXPAND_FRAMES);
+		cr.accept(new ClassEnhancer(cw, targetBrick, interceptorClass, resultingClasses), 0);
 		
 		resultingClasses.add(new ClassDefinition(classDef.name, cw.toByteArray()));
 		

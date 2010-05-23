@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import org.objectweb.asm.ClassAdapter;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
@@ -27,6 +28,8 @@ final class ClassEnhancer extends ClassAdapter {
 	private Type _classType;
 	private final Class<?> _brick;
 	private final Class<? extends Interceptor> _interceptorClass;
+	private BrickMetadataEmitter _brickMetadataEmitter;
+	private boolean _usingExistingInitializer;
 	
 	static class InterceptedMethod {
 
@@ -68,6 +71,8 @@ final class ClassEnhancer extends ClassAdapter {
 	
 	@Override
 	public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+		if (_classType != null)
+			throw new IllegalStateException();
 		super.visit(version, access, name, signature, superName, interfaces);
 		_classType = typeFromInternalName(name);
 		if (containsBrickInterface(interfaces))
@@ -87,11 +92,31 @@ final class ClassEnhancer extends ClassAdapter {
 			_interceptedMethods.add(new InterceptedMethod(access, name, desc, signature, exceptions, implName));
 			return super.visitMethod(ACC_FINAL, implName, desc, signature, exceptions);
 		}
-		return super.visitMethod(access, name, desc, signature, exceptions);
+		
+		MethodVisitor originalMethodVisitor = super.visitMethod(access, name, desc, signature, exceptions);
+		if (name.equals("<clinit>") && _brickMetadataEmitter != null) {
+			_usingExistingInitializer = true;
+			return prependBrickMetadataInitializationCode(originalMethodVisitor);
+		}
+		
+		return originalMethodVisitor;
+	}
+
+	private MethodVisitor prependBrickMetadataInitializationCode(MethodVisitor originalMethodVisitor) {
+		return new MethodAdapter(originalMethodVisitor) {
+			@Override
+			public void visitCode() {
+				super.visitCode();
+//				_brickMetadataEmitter.emitBrickMetadataInitializationCode(this);
+			}
+		};
 	}
 
 	@Override
 	public void visitEnd() {
+		
+		if (_brickMetadataEmitter != null && !_usingExistingInitializer)
+			_brickMetadataEmitter.emitBrickMetadataInitializer(this);
 		
 		for (InterceptedMethod im : _interceptedMethods) {
 			ClassDefinition continuation = emitContinuationFor(im);
@@ -301,9 +326,8 @@ final class ClassEnhancer extends ClassAdapter {
 	}
 
 	private void emitBrickMetadata() {
-		BrickMetadataEmitter emitter = new BrickMetadataEmitter(_brick, _interceptorClass);
-		emitter.emitBrickMetadataInitializer(this);
-		_resultingClasses.add(emitter.emit());
+		_brickMetadataEmitter = new BrickMetadataEmitter(_brick, _interceptorClass);
+		_resultingClasses.add(_brickMetadataEmitter.emit());
 	}
 	
 	private boolean containsBrickInterface(String[] interfaces) {
