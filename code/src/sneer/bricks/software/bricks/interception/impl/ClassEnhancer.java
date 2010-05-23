@@ -16,10 +16,10 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 import scala.actors.threadpool.Arrays;
+import sneer.bricks.software.bricks.interception.Boxing;
 import sneer.bricks.software.bricks.interception.InterceptionRuntime;
 import sneer.bricks.software.bricks.interception.Interceptor;
 import sneer.foundation.brickness.ClassDefinition;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 final class ClassEnhancer extends ClassAdapter {
 	
@@ -259,27 +259,21 @@ final class ClassEnhancer extends ClassAdapter {
 	}
 
 	private void emitAutoBoxing(MethodVisitor mv, Type type) {
-		if (type == Type.INT_TYPE)
-			emitMethodInsn(mv, INVOKESTATIC, Integer.class, "valueOf", int.class);
-		else
-			throw new NotImplementedYet(type.toString());
+		// Boxing.box
+		mv.visitMethodInsn(INVOKESTATIC, getInternalName(Boxing.class), "box", Type.getMethodDescriptor(Type.getType(Object.class), new Type[] { type }));
 	}
 	
 	private void emitUnboxing(MethodVisitor mv, Type type) {
-		if (type == Type.INT_TYPE)
-			emitUnboxingSequence(mv, Integer.class, "intValue");
-		else
-			throw new NotImplementedYet(type.toString());
+		// Boxing.unbox$type
+		mv.visitMethodInsn(INVOKESTATIC, getInternalName(Boxing.class), "unbox" + capitalize(type.getClassName()), Type.getMethodDescriptor(type, new Type[] { Type.getType(Object.class) }));
 	}
 
-	private void emitUnboxingSequence(MethodVisitor mv, Class<Integer> owner, String methodName) {
-		mv.visitTypeInsn(CHECKCAST, Type.getInternalName(owner));
-		emitMethodInsn(mv, INVOKEVIRTUAL, owner, methodName);
+	private String capitalize(String className) {
+		return className.substring(0, 1).toUpperCase().concat(className.substring(1));
 	}
 
-	private void emitMethodInsn(MethodVisitor mv, int opcode, Class<?> owner, String methodName, Class<?>... parameterTypes) {
-		Method method = getMethod(owner, methodName, parameterTypes);
-		mv.visitMethodInsn(opcode, Type.getInternalName(method.getDeclaringClass()), method.getName(), Type.getMethodDescriptor(method));
+	private String getInternalName(Class<?> klass) {
+		return Type.getInternalName(klass);
 	}
 
 	private String constructorDescriptor(Type[] ctorArgs) {
