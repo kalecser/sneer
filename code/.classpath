@@ -22,6 +22,7 @@
 	<classpathentry kind="lib" path="src/sneer/bricks/hardware/cpu/codec/impl/lib/commons-codec-1.4.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/code/metaclass/asm/impl/lib/asm-all-3.2.jar" sourcepath="src/sneer/bricks/software/code/metaclass/asm/impl/lib/asm-all-3.2-src.zip"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/pulp/serialization/tests/fixtures/brickwithlib/impl/lib/libForSerializer.jar"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/software/bricks/interception/tests/fixtures/brickwithlib/impl/lib/foo.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
