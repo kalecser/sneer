@@ -5,9 +5,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import sneer.bricks.hardware.gui.nature.GUI;
 import sneer.foundation.brickness.Brick;
 
-@Brick
+@Brick(GUI.class)
 public interface SynthMenus {
 
 	JMenuBar createMenuBar();

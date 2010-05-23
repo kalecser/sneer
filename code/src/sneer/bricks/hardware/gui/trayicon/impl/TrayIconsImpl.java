@@ -9,8 +9,25 @@ import sneer.bricks.pulp.reactive.Signal;
 
 class TrayIconsImpl implements TrayIcons {
 
+	private TrayIconImpl _trayIcon;
+
 	@Override
 	public TrayIcon newTrayIcon(URL icon, Signal<String> tooltip) throws SystemTrayNotSupported {
-		return new TrayIconImpl(icon, tooltip);
+		
+		if (_trayIcon != null){
+			throw new IllegalStateException("Trying to open more than one tray icon");
+		}
+		
+		_trayIcon = new TrayIconImpl(icon, tooltip);
+		return _trayIcon;
+	}
+
+	@Override
+	public void messageBalloon(String title, String message) {
+		if (_trayIcon == null){
+			return;
+		}
+		
+		_trayIcon.messageBalloon(title, message);
 	}
 }

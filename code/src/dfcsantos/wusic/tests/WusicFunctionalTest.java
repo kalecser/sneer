@@ -4,13 +4,13 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.jmock.Expectations;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import scala.actors.threadpool.Arrays;
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
 import sneer.bricks.expression.tuples.testsupport.pump.TuplePump;
 import sneer.bricks.hardware.clock.ticker.custom.CustomClockTicker;

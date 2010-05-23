@@ -69,4 +69,10 @@ class ContactSealsImpl implements ContactSeals {
 		return null;
 	}
 
+
+	@Override
+	public Signal<String> nicknameGiven(Seal peersSeal) {
+		return contactGiven(peersSeal).nickname();
+	}
+
 }

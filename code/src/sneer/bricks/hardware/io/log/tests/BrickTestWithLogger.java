@@ -10,10 +10,10 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import scala.actors.threadpool.Arrays;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.brickness.testsupport.BrickTestBase;

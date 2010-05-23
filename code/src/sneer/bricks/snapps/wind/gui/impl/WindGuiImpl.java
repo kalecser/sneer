@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.util.Collection;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
@@ -27,7 +28,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultStyledDocument;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
+import sneer.bricks.hardware.gui.trayicon.TrayIcons;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
@@ -46,7 +50,7 @@ import sneer.foundation.lang.Consumer;
 
 class WindGuiImpl implements WindGui {
 
-	{ my(Synth.class).notInGuiThreadLoad(this.getClass()); }
+	{ my(Synth.class).load(this.getClass()); }
 
 	private Container _container;
 	private final Wind _wind = my(Wind.class);
@@ -127,21 +131,42 @@ class WindGuiImpl implements WindGui {
 	}
 
 	private void initShoutReceiver() {
-		_referenceToAvoidGc = _wind.shoutsHeard().addReceiver(new Consumer<CollectionChange<Shout>>() { @Override public void consume(CollectionChange<Shout> ignored) {
-			shoutAlert();
+		_referenceToAvoidGc = _wind.shoutsHeard().addReceiver(new Consumer<CollectionChange<Shout>>() { @Override public void consume(CollectionChange<Shout> shout) {
+			shoutAlert(shout.elementsAdded());
 		}});
 	}
 	
-	private void shoutAlert() {
+	private void shoutAlert(Collection<Shout> shouts) {
 		Window window = SwingUtilities.windowForComponent(_container);
+		boolean windowActive = window.isActive();
+		if(windowActive) return;
 		
-		if(window.isActive()) return;
-		alertUser(window);
+		alertUser(shouts);
 	}
 
-	private void alertUser(Window window) {
-		window.toFront();
-//		_player.play(this.getClass().getResource("alert.wav"));
+	private synchronized void alertUser(Collection<Shout> shouts) {
+
+		String shoutsAsString = shoutsAsString(shouts);
+		my(TrayIcons.class).messageBalloon("New shouts heard", shoutsAsString.toString());
+		//		_player.play(this.getClass().getResource("alert.wav"));
+	}
+
+	private String shoutsAsString(Collection<Shout> shouts) {
+		StringBuilder shoutsAsString = new StringBuilder();
+		for (Shout shout : shouts){
+			
+			if (shoutsAsString.length() > 0){
+				shoutsAsString.append("\n");
+			}
+			
+			Seal publisher = shout.publisher;
+			shoutsAsString.append(nicknameOf(publisher) + " - " + shout.phrase);
+		}
+		return shoutsAsString.toString();
+	}
+
+	private String nicknameOf(Seal publisher) {
+		return my(ContactSeals.class).nicknameGiven(publisher).currentValue();
 	}
 
 	@Override

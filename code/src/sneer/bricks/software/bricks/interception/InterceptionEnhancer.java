@@ -8,6 +8,6 @@ import sneer.foundation.brickness.ClassDefinition;
 @Brick
 public interface InterceptionEnhancer {
 
-	List<ClassDefinition> realize(Class<? extends Interceptor> interceptorBrick, ClassDefinition classDef);
+	List<ClassDefinition> realize(Class<?> targetBrick, Class<? extends Interceptor> interceptorBrick, ClassDefinition classDef);
 
 }

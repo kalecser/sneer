@@ -47,6 +47,11 @@ public class GUINatureTest extends BrickTestWithFiles {
 			assertTrue(isGuiThread(Thread.currentThread()));
 		}});
 	}
+	
+	@Test
+	public void complexMethodWithVariablesAndFinallyBlock() {
+		assertTrue(isGuiThread(my(SomeGuiBrick.class).complexMethodWithVariablesAndFinallyBlock()));
+	}
 
 	private boolean isGuiThread(Thread thread) {
 		return thread.getName().contains("AWT");
