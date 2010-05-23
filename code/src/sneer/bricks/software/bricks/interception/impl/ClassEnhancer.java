@@ -86,7 +86,7 @@ final class ClassEnhancer extends ClassAdapter {
 			// original method gets renamed 
 			String implName = uniqueName(name);
 			_interceptedMethods.add(new InterceptedMethod(access, name, desc, signature, exceptions, implName));
-			return super.visitMethod(ACC_FINAL | ACC_PUBLIC, implName, desc, signature, exceptions);
+			return super.visitMethod(ACC_FINAL, implName, desc, signature, exceptions);
 		}
 		return super.visitMethod(access, name, desc, signature, exceptions);
 	}
@@ -197,10 +197,13 @@ final class ClassEnhancer extends ClassAdapter {
 	}
 
 	private ClassDefinition emitContinuationFor(InterceptedMethod m) {
-		String continuationInternalName = uniqueName(m.name);
+		String continuationInternalName = internalClassName() + uniqueName(m.name);
+		
+		super.visitInnerClass(continuationInternalName, internalClassName(), null, 0);
 		
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 		cw.visit(V1_6, ACC_SUPER | ACC_PUBLIC | ACC_FINAL, continuationInternalName, null, "java/lang/Object", new String[] { Type.getInternalName(Interceptor.Continuation.class) });
+		cw.visitOuterClass(internalClassName(), m.name, m.desc);
 		
 		Type[] ctorArgs = continuationConstructorArgTypesFor(m);
 		

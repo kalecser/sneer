@@ -3,7 +3,7 @@ package sneer.bricks.software.bricks.interception.tests.fixtures.combinedmethods
 import sneer.bricks.software.bricks.interception.tests.fixtures.combinedmethods.BrickOfSomeInterceptingNature;
 import sneer.bricks.software.bricks.interception.tests.fixtures.combinedmethods.Greeter;
 
-public class BrickOfSomeInterceptingNatureImpl implements BrickOfSomeInterceptingNature {
+class BrickOfSomeInterceptingNatureImpl implements BrickOfSomeInterceptingNature {
 
 	@Override
 	public int add(int i, int j) {

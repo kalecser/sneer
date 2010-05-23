@@ -2,7 +2,7 @@ package sneer.bricks.software.bricks.interception.tests.fixtures.combinedmethods
 
 import sneer.bricks.software.bricks.interception.tests.fixtures.combinedmethods.Greeter;
 
-public class GreeterBase implements Greeter {
+class GreeterBase implements Greeter {
 
 	@Override
 	public String hello() {
