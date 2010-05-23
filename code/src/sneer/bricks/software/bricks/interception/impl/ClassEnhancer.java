@@ -24,12 +24,12 @@ import sneer.foundation.lang.exceptions.NotImplementedYet;
 final class ClassEnhancer extends ClassAdapter {
 	
 	private final ArrayList<ClassDefinition> _resultingClasses;
-	private final ArrayList<MethodDescriptor> _interceptedMethods = new ArrayList<MethodDescriptor>();
-	private Type _className;
+	private final ArrayList<InterceptedMethod> _interceptedMethods = new ArrayList<InterceptedMethod>();
+	private Type _classType;
 	private final Class<?> _brick;
 	private final Class<? extends Interceptor> _interceptorClass;
 	
-	static class MethodDescriptor {
+	static class InterceptedMethod {
 
 		final int access;
 		final String name;
@@ -38,13 +38,15 @@ final class ClassEnhancer extends ClassAdapter {
 		final String[] exceptions;
 		final Type[] argumentTypes;
 		final Type returnType;
+		final String implName;
 
-		public MethodDescriptor(int access_, String name_, String desc_, String signature_, String[] exceptions_) {
+		public InterceptedMethod(int access_, String name_, String desc_, String signature_, String[] exceptions_, String implName_) {
 			access = access_;
 			name = name_;
 			desc = desc_;
 			signature = signature_;
 			exceptions = exceptions_;
+			implName = implName_;
 			argumentTypes = Type.getArgumentTypes(desc);
 			returnType = Type.getReturnType(desc);
 		}
@@ -68,30 +70,31 @@ final class ClassEnhancer extends ClassAdapter {
 	@Override
 	public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 		super.visit(version, access, name, signature, superName, interfaces);
-		_className = Type.getType("L" + name + ";");
+		_classType = typeFromInternalName(name);
 		if (containsBrickInterface(interfaces))
 			emitBrickMetadata();
+	}
+
+	private Type typeFromInternalName(String name) {
+		return Type.getType("L" + name + ";");
 	}
 
 	@Override
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 		
 		if (isAccessibleInstanceMethod(access) && !isConstructor(name)) {
-			_interceptedMethods.add(new MethodDescriptor(access, name, desc, signature, exceptions));
 			// original method gets renamed 
-			return super.visitMethod(ACC_PUBLIC, privateNameFor(name), desc, signature, exceptions);
+			String implName = uniqueName(name);
+			_interceptedMethods.add(new InterceptedMethod(access, name, desc, signature, exceptions, implName));
+			return super.visitMethod(ACC_FINAL | ACC_PUBLIC, implName, desc, signature, exceptions);
 		}
 		return super.visitMethod(access, name, desc, signature, exceptions);
 	}
 
-	private String privateNameFor(String name) {
-		return "$" + name;
-	}
-	
 	@Override
 	public void visitEnd() {
 		
-		for (MethodDescriptor im : _interceptedMethods) {
+		for (InterceptedMethod im : _interceptedMethods) {
 			ClassDefinition continuation = emitContinuationFor(im);
 			emitMethodInterceptionFor(im, internalNameFromClassName(continuation.name));
 			_resultingClasses.add(continuation);
@@ -100,7 +103,7 @@ final class ClassEnhancer extends ClassAdapter {
 		super.visitEnd();
 	}
 	
-	private void emitMethodInterceptionFor(MethodDescriptor m, String continuationClass) {
+	private void emitMethodInterceptionFor(InterceptedMethod m, String continuationClass) {
 		
 		String continuationInternalName = internalNameFromClassName(continuationClass);
 		
@@ -193,13 +196,11 @@ final class ClassEnhancer extends ClassAdapter {
 		return className.replace('.', '/');
 	}
 
-	private ClassDefinition emitContinuationFor(MethodDescriptor m) {
-		String continuationName = ContinuationNameProvider.continuationNameFor(m.name);
+	private ClassDefinition emitContinuationFor(InterceptedMethod m) {
+		String continuationInternalName = uniqueName(m.name);
 		
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-		
-		cw.visit(V1_6, ACC_SUPER | ACC_PUBLIC | ACC_FINAL, continuationName, null, "java/lang/Object", new String[] { Type.getInternalName(Interceptor.Continuation.class) });
-		cw.visitInnerClass(continuationName, internalClassName(), continuationName, 0);
+		cw.visit(V1_6, ACC_SUPER | ACC_PUBLIC | ACC_FINAL, continuationInternalName, null, "java/lang/Object", new String[] { Type.getInternalName(Interceptor.Continuation.class) });
 		
 		Type[] ctorArgs = continuationConstructorArgTypesFor(m);
 		
@@ -215,7 +216,7 @@ final class ClassEnhancer extends ClassAdapter {
 			Type ctorArg = ctorArgs[i];
 			ctor.visitVarInsn(ALOAD, 0);
 			emitLoad(ctor, ctorArg, i + 1);
-			ctor.visitFieldInsn(PUTFIELD, continuationName, fieldName(i), ctorArg.getDescriptor());
+			ctor.visitFieldInsn(PUTFIELD, continuationInternalName, fieldName(i), ctorArg.getDescriptor());
 		}
 		
 		ctor.visitVarInsn(ALOAD, 0);
@@ -230,10 +231,10 @@ final class ClassEnhancer extends ClassAdapter {
 		for (int i = 0; i < ctorArgs.length; i++) {
 			Type ctorArg = ctorArgs[i];
 			invoke.visitVarInsn(ALOAD, 0);
-			invoke.visitFieldInsn(GETFIELD, continuationName, fieldName(i), ctorArg.getDescriptor());
+			invoke.visitFieldInsn(GETFIELD, continuationInternalName, fieldName(i), ctorArg.getDescriptor());
 		}
 		
-		invoke.visitMethodInsn(INVOKEVIRTUAL, internalClassName(), privateNameFor(m.name), m.desc);
+		invoke.visitMethodInsn(INVOKEVIRTUAL, internalClassName(), m.implName, m.desc);
 		if (m.isVoidMethod())
 			invoke.visitInsn(ACONST_NULL);
 		else if (m.isPrimitiveMethod())
@@ -245,10 +246,14 @@ final class ClassEnhancer extends ClassAdapter {
 		
 		cw.visitEnd();
 
-		return new ClassDefinition(continuationName, cw.toByteArray());
+		return new ClassDefinition(typeFromInternalName(continuationInternalName).getClassName(), cw.toByteArray());
 
 	}
 
+	private String uniqueName(String name) {
+		return UniqueNameProvider.uniqueName(name);
+	}
+	
 	private String fieldName(int i) {
 		return "_" + i;
 	}
@@ -281,16 +286,16 @@ final class ClassEnhancer extends ClassAdapter {
 		return Type.getMethodDescriptor(Type.VOID_TYPE, ctorArgs);
 	}
 
-	private Type[] continuationConstructorArgTypesFor(MethodDescriptor m) {
+	private Type[] continuationConstructorArgTypesFor(InterceptedMethod m) {
 		return Types.insertBefore(m.argumentTypes, classType());
 	}
 
 	private Type classType() {
-		return _className;
+		return _classType;
 	}
 
 	private String internalClassName() {
-		return _className.getInternalName();
+		return _classType.getInternalName();
 	}
 	
 	private boolean isConstructor(String name) {
