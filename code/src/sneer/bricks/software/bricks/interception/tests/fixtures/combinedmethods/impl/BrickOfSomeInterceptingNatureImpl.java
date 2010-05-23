@@ -1,7 +1,7 @@
-package sneer.bricks.software.bricks.interception.tests.fixtures.brick.impl;
+package sneer.bricks.software.bricks.interception.tests.fixtures.combinedmethods.impl;
 
-import sneer.bricks.software.bricks.interception.tests.fixtures.brick.BrickOfSomeInterceptingNature;
-import sneer.bricks.software.bricks.interception.tests.fixtures.brick.Greeter;
+import sneer.bricks.software.bricks.interception.tests.fixtures.combinedmethods.BrickOfSomeInterceptingNature;
+import sneer.bricks.software.bricks.interception.tests.fixtures.combinedmethods.Greeter;
 
 public class BrickOfSomeInterceptingNatureImpl implements BrickOfSomeInterceptingNature {
 

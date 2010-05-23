@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.commons.lang.time.StopWatch;
 
 import sneer.bricks.software.bricks.interception.InterceptionEnhancer;
-import sneer.bricks.software.bricks.interception.tests.fixtures.brick.BrickOfSomeInterceptingNature;
+import sneer.bricks.software.bricks.interception.tests.fixtures.combinedmethods.BrickOfSomeInterceptingNature;
 import sneer.bricks.software.bricks.interception.tests.fixtures.nature.SomeInterceptingNature;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.brickness.ClassDefinition;

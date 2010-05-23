@@ -16,8 +16,8 @@ import sneer.bricks.hardware.cpu.threads.tests.BrickTestWithThreads;
 import sneer.bricks.software.bricks.interception.InterceptionEnhancer;
 import sneer.bricks.software.bricks.interception.Interceptor;
 import sneer.bricks.software.bricks.interception.Interceptor.Continuation;
-import sneer.bricks.software.bricks.interception.tests.fixtures.brick.BrickOfSomeInterceptingNature;
 import sneer.bricks.software.bricks.interception.tests.fixtures.brickwithlib.BrickWithLib;
+import sneer.bricks.software.bricks.interception.tests.fixtures.combinedmethods.BrickOfSomeInterceptingNature;
 import sneer.bricks.software.bricks.interception.tests.fixtures.nature.SomeInterceptingNature;
 import sneer.bricks.software.bricks.interception.tests.fixtures.primitivemethods.noargs.PrimitiveMethodNoArgs;
 import sneer.bricks.software.bricks.interception.tests.fixtures.refmethods.noargs.RefMethodsNoArgs;
@@ -69,7 +69,7 @@ public class InterceptionTest extends BrickTestWithThreads {
 	}
 	
 	@Test
-	public void primitiveParameters() {
+	public void primitiveParametersWithPrimitiveReturnValue() {
 		checkingMethodIsInvoked("add", new Object[] { 1, 2 }, new Closure() { @Override public void run() {
 			my(BrickOfSomeInterceptingNature.class).add(1, 2);
 		}});

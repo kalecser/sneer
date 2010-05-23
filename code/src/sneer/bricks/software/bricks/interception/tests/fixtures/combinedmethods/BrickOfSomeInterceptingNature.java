@@ -1,4 +1,4 @@
-package sneer.bricks.software.bricks.interception.tests.fixtures.brick;
+package sneer.bricks.software.bricks.interception.tests.fixtures.combinedmethods;
 
 import sneer.bricks.software.bricks.interception.tests.fixtures.nature.SomeInterceptingNature;
 import sneer.foundation.brickness.Brick;
