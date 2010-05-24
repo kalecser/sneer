@@ -25,7 +25,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
 
 import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
-import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.codec.SealCodec;
@@ -42,7 +41,6 @@ import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.owninfo.OwnInfo;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;
@@ -179,11 +177,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 	}
 
 	private TextWidget<JTextField> newTextField(final Signal<?> signal, final PickyConsumer<String> setter) {
-		final ByRef<TextWidget<JTextField>> result = ByRef.newInstance();
-		my(GuiThread.class).invokeAndWait(new Closure() { @Override public void run() {
-			result.value = my(ReactiveWidgetFactory.class).newTextField(signal, setter, NotificationPolicy.OnEnterPressedOrLostFocus);
-		}});
-		return result.value;
+		return my(ReactiveWidgetFactory.class).newTextField(signal, setter, NotificationPolicy.OnEnterPressedOrLostFocus);
 	}
 
 	private void submit() {
