@@ -1,4 +1,4 @@
-package spikes.rene.Krypton;
+package spikes.rene.krypton;
 
 import java.util.Random;
 import java.util.zip.GZIPInputStream;

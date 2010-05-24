@@ -1,6 +1,6 @@
-package spikes.rene.Krypton;
+package spikes.rene.krypton;
 
-//ancient
+//ancient, deprecated;
 
 import java.util.Random;
 import java.io.File;

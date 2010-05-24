@@ -1,4 +1,4 @@
-package spikes.rene.Krypton;
+package spikes.rene.krypton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,7 @@ public class KryptonGui {
 	
 	KryptonGui() {
 		JFrame window=new JFrame("Krypton Gui");
-		window.setBounds((1280-300)/2,(720-130)/2, 300,130);
+		window.setBounds(300,300, 300,130);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		Container c=window.getContentPane();
