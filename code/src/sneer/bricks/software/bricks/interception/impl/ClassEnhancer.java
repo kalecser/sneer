@@ -73,6 +73,7 @@ final class ClassEnhancer extends ClassAdapter {
 	public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 		if (_classType != null)
 			throw new IllegalStateException();
+		
 		super.visit(version, access, name, signature, superName, interfaces);
 		_classType = typeFromInternalName(name);
 		if (containsBrickInterface(interfaces))
@@ -82,7 +83,7 @@ final class ClassEnhancer extends ClassAdapter {
 	private Type typeFromInternalName(String name) {
 		return Type.getType("L" + name + ";");
 	}
-
+	
 	@Override
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 		
@@ -107,7 +108,7 @@ final class ClassEnhancer extends ClassAdapter {
 			@Override
 			public void visitCode() {
 				super.visitCode();
-//				_brickMetadataEmitter.emitBrickMetadataInitializationCode(this);
+				_brickMetadataEmitter.emitBrickMetadataInitializationCode(this);
 			}
 		};
 	}
@@ -116,7 +117,7 @@ final class ClassEnhancer extends ClassAdapter {
 	public void visitEnd() {
 		
 		if (_brickMetadataEmitter != null && !_usingExistingInitializer)
-			_brickMetadataEmitter.emitBrickMetadataInitializer(this);
+			emitBrickMetadataInitializer();
 		
 		for (InterceptedMethod im : _interceptedMethods) {
 			ClassDefinition continuation = emitContinuationFor(im);
@@ -125,6 +126,17 @@ final class ClassEnhancer extends ClassAdapter {
 		}
 		
 		super.visitEnd();
+	}
+
+	private void emitBrickMetadataInitializer() {
+		MethodVisitor mv = this.cv.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
+		mv.visitCode();
+		
+		_brickMetadataEmitter.emitBrickMetadataInitializationCode(mv);
+		
+		mv.visitInsn(RETURN);		
+		mv.visitMaxs(0, 0);
+		mv.visitEnd();
 	}
 	
 	private void emitMethodInterceptionFor(InterceptedMethod m, String continuationClass) {
@@ -327,7 +339,7 @@ final class ClassEnhancer extends ClassAdapter {
 
 	private void emitBrickMetadata() {
 		_brickMetadataEmitter = new BrickMetadataEmitter(_brick, _interceptorClass);
-		_resultingClasses.add(_brickMetadataEmitter.emit());
+		_resultingClasses.add(_brickMetadataEmitter.emitBrickMetadataClass());
 	}
 	
 	private boolean containsBrickInterface(String[] interfaces) {

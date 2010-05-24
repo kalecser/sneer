@@ -4,9 +4,11 @@ import sneer.bricks.software.bricks.interception.tests.fixtures.staticinitialize
 
 class StaticInitializerImpl implements StaticInitializer {
 	
-	{ nop(); }
+	static { nop(); }
 	
-	static void nop() {}
+	static void nop() {
+		System.out.print("");
+	}
 	
 	@Override
 	public void foo() {}
