@@ -21,7 +21,7 @@ class BrickMetadataEmitter {
 		_interceptorClass = interceptorClass;
 	}
 
-	public ClassDefinition emit() {
+	public ClassDefinition emitBrickMetadataClass() {
 		
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 
@@ -34,18 +34,6 @@ class BrickMetadataEmitter {
 		cw.visitEnd();
 		
 		return new ClassDefinition(BrickMetadataDefinition.CLASS_NAME, cw.toByteArray());
-	}
-
-	public void emitBrickMetadataInitializer(ClassVisitor cw) {
-		
-		MethodVisitor mv = cw.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
-		mv.visitCode();
-		
-		emitBrickMetadataInitializationCode(mv);
-		
-		mv.visitInsn(RETURN);		
-		mv.visitMaxs(0, 0);
-		mv.visitEnd();
 	}
 
 	public void emitBrickMetadataInitializationCode(MethodVisitor mv) {
