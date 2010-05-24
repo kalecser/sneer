@@ -446,15 +446,9 @@ class DashboardPanel extends JPanel {
 		private InstrumentPanel install(final Instrument instrument) {
 			
 			final InstrumentPanelImpl instrumentPanel = new InstrumentPanelImpl(instrument);
-			
-			my(GuiThread.class).invokeAndWait(new Closure(){	
-				@Override 
-				public void run() {
-					instrument.init(instrumentPanel);
-					instrumentPanel.resizeInstrumentPanel();
-					instrumentPanel.revalidate();
-				}
-			});
+			instrument.init(instrumentPanel);
+			instrumentPanel.resizeInstrumentPanel();
+			instrumentPanel.revalidate();
 //			RunMe.logTree(instrumentPanel);
 			return instrumentPanel;
 		}
