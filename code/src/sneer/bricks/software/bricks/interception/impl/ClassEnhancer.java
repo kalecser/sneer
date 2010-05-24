@@ -29,7 +29,7 @@ final class ClassEnhancer extends ClassAdapter {
 	private final Class<?> _brick;
 	private final Class<? extends Interceptor> _interceptorClass;
 	private BrickMetadataEmitter _brickMetadataEmitter;
-	private boolean _usingExistingInitializer;
+	private boolean _foundStaticInitializer;
 	
 	static class InterceptedMethod {
 
@@ -95,7 +95,7 @@ final class ClassEnhancer extends ClassAdapter {
 		
 		MethodVisitor originalMethodVisitor = super.visitMethod(access, name, desc, signature, exceptions);
 		if (name.equals("<clinit>") && _brickMetadataEmitter != null) {
-			_usingExistingInitializer = true;
+			_foundStaticInitializer = true;
 			return prependBrickMetadataInitializationCode(originalMethodVisitor);
 		}
 		
@@ -115,8 +115,8 @@ final class ClassEnhancer extends ClassAdapter {
 	@Override
 	public void visitEnd() {
 		
-		if (_brickMetadataEmitter != null && !_usingExistingInitializer)
-			_brickMetadataEmitter.emitBrickMetadataInitializer(this);
+		if (_brickMetadataEmitter != null && !_foundStaticInitializer)
+			emitBrickMetadataInitializer();
 		
 		for (InterceptedMethod im : _interceptedMethods) {
 			ClassDefinition continuation = emitContinuationFor(im);
@@ -125,6 +125,17 @@ final class ClassEnhancer extends ClassAdapter {
 		}
 		
 		super.visitEnd();
+	}
+
+	private void emitBrickMetadataInitializer() {
+		MethodVisitor mv = this.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
+		mv.visitCode();
+		
+		_brickMetadataEmitter.emitBrickMetadataInitializationCode(mv);
+		
+		mv.visitInsn(RETURN);		
+		mv.visitMaxs(0, 0);
+		mv.visitEnd();
 	}
 	
 	private void emitMethodInterceptionFor(InterceptedMethod m, String continuationClass) {
@@ -327,7 +338,7 @@ final class ClassEnhancer extends ClassAdapter {
 
 	private void emitBrickMetadata() {
 		_brickMetadataEmitter = new BrickMetadataEmitter(_brick, _interceptorClass);
-		_resultingClasses.add(_brickMetadataEmitter.emit());
+		_resultingClasses.add(_brickMetadataEmitter.emitBrickMetadataClass());
 	}
 	
 	private boolean containsBrickInterface(String[] interfaces) {
