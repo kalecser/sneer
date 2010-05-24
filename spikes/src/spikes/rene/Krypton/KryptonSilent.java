@@ -1,3 +1,5 @@
+package spikes.rene.Krypton;
+
 import java.util.Random;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
