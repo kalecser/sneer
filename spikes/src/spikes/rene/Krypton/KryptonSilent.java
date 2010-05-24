@@ -1,9 +1,3 @@
-package spikes.rene.Krypton;
-
-/*
-//this is supposed to be a standalone class file to be called from a gui written in other language
-
-
 import java.util.Random;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -16,7 +10,13 @@ import java.io.IOException;
 
 public class KryptonSilent {
 
-	public static void main (String args[]) throws IOException {
+		KryptonSilent(String function, String filename, String password) throws IOException {
+		String[] args={function,filename,password};
+			main(args);
+		}
+	
+	
+	public static void main (String[] args) throws IOException {
 	
 		if (args.length==0) {answerGui("insufficient"); return;}
 		
@@ -24,7 +24,7 @@ public class KryptonSilent {
 		if ((function.equals("krypt") & args.length<3) | ((function.equals("compress") | function.equals("decompress")) & args.length<2))
 			{answerGui("insufficient"); return;}
 			
-		String destpath=args[1], srcpath=destpath.substring(0,destpath.indexOf('.')) + ".tmp";
+		String destpath=args[1], srcpath=destpath.substring(0,destpath.lastIndexOf('.')) + ".tmp";
 		File srcfile = new File(srcpath), destfile = new File(destpath);
 		if (!(new File(destpath)).renameTo(srcfile)) {answerGui("rename error"); return;}
 		
@@ -103,5 +103,3 @@ public class KryptonSilent {
 		fw.close();
 	}
 }
-
-*/
