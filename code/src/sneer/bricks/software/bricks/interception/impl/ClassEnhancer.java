@@ -17,7 +17,6 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 import sneer.bricks.software.bricks.interception.Boxing;
-import sneer.bricks.software.bricks.interception.InterceptionRuntime;
 import sneer.bricks.software.bricks.interception.Interceptor;
 import sneer.foundation.brickness.ClassDefinition;
 
@@ -146,11 +145,11 @@ final class ClassEnhancer extends ClassAdapter {
 		MethodVisitor mv = super.visitMethod(m.access, m.name, m.desc, m.signature, m.exceptions);
 		mv.visitCode();
 		
-		// brick
-		mv.visitFieldInsn(GETSTATIC, BrickMetadataDefinition.CLASS_NAME, BrickMetadataDefinition.Fields.BRICK, BrickMetadataDefinition.Fields.BRICK_TYPE);
-		
 		// interceptor
 		mv.visitFieldInsn(GETSTATIC, BrickMetadataDefinition.CLASS_NAME, BrickMetadataDefinition.Fields.INTERCEPTOR, BrickMetadataDefinition.Fields.INTERCEPTOR_TYPE);
+		
+		// brick
+		mv.visitFieldInsn(GETSTATIC, BrickMetadataDefinition.CLASS_NAME, BrickMetadataDefinition.Fields.BRICK, BrickMetadataDefinition.Fields.BRICK_TYPE);
 		
 		// targetObject
 		mv.visitVarInsn(ALOAD, 0);
@@ -183,7 +182,8 @@ final class ClassEnhancer extends ClassAdapter {
 		mv.visitMethodInsn(INVOKESPECIAL, continuationInternalName, "<init>", constructorDescriptor(continuationConstructorArgTypesFor(m)));
 		
 		// InterceptionRuntime.dispatch(...)
-		mv.visitMethodInsn(INVOKESTATIC, Type.getInternalName(InterceptionRuntime.class), "dispatch", Type.getMethodDescriptor(interceptionRuntimeDispatchMethod()));
+		Method interceptorInvoke = interceptorInvokeMethod();
+		mv.visitMethodInsn(INVOKEINTERFACE, Type.getInternalName(Interceptor.class), interceptorInvoke.getName(), Type.getMethodDescriptor(interceptorInvoke));
 		
 		if (m.isVoidMethod()) {
 			mv.visitInsn(POP);
@@ -208,11 +208,10 @@ final class ClassEnhancer extends ClassAdapter {
 			mv.visitVarInsn(ALOAD, local);
 	}
 
-	private Method interceptionRuntimeDispatchMethod() {
-		Class<?> klass = InterceptionRuntime.class;
-		return getMethod(klass, "dispatch",
+	private Method interceptorInvokeMethod() {
+		Class<?> klass = Interceptor.class;
+		return getMethod(klass, "invoke",
 				Class.class,
-				Interceptor.class,
 				Object.class,
 				String.class,
 				Object[].class,
