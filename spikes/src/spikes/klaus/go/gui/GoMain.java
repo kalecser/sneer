@@ -13,7 +13,6 @@ import spikes.klaus.go.GoBoard.StoneColor;
 
 public class GoMain {
 	
-	
 	public GoMain() {
 		Environments.runWith(Brickness.newBrickContainer(), new Closure() { @Override public void run() {
 			my(ClockTicker.class);
@@ -23,14 +22,14 @@ public class GoMain {
 		}});
 	}
 	
+	public static void main(String[] args){
+		new GoMain();
+	}
+	
 	private void init() {
 		Register<Move> moveRegister = my(Signals.class).newRegister(null);
 		new GoFrame(moveRegister, StoneColor.BLACK, 0);
 		new GoFrame(moveRegister, StoneColor.WHITE, 500);
 	}
 
-	public static void main(String[] args){
-		new GoMain();
-	}
-	
 }

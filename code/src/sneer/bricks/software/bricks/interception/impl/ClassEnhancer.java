@@ -28,7 +28,7 @@ final class ClassEnhancer extends ClassAdapter {
 	private final Class<?> _brick;
 	private final Class<? extends Interceptor> _interceptorClass;
 	private BrickMetadataEmitter _brickMetadataEmitter;
-	private boolean _usingExistingInitializer;
+	private boolean _foundStaticInitializer;
 	
 	static class InterceptedMethod {
 
@@ -95,7 +95,7 @@ final class ClassEnhancer extends ClassAdapter {
 		
 		MethodVisitor originalMethodVisitor = super.visitMethod(access, name, desc, signature, exceptions);
 		if (name.equals("<clinit>") && _brickMetadataEmitter != null) {
-			_usingExistingInitializer = true;
+			_foundStaticInitializer = true;
 			return prependBrickMetadataInitializationCode(originalMethodVisitor);
 		}
 		
@@ -115,7 +115,7 @@ final class ClassEnhancer extends ClassAdapter {
 	@Override
 	public void visitEnd() {
 		
-		if (_brickMetadataEmitter != null && !_usingExistingInitializer)
+		if (_brickMetadataEmitter != null && !_foundStaticInitializer)
 			emitBrickMetadataInitializer();
 		
 		for (InterceptedMethod im : _interceptedMethods) {

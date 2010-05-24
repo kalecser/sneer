@@ -25,11 +25,9 @@ public class ActionsPanel extends JPanel {
 	public ActionsPanel(final Closure pass, final Closure resign, StoneColor side, Signal<StoneColor> nextToPlay) {
 		_side = side;
 		
-		final JButton passButton= new JButton();
-		passButton.setText("Pass");
+		final JButton passButton= new JButton("Pass");
 		
-		final JButton resignButton= new JButton();
-		resignButton.setText("Resign");
+		final JButton resignButton= new JButton("Resign");
 		 
 		add(passButton);
 		add(resignButton);

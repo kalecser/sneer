@@ -1,5 +1,6 @@
 package spikes.klaus.go;
 
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,6 +43,26 @@ class Intersection implements Serializable {
 		if (_left != null) _left.fillGroupWithNeighbours(stoneColor, group);
 		if (_right != null) _right.fillGroupWithNeighbours(stoneColor, group);
 	}
+	
+	void toggleDeadStone() {
+		StoneColor colorToKill = _stone;
+		boolean killed;
+		StoneColor turn=null;
+		if (isLiberty()) {
+			 turn=colorToKill; colorToKill=null;
+		}
+		
+		do {
+			killed = false;
+			Set<Intersection> group = new HashSet<Intersection>();
+			fillGroupWithNeighbours(_stone, group);
+			for (Intersection intersection : group)
+				if (intersection._stone == colorToKill) {
+					intersection._stone = turn;
+					killed = true;
+				}
+		} while (killed);
+	}
 
 	boolean killGroupIfSurrounded(StoneColor color) {
 		if (_stone != color) return false;
@@ -68,22 +89,6 @@ class Intersection implements Serializable {
 		if (_stone == null) 
 			return (other._stone == null);
 		return _stone.equals(other._stone);
-	}
-
-	void toggleDeadStone() {
-		if (isLiberty()) return;
-		StoneColor colorToKill = _stone;
-		boolean killed;
-		do {
-			killed = false;
-			Set<Intersection> group = new HashSet<Intersection>();
-			fillGroupWithNeighbours(_stone, group);
-			for (Intersection intersection : group)
-				if (intersection._stone == colorToKill) {
-					intersection._stone = null;
-					killed = true;
-				}
-		} while (killed);
 	}
 
 }
