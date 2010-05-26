@@ -42,7 +42,7 @@ public class FileClientTest extends BrickTestWithTuples {
 
 	@Test (timeout = 3000)
 	public void fileAlreadyMappedIsNotDownloaded() throws IOException {
-		Hash hash = my(Crypto.class).digest(new byte[]{42}); 
+		Hash hash = my(Crypto.class).digest(new byte[]{ 42 }); 
 		File file = anySmallFile();
 		my(FileMap.class).putFile(file.getAbsolutePath(), file.lastModified(), hash);
 
@@ -52,7 +52,7 @@ public class FileClientTest extends BrickTestWithTuples {
 		}});
 
 		File tmpFile = newTmpFile();
-		_subject.startFileDownload(tmpFile, hash);
+		_subject.startFileDownload(tmpFile, -1, hash, null);
 
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 		my(IO.class).files().assertSameContents(tmpFile, file);
@@ -70,7 +70,7 @@ public class FileClientTest extends BrickTestWithTuples {
 		}});
 
 		final File tmpFile = newTmpFile();
-		_subject.startFileDownload(tmpFile, fileHash).waitTillFinished();
+		_subject.startFileDownload(tmpFile, -1, fileHash, remoteSeal()).waitTillFinished();
 
 		waitForAllDispatchingToFinish();
 		my(IO.class).files().assertSameContents(tmpFile, smallFile);

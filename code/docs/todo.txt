@@ -23,15 +23,9 @@ Bamboo =================================================
 
 Igor ==================================================== 
 
-	- With your new version of FileMap, I guess FileClient.startFileDownload(File, Hash) should be removed, shouldn't it?
-		- Yes.
-
 	- Chat
 		- Fabio's One-on-one Chat - Incorporate "as is" using JOptionPanes.
 		- Announce to the list.
-
-	- WusicFunctionalTest.peersMode - It is failing intermittently on Klaus's machine (Timeout (Expected: 3 Seen: 0, 1, 2,)). Fix it in a solid way, with a clear understanding of the problem, not just trial-and-error with CustomClockTicker values.
-		- Unignore
 		
 	- Chat
 		- WindGui - Make it a Snapp again.
