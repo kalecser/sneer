@@ -52,7 +52,7 @@ public class FileClientTest extends BrickTestWithTuples {
 		}});
 
 		File tmpFile = newTmpFile();
-		_subject.startFileDownload(tmpFile, -1, hash, null);
+		_subject.startFileDownload(tmpFile, tmpFile.lastModified(), hash, null);
 
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 		my(IO.class).files().assertSameContents(tmpFile, file);
@@ -70,7 +70,7 @@ public class FileClientTest extends BrickTestWithTuples {
 		}});
 
 		final File tmpFile = newTmpFile();
-		_subject.startFileDownload(tmpFile, -1, fileHash, remoteSeal()).waitTillFinished();
+		_subject.startFileDownload(tmpFile, tmpFile.lastModified(), fileHash, remoteSeal()).waitTillFinished();
 
 		waitForAllDispatchingToFinish();
 		my(IO.class).files().assertSameContents(tmpFile, smallFile);

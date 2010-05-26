@@ -84,7 +84,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 			File tmpFolder = new File(tmpFolderRoot, String.valueOf(System.nanoTime()));
 			
 			try {
-				Download download = my(FileClient.class).startFolderDownload(tmpFolder, -1, srcFolderHash.value);
+				Download download = my(FileClient.class).startFolderDownload(tmpFolder, srcFolderHash.value);
 				download.waitTillFinished();
 			} catch (TimeoutException e) {
 				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.

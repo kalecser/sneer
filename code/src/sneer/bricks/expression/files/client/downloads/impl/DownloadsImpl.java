@@ -15,8 +15,8 @@ class DownloadsImpl implements Downloads {
 	}
 
 	@Override
-	public Download newFolderDownload(File folder, long lastModified, Hash hashOfFolder, Runnable toCallWhenFinished) {
-		return new FolderDownload(folder, lastModified, hashOfFolder, toCallWhenFinished);
+	public Download newFolderDownload(File folder, Hash hashOfFolder, Runnable toCallWhenFinished) {
+		return new FolderDownload(folder, hashOfFolder, toCallWhenFinished);
 	}
 
 }

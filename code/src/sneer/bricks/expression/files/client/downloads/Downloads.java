@@ -11,6 +11,6 @@ public interface Downloads {
 
 	Download newFileDownload(File file, long lastModified, Hash hashOfFile, Seal source, Runnable toCallWhenFinished);
 
-	Download newFolderDownload(File folder, long lastModified, Hash hashOfFile, Runnable toCallWhenFinished);
+	Download newFolderDownload(File folder, Hash hashOfFile, Runnable toCallWhenFinished);
 
 }

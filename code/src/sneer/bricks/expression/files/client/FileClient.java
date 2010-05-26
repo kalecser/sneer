@@ -12,6 +12,6 @@ public interface FileClient {
 
 	Download startFileDownload(File file, long lastModified, Hash hashOfFile, Seal source);
 
-	Download startFolderDownload(File folder, long lastModified, Hash hashOfFolder);
+	Download startFolderDownload(File folder, Hash hashOfFolder);
 
 }

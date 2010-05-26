@@ -27,9 +27,9 @@ class FileClientImpl implements FileClient {
 	}
 
 	@Override
-	public Download startFolderDownload(final File folder, final long lastModified, final Hash hashOfFolder) {
+	public Download startFolderDownload(final File folder, final Hash hashOfFolder) {
 		return startDownload(hashOfFolder, new Producer<Download>() { @Override public Download produce() {
-			return my(Downloads.class).newFolderDownload(folder, lastModified, hashOfFolder, downloadCleaner(hashOfFolder));
+			return my(Downloads.class).newFolderDownload(folder, hashOfFolder, downloadCleaner(hashOfFolder));
 		}});
 	}
 

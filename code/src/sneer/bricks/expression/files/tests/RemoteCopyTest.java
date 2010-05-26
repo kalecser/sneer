@@ -33,7 +33,7 @@ public class RemoteCopyTest extends FileCopyTestBase {
 	@Override
 	protected void copyFolderFromFileMap(final Hash hashOfContents, final File destination) throws Exception {
 		copyFromFileMap(new ClosureX<Exception>() { @Override public void run() throws IOException, TimeoutException {
-			Download download = my(FileClient.class).startFolderDownload(destination, -1, hashOfContents);
+			Download download = my(FileClient.class).startFolderDownload(destination, hashOfContents);
 			download.waitTillFinished();
 		}});
 	}
