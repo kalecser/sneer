@@ -5,8 +5,6 @@ import static sneer.foundation.environments.Environments.my;
 import java.util.HashMap;
 import java.util.Map;
 
-import sneer.bricks.identity.seals.OwnSeal;
-import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
@@ -15,8 +13,6 @@ import sneer.foundation.lang.Consumer;
 
 class SocketOriginatorImpl implements SocketOriginator {
 
-	private static final ContactSeals Seals = my(ContactSeals.class);
-	
 	@SuppressWarnings("unused")
 	private final Object _refToAvoidGC;
 	private final Map<InternetAddress, OutgoingAttempt> _attemptsByAddress = new HashMap<InternetAddress, OutgoingAttempt>();
@@ -34,8 +30,6 @@ class SocketOriginatorImpl implements SocketOriginator {
 
 	
 	private void startAddressing(InternetAddress address) {
-		if (isMyOwnAddress(address)) return;
-		
 		OutgoingAttempt attempt = new OutgoingAttempt(address);
 		_attemptsByAddress.put(address, attempt);
 	}
@@ -46,9 +40,5 @@ class SocketOriginatorImpl implements SocketOriginator {
 		attempt.crash();
 	}
 
-	
-	private boolean isMyOwnAddress(InternetAddress address) {
-		return my(OwnSeal.class).get().currentValue().equals(Seals.sealGiven(address.contact()).currentValue());
-	}
 	
 }
