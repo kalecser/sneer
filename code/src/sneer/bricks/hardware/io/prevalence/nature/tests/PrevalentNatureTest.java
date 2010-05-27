@@ -2,6 +2,7 @@ package sneer.bricks.hardware.io.prevalence.nature.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
@@ -167,7 +168,20 @@ public class PrevalentNatureTest extends BrickTestWithFiles {
 		}});
 	}
 
+	
+	@Ignore
+	@Test (timeout = 3000)
+	public void transactionMethodCallingTransactionMethod() {
+		my(PrevalentBrick2.class).addItemToSomePrevalentBrick("foo");
+		assertNotNull(my(SomePrevalentBrick.class).getItem("foo"));
 
+		runInNewTestEnvironment(new Closure() { @Override public void run() {
+			System.out.println("test: " + my(SomePrevalentBrick.class));
+			assertNotNull(my(SomePrevalentBrick.class).getItem("foo"));
+		}});
+	}
+
+	
 	private void runInNewTestEnvironment(Closure closure) {
 		Environments.runWith(newTestEnvironment(my(FolderConfig.class)), closure);
 	}

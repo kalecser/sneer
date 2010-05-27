@@ -9,5 +9,7 @@ public interface PrevalentBrick2 {
 	void rememberItemCount();
 
 	int recallItemCount();
+	
+	void addItemToSomePrevalentBrick(String name);
 
 }

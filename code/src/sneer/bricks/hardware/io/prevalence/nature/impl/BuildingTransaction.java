@@ -6,6 +6,7 @@ import java.util.Date;
 
 import org.prevayler.SureTransactionWithQuery;
 
+import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
@@ -31,12 +32,22 @@ abstract class BuildingTransaction implements SureTransactionWithQuery, Producer
 	
 	@Override
 	public Object produce() {
-		Object result = execute();
+		Object result = tryToExecute();
 		registerIfNecessary(result);
 		return result;
 	}
 
 	
+	private Object tryToExecute() {
+		try {
+			return execute();
+		} catch (RuntimeException rx) {
+			my(ExceptionLogger.class).log(rx);
+			throw rx;
+		}
+	}
+
+
 	protected abstract Object execute();
 
 	

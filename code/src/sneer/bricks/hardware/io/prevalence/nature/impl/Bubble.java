@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import sneer.bricks.hardware.io.prevalence.flag.PrevalenceFlag;
 import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
 import sneer.bricks.hardware.io.prevalence.nature.Transaction;
 import sneer.foundation.lang.CacheMap;
@@ -71,9 +72,17 @@ class Bubble implements InvocationHandler {
 	
 	private Object handleTransaction(Method method, Object[] args) {
 		BuildingTransaction transaction = new Invocation(tillHere(), method, args);
-		Object result = PrevaylerHolder._prevayler.execute(transaction);
+		Object result = my(PrevalenceFlag.class).isInsidePrevalence()
+			? executeDirectly(transaction)
+			: PrevaylerHolder._prevayler.execute(transaction);
 		
 		return wrapIfNecessary(result, method, null, true);
+	}
+
+
+	private Object executeDirectly(BuildingTransaction transaction) {
+		System.out.println("bubble: " + tillHere().produce());
+		return transaction.produce();
 	}
 
 	
