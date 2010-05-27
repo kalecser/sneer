@@ -12,15 +12,19 @@ import sneer.bricks.expression.files.server.FileServer;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.ticker.custom.CustomClockTicker;
 import sneer.bricks.hardware.cpu.crypto.Hash;
+import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.Seal;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.ClosureX;
 
 public class RemoteCopyTest extends FileCopyTestBase {
 
+	private Seal _localSeal = my(OwnSeal.class).get().currentValue();
+
 	@Override
 	protected void copyFileFromFileMap(final Hash hashOfContents, final File destination) throws Exception {
 		copyFromFileMap(new ClosureX<Exception>() { @Override public void run() throws IOException, TimeoutException {
-			Download download = my(FileClient.class).startFileDownload(destination, hashOfContents);
+			Download download = my(FileClient.class).startFileDownload(destination, -1, hashOfContents, _localSeal);
 			download.waitTillFinished();
 		}});
 	}

@@ -20,39 +20,25 @@ class FileClientImpl implements FileClient {
 	private final Map<Hash, WeakReference<Download>> _downloadsByHash = new HashMap<Hash, WeakReference<Download>>();
 
 	@Override
-	public Download startFileDownload(File file, Hash hashOfFile) {
-		return startFileDownload(file, -1, hashOfFile, null);
-	}
-
-
-	@Override
 	public Download startFileDownload(final File file, final long lastModified, final Hash hashOfFile, final Seal source) {
 		return startDownload(hashOfFile, new Producer<Download>() { @Override public Download produce() {
 			return my(Downloads.class).newFileDownload(file, lastModified, hashOfFile, source, downloadCleaner(hashOfFile));
 		}});
 	}
 
-
 	@Override
-	public Download startFolderDownload(File folder, Hash hashOfFolder) {
-		return startFolderDownload(folder, -1, hashOfFolder);
-	}
-
-
-	@Override
-	public Download startFolderDownload(final File folder, final long lastModified, final Hash hashOfFolder) {
+	public Download startFolderDownload(final File folder, final Hash hashOfFolder) {
 		return startDownload(hashOfFolder, new Producer<Download>() { @Override public Download produce() {
-			return my(Downloads.class).newFolderDownload(folder, lastModified, hashOfFolder, downloadCleaner(hashOfFolder));
+			return my(Downloads.class).newFolderDownload(folder, hashOfFolder, downloadCleaner(hashOfFolder));
 		}});
 	}
-
 
 	private Download startDownload(final Hash hash, Producer<Download> downloadFactory) {
 		Download result;
 
 		synchronized (_downloadsByHash) {
 			WeakReference<Download> weakRef = _downloadsByHash.get(hash);
-			
+
 			if (weakRef != null) {
 				result = weakRef.get();
 				if (result != null)
@@ -65,7 +51,6 @@ class FileClientImpl implements FileClient {
 
 		return result;
 	}
-
 
 	private Runnable downloadCleaner(final Hash hash) { 
 		return new Closure() { @Override public void run() {

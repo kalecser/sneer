@@ -215,10 +215,8 @@ abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDG
 	
 	private void startReceiving() {
 		_referenceToAvoidGc = _source.addReceiver(new Consumer<Object>() {@Override public void consume(final Object text) {
-			my(GuiThread.class).invokeAndWaitForWussies(new Closure(){ @Override public void run() {
-				if (!_notified) return;
-				setText(valueToString(text));
-			}});
+			if (!_notified) return;
+			setText(valueToString(text));
 		}});
 	}
 	

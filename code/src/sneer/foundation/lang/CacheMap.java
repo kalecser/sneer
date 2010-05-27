@@ -13,7 +13,7 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 	
 	private CacheMap() {}
 	
-	Map<K, Thread> _keysByResolver = new HashMap<K, Thread>();
+	Map<K, Thread> _resolversByKey = new HashMap<K, Thread>();
 	
 	
 	public <X extends Throwable> V get(K key, final ProducerX<V, X> producerToUseIfAbsent) throws X {
@@ -25,7 +25,7 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 	
 	public <X extends Throwable> V get(K key, FunctorX<K, V, X> functorToUseIfAbsent) throws X {
 		boolean thisThreadMustResolve = false;
-		synchronized (_keysByResolver) {
+		synchronized (_resolversByKey) {
 			V found = get(key);
 			if (found != null) return found;
 			
@@ -34,17 +34,17 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 
 		if (thisThreadMustResolve) {
 			V resolved = functorToUseIfAbsent.evaluate(key); //Fix: throw the exception in the other threads waiting too.
-			synchronized (_keysByResolver) {
+			synchronized (_resolversByKey) {
 				put(key, resolved);
-				_keysByResolver.remove(key);
-				_keysByResolver.notifyAll();
+				_resolversByKey.remove(key);
+				_resolversByKey.notifyAll();
 			};
 			return resolved;
 		}
 		
-		synchronized (_keysByResolver) {
-			while (_keysByResolver.containsKey(key))
-				waitWithoutInterruptions();
+		synchronized (_resolversByKey) {
+			while (_resolversByKey.containsKey(key))
+				waitWithoutInterruptions(key);
 		}
 		
 		return get(key);
@@ -52,10 +52,10 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 
 
 	private boolean volunteerToResolve(K key) {
-		Thread resolver = _keysByResolver.get(key);
+		Thread resolver = _resolversByKey.get(key);
 		
 		if (resolver == null) {
-			_keysByResolver.put(key, Thread.currentThread());
+			_resolversByKey.put(key, Thread.currentThread());
 			return true;
 		}
 
@@ -66,12 +66,23 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 	}
 
 	
-	private void waitWithoutInterruptions() {
+	private void waitWithoutInterruptions(K key) {
 		try {
-			_keysByResolver.wait();
+			_resolversByKey.wait();
 		} catch (InterruptedException e) {
-			throw new IllegalStateException(e);
+			String stack = stackGiven(_resolversByKey.get(key));
+			throw new IllegalStateException("This thread was interrupted while waiting for another thread to resolve: " + key + "\n>>>>>>Start of other thread's stack:\n" + stack + "\n<<<<<<End of other thread's stack");
 		}
+	}
+
+	
+	private String stackGiven(Thread thread) {
+		String result = "";
+		for (StackTraceElement element : thread.getStackTrace())
+			result += "\n\tat " + element.getClassName() + "."
+				+ element.getMethodName() + "(" + element.getFileName()
+				+ ":" + element.getLineNumber() + ")";
+		return result;
 	}
 
 }

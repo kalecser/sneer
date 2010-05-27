@@ -65,10 +65,12 @@ class ThreadsImpl implements Threads {
 		new Daemon(threadName) { @Override public void run() {
 			hasStarted.open();
 			Environments.runWith(environment, new Closure() { @Override public void run() {
+				Counter.increment(threadName);
 				my(CpuThrottle.class).limitMaxCpuUsage(maxCpuUsage, new Closure() { @Override public void run() {
 					ExceptionHandler.shield(runnable);				
 				}});
 			}});
+			Counter.decrement(threadName);
 		}};
 		
 		hasStarted.waitTillOpen();

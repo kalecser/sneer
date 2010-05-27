@@ -14,7 +14,6 @@ import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.widgets.reactive.ToggleButtonWidget;
-import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;
 
@@ -37,10 +36,8 @@ class RCheckBoxImpl extends RPanel<JCheckBox> implements ToggleButtonWidget<JChe
 		initActionListerner();
 
 		_toAvoidGc = _source.addReceiver(new Consumer<Boolean>() { @Override public void consume(final Boolean isSelected) {
-			my(GuiThread.class).invokeAndWaitForWussies(new Closure() { @Override public void run() {
-				_component.setSelected(isSelected);
-				refreshComponent();
-			}});
+			_component.setSelected(isSelected);
+			refreshComponent();
 		}});
 	}
 

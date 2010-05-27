@@ -9,12 +9,10 @@ import java.awt.Insets;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
-import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
-import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;
 
@@ -35,9 +33,7 @@ class RLabelImpl extends RPanel<JLabel> implements TextWidget<JLabel>{
 		_source = source;
 
 		_referenceToAvoidGc = source.addReceiver(new Consumer<Object>() {@Override public void consume(final Object value) {
-			my(GuiThread.class).invokeAndWaitForWussies(new Closure() {@Override public void run() {
-				textComponent().setText(valueToString(value));
-			}});
+			textComponent().setText(valueToString(value));
 		}});
 
 		initComponents();

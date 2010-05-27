@@ -165,7 +165,7 @@ public class BuilderTest extends BrickTestWithFiles {
 		
 	}
 
-	
+
 	private void copySourceFiles(Class<?>... classes) throws IOException {
 		for (Class<?> c : classes) copySourceFile(c);
 	}

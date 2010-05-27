@@ -11,10 +11,7 @@ import sneer.foundation.brickness.Brick;
 public interface FileClient {
 
 	Download startFileDownload(File file, long lastModified, Hash hashOfFile, Seal source);
-	Download startFileDownload(File file, Hash hashOfFile);
 
-	Download startFolderDownload(File folder, long lastModified, Hash hashOfFolder);
 	Download startFolderDownload(File folder, Hash hashOfFolder);
 
 }
-

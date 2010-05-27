@@ -17,7 +17,6 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 import sneer.bricks.software.bricks.interception.Boxing;
-import sneer.bricks.software.bricks.interception.InterceptionRuntime;
 import sneer.bricks.software.bricks.interception.Interceptor;
 import sneer.foundation.brickness.ClassDefinition;
 
@@ -29,7 +28,7 @@ final class ClassEnhancer extends ClassAdapter {
 	private final Class<?> _brick;
 	private final Class<? extends Interceptor> _interceptorClass;
 	private BrickMetadataEmitter _brickMetadataEmitter;
-	private boolean _usingExistingInitializer;
+	private boolean _foundStaticInitializer;
 	
 	static class InterceptedMethod {
 
@@ -73,6 +72,7 @@ final class ClassEnhancer extends ClassAdapter {
 	public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 		if (_classType != null)
 			throw new IllegalStateException();
+		
 		super.visit(version, access, name, signature, superName, interfaces);
 		_classType = typeFromInternalName(name);
 		if (containsBrickInterface(interfaces))
@@ -82,7 +82,7 @@ final class ClassEnhancer extends ClassAdapter {
 	private Type typeFromInternalName(String name) {
 		return Type.getType("L" + name + ";");
 	}
-
+	
 	@Override
 	public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
 		
@@ -95,7 +95,7 @@ final class ClassEnhancer extends ClassAdapter {
 		
 		MethodVisitor originalMethodVisitor = super.visitMethod(access, name, desc, signature, exceptions);
 		if (name.equals("<clinit>") && _brickMetadataEmitter != null) {
-			_usingExistingInitializer = true;
+			_foundStaticInitializer = true;
 			return prependBrickMetadataInitializationCode(originalMethodVisitor);
 		}
 		
@@ -107,7 +107,7 @@ final class ClassEnhancer extends ClassAdapter {
 			@Override
 			public void visitCode() {
 				super.visitCode();
-//				_brickMetadataEmitter.emitBrickMetadataInitializationCode(this);
+				_brickMetadataEmitter.emitBrickMetadataInitializationCode(this);
 			}
 		};
 	}
@@ -115,8 +115,8 @@ final class ClassEnhancer extends ClassAdapter {
 	@Override
 	public void visitEnd() {
 		
-		if (_brickMetadataEmitter != null && !_usingExistingInitializer)
-			_brickMetadataEmitter.emitBrickMetadataInitializer(this);
+		if (_brickMetadataEmitter != null && !_foundStaticInitializer)
+			emitBrickMetadataInitializer();
 		
 		for (InterceptedMethod im : _interceptedMethods) {
 			ClassDefinition continuation = emitContinuationFor(im);
@@ -126,6 +126,17 @@ final class ClassEnhancer extends ClassAdapter {
 		
 		super.visitEnd();
 	}
+
+	private void emitBrickMetadataInitializer() {
+		MethodVisitor mv = this.cv.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
+		mv.visitCode();
+		
+		_brickMetadataEmitter.emitBrickMetadataInitializationCode(mv);
+		
+		mv.visitInsn(RETURN);		
+		mv.visitMaxs(0, 0);
+		mv.visitEnd();
+	}
 	
 	private void emitMethodInterceptionFor(InterceptedMethod m, String continuationClass) {
 		
@@ -134,11 +145,11 @@ final class ClassEnhancer extends ClassAdapter {
 		MethodVisitor mv = super.visitMethod(m.access, m.name, m.desc, m.signature, m.exceptions);
 		mv.visitCode();
 		
-		// brick
-		mv.visitFieldInsn(GETSTATIC, BrickMetadataDefinition.CLASS_NAME, BrickMetadataDefinition.Fields.BRICK, BrickMetadataDefinition.Fields.BRICK_TYPE);
-		
 		// interceptor
 		mv.visitFieldInsn(GETSTATIC, BrickMetadataDefinition.CLASS_NAME, BrickMetadataDefinition.Fields.INTERCEPTOR, BrickMetadataDefinition.Fields.INTERCEPTOR_TYPE);
+		
+		// brick
+		mv.visitFieldInsn(GETSTATIC, BrickMetadataDefinition.CLASS_NAME, BrickMetadataDefinition.Fields.BRICK, BrickMetadataDefinition.Fields.BRICK_TYPE);
 		
 		// targetObject
 		mv.visitVarInsn(ALOAD, 0);
@@ -171,7 +182,8 @@ final class ClassEnhancer extends ClassAdapter {
 		mv.visitMethodInsn(INVOKESPECIAL, continuationInternalName, "<init>", constructorDescriptor(continuationConstructorArgTypesFor(m)));
 		
 		// InterceptionRuntime.dispatch(...)
-		mv.visitMethodInsn(INVOKESTATIC, Type.getInternalName(InterceptionRuntime.class), "dispatch", Type.getMethodDescriptor(interceptionRuntimeDispatchMethod()));
+		Method interceptorInvoke = interceptorInvokeMethod();
+		mv.visitMethodInsn(INVOKEINTERFACE, Type.getInternalName(Interceptor.class), interceptorInvoke.getName(), Type.getMethodDescriptor(interceptorInvoke));
 		
 		if (m.isVoidMethod()) {
 			mv.visitInsn(POP);
@@ -196,11 +208,10 @@ final class ClassEnhancer extends ClassAdapter {
 			mv.visitVarInsn(ALOAD, local);
 	}
 
-	private Method interceptionRuntimeDispatchMethod() {
-		Class<?> klass = InterceptionRuntime.class;
-		return getMethod(klass, "dispatch",
+	private Method interceptorInvokeMethod() {
+		Class<?> klass = Interceptor.class;
+		return getMethod(klass, "invoke",
 				Class.class,
-				Interceptor.class,
 				Object.class,
 				String.class,
 				Object[].class,
@@ -327,7 +338,7 @@ final class ClassEnhancer extends ClassAdapter {
 
 	private void emitBrickMetadata() {
 		_brickMetadataEmitter = new BrickMetadataEmitter(_brick, _interceptorClass);
-		_resultingClasses.add(_brickMetadataEmitter.emit());
+		_resultingClasses.add(_brickMetadataEmitter.emitBrickMetadataClass());
 	}
 	
 	private boolean containsBrickInterface(String[] interfaces) {

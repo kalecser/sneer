@@ -27,10 +27,10 @@ class OutgoingAttempt {
 	private final Light _light = my(BlinkingLights.class).prepare(LightType.WARNING);
 
 	
-	OutgoingAttempt(InternetAddress address) {
+	OutgoingAttempt(final InternetAddress address) {
 		_address = address;
 
-		_steppingContract = my(Timer.class).wakeUpNowAndEvery(20 * 1000, new Closure() { @Override public void run() {
+		_steppingContract = my(Timer.class).wakeUpNowAndEvery(20 * 1000, new Closure() { @Override public String toString() { return "Outgoing Connection Attempt: " + address; } @Override public void run() {
 			tryToOpen();
 		}});
 	}
