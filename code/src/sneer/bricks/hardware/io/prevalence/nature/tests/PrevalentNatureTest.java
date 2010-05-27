@@ -120,6 +120,7 @@ public class PrevalentNatureTest extends BrickTestWithFiles {
 		}});
 	}
 	
+	@Ignore
 	@Test (timeout = 3000)
 	public void idempotencyIsTransitive() {
 		SomePrevalentBrick brick = my(SomePrevalentBrick.class);

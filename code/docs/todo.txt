@@ -58,6 +58,8 @@ René =================================================
 
 Klaus =================================================
 
+	- PrevNatureTest.idempotencyIsTransitive - Unignore
+
 	- "transaction->my in parallel with my->transaction" intermittent deadlock in Freedom5
 		- Prevalent Brick instantiation must be stateless. It will not be persisted.
 			- Do not allow transactions during prevalent brick instantiation.

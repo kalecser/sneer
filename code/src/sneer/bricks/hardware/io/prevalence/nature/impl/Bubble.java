@@ -33,13 +33,13 @@ class Bubble implements InvocationHandler {
 	}
 
 	
-	private static <T> T proxyFor(Object startObject, Bubble previousBubble, Method query, Object[] queryArgs, T endObject) {
+	private static <T> T proxyFor(Object startObject, BuildingTransaction previousBubble, Method query, Object[] queryArgs, T endObject) {
 		InvocationHandler handler = new Bubble(startObject, previousBubble, query, queryArgs);
 		return (T)Proxy.newProxyInstance(endObject.getClass().getClassLoader(), Classes.allInterfacesOf(endObject.getClass()), handler);
 	}
 
 	
-	private Bubble(Object delegate, Bubble previousBubble, Method query, Object[] queryArgs) {
+	private Bubble(Object delegate, BuildingTransaction previousBubble, Method query, Object[] queryArgs) {
 		_delegate = delegate;
 		
 		_previousBubble = previousBubble;
@@ -50,7 +50,7 @@ class Bubble implements InvocationHandler {
 
 	private final Object _delegate;
 	
-	private final Bubble _previousBubble;
+	private final BuildingTransaction _previousBubble;
 	private final Method _query;
 	private final Object[] _queryArgs;
 	
@@ -89,7 +89,7 @@ class Bubble implements InvocationHandler {
 	private BuildingTransaction tillHere() {
 		return (_delegate != null)
 			? new MapLookup(_delegate)
-			: new Invocation(_previousBubble.tillHere(), _query, _queryArgs);
+			: new Invocation(_previousBubble, _query, _queryArgs);
 	}
 
 
@@ -112,10 +112,10 @@ class Bubble implements InvocationHandler {
 	}
 
 
-	private Object navigateToReceiver() throws IllegalAccessException, InvocationTargetException {
+	private Object navigateToReceiver() {
 		return _delegate != null
 			? _delegate
-			: _query.invoke(_previousBubble.navigateToReceiver(), _queryArgs);
+			: tillHere().produce();
 	}
 
 	
@@ -133,7 +133,7 @@ class Bubble implements InvocationHandler {
 			if (isTransaction)
 				throw new IllegalStateException();
 			
-			return proxyFor(null, Bubble.this, method, args, returned);
+			return proxyFor(null, tillHere(), method, args, returned);
 		}});
 	}
 
