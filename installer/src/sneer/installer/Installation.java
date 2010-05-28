@@ -97,7 +97,7 @@ class Installation {
     }
 	
 	private void updateCode() throws IOException {
-		IOUtils.write(LOG_FILE, "jar file url: " + jarFileName.toString());
+		
 		File file = extractJar(jarFileName, "sneer", "jar");
 		extractFiles(file, CODE);
 	}
