@@ -14,32 +14,18 @@ import sneer.foundation.lang.Producer;
 
 public class BricknessImpl implements NonBlockingEnvironment {
 	
-	private static final class BrickImplProducer<T> implements Producer<T> {
-		private final Class<T> _brickImpl;
-
-		private BrickImplProducer(Class<T> brickImpl) {
-			_brickImpl = brickImpl;
-		}
-
-		@Override public T produce() throws RuntimeException {
-			return (T)newInstance(_brickImpl);
-		}
-	}
-
-	
 	public BricknessImpl(Object... bindings) {
 		_brickImplLoader = new BrickImplLoader(_apiClassLoader);
 		
-		_bindings = new Bindings();
-		_bindings.bind(this);
-		_bindings.bind(new BrickSerializationMapperImpl(_apiClassLoader, _brickImplLoader));
-		_bindings.bind(bindings);
+		Bindings bindingsEnvironment = new Bindings();
+		bindingsEnvironment.bind(this);
+		bindingsEnvironment.bind(new BrickSerializationMapperImpl(_apiClassLoader, _brickImplLoader));
+		bindingsEnvironment.bind(bindings);
 	
-		_cache = createCachingEnvironment();
+		_cache = createCachingEnvironment(bindingsEnvironment);
 	}
 	
 	
-	private final Bindings _bindings;
 	private CachingEnvironment _cache;
 	private final BrickImplLoader _brickImplLoader;
 	private final ByRef<ClassLoader> _apiClassLoader = ByRef.newInstance();
@@ -58,8 +44,8 @@ public class BricknessImpl implements NonBlockingEnvironment {
 	}
 
 	
-	private CachingEnvironment createCachingEnvironment() {
-		return new CachingEnvironment(EnvironmentUtils.compose(_bindings.environment(), new Environment(){ @Override public <T> T provide(Class<T> brick) {
+	private CachingEnvironment createCachingEnvironment(Bindings bindings) {
+		return new CachingEnvironment(EnvironmentUtils.compose(bindings.environment(), new Environment(){ @Override public <T> T provide(Class<T> brick) {
 			return loadBrick(brick);
 		}}));
 	}
@@ -88,7 +74,9 @@ public class BricknessImpl implements NonBlockingEnvironment {
 			return (T)newInstance(brickImpl);
 		
 		Nature nature = natures.get(0);
-		return nature.instantiate(brick, brickImpl, new BrickImplProducer<T>(brickImpl));
+		return nature.instantiate(brick, brickImpl,	new Producer<T>() {	@Override public T produce() {
+			return (T)newInstance(brickImpl);
+		}});
 	}
 
 	
