@@ -19,7 +19,7 @@ class PrevalentImpl implements Prevalent {
 	public <T> T instantiate(final Class<T> prevalentBrick, Class<T> implClassIgnored, final Producer<T> instantiator) {
 		T brickInstance = PrevalenceEnvironment.INSTANCE.provide(prevalentBrick, instantiator);
 		
-		return Bubble.wrapped(brickInstance, new BrickProvision(prevalentBrick, brickInstance));
+		return (T)Bubble.wrapped(brickInstance, new BrickProvision(prevalentBrick, brickInstance));
 	}
 
 }
