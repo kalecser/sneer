@@ -65,17 +65,6 @@ René =================================================
 
 Klaus =================================================
 
-	- BricknessImpl
-		- _bindings -> local variable
-		- BrickImplProducer - inline. (no longer needs to be serializable)
-
-	- PrevNatureTest.idempotencyIsTransitive - Unignore
-
-	- "transaction->my in parallel with my->transaction" intermittent deadlock in Freedom5
-		- Prevalent Brick instantiation must be stateless. It will not be persisted.
-			- Do not allow transactions during prevalent brick instantiation.
-			- PrevalentBuilding - Allow only provision requests for Prevalent and Stateless bricks.
-
 	- Prevalence loading impls in API classloader during tests - Fix
 		- Uncomment in BrickTestRunner the following line (around line 100):  //  if (name.indexOf(".impl.")...
 		- FileMapData - make static again
