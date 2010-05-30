@@ -71,10 +71,8 @@ class SomePrevalentBrickImpl implements SomePrevalentBrick {
 	}
 	
 	@Override
-	public Item addItemAndReturnIt(String name) {
-		Item item = new ItemImpl(name);
-		_items.add(item);
-		return item;
+	public Item addItemAndReturnIt_AnnotatedAsTransaction(String name) {
+		return addItemWithoutRegistering(name);
 	}
 
 	
@@ -99,12 +97,6 @@ class SomePrevalentBrickImpl implements SomePrevalentBrick {
 
 	
 	@Override
-	public Item addItem_AnnotatedAsTransaction(String name) {
-		return addItemWithoutRegistering(name);
-	}
-
-	
-	@Override
 	public Consumer<String> itemAdder_Idempotent() {
 		return new Consumer<String>() { @Override public void consume(String name) {
 			if (INITIAL_VALUE.equals(name))
@@ -125,6 +117,8 @@ class SomePrevalentBrickImpl implements SomePrevalentBrick {
 	@Override
 	public Closure removerFor(final Item item) {
 		return new Closure() { @Override public void run() {
+			if (!_items.contains(item))
+				throw new IllegalStateException();
 			removeItem(item);
 		}};
 	}

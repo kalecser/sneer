@@ -5,7 +5,7 @@ import sneer.foundation.lang.Functor;
 
 
 
-public class CachingEnvironment implements Environment {
+public class CachingEnvironment implements NonBlockingEnvironment {
 
 	public CachingEnvironment(Environment delegate) {
 		_delegate = delegate;
@@ -26,6 +26,13 @@ public class CachingEnvironment implements Environment {
 		return (T)_cache.get(need, _functor);
 	}
 
+	
+	/** Returns null instead of blocking if another thread is getting this need. */
+	@Override
+	public <T> T provideWithoutBlocking(Class<T> need) {
+		return (T)_cache.getWithoutBlocking(need, _functor);
+	}
+	
 	
 	public void clear() {
 		_cache.clear();

@@ -1,34 +1,34 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import static sneer.foundation.environments.Environments.my;
+import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.Producer;
 
-import sneer.bricks.hardware.io.prevalence.flag.PrevalenceFlag;
-import sneer.foundation.environments.Environment;
-
-class PrevalentBuilding implements Environment {
-
-	
-	private Map<Class<?>, Object> _bricks = new ConcurrentHashMap<Class<?>, Object>();
-	
-	
-	{
-		_bricks.put(PrevalenceFlag.class, new PrevalenceFlag() { @Override public boolean isInsidePrevalence() {
-			return true;
-		}});
-	}
-	
-	
-	<T> void add(Class<T> brick, T brickInstance) {
-		_bricks.put(brick, brickInstance);
-	}
+class PrevalentBuilding {
 
 	
-	@Override
-	public <T> T provide(Class<T> brick) {
-		if (brick == PrevalentBuilding.class)
-			return (T)this;
-		
+	private CacheMap<Class<?>, Object> _bricks = CacheMap.newInstance();
+	
+	
+	<T> T get(Class<T> brick) {
 		return (T)_bricks.get(brick);
 	}
+
+	
+	synchronized
+	<T> T get(Class<T> brick, Producer<T> producerToUseIfAbsent) {
+		this.notifyAll();
+		return (T)_bricks.get(brick, (Producer<Object>)producerToUseIfAbsent);
+	}
+	
+	
+	synchronized
+	<T> T waitForInstance(Class<T> brick) {
+		while (get(brick) == null)
+			my(Threads.class).waitWithoutInterruptions(this);
+			
+		return get(brick);
+	}
+	
 }

@@ -55,7 +55,7 @@ Unacceptable Client Behavior
 	@Bind final DynDnsAccountKeeper _ownAccountKeeper = mock(DynDnsAccountKeeper.class);
 	@Bind final Updater _updater = mock(Updater.class);
 	@Bind final TransientPropertyStore _propertyStore = new TransientPropertyStore();
-	@Bind final ThreadsMock _threads = new ThreadsMock();
+	@Bind final ThreadsMock _threads = new ThreadsMock("DynDns");
 
 	
 	final Register<String> _ownIp = my(Signals.class).newRegister("123.45.67.89");

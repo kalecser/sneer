@@ -65,6 +65,10 @@ René =================================================
 
 Klaus =================================================
 
+	- BricknessImpl
+		- _bindings -> local variable
+		- BrickImplProducer - inline. (no longer needs to be serializable)
+
 	- PrevNatureTest.idempotencyIsTransitive - Unignore
 
 	- "transaction->my in parallel with my->transaction" intermittent deadlock in Freedom5

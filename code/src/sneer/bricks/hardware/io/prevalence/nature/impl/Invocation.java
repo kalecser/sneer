@@ -1,30 +1,35 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
+import static sneer.foundation.environments.Environments.my;
 
-class Invocation extends BuildingTransaction {
+import java.lang.reflect.Method;
+
+import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
+import sneer.foundation.lang.Producer;
+
+class Invocation implements Producer<Object> {
+
+	protected static final PrevalenceMap PrevalenceMap = my(PrevalenceMap.class);
 
 	
-	Invocation(BuildingTransaction previous, Method method, Object[] args) {
-		_previous = previous;
+	Invocation(Producer<Object> targetProducer, Method method, Object[] args) {
+		_targetProducer = targetProducer;
 		_method = method.getName();
 		_argsTypes = method.getParameterTypes();
 		_args = marshal(args);
 	}
 
 
-	private final BuildingTransaction _previous;
+	private final Producer<Object> _targetProducer;
 	private final String _method;
 	private final Class<?>[] _argsTypes;
 	private final Object[] _args;
 	
 	
 	@Override
-	protected Object execute() {
-		Object previousResult = _previous.execute();
-		PrevalenceMap.unmarshal(_args);
-		return invoke(previousResult, _method, _argsTypes, _args);
+	public Object produce() {
+		Object target = _targetProducer.produce();
+		return invoke(target, _method, _argsTypes, unmarshal(_args));
 	}
 
 
@@ -39,11 +44,13 @@ class Invocation extends BuildingTransaction {
 	}
 
 	
+	static private Object[] unmarshal(Object[] args) {
+		return PrevalenceMap.unmarshal(args);
+	}
+
+	
 	static private Object[] marshal(Object[] args) {
-		if (args == null) return null;
-		Object[] result = Arrays.copyOf(args, args.length);
-		PrevalenceMap.marshal(result);
-		return result;
+		return PrevalenceMap.marshal(args);
 	}
 
 }

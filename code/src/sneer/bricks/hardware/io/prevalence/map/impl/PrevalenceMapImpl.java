@@ -2,11 +2,13 @@ package sneer.bricks.hardware.io.prevalence.map.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import sneer.bricks.hardware.io.prevalence.flag.PrevalenceFlag;
 import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
+import sneer.foundation.lang.Immutable;
 
 class PrevalenceMapImpl implements PrevalenceMap {
 	
@@ -20,7 +22,7 @@ class PrevalenceMapImpl implements PrevalenceMap {
 		checkInsidePrevalence(object);
 		
 		if (_idsByObject.containsKey(object))
-			throw new IllegalStateException();
+			throw new IllegalStateException("Object already registered in prevalence map: " + object);
 		
 		long id = _nextId++;
 		_idsByObject.put(object, id);
@@ -41,12 +43,14 @@ class PrevalenceMapImpl implements PrevalenceMap {
 
 	
 	@Override
-	public void marshal(Object[] args) {
-		if (args == null)
-			return;
+	public Object[] marshal(Object[] array) {
+		if (array == null)
+			return null;
 		
-		for (int i = 0; i < args.length; i++)
-			args[i] = marshalIfNecessary(args[i]);
+		Object[] result = new Object[array.length]; 
+		for (int i = 0; i < result.length; i++)
+			result[i] = marshalIfNecessary(array[i]);
+		return result;
 	}
 	
 	
@@ -54,9 +58,12 @@ class PrevalenceMapImpl implements PrevalenceMap {
 		if (object == null) return null;
 		
 		Long id = _idsByObject.get(object);
-		return id == null
-			? object
-			: new OID(id);
+		if (id != null)
+			return new OID(id);
+		
+		if (requiresRegistration(object))
+			throw new IllegalStateException("Mutable object " + object + " should have been registered in prevalence map.");
+		return object;
 	}
 
 
@@ -70,12 +77,14 @@ class PrevalenceMapImpl implements PrevalenceMap {
 	
 	
 	@Override
-	public void unmarshal(Object[] array) {
+	public Object[] unmarshal(Object[] array) {
 		if (array == null)
-			return;
-		
+			return null;
+
+		Object[] result = new Object[array.length]; 
 		for (int i = 0; i < array.length; i++)
-			array[i] = unmarshal(array[i]);
+			result[i] = unmarshal(array[i]);
+		return result;
 	}
 
 	
@@ -92,6 +101,19 @@ class PrevalenceMapImpl implements PrevalenceMap {
 		if (result == null)
 			throw new IllegalStateException("Object not found for id: " + id);
 		return result;
+	}
+
+
+	@Override
+	public boolean requiresRegistration(Object object) {
+		if (object == null) return false;
+
+		Class<?> type = object.getClass();
+		if (type.isArray()) return false;
+		if (Collection.class.isAssignableFrom(type)) return false;
+		if (Immutable.isImmutable(type)) return false;
+		
+		return true;
 	}
 	
 }

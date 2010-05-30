@@ -45,7 +45,7 @@ class BrickImplLoader {
 	}
 
 	List<Nature> naturesFor(Class<?> brick) {
-		final Brick annotation = brick.getAnnotation (Brick.class);
+		final Brick annotation = brick.getAnnotation(Brick.class);
 		if (annotation == null) throw new BrickLoadingException("Brick '" + brick.getName() + "' is not annotated as such!");
 
 		return naturesImplsFor(annotation.value());
