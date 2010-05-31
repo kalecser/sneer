@@ -3,9 +3,9 @@ package sneer.bricks.hardware.io.prevalence.nature.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Collection;
 
 import sneer.bricks.hardware.io.prevalence.flag.PrevalenceFlag;
 import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
@@ -18,48 +18,73 @@ import sneer.foundation.lang.types.Classes;
 
 class Bubble implements InvocationHandler {
 	
-	static CacheMap<Object, Object> _proxiesByObject = CacheMap.newInstance();
+	private static final PrevalenceMap PrevalenceMap = my(PrevalenceMap.class);
+	
+	private static final CacheMap<Object, Object> _proxiesByObject = CacheMap.newInstance();
 	
 
-	static <T> T wrap(T newObject) {
-		T result = proxyFor(newObject);
-		_proxiesByObject.put(newObject, result);
-		return result;
+	static <T> T wrapped(final Object object, final Producer<Object> path) {
+		return (T)_proxiesByObject.get(object, new Producer<Object>() { @Override public Object produce() {
+			return newProxyFor(object, path);
+		}});
 	}
 
 
-	private static <T> T proxyFor(T object) {
-		return proxyFor(object, null, null, null, object);
-	}
+	private static Object newProxyFor(Object object, Producer<Object> path) {
+		if (isRegistered(object))
+			path = new MapLookup(object);
 
-	
-	private static <T> T proxyFor(Object startObject, BuildingTransaction previousBubble, Method query, Object[] queryArgs, T endObject) {
-		InvocationHandler handler = new Bubble(startObject, previousBubble, query, queryArgs);
-		return (T)Proxy.newProxyInstance(endObject.getClass().getClassLoader(), Classes.allInterfacesOf(endObject.getClass()), handler);
-	}
-
-	
-	private Bubble(Object delegate, BuildingTransaction previousBubble, Method query, Object[] queryArgs) {
-		_delegate = delegate;
-		
-		_previousBubble = previousBubble;
-		_query = query;
-		_queryArgs = queryArgs;
+		InvocationHandler handler = new Bubble(path);
+		Class<?> delegateClass = object.getClass();
+		return Proxy.newProxyInstance(delegateClass.getClassLoader(), Classes.allInterfacesOf(delegateClass), handler);
 	}
 
 
-	private final Object _delegate;
-	
-	private final BuildingTransaction _previousBubble;
-	private final Method _query;
-	private final Object[] _queryArgs;
+	private Bubble(Producer<Object> producer) {
+		_invocationPath = producer;
+	}
+
+
+	private final Producer<Object> _invocationPath;
 	
 	
 	@Override
 	public Object invoke(Object proxyImplied, Method method, Object[] args) throws Throwable {
-		return isTransaction(method)
-			? handleTransaction(method, args)
-			: handleQuery(method, args);
+		Producer<Object> path = extendedPath(method, args);
+		Object result = path.produce();
+		return wrapIfNecessary(result, path);
+	}
+
+
+	private Object wrapIfNecessary(Object object, Producer<Object> path) {
+		if (object == null) return object;
+		
+		Class<?> type = object.getClass();
+		if (type.isArray()) return object;
+		if (Collection.class.isAssignableFrom(type)) return object;
+		if (Immutable.isImmutable(type)) return object;
+		
+		if (ReadOnly.class.isAssignableFrom(type)) return object;
+		
+		return wrapped(object, path);
+	}
+
+
+	private Producer<Object> extendedPath(Method method, Object[] args) {
+		if (!isTransaction(method))
+			return new Invocation(_invocationPath, method, args);
+
+		TransactionInvocation transaction = new TransactionInvocation(_invocationPath, method, args);
+		return my(PrevalenceFlag.class).isInsidePrevalence()
+			? transaction
+			: withPrevayler(transaction);
+	}
+
+
+	private Producer<Object> withPrevayler(final TransactionInvocation transaction) {
+		return new Producer<Object>() { @Override public Object produce() {
+			return PrevaylerHolder._prevayler.execute(transaction);
+		}};
 	}
 
 
@@ -70,83 +95,8 @@ class Bubble implements InvocationHandler {
 	}
 	
 	
-	private Object handleTransaction(Method method, Object[] args) {
-		BuildingTransaction transaction = new Invocation(tillHere(), method, args);
-		Object result = my(PrevalenceFlag.class).isInsidePrevalence()
-			? executeDirectly(transaction)
-			: PrevaylerHolder._prevayler.execute(transaction);
-		
-		return wrapIfNecessary(result, method, null, true);
+	private static boolean isRegistered(Object object) {
+		return PrevalenceMap.isRegistered(object);
 	}
 
-
-	private Object executeDirectly(BuildingTransaction transaction) {
-		System.out.println("bubble: " + tillHere().produce());
-		return transaction.produce();
-	}
-
-	
-	private BuildingTransaction tillHere() {
-		return (_delegate != null)
-			? new MapLookup(_delegate)
-			: new Invocation(_previousBubble, _query, _queryArgs);
-	}
-
-
-	private Object handleQuery(Method query, Object[] args) throws Throwable {
-		Object result = invokeOnDelegate(query, args);
-		return wrapIfNecessary(result, query, args, false);
-	}
-	
-	
-	private Object invokeOnDelegate(Method method, Object[] args) throws Throwable {
-		try {
-			return method.invoke(navigateToReceiver(), args);
-		} catch (InvocationTargetException e) {
-			throw e.getCause();
-		} catch (IllegalArgumentException e) {
-			throw new IllegalStateException(e);
-		} catch (IllegalAccessException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-
-
-	private Object navigateToReceiver() {
-		return _delegate != null
-			? _delegate
-			: tillHere().produce();
-	}
-
-	
-	private Object wrapIfNecessary(final Object returned, final Method method, final Object[] args, final boolean isTransaction) {
-		if (returned == null) return null;
-
-		Class<?> type = method.getReturnType();
-		if (isReadOnly(type)) return returned;
-		if (type.isArray()) return returned;
-		
-		return _proxiesByObject.get(returned, new Producer<Object>() { @Override public Object produce() {
-			if (isRegistered(returned))
-				return proxyFor(returned);
-
-			if (isTransaction)
-				throw new IllegalStateException();
-			
-			return proxyFor(null, tillHere(), method, args, returned);
-		}});
-	}
-
-	
-	private boolean isRegistered(Object object) {
-		return my(PrevalenceMap.class).isRegistered(object);
-	}
-
-	
-	static boolean isReadOnly(Class<?> type) {
-		if (Immutable.isImmutable(type)) return true;
-		if (ReadOnly.class.isAssignableFrom(type)) return true;
-
-		return false;
-	}
 }

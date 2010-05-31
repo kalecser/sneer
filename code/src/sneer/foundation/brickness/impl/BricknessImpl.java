@@ -8,49 +8,48 @@ import sneer.foundation.environments.Bindings;
 import sneer.foundation.environments.CachingEnvironment;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
+import sneer.foundation.environments.NonBlockingEnvironment;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Producer;
 
-public class BricknessImpl implements Environment {
+public class BricknessImpl implements NonBlockingEnvironment {
 	
-	private static final class BrickImplProducer<T> implements Producer<T> {
-		private final Class<T> _brickImpl;
-
-		private BrickImplProducer(Class<T> brickImpl) {
-			_brickImpl = brickImpl;
-		}
-
-		@Override public T produce() throws RuntimeException {
-			return (T)newInstance(_brickImpl);
-		}
-	}
-
 	public BricknessImpl(Object... bindings) {
 		_brickImplLoader = new BrickImplLoader(_apiClassLoader);
 		
-		_bindings = new Bindings();
-		_bindings.bind(this);
-		_bindings.bind(new BrickSerializationMapperImpl(_apiClassLoader, _brickImplLoader));
-		_bindings.bind(bindings);
+		Bindings bindingsEnvironment = new Bindings();
+		bindingsEnvironment.bind(this);
+		bindingsEnvironment.bind(new BrickSerializationMapperImpl(_apiClassLoader, _brickImplLoader));
+		bindingsEnvironment.bind(bindings);
 	
-		_cache = createCachingEnvironment();
+		_cache = createCachingEnvironment(bindingsEnvironment);
 	}
 	
-	private final Bindings _bindings;
+	
 	private CachingEnvironment _cache;
 	private final BrickImplLoader _brickImplLoader;
 	private final ByRef<ClassLoader> _apiClassLoader = ByRef.newInstance();
+	
 	
 	@Override
 	public <T> T provide(Class<T> intrface) {
 		return _cache.provide(intrface);
 	}
 
-	private CachingEnvironment createCachingEnvironment() {
-		return new CachingEnvironment(EnvironmentUtils.compose(_bindings.environment(), new Environment(){ @Override public <T> T provide(Class<T> brick) {
+	
+	/** Returns null instead of blocking if another thread is loading this brick. */
+	@Override
+	public <T> T provideWithoutBlocking(Class<T> intrface) {
+		return _cache.provideWithoutBlocking(intrface);
+	}
+
+	
+	private CachingEnvironment createCachingEnvironment(Bindings bindings) {
+		return new CachingEnvironment(EnvironmentUtils.compose(bindings.environment(), new Environment(){ @Override public <T> T provide(Class<T> brick) {
 			return loadBrick(brick);
 		}}));
 	}
+	
 	
 	private <T> T loadBrick(Class<T> brick) {
 		try {
@@ -60,6 +59,7 @@ public class BricknessImpl implements Environment {
 		}
 	}
 
+	
 	private <T> T tryToLoadBrick(Class<T> brick) throws ClassNotFoundException {
 		checkClassLoader(brick);
 		
@@ -67,15 +67,19 @@ public class BricknessImpl implements Environment {
 		return instantiate(brick, brickImpl);
 	}
 	
+	
 	private <T> T instantiate(Class<T> brick, final Class<T> brickImpl) {
 		List<Nature> natures = _brickImplLoader.naturesFor(brick);
 		if (natures.isEmpty())
 			return (T)newInstance(brickImpl);
 		
 		Nature nature = natures.get(0);
-		return nature.instantiate(brick, brickImpl, new BrickImplProducer<T>(brickImpl));
+		return nature.instantiate(brick, brickImpl,	new Producer<T>() {	@Override public T produce() {
+			return (T)newInstance(brickImpl);
+		}});
 	}
 
+	
 	private static <T> T newInstance(Class<?> brickImpl) {
 		try {
 			Constructor<?> constructor = brickImpl.getDeclaredConstructor();
@@ -86,6 +90,7 @@ public class BricknessImpl implements Environment {
 		}
 	}
 
+	
 	private void checkClassLoader(Class<?> brick) {
 		if (_apiClassLoader.value == null)
 			_apiClassLoader.value = brick.getClassLoader();

@@ -120,8 +120,17 @@ public abstract class Immutable implements ReadOnly {
 
 
 	public static boolean isImmutable(Class<?> type) {
-		if (type.isPrimitive()) return true;
 		if (type == String.class) return true;
+
+		if (type.isPrimitive()) return true;
+		if (type == Boolean.class) return true;
+		if (type == Integer.class) return true;
+		if (type == Long.class) return true;
+		if (type == Float.class) return true;
+		if (type == Double.class) return true;
+		if (type == Byte.class) return true;
+		if (type == Character.class) return true;
+		
 		if (type == Date.class) return true;
 		if (Immutable.class.isAssignableFrom(type)) return true;
 		return false;

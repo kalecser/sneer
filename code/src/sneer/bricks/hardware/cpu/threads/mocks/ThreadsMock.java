@@ -13,13 +13,24 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.pulsers.PulseSource;
+import sneer.foundation.brickness.impl.BricknessImpl;
 
 public class ThreadsMock implements Threads {
 
+	private final Threads _delegate = my(BricknessImpl.class).provide(Threads.class);
+	
 	List<Runnable> _steppers = new ArrayList<Runnable>();
+	
+	private final String _daemonNameFragmentToHold;
 	private Map<Runnable, String> _daemonNamesByRunnable = new HashMap<Runnable, String>();
+
 	private final EventNotifier<Object> _crashingPulser = my(EventNotifiers.class).newInstance();
 
+
+	public ThreadsMock(String daemonNameFragmentToHold) {
+		_daemonNameFragmentToHold = daemonNameFragmentToHold;
+	}
+	
 
 	@Override
 	public synchronized Contract startStepping(final Runnable stepper) {
@@ -66,9 +77,13 @@ public class ThreadsMock implements Threads {
 
 	@Override
 	public void startDaemon(String threadName, Runnable runnable) {
-		_daemonNamesByRunnable.put(runnable, threadName);
+		if (threadName.indexOf(_daemonNameFragmentToHold) == -1)
+			_delegate.startDaemon(threadName, runnable);
+		else
+			_daemonNamesByRunnable.put(runnable, threadName);
 	}
 
+	
 	@Override
 	public void waitWithoutInterruptions(Object object) {
 		try {

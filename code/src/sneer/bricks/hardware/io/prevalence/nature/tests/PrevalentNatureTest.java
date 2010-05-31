@@ -79,7 +79,7 @@ public class PrevalentNatureTest extends BrickTestWithFiles {
 	public void objectsReturnedFromTransactionsAreAutomaticallyRegistered() {
 		runInNewTestEnvironment(new Closure() { @Override public void run() {
 			SomePrevalentBrick brick = my(SomePrevalentBrick.class);
-			Item foo = brick.addItemAndReturnIt("Foo");
+			Item foo = brick.addItemAndReturnIt_AnnotatedAsTransaction("Foo");
 			brick.addItem("Bar");
 			brick.removeItem(foo);
 			assertEquals(1, brick.itemCount());
@@ -120,7 +120,6 @@ public class PrevalentNatureTest extends BrickTestWithFiles {
 		}});
 	}
 	
-	@Ignore
 	@Test (timeout = 3000)
 	public void idempotencyIsTransitive() {
 		SomePrevalentBrick brick = my(SomePrevalentBrick.class);
@@ -136,7 +135,7 @@ public class PrevalentNatureTest extends BrickTestWithFiles {
 	public void transactionAnnotation() {
 		SomePrevalentBrick brick = my(SomePrevalentBrick.class);
 
-		Item item = brick.addItem_AnnotatedAsTransaction("Foo");
+		Item item = brick.addItemAndReturnIt_AnnotatedAsTransaction("Foo");
 		item.name("Bar");
 			
 		assertNull(brick.getItem("Foo"));
@@ -150,16 +149,16 @@ public class PrevalentNatureTest extends BrickTestWithFiles {
 	
 	@Test (timeout = 3000)
 	public void objectsReturnedByTransactionsAreRegistered() {
-		Item item = my(SomePrevalentBrick.class).addItem_AnnotatedAsTransaction("Foo");
+		Item item = my(SomePrevalentBrick.class).addItemAndReturnIt_AnnotatedAsTransaction("Foo");
 		assertTrue("Item should be registered.", my(PrevalenceMap.class).isRegistered(item));
 	}
 
 	
 	@Test (timeout = 3000)
 	public void invocationPathWithArgs() {
-		my(SomePrevalentBrick.class).addItem("foo");
+		my(SomePrevalentBrick.class).addItem("foo"); //Registers it.
 		my(SomePrevalentBrick.class).addItem("bar");
-		Item item = my(SomePrevalentBrick.class).getItem("foo");
+		Item item = my(SomePrevalentBrick.class).getItem("foo"); 
 		Closure remover = my(SomePrevalentBrick.class).removerFor(item);
 		remover.run();
 

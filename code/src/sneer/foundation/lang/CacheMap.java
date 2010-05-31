@@ -24,6 +24,17 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 
 	
 	public <X extends Throwable> V get(K key, FunctorX<K, V, X> functorToUseIfAbsent) throws X {
+		return get(key, functorToUseIfAbsent, true);
+	}
+
+	
+	/** Returns null instead of blocking if another thread is running the functor to resolve this same key. */
+	public <X extends Throwable> V getWithoutBlocking(K key, FunctorX<K, V, X> functorToUseIfAbsent) throws X {
+		return get(key, functorToUseIfAbsent, false);
+	}
+
+	
+	private <X extends Throwable> V get(K key, FunctorX<K, V, X> functorToUseIfAbsent, boolean blocking) throws X {
 		boolean thisThreadMustResolve = false;
 		synchronized (_resolversByKey) {
 			V found = get(key);
@@ -41,6 +52,8 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 			};
 			return resolved;
 		}
+		
+		if (!blocking) return null;
 		
 		synchronized (_resolversByKey) {
 			while (_resolversByKey.containsKey(key))

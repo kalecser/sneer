@@ -10,6 +10,8 @@ import org.prevayler.PrevaylerFactory;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.cpu.threads.latches.Latch;
+import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
 import sneer.bricks.software.folderconfig.FolderConfig;
@@ -17,18 +19,35 @@ import sneer.foundation.lang.Closure;
 
 class PrevaylerHolder {
 
-	static final Prevayler _prevayler = createPrevayler(prevalenceBase());
+	static Prevayler _prevayler;
+	static private final Latch _transactionLogReplayed = my(Latches.class).produce();
 
+	static private PrevalentBuilding _building;
+	static private final Latch _buildingAvailable = my(Latches.class).produce();
+
+
+	
 	@SuppressWarnings("unused")	static private final WeakContract _refToAvoidGc;
 
 
 	static {
+		startReplayingTransactions();
+		
 		_refToAvoidGc = my(Threads.class).crashed().addPulseReceiver(new Closure() { @Override public void run() {
 			crash();
 		}});
 	}
 	
 
+	private static void startReplayingTransactions() {
+		my(Threads.class).startDaemon("Prevalent transaction log replay.", new Runnable() { @Override public void run() {
+			_prevayler = createPrevayler(prevalenceBase());
+			setBuildingIfNecessary((PrevalentBuilding)_prevayler.prevalentSystem());
+			_transactionLogReplayed.open();
+		}});
+	}
+	
+	
 	private static <T> File prevalenceBase() {
 		return my(FolderConfig.class).storageFolderFor(Prevalent.class);
 	}
@@ -63,5 +82,25 @@ class PrevaylerHolder {
 		} catch (IOException e) {
 			my(Logger.class).log("Exception closing prevayler: " + e);
 		}
+	}
+
+
+	static void setBuildingIfNecessary(PrevalentBuilding building) {
+		if (_building == null) {
+			_building = building;
+			_buildingAvailable.open();
+		}
+		if (building != _building) throw new IllegalStateException();
+	}
+
+
+	static PrevalentBuilding building() {
+		_buildingAvailable.waitTillOpen();
+		return _building;
+	}
+
+
+	static void waitForTransactionLogReplayIfNecessary() {
+		_transactionLogReplayed.waitTillOpen();
 	}
 }

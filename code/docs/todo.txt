@@ -23,6 +23,13 @@ Bamboo =================================================
 
 Igor ==================================================== 
 
+	- Smaller webstart jar
+		- Send only code and compile locally.
+			- bootstrap jar - add bins for foundation, compiler and builder brick
+			- sneer.jar - cherry pick remove the jars duplicated in bootstrap jar
+			- Installation - Unzip sneer.jar and cherry picked jars from bootstrap to SRC, use Builder brick to compile to BIN
+		- After everything is working: compiler-7-ea-b17-02_aug_2007.jar - update to newer version.
+
 	- Chat
 		- Fabio's One-on-one Chat - Incorporate "as is" using JOptionPanes.
 		- Announce to the list.
@@ -57,13 +64,6 @@ René =================================================
 
 
 Klaus =================================================
-
-	- PrevNatureTest.idempotencyIsTransitive - Unignore
-
-	- "transaction->my in parallel with my->transaction" intermittent deadlock in Freedom5
-		- Prevalent Brick instantiation must be stateless. It will not be persisted.
-			- Do not allow transactions during prevalent brick instantiation.
-			- PrevalentBuilding - Allow only provision requests for Prevalent and Stateless bricks.
 
 	- Prevalence loading impls in API classloader during tests - Fix
 		- Uncomment in BrickTestRunner the following line (around line 100):  //  if (name.indexOf(".impl.")...
