@@ -30,7 +30,8 @@ public class TransactionInvocation extends Invocation implements SureTransaction
 		try {
 			return produceAndRegister();
 		} catch (RuntimeException rx) {
-			my(ExceptionLogger.class).log(rx);
+			if (PrevaylerHolder.isReplayingTransactions())
+				my(ExceptionLogger.class).log(rx, "Exception thrown while replaying prevalent transactions: ", rx.getMessage());
 			throw rx;
 		}
 	}
