@@ -1,6 +1,7 @@
 package sneer.bricks.network.social.impl;
 
 import static sneer.foundation.environments.Environments.my;
+import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
@@ -24,7 +25,8 @@ class ContactsImpl implements Contacts {
 
 	
 	private Contact doAddContact(String nickname) {
-		final Contact result = new ContactImpl(nickname); 
+		final Contact result = new ContactImpl(nickname);
+		my(PrevalenceMap.class).register(result);
 		_contacts.add(result);
 		return result;
 	}
