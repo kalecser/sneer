@@ -63,11 +63,13 @@ Igor ====================================================
 René =================================================
 
 	- Toroidal Go Snapp
-		- Dead groups phase - Gui
 
 
 Klaus =================================================
 
+	- InternetAddresses thread leak - Fix
+		- Simplify connection
+	
 	- Prevalence loading impls in API classloader during tests - Fix
 		- Uncomment in BrickTestRunner the following line (around line 100):  //  if (name.indexOf(".impl.")...
 		- FileMapData - make static again
