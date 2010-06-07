@@ -23,6 +23,9 @@ Bamboo =================================================
 
 Igor ==================================================== 
 
+	- <include name='sneer/bricks/hardware/cpu/crypto/impl/lib/bcprov-jdk16-139.jar' /> - Remove from test classpath in build.sneer.xml.
+		- How come the SneerTests run configuration runs all tests without BC in the path?
+
 	- Smaller webstart jar
 		- Send only code and compile locally.
 			- bootstrap jar - add bins for foundation, compiler and builder brick
@@ -60,11 +63,13 @@ Igor ====================================================
 René =================================================
 
 	- Toroidal Go Snapp
-		- Dead groups phase - Gui
 
 
 Klaus =================================================
 
+	- InternetAddresses thread leak - Fix
+		- Simplify connection
+	
 	- Prevalence loading impls in API classloader during tests - Fix
 		- Uncomment in BrickTestRunner the following line (around line 100):  //  if (name.indexOf(".impl.")...
 		- FileMapData - make static again

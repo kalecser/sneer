@@ -28,7 +28,6 @@ public class InstallationWizard extends JFrame {
 		dogFoodInformation();
 		configInformation();
 		new Installation();
-		congratulations();
 	}
 	
 	private void welcome() {
@@ -67,15 +66,6 @@ public class InstallationWizard extends JFrame {
 		"Whatever >");
 	}
 	
-	private void congratulations() {
-		Dialogs.show(WIZARD_TITLE,
-		"Congratulations!\n\n" +
-		"You have just claimed your own\n" +
-		"share of the internet.", systemExit(),
-				
-		"Start Sneer");
-	}
-
 	private void showDialog(String msg, Object...options) {
 		Dialogs.show(WIZARD_TITLE, msg,	exitDialog(), options);
 	}

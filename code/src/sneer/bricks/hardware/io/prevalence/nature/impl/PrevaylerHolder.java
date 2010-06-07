@@ -100,7 +100,13 @@ class PrevaylerHolder {
 	}
 
 
+	static boolean isReplayingTransactions() {
+		return !_transactionLogReplayed.isOpen();
+	}
+
+
 	static void waitForTransactionLogReplayIfNecessary() {
 		_transactionLogReplayed.waitTillOpen();
 	}
+
 }
