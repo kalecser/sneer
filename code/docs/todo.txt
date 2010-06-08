@@ -34,10 +34,6 @@ Igor ====================================================
 		- After everything is working: compiler-7-ea-b17-02_aug_2007.jar - update to newer version.
 
 	- Chat
-		- Fabio's One-on-one Chat - Incorporate "as is" using JOptionPanes.
-		- Announce to the list.
-		
-	- Chat
 		- WindGui - Make it a Snapp again.
 			- Chat Gui - Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
 				- Enter bug - Fix.
