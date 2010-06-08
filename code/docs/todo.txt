@@ -23,9 +23,6 @@ Bamboo =================================================
 
 Igor ==================================================== 
 
-	- <include name='sneer/bricks/hardware/cpu/crypto/impl/lib/bcprov-jdk16-139.jar' /> - Remove from test classpath in build.sneer.xml.
-		- How come the SneerTests run configuration runs all tests without BC in the path?
-
 	- Smaller webstart jar
 		- Send only code and compile locally.
 			- bootstrap jar - add bins for foundation, compiler and builder brick
@@ -33,11 +30,9 @@ Igor ====================================================
 			- Installation - Unzip sneer.jar and cherry picked jars from bootstrap to SRC, use Builder brick to compile to BIN
 		- After everything is working: compiler-7-ea-b17-02_aug_2007.jar - update to newer version.
 
-	- Chat
-		- WindGui - Make it a Snapp again.
-			- Chat Gui - Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
-				- Enter bug - Fix.
-				- Focus bug - Fix.
+	- Fix Wind's focus bug
+
+	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
 
 	- Wusic - MusicalTasteMatcher Buttons - Talk to Klaus
 			- First Group: (I want this track. (Today's "Me Too"))

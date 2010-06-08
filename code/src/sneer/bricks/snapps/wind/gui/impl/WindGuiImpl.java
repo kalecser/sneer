@@ -27,7 +27,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultStyledDocument;
 
-import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.gui.trayicon.TrayIcons;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
@@ -45,7 +44,6 @@ import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
 import sneer.bricks.snapps.wind.Shout;
 import sneer.bricks.snapps.wind.Wind;
 import sneer.bricks.snapps.wind.gui.WindGui;
-import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class WindGuiImpl implements WindGui {
@@ -54,25 +52,17 @@ class WindGuiImpl implements WindGui {
 
 	private Container _container;
 	private final Wind _wind = my(Wind.class);
-//	private final SoundPlayer _player = my(SoundPlayer.class);
-	private final ReactiveWidgetFactory _rfactory = my(ReactiveWidgetFactory.class);
 	private final JTextPane _shoutsList = new JTextPane();
 
-	@SuppressWarnings("unused") private Object _referenceToAvoidGc;
+	private final TextWidget<JTextPane> _myShout = my(ReactiveWidgetFactory.class).newTextPane(
+		my(Signals.class).newRegister("").output(),  _wind.megaphone(), NotificationPolicy.OnEnterPressed
+	);
 
-	private final TextWidget<JTextPane> _myShout; {
-		final Object ref[] = new Object[1];
-		my(GuiThread.class).invokeAndWait(new Closure(){ @Override public void run() {//Fix Use GUI Nature
-			ref[0] = _rfactory.newTextPane(my(Signals.class).newRegister("").output(),  _wind.megaphone(), NotificationPolicy.OnEnterPressed);
-		}});
-		_myShout = (TextWidget<JTextPane>) ref[0];
-	}
-	
 	private final JScrollPane _scrollPane = my(ReactiveAutoScroll.class).create(_wind.shoutsHeard(),
 		new Consumer<CollectionChange<Shout>>() { 
-			
+
 			ShoutPainter _shoutPainter = new ShoutPainter((DefaultStyledDocument) _shoutsList.getStyledDocument());
-			
+
 			@Override 
 			public void consume(CollectionChange<Shout> change) {
 				if (!change.elementsRemoved().isEmpty()){
@@ -84,7 +74,10 @@ class WindGuiImpl implements WindGui {
 					_shoutPainter.appendShout(shout);
 
 			}
-		});
+		}
+	);
+
+	@SuppressWarnings("unused") private Object _refToAvoidGc;
 
 	public WindGuiImpl() {
 		my(InstrumentRegistry.class).registerInstrument(this);
@@ -131,7 +124,7 @@ class WindGuiImpl implements WindGui {
 	}
 
 	private void initShoutReceiver() {
-		_referenceToAvoidGc = _wind.shoutsHeard().addReceiver(new Consumer<CollectionChange<Shout>>() { @Override public void consume(CollectionChange<Shout> shout) {
+		_refToAvoidGc = _wind.shoutsHeard().addReceiver(new Consumer<CollectionChange<Shout>>() { @Override public void consume(CollectionChange<Shout> shout) {
 			shoutAlert(shout.elementsAdded());
 		}});
 	}
@@ -208,4 +201,5 @@ class WindGuiImpl implements WindGui {
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(fieldContent, this);	
 		}
 	}
+
 }
