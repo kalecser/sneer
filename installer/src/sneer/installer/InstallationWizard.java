@@ -22,7 +22,7 @@ public class InstallationWizard extends JFrame {
 		loadMetalLookAndFeel();
 	}
 
-	private void dialogsWorkflow() throws IOException {
+	private void dialogsWorkflow() throws Exception {
 		welcome();
 		license();
 		dogFoodInformation();

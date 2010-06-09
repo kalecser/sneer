@@ -7,8 +7,6 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import sneer.foundation.languagesupport.JarFinder;
-
 public class Sneer {
 
 	public static void main(String[] argsIgnored) throws Exception {
@@ -31,15 +29,15 @@ public class Sneer {
 		List<URL> result = new ArrayList<URL>();
 		result.add(toURL(SneerFolders.OWN_BIN));
 		result.add(toURL(SneerCodeFolders.BIN));
-		for (URL jar : langSupportJars())
-			result.add(jar);
+//		for (URL jar : langSupportJars())
+//			result.add(jar);
 		return result.toArray(new URL[0]);
 	}
 
 
-	private URL[] langSupportJars() {
-		return JarFinder.languageSupportJars(SneerCodeFolders.BIN);
-	}
+//	private URL[] langSupportJars() {
+//		return JarFinder.languageSupportJars(SneerCodeFolders.BIN);
+//	}
 	
 	
 	private URL toURL(File file) {

@@ -10,7 +10,6 @@
 
 	<property name="sneer.home" location="../code" />
 	<property name="sneer.src" location="../code/src" />
-	<property name="sneer.bin" location="../code/bin" />
 
 	<path id="classpath">
 		<pathelement path="${bin.dir}"/>
@@ -27,7 +26,6 @@
 		<fileset dir="${sneer.src}">
 			<!-- include name='sneer/foundation/languagesupport/**/*.jar' / -->
 			<include name='sneer/foundation/testsupport/**/*.jar' />
-			<include name='sneer/bricks/hardware/cpu/crypto/impl/lib/bcprov-jdk16-139.jar' />
 		</fileset>
 		<fileset dir="lib">
 			<include name='**/*.jar' />
@@ -129,9 +127,9 @@
 	    </scalac -->
 	</target>
 
-	<target name="makejar" depends="compile, copy-bin">
-		<delete file="${dist.dir}"/>
-		<mkdir dir="${dist.dir}"/>
+	<target name="makejar" depends="compile">
+		<reset-dir dir="${dist.dir}"/>
+
 		<jar destfile="${dist.dir}/sneer.jar">
 			<fileset dir="${sneer.home}">
 				<include name='**/*.*' />
@@ -139,15 +137,6 @@
 				<exclude name='**/TEST-*.xml' />
 			</fileset>
 		</jar>
-	</target>
-
-	<target name="copy-bin">
-		<reset-dir dir="${sneer.bin}"/>
-		<copy todir="${sneer.bin}">
-			<fileset dir="${bin.dir}">
-				<include name='**/*.*'/>
-			</fileset>
-		</copy>
 	</target>
 
 	<target name="copy-resources">
@@ -167,7 +156,6 @@
 			</fileset>
 		</copy>
 	</target>
-
 
 	<target name="clean">
 		<delete dir="${build.dir}"/>

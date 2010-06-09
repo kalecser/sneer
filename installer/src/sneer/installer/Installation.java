@@ -27,52 +27,43 @@ import javax.swing.JWindow;
 
 class Installation {
 
-	private final URL jarFileName = this.getClass().getResource("/sneer.jar");
-	private final URL ownFileName = this.getClass().getResource("/own.jar");
-	private JWindow _window;
-	
-	Installation() throws IOException {
-		showWaitWindow();
+	private final URL _sneerJar		= this.getClass().getResource("/sneer.jar");
+	private final URL _ownJar		= this.getClass().getResource("/own.jar");
+
+	private JWindow _splashScreen;
+
+	Installation() throws Exception {
+		showSplashScreen();
 		resetDirectories();
 		updateCode();
+//		compileCode();
 		createOwnProjectIfNecessary();
-		closeWaitWindow();
+		closeSplashScreen();
 	}
 
-	private void closeWaitWindow() {
-		_window.setVisible(false);
-		_window.dispose();
-	}
-
-	private void showWaitWindow() {
-		_window = new JWindow();
+	private void showSplashScreen() {
+		_splashScreen = new JWindow();
 		Image image = Toolkit.getDefaultToolkit().createImage(Installation.class.getResource("dogfood.png"));
 		ImageIcon icon = new ImageIcon(image);
-		_window.setLayout(new BorderLayout());
-		_window.add(new JLabel(icon), BorderLayout.CENTER);
+		_splashScreen.setLayout(new BorderLayout());
+		_splashScreen.add(new JLabel(icon), BorderLayout.CENTER);
 
 		int imgWidth = 600;
 		int imgHeight = 300;
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize(); 
-		Point basePoint = new Point((int) ((screenSize.getWidth()-imgWidth)/2), 
-								 				(int) ((screenSize.getHeight()-imgHeight)/2));
-		
-		_window.setBounds(basePoint.x, basePoint.y, imgWidth, imgHeight);
-		_window.setVisible(true);
-	}
+		Point basePoint = new Point(
+			(int) ((screenSize.getWidth() - imgWidth) / 2), 
+			(int) ((screenSize.getHeight() - imgHeight) / 2)
+		);
 
-	private void createOwnProjectIfNecessary() throws IOException {
-		if(OWN_CODE.exists()) return;
-		
-		IOUtils.write(LOG_FILE, "jar file url: " + ownFileName.toString());
-		File file = extractJar(ownFileName, "own", "jar");
-		extractFiles(file, OWN_CODE.getParentFile());		
+		_splashScreen.setBounds(basePoint.x, basePoint.y, imgWidth, imgHeight);
+		_splashScreen.setVisible(true);
 	}
 
 	private void resetDirectories() throws IOException {
 		if(!SNEER_HOME.exists())
 			SNEER_HOME.mkdirs();
-		
+
 		deleteFolder(SRC);
 		deleteFolder(BIN);
 		SRC.mkdirs();
@@ -82,24 +73,23 @@ class Installation {
 	private void deleteFolder(File folder) throws IOException {
         if (!folder.exists()) return;
 
-        for (File file : folder.listFiles())  recursiveDelete(file);
-        
+        for (File file : folder.listFiles())
+        	recursiveDelete(file);
+
         if (!folder.delete()) throw new IOException(("Unable to delete folder " + folder + "."));
-    }		
-	
+    }
+
     private void recursiveDelete(File file) throws IOException {
         if (file.isDirectory()) {
             deleteFolder(file);
             return;
         }
-        
+
         if (!file.delete())  throw new IOException(("Unable to delete file: " + file));
     }
-	
+
 	private void updateCode() throws IOException {
-		
-		File file = extractJar(jarFileName, "sneer", "jar");
-		extractFiles(file, CODE);
+		extractFiles(extractJar(_sneerJar, "sneer", "jar"), CODE);
 	}
 
 	private File extractJar(URL url, String prefix, String suffix) throws IOException {
@@ -111,7 +101,7 @@ class Installation {
 		input.close();
 		return file;
 	}
-	
+
 	private void extractFiles(File src, File toDir) throws IOException {
 		if(!(src.exists()))
 			throw new IOException("File '" + src.getAbsolutePath() + "' not found!");	
@@ -125,7 +115,7 @@ class Installation {
 		JarInputStream jis = new JarInputStream(inputStream);
 		JarFile jar = new JarFile(src);
 		JarEntry entry = null;
-		
+
         while ((entry = jis.getNextJarEntry()) != null) {
         	File file = new File(toDir, entry.getName());
 
@@ -137,8 +127,32 @@ class Installation {
         }
 	}
 
-	
-	public static void main(String[] args) throws IOException {
+//	private void compileCode() throws Exception {
+//		Environments.runWith(Brickness.newBrickContainer(), new ClosureX<Exception>() { @Override public void run() throws Exception {
+//			loadJavaCompiler();
+//			my(Builder.class).build(SRC, BIN);				
+//		}});
+//	}
+//
+//	private void loadJavaCompiler() {
+//		my(JavaCompiler.class);
+//	}
+
+	private void createOwnProjectIfNecessary() throws IOException {
+		if(OWN_CODE.exists()) return;
+
+		IOUtils.write(LOG_FILE, "jar file url: " + _ownJar.toString());
+		File file = extractJar(_ownJar, "own", "jar");
+		extractFiles(file, OWN_CODE.getParentFile());		
+	}
+
+	private void closeSplashScreen() {
+		_splashScreen.setVisible(false);
+		_splashScreen.dispose();
+	}
+
+	public static void main(String[] args) throws Exception {
 		new Installation();
 	}
+
 }
