@@ -1,15 +1,13 @@
 package spikes.klaus.go;
 
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 import spikes.klaus.go.GoBoard.StoneColor;
 
-class Intersection implements Serializable {
+class Intersection {
 
-	private static final long serialVersionUID = 1L;
 	private Intersection _left;
 	private Intersection _right;
 	private Intersection _up;
@@ -54,8 +52,7 @@ class Intersection implements Serializable {
 		
 		do {
 			killed = false;
-			Set<Intersection> group = new HashSet<Intersection>();
-			fillGroupWithNeighbours(_stone, group);
+			Set<Intersection> group = getGroupWithNeighbours();
 			for (Intersection intersection : group)
 				if (intersection._stone == colorToKill) {
 					intersection._stone = turn;
@@ -64,11 +61,16 @@ class Intersection implements Serializable {
 		} while (killed);
 	}
 
+	Set<Intersection> getGroupWithNeighbours() {
+		Set<Intersection> result = new HashSet<Intersection>();
+		fillGroupWithNeighbours(_stone, result);
+		return result;
+	}
+
 	boolean killGroupIfSurrounded(StoneColor color) {
 		if (_stone != color) return false;
 		
-		Set<Intersection> groupWithNeighbours = new HashSet<Intersection>();
-		fillGroupWithNeighbours(_stone, groupWithNeighbours);
+		Set<Intersection> groupWithNeighbours = getGroupWithNeighbours();
 		
 		for (Intersection intersection : groupWithNeighbours)
 			if (intersection.isLiberty()) return false;

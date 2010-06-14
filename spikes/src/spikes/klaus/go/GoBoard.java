@@ -6,6 +6,7 @@ import static spikes.klaus.go.GoBoard.StoneColor.WHITE;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 import sneer.bricks.hardware.ram.deepcopy.DeepCopier;
 import sneer.bricks.pulp.reactive.Register;
@@ -108,19 +109,34 @@ public class GoBoard {
 	
 	
 	public void toggleDeadStone(int x, int y) {
-		if (_intersections[x][y]._stone==null & _previousSituation[x][y]._stone!=null) {
-			Intersection[][] temp;
-			temp=my(DeepCopier.class).deepCopy(_previousSituation);
-			_intersections=my(DeepCopier.class).deepCopy(_previousSituation);
-			_previousSituation=my(DeepCopier.class).deepCopy(temp);
-		}
-		else {
-			if (_intersections[x][y]._stone!=null) _intersections[x][y].toggleDeadStone();
+		StoneColor previousColor = _previousSituation[x][y]._stone;
+		StoneColor currentColor = _intersections[x][y]._stone;
+
+		if (currentColor == null & previousColor != null) {
+			Set<Intersection> group = _previousSituation[x][y].getGroupWithNeighbours();
+			for (Intersection previous : group) {
+				if (previous._stone == previousColor)
+					currentEquivalent(previous)._stone = previousColor;
+			}
+		} else {
+			if (currentColor != null) _intersections[x][y].toggleDeadStone();
 		}
 		updateScore();
 	}
 
 	
+	private Intersection currentEquivalent(Intersection previous) {
+		int size = _previousSituation.length;
+		for (int x = 0; x < size; x++) {
+			for (int y = 0; y < size; y++) {
+				if (_previousSituation[x][y] == previous)
+					return _intersections[x][y];
+			}
+		}
+		throw new IllegalStateException("Previous intersection " + previous + " not found.");
+	}
+
+
 	public void passTurn() {
 		next();
 		

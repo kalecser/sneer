@@ -278,7 +278,7 @@ public class GoBoardPanel extends JPanel {
 		}
 		
 		@Override
-		public void mouseClicked(MouseEvent e) {
+		public void mouseReleased(MouseEvent e) {
 			int x = unscrollX(toScreenPosition(e.getX()));
 			int y = unscrollY(toScreenPosition(e.getY()));
 			if (_board.nextToPlay()==null) {

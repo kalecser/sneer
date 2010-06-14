@@ -272,5 +272,27 @@ public class GoTest extends BrickTestWithFiles {
 		_board.toggleDeadStone(0, 0);
 	}
 
+	@Test
+	public void untoggleDeadGroup() {
+		String[] setup = new String[]{
+			    "+ + + + + + + + +",
+				"+ + x x + + + + +",
+				"+ x o + x + + + +",
+				"+ + x x + + + + +",
+				"+ x o + x + + + +",
+				"+ + x x + + + + +",
+				"+ + + + + + + + +",
+				"+ + + + + + o + +",
+				"+ + + + + + + + +"};
+		_board = new ToroidalGoBoard(setup);
+		_board.passTurn();
+		_board.passTurn();
+		_board.toggleDeadStone(2, 2);
+		assertScore(3, 0);
+		_board.toggleDeadStone(2, 4);
+		assertScore(6, 0);
+		_board.toggleDeadStone(2, 4);
+		assertScore(3, 0);
+	}
 	
 }
