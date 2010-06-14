@@ -3,6 +3,7 @@ package spikes.klaus.go.gui;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.clock.ticker.ClockTicker;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
+import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.brickness.Brickness;
@@ -16,6 +17,7 @@ public class GoMain {
 	public GoMain() {
 		Environments.runWith(Brickness.newBrickContainer(), new Closure() { @Override public void run() {
 			my(ClockTicker.class);
+			my(TimeboxedEventQueue.class).startQueueing(5000);
 			my(GuiThread.class).invokeAndWaitForWussies(new Closure(){@Override public void run() {
 				init();
 			}});
