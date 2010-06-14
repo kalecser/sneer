@@ -4,8 +4,9 @@ package spikes.rene.toscoball;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+
 import javax.swing.JFrame;
 
 
@@ -26,7 +27,9 @@ public class Game {
 
 		mesa=new Mesa(6, window, this);
 		mesa.setLayout(null);
-		mesa.addMouseListener(new TiroListener(mesa));
+		mesa.addMouseListener(new MouseAdapter(){
+			@Override public void mouseReleased(MouseEvent e) {mesa.shoot(e);}
+		});
 		
 		window.setContentPane(mesa);
 		window.setVisible(true);
@@ -36,7 +39,8 @@ public class Game {
 	}
 	
 	private void startGame() {
-		ctrl=new Thread() {public void run() {while(true) {
+		ctrl=new Thread() {@Override
+		public void run() {while(true) {
 			try {Thread.sleep(33);}
 			catch (InterruptedException e) {}
 			finally {updateGame();}
@@ -62,17 +66,6 @@ public class Game {
 		mesa.isRunning=true;
 	}
 
-	
-	private class TiroListener implements MouseListener {
-		Mesa mesa;
-		TiroListener(Mesa m) {mesa=m;}
-		@Override public void mouseClicked(MouseEvent e) {}
-		@Override public void mouseEntered(MouseEvent e) {}
-		@Override public void mouseExited(MouseEvent e) {}
-		@Override public void mousePressed(MouseEvent e) {}
-		@Override public void mouseReleased(MouseEvent e) {mesa.shoot(e);}
-	}
-	
 	
 	private class TeclasListener implements KeyListener {
 	Game game;
