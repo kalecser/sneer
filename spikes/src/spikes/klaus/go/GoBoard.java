@@ -112,28 +112,28 @@ public class GoBoard {
 		StoneColor previousColor = _previousSituation[x][y]._stone;
 		StoneColor currentColor = _intersections[x][y]._stone;
 
-		if (currentColor == null & previousColor != null) {
-			Set<Intersection> group = _previousSituation[x][y].getGroupWithNeighbours();
-			for (Intersection previous : group) {
-				if (previous._stone == previousColor)
-					currentEquivalent(previous)._stone = previousColor;
+		if (currentColor == null) {
+			Set<Intersection> group = _intersections[x][y].getGroupWithNeighbours();
+			for (Intersection intersection : group) {
+				if (intersection._stone == null)
+					intersection._stone = previousEquivalent(intersection)._stone;
 			}
 		} else {
-			if (currentColor != null) _intersections[x][y].toggleDeadStone();
+			_intersections[x][y].toggleDeadStone();
 		}
 		updateScore();
 	}
 
 	
-	private Intersection currentEquivalent(Intersection previous) {
-		int size = _previousSituation.length;
+	private Intersection previousEquivalent(Intersection intersection) {
+		int size = _intersections.length;
 		for (int x = 0; x < size; x++) {
 			for (int y = 0; y < size; y++) {
-				if (_previousSituation[x][y] == previous)
-					return _intersections[x][y];
+				if (_intersections[x][y] == intersection)
+					return _previousSituation[x][y];
 			}
 		}
-		throw new IllegalStateException("Previous intersection " + previous + " not found.");
+		throw new IllegalStateException("Intersection " + intersection + " not found.");
 	}
 
 

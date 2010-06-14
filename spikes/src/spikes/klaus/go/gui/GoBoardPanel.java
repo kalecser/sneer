@@ -283,7 +283,6 @@ public class GoBoardPanel extends JPanel {
 			int y = unscrollY(toScreenPosition(e.getY()));
 			if (_board.nextToPlay()==null) {
 				_moveRegister.setter().consume(new Move(false, false, x,y, true));
-				//repaint();
 				return;
 			}
 			if (!_board.canPlayStone(x, y)) return;
