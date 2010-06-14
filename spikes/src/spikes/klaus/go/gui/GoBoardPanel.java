@@ -154,7 +154,7 @@ public class GoBoardPanel extends JPanel {
 			graphics.setColor(new Color(255, 255, 255, 90));
 			
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		paintStoneOnCoordinates(graphics, toCoordinate(_hoverX), toCoordinate(_hoverY), true);
+		paintStoneOnCoordinates(graphics, toCoordinate(_hoverX), toCoordinate(_hoverY), false);
 
 	}
 

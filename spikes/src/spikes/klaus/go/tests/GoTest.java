@@ -169,6 +169,7 @@ public class GoTest extends BrickTestWithFiles {
 		ToroidalGoBoard subject = new ToroidalGoBoard(new String[]{});
 		subject.resign();
 		assertNull(subject.nextToPlay());
+		assertSame(StoneColor.WHITE, subject.winner().currentValue());
 	}
 
 	@Test
@@ -220,7 +221,7 @@ public class GoTest extends BrickTestWithFiles {
 
 
 	@Test
-	public void testDeadGroup() {
+	public void deadGroup() {
 		String[] setup = new String[]{
 			    "+ + + + + + + + +",
 				"+ + + + x x + + +",
@@ -256,4 +257,23 @@ public class GoTest extends BrickTestWithFiles {
 		assertScore(20, 1);
 	}
 
+	@Test(timeout = 2000)
+	public void deadGroupMisclickOnFreeIntersectionDoesNotFreeze() {
+		String[] setup = new String[]{
+			    "+ + + + + + + + +",
+				"+ + + + x x + + +",
+				"+ + + x + + x + +",
+				"+ + x + + + o x +",
+				"+ + + x + o o x +",
+				"+ + + + x o x + +",
+				"+ + + + x x x + +",
+				"+ o + + + + + + +",
+				"+ + + + + + + + +"};
+		_board = new ToroidalGoBoard(setup);
+		_board.passTurn();
+		_board.passTurn();
+		_board.toggleDeadStone(0, 0);
+	}
+
+	
 }

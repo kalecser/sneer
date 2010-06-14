@@ -38,6 +38,7 @@ public class GoBoard {
 	private boolean _previousWasPass = false;
 	private final Register<Integer> _blackScore = my(Signals.class).newRegister(0);
 	private final Register<Integer> _whiteScore = my(Signals.class).newRegister(0);
+	private Register<StoneColor> _winner = my(Signals.class).newRegister(null);
 	
 	
 	
@@ -103,7 +104,9 @@ public class GoBoard {
 			_intersections=my(DeepCopier.class).deepCopy(_previousSituation);
 			_previousSituation=my(DeepCopier.class).deepCopy(temp);
 		}
-		else _intersections[x][y].toggleDeadStone();
+		else {
+			if (_intersections[x][y]._stone!=null) _intersections[x][y].toggleDeadStone();
+		}
 	}
 
 	public void passTurn() {
@@ -114,9 +117,13 @@ public class GoBoard {
 		
 		_previousWasPass = true;
 	}
+	
 	public void resign() {
+		StoneColor loser = nextToPlay();
+		_winner.setter().consume(other(loser));
 		stopAcceptingMoves();
 	}
+	
 	public void finish() {
 		countDeadStones();
 		countTerritories();
@@ -271,4 +278,10 @@ public class GoBoard {
 			
 			return result;
 	}
+	
+	public Signal<StoneColor> winner() {
+		return _winner.output(); 
+	}
+
+	
 }

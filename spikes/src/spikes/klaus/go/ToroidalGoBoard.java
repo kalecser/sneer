@@ -1,6 +1,7 @@
 package spikes.klaus.go;
 
 
+
 public class ToroidalGoBoard extends GoBoard {
 
 	public ToroidalGoBoard(int size) {
@@ -34,6 +35,4 @@ public class ToroidalGoBoard extends GoBoard {
 		}
 	}
 
-	
-	
 }
