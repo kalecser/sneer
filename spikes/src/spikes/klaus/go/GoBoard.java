@@ -16,6 +16,7 @@ public class GoBoard {
 
 	public static enum StoneColor { BLACK, WHITE;}
 	
+	
 	public GoBoard(int size) {
 		_intersections = new Intersection[size][size];
 		for (int x = 0; x < size; x++) {
@@ -27,25 +28,28 @@ public class GoBoard {
 			}
 		}
 	}
+	
+	
 	public GoBoard(String[] setup) {
 		this(setup.length);
 		setup(setup);
 	}
 
+	
 	private Intersection[][] _intersections;
 	private Register<StoneColor> _nextToPlay = my(Signals.class).newRegister(BLACK);
 	private Intersection[][] _previousSituation;
 	private boolean _previousWasPass = false;
 	private final Register<Integer> _blackScore = my(Signals.class).newRegister(0);
 	private final Register<Integer> _whiteScore = my(Signals.class).newRegister(0);
+	private int _capturedStonesBlack;
+	private int _capturedStonesWhite;
 	private Register<StoneColor> _winner = my(Signals.class).newRegister(null);
 	
-	
-	
+		
 	protected Intersection intersection(int x, int y) {
 		return _intersections[x][y];
 	}
-	
 	
 	
 	public String printOut(){
@@ -66,9 +70,11 @@ public class GoBoard {
 		return result.toString();
 	}
 	
+	
 	public int size() {
 		return _intersections.length;
 	}
+	
 	
 	public boolean canPlayStone(int x, int y) {
 		if (nextToPlay() == null) return false;
@@ -84,6 +90,8 @@ public class GoBoard {
 		
 		return true;
 	}
+	
+	
 	public void playStone(int x, int y) {
 		Intersection[][] situationFound = copySituation();
 		
@@ -94,9 +102,11 @@ public class GoBoard {
 		}
 		_previousWasPass = false;
 		_previousSituation = situationFound;
-		countCapturedStones();
+		countDeadStones();
 		next();
 	}
+	
+	
 	public void toggleDeadStone(int x, int y) {
 		if (_intersections[x][y]._stone==null & _previousSituation[x][y]._stone!=null) {
 			Intersection[][] temp;
@@ -107,8 +117,10 @@ public class GoBoard {
 		else {
 			if (_intersections[x][y]._stone!=null) _intersections[x][y].toggleDeadStone();
 		}
+		updateScore();
 	}
 
+	
 	public void passTurn() {
 		next();
 		
@@ -118,45 +130,56 @@ public class GoBoard {
 		_previousWasPass = true;
 	}
 	
+	
 	public void resign() {
 		StoneColor loser = nextToPlay();
 		_winner.setter().consume(other(loser));
 		stopAcceptingMoves();
 	}
 	
-	public void finish() {
-		countDeadStones();
-		countTerritories();
-	}
-
+	
 	public Signal<Integer> blackScore() {
 		return _blackScore.output();
 	}
+	
+	
 	public Signal<Integer> whiteScore() {
 		return _whiteScore.output();
 	}
+	
+	
 	public Signal<StoneColor> nextToPlaySignal() {
 		return _nextToPlay.output();
 	}
 
+	
 	public StoneColor other(StoneColor color) {
 		return color == BLACK
 		? WHITE
 				: BLACK;
 	}
+	
+	
 	public StoneColor stoneAt(int x, int y) {
 		return intersection(x, y)._stone;
 	}
+	
+	
 	public StoneColor nextToPlay() {
 		return _nextToPlay.output().currentValue();
 	}
+	
+	
 	public StoneColor getPrevColor(int x, int y) {
 		return _previousSituation[x][y]._stone;
 	}
 	
+	
 	private boolean sameSituationAs(Intersection[][] situation) {
 		return Arrays.deepEquals(situation, _intersections);
 	}
+	
+	
 	private boolean killSurroundedStones(StoneColor color) {
 		boolean wereStonesKilled = false;
 		for(Intersection[] column : _intersections)
@@ -167,9 +190,12 @@ public class GoBoard {
 		return wereStonesKilled;
 	}
 	
+	
 	private Intersection[][] copySituation() {
 		return my(DeepCopier.class).deepCopy(_intersections);
 	}
+	
+	
 	private HashSet<Intersection> allIntersections() {
 		HashSet<Intersection> set = new HashSet<Intersection>();
 		
@@ -180,10 +206,13 @@ public class GoBoard {
 		return set;
 	}
 	
+	
 	private void setup(String[] setup){
 		for (int y = 0; y < setup.length; y++)
 			setupLine(y, setup[y]);
 	}
+	
+	
 	private void setupLine(int y, String line) {
 		int x = 0;
 		for(char symbol : line.toCharArray()) {
@@ -198,6 +227,7 @@ public class GoBoard {
 		}
 	}
 	
+	
 	private void tryToPlayStone(int x, int y) throws IllegalMove{
 		intersection(x, y).setStone(nextToPlay());
 		
@@ -209,10 +239,25 @@ public class GoBoard {
 			throw new IllegalMove();
 	}
 	
+	
 	private void stopAcceptingMoves() {
 		_previousSituation = copySituation();
 		_nextToPlay.setter().consume(null);
+		
+		_capturedStonesBlack = blackScore().currentValue();
+		_capturedStonesWhite = whiteScore().currentValue();
+		
+		updateScore();
 	}
+	
+	
+	private void updateScore() {
+		_blackScore.setter().consume(_capturedStonesBlack);
+		_whiteScore.setter().consume(_capturedStonesWhite);
+		countDeadStones();
+		countTerritories();
+	}
+
 	
 	private void countDeadStones() {
 		int size = _intersections.length;
@@ -226,7 +271,10 @@ public class GoBoard {
 			}
 		}
 	}
+	
+	
 	private void countTerritories() {
+	
 		HashSet<Intersection> pending = allIntersections();
 		
 		while (!pending.isEmpty()) {
@@ -247,41 +295,25 @@ public class GoBoard {
 			if (!belongsToB & belongsToW) add(_whiteScore, numEmpty);
 		}
 	}
+	
+	
 	private void add(Register<Integer> register, int ammount) {
 		register.setter().consume(register.output().currentValue() + ammount);
 	}
 
+	
 	private void next() {
 		_nextToPlay.setter().consume(other(nextToPlay()));
 	}
+
+	
 	private void restoreSituation(Intersection[][] situation) {
 		_intersections = situation;
 	}
 
-	private void countCapturedStones() {
-		countCapturedStones(_blackScore, WHITE);
-		countCapturedStones(_whiteScore, BLACK);
-	}
-	private void countCapturedStones(Register<Integer> counter,	StoneColor color) {
-		Integer captured = countCapturedStones(color);
-		counter.setter().consume(counter.output().currentValue() + captured);
-	}
-	private int countCapturedStones(StoneColor color) {
-		int result = 0;
-		
-		for (int line = 0; line < size(); line++)
-			for (int column = 0; column < size(); column++) {
-				StoneColor previous = _previousSituation[line][column]._stone;
-				StoneColor current = _intersections[line][column]._stone;
-				if (previous == color && current == null) result++;
-			};
-			
-			return result;
-	}
 	
 	public Signal<StoneColor> winner() {
 		return _winner.output(); 
 	}
-
 	
 }

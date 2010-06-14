@@ -215,7 +215,6 @@ public class GoTest extends BrickTestWithFiles {
 		_board = new ToroidalGoBoard(setup);
 		_board.passTurn();
 		_board.passTurn();
-		_board.finish();
 		assertScore(2, 1);
 	}
 
@@ -236,7 +235,6 @@ public class GoTest extends BrickTestWithFiles {
 		_board.passTurn();
 		_board.passTurn();
 		_board.toggleDeadStone(5, 4);
-		_board.finish();
 		assertScore(14, 0);
 		
 		setup = new String[]{
@@ -253,7 +251,6 @@ public class GoTest extends BrickTestWithFiles {
 		_board.passTurn();
 		_board.passTurn();
 		_board.toggleDeadStone(5, 4);
-		_board.finish();
 		assertScore(20, 1);
 	}
 
