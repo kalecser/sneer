@@ -31,8 +31,8 @@ public class Ball {
 	private static final double
 		degtorad=Math.PI/180;
 	private static final Image
-		ballspr=Toolkit.getDefaultToolkit().getImage("ball.png"),
-		whitespr=Toolkit.getDefaultToolkit().getImage("wball.png");
+		ballspr=Toolkit.getDefaultToolkit().getImage(Ball.class.getResource("ball.png")),
+		whitespr=Toolkit.getDefaultToolkit().getImage(Ball.class.getResource("wball.png"));
 	private boolean isWhite=false;
 	public boolean isAlive=true;
 	private Game game;

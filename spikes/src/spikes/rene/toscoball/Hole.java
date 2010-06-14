@@ -13,7 +13,7 @@ public class Hole {
 	static final int
 		radius=16;
 	private static final Image
-		buracospr=Toolkit.getDefaultToolkit().getImage("buraco.png");
+		buracospr=Toolkit.getDefaultToolkit().getImage(Hole.class.getResource("buraco.png"));
 	
 	public Hole(int i, int j) {x=i; y=j;}
 	

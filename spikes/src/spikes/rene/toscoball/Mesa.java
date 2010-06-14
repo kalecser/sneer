@@ -17,8 +17,8 @@ import javax.swing.JPanel;
 public class Mesa extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private static final Image
-	menuimg=Toolkit.getDefaultToolkit().getImage("menu.png"),
-	mesaimg=Toolkit.getDefaultToolkit().getImage("mesa.png");
+	menuimg=Toolkit.getDefaultToolkit().getImage(Mesa.class.getResource("menu.png")),
+	mesaimg=Toolkit.getDefaultToolkit().getImage(Mesa.class.getResource("mesa.png"));
 	private static int numBalls, numHoles, numWalls;
 	Ball whiteball;
 	Ball[] balls;
