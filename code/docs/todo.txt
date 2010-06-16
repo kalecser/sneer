@@ -35,12 +35,12 @@ Igor ====================================================
 	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
 
 	- Wusic - MusicalTasteMatcher Buttons - Talk to Klaus
-			- First Group: (I want this track. (Today's "Me Too"))
+			- First Group: "I want this track." (Today's "Me Too")
 				:D    
-			- Second Group: (I dont want this particular track...)
-				:)    (...but I like it. Bring me similar ones.)
-				:|    (...and that's it.)
-				:(    (...or any similar tracks.)
+			- Second Group: "I dont want this particular track..."
+				:)    "...but I like it. Bring me similar ones."
+				:|    "...just delete it." (Today's "No Way")
+				:(    "...or any similar tracks."
 
 	- sovereigncomputing.net - Moralize. This is necessary to help promote Wusic.
 		- Talk to Klaus 
