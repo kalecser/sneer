@@ -36,7 +36,6 @@ class Installation {
 		showSplashScreen();
 		resetDirectories();
 		updateCode();
-//		compileCode();
 		createOwnProjectIfNecessary();
 		closeSplashScreen();
 	}
@@ -89,11 +88,11 @@ class Installation {
     }
 
 	private void updateCode() throws IOException {
-		extractFiles(extractJar(_sneerJar, "sneer", "jar"), CODE);
+		extractFiles(extractJar(_sneerJar, "sneer"), CODE);
 	}
 
-	private File extractJar(URL url, String prefix, String suffix) throws IOException {
-		File file =  File.createTempFile(prefix, suffix);
+	private File extractJar(URL url, String prefix) throws IOException {
+		File file =  File.createTempFile(prefix, "jar");
 		file.deleteOnExit();
 
 		InputStream input = url.openStream();
@@ -127,22 +126,11 @@ class Installation {
         }
 	}
 
-//	private void compileCode() throws Exception {
-//		Environments.runWith(Brickness.newBrickContainer(), new ClosureX<Exception>() { @Override public void run() throws Exception {
-//			loadJavaCompiler();
-//			my(Builder.class).build(SRC, BIN);				
-//		}});
-//	}
-//
-//	private void loadJavaCompiler() {
-//		my(JavaCompiler.class);
-//	}
-
 	private void createOwnProjectIfNecessary() throws IOException {
 		if(OWN_CODE.exists()) return;
 
 		IOUtils.write(LOG_FILE, "jar file url: " + _ownJar.toString());
-		File file = extractJar(_ownJar, "own", "jar");
+		File file = extractJar(_ownJar, "own");
 		extractFiles(file, OWN_CODE.getParentFile());		
 	}
 

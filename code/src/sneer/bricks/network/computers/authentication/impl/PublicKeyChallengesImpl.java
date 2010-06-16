@@ -8,8 +8,7 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-
-import org.bouncycastle.util.Arrays;
+import java.util.Arrays;
 
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
@@ -46,7 +45,7 @@ class PublicKeyChallengesImpl implements PublicKeyChallenges {
 
 	private void check(Seal seal, PublicKey publicKey) throws IOException {
 		Hash hash = my(Crypto.class).digest(publicKey.getEncoded());
-		if (!Arrays.areEqual(seal.bytes.copy(), hash.bytes.copy()))
+		if (!Arrays.equals(seal.bytes.copy(), hash.bytes.copy()))
 			throw new IOException("Public Key did not match Seal.");
 	}
 
