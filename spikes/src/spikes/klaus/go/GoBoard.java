@@ -109,19 +109,20 @@ public class GoBoard {
 	
 	
 	public void toggleDeadStone(int x, int y) {
-		StoneColor previousColor = _previousSituation[x][y]._stone;
-		StoneColor currentColor = _intersections[x][y]._stone;
+		if (_intersections[x][y]._stone == null)
+			unmarkDeadStones(x, y);
+		else
+			_intersections[x][y].markDeadStones();
 
-		if (currentColor == null) {
-			Set<Intersection> group = _intersections[x][y].getGroupWithNeighbours();
-			for (Intersection intersection : group) {
-				if (intersection._stone == null)
-					intersection._stone = previousEquivalent(intersection)._stone;
-			}
-		} else {
-			_intersections[x][y].toggleDeadStone();
-		}
 		updateScore();
+	}
+
+
+	private void unmarkDeadStones(int x, int y) {
+		Set<Intersection> group = _intersections[x][y].getGroupWithNeighbours();
+		for (Intersection intersection : group)
+			if (intersection._stone == null)
+				intersection._stone = previousEquivalent(intersection)._stone;
 	}
 
 	
