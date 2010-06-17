@@ -4,8 +4,6 @@ package spikes.rene.toscoball;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
 
@@ -16,20 +14,18 @@ public class Game {
 	private Mesa mesa;
 	private JFrame window;
 	private Thread ctrl;
+	private int space=0, k=0;
 
 	public static void main(String args[]) {new Game();}
 
 	private Game() {
-		window=new JFrame("Billiards R");
+		window=new JFrame("tosco Ball");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setBounds(0,0,640,480);
+		window.setBounds(0,0,512,480);
 		window.addKeyListener(new TeclasListener(this));
 
 		mesa=new Mesa(6, window, this);
 		mesa.setLayout(null);
-		mesa.addMouseListener(new MouseAdapter(){
-			@Override public void mouseReleased(MouseEvent e) {mesa.shoot(e);}
-		});
 		
 		window.setContentPane(mesa);
 		window.setVisible(true);
@@ -41,7 +37,7 @@ public class Game {
 	private void startGame() {
 		ctrl=new Thread() {@Override
 		public void run() {while(true) {
-			try {Thread.sleep(33);}
+			try {Thread.sleep(16);}
 			catch (InterruptedException e) {}
 			finally {updateGame();}
 		}}};
@@ -49,6 +45,9 @@ public class Game {
 	}
 	
 	private void updateGame() {
+		mesa.space(space);
+		if (k==2) mesa.turn(1);
+		if (k==-2) mesa.turn(-1);
 		mesa.stepBalls();
 		mesa.repaint();
 	}
@@ -73,8 +72,16 @@ public class Game {
 		@Override public void keyPressed(KeyEvent e) {
 			if (e.getKeyCode()==KeyEvent.VK_ESCAPE) game.endGame();
 			if (e.getKeyCode()==KeyEvent.VK_ENTER) game.exitMenu();
+			if (e.getKeyCode()==KeyEvent.VK_LEFT) {if (k==0) {mesa.turn(1); k=1;} else k=2;};
+			if (e.getKeyCode()==KeyEvent.VK_RIGHT) {if (k==0) {mesa.turn(-1); k=-1;} else k=-2;};
+			if (e.getKeyCode()==KeyEvent.VK_UP) space=2;
+			if (e.getKeyCode()==KeyEvent.VK_DOWN) space=-2;
+			if (e.getKeyCode()==KeyEvent.VK_SPACE) mesa.shoot();
 		}
-		@Override public void keyReleased(KeyEvent e) {}
+		@Override public void keyReleased(KeyEvent e) {
+			if (e.getKeyCode()==KeyEvent.VK_UP | e.getKeyCode()==KeyEvent.VK_DOWN) space=0;
+			if (e.getKeyCode()==KeyEvent.VK_LEFT | e.getKeyCode()==KeyEvent.VK_RIGHT) k=0;
+		}
 		@Override public void keyTyped(KeyEvent e) {} 
 	}
 }

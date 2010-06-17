@@ -2,8 +2,6 @@ package spikes.rene.toscoball;
 //a rectangular wall with collision.
 //Wall(X pos ,Y pos, Width, Height)
 
-import java.awt.Graphics;
-
 
 public class Wall {
 
@@ -16,24 +14,24 @@ public class Wall {
 		h=l;
 	}
 	
-	public void draw(Graphics g) {
-		g.fillRect(x,y,w,h);
-	}
-	
 	public void checkCollision(Ball other) {
-		if (!other.isAlive) return; 
+		if (!other.isAlive | !isIn(other)) return; 
 
 		//Contact before collision to increase precision.
-		other.contact(this);
+		other.contactWall(this);
 		
 		if ((other.x>x & other.x<x+w) & (other.y>y-Ball.radius & other.y<y+h+Ball.radius)) {
 			//vertical collision
 			other.bounce(0);
+			if (other.y<y+h/2) other.y=y-Ball.radius;
+			else other.y=y+h+Ball.radius;
 			return;
 		}
 		if ((other.y>y & other.y<y+h) & (other.x>x-Ball.radius & other.x<x+w+Ball.radius)) {
 			//horizontal collision
 			other.bounce(90);
+			if (other.x<x+w/2) other.x=x-Ball.radius;
+			else other.x=x+w+Ball.radius;
 			return;
 		}
 		if (M.pointDistance(x,y,other.x,other.y)<Ball.radius) {

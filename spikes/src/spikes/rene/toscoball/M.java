@@ -3,7 +3,7 @@ package spikes.rene.toscoball;
 
 
 public class M{
-	private static final double degtorad=Math.PI/180;
+	public static final double degtorad=Math.PI/180;
 	
 	public static double correctAngle(double dir) {
 		while (dir<0) dir+=360;
@@ -21,5 +21,8 @@ public class M{
 	}
 	public static double pointDistance(double x1, double y1, double x2, double y2) {
 		return Math.hypot((x1-x2),(y1-y2));
+	}
+	public static double sqr(double a) {
+		return a*a;
 	}
 }
