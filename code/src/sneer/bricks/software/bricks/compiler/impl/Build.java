@@ -98,10 +98,16 @@ class Build {
 
 
 	private void accumulateTestFiles(Collection<File> testFiles, File brickFolder) {
-		File testsFolder = new File(brickFolder, "tests");
-		if (!testsFolder.exists()) return;
-		
-		testFiles.addAll(listJavaFiles(testsFolder, fileFilters().any()));
+		accumulateTestFiles(testFiles, brickFolder, "tests");
+		accumulateTestFiles(testFiles, brickFolder, "testsupport");
+	}
+
+
+	private void accumulateTestFiles(Collection<File> testFiles,
+			File brickFolder, String subfolder) {
+		File testsFolder = new File(brickFolder, subfolder);
+		if (testsFolder.exists())
+			testFiles.addAll(listJavaFiles(testsFolder, fileFilters().any()));
 	}
 
 	private Result compile(Collection<File> sourceFiles, File destination, File... classpath) throws IOException, CompilerException {
@@ -216,6 +222,7 @@ class Build {
 			fileFilters().not(fileFilters().or(new Filter[] {
 				fileFilters().name("impl"),
 				fileFilters().name("tests"),
+				fileFilters().name("testsupport"),
 				fileFilters().name("foundation")
 			})));
 	}

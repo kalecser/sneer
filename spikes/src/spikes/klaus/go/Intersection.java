@@ -1,15 +1,13 @@
 package spikes.klaus.go;
 
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 import spikes.klaus.go.GoBoard.StoneColor;
 
-class Intersection implements Serializable {
+class Intersection {
 
-	private static final long serialVersionUID = 1L;
 	private Intersection _left;
 	private Intersection _right;
 	private Intersection _up;
@@ -17,20 +15,24 @@ class Intersection implements Serializable {
 	
 	StoneColor _stone = null;
 
-	protected void connectToYourLeft(Intersection other) {
+	
+	void connectToYourLeft(Intersection other) {
 		_left = other;
 		other._right = this;
 	}
 
-	protected void connectUp(Intersection other) {
+	
+	void connectUp(Intersection other) {
 		_up = other;
 		other._down = this;
 	}
 
+	
 	void setStone(StoneColor stoneColor) throws IllegalMove {
 		if (!isLiberty()) throw new IllegalMove();
 		_stone = stoneColor;
 	}
+	
 	
 	void fillGroupWithNeighbours(StoneColor stoneColor, Set<Intersection> group) {
 		if (group.contains(this)) return;
@@ -44,31 +46,34 @@ class Intersection implements Serializable {
 		if (_right != null) _right.fillGroupWithNeighbours(stoneColor, group);
 	}
 	
-	void toggleDeadStone() {
+	
+	void markDeadStones() {
 		StoneColor colorToKill = _stone;
 		boolean killed;
-		StoneColor turn=null;
-		if (isLiberty()) {
-			 turn=colorToKill; colorToKill=null;
-		}
 		
 		do {
 			killed = false;
-			Set<Intersection> group = new HashSet<Intersection>();
-			fillGroupWithNeighbours(_stone, group);
+			Set<Intersection> group = getGroupWithNeighbours();
 			for (Intersection intersection : group)
 				if (intersection._stone == colorToKill) {
-					intersection._stone = turn;
+					intersection._stone = null;
 					killed = true;
 				}
 		} while (killed);
 	}
 
+	
+	Set<Intersection> getGroupWithNeighbours() {
+		Set<Intersection> result = new HashSet<Intersection>();
+		fillGroupWithNeighbours(_stone, result);
+		return result;
+	}
+
+	
 	boolean killGroupIfSurrounded(StoneColor color) {
 		if (_stone != color) return false;
 		
-		Set<Intersection> groupWithNeighbours = new HashSet<Intersection>();
-		fillGroupWithNeighbours(_stone, groupWithNeighbours);
+		Set<Intersection> groupWithNeighbours = getGroupWithNeighbours();
 		
 		for (Intersection intersection : groupWithNeighbours)
 			if (intersection.isLiberty()) return false;
@@ -79,10 +84,12 @@ class Intersection implements Serializable {
 		return true;
 	}
 
+	
 	boolean isLiberty() {
 		return _stone == null;
 	}
 
+	
 	@Override
 	public boolean equals(Object obj) {
 		final Intersection other = (Intersection) obj;

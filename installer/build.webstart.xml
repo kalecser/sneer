@@ -7,9 +7,27 @@
 	<property name="jnlp.file" location="${build.dir}/dist/sneer.jnlp" />
 	<property name="jnlp.mainClass" value="sneer.installer.Main" />
 
-	<target name="main" depends="compile, copy, log, makeJars, makeJnlp, signJars">
+	<target name="main" depends="init, compile, copy, log, makeJars, makeJnlp, signJars" />
+
+	<target name="init">
+		<tstamp />
 	</target>
-	
+
+	<target name="compile">
+		<path id="classpath">
+			<pathelement path="./bin"/>
+		</path>
+		<javac srcdir="src"
+				destdir="${bin.dir}"
+				listfiles="true"
+				failonerror="true"
+				debug="on"
+				target="1.5"
+				encoding="utf-8">
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+
 	<target name="copy">
 		<copy todir="${build.dir}/dist">
 			<fileset dir="web">
@@ -29,46 +47,6 @@
 		<echo message="${env.WORKSPACE}" />
 		<echo message="${env.HUDSON_URL}" />
 		<record name="build/dist/log.txt" action="stop" />
-	</target>
-
-	<target name="makeJnlp">
-
-		<condition property="jnlp.codebase"
-			value="${env.HUDSON_URL}job/${env.JOB_NAME}/lastStableBuild/artifact/installer/build/dist" 
-			else="file:///${build.dir}/dist">
-			<equals arg1="${env.JOB_NAME}" arg2="Sneer"/>
-		</condition>
-		<echo message="${jnlp.codebase}"/>
-		<replace file="${build.dir}/dist/sneer.html" token="${jnlp.url}" value="${jnlp.codebase}/sneer.jnlp"/>
-	
-		<echoxml file="${jnlp.file}">
-			<jnlp spec="1.0+" codebase="${jnlp.codebase}" href="sneer.jnlp">
-				<information>
-					<title>Sneer</title>
-					
-			        <shortcut online="true">
-			            <menu submenu="Sovereign Computing"/>
-			            <desktop/>
-			        </shortcut>
-					
-					<vendor>Sneer</vendor>
-					<description>Sovereign computing is the freedom to share information and hardware resources with your friends, any way you like.:)</description>
-					<description kind="short">Sneer is a java-based, free software platform for sovereign applications.</description>
-					<homepage href="http://sovereigncomputing.net/" />
-				</information>
-				<offline-allowed/>				
-				<update check="timeout" policy="always" />
-				
-				<resources>
-					<jar href="sneer-bootstrap.jar" />
-					<j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se" />
-				</resources>
-				<security>
-					<all-permissions />
-				</security>
-				<application-desc main-class="${jnlp.mainClass}" />
-			</jnlp>
-		</echoxml>
 	</target>
 
 	<target name="makeJars">
@@ -91,37 +69,66 @@
 		</jar>
 	
 		<delete dir="${own.build.dir}"/>
-		
+
 		<jar destfile="build/dist/sneer-bootstrap.jar">
 			<fileset dir="${bin.dir}">
-				<exclude name='sneer/main/SneerSession*.*' />
+				<include name='sneer/installer/**/*.*' />
+				<include name='sneer/main/*.class' />
+				<exclude name='sneer/main/SneerSession*' />
 			</fileset>
+
 			<fileset dir="src">
 				<include name='**/*.*' />
 				<exclude name='**/*.java' />
 			</fileset>
+
 			<fileset dir="build/dist/">
+				<include name='builder.jar' />
 				<include name='sneer.jar' />
 				<include name='own.jar' />
 			</fileset>
 		</jar>
 	</target>
 
-	<target name="compile">
-		<path id="classpath">
-			<pathelement path="./bin"/>
-		</path>
-		<javac srcdir="src"
-				destdir="${bin.dir}"
-				listfiles="true"
-				failonerror="true"
-				debug="on"
-				target="1.5"
-				encoding="utf-8">
-			<classpath refid="classpath"/>
-		</javac>
+	<target name="makeJnlp">
+		<condition property="jnlp.codebase"
+			value="${env.HUDSON_URL}job/${env.JOB_NAME}/lastStableBuild/artifact/installer/build/dist" 
+			else="file:///${build.dir}/dist">
+			<equals arg1="${env.JOB_NAME}" arg2="Sneer"/>
+		</condition>
+		<echo message="${jnlp.codebase}"/>
+		<replace file="${build.dir}/dist/sneer.html" token="${jnlp.url}" value="${jnlp.codebase}/sneer.jnlp"/>
+
+		<echoxml file="${jnlp.file}">
+			<jnlp spec="1.0+" codebase="${jnlp.codebase}" href="sneer.jnlp">
+				<information>
+					<title>Sneer</title>
+					
+			        <shortcut online="true">
+			            <menu submenu="Sovereign Computing"/>
+			            <desktop/>
+			        </shortcut>
+					
+					<vendor>Sneer</vendor>
+					<description>Sovereign computing is the freedom to share information and hardware resources with your friends, any way you like.</description>
+					<description kind="short">Sneer is a java-based, free software platform for sovereign applications.</description>
+					<homepage href="http://sovereigncomputing.net/" />
+				</information>
+				<offline-allowed/>				
+				<update check="timeout" policy="always" />
+				
+				<resources>
+					<jar href="sneer-bootstrap.jar" />
+					<j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se" />
+				</resources>
+				<security>
+					<all-permissions />
+				</security>
+				<application-desc main-class="${jnlp.mainClass}" />
+			</jnlp>
+		</echoxml>
 	</target>
-	
+
 	<target name="signJars" depends="makeJars">
 		<signjar keystore="sneerKeystore" jar="./build/dist/sneer-bootstrap.jar" alias="bihaiko" storepass="amanda" />
 	</target>

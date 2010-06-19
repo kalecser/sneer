@@ -169,6 +169,7 @@ public class GoTest extends BrickTestWithFiles {
 		ToroidalGoBoard subject = new ToroidalGoBoard(new String[]{});
 		subject.resign();
 		assertNull(subject.nextToPlay());
+		assertSame(StoneColor.WHITE, subject.winner().currentValue());
 	}
 
 	@Test
@@ -214,13 +215,12 @@ public class GoTest extends BrickTestWithFiles {
 		_board = new ToroidalGoBoard(setup);
 		_board.passTurn();
 		_board.passTurn();
-		_board.finish();
 		assertScore(2, 1);
 	}
 
 
 	@Test
-	public void testDeadGroup() {
+	public void deadGroup() {
 		String[] setup = new String[]{
 			    "+ + + + + + + + +",
 				"+ + + + x x + + +",
@@ -235,7 +235,6 @@ public class GoTest extends BrickTestWithFiles {
 		_board.passTurn();
 		_board.passTurn();
 		_board.toggleDeadStone(5, 4);
-		_board.finish();
 		assertScore(14, 0);
 		
 		setup = new String[]{
@@ -252,8 +251,48 @@ public class GoTest extends BrickTestWithFiles {
 		_board.passTurn();
 		_board.passTurn();
 		_board.toggleDeadStone(5, 4);
-		_board.finish();
 		assertScore(20, 1);
 	}
 
+	@Test(timeout = 2000)
+	public void deadGroupMisclickOnFreeIntersectionDoesNotFreeze() {
+		String[] setup = new String[]{
+			    "+ + + + + + + + +",
+				"+ + + + x x + + +",
+				"+ + + x + + x + +",
+				"+ + x + + + o x +",
+				"+ + + x + o o x +",
+				"+ + + + x o x + +",
+				"+ + + + x x x + +",
+				"+ o + + + + + + +",
+				"+ + + + + + + + +"};
+		_board = new ToroidalGoBoard(setup);
+		_board.passTurn();
+		_board.passTurn();
+		_board.toggleDeadStone(0, 0);
+	}
+
+	@Test
+	public void untoggleDeadGroup() {
+		String[] setup = new String[]{
+			    "+ + + + + + + + +",
+				"+ + x x + + + + +",
+				"+ x o + x + + + +",
+				"+ + x x + + + + +",
+				"+ x o + x + + + +",
+				"+ + x x + + + + +",
+				"+ + + + + + + + +",
+				"+ + + + + + o + +",
+				"+ + + + + + + + +"};
+		_board = new ToroidalGoBoard(setup);
+		_board.passTurn();
+		_board.passTurn();
+		_board.toggleDeadStone(2, 2);
+		assertScore(3, 0);
+		_board.toggleDeadStone(2, 4);
+		assertScore(6, 0);
+		_board.toggleDeadStone(2, 4);
+		assertScore(3, 0);
+	}
+	
 }

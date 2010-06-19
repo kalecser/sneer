@@ -23,33 +23,18 @@ Bamboo =================================================
 
 Igor ==================================================== 
 
-	- <include name='sneer/bricks/hardware/cpu/crypto/impl/lib/bcprov-jdk16-139.jar' /> - Remove from test classpath in build.sneer.xml.
-		- How come the SneerTests run configuration runs all tests without BC in the path?
+	- Add list of friends to ContactInfoWindow
+		- Add button to accept friend  
 
-	- Smaller webstart jar
-		- Send only code and compile locally.
-			- bootstrap jar - add bins for foundation, compiler and builder brick
-			- sneer.jar - cherry pick remove the jars duplicated in bootstrap jar
-			- Installation - Unzip sneer.jar and cherry picked jars from bootstrap to SRC, use Builder brick to compile to BIN
-		- After everything is working: compiler-7-ea-b17-02_aug_2007.jar - update to newer version.
-
-	- Chat
-		- Fabio's One-on-one Chat - Incorporate "as is" using JOptionPanes.
-		- Announce to the list.
-		
-	- Chat
-		- WindGui - Make it a Snapp again.
-			- Chat Gui - Instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
-				- Enter bug - Fix.
-				- Focus bug - Fix.
-
-	- Wusic - MusicalTasteMatcher Buttons - Talk to Klaus
+	- Wusic - MusicalTasteMatcher Buttons
 			- First Group: (I want this track. (Today's "Me Too"))
-				:D    
+				:D
 			- Second Group: (I dont want this particular track...)
 				:)    (...but I like it. Bring me similar ones.)
 				:|    (...and that's it.)
 				:(    (...or any similar tracks.)
+
+	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
 
 	- sovereigncomputing.net - Moralize. This is necessary to help promote Wusic.
 		- Talk to Klaus 

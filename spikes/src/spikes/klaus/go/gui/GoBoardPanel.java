@@ -154,7 +154,7 @@ public class GoBoardPanel extends JPanel {
 			graphics.setColor(new Color(255, 255, 255, 90));
 			
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		paintStoneOnCoordinates(graphics, toCoordinate(_hoverX), toCoordinate(_hoverY), true);
+		paintStoneOnCoordinates(graphics, toCoordinate(_hoverX), toCoordinate(_hoverY), false);
 
 	}
 
@@ -278,12 +278,11 @@ public class GoBoardPanel extends JPanel {
 		}
 		
 		@Override
-		public void mouseClicked(MouseEvent e) {
+		public void mouseReleased(MouseEvent e) {
 			int x = unscrollX(toScreenPosition(e.getX()));
 			int y = unscrollY(toScreenPosition(e.getY()));
 			if (_board.nextToPlay()==null) {
 				_moveRegister.setter().consume(new Move(false, false, x,y, true));
-				//repaint();
 				return;
 			}
 			if (!_board.canPlayStone(x, y)) return;
