@@ -19,18 +19,18 @@ public class Game {
 	public static void main(String args[]) {new Game();}
 
 	private Game() {
-		window=new JFrame("tosco Ball");
+		window=new JFrame("toscoBall");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setBounds(0,0,512,480);
-		window.addKeyListener(new TeclasListener(this));
+		window.setResizable(false);
 
-		mesa=new Mesa(6, window, this);
-		mesa.setLayout(null);
+		mesa=new Mesa(6, this);
 		
 		window.setContentPane(mesa);
-		window.setVisible(true);
 		window.pack();
+		window.addKeyListener(new TeclasListener(this));
 		window.setLocationRelativeTo(null);
+		window.setVisible(true);
 		startGame();
 	}
 	
@@ -57,8 +57,12 @@ public class Game {
 	}
 	
 	void loseGame() {
-		System.err.println("LOSER!");
-		endGame();
+		mesa.restartGame();
+		//endGame();
+	}
+	
+	void tellMesaToShine(int x, int y) {
+		mesa.shine(x,y);
 	}
 	
 	private void exitMenu() {
@@ -70,17 +74,23 @@ public class Game {
 	Game game;
 	TeclasListener(Game g) {game=g;}
 		@Override public void keyPressed(KeyEvent e) {
-			if (e.getKeyCode()==KeyEvent.VK_ESCAPE) game.endGame();
-			if (e.getKeyCode()==KeyEvent.VK_ENTER) game.exitMenu();
-			if (e.getKeyCode()==KeyEvent.VK_LEFT) {if (k==0) {mesa.turn(1); k=1;} else k=2;};
-			if (e.getKeyCode()==KeyEvent.VK_RIGHT) {if (k==0) {mesa.turn(-1); k=-1;} else k=-2;};
-			if (e.getKeyCode()==KeyEvent.VK_UP) space=2;
-			if (e.getKeyCode()==KeyEvent.VK_DOWN) space=-2;
-			if (e.getKeyCode()==KeyEvent.VK_SPACE) mesa.shoot();
+			switch (e.getKeyCode()) {
+				case KeyEvent.VK_ESCAPE: {game.endGame(); break;}
+				case KeyEvent.VK_ENTER: {game.exitMenu(); break;}
+				case KeyEvent.VK_LEFT: {if (k==0) {mesa.turn(1); k=1;} else k=2; break;}
+				case KeyEvent.VK_RIGHT: {if (k==0) {mesa.turn(-1); k=-1;} else k=-2; break;}
+				case KeyEvent.VK_UP: {space=2; break;}
+				case KeyEvent.VK_DOWN: {space=-2; break;}
+				case KeyEvent.VK_SPACE: {mesa.shoot(); break;}
+			}
 		}
 		@Override public void keyReleased(KeyEvent e) {
-			if (e.getKeyCode()==KeyEvent.VK_UP | e.getKeyCode()==KeyEvent.VK_DOWN) space=0;
-			if (e.getKeyCode()==KeyEvent.VK_LEFT | e.getKeyCode()==KeyEvent.VK_RIGHT) k=0;
+			switch (e.getKeyCode()) {
+			case KeyEvent.VK_UP:
+			case KeyEvent.VK_DOWN: {space=0; break;}
+			case KeyEvent.VK_LEFT:
+			case KeyEvent.VK_RIGHT: {k=0; break;}
+			}
 		}
 		@Override public void keyTyped(KeyEvent e) {} 
 	}

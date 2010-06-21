@@ -1,5 +1,5 @@
 package spikes.rene.toscoball;
-//a billiards ball
+//a physically genuine 2D sphere with collision
 //Ball(X pos ,Y pos)
 
 import java.awt.Graphics;
@@ -10,19 +10,17 @@ import java.awt.Toolkit;
 public class Ball {
 
 	private int id;
-	double x,y,xprev,yprev;
+	double x,y,xprev,yprev,xstart,ystart;
 	private double
-		speed=0,
+		speed,
 		direction=0;
-	static final int
-		radius=11;
 	static int k;
 	private static final int
-	minx=radius+48,
-	miny=radius+128,
-	maxx=464-radius,
-	maxy=432-radius;
-	private static final double friction=0.01;
+	minx=11+48,
+	miny=11+128,
+	maxx=464-11,
+	maxy=432-11;
+	private static final double friction=0.0152;
 	private static final Image[] ballspr=new Image[] {
 		img("bola1.png"), img("bola2.png"),
 		img("bola3.png"), img("bola4.png"),
@@ -37,7 +35,9 @@ public class Ball {
 	private Game game;
 	
 	public Ball(int i, int j, int n, Game g) {
-		setPos(i,j);
+		xstart=i;
+		ystart=j;
+		resetPos();
 		id=n;
 		isWhite=(id==0);
 		game=g;
@@ -47,10 +47,8 @@ public class Ball {
 		if (!isAlive) return;
 		int sub=id-1;
 		if (isWhite) {sub=6+k;}
-		g.drawImage(ballspr[sub],(int)(x-radius),(int)(y-radius), radius*2, radius*2,null);
+		g.drawImage(ballspr[sub],(int)x-11,(int)y-11,null);
 	}
-	
-	public void setPos(double i, double j) {x=i; y=j;}
 	
 	public boolean isMoving() {
 		if (!isAlive) return false;
@@ -95,7 +93,7 @@ public class Ball {
 				expulse(other, 1);
 				return;
 			}
-			if (M.pointDistance(x,y,other.x,other.y)<radius*2) { 
+			if (M.pointDistance(x,y,other.x,other.y)<22) { 
 				
 				double xf=0,yf=0,oxf=0,oyf=0;
 				if (speed>0) {
@@ -108,7 +106,7 @@ public class Ball {
 				int lol=(int)Math.ceil(Math.max(speed,other.speed));
 				
 				for (int i=0; i<lol; i++) {
-					if (i>lol | M.sqr(x-other.x)+M.sqr(y-other.y)>M.sqr(radius*2)) break;
+					if (i>lol | M.sqr(x-other.x)+M.sqr(y-other.y)>M.sqr(22)) break;
 					x-=xf; y-=yf;
 					other.x-=oxf; other.y-=oyf;
 				}
@@ -122,7 +120,7 @@ public class Ball {
 				double histowmod=Math.max(0,Math.cos(M.degtorad*(other.direction-hisdir))*other.speed);
 	
 				//store the amount of initial momentum for later corrections
-				double total=(speed+other.speed);
+				//double total=(speed+other.speed);
 	
 				//update the speed and direction of the local ball
 				double hcomponent=M.lengthdirx(speed,direction)+M.lengthdirx(histowmod+mytowmod,hisdir);
@@ -136,6 +134,8 @@ public class Ball {
 				other.direction=M.pointDirection(0,0,hcomponent,vcomponent);
 				other.speed=M.pointDistance(0,0,hcomponent,vcomponent);
 				
+				/* This code is making balls too slow.
+				
 				//then cap resulting energy to avoid 'explode'
 				if (speed==0) other.speed=total;
 				else if (other.speed==0) speed=total;
@@ -143,15 +143,15 @@ public class Ball {
 					double factor=speed/total;
 					speed=total*(factor);
 					other.speed=total*(1-factor);
-				}
+				}*/
 			}
 		}
 	}
 	
 	public void expulse(Ball other, int fac) {
 		double dist=M.pointDistance(x,y,other.x,other.y)/2;
-		if (dist>radius+fac) return;
-		else if (dist<radius*0.8) {
+		if (dist>11+fac) return;
+		else if (dist<9) {
 			x+=Math.random()-0.5;
 			y+=Math.random()-0.5;
 		}
@@ -159,10 +159,10 @@ public class Ball {
 		double hisdir=M.correctAngle(mydir+180);
 		double midx=x+M.lengthdirx(dist,mydir);
 		double midy=y+M.lengthdiry(dist,mydir);
-		x=midx+M.lengthdirx(radius+1,hisdir);
-		y=midy+M.lengthdiry(radius+1,hisdir);
-		other.x=midx+M.lengthdirx(radius+1,mydir);
-		other.y=midy+M.lengthdiry(radius+1,mydir);
+		x=midx+M.lengthdirx(12,hisdir);
+		y=midy+M.lengthdiry(12,hisdir);
+		other.x=midx+M.lengthdirx(12,mydir);
+		other.y=midy+M.lengthdiry(12,mydir);
 		xprev=x;
 		yprev=y;
 		other.xprev=other.x;
@@ -173,17 +173,26 @@ public class Ball {
 		direction=M.correctAngle(-(direction-angle)+angle);
 	}
 	
-	public void shoot(double a) {
-		speed=10;
+	public void shoot(double a, int p) {
+		speed=p;
 		direction=a;
 	}
 	
 	public void die() {
 		if (isWhite) game.loseGame();
-		else isAlive=false;
+		else {
+			isAlive=false;
+			game.tellMesaToShine((int)x,(int)y);
+		}
+	}
+	
+	public void resetPos() {
+		x=xstart;
+		y=ystart;
+		speed=0;
 	}
 
 	private static Image img(String name) {
-		return Toolkit.getDefaultToolkit().getImage(Ball.class.getResource(name));
+		return Toolkit.getDefaultToolkit().getImage(Ball.class.getResource("images/"+name));
 	}
 }
