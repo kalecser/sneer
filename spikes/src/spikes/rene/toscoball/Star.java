@@ -1,22 +1,21 @@
 package spikes.rene.toscoball;
-//visual effect.
+//visual effect
 //Star(MediaTracker)
 
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MediaTracker;
-import java.awt.Toolkit;
 
 
 public class Star {
 
 	int x,y,sub=0;
 	private static final Image[] starspr=new Image[] {
-		img("star5.png"), img("star4.png"),
-		img("star4.png"), img("star3.png"),
-		img("star2.png"), img("star2.png"),
-		img("star1.png"), img("star0.png"),
-		img("star0.png")};
+		M.img("star5.png"), M.img("star4.png"),
+		M.img("star4.png"), M.img("star3.png"),
+		M.img("star2.png"), M.img("star2.png"),
+		M.img("star1.png"), M.img("star0.png"),
+		M.img("star0.png")};
 	public boolean visible=false;
 
 	public Star(MediaTracker t) {
@@ -36,9 +35,5 @@ public class Star {
 		y=j-15;
 		sub=0;
 		visible=true;
-	}
-
-	private static Image img(String name) {
-		return Toolkit.getDefaultToolkit().getImage(Ball.class.getResource("images/"+name));
 	}
 }

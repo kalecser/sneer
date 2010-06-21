@@ -1,23 +1,21 @@
 package spikes.rene.toscoball;
-//a rectangular wall with collision.
-//Wall(X pos ,Y pos, Width, Height)
+//a rectangular wall with collision
+//Wall(X, Y, Width, Height)
 
 
-public class Wall {
+class Wall {
 
 	int x,y,w,h;
 	
-	public Wall(int i, int j, int k, int l) {
-		x=i;
-		y=j;
-		w=k;
-		h=l;
-	}
+	Wall(int i, int j, int k, int l) {x=i; y=j; w=k; h=l;}
 	
-	public void checkCollision(Ball other) {
-		if (!other.isAlive | !isIn(other)) return; 
+	void checkCollision(Ball[] balls) {
+		for (int i=0; i<balls.length; i++) {collide(balls[i]);}
+	}
+	private void collide(Ball other) {
+		if (!other.isAlive | !intersects(other)) return; 
 
-		//Contact before collision to increase precision.
+		//Contact before to increase bounce precision.
 		other.contactWall(this);
 		
 		if ((other.x>x & other.x<x+w) & (other.y>y-11 & other.y<y+h+11)) {
@@ -56,7 +54,7 @@ public class Wall {
 		}
 	}
 	
-	public boolean isIn(Ball other) {
+	boolean intersects(Ball other) {
 		//required for Ball.contact(Wall)
 		if ((other.x>x & other.x<x+w) & (other.y>y-11 & other.y<y+h+11)) return true;
 		if ((other.y>y & other.y<y+h) & (other.x>x-11 & other.x<x+w+11)) return true;

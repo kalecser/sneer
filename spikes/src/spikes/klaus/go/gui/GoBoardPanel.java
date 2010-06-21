@@ -5,8 +5,10 @@ import static sneer.foundation.environments.Environments.my;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -70,6 +72,9 @@ public class GoBoardPanel extends JPanel {
 	final GoBoard _board = new ToroidalGoBoard(BOARD_SIZE);
 
 	private BufferedImage _bufferImage;
+	
+	private Image winImg, loseImg, blackStoneImg, whiteStoneImg;
+	private boolean isWinner=false;
 
 	private int _hoverX;
 	private int _hoverY;
@@ -96,6 +101,10 @@ public class GoBoardPanel extends JPanel {
 		
 		addMouseListener();
 	    _refToAvoidGc2 = my(Timer.class).wakeUpEvery(150, new Scroller());
+	    winImg=Toolkit.getDefaultToolkit().getImage(GoBoardPanel.class.getResource("images/winImg.png"));
+	    loseImg=Toolkit.getDefaultToolkit().getImage(GoBoardPanel.class.getResource("images/loseImg.png"));
+	    blackStoneImg=Toolkit.getDefaultToolkit().getImage(GoBoardPanel.class.getResource("images/black.png"));
+	    whiteStoneImg=Toolkit.getDefaultToolkit().getImage(GoBoardPanel.class.getResource("images/white.png"));
 	}
 	
 	private void play(Move move) {
@@ -142,6 +151,13 @@ public class GoBoardPanel extends JPanel {
 		paintStones(buffer);
 		
 		graphics.drawImage(_bufferImage, 0, 0, this);
+		
+		int scW=scoreWhite().currentValue(),
+		scB=scoreBlack().currentValue();
+		if (scW==scB) return;
+		if (_side==StoneColor.WHITE) isWinner=(scW>scB);
+		else isWinner=(scW<scB);
+		if (_board.nextToPlay()==null) graphics.drawImage((isWinner ? winImg : loseImg), 175, 185, this);
 	}
 
 	private void drawHoverStone(Graphics2D graphics) {
@@ -162,15 +178,8 @@ public class GoBoardPanel extends JPanel {
 		float c = 0;
 		for(int i = 0; i < BOARD_SIZE; i++ ) {
 			buffer.setColor(Color.black);
-			//method 1
 			buffer.draw(new Line2D.Float(c+MARGIN, MARGIN, c+MARGIN, MARGIN+BOARD_IMAGE_SIZE));
 			buffer.draw(new Line2D.Float(MARGIN, c+MARGIN, MARGIN+BOARD_IMAGE_SIZE, c+MARGIN));
-			//method 2
-			//buffer.drawLine((int)(c+MARGIN), (int)MARGIN, (int)(c+MARGIN), (int)(MARGIN+BOARD_IMAGE_SIZE));
-			//buffer.drawLine((int)MARGIN, (int)(c+MARGIN), (int)(MARGIN+BOARD_IMAGE_SIZE), (int)(c+MARGIN));
-			//method 3
-			//buffer.drawRect((int)MARGIN, (int)MARGIN, (int)c, (int)c);
-			//buffer.drawRect((int)(c+MARGIN), (int)(c+MARGIN), (int)(BOARD_IMAGE_SIZE-c), (int)(BOARD_IMAGE_SIZE-c));
 			c += CELL_SIZE;
 		}
 	}
@@ -200,7 +209,9 @@ public class GoBoardPanel extends JPanel {
 		float cy = toCoordinate(scrollY(y));		
 	
 		graphics.setColor(toAwtColor(color));
-		paintStoneOnCoordinates(graphics, cx, cy, dead);
+		
+		//remove last boolean for the 'shape'
+		paintStoneOnCoordinates(graphics, cx, cy, dead, (color==StoneColor.BLACK));
 	}
 
 	private Color toAwtColor(StoneColor color) {
@@ -236,6 +247,13 @@ public class GoBoardPanel extends JPanel {
 		
 		Shape stone = new Ellipse2D.Float(x - (d / 2), y - (d / 2), d, d);
 		graphics.fill(stone);
+	}
+	
+	private void paintStoneOnCoordinates(Graphics2D g, float x, float y, boolean dead, boolean isBlack) {
+		int d = (int)STONE_DIAMETER;
+		if (dead) d*=0.6;
+		
+		g.drawImage((isBlack ? blackStoneImg : whiteStoneImg), (int)x-d/2, (int)y-d/2,d,d, null);
 	}
 	
 	public Signal<Integer> scoreWhite(){
