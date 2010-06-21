@@ -192,7 +192,7 @@ public class Mesa extends JPanel {
 	}
 	
 	public void space(int num) {
-		dist=(int)Math.min(250,Math.max(18,dist+num));
+		dist = Math.min(250,Math.max(18,dist+num));
 	}
 	
 	public void shoot() {
