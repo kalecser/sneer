@@ -45,7 +45,9 @@ Igor ====================================================
 	- Site
               - Download page: Red "Java Web Start" box -> Red "Java Web Start" text.
               - About Us
-			- Spam bot deflection - Replace @ in our emails with a graphical image of @. Remove the mailto: link.
+			- Spam bot deflection
+				- Remove the mailto: links.
+				- Replace @ in our emails with a graphical image: http://www.google.com/images?q=arroba
               	- List all people that own a percentage of Sneer in order of percentage and then, in order: Petra, Gandhi, Kalecser, Daniel Santos.
 				- Only you and I need to have emails listed, the others don't.
               - Remove html duplication - Use github pages' templates (Jeckyll)
