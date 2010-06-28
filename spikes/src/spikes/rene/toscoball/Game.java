@@ -1,12 +1,10 @@
 package spikes.rene.toscoball;
-//this is supposed to evolve into a billiards game.
-//main class
+//this is finally becoming a nice 8-bit billiards game
+//Main class
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 import javax.swing.JFrame;
-
 
 
 public class Game {
@@ -14,73 +12,74 @@ public class Game {
 	private Mesa mesa;
 	private JFrame window;
 	private Thread ctrl;
-	private int space=0, k=0;
+	private int spacing=0, turning=0;
 
 	public static void main(String args[]) {new Game();}
 
 	private Game() {
-		window=new JFrame("tosco Ball");
+		mesa=new Mesa(6, this);
+
+		window=new JFrame("toscoBall");
+		window.addKeyListener(new TeclasListener());
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setBounds(0,0,512,480);
-		window.addKeyListener(new TeclasListener(this));
-
-		mesa=new Mesa(6, window, this);
-		mesa.setLayout(null);
-		
+		window.setResizable(false);
 		window.setContentPane(mesa);
-		window.setVisible(true);
 		window.pack();
 		window.setLocationRelativeTo(null);
+		window.setVisible(true);
+		
 		startGame();
 	}
 	
 	private void startGame() {
-		ctrl=new Thread() {@Override
-		public void run() {while(true) {
-			try {Thread.sleep(16);}
-			catch (InterruptedException e) {}
-			finally {updateGame();}
+		ctrl=new Thread() {@Override public void run() {
+			while(true) {
+				try {Thread.sleep(16);}
+				catch (InterruptedException e) {}
+				finally {updateGame();}
 		}}};
 		ctrl.start();
 	}
 	
 	private void updateGame() {
-		mesa.space(space);
-		if (k==2) mesa.turn(1);
-		if (k==-2) mesa.turn(-1);
-		mesa.stepBalls();
-		mesa.repaint();
+		mesa.step(spacing, turning);
 	}
 	
 	private void endGame() {
+		//something
 		System.exit(0);
 	}
 	
 	void loseGame() {
-		System.err.println("LOSER!");
-		endGame();
+		mesa.restartGame();
+		//endGame();
 	}
 	
-	private void exitMenu() {
-		mesa.isRunning=true;
+	void shineAt(int x, int y) {
+		mesa.shineAt(x,y);
 	}
 
 	
 	private class TeclasListener implements KeyListener {
-	Game game;
-	TeclasListener(Game g) {game=g;}
 		@Override public void keyPressed(KeyEvent e) {
-			if (e.getKeyCode()==KeyEvent.VK_ESCAPE) game.endGame();
-			if (e.getKeyCode()==KeyEvent.VK_ENTER) game.exitMenu();
-			if (e.getKeyCode()==KeyEvent.VK_LEFT) {if (k==0) {mesa.turn(1); k=1;} else k=2;};
-			if (e.getKeyCode()==KeyEvent.VK_RIGHT) {if (k==0) {mesa.turn(-1); k=-1;} else k=-2;};
-			if (e.getKeyCode()==KeyEvent.VK_UP) space=2;
-			if (e.getKeyCode()==KeyEvent.VK_DOWN) space=-2;
-			if (e.getKeyCode()==KeyEvent.VK_SPACE) mesa.shoot();
+			switch (e.getKeyCode()) {
+				case KeyEvent.VK_ESCAPE: {endGame(); break;}
+				case KeyEvent.VK_ENTER: {mesa.beginGame(); break;}
+				case KeyEvent.VK_LEFT: {if (turning==0) {mesa.moveCursor(0,2); turning=1;} else turning=2; break;}
+				case KeyEvent.VK_RIGHT: {if (turning==0) {mesa.moveCursor(0,-2); turning=-1;} else turning=-2; break;}
+				case KeyEvent.VK_UP: {spacing=2; break;}
+				case KeyEvent.VK_DOWN: {spacing=-2; break;}
+				case KeyEvent.VK_SPACE: {mesa.shoot(); break;}
+			}
 		}
 		@Override public void keyReleased(KeyEvent e) {
-			if (e.getKeyCode()==KeyEvent.VK_UP | e.getKeyCode()==KeyEvent.VK_DOWN) space=0;
-			if (e.getKeyCode()==KeyEvent.VK_LEFT | e.getKeyCode()==KeyEvent.VK_RIGHT) k=0;
+			switch (e.getKeyCode()) {
+			case KeyEvent.VK_UP:
+			case KeyEvent.VK_DOWN: {spacing=0; break;}
+			case KeyEvent.VK_LEFT:
+			case KeyEvent.VK_RIGHT: {turning=0; break;}
+			}
 		}
 		@Override public void keyTyped(KeyEvent e) {} 
 	}
