@@ -54,7 +54,8 @@ Igor ====================================================
  
 
 	- Add list of friends to ContactInfoWindow
-		- Add button to accept friend  
+		- Add "Me Too" button to add selected contact's contact as my contact
+
 
 	- Wusic - MusicalTasteMatcher Buttons
 			- First Group: (I want this track. (Today's "Me Too"))
