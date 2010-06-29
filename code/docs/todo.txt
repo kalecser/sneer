@@ -43,13 +43,15 @@ Igor ====================================================
 		       at java.lang.Thread.run(Unknown Source)
 
 	- Site
+		- New overlapping Traditional vs Sovereign Networks diagram.
               - Download page: Red "Java Web Start" box -> Red "Java Web Start" text.
               - About Us
 			- Spam bot deflection
 				- Remove the mailto: links.
 				- Replace @ in our emails with a graphical image: http://www.google.com/images?q=arroba
-              	- List all people that own a percentage of Sneer in order of percentage and then, in order: Petra, Gandhi, Kalecser, Daniel Santos.
-				- Only you and I need to have emails listed, the others don't.
+					- Only Klaus and Igor need to have email addresses listed, the others don't.
+              	- List all people that own a percentage of Sneer in order of percentage and then, in order: Petra, Patrick Roemer, Ricardo Andere de Mello (Gandhi), Kalecser Kurtz, Daniel Santos, Priscila Vriesman.
+				- Ask for people's resumès
               - Remove html duplication - Use github pages' templates (Jeckyll)
  
 
