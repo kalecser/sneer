@@ -74,7 +74,6 @@
 			<fileset dir="${bin.dir}">
 				<include name='sneer/installer/**/*.*' />
 				<include name='sneer/main/*.class' />
-				<exclude name='sneer/main/SneerSession*' />
 			</fileset>
 
 			<fileset dir="src">
