@@ -50,8 +50,23 @@ Igor ====================================================
 				- Remove the mailto: links.
 				- Replace @ in our emails with a graphical image: http://www.google.com/images?q=arroba
 					- Only Klaus and Igor need to have email addresses listed, the others don't.
-              	- List all people that own a percentage of Sneer in order of percentage and then, in order: Petra, Patrick Roemer, Ricardo Andere de Mello (Gandhi), Kalecser Kurtz, Daniel Santos, Priscila Vriesman.
-				- Ask for people's resumès
+              	- List all people that own a percentage of Sneer in order of percentage and then, in order: Petra, Patrick Roemer, Ricardo Andere de Mello (Gandhi), Kalecser Kurtz, Daniel Santos, Priscila Vriesman, René Cusumano.
+				- Instead of resumés, lets just put peoples contributions, what do you think?
+					- Klaus Wuestefeld
+					- Vision, Strategy, Code
+
+					- Igor Arouga
+					- Marketing, Code
+
+					- Rodrigo "Bamboo" Oliveira
+					- Code
+					
+					- Petra Elster
+					- Drawings
+					
+					For all others put "Code" and I update it, if necessary.
+					
+					
               - Remove html duplication - Use github pages' templates (Jeckyll)
  
 
