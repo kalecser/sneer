@@ -10,6 +10,7 @@
 
 	<property name="sneer.home" location="../code" />
 	<property name="sneer.src" location="../code/src" />
+	<property name="sneer.bin" location="../code/bin" />
 
 	<path id="classpath">
 		<pathelement path="${bin.dir}"/>
@@ -127,7 +128,7 @@
 	    </scalac -->
 	</target>
 
-	<target name="makejar" depends="compile">
+	<target name="makejar" depends="compile, copy-bin">
 		<reset-dir dir="${dist.dir}"/>
 
 		<jar destfile="${dist.dir}/sneer.jar">
@@ -137,6 +138,15 @@
 				<exclude name='**/TEST-*.xml' />
 			</fileset>
 		</jar>
+	</target>
+
+	<target name="copy-bin">
+	    <reset-dir dir="${sneer.bin}"/>
+	    <copy todir="${sneer.bin}">
+	      <fileset dir="${bin.dir}">
+	        <include name='**/*.*'/>
+	      </fileset>
+	    </copy>
 	</target>
 
 	<target name="copy-resources">
