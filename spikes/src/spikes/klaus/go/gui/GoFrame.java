@@ -27,6 +27,7 @@ public class GoFrame extends JFrame {
 	    setResizable(true);
 	    setBounds(horizontalPosition, 0, 500, 575);
 	    setVisible(true);
+	    setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		addComponentPanel(_move);	
