@@ -16,7 +16,7 @@ class Counter {
 
 	
 	static {
-		_refToAvoidGc = my(Timer.class).wakeUpEvery(5000, new Runnable() { @Override public void run() {
+		_refToAvoidGc = my(Timer.class).wakeUpEvery(60 * 5000, new Runnable() { @Override public void run() {
 			log();
 		}});
 	}

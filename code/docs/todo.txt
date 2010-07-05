@@ -23,38 +23,15 @@ Bamboo =================================================
 
 Igor ==================================================== 
 
-	- Webstart - Fix:
-		java.lang.ClassNotFoundException: sneer.main.SneerSession
-		       at java.net.URLClassLoader$1.run(Unknown Source)
-		       at java.security.AccessController.doPrivileged(Native Method)
-		       at java.net.URLClassLoader.findClass(Unknown Source)
-		       at java.lang.ClassLoader.loadClass(Unknown Source)
-		       at java.lang.ClassLoader.loadClass(Unknown Source)
-		       at sneer.main.Sneer.<init>(Sneer.java:19)
-		       at sneer.installer.Main.main(Main.java:15)
-		       at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-		       at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
-		       at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
-		       at java.lang.reflect.Method.invoke(Unknown Source)
-		       at com.sun.javaws.Launcher.executeApplication(Unknown Source)
-		       at com.sun.javaws.Launcher.executeMainClass(Unknown Source)
-		       at com.sun.javaws.Launcher.doLaunchApp(Unknown Source)
-		       at com.sun.javaws.Launcher.run(Unknown Source)
-		       at java.lang.Thread.run(Unknown Source)
-
 	- Site
-              - Download page: Red "Java Web Start" box -> Red "Java Web Start" text.
-              - About Us
+		- About Us
 			- Spam bot deflection
 				- Remove the mailto: links.
 				- Replace @ in our emails with a graphical image: http://www.google.com/images?q=arroba
-              	- List all people that own a percentage of Sneer in order of percentage and then, in order: Petra, Gandhi, Kalecser, Daniel Santos.
-				- Only you and I need to have emails listed, the others don't.
-              - Remove html duplication - Use github pages' templates (Jeckyll)
- 
 
 	- Add list of friends to ContactInfoWindow
-		- Add button to accept friend  
+		- Add "Me Too" button to add selected contact's contact as my contact
+
 
 	- Wusic - MusicalTasteMatcher Buttons
 			- First Group: (I want this track. (Today's "Me Too"))

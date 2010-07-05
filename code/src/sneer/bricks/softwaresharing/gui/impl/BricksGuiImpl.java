@@ -171,8 +171,8 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 	}
 	
 	private void initGui() {
-		final RootTreeNode root = new RootTreeNode();
-//		final RootTreeNode root = new RootTreeNode(FakeModel.bricks());
+//		final RootTreeNode root = new RootTreeNode();
+		final RootTreeNode root = new RootTreeNode(FakeModel.bricks());
 
 		_tree.setRootVisible(false);
 		_tree.setModel(new DefaultTreeModel(root));
