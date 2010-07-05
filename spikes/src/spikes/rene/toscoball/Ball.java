@@ -24,15 +24,15 @@ class Ball {
 		M.img("bolab2.png"), M.img("bolab1.png")};
 	boolean isAlive;
 	private boolean isWhite=false;
-	private Game game;
+	private Mesa mesa;
 	
-	Ball(int i, int j, int n, Game g) {
+	Ball(int i, int j, int n, Mesa m) {
 		xstart=i;
 		ystart=j;
 		reset();
 		id=n;
 		isWhite=(id==0);
-		game=g;
+		mesa=m;
 	}
 	
 	void draw(Graphics g) {
@@ -154,10 +154,10 @@ class Ball {
 	}
 	
 	void die() {
-		if (isWhite) game.loseGame();
-		else {//fallen
+		if (isWhite) mesa.loseGame();
+		else {//fell in a hole
 			isAlive=false;
-			game.shineAt((int)x,(int)y);
+			mesa.shineAt((int)x,(int)y);
 		}
 	}
 	

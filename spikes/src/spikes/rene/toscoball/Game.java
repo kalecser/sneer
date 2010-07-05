@@ -5,6 +5,7 @@ package spikes.rene.toscoball;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 
 public class Game {
@@ -17,12 +18,11 @@ public class Game {
 	public static void main(String args[]) {new Game();}
 
 	private Game() {
-		mesa=new Mesa(6, this);
+		mesa=new Mesa(this);
 
 		window=new JFrame("toscoBall");
 		window.addKeyListener(new TeclasListener());
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setBounds(0,0,512,480);
 		window.setResizable(false);
 		window.setContentPane(mesa);
 		window.pack();
@@ -51,9 +51,14 @@ public class Game {
 		System.exit(0);
 	}
 	
+	void winGame() {
+		JOptionPane.showMessageDialog(null, "You won the game!", "You Win", JOptionPane.INFORMATION_MESSAGE);
+		mesa.stopGame();
+	}
+	
 	void loseGame() {
-		mesa.restartGame();
-		//endGame();
+		JOptionPane.showMessageDialog(null, "You lost the game.", "Game Over", JOptionPane.INFORMATION_MESSAGE);
+		mesa.stopGame();
 	}
 	
 	void shineAt(int x, int y) {

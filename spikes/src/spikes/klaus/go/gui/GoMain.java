@@ -31,7 +31,7 @@ public class GoMain {
 	private void init() {
 		Register<Move> moveRegister = my(Signals.class).newRegister(null);
 		new GoFrame(moveRegister, StoneColor.BLACK, 0);
-		new GoFrame(moveRegister, StoneColor.WHITE, 500);
+		new GoFrame(moveRegister, StoneColor.WHITE, 1);
 	}
 
 }
