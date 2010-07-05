@@ -10,13 +10,14 @@ import javax.swing.JPanel;
 
 
 class Mesa extends JPanel {
+	private static final long serialVersionUID = 1L;
 	private final Image mesaImg;
 	private final Image[]
 	    crossImg,
 	    menuImg,
 	    barImg;
 	private int
-		numBalls,
+		numBalls=7,
 		dist=95,
 		subImg=0,
 		power=7,
@@ -27,28 +28,29 @@ class Mesa extends JPanel {
 		isRunning=false;
 	private double angle=0;
 	
+	private Game game;
 	private Star star;
 	private Ball whiteBall;
 	private Ball[] balls;
 	private Hole[] holes;
 	private Wall[] walls;
 	
-	Mesa(int n, Game g) {
+	Mesa(Game g) {
 		setPreferredSize(new Dimension(512,480));
 		setLayout(null);
-		numBalls=n+1; //white ball into account
+		game=g;
 		
 		//create all game objects
 		
-		whiteBall=new Ball(161,281,0,g);
+		whiteBall=new Ball(161,281,0,this);
 		balls=new Ball[] {
 			whiteBall,
-			new Ball(321,281,1,g),
-			new Ball(345,265,2,g),
-			new Ball(345,297,3,g),
-			new Ball(369,249,4,g),
-			new Ball(369,281,5,g),
-			new Ball(369,313,6,g)
+			new Ball(321,281,1,this),
+			new Ball(345,265,2,this),
+			new Ball(345,297,3,this),
+			new Ball(369,249,4,this),
+			new Ball(369,281,5,this),
+			new Ball(369,313,6,this)
 		};
 		
 		holes = new Hole[] {
@@ -115,7 +117,6 @@ class Mesa extends JPanel {
 
 	@Override
 	public void paintComponent(Graphics g) {
-		
 		if (!isRunning) {//intro images
 			subImgCounter++; if (subImgCounter>7) {subImgCounter=0; subImg=(subImg+1) % 6;}
 			g.drawImage(menuImg[subImg],0,0,null);
@@ -135,7 +136,7 @@ class Mesa extends JPanel {
 		for (int i=0; i<numBalls; i++) {if (balls[i].isMoving()) return;}
 		
 		//draw crosshair
-		g.drawImage(crossImg[Ball.subImg+((int)((360-angle)/1.40625) % 4)*8],(int)(whiteBall.x+M.lengthdirx(dist,angle)-7),(int)(whiteBall.y+M.lengthdiry(dist,angle)-7),null);
+		g.drawImage(crossImg[Ball.subImg+((int)((360-angle)/1.40625) % 4)*8],(int)Math.max(41,Math.min(457,(whiteBall.x+M.lengthdirx(dist,angle)-7))),(int)Math.max(121,Math.min(425,(whiteBall.y+M.lengthdiry(dist,angle)-7))),null);
 	
 		//update power meter with double delay
 		if (subImgCounter==0) {powerCounter++; if (powerCounter==3) {powerCounter=0;
@@ -156,13 +157,18 @@ class Mesa extends JPanel {
 				}
 			
 				//hole>ball
-				for (int i=0; i<6; i++) {holes[i].checkCollision(balls);	}
+				for (int i=0; i<6; i++) {holes[i].checkCollision(balls);}
 				
 				//wall>ball
-				for (int i=0; i<6; i++) {walls[i].checkCollision(balls);	}
+				for (int i=0; i<6; i++) {walls[i].checkCollision(balls);}
 			
 				//prevent ball smashing
 				for (int i=0; i<numBalls; i++) {balls[i].checkExpulse(balls);}
+				
+				//check for victory condition: all balls killed except for white
+				boolean should=true;
+				for (int i=1; i<numBalls; i++) {if (balls[i].isAlive) should=false;}
+				if (should) game.winGame();
 		}
 		repaint();
 	}
@@ -183,6 +189,15 @@ class Mesa extends JPanel {
 	
 	void beginGame() {
 		isRunning=true;
+	}
+	
+	void stopGame() {
+		restartGame();
+		isRunning=false;
+	}
+	
+	void loseGame() {
+		game.loseGame();
 	}
 	
 	void restartGame() {

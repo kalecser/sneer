@@ -7,7 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
-import java.awt.Shape;
+//import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -135,22 +135,29 @@ public class GoBoardPanel extends JPanel {
 
 	
 	private void paintInEnvironment(Graphics graphics) {
-		Graphics2D buffer = getBuffer();
+		Graphics2D buffer = getBoardBuffer(); //getBuffer();
 		
-	    buffer.setColor(new Color(228,205,152,90));
+	    buffer.setColor(new Color(228,205,152));//,90));
 		buffer.fillRect(0, 0, SCREEN_SIZE, SCREEN_SIZE);
 		
-		buffer.setColor(new Color(228,205,152));
-		buffer.fill(new Rectangle2D.Float(MARGIN, MARGIN, BOARD_IMAGE_SIZE, BOARD_IMAGE_SIZE));
+		//buffer.setColor(new Color(228,205,152));
+		//buffer.fill(new Rectangle2D.Float(MARGIN, MARGIN, BOARD_IMAGE_SIZE, BOARD_IMAGE_SIZE));
 	    
+		
 		buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		buffer.setColor(Color.black);
 	
-		paintGrid(buffer);		
+		paintGridSmall(buffer);		
 		drawHoverStone(buffer);
 		paintStones(buffer);
-		
-		graphics.drawImage(_bufferImage, 0, 0, this);
+
+		//graphics.drawImage(_bufferImage, 0, 0, this);
+		for (int i=0; i<9; i++) {
+			int x=(int)(MARGIN+(BOARD_IMAGE_SIZE+CELL_SIZE)*((i % 3)-1));
+			int y=(int)(MARGIN+(BOARD_IMAGE_SIZE+CELL_SIZE)*(Math.floor(i/3)-1));
+			graphics.drawImage(_bufferImage, x, y, this);
+		}
+		((Graphics2D) graphics).draw(new Rectangle2D.Float(MARGIN+1, MARGIN+1, BOARD_IMAGE_SIZE-2, BOARD_IMAGE_SIZE-2));
 		
 		int scW=scoreWhite().currentValue(),
 		scB=scoreBlack().currentValue();
@@ -170,18 +177,29 @@ public class GoBoardPanel extends JPanel {
 			graphics.setColor(new Color(255, 255, 255, 90));
 			
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		paintStoneOnCoordinates(graphics, toCoordinate(_hoverX), toCoordinate(_hoverY), false);
+		paintStoneOnCoordinates(graphics, toCoordinateSmall(_hoverX), toCoordinateSmall(_hoverY), false);
 
 	}
 
-	private void paintGrid(Graphics2D buffer) {
+	//private void paintGrid(Graphics2D buffer) {
+	//	float c = 0;
+	//	for(int i = 0; i < BOARD_SIZE; i++ ) {
+	//		buffer.setColor(Color.black);
+	//		buffer.draw(new Line2D.Float(c+MARGIN, MARGIN, c+MARGIN, MARGIN+BOARD_IMAGE_SIZE));
+	//		buffer.draw(new Line2D.Float(MARGIN, c+MARGIN, MARGIN+BOARD_IMAGE_SIZE, c+MARGIN));
+	//		c += CELL_SIZE;
+	//	}
+	//}
+	
+	private void paintGridSmall(Graphics2D buffer) {
 		float c = 0;
-		for(int i = 0; i < BOARD_SIZE; i++ ) {
+		for(int i = 0; i <= BOARD_SIZE; i++ ) {
 			buffer.setColor(Color.black);
-			buffer.draw(new Line2D.Float(c+MARGIN, MARGIN, c+MARGIN, MARGIN+BOARD_IMAGE_SIZE));
-			buffer.draw(new Line2D.Float(MARGIN, c+MARGIN, MARGIN+BOARD_IMAGE_SIZE, c+MARGIN));
+			buffer.draw(new Line2D.Float(c, 0, c, BOARD_IMAGE_SIZE+CELL_SIZE));
+			buffer.draw(new Line2D.Float(0, c, BOARD_IMAGE_SIZE+CELL_SIZE, c));
 			c += CELL_SIZE;
 		}
+		
 	}
 
 	private void paintStones(Graphics2D graphics) {
@@ -192,7 +210,7 @@ public class GoBoardPanel extends JPanel {
 				paintStoneOnPosition(graphics, x, y);
 			
 	}
-
+	
 	private void paintStoneOnPosition(Graphics2D graphics, int x, int y) {
 		StoneColor color = _board.stoneAt(x, y);
 		boolean dead=false;
@@ -205,8 +223,11 @@ public class GoBoardPanel extends JPanel {
 			else return;
 		}
 		
-		float cx = toCoordinate(scrollX(x));		
-		float cy = toCoordinate(scrollY(y));		
+		//float cx = toCoordinate(scrollX(x));		
+		//float cy = toCoordinate(scrollY(y));		
+		
+		float cx = toCoordinateSmall(scrollX(x));		
+		float cy = toCoordinateSmall(scrollY(y));		
 	
 		graphics.setColor(toAwtColor(color));
 		
@@ -218,20 +239,30 @@ public class GoBoardPanel extends JPanel {
 		return color == StoneColor.BLACK? Color.black: Color.white;
 	}
 
+	//private int scrollXsmall(int x) { return (x + _scrollX) % BOARD_SIZE; }
+	//private int scrollYsmall(int y) { return (y + _scrollY) % BOARD_SIZE; }
+	
 	private int scrollX(int x) { return (x + _scrollX) % BOARD_SIZE; }
 	private int unscrollX(int x) { return (BOARD_SIZE + x - _scrollX) % BOARD_SIZE; }
 
 	private int scrollY(int y) { return (y + _scrollY) % BOARD_SIZE; }
 	private int unscrollY(int y) { return (BOARD_SIZE + y - _scrollY) % BOARD_SIZE; }
 	
-	private Graphics2D getBuffer() {
-		_bufferImage = (BufferedImage)createImage(SCREEN_SIZE, SCREEN_SIZE);
+	//private Graphics2D getBuffer() {
+	//	_bufferImage = (BufferedImage)createImage(SCREEN_SIZE, SCREEN_SIZE);
+	//    return _bufferImage.createGraphics();
+	//}
+	private Graphics2D getBoardBuffer() {
+		_bufferImage = (BufferedImage)createImage((int)(BOARD_IMAGE_SIZE+CELL_SIZE), (int)(BOARD_IMAGE_SIZE+CELL_SIZE));
 	    return _bufferImage.createGraphics();
 	}
 
 
-	private float toCoordinate(int position) {
-		return position * CELL_SIZE + MARGIN;
+	//private float toCoordinate(int position) {
+	//	return position * CELL_SIZE + MARGIN;
+	//}
+	private float toCoordinateSmall(int position) {
+		return position * CELL_SIZE;
 	}
 	
 	private int toScreenPosition(int coordinate) {
@@ -245,15 +276,37 @@ public class GoBoardPanel extends JPanel {
 		float d = STONE_DIAMETER;
 		if (dead) d*=0.6;
 		
-		Shape stone = new Ellipse2D.Float(x - (d / 2), y - (d / 2), d, d);
-		graphics.fill(stone);
+		graphics.fill(new Ellipse2D.Float(x - (d / 2), y - (d / 2), d, d));
+		//wrapping
+		int buffersize=(int)(BOARD_IMAGE_SIZE+CELL_SIZE);
+		if (x==0) graphics.fill(new Ellipse2D.Float(buffersize - (d / 2), y - (d / 2), d, d));
+		if (y==0) graphics.fill(new Ellipse2D.Float(x - (d / 2), buffersize - (d / 2), d, d));
+		if (x==buffersize) graphics.fill(new Ellipse2D.Float(- (d / 2), y - (d / 2), d, d)); 
+		if (y==buffersize) graphics.fill(new Ellipse2D.Float(x - (d / 2), - (d / 2), d, d)); 
+		
+		if (x==0 & y==0) graphics.fill(new Ellipse2D.Float(buffersize - (d / 2), buffersize  - (d / 2), d, d));
+		if (x==buffersize & y==0) graphics.fill(new Ellipse2D.Float(- (d / 2), buffersize  - (d / 2), d, d));
+		if (x==buffersize & y==buffersize) graphics.fill(new Ellipse2D.Float(- (d / 2), - (d / 2), d, d));
+		if (x==0 & y==buffersize) graphics.fill(new Ellipse2D.Float(buffersize- (d / 2), - (d / 2), d, d));
 	}
 	
 	private void paintStoneOnCoordinates(Graphics2D g, float x, float y, boolean dead, boolean isBlack) {
 		int d = (int)STONE_DIAMETER;
 		if (dead) d*=0.6;
+		Image spr=(isBlack ? blackStoneImg : whiteStoneImg);
 		
-		g.drawImage((isBlack ? blackStoneImg : whiteStoneImg), (int)x-d/2, (int)y-d/2,d,d, null);
+		g.drawImage(spr, (int)x-d/2, (int)y-d/2,d,d, null);
+		//wrapping
+		int buffersize=(int)(BOARD_IMAGE_SIZE+CELL_SIZE);
+		if (x==0) g.drawImage(spr, buffersize-d/2, (int)y-d/2,d,d, null);
+		if (y==0) g.drawImage(spr, (int)x-d/2, buffersize-d/2,d,d, null);
+		if (x==buffersize) g.drawImage(spr, -d/2, (int)y-d/2,d,d, null);
+		if (y==buffersize) g.drawImage(spr, (int)x-d/2, -d/2,d,d, null);
+		
+		if (x==0 & y==0) g.drawImage(spr, buffersize-d/2, buffersize-d/2,d,d, null);
+		if (x==buffersize & y==0) g.drawImage(spr, -d/2, buffersize-d/2,d,d, null);
+		if (x==buffersize & y==buffersize) g.drawImage(spr, -d/2,-d/2,d,d, null);
+		if (x==0 & y==buffersize) g.drawImage(spr, buffersize-d/2, -d/2,d,d, null);
 	}
 	
 	public Signal<Integer> scoreWhite(){
