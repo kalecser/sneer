@@ -52,8 +52,8 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	@SuppressWarnings("unused")
 	private void init() {
 		my(TupleSpace.class).keep(SrcFolderHash.class);
-		publishMySrcFolder();
 		receiveSrcFoldersFromPeers();
+		publishMySrcFolder();
 	}
 
 	

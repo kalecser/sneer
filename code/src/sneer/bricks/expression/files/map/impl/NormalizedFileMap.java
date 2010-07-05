@@ -45,13 +45,26 @@ class NormalizedFileMap implements FileMap {
 	
 	@Override
 	public String getFile(Hash hash) {
-		String path = _data.getPath(hash);
-		if (path == null) return null;
-		return isFolder(path)
-			? null
-			: path;
+		return getFileOrFolder(hash, false);
 	}
 
+	@Override
+	public String getFolder(Hash hash) {
+		return getFileOrFolder(hash, true);
+	}
+
+	@Override
+	public String getPath(Hash hash) {
+		return _data.getPath(hash);
+	}
+	
+	private String getFileOrFolder(Hash hash, boolean isFolder) {
+		String path = getPath(hash);
+		if (path == null) return null;
+		return isFolder == isFolder(path)
+			? path
+			: null;
+	}
 	
 	@Override
 	public Hash getHash(String path) {
@@ -70,7 +83,7 @@ class NormalizedFileMap implements FileMap {
 	
 	@Override
 	public FolderContents getFolderContents(Hash hash) {
-		String path = _data.getPath(hash);
+		String path = getPath(hash);
 		if (path == null) return null;
 		if (!isFolder(path)) return null;
 		return new FolderContentsGetter(_data, path).result();

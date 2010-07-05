@@ -70,7 +70,7 @@ class FolderDownload extends AbstractDownload {
 	    for (FileOrFolder entry : folderContents.contents)
 	    	startSpinOffDownload(entry).waitTillFinished();
 
-	    finishWithSuccess();
+	    finishRemoteDownloadWithSuccess();
 	}
 
 

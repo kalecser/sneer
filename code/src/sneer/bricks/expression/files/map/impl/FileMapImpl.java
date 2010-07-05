@@ -31,6 +31,14 @@ class FileMapImpl implements FileMap {
 		return _delegate.getFile(hash);
 	}
 
+	public String getFolder(Hash hash) {
+		return _delegate.getFolder(hash);
+	}
+
+	public String getPath(Hash hash) {
+		return _delegate.getPath(hash);
+	}
+
 	public void putFile(String path, long lastModified, Hash hash) {
 		_delegate.putFile(normalize(path), lastModified, hash);
 	}
