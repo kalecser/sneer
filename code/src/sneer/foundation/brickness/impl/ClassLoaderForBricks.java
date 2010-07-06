@@ -83,11 +83,16 @@ abstract class ClassLoaderForBricks extends EagerClassLoader implements BrickCla
 
 	public byte[] toByteArray(final URL classResource) throws IOException {
     	InputStream input = classResource.openStream();
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024*4];
-		int n = 0;
-		while (-1 != (n = input.read(buffer))) 
-			output.write(buffer, 0, n);
-        return output.toByteArray();
+    	try {
+	        ByteArrayOutputStream output = new ByteArrayOutputStream();
+	        byte[] buffer = new byte[1024*4];
+			int n = 0;
+			while (-1 != (n = input.read(buffer))) 
+				output.write(buffer, 0, n);
+	        return output.toByteArray();
+    	}
+    	finally {
+    		input.close();
+    	}
     }
 }
