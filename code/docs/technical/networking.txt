@@ -1,0 +1,26 @@
+TCP SOCKETS
+==============
+
+TCP sockets are used for direct communication between peers. Other means can be used in the future, such as UDP.
+
+Setting "Own Info > Port" allows sockets from peers to be accepted.
+
+Setting "Own Info > Host Address" with a reachable host address (a dyndns host, for example) will help other peers connect to you more easily. This information is not used locally, it is propagated to peers.  
+
+
+
+CONTACT INFO
+================
+
+Nickname - Use whatever you want.
+
+Host (optional) - The host address where the contact will be reached.  
+
+Port (optional) - The TCP port where the contact can be reached.
+
+When establishing a first connection, Contact host and port addresses must be set by one of the sides or both. Once the connection is established, these values will be updated with the own host and port values set by the peer. 
+
+
+
+SIGHTINGS
+=============
