@@ -38,7 +38,7 @@ public class GoBoardPanel extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 
-	private static final int BOARD_SIZE = 9;
+	private static final int BOARD_SIZE = 19;
 	private static final int SCREEN_SIZE = 500;
 	private static final float MARGIN = SCREEN_SIZE/5;
 	private static final float BOARD_IMAGE_SIZE = SCREEN_SIZE - MARGIN*2;

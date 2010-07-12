@@ -55,6 +55,9 @@ Igor ====================================================
 René =================================================
 
 	- Toroidal Go Snapp
+		- Board border (stronger square) is being drawn over stones - Fix.
+		- Detect and display victory/loss condition.
+		- Stone circle Anti-alias. 
 
 
 Klaus =================================================
