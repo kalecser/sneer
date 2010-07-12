@@ -97,7 +97,7 @@ class FileDownload extends AbstractDownload {
 		if (_fileSizeInBlocks > 0)
 			_output = new FileOutputStream(_path);			
 		else
-			finishWithSuccess();
+			finishRemoteDownloadWithSuccess();
 	}
 
 	
@@ -129,7 +129,7 @@ class FileDownload extends AbstractDownload {
 		++_nextBlockToWrite;
 		if (readyToFinish()) {
 			my(IO.class).crash(_output);
-			finishWithSuccess();
+			finishRemoteDownloadWithSuccess();
 		}
 	}
 

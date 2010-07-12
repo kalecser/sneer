@@ -14,7 +14,9 @@ public interface FileMap {
 	
 	Hash getHash(String path);
 
+	String getPath(Hash hash);
 	String getFile(Hash hash);
+	String getFolder(Hash hash);
 	long getLastModified(String file);
 	
 	FolderContents getFolderContents(Hash hash);

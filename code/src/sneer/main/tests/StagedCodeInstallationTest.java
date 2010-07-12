@@ -16,9 +16,9 @@ public class StagedCodeInstallationTest extends CleanTestBase {
 		createTmpFiles(
 			"src/sneer/main/Sneer.java",
 			"bin/sneer/main/Sneer.class",
-			"bin/sneer/main/Sneer$ExclusionFilter.class",
 			"src/sneer/main/SneerVersionUpdater.java",
 			"bin/sneer/main/SneerVersionUpdater.class",
+			"bin/sneer/main/SneerVersionUpdater$ExclusionFilter.class",
 			"src/sneer/main/SneerCodeFolders.java",
 			"bin/sneer/main/SneerCodeFolders.class",
 			"src/toBeDeleted.java",
@@ -42,9 +42,9 @@ public class StagedCodeInstallationTest extends CleanTestBase {
 
 			"src/sneer/main/Sneer.java", //Preserved
 			"bin/sneer/main/Sneer.class",
-			"bin/sneer/main/Sneer$ExclusionFilter.class",
 			"src/sneer/main/SneerVersionUpdater.java",
 			"bin/sneer/main/SneerVersionUpdater.class",
+			"bin/sneer/main/SneerVersionUpdater$ExclusionFilter.class",
 			"src/sneer/main/SneerCodeFolders.java",
 			"bin/sneer/main/SneerCodeFolders.class",
 

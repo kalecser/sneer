@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
+import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.Clock;
@@ -120,9 +121,9 @@ abstract class AbstractDownload implements Download {
 	@Override
 	public void waitTillFinished() throws IOException, TimeoutException {
 		_isFinished.waitTillOpen();
-		if (_exception != null)
-			if (_exception instanceof IOException) throw (IOException) _exception;
-			if (_exception instanceof TimeoutException) throw (TimeoutException) _exception;
+		if (_exception == null) return;
+		if (_exception instanceof IOException) throw (IOException) _exception;
+		if (_exception instanceof TimeoutException) throw (TimeoutException) _exception;
 	}
 
 
@@ -185,10 +186,14 @@ abstract class AbstractDownload implements Download {
 	}
 
 
-	void finishWithSuccess() throws IOException {
-		my(DotParts.class).closeDotPart(_path, _lastModified);
-		updateFileMapWith(_path, _actualPath);
+	void finishRemoteDownloadWithSuccess() throws IOException {
+		finishWithSuccess(_path);
+	}
 
+
+	void finishWithSuccess(File mappedPath) throws IOException {
+		my(DotParts.class).closeDotPart(_path, _lastModified);
+		updateFileMapWith(mappedPath, _actualPath);
 		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
 		finish();
 	}
@@ -224,10 +229,15 @@ abstract class AbstractDownload implements Download {
 		if (alreadyMapped == null) return;
 		try {
 			copyContents(alreadyMapped);
-			finishWithSuccess();
+			finishWithSuccess(mappedFileBy(_hash));
 		} catch (IOException ioe) {
 			finishWith(ioe);
 		}
+	}
+
+
+	private File mappedFileBy(Hash hash) {
+		return new File(my(FileMap.class).getPath(hash));
 	}
 
 

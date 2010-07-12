@@ -23,14 +23,16 @@ public class GoFrame extends JFrame {
 	public GoFrame(Register<Move> _move, StoneColor side, int horizontalPosition) {
 		_side = side;
 	
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Go - " + _side.name());	  
 	    setResizable(true);
-	    setBounds(horizontalPosition, 0, 500, 575);
-	    setVisible(true);
 	    setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		addComponentPanel(_move);	
+	    addComponentPanel(_move);
+	    setVisible(true);
+	    int bord=getInsets().left+getInsets().right;
+	    setBounds(horizontalPosition*(500+bord)+100, 100, 500+bord, 575+getInsets().bottom);
+		//this is intended for when the game is running on a single window
+		//setLocationRelativeTo(null);
 	}
 
 	private void addComponentPanel(Register<Move> move) {

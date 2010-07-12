@@ -9,7 +9,7 @@ import sneer.tests.prevalence.fixtures.setup.PrevalenceTestSetup;
 
 public class PrevalenceTest extends SovereignFunctionalTestBase {
 	
-	@Test (timeout = 3000)
+	@Test (timeout = 6000)
 	public void test() {
 		
 		SovereignParty session1 = createParty("Neide");

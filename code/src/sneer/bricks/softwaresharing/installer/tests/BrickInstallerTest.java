@@ -15,10 +15,11 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
-import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
@@ -30,6 +31,7 @@ import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Predicate;
 
 @Ignore
 public class BrickInstallerTest extends BrickTestWithFiles {
@@ -65,19 +67,24 @@ public class BrickInstallerTest extends BrickTestWithFiles {
 		
 		srcFileFor(Brick.class).delete();
 		
-		Signal<Integer> size = blinkingLights().size();
-		assertEquals(0, size.currentValue().intValue());
+		assertEquals(0, errorLights().size());
 		
 		_subject.stageBricksForInstallation();
 		
-		assertEquals(1, size.currentValue().intValue());
+		assertEquals(1, errorLights().size());
 	}
 
 	
 	private ListSignal<Light> blinkingLights() {
 		return my(BlinkingLights.class).lights();
 	}
-	
+
+	private Collection<Light> errorLights() {
+		return my(CollectionUtils.class).filter(blinkingLights().currentElements(), new Predicate<Light>() { @Override public boolean evaluate(Light light) {
+				return light.type() == LightType.ERROR;
+		}});
+	}
+
 	
 	@Test (timeout = 6000)
 	public void stageOneBrick() throws Exception  {
