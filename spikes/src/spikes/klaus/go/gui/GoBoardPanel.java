@@ -7,7 +7,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
-//import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -38,7 +37,7 @@ public class GoBoardPanel extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 
-	private static final int BOARD_SIZE = 19;
+	private static final int BOARD_SIZE = 3;
 	private static final int SCREEN_SIZE = 500;
 	private static final float MARGIN = SCREEN_SIZE/5;
 	private static final float BOARD_IMAGE_SIZE = SCREEN_SIZE - MARGIN*2;
@@ -130,26 +129,32 @@ public class GoBoardPanel extends JPanel {
 	private void paintInEnvironment(Graphics graphics) {
 		Graphics2D buffer = getBuffer();
 		
-	    buffer.setColor(new Color(228,205,152));//,90));
+		//new system: set the buffer transparent so the bounding rectangle can be drawn under it
+		buffer.setColor(new Color(0,0,0,0));
 		buffer.fillRect(0, 0, SCREEN_SIZE, SCREEN_SIZE);
-		
-		//buffer.fill(new Rectangle2D.Float(MARGIN, MARGIN, BOARD_IMAGE_SIZE, BOARD_IMAGE_SIZE));
+			
 		
 		buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		buffer.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		buffer.setColor(Color.black);
-	
 		paintGridSmall(buffer);		
 		drawHoverStone(buffer);
 		paintStones(buffer);
 
-		//graphics.drawImage(_bufferImage, 0, 0, this);
+		//end drawing to buffer, start drawing to screen
+				
+		graphics.setColor(new Color(228,205,152));
+		graphics. fillRect(0, 0, SCREEN_SIZE+10, SCREEN_SIZE+10);
+		graphics.setColor(Color.black);
+		((Graphics2D) graphics).draw(new Rectangle2D.Float(MARGIN+1, MARGIN+1, BOARD_IMAGE_SIZE-2, BOARD_IMAGE_SIZE-2));
+		
+		
 		for (int i=0; i<9; i++) {
 			int x=(int)(MARGIN+(BOARD_IMAGE_SIZE+CELL_SIZE)*((i % 3)-1));
 			int y=(int)(MARGIN+(BOARD_IMAGE_SIZE+CELL_SIZE)*(Math.floor(i/3)-1));
 			graphics.drawImage(_bufferImage, x, y, this);
 		}
 		
-		((Graphics2D) graphics).draw(new Rectangle2D.Float(MARGIN+1, MARGIN+1, BOARD_IMAGE_SIZE-2, BOARD_IMAGE_SIZE-2));
 		
 		int scW=scoreWhite().currentValue(),
 		scB=scoreBlack().currentValue();
@@ -169,15 +174,6 @@ public class GoBoardPanel extends JPanel {
 		paintStoneOnCoordinates(graphics, toCoordinateSmall(_hoverX), toCoordinateSmall(_hoverY), false);
 	}
 
-	//private void paintGrid(Graphics2D buffer) {
-	//	float c = 0;
-	//	for(int i = 0; i < BOARD_SIZE; i++ ) {
-	//		buffer.setColor(Color.black);
-	//		buffer.draw(new Line2D.Float(c+MARGIN, MARGIN, c+MARGIN, MARGIN+BOARD_IMAGE_SIZE));
-	//		buffer.draw(new Line2D.Float(MARGIN, c+MARGIN, MARGIN+BOARD_IMAGE_SIZE, c+MARGIN));
-	//		c += CELL_SIZE;
-	//	}
-	//}
 	private void paintGridSmall(Graphics2D buffer) {
 		float c = 0;
 		for(int i = 0; i <= BOARD_SIZE; i++ ) {
@@ -226,18 +222,12 @@ public class GoBoardPanel extends JPanel {
 	private int scrollY(int y) { return (y + _scrollY) % BOARD_SIZE; }
 	private int unscrollY(int y) { return (BOARD_SIZE + y - _scrollY) % BOARD_SIZE; }
 	
-	//private Graphics2D getBuffer() {
-	//	_bufferImage = (BufferedImage)createImage(SCREEN_SIZE, SCREEN_SIZE);
-	//    return _bufferImage.createGraphics();
-	//}
 	private Graphics2D getBuffer() {
-		_bufferImage = (BufferedImage)createImage((int)(BOARD_IMAGE_SIZE+CELL_SIZE), (int)(BOARD_IMAGE_SIZE+CELL_SIZE));
-	    return _bufferImage.createGraphics();
+		_bufferImage = new BufferedImage((int)(BOARD_IMAGE_SIZE+CELL_SIZE), (int)(BOARD_IMAGE_SIZE+CELL_SIZE), 
+			      BufferedImage.TYPE_INT_ARGB);
+		return (Graphics2D)_bufferImage.getGraphics();
 	}
 
-	//private float toCoordinate(int position) {
-	//	return position * CELL_SIZE + MARGIN;
-	//}
 	private float toCoordinateSmall(int position) {
 		return position * CELL_SIZE;
 	}

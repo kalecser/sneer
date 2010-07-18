@@ -30,8 +30,8 @@ public class GoFrame extends JFrame {
 	    addComponentPanel(_move);
 	    setVisible(true);
 	    int bord=getInsets().left+getInsets().right;
-	    setBounds(horizontalPosition*(500+bord)+100, 100, 500+bord, 575+getInsets().bottom);
-		//this is intended for when the game is running on a single window
+	    setBounds(horizontalPosition*(500+bord)+100, 100, 500+bord, 575);
+		//this is for when the game is running on a single window
 		//setLocationRelativeTo(null);
 	}
 
