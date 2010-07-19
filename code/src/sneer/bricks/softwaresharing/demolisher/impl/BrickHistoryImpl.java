@@ -8,19 +8,19 @@ import java.util.List;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.softwaresharing.BrickInfo;
+import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
 
-class BrickInfoImpl implements BrickInfo {
+class BrickHistoryImpl implements BrickHistory {
 
 	
 	private final String _brickName;
 	private final CacheMap<Hash, BrickVersionImpl> _versionsByHash = CacheMap.newInstance();
 
 	
-	public BrickInfoImpl(String brickName, Hash packageHash, boolean isCurrent) throws IOException {
+	public BrickHistoryImpl(String brickName, Hash packageHash, boolean isCurrent) throws IOException {
 		my(Logger.class).log("BrickInfo created: " + brickName);
 		_brickName = brickName;
 		addVersionIfNecessary(packageHash, isCurrent);

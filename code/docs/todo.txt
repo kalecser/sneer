@@ -83,6 +83,7 @@ Klaus =================================================
 		- Remove all calls to Thread.sleep() including indirect.
 
 	- Freedom7 - "Me Too" for Bricks 
+		- Uncomment check in NormalizedFileMap#putFolder()
 		- Unignore Freedom7.meToo
 			- BrickSpaceImpl.init() uncomment.
 			- BrickInstallerTest (requires BrickSpaceImpl#init())

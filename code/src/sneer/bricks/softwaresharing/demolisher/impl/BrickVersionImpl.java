@@ -8,7 +8,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
-import sneer.bricks.expression.files.map.FileMap;
+import sneer.bricks.expression.files.hasher.FolderContentsHasher;
 import sneer.bricks.expression.files.map.visitors.FileMapGuide;
 import sneer.bricks.expression.files.map.visitors.FolderStructureVisitor;
 import sneer.bricks.expression.files.protocol.FolderContents;
@@ -18,21 +18,21 @@ import sneer.bricks.softwaresharing.FileVersion;
 
 class BrickVersionImpl implements BrickVersion {
 
-	private final Hash _hash;
+	private final FolderContents _contents;
 	private final List<FileVersion> _files;
 	
 	private Status _status;
 	private boolean _stagedForExecution;
 	
 	BrickVersionImpl(Hash hashOfPackage, boolean isCurrent) throws IOException {
-		_hash = BrickFilter.mapOnlyFilesFromThisBrick(hashOfPackage);
+		_contents = BrickFilter.retrieveOnlyFilesFromThisBrick(hashOfPackage);
 		_files = findFiles();
 		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
 	}
 
 
 	@Override public List<FileVersion> files() { return _files; }
-	@Override public Hash hash() { return _hash; }
+	@Override public Hash hash() { return my(FolderContentsHasher.class).hash(_contents); }
 	@Override public boolean isStagedForExecution() { return _stagedForExecution; }
 	@Override public Status status() { return _status; }
 
@@ -65,7 +65,7 @@ class BrickVersionImpl implements BrickVersion {
 
 
 	private FolderContents folderContents() {
-		return my(FileMap.class).getFolderContents(_hash);
+		return _contents;
 	}
 
 	

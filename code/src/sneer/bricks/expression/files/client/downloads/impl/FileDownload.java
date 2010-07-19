@@ -60,7 +60,7 @@ class FileDownload extends AbstractDownload {
 
 	
 	private void receiveFileBlock(FileContents contents) {
-		registerActivity();
+		recordActivity();
 
 		if (isFinished()) return;
 
@@ -180,6 +180,11 @@ class FileDownload extends AbstractDownload {
 	void copyContents(Object contents) throws IOException {
 		if (!(contents instanceof String)) throw new IOException("Wrong type of contents received. Should be String but was " + contents.getClass());
 		my(IO.class).files().copyFile(new File((String)contents), _path);
+	}
+
+	@Override
+	protected boolean isWaitingForActivity() {
+		return !isFinished();
 	}
 
 }

@@ -18,9 +18,6 @@ import sneer.tests.SovereignParty;
 
 public class Freedom7Test extends SovereignFunctionalTestBase {
 	
-//	private final JavaCompiler _compiler = my(JavaCompiler.class);
-
-	
 	@Override
 	protected SovereignParty createParty(String name) {
 		SovereignParty result = super.createParty(name);

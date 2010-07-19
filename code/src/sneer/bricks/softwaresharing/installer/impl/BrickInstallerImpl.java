@@ -18,7 +18,7 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.software.bricks.compiler.BrickCompilerException;
 import sneer.bricks.software.bricks.compiler.Builder;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.bricks.softwaresharing.BrickInfo;
+import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
@@ -66,7 +66,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 	private void prepareStagedSrc() throws IOException {
 		copyFolder(srcFolder(), _srcStage);		
 		
-		for (BrickInfo brickInfo : stagedBricks())
+		for (BrickHistory brickInfo : stagedBricks())
 			prepareStagedSrc(brickInfo);
 	}
 
@@ -76,9 +76,9 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 
 
-	private List<BrickInfo> stagedBricks() {
-		List<BrickInfo> result = new ArrayList<BrickInfo>();
-		for(BrickInfo brickInfo: my(BrickSpace.class).availableBricks()) {
+	private List<BrickHistory> stagedBricks() {
+		List<BrickHistory> result = new ArrayList<BrickHistory>();
+		for(BrickHistory brickInfo: my(BrickSpace.class).availableBricks()) {
 			BrickVersion version = brickInfo.getVersionStagedForInstallation();
 			if (version != null) result.add(brickInfo);
 		}
@@ -88,17 +88,17 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 
 
-	private void prepareStagedSrc(BrickInfo brickInfo) throws IOException {
+	private void prepareStagedSrc(BrickHistory brickInfo) throws IOException {
 		prepareStagedSrc(brickSrcFolder(brickInfo), brickInfo.getVersionStagedForInstallation());
 	}
 
 
-	private File brickSrcFolder(BrickInfo brickInfo) {
+	private File brickSrcFolder(BrickHistory brickInfo) {
 		return new File(_srcStage, packageFolder(brickInfo));
 	}
 
 
-	private String packageFolder(BrickInfo brickInfo) {
+	private String packageFolder(BrickHistory brickInfo) {
 		return packageFolder(brickInfo.name());
 	}
 

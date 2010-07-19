@@ -22,7 +22,7 @@ import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.bricks.softwaresharing.BrickInfo;
+import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.demolisher.Demolisher;
 import sneer.bricks.softwaresharing.publisher.SourcePublisher;
@@ -35,7 +35,7 @@ import sneer.foundation.lang.Consumer;
 
 class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
-	private final CacheMap<String, BrickInfo> _availableBricksByName = CacheMap.newInstance();
+	private final CacheMap<String, BrickHistory> _availableBricksByName = CacheMap.newInstance();
 
 	private final EventNotifier<Seal> _newBuildingFound = my(EventNotifiers.class).newInstance();
 	
@@ -58,8 +58,8 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 	
 	@Override
-	public Collection<BrickInfo> availableBricks() {
-		return new ArrayList<BrickInfo>(_availableBricksByName.values());
+	public Collection<BrickHistory> availableBricks() {
+		return new ArrayList<BrickHistory>(_availableBricksByName.values());
 	}
 
 	

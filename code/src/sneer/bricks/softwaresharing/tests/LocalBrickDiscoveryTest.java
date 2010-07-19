@@ -19,11 +19,11 @@ import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
-import sneer.bricks.softwaresharing.BrickInfo;
+import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
-import sneer.bricks.softwaresharing.BrickInfo.Status;
+import sneer.bricks.softwaresharing.BrickHistory.Status;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
@@ -44,7 +44,7 @@ public class LocalBrickDiscoveryTest extends BrickTestWithFiles {
 	}
 
 	private void assertBrickInfo(String brickName, String... expectedFileNames) {
-		BrickInfo brick = waitForAvailableBrick(brickName, Status.CURRENT);
+		BrickHistory brick = waitForAvailableBrick(brickName, Status.CURRENT);
 
 		assertEquals(1, brick.versions().size());
 		BrickVersion singleVersion = brick.versions().get(0);
@@ -65,7 +65,7 @@ public class LocalBrickDiscoveryTest extends BrickTestWithFiles {
 	}
 	
 	
-	private BrickInfo waitForAvailableBrick(final String brickName, final Status status) {
+	private BrickHistory waitForAvailableBrick(final String brickName, final Status status) {
 		final Latch latch = my(Latches.class).produce();
 		
 		WeakContract contract = my(BrickSpace.class).newBuildingFound().addReceiver(new Consumer<Seal>() { @Override public void consume(Seal publisher) {
@@ -85,8 +85,8 @@ public class LocalBrickDiscoveryTest extends BrickTestWithFiles {
 	}
 
 
-	private BrickInfo findBrick(final String brickName, final Status status) {
-		for (BrickInfo brickInfo : my(BrickSpace.class).availableBricks()) {
+	private BrickHistory findBrick(final String brickName, final Status status) {
+		for (BrickHistory brickInfo : my(BrickSpace.class).availableBricks()) {
 			my(Logger.class).log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Brick found: " + brickInfo.name() + " status: " + brickInfo.status().name());
 			if (brickInfo.name().equals(brickName)
 				&& brickInfo.status() == status)

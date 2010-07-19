@@ -44,8 +44,9 @@ import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.snapps.wind.Shout;
 import sneer.bricks.snapps.wind.Wind;
 import sneer.bricks.software.code.classutils.ClassUtils;
+import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.bricks.softwaresharing.BrickInfo;
+import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
@@ -230,6 +231,8 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private void startSnapps() {
+		startAndKeep(JavaCompiler.class);
+		
 		startAndKeep(SocketOriginator.class);
 		startAndKeep(SocketReceiver.class);
 		startAndKeep(ProbeManager.class);
@@ -240,7 +243,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 		startAndKeep(FileServer.class);
 
-		startAndKeep(Heart.class);
+		startAndKeep(Heart.class);		
 	}
 
 	
@@ -296,7 +299,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private boolean isBrickAvailable(final String brickName, final String brickStatus) {
-		for (BrickInfo brickInfo : my(BrickSpace.class).availableBricks()) {
+		for (BrickHistory brickInfo : my(BrickSpace.class).availableBricks()) {
 			my(Logger.class).log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Brick found: " + brickInfo.name() + " status: " + brickInfo.status().name());
 			if (brickInfo.name().equals(brickName)
 				&& brickInfo.status().name().equals(brickStatus))
@@ -368,21 +371,21 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private void setStagedForInstallation(String brickName) {
-		final BrickInfo brick = availableBrick(brickName);
+		final BrickHistory brick = availableBrick(brickName);
 		final BrickVersion singleVersion = singleVersionOf(brick);
 		brick.setStagedForInstallation(singleVersion, true);
 	}
 
 	
-	private BrickVersion singleVersionOf(BrickInfo brick) {
+	private BrickVersion singleVersionOf(BrickHistory brick) {
 		if (brick.versions().size() != 1)
 			throw new IllegalStateException();
 		return brick.versions().get(0);
 	}
 
 	
-	private BrickInfo availableBrick(String brickName) {
-		for (BrickInfo brick : my(BrickSpace.class).availableBricks())
+	private BrickHistory availableBrick(String brickName) {
+		for (BrickHistory brick : my(BrickSpace.class).availableBricks())
 			if (brick.name().equals(brickName))
 				return brick;
 		throw new IllegalArgumentException();

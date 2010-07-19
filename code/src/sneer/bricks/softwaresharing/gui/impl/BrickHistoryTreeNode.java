@@ -10,13 +10,13 @@ import javax.swing.ImageIcon;
 import javax.swing.tree.TreeNode;
 
 import sneer.bricks.skin.image.ImageFactory;
-import sneer.bricks.softwaresharing.BrickInfo;
+import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickVersion;
-import sneer.bricks.softwaresharing.BrickInfo.Status;
+import sneer.bricks.softwaresharing.BrickHistory.Status;
 
-class BrickInfoTreeNode extends AbstractTreeNodeWrapper<BrickVersion> {
+class BrickHistoryTreeNode extends AbstractTreeNodeWrapper<BrickVersion> {
 
-	private final BrickInfo _brickInfo;
+	private final BrickHistory _brickHistory;
 	private static final ImageIcon _currentBrick = loadIcon("currentBrick.png");
 	private static final ImageIcon _rejectedBrick = loadIcon("rejectedBrick.png");
 	
@@ -29,44 +29,44 @@ class BrickInfoTreeNode extends AbstractTreeNodeWrapper<BrickVersion> {
 	private static final ImageIcon _addDivergingBrick = loadIcon("addDivergingBrick.png");
 
 	private static ImageIcon loadIcon(String fileName){
-		return my(ImageFactory.class).getIcon(BrickInfoTreeNode.class, fileName);
+		return my(ImageFactory.class).getIcon(BrickHistoryTreeNode.class, fileName);
 	}
 	
-	BrickInfoTreeNode(TreeNode parent, BrickInfo brickInfo){
-		super(parent, brickInfo);
-		_brickInfo = brickInfo;
+	BrickHistoryTreeNode(TreeNode parent, BrickHistory brickHistory){
+		super(parent, brickHistory);
+		_brickHistory = brickHistory;
 		
 		getIcon();
 	}
 	
 	@Override
-	public BrickInfo sourceObject() {
-		return _brickInfo;
+	public BrickHistory sourceObject() {
+		return _brickHistory;
 	}
 
 	@Override public ImageIcon getIcon() {
-		if(_brickInfo.status() == Status.DIFFERENT ) {
-			if(Util.isBrickStagedForExecution(_brickInfo))
+		if(_brickHistory.status() == Status.DIFFERENT ) {
+			if(Util.isBrickStagedForExecution(_brickHistory))
 				return _addDifferentBrick;
 			
 			return _differentBrick;
 		}
 		
-		if(_brickInfo.status() == Status.DIVERGING ){
-			if(Util.isBrickStagedForExecution(_brickInfo))
+		if(_brickHistory.status() == Status.DIVERGING ){
+			if(Util.isBrickStagedForExecution(_brickHistory))
 				return _addDivergingBrick;
 
 			return _divergingBrick;
 		}
 		
-		if(_brickInfo.status() == Status.NEW ) {
-			if(Util.isBrickStagedForExecution(_brickInfo))
+		if(_brickHistory.status() == Status.NEW ) {
+			if(Util.isBrickStagedForExecution(_brickHistory))
 				return _addNewBrick;
 
 			return  _newBrick;
 		}
 		
-		if(_brickInfo.status() == Status.REJECTED ) 
+		if(_brickHistory.status() == Status.REJECTED ) 
 			return _rejectedBrick;
 		
 		return _currentBrick;
@@ -74,9 +74,9 @@ class BrickInfoTreeNode extends AbstractTreeNodeWrapper<BrickVersion> {
 	
 	
 	@Override public String toString() {
-		return _brickInfo.isSnapp()
-			? _brickInfo.name() + " (Snapp)"
-			: _brickInfo.name();
+		return _brickHistory.isSnapp()
+			? _brickHistory.name() + " (Snapp)"
+			: _brickHistory.name();
 	}
 
 	
@@ -86,7 +86,7 @@ class BrickInfoTreeNode extends AbstractTreeNodeWrapper<BrickVersion> {
 	}
 
 	@Override protected List<BrickVersion> listChildren() { 
-		Collections.sort(_brickInfo.versions(), new Comparator<BrickVersion>(){ @Override public int compare(BrickVersion v1, BrickVersion v2) {
+		Collections.sort(_brickHistory.versions(), new Comparator<BrickVersion>(){ @Override public int compare(BrickVersion v1, BrickVersion v2) {
 			if(v1.publicationDate()==v2.publicationDate())
 				return usersCount(v1) - usersCount(v2);
 			
@@ -96,6 +96,6 @@ class BrickInfoTreeNode extends AbstractTreeNodeWrapper<BrickVersion> {
 		private int usersCount(BrickVersion v1) {
 			return v1.users().size();
 		}});
-		return _brickInfo.versions(); 
+		return _brickHistory.versions(); 
 	}
 }

@@ -2,7 +2,7 @@ package sneer.bricks.softwaresharing;
 
 import java.util.List;
 
-public interface BrickInfo {
+public interface BrickHistory {
 	
 	public enum Status {
 		/** A brick that has only rejected versions. */

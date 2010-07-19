@@ -5,44 +5,28 @@ import static sneer.foundation.environments.Environments.my;
 import java.util.ArrayList;
 import java.util.List;
 
-import sneer.bricks.expression.files.hasher.FolderContentsHasher;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.foundation.lang.arrays.ImmutableArray;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 class BrickFilter {
 
 	private static final FileMap FileMap = my(FileMap.class);
 	
 
-	static Hash mapOnlyFilesFromThisBrick(Hash hashOfPackage) {
-		FolderContents packageContents = packageContents(hashOfPackage);
-		FolderContents brickContents = filterOtherBricksOutOf(packageContents);
-		
-		@SuppressWarnings("unused")
-		Hash result = brickContents.contents.length() == packageContents.contents.length()
-			? hashOfPackage
-			: my(FolderContentsHasher.class).hash(brickContents);
-		
-		//FileMap.putFolderContents(new File("BogusFileBecauseBrickMappingRemovalIsNotImplementedYet"), brickContents, result);
-		//return result;
-		throw new NotImplementedYet();
-	}
-
-
-	private static FolderContents filterOtherBricksOutOf(FolderContents packageContents) {
+	static FolderContents retrieveOnlyFilesFromThisBrick(Hash hashOfPackage) {
 		List<FileOrFolder> result = new ArrayList<FileOrFolder>();
-		for (FileOrFolder candidate : packageContents.contents)
+		ImmutableArray<FileOrFolder> packageContents = packageContents(hashOfPackage).contents;
+		for (FileOrFolder candidate : packageContents)
 			if (isPartOfBrick(candidate))
 				result.add(candidate);
 		
 		return asTuple(result);
 	}
-	
-	
+
+
 	private static boolean isPartOfBrick(FileOrFolder candidate) {
 		if (!isFolder(candidate)) return true;
 		if (candidate.name.equals("impl")) return true;

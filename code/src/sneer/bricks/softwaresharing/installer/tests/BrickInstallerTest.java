@@ -22,11 +22,12 @@ import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.software.code.classutils.ClassUtils;
+import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
-import sneer.bricks.softwaresharing.BrickInfo;
+import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.installer.BrickInstaller;
 import sneer.foundation.brickness.Brick;
@@ -35,6 +36,10 @@ import sneer.foundation.lang.Predicate;
 
 @Ignore
 public class BrickInstallerTest extends BrickTestWithFiles {
+
+	{
+		my(JavaCompiler.class);
+	}
 
 	{
 		my(FolderConfig.class).stageFolder().set(stageFolder());
@@ -60,7 +65,7 @@ public class BrickInstallerTest extends BrickTestWithFiles {
 			copyClassToSrcFolder(c);
 	}
 
-	
+
 	@Test (timeout = 6000)
 	public void stagingFailureIsReportedAsBlinkingLight() throws Throwable {
 		stageBrickY();
@@ -88,10 +93,13 @@ public class BrickInstallerTest extends BrickTestWithFiles {
 	
 	@Test (timeout = 6000)
 	public void stageOneBrick() throws Exception  {
+		
 		stageBrickY();
 		
 		_subject.stageBricksForInstallation();
 
+		assertEquals(0, errorLights().size());
+		
 		assertStagedFilesExist(
 			"src/sneer/foundation/brickness/Brick.java",
 			"bin/sneer/foundation/brickness/Brick.class",
@@ -118,7 +126,7 @@ public class BrickInstallerTest extends BrickTestWithFiles {
 		
 		waitForAvailableBrick("bricks.y.Y");
 		
-		BrickInfo Y = single(my(BrickSpace.class).availableBricks());
+		BrickHistory Y = single(my(BrickSpace.class).availableBricks());
 		Y.setStagedForInstallation(single(Y.versions()), true);
 	}
 
@@ -204,7 +212,7 @@ public class BrickInstallerTest extends BrickTestWithFiles {
 
 	
 	private boolean isBrickAvailable(final String brickName) {
-		for (BrickInfo brickInfo : my(BrickSpace.class).availableBricks())
+		for (BrickHistory brickInfo : my(BrickSpace.class).availableBricks())
 			if (brickInfo.name().equals(brickName))
 				return true;
 		

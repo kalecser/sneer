@@ -34,6 +34,10 @@ class NormalizedFileMap implements FileMap {
 	@Override
 	public void putFolder(String path, Hash hash) {
 		putPath(path, -1, hash);
+//		Hash resultHash = my(FolderContentsHasher.class).hash(getFolderContents(hash));
+//		if(!hash.equals(resultHash)) {
+//			throw new IllegalArgumentException("HASH: expected " + hash + ", got " + resultHash + " for " + path);
+//		}
 	}
 
 	

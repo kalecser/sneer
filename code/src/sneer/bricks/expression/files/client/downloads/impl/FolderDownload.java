@@ -48,8 +48,6 @@ class FolderDownload extends AbstractDownload {
 	
 	synchronized
 	private void receiveFolder(FolderContents contents) {
-		registerActivity();
-
 		try {
 			tryToReceiveFolder(contents);
 		} catch (Exception e) {
@@ -63,6 +61,7 @@ class FolderDownload extends AbstractDownload {
 
 	    Hash hashOfFolder = my(FolderContentsHasher.class).hash(folderContents);
 	    if (!_hash.equals(hashOfFolder)) return;
+	    
 	    _contentsReceived = folderContents;
 
 	    if (!_path.exists() && !_path.mkdir()) throw new IOException("Unable to create folder: " + _path);
@@ -107,6 +106,12 @@ class FolderDownload extends AbstractDownload {
 	@Override
 	Object mappedContentsBy(Hash hashOfContents) {
 		return my(FileMap.class).getFolderContents(hashOfContents);
+	}
+
+
+	@Override
+	protected boolean isWaitingForActivity() {
+		return _contentsReceived == null;
 	}
 
 

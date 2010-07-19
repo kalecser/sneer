@@ -35,7 +35,7 @@ import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.diff.text.gui.TextDiffPanel;
 import sneer.bricks.snapps.diff.text.gui.TextDiffPanels;
 import sneer.bricks.snapps.system.log.gui.LogConsole;
-import sneer.bricks.softwaresharing.BrickInfo;
+import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.BrickVersion.Status;
@@ -140,8 +140,8 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		return (BrickVersionTreeNode) _lastSelectedNode;
 	}
 	
-	private BrickInfo selectedBrick() {
-		return ((BrickInfoTreeNode)selectedBrickVersionTreeNode()._parent).sourceObject();
+	private BrickHistory selectedBrick() {
+		return ((BrickHistoryTreeNode)selectedBrickVersionTreeNode()._parent).sourceObject();
 	}
 
 	private void tryShowFiles() {

@@ -218,7 +218,8 @@ abstract class AbstractDownload implements Download {
 
 	void startSendingRequests() {
 		_timerContract = my(Timer.class).wakeUpNowAndEvery(REQUEST_INTERVAL, new Closure() { @Override public void run() {
-			checkForTimeOut();
+			checkForActivityTimeOut();
+			checkForDurationTimeOut();
 			publishRequestIfNecessary();
 		}});
 	}
@@ -246,18 +247,26 @@ abstract class AbstractDownload implements Download {
 	abstract void copyContents(Object contents) throws IOException;
 
 
-	protected void registerActivity() {
+	protected void recordActivity() {
 		_lastActivityTime = my(Clock.class).time().currentValue();
 	}
 
 
-	void checkForTimeOut() {
+	private void checkForDurationTimeOut() {
 		Long currentTime = my(Clock.class).time().currentValue();
-		if (currentTime - _lastActivityTime > ACTIVITY_TIMEOUT) timeout("Activity");
 		if (currentTime - _startTime > DURATION_TIMEOUT) timeout("Duration");
 	}
 
+	private void checkForActivityTimeOut() {
+		if(!isWaitingForActivity()) {
+			return;
+		}
+		Long currentTime = my(Clock.class).time().currentValue();
+		if (currentTime - _lastActivityTime > ACTIVITY_TIMEOUT) timeout("Activity");
+	}
 
+	protected abstract boolean isWaitingForActivity();
+	
 	private void timeout(String timeoutCase) {
 		finishWith(new TimeoutException(timeoutCase + " Timeout downloading " + _actualPath.getAbsolutePath()));
 	}
