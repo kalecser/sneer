@@ -1,7 +1,6 @@
 package sneer.bricks.expression.files.map.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.expression.files.hasher.FolderContentsHasher;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.impl.FileMapData.Entry;
 import sneer.bricks.expression.files.protocol.FolderContents;
