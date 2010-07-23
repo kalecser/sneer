@@ -312,7 +312,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	@Override
 	public void stageBricksForInstallation(String... brickNames) {
 		for (String brickName : brickNames)
-			setStagedForInstallation(brickName);
+			setChosenForExecution(brickName);
 		
 		my(BrickStager.class).stageBricksForInstallation();
 	}
@@ -370,7 +370,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	}
 
 	
-	private void setStagedForInstallation(String brickName) {
+	private void setChosenForExecution(String brickName) {
 		final BrickHistory brick = availableBrick(brickName);
 		final BrickVersion singleVersion = singleVersionOf(brick);
 		brick.setChosenForExecution(singleVersion, true);
