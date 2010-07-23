@@ -20,6 +20,7 @@ import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.CacheMap;
@@ -49,13 +50,14 @@ class FileMapperImpl implements FileMapper {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "File Mapping Error", "This can happen if your file has weird characters in the name or if your disk is failing.", e);
 			return my(Crypto.class).digest(new byte[0]);
 		}
-		FileMap.putFile(path, file.lastModified(), result);
+		FileMap.putFile(path, lastModified, result);
 		return result;
 	}
 
 
 	@Override
 	public Hash mapFolder(final File folder, final String... acceptedFileExtensions) throws MappingStopped, IOException {
+		my(Logger.class).log("FileMapper starting to Map folder ", folder);
 		Hash hash = FileMap.getHash(folder.getAbsolutePath());
 		return (hash != null)
 			? hash

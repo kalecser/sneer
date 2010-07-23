@@ -16,12 +16,12 @@ class BuilderImpl implements Builder {
 	@Override
 	public void build(File srcFolder, File destFolder) throws IOException, BrickCompilerException {
 		ListSignal<Language> languages = my(LanguageRegistry.class).languages();
-		if(languages.currentElements().isEmpty()) {
+
+		if(languages.currentElements().isEmpty())
 			throw new IllegalStateException("mute - no languages found");
-		}
-		for (Language language : languages) {
+
+		for (Language language : languages)
 			new Build(srcFolder, destFolder, language);
-		}
 	}
 	
 }

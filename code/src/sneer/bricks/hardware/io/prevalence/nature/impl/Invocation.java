@@ -2,6 +2,7 @@ package sneer.bricks.hardware.io.prevalence.nature.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
@@ -38,6 +39,11 @@ class Invocation implements Producer<Object> {
 			Method method = receiver.getClass().getMethod(methodName, argTypes);
 			method.setAccessible(true);
 			return method.invoke(receiver, args);
+		} catch (InvocationTargetException e) {
+			Throwable cause = e.getTargetException();
+			if (cause instanceof RuntimeException)
+				throw (RuntimeException)cause;
+			throw new IllegalStateException("Exception trying to invoke " + receiver.getClass() + "." + methodName, cause);
 		} catch (Exception e) {
 			throw new IllegalStateException("Exception trying to invoke " + receiver.getClass() + "." + methodName, e);
 		}

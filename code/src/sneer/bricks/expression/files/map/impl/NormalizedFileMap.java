@@ -14,9 +14,6 @@ import sneer.bricks.hardware.io.log.Logger;
  * Expects all path args to have unix-style separators "/" and no trailing separators.
  * 
  * IMPORTANT: Folders are represented with lastModifiedDate -1.
- *
- *   
- *   
  **/
 class NormalizedFileMap implements FileMap {
 
