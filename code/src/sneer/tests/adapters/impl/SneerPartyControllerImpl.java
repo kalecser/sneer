@@ -49,7 +49,7 @@ import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
-import sneer.bricks.softwaresharing.installer.BrickInstaller;
+import sneer.bricks.softwaresharing.stager.BrickStager;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
@@ -314,7 +314,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		for (String brickName : brickNames)
 			setStagedForInstallation(brickName);
 		
-		my(BrickInstaller.class).stageBricksForInstallation();
+		my(BrickStager.class).stageBricksForInstallation();
 	}
 
 	

@@ -1,4 +1,4 @@
-package sneer.bricks.softwaresharing.installer.impl;
+package sneer.bricks.softwaresharing.stager.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -21,9 +21,9 @@ import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
-import sneer.bricks.softwaresharing.installer.BrickInstaller;
+import sneer.bricks.softwaresharing.stager.BrickStager;
 
-public class BrickInstallerImpl implements BrickInstaller {
+public class BrickStagerImpl implements BrickStager {
 
 	private final File _srcStage = staged("src");
 	private final File _binStage = staged("bin");
@@ -64,10 +64,10 @@ public class BrickInstallerImpl implements BrickInstaller {
 
 	
 	private void prepareStagedSrc() throws IOException {
-		copyFolder(srcFolder(), _srcStage);		
+		copyFolder(srcFolder(), _srcStage);
 		
-		for (BrickHistory brickInfo : stagedBricks())
-			prepareStagedSrc(brickInfo);
+		for (BrickHistory brick : stagedBricks())
+			prepareStagedSrc(brick);
 	}
 
 
@@ -79,7 +79,7 @@ public class BrickInstallerImpl implements BrickInstaller {
 	private List<BrickHistory> stagedBricks() {
 		List<BrickHistory> result = new ArrayList<BrickHistory>();
 		for(BrickHistory brickInfo: my(BrickSpace.class).availableBricks()) {
-			BrickVersion version = brickInfo.getVersionStagedForInstallation();
+			BrickVersion version = brickInfo.getVersionChosenForInstallation();
 			if (version != null) result.add(brickInfo);
 		}
 		if (result.isEmpty()) throw new IllegalStateException("No staged brick were found.");
@@ -88,8 +88,8 @@ public class BrickInstallerImpl implements BrickInstaller {
 	}
 
 
-	private void prepareStagedSrc(BrickHistory brickInfo) throws IOException {
-		prepareStagedSrc(brickSrcFolder(brickInfo), brickInfo.getVersionStagedForInstallation());
+	private void prepareStagedSrc(BrickHistory brickHistory) throws IOException {
+		prepareStagedSrc(brickSrcFolder(brickHistory), brickHistory.getVersionChosenForInstallation());
 	}
 
 

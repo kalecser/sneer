@@ -1,9 +1,9 @@
-package sneer.bricks.softwaresharing.installer;
+package sneer.bricks.softwaresharing.stager;
 
 import sneer.foundation.brickness.Brick;
 
 @Brick
-public interface BrickInstaller {
+public interface BrickStager {
 
 	void stageBricksForInstallation();
 

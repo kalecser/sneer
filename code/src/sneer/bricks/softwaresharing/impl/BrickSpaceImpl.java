@@ -44,12 +44,11 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	
 	{
 		my(Threads.class).startDaemon("BrickSpaceImpl init", new Closure() { @Override public void run() {
-			//init();
+			init();
 		}});
 	}
 
 	
-	@SuppressWarnings("unused")
 	private void init() {
 		my(TupleSpace.class).keep(SrcFolderHash.class);
 		receiveSrcFoldersFromPeers();

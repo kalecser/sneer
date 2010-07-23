@@ -1,13 +1,13 @@
-package sneer.bricks.softwaresharing.installer.tests;
+package sneer.bricks.softwaresharing.stager.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -20,7 +20,6 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
@@ -29,24 +28,21 @@ import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
 import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
-import sneer.bricks.softwaresharing.installer.BrickInstaller;
+import sneer.bricks.softwaresharing.stager.BrickStager;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Predicate;
 
-@Ignore
-public class BrickInstallerTest extends BrickTestWithFiles {
+public class BrickStagerTest extends BrickTestWithFiles {
 
 	{
 		my(JavaCompiler.class);
-	}
-
-	{
+		
 		my(FolderConfig.class).stageFolder().set(stageFolder());
 		my(FolderConfig.class).srcFolder().set(srcFolder());
 	}
 	
-	final BrickInstaller _subject = my(BrickInstaller.class);
+	final BrickStager _subject = my(BrickStager.class);
 	
 	
 	@Before
@@ -68,33 +64,31 @@ public class BrickInstallerTest extends BrickTestWithFiles {
 
 	@Test (timeout = 6000)
 	public void stagingFailureIsReportedAsBlinkingLight() throws Throwable {
-		stageBrickY();
+		prepareBrickY();
 		
-		srcFileFor(Brick.class).delete();
+		assertTrue(srcFileFor(Brick.class).delete());
 		
 		assertEquals(0, errorLights().size());
-		
 		_subject.stageBricksForInstallation();
-		
 		assertEquals(1, errorLights().size());
 	}
 
 	
-	private ListSignal<Light> blinkingLights() {
-		return my(BlinkingLights.class).lights();
+	private Collection<Light> errorLights() {
+		return my(CollectionUtils.class).filter(blinkingLights(), new Predicate<Light>() { @Override public boolean evaluate(Light light) {
+			return light.type() == LightType.ERROR;
+		}});
 	}
 
-	private Collection<Light> errorLights() {
-		return my(CollectionUtils.class).filter(blinkingLights().currentElements(), new Predicate<Light>() { @Override public boolean evaluate(Light light) {
-				return light.type() == LightType.ERROR;
-		}});
+
+	private List<Light> blinkingLights() {
+		return my(BlinkingLights.class).lights().currentElements();
 	}
 
 	
 	@Test (timeout = 6000)
 	public void stageOneBrick() throws Exception  {
-		
-		stageBrickY();
+		prepareBrickY();
 		
 		_subject.stageBricksForInstallation();
 
@@ -116,18 +110,27 @@ public class BrickInstallerTest extends BrickTestWithFiles {
 	}
 
 	
-	private void stageBrickY() throws IOException {
-		JavaSourceWriter writer = srcWriterFor(srcFolder());
-		writer.write("bricks.y.Y", "@" + Brick.class.getName() + " public interface Y {}");
-		writer.write("bricks.y.impl.YImpl", "class YImpl implements bricks.y.Y {}");
-		
+	private void prepareBrickY() throws IOException {
+		generateBrickY();
+		BrickHistory Y = waitForAvailableBrickY();
+		Y.setChosenForExecution(single(Y.versions()), true);
+	}
+
+
+	private BrickHistory waitForAvailableBrickY() {
 		my(Logger.class).log("Starting discovery of local bricks...");
 		my(BrickSpace.class);
 		
 		waitForAvailableBrick("bricks.y.Y");
 		
-		BrickHistory Y = single(my(BrickSpace.class).availableBricks());
-		Y.setStagedForInstallation(single(Y.versions()), true);
+		return single(my(BrickSpace.class).availableBricks());
+	}
+
+
+	private void generateBrickY() throws IOException {
+		JavaSourceWriter writer = srcWriterFor(srcFolder());
+		writer.write("bricks.y.Y", "@" + Brick.class.getName() + " public interface Y {}");
+		writer.write("bricks.y.impl.YImpl", "class YImpl implements bricks.y.Y {}");
 	}
 
 	
@@ -141,10 +144,10 @@ public class BrickInstallerTest extends BrickTestWithFiles {
 	}
 	
 	
-	private File srcFolder() {
-		return new File(tmpFolder(), "src");
-	}
+	private File srcFolder() { return newTmpFile("src"); }
+	private File stageFolder() { return newTmpFile("stage"); }
 
+	
 	private void assertStagedFilesExist(String... fileNames) {
 		for (String fileName : fileNames) assertStagedFileExists(fileName);
 	}
@@ -160,11 +163,6 @@ public class BrickInstallerTest extends BrickTestWithFiles {
 	}
 
 
-	private File stageFolder() {
-		return new File(tmpFolder(), "stage");
-	}
-
-	
 	private void copyClassToSrcFolder(final Class<?> clazz) throws IOException {
 		my(IO.class).files().copyFile(
 			repositorySrcFileFor(clazz),
@@ -183,12 +181,12 @@ public class BrickInstallerTest extends BrickTestWithFiles {
 	
 	
 	private File repositorySrcFolder() {
-		return new File(repositoryBinFolder(), "src");
+		return new File(repositoryBinFolder().getParentFile(), "src");
 	}
 
 	
 	private File repositoryBinFolder() {
-		return classUtils().classpathRootFor(Brick.class).getParentFile();
+		return classUtils().classpathRootFor(Brick.class);
 	}
 
 	
