@@ -61,18 +61,18 @@ class BrickHistoryImpl implements BrickHistory {
 
 
 	@Override
-	public void setStagedForInstallation(BrickVersion version, boolean staged) {
+	public void setChosenForExecution(BrickVersion version, boolean chosen) {
 		if (!versions().contains(version))
 			throw new IllegalArgumentException();
 		
-		((BrickVersionImpl)version).setStagedForExecution(staged);
+		((BrickVersionImpl)version).setChosenForExecution(chosen);
 	}
 
 
 	@Override
-	public BrickVersion getVersionStagedForInstallation() {
+	public BrickVersion getVersionChosenForInstallation() {
 		for (BrickVersion version : _versionsByHash.values())
-			if (version.isStagedForExecution()) return version;
+			if (version.isChosenForExecution()) return version;
 		
 		return null;
 	}

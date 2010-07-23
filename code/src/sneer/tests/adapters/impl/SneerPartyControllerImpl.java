@@ -373,7 +373,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	private void setStagedForInstallation(String brickName) {
 		final BrickHistory brick = availableBrick(brickName);
 		final BrickVersion singleVersion = singleVersionOf(brick);
-		brick.setStagedForInstallation(singleVersion, true);
+		brick.setChosenForExecution(singleVersion, true);
 	}
 
 	

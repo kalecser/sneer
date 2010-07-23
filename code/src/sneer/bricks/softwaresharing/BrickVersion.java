@@ -23,7 +23,7 @@ public interface BrickVersion {
 	Hash hash();
 	
 	Status status();
-	boolean isStagedForExecution();
+	boolean isChosenForExecution();
 	void setRejected(boolean rejected);
 	
 	long publicationDate();

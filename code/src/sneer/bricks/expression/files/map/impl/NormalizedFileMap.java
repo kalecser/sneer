@@ -1,6 +1,7 @@
 package sneer.bricks.expression.files.map.impl;
 
 import static sneer.foundation.environments.Environments.my;
+import sneer.bricks.expression.files.hasher.FolderContentsHasher;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.impl.FileMapData.Entry;
 import sneer.bricks.expression.files.protocol.FolderContents;
@@ -32,9 +33,8 @@ class NormalizedFileMap implements FileMap {
 	public void putFolder(String path, Hash hash) {
 		putPath(path, -1, hash);
 //		Hash resultHash = my(FolderContentsHasher.class).hash(getFolderContents(hash));
-//		if(!hash.equals(resultHash)) {
+//		if(!hash.equals(resultHash))
 //			throw new IllegalArgumentException("HASH: expected " + hash + ", got " + resultHash + " for " + path);
-//		}
 	}
 
 	

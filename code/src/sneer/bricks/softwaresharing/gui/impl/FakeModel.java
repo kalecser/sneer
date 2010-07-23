@@ -72,7 +72,7 @@ class FakeModel {
 			private final List<String> _users = Arrays.asList(new String[]{"User 4", "User 1", "User 3", "User 2"});
 			
 			@Override public List<FileVersion> files() {return _fileVersions;}
-			@Override public boolean isStagedForExecution() {return _staged;}
+			@Override public boolean isChosenForExecution() {return _staged;}
 			@Override public Status status() {return _status; }
 			@Override public List<String> users() {  return  _users;}			
 			
@@ -99,9 +99,9 @@ class FakeModel {
 			@Override public boolean isSnapp() { return false; }
 			@Override public String name() {return name; }
 			@Override public List<BrickVersion> versions() { return versions;}
-			@Override public void setStagedForInstallation(BrickVersion version, boolean staged) {}
+			@Override public void setChosenForExecution(BrickVersion version, boolean staged) {}
 			@Override public BrickHistory.Status status() { return status; }
-			@Override public BrickVersion getVersionStagedForInstallation() { return null; }
+			@Override public BrickVersion getVersionChosenForInstallation() { return null; }
 		};
 	}
 }

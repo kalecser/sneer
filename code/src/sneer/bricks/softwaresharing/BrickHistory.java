@@ -24,8 +24,8 @@ public interface BrickHistory {
 	String name();
 	
 	List<BrickVersion> versions();
-	void setStagedForInstallation(BrickVersion version, boolean staged);
-	BrickVersion getVersionStagedForInstallation();
+	void setChosenForExecution(BrickVersion version, boolean staged);
+	BrickVersion getVersionChosenForInstallation();
 
 	Status status();
 	boolean isSnapp();

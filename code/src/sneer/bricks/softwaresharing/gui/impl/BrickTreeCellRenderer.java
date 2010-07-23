@@ -25,7 +25,7 @@ class BrickTreeCellRenderer extends DefaultTreeCellRenderer {
 			isStaged(result);
     
     if(value instanceof BrickVersionTreeNode)
-    	if((((BrickVersionTreeNode)value).sourceObject()).isStagedForExecution())
+    	if((((BrickVersionTreeNode)value).sourceObject()).isChosenForExecution())
 			isStaged(result);
     
     return result;

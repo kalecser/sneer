@@ -7,7 +7,7 @@ abstract class Util {
 	
 	static boolean isBrickStagedForExecution(BrickHistory brickInfo) {
 		for (BrickVersion version : brickInfo.versions()) 
-			if(version.isStagedForExecution())
+			if(version.isChosenForExecution())
 				return true;
 			
 		return false;

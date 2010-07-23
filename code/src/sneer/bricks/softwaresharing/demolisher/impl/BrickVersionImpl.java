@@ -33,7 +33,7 @@ class BrickVersionImpl implements BrickVersion {
 
 	@Override public List<FileVersion> files() { return _files; }
 	@Override public Hash hash() { return my(FolderContentsHasher.class).hash(_contents); }
-	@Override public boolean isStagedForExecution() { return _stagedForExecution; }
+	@Override public boolean isChosenForExecution() { return _stagedForExecution; }
 	@Override public Status status() { return _status; }
 
 	
@@ -53,7 +53,7 @@ class BrickVersionImpl implements BrickVersion {
 	}
 
 
-	void setStagedForExecution(boolean value) {
+	void setChosenForExecution(boolean value) {
 		_stagedForExecution = value;
 	}
 
