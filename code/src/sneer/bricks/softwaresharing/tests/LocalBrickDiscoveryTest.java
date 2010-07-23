@@ -29,13 +29,13 @@ import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 import sneer.foundation.testsupport.AssertUtils;
 
+@Ignore
 public class LocalBrickDiscoveryTest extends BrickTestWithFiles {
 
-	@Ignore
 	@Test (timeout = 4000)
 	public void localBrickDiscoveryWithBricksInSubfolders() throws IOException {
-		generateBrick(tmpFolder());
-		my(FolderConfig.class).srcFolder().set(tmpFolder());
+		my(FolderConfig.class).srcFolder().set(newTmpFile("src"));
+		generateBricks();
 
 		my(BrickSpace.class);
 		
@@ -55,8 +55,10 @@ public class LocalBrickDiscoveryTest extends BrickTestWithFiles {
 	}
 
 	
-	private void generateBrick(File srcFolder) throws IOException {
+	private void generateBricks() throws IOException {
+		File srcFolder = my(FolderConfig.class).srcFolder().get();
 		JavaSourceWriter writer = my(JavaSourceWriters.class).newInstance(srcFolder);
+		
 		writer.write("brick.Foo", "@" + Brick.class.getName() + " public interface Foo {}");
 		writer.write("brick.impl.FooImpl", "Contents ignored.");
 		writer.write("brick.tests.FooTest", "Contents ignored.");
