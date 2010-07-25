@@ -36,12 +36,12 @@ abstract class AbstractDownload implements Download {
 	static final int REQUEST_INTERVAL = 15 * 1000;
 
 	protected File _path;
+	protected final File _actualPath;
 	final long _lastModified;
 	final Hash _hash;
 
 	private final Seal _source;
 
-	protected final File _actualPath;
 
 	private long _startTime;
 	private long _lastActivityTime;
@@ -59,18 +59,28 @@ abstract class AbstractDownload implements Download {
 
 
 	AbstractDownload(File path, long lastModified, Hash hashOfFile, Seal source, Runnable toCallWhenFinished) {
+		_actualPath = path;
+
 		_path = dotPartFor(path);
 		_lastModified = lastModified;
 		_hash = hashOfFile;
 
 		_source = source; 
 
-		_actualPath = path;
-
 		_toCallWhenFinished = toCallWhenFinished;
 
 		finishIfLocallyAvailable();
 	}
+
+	
+	abstract protected void subscribeToContents();
+	abstract protected Tuple requestToPublishIfNecessary();
+	abstract protected boolean isWaitingForActivity();
+
+	abstract protected Object mappedContentsBy(Hash hashOfContents);
+	abstract protected void finishWithLocalContents(Object contents) throws IOException, TimeoutException;
+	
+	abstract protected void updateFileMap();
 
 
 	void start() {
@@ -85,34 +95,13 @@ abstract class AbstractDownload implements Download {
 	}
 
 
-	abstract void subscribeToContents();
+	@Override	public File file() {	return _actualPath; }
+	@Override	public Hash hash() { return _hash; }
+	@Override	public Seal source() {	return _source; }
+	@Override	public Signal<Integer> progress() { return _progress.output(); }
 
 
-	@Override
-	public File file() {
-		return _actualPath;
-	}
-
-
-	@Override
-	public Hash hash() {
-		return _hash;
-	}
-
-
-	@Override
-	public Seal source() {
-		return _source;
-	}
-
-
-	@Override
-	public Signal<Integer> progress() {
-		return _progress.output();
-	}
-
-
-	void setProgress(float newValue) {
+	protected void setProgress(float newValue) {
 		_progress.setter().consume(Math.round(100 * newValue));
 	}
 
@@ -163,11 +152,8 @@ abstract class AbstractDownload implements Download {
 		publish(request);
 	}
 
-	
-	abstract Tuple requestToPublishIfNecessary();
-	
 
-	void publish(Tuple request) {
+	protected void publish(Tuple request) {
 		my(TupleSpace.class).acquire(request);
 	}
 
@@ -184,20 +170,12 @@ abstract class AbstractDownload implements Download {
 	}
 
 
-	void finishRemoteDownloadWithSuccess() throws IOException {
-		finishWithSuccess();
-	}
-
-
 	void finishWithSuccess() throws IOException {
 		my(DotParts.class).closeDotPart(_path, _lastModified);
 		updateFileMap();
 		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
 		finish();
 	}
-
-
-	abstract void updateFileMap();
 
 
 	void finish() {
@@ -227,16 +205,11 @@ abstract class AbstractDownload implements Download {
 		Object alreadyMapped = mappedContentsBy(_hash);
 		if (alreadyMapped == null) return;
 		try {
-			copyContents(alreadyMapped);
-		} catch (IOException ioe) {
-			finishWith(ioe);
+			finishWithLocalContents(alreadyMapped);
+		} catch (Exception e) {
+			finishWith(e);
 		}
 	}
-
-
-	abstract Object mappedContentsBy(Hash hashOfContents);
-
-	abstract void copyContents(Object contents) throws IOException;
 
 
 	protected void recordActivity() {
@@ -249,6 +222,7 @@ abstract class AbstractDownload implements Download {
 		if (currentTime - _startTime > DURATION_TIMEOUT) timeout("Duration");
 	}
 
+	
 	private void checkForActivityTimeOut() {
 		if(!isWaitingForActivity())
 			return;
@@ -256,7 +230,6 @@ abstract class AbstractDownload implements Download {
 		if (currentTime - _lastActivityTime > ACTIVITY_TIMEOUT) timeout("Activity");
 	}
 
-	protected abstract boolean isWaitingForActivity();
 	
 	private void timeout(String timeoutCase) {
 		finishWith(new TimeoutException(timeoutCase + " Timeout downloading " + _actualPath.getAbsolutePath()));

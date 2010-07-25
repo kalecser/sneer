@@ -38,7 +38,7 @@ class FolderDownload extends AbstractDownload {
 
 
 	@Override
-	void subscribeToContents() {
+	protected void subscribeToContents() {
 		_folderContentConsumerContract = my(RemoteTuples.class).addSubscription(FolderContents.class, new Consumer<FolderContents>() { @Override public void consume(FolderContents folderContents) {
 			receiveFolder(folderContents);
 		}});
@@ -61,14 +61,19 @@ class FolderDownload extends AbstractDownload {
 	    Hash hashOfFolder = my(FolderContentsHasher.class).hash(folderContents);
 	    if (!_hash.equals(hashOfFolder)) return;
 	    
-	    _contentsReceived = folderContents;
+	    finishWith(folderContents);
+	}
+
+
+	private void finishWith(FolderContents folderContents) throws IOException,	TimeoutException {
+		_contentsReceived = folderContents;
 
 	    if (!_path.exists() && !_path.mkdir()) throw new IOException("Unable to create folder: " + _path);
 
 	    for (FileOrFolder entry : folderContents.contents)
 	    	startSpinOffDownload(entry).waitTillFinished();
 
-	    finishRemoteDownloadWithSuccess();
+	    finishWithSuccess();
 	}
 
 
@@ -80,14 +85,14 @@ class FolderDownload extends AbstractDownload {
 
 
 	@Override
-	void updateFileMap() {
+	protected void updateFileMap() {
 		my(FileMap.class).putFolder(_path.getAbsolutePath(), _hash);
 		my(FileMap.class).rename(_path.getAbsolutePath(), _actualPath.getAbsolutePath());
 	}
 
 
 	@Override
-	Tuple requestToPublishIfNecessary() {
+	protected Tuple requestToPublishIfNecessary() {
 		return _contentsReceived != null
 			? null
 			: new FileRequest(source(), _hash, 0, _path.getAbsolutePath());
@@ -95,13 +100,13 @@ class FolderDownload extends AbstractDownload {
 
 
 	@Override
-	void copyContents(Object contents) {
-		receiveFolder((FolderContents) contents);
+	protected void finishWithLocalContents(Object contents) throws IOException, TimeoutException {
+		finishWith((FolderContents) contents);
 	}
 
 
 	@Override
-	Object mappedContentsBy(Hash hashOfContents) {
+	protected Object mappedContentsBy(Hash hashOfContents) {
 		return my(FileMap.class).getFolderContents(hashOfContents);
 	}
 
