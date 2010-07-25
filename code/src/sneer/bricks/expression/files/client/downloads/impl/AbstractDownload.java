@@ -35,13 +35,13 @@ abstract class AbstractDownload implements Download {
 
 	static final int REQUEST_INTERVAL = 15 * 1000;
 
-	File _path;
+	protected File _path;
 	final long _lastModified;
 	final Hash _hash;
 
 	private final Seal _source;
 
-	private final File _actualPath;
+	protected final File _actualPath;
 
 	private long _startTime;
 	private long _lastActivityTime;
@@ -147,14 +147,12 @@ abstract class AbstractDownload implements Download {
 
 
 	private File dotPartFor(File path) {
-		File dotPart = null;
 		try {
-			dotPart = my(DotParts.class).openDotPartFor(path);
+			return my(DotParts.class).openDotPartFor(path);
 		} catch (IOException e) {
 			finishWith(e);
+			return null;
 		}
-
-		return dotPart;
 	}
 
 
@@ -187,19 +185,19 @@ abstract class AbstractDownload implements Download {
 
 
 	void finishRemoteDownloadWithSuccess() throws IOException {
-		finishWithSuccess(_path);
+		finishWithSuccess();
 	}
 
 
-	void finishWithSuccess(File mappedPath) throws IOException {
+	void finishWithSuccess() throws IOException {
 		my(DotParts.class).closeDotPart(_path, _lastModified);
-		updateFileMapWith(mappedPath, _actualPath);
+		updateFileMap();
 		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
 		finish();
 	}
 
 
-	abstract void updateFileMapWith(File tmpFile, File actualFile);
+	abstract void updateFileMap();
 
 
 	void finish() {
