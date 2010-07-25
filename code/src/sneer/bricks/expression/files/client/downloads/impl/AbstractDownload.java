@@ -69,6 +69,8 @@ abstract class AbstractDownload implements Download {
 
 		_toCallWhenFinished = toCallWhenFinished;
 
+		my(Logger.class).log("Downloading: {} Hash:", _actualPath, _hash);
+
 		finishIfLocallyAvailable();
 	}
 
@@ -84,8 +86,6 @@ abstract class AbstractDownload implements Download {
 
 
 	void start() {
-		my(Logger.class).log("Downloading: {} Hash:", _actualPath, _hash);
-
 		if (isFinished()) return;
 
 		subscribeToContents();
