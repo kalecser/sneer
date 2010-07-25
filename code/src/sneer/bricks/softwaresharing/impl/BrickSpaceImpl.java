@@ -76,31 +76,30 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 		return _newBuildingFound.output();
 	}
 	
+	
+	synchronized
 	private void fetchIfNecessary(final SrcFolderHash srcFolderHash) {
-		shield("writing", new ClosureX<IOException>() { @Override public void run() throws IOException {
+		shield("writing", new ClosureX<Exception>() { @Override public void run() throws Exception {
 
-			File tmpFolderRoot = my(FolderConfig.class).tmpFolderFor(BrickSpace.class);
-			File tmpFolder = new File(tmpFolderRoot, String.valueOf(System.nanoTime()));
+			//if (!isMyOwn(srcFolderHash))
+				download(srcFolderHash);
 			
-			try {
-				Download download = my(FileClient.class).startFolderDownload(tmpFolder, srcFolderHash.value);
-				download.waitTillFinished();
-			} catch (TimeoutException e) {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-			}
-			
-			shield("reading", new ClosureX<IOException>() { @Override public void run() throws IOException {
+			shield("reading", new ClosureX<Exception>() { @Override public void run() throws Exception {
 				accumulateBricks(srcFolderHash);
 			}});
 		}});
 	}
 
 	
-	private void shield(String operation, ClosureX<IOException> closure) {
+	private void shield(String operation, ClosureX<Exception> closure) {
 		try {
 			closure.run();
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error " + operation + " brick sources.", "This might indicate problems with your file device (Hard Drive). :(", e, 30000);
+		} catch (TimeoutException e) {
+			my(BlinkingLights.class).turnOn(LightType.WARNING, "Timeout downloading brick sources.", null, e, 30000);
+		} catch (Exception e) {
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error " + operation + " brick sources.", null, e, 30000);
 		}
 	}
 
@@ -120,12 +119,23 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 		return srcFolderHash.publisher.equals(my(OwnSeal.class).get().currentValue());
 	}
 
+	
 	private void publishMySrcFolder() {
 		my(SourcePublisher.class).publishSourceFolder();
 	}
 
+	
 	private void receiveSrcFoldersFromPeers() {
 		_tupleSubscription = my(TupleSpace.class).addSubscription(SrcFolderHash.class, this);
+	}
+
+
+	private void download(final SrcFolderHash srcFolderHash) throws IOException, TimeoutException {
+		File tmpFolderRoot = my(FolderConfig.class).tmpFolderFor(BrickSpace.class);
+		File tmpFolder = new File(tmpFolderRoot, String.valueOf(System.nanoTime()));
+		
+		Download download = my(FileClient.class).startFolderDownload(tmpFolder, srcFolderHash.value);
+		download.waitTillFinished();
 	}
 
 }

@@ -9,6 +9,7 @@ import java.io.IOException;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
+import sneer.bricks.hardware.io.log.Logger;
 
 class DotPartsImpl implements DotParts {
 
@@ -26,6 +27,8 @@ class DotPartsImpl implements DotParts {
 
 	@Override
 	public File closeDotPart(File dotPartFile, long lastModified) throws IOException {
+		my(Logger.class).log("Closing dotPart file: ", dotPartFile);
+		
 		if (lastModified != -1)
 			dotPartFile.setLastModified(lastModified);
 		

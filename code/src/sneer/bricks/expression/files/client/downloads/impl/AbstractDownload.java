@@ -112,7 +112,7 @@ abstract class AbstractDownload implements Download {
 		if (_exception == null) return;
 		if (_exception instanceof IOException) throw (IOException) _exception;
 		if (_exception instanceof TimeoutException) throw (TimeoutException) _exception;
-		throw new IllegalStateException("Unexpected exception type", _exception);
+		throw new IllegalStateException("Unexpected exception type: " + _exception.getClass(), _exception);
 	}
 
 
@@ -172,9 +172,11 @@ abstract class AbstractDownload implements Download {
 
 	void finishWithSuccess() throws IOException {
 		my(DotParts.class).closeDotPart(_path, _lastModified);
+		my(Logger.class).log("::::::closed " + _path);
 		updateFileMap();
-		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
+		my(Logger.class).log("::::::updated " + _path);
 		finish();
+		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
 	}
 
 

@@ -35,21 +35,29 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 		a().copyToSourceFolder(generateY());
 		
 		newSession(a());
+		System.out.println("\n\n1");
 		
 		a().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
+		System.out.println("\n\n2");
 		b().waitForAvailableBrick("freedom7.y.Y", "NEW");
+		System.out.println("\n\n3");
 		
 		b().stageBricksForInstallation("freedom7.y.Y");
+		System.out.println("\n\n4");
 
 		System.clearProperty("freedom7.y.Y.installed");
 		newSession(b());
+		System.out.println("\n\n5");
 		b().loadBrick("freedom7.y.Y");
+		System.out.println("\n\n6");
 		assertEquals("true", System.getProperty("freedom7.y.Y.installed"));
 
 		b().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
+		System.out.println("\n\n7");
 	}
 
 	
+//	@SuppressWarnings("unused")
 	private boolean isHudsonServer() {
 		return GraphicsEnvironment.isHeadless();
 	}
