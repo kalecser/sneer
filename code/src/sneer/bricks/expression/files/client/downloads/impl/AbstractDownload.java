@@ -267,25 +267,27 @@ abstract class AbstractDownload implements Download {
 	
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((_hash == null) ? 0 : _hash.hashCode());
-		return result;
+//		final int prime = 31;
+//		int result = 1;
+//		result = prime * result + ((_hash == null) ? 0 : _hash.hashCode());
+//		return result;
+		throw new RuntimeException("Delete this method if this exception is never thrown.");
 	}
 
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
-		AbstractDownload other = (AbstractDownload) obj;
-		if (_hash == null) {
-			if (other._hash != null)
-				return false;
-		} else if (!_hash.equals(other._hash))
-			return false;
-		return true;
+//		if (this == obj) return true;
+//		if (obj == null) return false;
+//		if (getClass() != obj.getClass()) return false;
+//		AbstractDownload other = (AbstractDownload) obj;
+//		if (_hash == null) {
+//			if (other._hash != null)
+//				return false;
+//		} else if (!_hash.equals(other._hash))
+//			return false;
+//		return true;
+		throw new RuntimeException("Delete this method if this exception is never thrown.");
 	}
 
 
