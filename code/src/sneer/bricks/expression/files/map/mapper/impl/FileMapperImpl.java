@@ -100,6 +100,14 @@ class FileMapperImpl implements FileMapper {
 		}
 
 
+		synchronized
+		Hash result() throws MappingStopped, IOException {
+			if (_result == null && _exception == null) run();
+			if (_exception != null) throwNarrowed(_exception);
+			return _result;
+		}
+		
+		
 		private void run() {
 			my(CpuThrottle.class).limitMaxCpuUsage(20, new Closure() { @Override public void run() {
 				try {
@@ -107,17 +115,9 @@ class FileMapperImpl implements FileMapper {
 				} catch (Exception e) {
 					_exception = e;
 				} finally {
-					_mappingsByFolder.remove(_folder);					
+					_mappingsByFolder.remove(_folder);
 				}
 			}});
-		}
-
-
-		synchronized
-		Hash result() throws MappingStopped, IOException {
-			if (_result == null && _exception == null) run();
-			if (_exception != null) throwNarrowed(_exception);
-			return _result;
 		}
 
 
@@ -136,7 +136,14 @@ class FileMapperImpl implements FileMapper {
 		private Hash mapFolder(File folder, String... acceptedFileExtensions) throws MappingStopped, IOException {
 			FolderContents contents = new FolderContents(immutable(mapFolderEntries(folder, acceptedFileExtensions)));
 			Hash hash = my(FolderContentsHasher.class).hash(contents);
-			FileMap.putFolder(folder.getAbsolutePath(), hash);
+			try {
+				FileMap.putFolder(folder.getAbsolutePath(), hash);
+			} catch (RuntimeException e) {
+				String entries = "";
+				for (FileOrFolder entry : contents.contents)
+					entries += "\n" + entry.toString();
+				throw new IllegalStateException("Exception trying to map folder: " + folder + " entries: " + entries, e);
+			}
 			return hash;
 		}
 

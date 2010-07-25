@@ -50,6 +50,7 @@ import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.stager.BrickStager;
+import sneer.bricks.softwaresharing.stager.tests.BrickStagerTest;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
@@ -321,7 +322,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	@Override
 	public void enableCodeSharing() {
 		try {
-			tryToCopyRepositoryCode();
+			copyRepositoryCode();
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
@@ -329,9 +330,17 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	}
 
 	
-	private void tryToCopyRepositoryCode() throws IOException {
+	private void copyRepositoryCode() throws IOException {
 		my(Logger.class).log("Copying necessary repository code...");
-		copyRepositorySources();
+
+		BrickStagerTest.copyBrickBaseToSrcFolder();
+		BrickStagerTest.copyClassesToSrcFolder(
+			sneer.main.Sneer.class,
+			sneer.main.SneerVersionUpdater.class,
+			sneer.main.SneerFolders.class,
+			sneer.main.SneerCodeFolders.class
+		);
+		
 		copyUnupdatableBinFiles();
 		my(Logger.class).log("Copying necessary repository code... done.");
 	}
@@ -357,11 +366,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		File from = new File(repositoryBinFolder(), fileName);
 		File to = new File(testBinFolder(), fileName);
 		my(IO.class).files().copyFile(from, to);
-	}
-
-	
-	private void copyRepositorySources() throws IOException {
-		copyToSourceFolder(new File(repositoryBinFolder().getParentFile(), "src"));
 	}
 
 	

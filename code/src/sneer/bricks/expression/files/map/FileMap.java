@@ -24,4 +24,5 @@ public interface FileMap {
 	@Transaction
 	Hash remove(String path);
 	void rename(String fromPath, String toPath);
+	
 }

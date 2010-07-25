@@ -38,15 +38,20 @@ public class BrickStagerTest extends BrickTestWithFiles {
 	{
 		my(JavaCompiler.class);
 		
-		my(FolderConfig.class).stageFolder().set(stageFolder());
-		my(FolderConfig.class).srcFolder().set(srcFolder());
+		my(FolderConfig.class).stageFolder().set(newTmpFile("stage"));
+		my(FolderConfig.class).srcFolder().set(newTmpFile("src"));
 	}
 	
 	final BrickStager _subject = my(BrickStager.class);
 	
 	
 	@Before
-	public void setUpSrc() throws IOException {
+	public void beforeBrickStagerTest() throws IOException {
+		copyBrickBaseToSrcFolder();
+	}
+
+
+	static public void copyBrickBaseToSrcFolder() throws IOException {
 		srcFolder().mkdirs();
 		
 		copyClassesToSrcFolder(
@@ -56,12 +61,6 @@ public class BrickStagerTest extends BrickTestWithFiles {
 	}
 	
 	
-	private void copyClassesToSrcFolder(Class<?>... classes) throws IOException {
-		for (Class<?> c : classes)
-			copyClassToSrcFolder(c);
-	}
-
-
 	@Test (timeout = 6000)
 	public void stagingFailureIsReportedAsBlinkingLight() throws Throwable {
 		prepareBrickY();
@@ -134,18 +133,13 @@ public class BrickStagerTest extends BrickTestWithFiles {
 	}
 
 	
-	private File javaFileNameAt(File rootFolder, Class<?> clazz) {
-		return new File(rootFolder, classUtils().relativeJavaFileName(clazz));
-	}
-	
-	
-	private ClassUtils classUtils() {
+	private static ClassUtils classUtils() {
 		return my(ClassUtils.class);
 	}
 	
 	
-	private File srcFolder() { return newTmpFile("src"); }
-	private File stageFolder() { return newTmpFile("stage"); }
+	private static File srcFolder() { return my(FolderConfig.class).srcFolder().get(); }
+	private File stageFolder() { return my(FolderConfig.class).stageFolder().get(); }
 
 	
 	private void assertStagedFilesExist(String... fileNames) {
@@ -163,29 +157,40 @@ public class BrickStagerTest extends BrickTestWithFiles {
 	}
 
 
-	private void copyClassToSrcFolder(final Class<?> clazz) throws IOException {
+	public static void copyClassesToSrcFolder(Class<?>... classes) throws IOException {
+		for (Class<?> c : classes)
+			copyClassToSrcFolder(c);
+	}
+
+
+	private static void copyClassToSrcFolder(final Class<?> clazz) throws IOException {
 		my(IO.class).files().copyFile(
 			repositorySrcFileFor(clazz),
 			srcFileFor(clazz));
 	}
 
 	
-	private File srcFileFor(final Class<?> clazz) {
+	private static File srcFileFor(final Class<?> clazz) {
 		return javaFileNameAt(srcFolder(), clazz);
 	}
 
 	
-	private File repositorySrcFileFor(final Class<?> clazz) {
+	private static File javaFileNameAt(File rootFolder, Class<?> clazz) {
+		return new File(rootFolder, classUtils().relativeJavaFileName(clazz));
+	}
+	
+	
+	private static File repositorySrcFileFor(final Class<?> clazz) {
 		return new File(repositorySrcFolder(), classUtils().relativeJavaFileName(clazz));
 	}
 	
 	
-	private File repositorySrcFolder() {
+	private static File repositorySrcFolder() {
 		return new File(repositoryBinFolder().getParentFile(), "src");
 	}
 
 	
-	private File repositoryBinFolder() {
+	private static File repositoryBinFolder() {
 		return classUtils().classpathRootFor(Brick.class);
 	}
 
