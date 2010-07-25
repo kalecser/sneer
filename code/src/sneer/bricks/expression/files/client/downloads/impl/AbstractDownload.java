@@ -7,7 +7,6 @@ import java.io.IOException;
 
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
-import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.Clock;
@@ -124,6 +123,7 @@ abstract class AbstractDownload implements Download {
 		if (_exception == null) return;
 		if (_exception instanceof IOException) throw (IOException) _exception;
 		if (_exception instanceof TimeoutException) throw (TimeoutException) _exception;
+		throw new IllegalStateException("Unexpected exception type", _exception);
 	}
 
 
@@ -230,15 +230,9 @@ abstract class AbstractDownload implements Download {
 		if (alreadyMapped == null) return;
 		try {
 			copyContents(alreadyMapped);
-			finishWithSuccess(mappedFileBy(_hash));
 		} catch (IOException ioe) {
 			finishWith(ioe);
 		}
-	}
-
-
-	private File mappedFileBy(Hash hash) {
-		return new File(my(FileMap.class).getPath(hash));
 	}
 
 
@@ -258,9 +252,8 @@ abstract class AbstractDownload implements Download {
 	}
 
 	private void checkForActivityTimeOut() {
-		if(!isWaitingForActivity()) {
+		if(!isWaitingForActivity())
 			return;
-		}
 		Long currentTime = my(Clock.class).time().currentValue();
 		if (currentTime - _lastActivityTime > ACTIVITY_TIMEOUT) timeout("Activity");
 	}

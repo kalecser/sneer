@@ -12,7 +12,6 @@ import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FileRequest;
 import sneer.bricks.expression.files.protocol.FolderContents;
-import sneer.bricks.expression.files.writer.folder.FolderContentsWriter;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.crypto.Hash;
@@ -96,10 +95,8 @@ class FolderDownload extends AbstractDownload {
 
 
 	@Override
-	void copyContents(Object contents) throws IOException {
-		if (!(contents instanceof FolderContents)) throw new IOException("Wrong type of contents received. Should be FolderContents but was " + contents.getClass());
-		_contentsReceived = (FolderContents) contents;
-		my(FolderContentsWriter.class).writeToFolder(_path, _contentsReceived);
+	void copyContents(Object contents) {
+		receiveFolder((FolderContents) contents);
 	}
 
 
