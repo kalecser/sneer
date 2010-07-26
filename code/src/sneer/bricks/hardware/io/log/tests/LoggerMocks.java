@@ -30,7 +30,7 @@ public class LoggerMocks {
 	
 	private Consumer<String> messageKeeper(final String prefix) {
 		return new Consumer<String>() { @Override public void consume(String message) {
-//			if (!message.contains("Brick.java")) return;
+//			if (!message.contains("Y.java")) return;
 			_keptMessages.add(prefix + message);
 			if (!showLog) return;
 			System.out.println(prefix + message);
