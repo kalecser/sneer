@@ -33,54 +33,37 @@ class FileMapperImpl implements FileMapper {
 
 	private final static FileMap FileMap = my(FileMap.class);
 
-	private final CacheMap<File, FolderMapping> _mappingsByFolder = CacheMap.newInstance();
+	private final CacheMap<File, MapperWorker> _workersByFileOrFolder = CacheMap.newInstance();
 
 
-	@Override
-	public Hash mapFile(File file) {
-		String path = file.getAbsolutePath();
-		long lastModified = file.lastModified();
-
-		Hash result = FileMap.getHash(path);
-		if (result != null && lastModified == FileMap.getLastModified(path))
-			return result;
-
+	public Hash mapFileOrFolder(final File fileOrFolder, final String... acceptedFileExtensions) throws MappingStopped,	IOException {
+		my(Logger.class).log("FileMapper starting to Map: ", fileOrFolder);
 		try {
-			result = my(Crypto.class).digest(file);
-		} catch (IOException e) {
-			my(BlinkingLights.class).turnOn(LightType.ERROR, "File Mapping Error", "This can happen if your file has weird characters in the name or if your disk is failing.", e);
-			return my(Crypto.class).digest(new byte[0]);
+			return workerFor(fileOrFolder, acceptedFileExtensions).result();
+		} finally {
+			_workersByFileOrFolder.remove(fileOrFolder);
 		}
-		FileMap.putFile(path, lastModified, result);
-		return result;
 	}
 
 
-	@Override
-	public Hash mapFolder(final File folder, final String... acceptedFileExtensions) throws MappingStopped, IOException {
-		my(Logger.class).log("FileMapper starting to Map folder ", folder);
-		return mappingFor(folder, acceptedFileExtensions).result();
-	}
-
-
-	private FolderMapping mappingFor(final File folder, final String... acceptedFileExtensions) {
-		return _mappingsByFolder.get(folder, new Producer<FolderMapping>() { @Override public FolderMapping produce() {
-			return new FolderMapping(folder, acceptedFileExtensions);
+	private MapperWorker workerFor(final File fileOrFolder, final String... acceptedFileExtensions) {
+		return _workersByFileOrFolder.get(fileOrFolder, new Producer<MapperWorker>() { @Override public MapperWorker produce() {
+			return new MapperWorker(fileOrFolder, acceptedFileExtensions);
 		}});
 	}
 
 
 	@Override
-	public void stopFolderMapping(final File folder) {
-		if (_mappingsByFolder.get(folder) == null) return;
-		final FolderMapping folderMapping = _mappingsByFolder.remove(folder);
+	public void stopMapping(final File folder) {
+		if (_workersByFileOrFolder.get(folder) == null) return;
+		final MapperWorker folderMapping = _workersByFileOrFolder.remove(folder);
 		folderMapping.stop();
 	}
 
 
-	private class FolderMapping {
+	private class MapperWorker {
 
-		private final File _folder;
+		private final File _fileOrFolder;
 		private final FileFilter _extensionsFilter;
 
 		private Hash _result;
@@ -89,11 +72,8 @@ class FileMapperImpl implements FileMapper {
 		private final AtomicBoolean _stop = new AtomicBoolean(false);
 
 
-		private FolderMapping(File folder, String... acceptedFileExtensions) {
-			if (!folder.isDirectory())
-				throw new IllegalArgumentException("Parameter 'folder' must be a directory");
-
-			_folder = folder;
+		private MapperWorker(File fileOrFolder, String... acceptedFileExtensions) {
+			_fileOrFolder = fileOrFolder;
 			_extensionsFilter = filterFor(acceptedFileExtensions);
 		}
 
@@ -116,11 +96,11 @@ class FileMapperImpl implements FileMapper {
 		private void run() {
 			my(CpuThrottle.class).limitMaxCpuUsage(20, new Closure() { @Override public void run() {
 				try {
-					_result = mapFolder(_folder);
+					_result = _fileOrFolder.isDirectory()
+						? mapFolder(_fileOrFolder)
+						: mapFile(_fileOrFolder);
 				} catch (Exception e) {
 					_exception = e;
-				} finally {
-					_mappingsByFolder.remove(_folder);
 				}
 			}});
 		}
@@ -177,6 +157,25 @@ class FileMapperImpl implements FileMapper {
 		}
 
 
+		private Hash mapFile(File file) {
+			String path = file.getAbsolutePath();
+			long lastModified = file.lastModified();
+
+			Hash result = FileMap.getHash(path);
+			if (result != null && lastModified == FileMap.getLastModified(path))
+				return result;
+
+			try {
+				result = my(Crypto.class).digest(file);
+			} catch (IOException e) {
+				my(BlinkingLights.class).turnOn(LightType.ERROR, "File Mapping Error", "This can happen if your file has weird characters in the name or if your disk is failing.", e);
+				return my(Crypto.class).digest(new byte[0]);
+			}
+			FileMap.putFile(path, lastModified, result);
+			return result;
+		}
+
+		
 		private File[] sortedFiles(File folder) {
 			File[] result = folder.listFiles(_extensionsFilter);
 			if (result == null)	return new File[0];

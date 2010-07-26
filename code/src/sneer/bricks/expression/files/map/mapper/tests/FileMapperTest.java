@@ -27,7 +27,7 @@ public class FileMapperTest extends BrickTestWithFiles {
 	
 	@Test (timeout = 3000)
 	public void mapFolder() throws Exception {
-		Hash hash = _subject.mapFolder(fixturesFolder(), "txt");
+		Hash hash = _subject.mapFileOrFolder(fixturesFolder(), "txt");
 		FolderContents folderContents = my(FileMap.class).getFolderContents(hash);
 
 		Collection<String> names = my(CollectionUtils.class).map(folderContents.contents, new Functor<FileOrFolder, String>() { @Override public String evaluate(FileOrFolder fileOrFolder) {
@@ -50,17 +50,19 @@ public class FileMapperTest extends BrickTestWithFiles {
 	@Test (timeout = 3000)
 	public void remappingAChangedFolder() throws IOException, MappingStopped {
 		File newFolder = newFolder("newFolder");
-		Hash hash = _subject.mapFolder(newFolder);
+		Hash hash = _subject.mapFileOrFolder(newFolder);
 		assertStartsWith(new byte[]{-49, -125, -31, 53, 126, -17, -72, -67, -15, 84} , hash.bytes.copy()); //Obtained by regression
 
-		File file = createTmpFileWithFileNameAsContent("newFolder/foo");
-		file.setLastModified(42);
-		hash = _subject.mapFolder(newFolder);
+		File foo = createTmpFileWithFileNameAsContent("newFolder/foo");
+		foo.setLastModified(42);
+		hash = _subject.mapFileOrFolder(newFolder);
 		assertStartsWith(new byte[]{107, 36, 53, 46, 121, -47, 119, 52, 70, -74} , hash.bytes.copy()); //Obtained by regression
 		
-		file.delete();
-		hash = _subject.mapFolder(newFolder);
+		foo.delete();
+		hash = _subject.mapFileOrFolder(newFolder);
 		assertStartsWith(new byte[]{-49, -125, -31, 53, 126, -17, -72, -67, -15, 84} , hash.bytes.copy()); //Obtained by regression
+		
+//		assertNull(my(FileMap.class).getHash(foo.getAbsolutePath()));
 	}
 
 

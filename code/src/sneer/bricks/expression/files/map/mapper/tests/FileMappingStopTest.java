@@ -30,13 +30,13 @@ public class FileMappingStopTest extends BrickTestWithFiles {
 			allowing(_fileMap).getHash(with(any(String.class)));
 			oneOf(_fileMap).putFile(with(any(String.class)), with(any(Long.class)), with(any(Hash.class)));
 				will(new CustomAction("Call stopFolderMapping") { @Override public Object invoke(Invocation invocation) throws Throwable {
-					_subject.stopFolderMapping(fixturesFolder);
+					_subject.stopMapping(fixturesFolder);
 					return null;
 				}});
 			oneOf(_fileMap).remove(fixturesFolder.getAbsolutePath());
 		}});
 
-		_subject.mapFolder(fixturesFolder, "txt");
+		_subject.mapFileOrFolder(fixturesFolder, "txt");
 	}
 
 	private File myClassFile() {

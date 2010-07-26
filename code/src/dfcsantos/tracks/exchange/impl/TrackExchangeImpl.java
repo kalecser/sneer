@@ -86,7 +86,7 @@ class TrackExchangeImpl implements TrackExchange {
 
 
 	private void stopCurrentMapping() {
-		my(FileMapper.class).stopFolderMapping(_currentTracksFolder);
+		my(FileMapper.class).stopMapping(_currentTracksFolder);
 	}
 
 
@@ -109,7 +109,7 @@ class TrackExchangeImpl implements TrackExchange {
 
 	private void mapSharedTracksFolder(File newSharedTracksFolder) {
 		try {
-			my(FileMapper.class).mapFolder(newSharedTracksFolder, "mp3");
+			my(FileMapper.class).mapFileOrFolder(newSharedTracksFolder, "mp3");
 			_isMapping.setter().consume(false);
 		} catch (MappingStopped ignored) {
 		} catch (IOException e) {

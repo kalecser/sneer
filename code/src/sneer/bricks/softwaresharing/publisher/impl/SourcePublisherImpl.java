@@ -23,7 +23,7 @@ class SourcePublisherImpl implements SourcePublisher {
 
 		Hash hash;
 		try {
-			hash = my(FileMapper.class).mapFolder(srcFolder());
+			hash = my(FileMapper.class).mapFileOrFolder(srcFolder());
 		} catch (MappingStopped e) {
 			throw new IllegalStateException(e);
 		} catch (IOException e) {
