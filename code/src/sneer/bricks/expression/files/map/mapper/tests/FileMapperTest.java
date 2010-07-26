@@ -50,19 +50,40 @@ public class FileMapperTest extends BrickTestWithFiles {
 	@Test (timeout = 3000)
 	public void remappingAChangedFolder() throws IOException, MappingStopped {
 		File newFolder = newFolder("newFolder");
-		Hash hash = _subject.mapFileOrFolder(newFolder);
-		assertStartsWith(new byte[]{-49, -125, -31, 53, 126, -17, -72, -67, -15, 84} , hash.bytes.copy()); //Obtained by regression
+		byte[] hashForEmptyFolder = new byte[]{-49, -125, -31, 53, 126, -17, -72, -67, -15, 84}; //Obtained by regression
+		mapAndAssert(newFolder, hashForEmptyFolder);
 
 		File foo = createTmpFileWithFileNameAsContent("newFolder/foo");
-		foo.setLastModified(42);
-		hash = _subject.mapFileOrFolder(newFolder);
-		assertStartsWith(new byte[]{107, 36, 53, 46, 121, -47, 119, 52, 70, -74} , hash.bytes.copy()); //Obtained by regression
+		File bar = createTmpFileWithFileNameAsContent("newFolder/bar");
+		mapAndAssert(newFolder, new byte[]{-53, 13, -89, 50, 31, 49, -121, -71, -80, -65}); //Obtained by regression
 		
 		foo.delete();
-		hash = _subject.mapFileOrFolder(newFolder);
-		assertStartsWith(new byte[]{-49, -125, -31, 53, 126, -17, -72, -67, -15, 84} , hash.bytes.copy()); //Obtained by regression
-		
-//		assertNull(my(FileMap.class).getHash(foo.getAbsolutePath()));
+		mapAndAssert(newFolder, new byte[]{-3, -5, -77, -47, -7, -22, 0, -119, -115, 111}); //Obtained by regression
+		assertFalse(isMapped(foo));
+		assertTrue(isMapped(bar));
+
+		bar.delete();
+		mapAndAssert(newFolder, hashForEmptyFolder);
+		assertFalse(isMapped(bar));
+	}
+
+
+	private boolean isMapped(File file) {
+		return my(FileMap.class).getHash(file.getAbsolutePath()) != null;
+	}
+
+
+	@Override
+	protected File createTmpFileWithFileNameAsContent(String fileName)	throws IOException {
+		File result = super.createTmpFileWithFileNameAsContent(fileName);
+		result.setLastModified(42);
+		return result;
+	}
+
+
+	private void mapAndAssert(File fileOrFolder, byte[] expectedHashStart) throws MappingStopped, IOException {
+		Hash hash = _subject.mapFileOrFolder(fileOrFolder);
+		assertStartsWith(expectedHashStart, hash.bytes.copy());
 	}
 
 

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import sneer.bricks.expression.files.hasher.FolderContentsHasher;
+import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
@@ -29,6 +30,9 @@ import sneer.foundation.lang.arrays.ImmutableArray;
 
 class MapperWorker {
 
+	private final static FileMap FileMap = my(FileMap.class);
+
+
 	private final File _fileOrFolder;
 	private final FileFilter _extensionsFilter;
 
@@ -41,13 +45,6 @@ class MapperWorker {
 	MapperWorker(File fileOrFolder, String... acceptedFileExtensions) {
 		_fileOrFolder = fileOrFolder;
 		_extensionsFilter = filterFor(acceptedFileExtensions);
-	}
-
-
-	private FileFilter filterFor(String... acceptedFileExtensions) {
-		return acceptedFileExtensions.length > 0
-			? my(IO.class).fileFilters().foldersAndExtensions(acceptedFileExtensions)
-			: my(IO.class).fileFilters().any();
 	}
 
 
@@ -72,53 +69,71 @@ class MapperWorker {
 	}
 
 
-	private void throwNarrowed(Exception e) throws MappingStopped, IOException {
-		if (e instanceof MappingStopped) throw (MappingStopped) e;
-		if (e instanceof IOException) throw (IOException) e;
-		throw new IllegalStateException(e);
-	}
-
-
 	void stop() {
 		_stop.set(true);
 	}
 
 
 	private Hash mapFolder(File folder) throws MappingStopped, IOException {
-		FolderContents contents = new FolderContents(immutable(mapFolderEntries(folder)));
-		Hash hash = my(FolderContentsHasher.class).hash(contents);
+		List<FileOrFolder> newEntries = mapFolderEntries(folder);
+		FolderContents newContents = new FolderContents(immutable(newEntries));
+		
+		String folderPath = folder.getAbsolutePath();
+		Hash mappedHash = FileMap.getHash(folderPath);
+		FolderContents mappedContents = mappedHash == null
+			? null
+			: FileMap.getFolderContents(mappedHash);
+		
+		if (newContents.equals(mappedContents)) return mappedHash;
+		
+		unmapDeletedFiles(folderPath, newEntries, mappedContents);
+		return putFolderHash(folder, newContents);
+	}
+
+
+	private void unmapDeletedFiles(String folderPath, List<FileOrFolder> newEntries, FolderContents oldContents) {
+		if (oldContents == null) return;
+		for (FileOrFolder oldEntry : oldContents.contents)
+			if (!newEntries.contains(oldEntry))
+				unmap(folderPath, oldEntry);
+	}
+
+
+	private void unmap(String folderPath, FileOrFolder oldEntry) {
+		FileMap.remove(folderPath + "/" + oldEntry.name);
+	}
+
+
+	private Hash putFolderHash(File folder, FolderContents newContents) {
+		Hash hash = my(FolderContentsHasher.class).hash(newContents);
 		try {
-			FileMapperImpl.FileMap.putFolder(folder.getAbsolutePath(), hash);
+			FileMap.putFolder(folder.getAbsolutePath(), hash);
 		} catch (RuntimeException e) {
-			String entries = "";
-			for (FileOrFolder entry : contents.contents)
-				entries += "\n" + entry.toString();
-			throw new IllegalStateException("Exception trying to map folder: " + folder + " entries: " + entries, e);
+			throw withDetails(folder,	newContents, e);
 		}
 		return hash;
 	}
 
 
-	private List<FileOrFolder> mapFolderEntries(File folder) throws MappingStopped, IOException{
+	private List<FileOrFolder> mapFolderEntries(File folder) throws MappingStopped, IOException {
 		List<FileOrFolder> result = new ArrayList<FileOrFolder>();
-		for (File entry : sortedFiles(folder)) {
-			if (_stop.get()) throw new MappingStopped();
+		for (File entry : sortedFiles(folder))
 			result.add(mapFolderEntry(entry));
-		}
 		return result;
 	}
 
 
 	private FileOrFolder mapFolderEntry(File fileOrFolder) throws IOException, MappingStopped {
-		Hash hash;
+		if (_stop.get()) throw new MappingStopped();
+
 		String name = fileOrFolder.getName();
 		
 		if (fileOrFolder.isDirectory()) {
-			hash = mapFolder(fileOrFolder);
+			Hash hash = mapFolder(fileOrFolder);
 			return new FileOrFolder(name, hash);
 		}
 		
-		hash = mapFile(fileOrFolder);
+		Hash hash = mapFile(fileOrFolder);
 		return new FileOrFolder(name, fileOrFolder.lastModified(), hash);
 	}
 
@@ -127,8 +142,8 @@ class MapperWorker {
 		String path = file.getAbsolutePath();
 		long lastModified = file.lastModified();
 
-		Hash result = FileMapperImpl.FileMap.getHash(path);
-		if (result != null && lastModified == FileMapperImpl.FileMap.getLastModified(path))
+		Hash result = FileMap.getHash(path);
+		if (result != null && lastModified == FileMap.getLastModified(path))
 			return result;
 
 		try {
@@ -137,7 +152,7 @@ class MapperWorker {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "File Mapping Error", "This can happen if your file has weird characters in the name or if your disk is failing.", e);
 			return my(Crypto.class).digest(new byte[0]);
 		}
-		FileMapperImpl.FileMap.putFile(path, lastModified, result);
+		FileMap.putFile(path, lastModified, result);
 		return result;
 	}
 
@@ -150,10 +165,35 @@ class MapperWorker {
 		}});
 		return result;
 	}
+	
+	
+	static private FileFilter filterFor(String... acceptedFileExtensions) {
+		return acceptedFileExtensions.length > 0
+		? my(IO.class).fileFilters().foldersAndExtensions(acceptedFileExtensions)
+				: my(IO.class).fileFilters().any();
+	}
+
+	
+	static private IllegalStateException withDetails(File folder,	FolderContents contents, RuntimeException e) {
+		String entries = "";
+		for (FileOrFolder entry : contents.contents)
+			entries += "\n" + entry.toString();
+		return new IllegalStateException("Exception trying to map folder: " + folder + " entries: " + entries, e);
+	}
 
 
-	private ImmutableArray<FileOrFolder> immutable(List<FileOrFolder> entries) {
+	static private void throwNarrowed(Exception e) throws MappingStopped, IOException {
+		if (e instanceof MappingStopped) throw (MappingStopped) e;
+		if (e instanceof IOException) throw (IOException) e;
+		throw new IllegalStateException(e);
+	}
+	
+	
+	static private ImmutableArray<FileOrFolder> immutable(List<FileOrFolder> entries) {
 		return new ImmutableArray<FileOrFolder>(entries);
 	}
 
 }
+
+
+
