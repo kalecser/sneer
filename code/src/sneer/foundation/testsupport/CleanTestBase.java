@@ -296,7 +296,11 @@ public abstract class CleanTestBase extends AssertUtils {
 	protected File createTmpFileWithFileNameAsContent(String fileName) throws IOException {
 		File file = createTmpFile(fileName);
 		FileOutputStream fileOutputStream = new FileOutputStream(file);
-		fileOutputStream.write(fileName.getBytes());
+		try {
+			fileOutputStream.write(fileName.getBytes());
+		} finally {
+			fileOutputStream.close();
+		}
 		return file;
 	}
 

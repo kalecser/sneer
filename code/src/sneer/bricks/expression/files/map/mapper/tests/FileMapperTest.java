@@ -49,15 +49,25 @@ public class FileMapperTest extends BrickTestWithFiles {
 	
 	@Test (timeout = 3000)
 	public void remappingAChangedFolder() throws IOException, MappingStopped {
-		Hash hash = _subject.mapFolder(tmpFolder());
-		assertStartsWith(new byte[]{16, -91, 39, -65, -72, -88, 88, 10, 27, 82} , hash.bytes.copy()); //Obtained by regression
+		File newFolder = newFolder("newFolder");
+		Hash hash = _subject.mapFolder(newFolder);
+		assertStartsWith(new byte[]{-49, -125, -31, 53, 126, -17, -72, -67, -15, 84} , hash.bytes.copy()); //Obtained by regression
 
-		createTmpFileWithFileNameAsContent("foo");
+		File file = createTmpFileWithFileNameAsContent("newFolder/foo");
+		file.setLastModified(42);
+		hash = _subject.mapFolder(newFolder);
+		assertStartsWith(new byte[]{107, 36, 53, 46, 121, -47, 119, 52, 70, -74} , hash.bytes.copy()); //Obtained by regression
 		
-		hash = _subject.mapFolder(tmpFolder());
-		assertStartsWith(new byte[]{16, -91, 39, -65, -72, -88, 88, 10, 27, 82} , hash.bytes.copy()); //Obtained by regression
-		
-		//fail("this test should have failed");
+		file.delete();
+		hash = _subject.mapFolder(newFolder);
+		assertStartsWith(new byte[]{-49, -125, -31, 53, 126, -17, -72, -67, -15, 84} , hash.bytes.copy()); //Obtained by regression
+	}
+
+
+	private File newFolder(String name) {
+		File result = newTmpFile(name);
+		result.mkdir();
+		return result;
 	}
 
 	

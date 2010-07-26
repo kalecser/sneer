@@ -59,10 +59,7 @@ class FileMapperImpl implements FileMapper {
 	@Override
 	public Hash mapFolder(final File folder, final String... acceptedFileExtensions) throws MappingStopped, IOException {
 		my(Logger.class).log("FileMapper starting to Map folder ", folder);
-		Hash hash = FileMap.getHash(folder.getAbsolutePath());
-		return (hash != null)
-			? hash
-			: mappingFor(folder, acceptedFileExtensions).result();
+		return mappingFor(folder, acceptedFileExtensions).result();
 	}
 
 
