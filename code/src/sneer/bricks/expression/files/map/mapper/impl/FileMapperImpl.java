@@ -3,6 +3,7 @@ package sneer.bricks.expression.files.map.mapper.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,7 +84,7 @@ class FileMapperImpl implements FileMapper {
 	private class FolderMapping {
 
 		private final File _folder;
-		private final String[] _acceptedFileExtensions;
+		private final FileFilter _extensionsFilter;
 
 		private Hash _result;
 		private Exception _exception;
@@ -96,7 +97,14 @@ class FileMapperImpl implements FileMapper {
 				throw new IllegalArgumentException("Parameter 'folder' must be a directory");
 
 			_folder = folder;
-			_acceptedFileExtensions = acceptedFileExtensions;
+			_extensionsFilter = filterFor(acceptedFileExtensions);
+		}
+
+
+		private FileFilter filterFor(String... acceptedFileExtensions) {
+			return acceptedFileExtensions.length > 0
+				? my(IO.class).fileFilters().foldersAndExtensions(acceptedFileExtensions)
+				: my(IO.class).fileFilters().any();
 		}
 
 
@@ -111,7 +119,7 @@ class FileMapperImpl implements FileMapper {
 		private void run() {
 			my(CpuThrottle.class).limitMaxCpuUsage(20, new Closure() { @Override public void run() {
 				try {
-					_result = mapFolder(_folder, _acceptedFileExtensions);
+					_result = mapFolder(_folder);
 				} catch (Exception e) {
 					_exception = e;
 				} finally {
@@ -133,8 +141,8 @@ class FileMapperImpl implements FileMapper {
 		}
 
 
-		private Hash mapFolder(File folder, String... acceptedFileExtensions) throws MappingStopped, IOException {
-			FolderContents contents = new FolderContents(immutable(mapFolderEntries(folder, acceptedFileExtensions)));
+		private Hash mapFolder(File folder) throws MappingStopped, IOException {
+			FolderContents contents = new FolderContents(immutable(mapFolderEntries(folder)));
 			Hash hash = my(FolderContentsHasher.class).hash(contents);
 			try {
 				FileMap.putFolder(folder.getAbsolutePath(), hash);
@@ -148,22 +156,22 @@ class FileMapperImpl implements FileMapper {
 		}
 
 
-		private List<FileOrFolder> mapFolderEntries(File folder, String... acceptedExtensions) throws MappingStopped, IOException{
+		private List<FileOrFolder> mapFolderEntries(File folder) throws MappingStopped, IOException{
 			List<FileOrFolder> result = new ArrayList<FileOrFolder>();
-			for (File entry : sortedFiles(folder, acceptedExtensions)) {
+			for (File entry : sortedFiles(folder)) {
 				if (_stop.get()) throw new MappingStopped();
-				result.add(mapFolderEntry(entry, acceptedExtensions));
+				result.add(mapFolderEntry(entry));
 			}
 			return result;
 		}
 
 
-		private FileOrFolder mapFolderEntry(File fileOrFolder, String... acceptedExtensions) throws IOException, MappingStopped {
+		private FileOrFolder mapFolderEntry(File fileOrFolder) throws IOException, MappingStopped {
 			Hash hash;
 			String name = fileOrFolder.getName();
 			
 			if (fileOrFolder.isDirectory()) {
-				hash = mapFolder(fileOrFolder, acceptedExtensions);
+				hash = mapFolder(fileOrFolder);
 				return new FileOrFolder(name, hash);
 			}
 			
@@ -172,20 +180,13 @@ class FileMapperImpl implements FileMapper {
 		}
 
 
-		private File[] sortedFiles(File folder, final String... acceptedExtensions) {
-			File[] result = listFiles(folder, acceptedExtensions);
+		private File[] sortedFiles(File folder) {
+			File[] result = folder.listFiles(_extensionsFilter);
 			if (result == null)	return new File[0];
 			Arrays.sort(result, new Comparator<File>() { @Override public int compare(File file1, File file2) {
 				return file1.getName().compareTo(file2.getName());
 			}});
 			return result;
-		}
-
-
-		private File[] listFiles(File folder, final String... acceptedExtensions) {
-			return acceptedExtensions.length > 0
-					? folder.listFiles(my(IO.class).fileFilters().foldersAndExtensions(acceptedExtensions))
-					: folder.listFiles();
 		}
 
 

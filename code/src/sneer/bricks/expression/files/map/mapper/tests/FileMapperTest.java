@@ -23,8 +23,8 @@ import sneer.foundation.lang.Functor;
 public class FileMapperTest extends BrickTestWithFiles {
 
 	private final FileMapper _subject = my(FileMapper.class);
-	private final FileMap _fileMap = my(FileMap.class);
 
+	
 	@Test (timeout = 3000)
 	public void mapFolder() throws Exception {
 		Hash hash = _subject.mapFolder(fixturesFolder(), "txt");
@@ -35,29 +35,42 @@ public class FileMapperTest extends BrickTestWithFiles {
 		}});
 
 		assertContentsInAnyOrder(names, "directory1", "directory2", "track4.txt", "track5.txt");
+		
+		Hash hashOfFile = hashOfFile("directory1/track1.txt");
+		assertNotNull(my(FileMap.class).getFile(hashOfFile));
 	}
 
+
+	private Hash hashOfFile(String fileMane) throws IOException {
+		Hash hashOfFile = my(Crypto.class).digest(fixture(fileMane));
+		return hashOfFile;
+	}
+
+	
 	@Test (timeout = 3000)
-	public void clearFolderMapping() throws IOException, MappingStopped {
-		final Hash hashOfFolder = _subject.mapFolder(fixturesFolder());
-		assertNotNull(_fileMap.getFolderContents(hashOfFolder));
+	public void remappingAChangedFolder() throws IOException, MappingStopped {
+		Hash hash = _subject.mapFolder(tmpFolder());
+		assertStartsWith(new byte[]{16, -91, 39, -65, -72, -88, 88, 10, 27, 82} , hash.bytes.copy()); //Obtained by regression
 
-		final Hash hashOfFile = my(Crypto.class).digest(fixture("directory1/track1.txt"));
-		assertNotNull(_fileMap.getFile(hashOfFile));
-
-		_fileMap.remove(fixturesFolder().getAbsolutePath());
-		assertNull(_fileMap.getFolderContents(hashOfFolder));
-		assertNull(_fileMap.getFile(hashOfFile));
+		createTmpFileWithFileNameAsContent("foo");
+		
+		hash = _subject.mapFolder(tmpFolder());
+		assertStartsWith(new byte[]{16, -91, 39, -65, -72, -88, 88, 10, 27, 82} , hash.bytes.copy()); //Obtained by regression
+		
+		//fail("this test should have failed");
 	}
 
+	
 	private File fixture(String name) {
 		return new File(fixturesFolder(), name);
 	}
 
+	
 	private File fixturesFolder() {
 		return new File(myClassFile().getParent(), "fixtures");
 	}
 
+	
 	private File myClassFile() {
 		return my(ClassUtils.class).classFile(getClass());
 	}
