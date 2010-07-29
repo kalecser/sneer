@@ -9,7 +9,6 @@ import java.io.IOException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.LoggerMocks;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.foundation.brickness.Brick;
@@ -26,34 +25,25 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 	}
 	
 	
-	@Ignore
-	@Test (timeout = 1000 * 60 * 5)
+	@Test (timeout = 1000 * 30)
 	public void meToo_TakesACoupleOfMinutesToRunAndRunsOnlyOnHeadlessServer() throws Exception {
 		//if (!isHudsonServer()) return;
-		LoggerMocks.showLog = true;
 		
 		a().copyToSourceFolder(generateY());
 		
 		newSession(a());
-		System.out.println("\n\n\n\n1");
 		
 		a().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
-		System.out.println("\n\n\n\n2");
 		b().waitForAvailableBrick("freedom7.y.Y", "NEW");
-		System.out.println("\n\n\n\n3");
 		
 		b().stageBricksForInstallation("freedom7.y.Y");
-		System.out.println("\n\n\n\n4");
 
 		System.clearProperty("freedom7.y.Y.installed");
 		newSession(b());
-		System.out.println("\n\n\n\n5");
 		b().loadBrick("freedom7.y.Y");
-		System.out.println("\n\n\n\n6");
 		assertEquals("true", System.getProperty("freedom7.y.Y.installed"));
 
 		b().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
-		System.out.println("\n\n\n\n7");
 	}
 
 	

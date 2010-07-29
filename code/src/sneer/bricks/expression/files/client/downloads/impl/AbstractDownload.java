@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
+import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.Clock;
@@ -34,6 +35,9 @@ abstract class AbstractDownload implements Download {
 	private static int DURATION_TIMEOUT = 30 * 60 * 1000;
 
 	static final int REQUEST_INTERVAL = 15 * 1000;
+	
+	private static final String DOT_PART = my(DotParts.class).dotPartExtention();
+	
 
 	protected File _path;
 	protected final File _actualPath;
@@ -172,9 +176,7 @@ abstract class AbstractDownload implements Download {
 
 	void finishWithSuccess() throws IOException {
 		my(DotParts.class).closeDotPart(_path, _lastModified);
-		my(Logger.class).log("::::::closed " + _path);
 		updateFileMap();
-		my(Logger.class).log("::::::updated " + _path);
 		finish();
 		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
 	}
@@ -204,10 +206,13 @@ abstract class AbstractDownload implements Download {
 
 
 	private void finishIfLocallyAvailable() {
-		Object alreadyMapped = mappedContentsBy(_hash);
-		if (alreadyMapped == null) return;
+		String mappedPath = my(FileMap.class).getPath(_hash);
+		if (mappedPath == null) return;
+		if (mappedPath.contains(DOT_PART)) return; //Optimize Downloads that include identical files in different folders will download all of them redundantly. The problem is .part files can be renamed to their actual name at any moment. 
+
+		Object mappedContents = mappedContentsBy(_hash);
 		try {
-			finishWithLocalContents(alreadyMapped);
+			finishWithLocalContents(mappedContents);
 		} catch (Exception e) {
 			finishWith(e);
 		}

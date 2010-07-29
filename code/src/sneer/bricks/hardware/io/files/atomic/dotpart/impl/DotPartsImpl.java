@@ -52,4 +52,10 @@ class DotPartsImpl implements DotParts {
 		);
 	}
 
+
+	@Override
+	public String dotPartExtention() {
+		return DOT_PART_EXTENSION;
+	}
+
 }

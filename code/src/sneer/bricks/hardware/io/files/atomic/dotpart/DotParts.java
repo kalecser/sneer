@@ -10,9 +10,9 @@ import sneer.foundation.brickness.Brick;
 public interface DotParts {
 
 	File openDotPartFor(File actualFile) throws IOException;
-
 	File closeDotPart(File dotPartFile, long lastModified) throws IOException;
 
 	FileFilter dotPartExclusionFilter();
+	String dotPartExtention();
 
 }
