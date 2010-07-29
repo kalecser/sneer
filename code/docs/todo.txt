@@ -82,14 +82,12 @@ Igor ====================================================
 René =================================================
 
 	- Toroidal Go Snapp
-		- Fix: Sometimes, a stone that was just played does not appear. It only appears when the mouse is moved.
 		- Detect and display victory/loss condition
 			- Sometimes it does not appear after I click resign.
-			- When it does appear, it cannot be seen over black stones.
-		- Light Reflections on the stones (The larger reflection ellipse should be rotated a bit counter-clockwise to be correct)
-			- The reflections were a good idea :) but I find them distracting, polluting. Please remove them. Just draw a perfect anti-aliased black or white disc. I find that more elegant.
-		- Stone circle Anti-alias 
-			- Black stones still have strong aliasing on 19x19. Can anti-aliasing improve?
+				- Could not replicate this.
+		- Fix: Extreme slowness during mouse movement, caused by a deepCopy() in board.canPlayStone().
+	
+	- Maybe toscoBall can become a single player game snapp.
 
 
 Klaus =================================================
