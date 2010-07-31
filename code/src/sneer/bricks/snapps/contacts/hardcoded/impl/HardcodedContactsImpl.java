@@ -75,6 +75,7 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 //			new ContactInfo("Bihaiko", "bihaiko.dyndns.org", 6789),
 //			new ContactInfo("Daniel Santos", "dfcsantos.homeip.net", 7777),
 			new ContactInfo("Dummy", "localhost", 7777, newSeal("1b7b8e78558d0389fc39ed3fc3f6d588a1c40af8cdac9aaf1f7b918f508589b5d2ec9b5bec0179926140c2cabe8ec202e8529421fc60380cac123f97a81e7608")),
+			new ContactInfo("Edmundo", "edmundo.selfip.net", 7777, newSeal("b64fa8d5a7e0b754b88105c4ca5d43d53228c5f15887326bbee82c033cd35688fc5eaa73972352c5c2766f7bc61dd127a4584d9827f539092ec4dd6c8b18f34d")),
 			new ContactInfo("Igor Arouca", "igorarouca.selfip.net", 6789, newSeal("5865e61278e15a24546be3042cf8caee95b7399cd194e80fad9a15b516e785bba9c0f80f604bb5a0bfda26ea2a7459361a55280b8e321256f866b876c33ff286")),
 			new ContactInfo("Kalecser", "kalecser.dyndns.org", 7770, newSeal("535e7bf346a0b398b43621c03c4810f685d80014a7197e8adb5ecc9ba35af01e76589b2a0dc0661ca5c55a4d45aa11a6aedba97f1e68665a75b80008c65b998b")),
 			new ContactInfo("Klaus", "klausw.selfip.net", 5923, newSeal("1ac4acbaf29e2fa32f48e90b29f8cf0df5a5b18933aca7406f2fa359abef84205bf647640e9e4d025c7568173e4da5e42ff7f2af73dd8a7deaa2d4ee4d7e070d")),

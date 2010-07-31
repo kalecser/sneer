@@ -37,7 +37,7 @@ public class GoBoardPanel extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 
-	private static final int BOARD_SIZE = 9;
+	private static final int BOARD_SIZE = 19;
 	private static final int SCREEN_SIZE = 500;
 	private static final float MARGIN = SCREEN_SIZE/5;
 	private static final float BOARD_IMAGE_SIZE = SCREEN_SIZE - MARGIN*2;
@@ -63,9 +63,9 @@ public class GoBoardPanel extends JPanel {
 
 	final GoBoard _board = new ToroidalGoBoard(BOARD_SIZE);
 
-	private BufferedImage _bufferImage;
+	private BufferedImage _bufferImage, _bufferGrid;
 	
-	private Image winImg, loseImg, blackStoneImg, whiteStoneImg;
+	private Image winImg, loseImg;//, blackStoneImg, whiteStoneImg;
 	private boolean isWinner=false;
 
 	private int _hoverX;
@@ -96,8 +96,15 @@ public class GoBoardPanel extends JPanel {
 	    _refToAvoidGc2 = my(Timer.class).wakeUpEvery(150, new Scroller());
 	    winImg=Toolkit.getDefaultToolkit().getImage(GoBoardPanel.class.getResource("images/winImg.png"));
 	    loseImg=Toolkit.getDefaultToolkit().getImage(GoBoardPanel.class.getResource("images/loseImg.png"));
-	    blackStoneImg=Toolkit.getDefaultToolkit().getImage(GoBoardPanel.class.getResource("images/black.png"));
-	    whiteStoneImg=Toolkit.getDefaultToolkit().getImage(GoBoardPanel.class.getResource("images/white.png"));
+		createGridBuffer();
+		
+	}
+	
+	private void createGridBuffer() {
+		_bufferGrid = new BufferedImage((int)(BOARD_IMAGE_SIZE+CELL_SIZE), (int)(BOARD_IMAGE_SIZE+CELL_SIZE), 
+			      BufferedImage.TYPE_INT_ARGB);
+		Graphics2D buffer = (Graphics2D)_bufferGrid.getGraphics();
+		paintGridSmall(buffer);
 	}
 	
 	private void play(Move move) {
@@ -129,7 +136,6 @@ public class GoBoardPanel extends JPanel {
 	private void paintInEnvironment(Graphics graphics) {
 		Graphics2D buffer = getBuffer();
 		
-		//new system: set the buffer transparent so the bounding rectangle can be drawn under it
 		buffer.setColor(new Color(0,0,0,0));
 		buffer.fillRect(0, 0, SCREEN_SIZE, SCREEN_SIZE);
 			
@@ -137,14 +143,15 @@ public class GoBoardPanel extends JPanel {
 		buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		buffer.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		buffer.setColor(Color.black);
-		paintGridSmall(buffer);		
+		buffer.drawImage(_bufferGrid, 0, 0, this);
+		//paintGridSmall(buffer);		
 		drawHoverStone(buffer);
 		paintStones(buffer);
 
-		//end drawing to buffer, start drawing to screen
+		
 				
 		graphics.setColor(new Color(228,205,152));
-		graphics. fillRect(0, 0, SCREEN_SIZE+10, SCREEN_SIZE+10);
+		graphics.fillRect(0, 0, SCREEN_SIZE+10, SCREEN_SIZE+10);
 		graphics.setColor(Color.black);
 		((Graphics2D) graphics).draw(new Rectangle2D.Float(MARGIN+1, MARGIN+1, BOARD_IMAGE_SIZE-2, BOARD_IMAGE_SIZE-2));
 		
@@ -209,7 +216,7 @@ public class GoBoardPanel extends JPanel {
 	
 		graphics.setColor(toAwtColor(color));
 		
-		paintStoneSpriteOnCoordinates(graphics, cx, cy, dead, (color==StoneColor.BLACK));
+		paintStoneOnCoordinates(graphics, cx, cy, dead);// ,(color==StoneColor.BLACK));
 	}
 
 	private Color toAwtColor(StoneColor color) {
@@ -258,26 +265,7 @@ public class GoBoardPanel extends JPanel {
 		if (x==0 & y==buffersize) graphics.fill(new Ellipse2D.Float(buffersize- (d / 2), - (d / 2), d, d));
 	}
 	
-	private void paintStoneSpriteOnCoordinates(Graphics2D g, float x, float y, boolean dead, boolean isBlack) {
-		int d = (int)STONE_DIAMETER;
-		if (dead) d*=0.6;
-		Image spr=(isBlack ? blackStoneImg : whiteStoneImg);
-		
-		g.drawImage(spr, (int)x-d/2, (int)y-d/2,d,d, null);
-		//wrapping
-		int buffersize=(int)(BOARD_IMAGE_SIZE+CELL_SIZE);
-		
-		if (x==0) g.drawImage(spr, buffersize-d/2, (int)y-d/2,d,d, null);
-		if (y==0) g.drawImage(spr, (int)x-d/2, buffersize-d/2,d,d, null);
-		if (x==buffersize) g.drawImage(spr, -d/2, (int)y-d/2,d,d, null);
-		if (y==buffersize) g.drawImage(spr, (int)x-d/2, -d/2,d,d, null);
-		
-		if (x==0 & y==0) g.drawImage(spr, buffersize-d/2, buffersize-d/2,d,d, null);
-		if (x==buffersize & y==0) g.drawImage(spr, -d/2, buffersize-d/2,d,d, null);
-		if (x==buffersize & y==buffersize) g.drawImage(spr, -d/2,-d/2,d,d, null);
-		if (x==0 & y==buffersize) g.drawImage(spr, buffersize-d/2, -d/2,d,d, null);
-	}
-	
+
 	public Signal<Integer> scoreWhite() {return _board.whiteScore();}
 	public Signal<Integer> scoreBlack() {return _board.blackScore();}
 	

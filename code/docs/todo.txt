@@ -4,6 +4,39 @@
 
 Following are the tasks each one of us has on his plate right now:
 
+Edmundo =================================================
+
+	- Platform exploration
+		- Basics:
+			- Analyze the project's package structure
+				- Note that it's tied to the concepts (freedoms) listed in docs/technical/architecture.txt
+			- Observe naming conventions:
+				- For packages
+					- abstraction.layer.tests
+					- abstraction.layer.Type
+					- abstraction.layer.Types (factory)
+					- abstraction.layer.impl.TypesImpl
+					- abstraction.layer.impl.TypesImpl
+				- For variables
+					- Use _ (underscore) in fields' names (check any brick)
+				- For tests: have a look at a test for details
+			- Coding conventions:
+				- It's always worth remembering: 
+					- "Program to an Interface, never to an Implementation" (Design Patterns: Elements of Reusable OO Software)
+					- Try to use TDD whenever possible, so there won't be code without coverage
+					- Always break down your tasks into commitable baby steps (divide and conquer)
+						- Rephrasing: "Avoid leaving uncommited code after a day's work"
+					- Programming it's all about good and meaningful names
+						- Carefully choose your interfaces', classes', methods' and variables' names
+							- Tip: use a thesaurus for finding better names   
+		- Study the following core features:
+			- Reactive Framework (Signals)
+				- Have a look at EventSource's hierarchy (EventSource > Signal > AbstractSignal)
+				- Examine the types' implementations in the 'sneer.bricks.pulp.reactive.impl' package, especially 'RegisterImpl'
+				- See examples of how to use signals using the factory 'Signals'
+				- Run the ReactiveWidgetsDemo
+			- Dependency Injection (Environments)
+			- Natures
 
 Patrick =================================================
 
@@ -49,14 +82,12 @@ Igor ====================================================
 René =================================================
 
 	- Toroidal Go Snapp
-		- Fix: Sometimes, a stone that was just played does not appear. It only appears when the mouse is moved.
 		- Detect and display victory/loss condition
 			- Sometimes it does not appear after I click resign.
-			- When it does appear, it cannot be seen over black stones.
-		- Light Reflections on the stones (The larger reflection ellipse should be rotated a bit counter-clockwise to be correct)
-			- The reflections were a good idea :) but I find them distracting, polluting. Please remove them. Just draw a perfect anti-aliased black or white disc. I find that more elegant.
-		- Stone circle Anti-alias 
-			- Black stones still have strong aliasing on 19x19. Can anti-aliasing improve?
+				- Could not replicate this.
+		- Fix: Extreme slowness during mouse movement, caused by a deepCopy() in board.canPlayStone().
+	
+	- Maybe toscoBall can become a single player game snapp.
 
 
 Klaus =================================================
