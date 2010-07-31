@@ -88,10 +88,9 @@ Klaus =================================================
 		- Remove all calls to Thread.sleep() including indirect.
 
 	- Freedom7 - "Me Too" for Bricks 
-		- Unignore Freedom7.meToo (passes if FileMap is not prevalent :P)
-			- BrickSpaceImpl:
-				- Uncomment line  //if (!isMyOwn(srcFolderHash))
-				- remove synchronized from fetchIfNecessary
+		- BrickSpaceImpl:
+			- Uncomment line  //if (!isMyOwn(srcFolderHash))
+			- remove synchronized from fetchIfNecessary
 			
 			
 		- Brick States - All
