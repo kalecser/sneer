@@ -1,10 +1,10 @@
-package spikes.klaus.go;
+package sneer.bricks.snapps.games.go;
 
 
 import java.util.HashSet;
 import java.util.Set;
 
-import spikes.klaus.go.GoBoard.StoneColor;
+import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
 
 class Intersection {
 

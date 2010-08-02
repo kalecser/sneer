@@ -1,4 +1,4 @@
-package spikes.klaus.go.gui;
+package sneer.bricks.snapps.games.go.gui;
 
 import static sneer.foundation.environments.Environments.my;
 

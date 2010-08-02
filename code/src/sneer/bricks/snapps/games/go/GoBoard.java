@@ -1,8 +1,8 @@
-package spikes.klaus.go;
+package sneer.bricks.snapps.games.go;
 
+import static sneer.bricks.snapps.games.go.GoBoard.StoneColor.BLACK;
+import static sneer.bricks.snapps.games.go.GoBoard.StoneColor.WHITE;
 import static sneer.foundation.environments.Environments.my;
-import static spikes.klaus.go.GoBoard.StoneColor.BLACK;
-import static spikes.klaus.go.GoBoard.StoneColor.WHITE;
 
 import java.util.Arrays;
 import java.util.HashSet;

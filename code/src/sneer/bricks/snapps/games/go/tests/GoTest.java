@@ -1,11 +1,11 @@
-package spikes.klaus.go.tests;
+package sneer.bricks.snapps.games.go.tests;
 
 import org.junit.Test;
 
+import sneer.bricks.snapps.games.go.GoBoard;
+import sneer.bricks.snapps.games.go.ToroidalGoBoard;
+import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
-import spikes.klaus.go.GoBoard;
-import spikes.klaus.go.ToroidalGoBoard;
-import spikes.klaus.go.GoBoard.StoneColor;
 
 public class GoTest extends BrickTestWithFiles {
 

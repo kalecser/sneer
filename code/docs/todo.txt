@@ -81,6 +81,10 @@ Igor ====================================================
 
 René =================================================
 
+	- Revise 'sneer.bricks.snapps.games.go.GoMain'
+		- Talk to Klaus about issues in comments
+		- Make exchange of GoMoves work (see comments in GoMove tuple)
+
 	- Toroidal Go Snapp
 		- Detect and display victory/loss condition
 			- Sometimes it does not appear after I click resign.

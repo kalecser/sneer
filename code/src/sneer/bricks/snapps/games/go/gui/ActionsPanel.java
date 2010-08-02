@@ -1,4 +1,4 @@
-package spikes.klaus.go.gui;
+package sneer.bricks.snapps.games.go.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,10 +8,10 @@ import javax.swing.JPanel;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
 import sneer.foundation.environments.ProxyInEnvironment;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
-import spikes.klaus.go.GoBoard.StoneColor;
 
 public class ActionsPanel extends JPanel {
 	
