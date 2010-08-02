@@ -19,7 +19,7 @@ class OneOnOneChatImpl implements OneOnOneChat {
 
 	{
 		_refToAvoidGc = my(TupleSpace.class).addSubscription(ChatMessage.class, new Consumer<ChatMessage>() { @Override public void consume(ChatMessage message) {
-			String reply = ChatWindow.showInputDialog(my(ContactSeals.class).contactGiven(message.publisher).nickname() + " says: " + message.message);
+			String reply = ChatWindow.showInputDialog(my(ContactSeals.class).contactGiven(message.publisher).nickname() + " says: " + message.text);
 			if (reply == null) return;
 			sendTo(message.publisher, reply);
 		}});
