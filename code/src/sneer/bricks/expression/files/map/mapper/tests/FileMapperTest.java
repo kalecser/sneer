@@ -55,10 +55,10 @@ public class FileMapperTest extends BrickTestWithFiles {
 
 		File foo = createTmpFileWithFileNameAsContent("newFolder/foo");
 		File bar = createTmpFileWithFileNameAsContent("newFolder/bar");
-		mapAndAssert(newFolder, new byte[]{-53, 13, -89, 50, 31, 49, -121, -71, -80, -65}); //Obtained by regression
+		mapAndAssert(newFolder, new byte[]{8, 45, -125, -40, 18, 87, -64, 24, 36, -116}); //Obtained by regression
 		
 		foo.delete();
-		mapAndAssert(newFolder, new byte[]{-3, -5, -77, -47, -7, -22, 0, -119, -115, 111}); //Obtained by regression
+		mapAndAssert(newFolder, new byte[]{-124, -36, -118, 18, 78, 17, 1, -74, -84, -8}); //Obtained by regression
 		assertFalse(isMapped(foo));
 		assertTrue(isMapped(bar));
 
@@ -76,7 +76,7 @@ public class FileMapperTest extends BrickTestWithFiles {
 	@Override
 	protected File createTmpFileWithFileNameAsContent(String fileName)	throws IOException {
 		File result = super.createTmpFileWithFileNameAsContent(fileName);
-		result.setLastModified(42);
+		result.setLastModified(42000);
 		return result;
 	}
 
