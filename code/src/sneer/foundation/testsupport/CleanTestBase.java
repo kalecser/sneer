@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
-import java.nio.charset.Charset;
 import java.util.Set;
 
 import org.junit.After;
