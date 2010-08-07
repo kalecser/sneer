@@ -86,8 +86,9 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		}});
 		
 		Signal<String> processTitle = my(ProcessTitle.class).title();
-		refToAvoidGc = processTitle.addReceiver(new Consumer<String>() {	@Override	public void consume(String processTitleText) {
-				setTitle(TITLE + " - " + processTitleText); }});
+		refToAvoidGc = processTitle.addPulseReceiver(new Runnable() {	@Override	public void run() {
+				updateTitle();
+		}});
 		
 	}
 	
@@ -145,10 +146,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		
 		_tab.setTabPlacement(SwingConstants.RIGHT);
 		_tab.addChangeListener(new ChangeListener(){ @Override public void stateChanged(ChangeEvent e) {
-			if(_tab.getSelectedIndex()==0)
-				setTitle(TITLE);
-			else
-				setTitle("Sneer Log Console (Filter)");
+			updateTitle();
 		}});
 		
 		getContentPane().add(_tab, BorderLayout.CENTER);
@@ -230,6 +228,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		}});
 	}
 
+	
 	private JScrollPane AutoScroll() {
 		JScrollPane scroll = my(ReactiveAutoScroll.class).create(my(LogNotifier.class).loggedMessages(), new Consumer<String>() { @Override public void consume(String message) {
 			if (_txtLog.getLineCount() == CONSOLE_LINE_LIMIT)
@@ -239,6 +238,18 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		}});
 		scroll.getViewport().add(_txtLog);
 		return scroll;
+	}
+
+	
+	private void updateTitle() {
+		setTitle(TITLE + " - " + my(ProcessTitle.class).title() + filter());
+	}
+
+	
+	private String filter() {
+		return _tab.getSelectedIndex()==0
+			? ""
+			: " (Filter)";
 	}
 
 }
