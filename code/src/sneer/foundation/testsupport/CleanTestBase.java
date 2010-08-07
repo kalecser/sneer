@@ -297,7 +297,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		File file = createTmpFile(fileName);
 		FileOutputStream fileOutputStream = new FileOutputStream(file);
 		try {
-			fileOutputStream.write(fileName.getBytes());
+			fileOutputStream.write(fileName.getBytes("UTF-8"));
 		} finally {
 			fileOutputStream.close();
 		}

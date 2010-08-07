@@ -7,28 +7,6 @@ Following are the tasks each one of us has on his plate right now:
 Edmundo =================================================
 
 	- Platform exploration
-		- Basics:
-			- Analyze the project's package structure
-				- Note that it's tied to the concepts (freedoms) listed in docs/technical/architecture.txt
-			- Observe naming conventions:
-				- For packages
-					- abstraction.layer.tests
-					- abstraction.layer.Type
-					- abstraction.layer.Types (factory)
-					- abstraction.layer.impl.TypesImpl
-					- abstraction.layer.impl.TypesImpl
-				- For variables
-					- Use _ (underscore) in fields' names (check any brick)
-				- For tests: have a look at a test for details
-			- Coding conventions:
-				- It's always worth remembering: 
-					- "Program to an Interface, never to an Implementation" (Design Patterns: Elements of Reusable OO Software)
-					- Try to use TDD whenever possible, so there won't be code without coverage
-					- Always break down your tasks into commitable baby steps (divide and conquer)
-						- Rephrasing: "Avoid leaving uncommited code after a day's work"
-					- Programming it's all about good and meaningful names
-						- Carefully choose your interfaces', classes', methods' and variables' names
-							- Tip: use a thesaurus for finding better names   
 		- Study the following core features:
 			- Reactive Framework (Signals)
 				- Have a look at EventSource's hierarchy (EventSource > Signal > AbstractSignal)
@@ -80,6 +58,10 @@ Igor ====================================================
 
 
 René =================================================
+
+	- Revise 'sneer.bricks.snapps.games.go.GoMain'
+		- Talk to Klaus about issues in comments
+		- Make exchange of GoMoves work (see comments in GoMove tuple)
 
 	- Toroidal Go Snapp
 		- Detect and display victory/loss condition

@@ -1,4 +1,4 @@
-package spikes.klaus.go.gui;
+package sneer.bricks.snapps.games.go.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -11,9 +11,9 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.snapps.games.go.Move;
+import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
 import sneer.foundation.lang.Closure;
-import spikes.klaus.go.Move;
-import spikes.klaus.go.GoBoard.StoneColor;
 
 public class GoFrame extends JFrame {
 	

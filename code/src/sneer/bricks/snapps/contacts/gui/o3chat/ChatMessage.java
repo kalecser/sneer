@@ -5,11 +5,11 @@ import sneer.bricks.identity.seals.Seal;
 
 public class ChatMessage extends Tuple {
 
-	public final String message;
+	public final String text;
 
-	public ChatMessage(Seal addressee_, String message_) {
+	public ChatMessage(Seal addressee_, String text_) {
 		super(addressee_);
-		this.message = message_;
+		this.text = text_;
 	}
 
 }

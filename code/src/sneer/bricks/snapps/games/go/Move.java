@@ -1,4 +1,4 @@
-package spikes.klaus.go;
+package sneer.bricks.snapps.games.go;
 
 
 public class Move {
