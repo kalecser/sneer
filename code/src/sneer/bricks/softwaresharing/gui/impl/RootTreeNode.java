@@ -51,7 +51,7 @@ class RootTreeNode extends AbstractTreeNodeWrapper<BrickHistory> {
 
 		return _infos; 
 	}
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override protected AbstractTreeNodeWrapper wrapChild(int childIndex) {
 		return new BrickHistoryTreeNode(this, listChildren().get(childIndex));
 	}

@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 /** Commons-IO 1.4 does not preserve folder lastModified dates when copying. */
 public class FolderCopierToWorkaroundCommonsIoBug {
 	

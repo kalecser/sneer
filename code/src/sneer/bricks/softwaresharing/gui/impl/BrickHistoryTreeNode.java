@@ -80,7 +80,7 @@ class BrickHistoryTreeNode extends AbstractTreeNodeWrapper<BrickVersion> {
 	}
 
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override protected AbstractTreeNodeWrapper wrapChild(int childIndex) {
 		return new BrickVersionTreeNode(this, listChildren().get(childIndex));
 	}

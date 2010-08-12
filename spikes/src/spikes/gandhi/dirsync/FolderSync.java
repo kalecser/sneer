@@ -83,7 +83,7 @@ public class FolderSync {
         }
         
         
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("rawtypes")
         private List<FileInfo> readListOfFileInfo(ObjectInputStream inObj) throws IOException,
                 ClassNotFoundException {
             return (List)inObj.readObject();

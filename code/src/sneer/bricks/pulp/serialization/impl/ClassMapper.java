@@ -19,7 +19,7 @@ final class ClassMapper extends MapperWrapper {
 	}
 
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public String serializedClass(Class type) {
 		return type != null
@@ -28,7 +28,7 @@ final class ClassMapper extends MapperWrapper {
 	}
 
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Class realClass(String elementName) {
 		try {

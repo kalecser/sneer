@@ -36,7 +36,7 @@ abstract class AbstractTreeNodeWrapper<CHILD> implements TreeNode{
 		};
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected AbstractTreeNodeWrapper cast(TreeNode node) {
 		try {
 			return (AbstractTreeNodeWrapper)node;

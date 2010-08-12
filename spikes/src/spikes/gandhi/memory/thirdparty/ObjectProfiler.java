@@ -253,7 +253,7 @@ abstract class ObjectProfiler
     /*
      * The main worker method for sizeof() and sizedelta().
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
 	private static int computeSizeof (Object obj,
                                       final IdentityHashMap visited,
                                       final Map /* Class->ClassMetadata */ metadataMap)
@@ -344,7 +344,7 @@ abstract class ObjectProfiler
      * Performs phase 1 of profile creation: bread-first traversal and node
      * creation.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
 	private static ObjectProfileNode createProfileTree (Object obj,
                                                         final IdentityHashMap visited,
                                                         final Map /* Class->ClassMetadata */ metadataMap)
@@ -456,7 +456,7 @@ abstract class ObjectProfiler
      * non-recursive post-order traversal of the tree created in phase 1)
      * and 'locking down' of profile nodes into their most compact form.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
 	private static void finishProfileTree (ObjectProfileNode node)
     {
         final LinkedList queue = new LinkedList ();
@@ -491,7 +491,7 @@ abstract class ObjectProfiler
     /*
      * A helper method for manipulating a class metadata cache.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
 	private static ClassMetadata getClassMetadata (final Class cls,
                                                    final Map /* Class->ClassMetadata */ metadataMap,
                                                    final ClassAccessPrivilegedAction caAction,

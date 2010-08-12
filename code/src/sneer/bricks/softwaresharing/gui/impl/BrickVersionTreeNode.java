@@ -80,7 +80,7 @@ class BrickVersionTreeNode extends AbstractTreeNodeWrapper<String> {
 		return _brickVersion.users(); 
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override protected AbstractTreeNodeWrapper wrapChild(int childIndex) {
 		return new StringTreeNode(this, listChildren().get(childIndex));
 	}	

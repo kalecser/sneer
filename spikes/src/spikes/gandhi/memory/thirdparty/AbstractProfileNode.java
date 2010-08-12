@@ -30,7 +30,7 @@ abstract class AbstractProfileNode implements IObjectProfileNode, Comparable<Obj
     }
     
     @Override
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public final IObjectProfileNode [] path ()
     {
         IObjectProfileNode [] path = m_path;
