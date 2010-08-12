@@ -15,7 +15,8 @@ final class ClassFieldLink implements ILink
     
     // ILink:
     
-    public String name ()
+    @Override
+	public String name ()
     {
         return ObjectProfiler.fieldName (m_field, ObjectProfiler.SHORT_TYPE_NAMES);
     }

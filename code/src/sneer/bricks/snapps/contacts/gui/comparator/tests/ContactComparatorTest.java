@@ -57,6 +57,7 @@ public class ContactComparatorTest extends BrickTestWithFiles {
 }
 
 class StethoscopeMock implements Stethoscope {
+	@Override
 	public Signal<Boolean> isAlive(final Contact contact) {
 		return ((ContactMock)contact)._isOnline;
 	}

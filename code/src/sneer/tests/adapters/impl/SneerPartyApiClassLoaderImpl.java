@@ -46,6 +46,7 @@ public final class SneerPartyApiClassLoaderImpl extends EagerClassLoader impleme
 		return false;
 	}
 	
+	@Override
 	public Class<?> loadUnsharedBrickClass(String brickName) throws ClassNotFoundException {
 		return doLoadClass(brickName);
 	}

@@ -102,6 +102,7 @@ public class CopyAndPasteDemo extends JFrame implements ClipboardOwner {
 		return (String) contents.getTransferData(DataFlavor.stringFlavor);
 	}
 	
+	@Override
 	public void lostOwnership(Clipboard parClipboard, Transferable parTransferable) {
 		//do nothing
 	}

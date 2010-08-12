@@ -17,17 +17,20 @@ abstract class AbstractProfileNode implements IObjectProfileNode, Comparable<Obj
     
     // IObjectProfileNode:
     
-    public final int size ()
+    @Override
+	public final int size ()
     {
         return m_size;
     }
 
-    public final IObjectProfileNode parent ()
+    @Override
+	public final IObjectProfileNode parent ()
     {
         return m_parent;
     }
     
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
 	public final IObjectProfileNode [] path ()
     {
         IObjectProfileNode [] path = m_path;
@@ -44,7 +47,8 @@ abstract class AbstractProfileNode implements IObjectProfileNode, Comparable<Obj
 		return path;
     }
     
-    public final IObjectProfileNode root ()
+    @Override
+	public final IObjectProfileNode root ()
     {
         IObjectProfileNode node = this;
         for (IObjectProfileNode parent = parent (); parent != null;
@@ -53,7 +57,8 @@ abstract class AbstractProfileNode implements IObjectProfileNode, Comparable<Obj
         return node;
     }
     
-    public final int pathlength ()
+    @Override
+	public final int pathlength ()
     {
         final IObjectProfileNode [] path = m_path;
         if (path != null)
@@ -66,7 +71,8 @@ abstract class AbstractProfileNode implements IObjectProfileNode, Comparable<Obj
 
     }
     
-    public final String dump ()
+    @Override
+	public final String dump ()
     {
         final StringWriter sw = new StringWriter ();
         final PrintWriter out = new PrintWriter (sw);
@@ -81,7 +87,8 @@ abstract class AbstractProfileNode implements IObjectProfileNode, Comparable<Obj
     
     // Comparable:
     
-    public final int compareTo (final Object obj)
+    @Override
+	public final int compareTo (final Object obj)
     {
         return ((AbstractProfileNode) obj).m_size - m_size;
     }

@@ -11,7 +11,8 @@ final class ObjectShellProfileNode extends AbstractShellProfileNode
 {
     // public: ................................................................    
 
-    public String name ()
+    @Override
+	public String name ()
     {
         return "<shell: " + m_primitiveFieldCount + " prim/" + m_refFieldCount + " ref fields>";
     }

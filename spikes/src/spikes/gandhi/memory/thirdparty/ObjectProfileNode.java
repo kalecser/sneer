@@ -14,32 +14,38 @@ final class ObjectProfileNode extends AbstractProfileNode
 {
     // public: ................................................................    
 
-    public Object object ()
+    @Override
+	public Object object ()
     {
         return m_obj;
     }
     
-    public String name ()
+    @Override
+	public String name ()
     {
         return m_link == null ? ObjectProfiler.INPUT_OBJECT_NAME : m_link.name ();
     }
 
-    public IObjectProfileNode shell ()
+    @Override
+	public IObjectProfileNode shell ()
     {
         return m_shell;
     }
     
-    public IObjectProfileNode [] children ()
+    @Override
+	public IObjectProfileNode [] children ()
     {
         return m_children;
     }
 
-    public int refcount ()
+    @Override
+	public int refcount ()
     {
         return m_refcount;
     }
     
-    public boolean traverse (final INodeFilter filter, final INodeVisitor visitor)
+    @Override
+	public boolean traverse (final INodeFilter filter, final INodeVisitor visitor)
     {
         if ((visitor != null) && ((filter == null) || filter.accept (this)))
         {

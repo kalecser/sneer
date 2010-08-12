@@ -26,6 +26,7 @@ class EncoderImpl implements Encoder {
 	
 	private Map<Pair<Integer, Integer>, int[]> _previousPixelsByCellCoordinate = new HashMap<Pair<Integer, Integer>, int[]>();
 	
+	@Override
 	public List<ImageDelta> generateDeltas(BufferedImage shot) throws Hiccup {
 		final List<ImageDelta> result = new ArrayList<ImageDelta>();
 		

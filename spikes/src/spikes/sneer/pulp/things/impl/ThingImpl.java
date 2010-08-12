@@ -12,10 +12,12 @@ class ThingImpl implements Thing {
 		_description = description;
 	}
 
+	@Override
 	public String name() {
 		return _name;
 	}
 
+	@Override
 	public String description() {
 		return _description;
 	}

@@ -15,6 +15,7 @@ class InProcessByteArrayServerSocket implements ByteArrayServerSocket {
 		_serverPort = serverPort;
 	}
 
+	@Override
 	public synchronized ByteArraySocket accept() throws IOException {
 		
 		if (_clientSide != null) throw new IOException("Port already in use.");

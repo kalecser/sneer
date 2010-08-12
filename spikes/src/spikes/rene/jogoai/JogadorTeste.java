@@ -68,15 +68,18 @@ class JogadorTeste implements Jogador {
 		"\nFechando..."
 	};
 	
+	@Override
 	public boolean confirm(String proposicao) {
 		return answer(proposicao).equalsIgnoreCase("s");
 	}
 	
+	@Override
 	public String answer(String msg) {
 		acknowledge(msg);
 		return proximaLinha();
 	}
 
+	@Override
 	public void acknowledge(String texto) {
 		String esperado = proximaLinha();
 		if (!esperado.equals(texto))

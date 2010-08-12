@@ -16,7 +16,8 @@ import spikes.bamboo.bricksorter.BrickSorter;
 public class BrickSorterApplication {
 
 	public static void main(String[] args) throws IOException {
-		Environments.runWith(new CachingEnvironment(Brickness.newBrickContainer()), new ClosureX<IOException>() { public void run() throws IOException {
+		Environments.runWith(new CachingEnvironment(Brickness.newBrickContainer()), new ClosureX<IOException>() { @Override
+		public void run() throws IOException {
 			List<Class<?>> originalBricks = new ArrayList<Class<?>>();
 			for (Class<?> brick : bricksToSortAccordingToDependencies())
 				originalBricks.add(brick);

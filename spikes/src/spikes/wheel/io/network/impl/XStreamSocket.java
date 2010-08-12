@@ -22,10 +22,12 @@ public class XStreamSocket implements ObjectSocket {
 		_delegate = delegate;
 	}
 
+	@Override
 	public void close() throws IOException {
 		_delegate.close();
 	}
 
+	@Override
 	public Object readObject() throws IOException, ClassNotFoundException {
 		synchronized (_readMonitor) {
 			String xml;
@@ -46,6 +48,7 @@ public class XStreamSocket implements ObjectSocket {
 		}
 	}
 
+	@Override
 	public void writeObject(Object obj) throws IOException {
 		synchronized (_writeMonitor) {
 			String xml = _xStream.toXML(obj);

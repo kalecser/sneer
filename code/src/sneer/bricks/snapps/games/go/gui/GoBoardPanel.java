@@ -47,6 +47,7 @@ public class GoBoardPanel extends JPanel {
 	
 	public class Scroller implements Runnable {
 
+		@Override
 		public void run() {
 			if(!_isScrolling) return;
 			scroll();

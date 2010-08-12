@@ -17,6 +17,7 @@ class FileMapperImpl implements FileMapper {
 	private final CacheMap<File, MapperWorker> _workersByFileOrFolder = CacheMap.newInstance();
 
 
+	@Override
 	public Hash mapFileOrFolder(final File fileOrFolder, final String... acceptedFileExtensions) throws MappingStopped,	IOException {
 		my(Logger.class).log("FileMapper starting to Map: ", fileOrFolder);
 		try {

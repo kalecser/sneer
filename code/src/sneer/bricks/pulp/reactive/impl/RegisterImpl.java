@@ -46,6 +46,7 @@ class RegisterImpl<T> implements Register<T> {
 		return false;
 	}
 
+	@Override
 	public synchronized Signal<T> output() {
 		AbstractSignal<T> rawOutput = rawOutput();
 		if (rawOutput != null) return rawOutput;
@@ -63,6 +64,7 @@ class RegisterImpl<T> implements Register<T> {
 		return _output == null ? null : _output.get();
 	}
 
+	@Override
 	public Consumer<T> setter() {
 		return new MySetter();
 	}

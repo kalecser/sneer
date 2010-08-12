@@ -54,6 +54,7 @@ class GameFrame{
 				
 					JMenuItem subMenuXadrez= new JMenuItem(Resources.getString(Resources.CHESS));
 					subMenuXadrez.addActionListener(new ActionListener(){
+						@Override
 						public void actionPerformed(ActionEvent action) {
 							_gamePanel.setGame(new ChessOptions());
 						}
@@ -62,6 +63,7 @@ class GameFrame{
 					
 					JMenuItem subMenuGo= new JMenuItem(Resources.getString(Resources.GO));
 					subMenuGo.addActionListener(new ActionListener(){
+						@Override
 						public void actionPerformed(ActionEvent action) {
 							_gamePanel.setGame(new GoOptions());
 						}

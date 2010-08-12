@@ -35,6 +35,7 @@ public class ObjectSocketMock implements ObjectSocket {
 		_counterpart = counterpart;
 	}
 
+	@Override
 	public void writeObject(Object object) throws IOException {
 		_permit.check();
 		_counterpart.receive(my(DeepCopier.class).deepCopy(object));
@@ -45,6 +46,7 @@ public class ObjectSocketMock implements ObjectSocket {
 		notify();
 	}
 
+	@Override
 	public synchronized Object readObject() throws IOException {
 		_permit.check();
 		if (_receivedObjects.isEmpty()) my(Threads.class).waitWithoutInterruptions(this);
@@ -52,6 +54,7 @@ public class ObjectSocketMock implements ObjectSocket {
 		return _receivedObjects.remove(0);
 	}
 
+	@Override
 	public void close() {
 		//Implement.
 	}

@@ -242,6 +242,7 @@ public class JFontChooser extends JDialog implements ActionListener, ListSelecti
 		return font.getSize();
 	}
 	
+	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		boolean found = false;
@@ -333,6 +334,7 @@ public class JFontChooser extends JDialog implements ActionListener, ListSelecti
 		}
 	}
 	
+	@Override
 	public void valueChanged(ListSelectionEvent e)
 	{
 		if (e.getSource() == fList)

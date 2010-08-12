@@ -18,10 +18,12 @@ public class XStreamNetwork implements OldNetwork {
 		_delegate = delegate;
 	}
 
+	@Override
 	public ObjectSocket openSocket(String host, int port) throws IOException {
 		return new XStreamSocket(_xStream, _delegate.openSocket(host, port));
 	}
 
+	@Override
 	public ObjectServerSocket openObjectServerSocket(int port)
 			throws IOException {
 		return new XStreamServerSocket(_xStream, _delegate.openObjectServerSocket(port));

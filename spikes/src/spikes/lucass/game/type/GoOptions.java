@@ -27,39 +27,48 @@ public class GoOptions implements GameOptions{
 			{EMPTY,DOT,EMPTY,DOT,EMPTY},
 	};
 	
+	@Override
 	public int[][] getDefaultPositions(){
 		return _defaultPositions;
 	}
 	
+	@Override
 	public int getRowNumber(){
 		return _defaultPositions.length;
 	}
 	
+	@Override
 	public int getColNumber(){
 		return _defaultPositions[0].length;
 	}
 
+	@Override
 	public int getPieceTypesNumber() {
 		return PIECE_TYPES_NUMBER;
 	}
 
+	@Override
 	public Image getBoardImage() {
 		return _boardImage;
 	}
 
+	@Override
 	public Image getPiecesImage() {
 		return _piecesImage;
 	}
 
+	@Override
 	public int getBoardCellVariation() {
 		return 1;
 	}
 
+	@Override
 	public int getPieceIndex(String pieceName) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	@Override
 	public String[] getPieceList() {
 		// TODO Auto-generated method stub
 		return new String[]{"LALALALA","LALALAL4","LALd","LAssssd"};

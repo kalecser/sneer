@@ -32,10 +32,12 @@ class CollectionChangeImpl<T> implements CollectionChange<T> {
 		return collection == null ? Collections.EMPTY_LIST : collection;
 	}
 
+	@Override
 	public Collection<T> elementsAdded() {
 		return _elementsAdded;
 	}
 
+	@Override
 	public Collection<T> elementsRemoved() {
 		return _elementsRemoved;
 	}

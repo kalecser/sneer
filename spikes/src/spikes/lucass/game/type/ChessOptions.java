@@ -58,34 +58,42 @@ public class ChessOptions implements GameOptions{
 			{W_T_INDEX,W_H_INDEX,W_B_INDEX,W_Q_INDEX,W_K_INDEX,W_B_INDEX,W_H_INDEX,W_T_INDEX},
 	};
 	
+	@Override
 	public int[][] getDefaultPositions(){
 		return _defaultPositions;
 	}
 	
+	@Override
 	public int getRowNumber(){
 		return _defaultPositions.length;
 	}
 	
+	@Override
 	public int getColNumber(){
 		return _defaultPositions[0].length;
 	}
 
+	@Override
 	public int getPieceTypesNumber() {
 		return PIECE_TYPES_NUMBER;
 	}
 
+	@Override
 	public Image getBoardImage() {
 		return _boardImage;
 	}
 
+	@Override
 	public Image getPiecesImage() {
 		return _piecesImage;
 	}
 	
+	@Override
 	public int getBoardCellVariation() {
 		return 2;
 	}
 
+	@Override
 	public int getPieceIndex(String pieceName) {
 		for(int i=0; i<_piecesNames.size(); i++){
 			if(_piecesNames.elementAt(i).toString().equals(pieceName)){
@@ -96,6 +104,7 @@ public class ChessOptions implements GameOptions{
 		return -1;
 	}
 
+	@Override
 	public String[] getPieceList() {
 		String[] nameList= new String[_piecesNames.size()];
 		for(int i=0; i<_piecesNames.size(); i++){

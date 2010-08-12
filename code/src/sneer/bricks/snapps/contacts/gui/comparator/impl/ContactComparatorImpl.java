@@ -10,6 +10,7 @@ import sneer.bricks.snapps.contacts.gui.comparator.ContactComparator;
 
 class ContactComparatorImpl implements ContactComparator {
 	
+	@Override
 	public int compare(Contact contact1, Contact contact2) {
 		
 		boolean isOnline1 = isOnline(contact1);

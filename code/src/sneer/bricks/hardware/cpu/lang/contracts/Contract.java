@@ -4,6 +4,7 @@ package sneer.bricks.hardware.cpu.lang.contracts;
 public interface Contract extends Disposable {
 	
 	/** Terminates the service. */
+	@Override
 	void dispose();
 	
 }

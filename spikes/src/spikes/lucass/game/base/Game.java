@@ -41,10 +41,14 @@ public class Game{
 
 	public MouseListener getMouseListener(){
 		return new MouseListener(){
+			@Override
 			public void mouseClicked(MouseEvent e){}
+			@Override
 			public void mouseEntered(MouseEvent e){}
+			@Override
 			public void mouseExited(MouseEvent e){}
 			
+			@Override
 			public void mousePressed(MouseEvent e) {
 				if(e.getButton()==MouseEvent.BUTTON1){
 					PieceSprite tmp= _pieceSet.removePieceAtPosition(e.getX(), e.getY());
@@ -52,6 +56,7 @@ public class Game{
 						_movingPiece= tmp;
 				}
 			}
+			@Override
 			public void mouseReleased(MouseEvent e) {
 				if(e.getButton()==MouseEvent.BUTTON1){
 					if(_movingPiece.getPieceIndex()>=0){
@@ -66,8 +71,10 @@ public class Game{
 	
 	public MouseMotionListener getMouseMotionListener(){
 		return new MouseMotionListener(){
+			@Override
 			public void mouseMoved(MouseEvent e) {
 			}
+			@Override
 			public void mouseDragged(MouseEvent e) {
 				_movingPiece.setPosition(e.getX(), e.getY());
 			}

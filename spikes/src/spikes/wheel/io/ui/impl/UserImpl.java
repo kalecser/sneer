@@ -88,6 +88,7 @@ public class UserImpl implements User {
 	@Override
 	public Catcher catcher() {
 		return new Catcher() {
+			@Override
 			public void catchThis(Throwable throwable) {
 				throwable.printStackTrace();
 				acknowledgeUnexpectedProblem(throwable.getMessage());
@@ -96,6 +97,7 @@ public class UserImpl implements User {
 	}
 
 
+	@Override
 	public boolean confirm(String proposition) {
 		try {
 			return confirmOrCancel(proposition);
@@ -104,6 +106,7 @@ public class UserImpl implements User {
 		}
 	}
 	
+	@Override
 	public void confirmWithTimeout(String proposition, int timeout, Consumer<Boolean> callback) {
 		String message = adaptPrompt(proposition);
 		JOptionPane pane = new JOptionPane(message,JOptionPane.QUESTION_MESSAGE,JOptionPane.YES_NO_OPTION);
@@ -266,6 +269,7 @@ public class UserImpl implements User {
 		}});
 	}
 
+	@Override
 	public void modelessAcknowledge(String title, String message) {
 		showModelessOptionPane(title, message);
 	}

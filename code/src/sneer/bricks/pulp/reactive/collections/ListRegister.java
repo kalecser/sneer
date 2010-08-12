@@ -6,6 +6,7 @@ public interface ListRegister<T> extends CollectionRegister<T> {
 
 	Consumer<T> adder();
 	Consumer<T> remover();
+	@Override
 	ListSignal<T> output();
 
 	void add(T element);

@@ -317,11 +317,13 @@ public abstract class AbstractComponentDecorator {
 
 	private final class Listener extends ComponentAdapter implements HierarchyListener, PropertyChangeListener {
 
-    	public void hierarchyChanged(HierarchyEvent e) {
+    	@Override
+		public void hierarchyChanged(HierarchyEvent e) {
             if ((e.getChangeFlags() & HierarchyEvent.PARENT_CHANGED) != 0) {
                 attach();}}
         
-        public void propertyChange(PropertyChangeEvent e) {
+        @Override
+		public void propertyChange(PropertyChangeEvent e) {
             if (JLayeredPane.LAYER_PROPERTY.equals(e.getPropertyName())) {
                 attach();}}
         

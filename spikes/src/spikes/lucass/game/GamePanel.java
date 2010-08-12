@@ -61,6 +61,7 @@ public class GamePanel extends JPanel implements Runnable{
 			JMenuItem newPieceName= new JMenuItem(pieces[i]);
 			
 			newPieceName.addActionListener(new ActionListener(){
+				@Override
 				public void actionPerformed(ActionEvent e) {
 					System.out.println(((JMenuItem)e.getSource()).getText());
 				}
@@ -82,9 +83,11 @@ public class GamePanel extends JPanel implements Runnable{
 		addMouseListener(_game.getMouseListener());
 		addMouseMotionListener(_game.getMouseMotionListener());
 		addFocusListener(new FocusListener(){
+			@Override
 			public void focusGained(FocusEvent ignored) {
 				_isGamePanelFocused= true;		
 			}
+			@Override
 			public void focusLost(FocusEvent ignored) {
 				_isGamePanelFocused= false;
 			}
@@ -109,7 +112,8 @@ public class GamePanel extends JPanel implements Runnable{
         _isThreadRunning= false;
     }
 
-    public void run() {
+    @Override
+	public void run() {
         while(_isThreadRunning){
             step();
             if(_isGamePanelFocused)

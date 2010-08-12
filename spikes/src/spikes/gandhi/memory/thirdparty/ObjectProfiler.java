@@ -209,7 +209,8 @@ abstract class ObjectProfiler
     private static final class ClassAccessPrivilegedAction
                          implements PrivilegedExceptionAction<Object>
     {
-        public Object run () throws Exception
+        @Override
+		public Object run () throws Exception
         {
             return m_cls.getDeclaredFields ();
         }
@@ -228,7 +229,8 @@ abstract class ObjectProfiler
     private static final class FieldAccessPrivilegedAction
                          implements PrivilegedExceptionAction<Object>
     {
-        public Object run () throws Exception
+        @Override
+		public Object run () throws Exception
         {
             m_field.setAccessible (true);
             

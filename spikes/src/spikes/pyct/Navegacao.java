@@ -148,7 +148,8 @@ public class Navegacao extends JFrame implements MouseListener, MouseMotionListe
 		      new ItemListener() {
 
 		     
-		         public void itemStateChanged( ItemEvent event )
+		         @Override
+				public void itemStateChanged( ItemEvent event )
 		         {
 		     
 					   if ( event.getStateChange() == ItemEvent.SELECTED )
@@ -169,11 +170,13 @@ public class Navegacao extends JFrame implements MouseListener, MouseMotionListe
 		navegacao.navegacao();
 	}
 
+	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
 	public void mousePressed(MouseEvent event) {
 		// TODO Auto-generated method stub
 		statusBar.setText( "Pressed at [" + event.getX() + ", " + event.getY() + "]" );
@@ -200,26 +203,31 @@ public class Navegacao extends JFrame implements MouseListener, MouseMotionListe
 		//}
 	}
 
+	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
 	public void mouseDragged(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
 		

@@ -11,7 +11,8 @@ final class ArrayShellProfileNode extends AbstractShellProfileNode
 {
     // public: ................................................................
     
-    public String name ()
+    @Override
+	public String name ()
     {
         return "<shell: " + ObjectProfiler.typeName (m_type, ObjectProfiler.SHORT_TYPE_NAMES) + ", length=" + m_length + ">";
     }

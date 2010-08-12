@@ -11,6 +11,7 @@ import java.util.Collection;
 
 public interface SetRegister<T> extends CollectionRegister<T> {
 
+	@Override
 	SetSignal<T> output();
 
 	void add(T elementAdded);

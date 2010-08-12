@@ -13,7 +13,8 @@ final class ArrayIndexLink implements ILink
     
     // ILink:
     
-    public String name ()
+    @Override
+	public String name ()
     {
         final StringBuffer s = new StringBuffer ();
         

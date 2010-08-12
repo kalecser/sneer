@@ -29,6 +29,7 @@ class ListRegisterImpl<VO> implements ListRegister<VO> {
 			return _list.indexOf(element);
 		}
 
+		@Override
 		public Iterator<VO> iterator() {
 			synchronized (_list) {
 				return new ArrayList<VO>(_list).iterator(); //Optimize
@@ -103,6 +104,7 @@ class ListRegisterImpl<VO> implements ListRegister<VO> {
 		_output.notifyReceivers(new ListElementRemoved<VO>(index, oldValue));
 	}
 
+	@Override
 	public ListSignal<VO> output() {
 		return _output;
 	}

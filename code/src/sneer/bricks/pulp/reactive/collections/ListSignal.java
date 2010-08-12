@@ -9,6 +9,7 @@ public interface ListSignal<T> extends CollectionSignal<T> {
 	
 	T currentGet(int index);
 	int currentIndexOf(T element);
+	@Override
 	List<T> currentElements();
 	
 	WeakContract addListReceiver(Consumer<? super ListChange<T>> receiver);

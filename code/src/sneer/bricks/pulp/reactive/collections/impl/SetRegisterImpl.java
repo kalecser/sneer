@@ -80,14 +80,17 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 	private final MyOutput _output = new MyOutput();
 
 	
+	@Override
 	public SetSignal<T> output() {
 		return _output;
 	}
 
+	@Override
 	public void add(T elementAdded) {
 		change(new CollectionChangeImpl<T>(elementAdded, null));
 	}
 
+	@Override
 	public void remove(T elementRemoved) {
 		change(new CollectionChangeImpl<T>(null, elementRemoved));
 	}

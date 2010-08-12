@@ -48,6 +48,7 @@ public class JogoAI {
 		}
 
 		
+		@Override
 		public Elemento learn() {
 			if (confirm("O animal eh " + _nome + "?")) {
 				print("Ahaaa eu sabia xD!");
@@ -75,6 +76,7 @@ public class JogoAI {
 			_ladoNao = ladoNao;
 		}
 		
+		@Override
 		public Elemento learn() {
 			if (confirm("Hmm... Por acaso o animal " + _caracteristica + "?"))
 				_ladoSim = _ladoSim.learn();

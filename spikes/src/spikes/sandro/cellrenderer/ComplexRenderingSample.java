@@ -78,6 +78,7 @@ public class ComplexRenderingSample {
 class ComplexCellRenderer implements ListCellRenderer {
 	protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
+	@Override
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		Font theFont = null;
 		Color theForeground = null;

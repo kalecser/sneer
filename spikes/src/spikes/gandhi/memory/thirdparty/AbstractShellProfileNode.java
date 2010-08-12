@@ -12,27 +12,32 @@ abstract class AbstractShellProfileNode extends AbstractProfileNode
 {
     // public: ................................................................    
 
-    public final Object object ()
+    @Override
+	public final Object object ()
     {
         return null;
     }
     
-    public final IObjectProfileNode shell ()
+    @Override
+	public final IObjectProfileNode shell ()
     {
         return null;
     }
     
-    public final IObjectProfileNode [] children ()
+    @Override
+	public final IObjectProfileNode [] children ()
     {
         return EMPTY_OBJECTPROFILENODE_ARRAY;
     }
     
-    public final int refcount ()
+    @Override
+	public final int refcount ()
     {
         return 0;
     }
     
-    public final boolean traverse (final INodeFilter filter, final INodeVisitor visitor)
+    @Override
+	public final boolean traverse (final INodeFilter filter, final INodeVisitor visitor)
     {
         if ((visitor != null) && ((filter == null) || filter.accept (this)))
         {

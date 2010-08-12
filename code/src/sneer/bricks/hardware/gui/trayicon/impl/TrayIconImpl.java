@@ -75,6 +75,7 @@ class TrayIconImpl implements TrayIcon {
 	}
 
 	
+	@Override
 	public void addAction(final Action action) {
 		PopupMenu popup = _trayIcon.getPopupMenu();
 		if (popup.getItemCount() > 0)
@@ -90,18 +91,22 @@ class TrayIconImpl implements TrayIcon {
 		popup.add(menuItem);
 	}
 
+	@Override
 	public void messageBalloon(String title, String message) {
 		_trayIcon.displayMessage(title, message, MessageType.NONE);
 	}
 	
+	@Override
 	public void clearActions(){
 		_trayIcon.getPopupMenu().removeAll();
 	}
 
+	@Override
 	public void setDefaultAction(Action defaultAction) {
 		_defaultAction = defaultAction;
 	}
 
+	@Override
 	public void dispose() {
 		SystemTray.getSystemTray().remove(_trayIcon);		
 	}

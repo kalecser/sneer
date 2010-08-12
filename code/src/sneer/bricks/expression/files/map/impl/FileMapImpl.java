@@ -15,42 +15,52 @@ class FileMapImpl implements FileMap {
 	private final FileMap _delegate = new NormalizedFileMap();
 	
 	
+	@Override
 	public FolderContents getFolderContents(Hash hash) {
 		return _delegate.getFolderContents(hash);
 	}
 
+	@Override
 	public Hash getHash(String path) {
 		return _delegate.getHash(normalize(path));
 	}
 
+	@Override
 	public long getLastModified(String file) {
 		return _delegate.getLastModified(normalize(file));
 	}
 
+	@Override
 	public String getFile(Hash hash) {
 		return _delegate.getFile(hash);
 	}
 
+	@Override
 	public String getFolder(Hash hash) {
 		return _delegate.getFolder(hash);
 	}
 
+	@Override
 	public String getPath(Hash hash) {
 		return _delegate.getPath(hash);
 	}
 
+	@Override
 	public void putFile(String path, long lastModified, Hash hash) {
 		_delegate.putFile(normalize(path), lastModified, hash);
 	}
 
+	@Override
 	public void putFolder(String path, Hash hash) {
 		_delegate.putFolder(normalize(path), hash);
 	}
 
+	@Override
 	public Hash remove(String path) {
 		return _delegate.remove(normalize(path));
 	}
 
+	@Override
 	public void rename(String fromPath, String toPath) {
 		_delegate.rename(normalize(fromPath), normalize(toPath));
 	}

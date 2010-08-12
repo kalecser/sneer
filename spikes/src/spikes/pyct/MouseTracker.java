@@ -68,7 +68,8 @@ public class MouseTracker extends JFrame implements MouseListener, MouseMotionLi
 		      new ActionListener() {
 
 		         
-		         public void actionPerformed( ActionEvent event )
+		         @Override
+				public void actionPerformed( ActionEvent event )
 		         {
 		            RunnerConfiguracao executa = new RunnerConfiguracao();
 		            executa.executa();
@@ -86,7 +87,8 @@ public class MouseTracker extends JFrame implements MouseListener, MouseMotionLi
 		      new ActionListener() {
 
 		         
-		         public void actionPerformed( ActionEvent event )
+		         @Override
+				public void actionPerformed( ActionEvent event )
 		         {
 		        	 openFile();
 		        	 salvaFotosRelacionadas();
@@ -182,11 +184,13 @@ public class MouseTracker extends JFrame implements MouseListener, MouseMotionLi
 	    System.out.println(_nome);
 	}  
 	
+	@Override
 	public void mouseClicked( MouseEvent event )
 	{
 		statusBar.setText( "Clicked at [" + event.getX() + ", " + event.getY() + "]" );
 	}
 
+	@Override
 	public void mousePressed( MouseEvent event )
 	{
 		statusBar.setText( "Pressed at [" + event.getX() + ", " + event.getY() + "]" );
@@ -197,6 +201,7 @@ public class MouseTracker extends JFrame implements MouseListener, MouseMotionLi
 		System.out.println("Inicial "+cordenadaInicialX+" , "+cordenadaInicialY);
 	}
 
+	@Override
 	public void mouseReleased( MouseEvent event )
 	{
 		statusBar.setText( "Released at [" + event.getX() +  ", " + event.getY() + "]" );
@@ -217,22 +222,26 @@ public class MouseTracker extends JFrame implements MouseListener, MouseMotionLi
 		}
 	}
 
+	@Override
 	public void mouseEntered( MouseEvent event )
 	{
 		
 	}
 
+	@Override
 	public void mouseExited( MouseEvent event )
 	{
 		statusBar.setText( "Fora da  Foto" );
 	}
 
+	@Override
 	public void mouseDragged( MouseEvent event )
 	{
 		statusBar.setText( "Dragged at [" + event.getX() +  ", " + event.getY() + "]" );
 	}
 	
 
+	@Override
 	public void mouseMoved( MouseEvent event )
 	{
 		statusBar.setText( "Moved at [" + event.getX() + ", " + event.getY() + "]" );

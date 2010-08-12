@@ -73,11 +73,13 @@ abstract class ObjectProfileVisitors
     private static abstract class AbstractProfileNodeVisitor
                             implements IObjectProfileNode.INodeVisitor
     {
-        public void previsit (final IObjectProfileNode node)
+        @Override
+		public void previsit (final IObjectProfileNode node)
         {
         }
         
-        public void postvisit (final IObjectProfileNode node)
+        @Override
+		public void postvisit (final IObjectProfileNode node)
         {
         }
         

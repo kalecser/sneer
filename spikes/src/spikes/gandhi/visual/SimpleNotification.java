@@ -39,6 +39,7 @@ public class SimpleNotification extends JWindow implements Runnable {
 		setVisible(false);
 	}
 
+	@Override
 	public void run() {
 		setVisible(true);
 		try { Thread.sleep(_seconds * 1000); } catch (Exception e) {}

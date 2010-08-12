@@ -21,6 +21,7 @@ public class JFrameBoundsKeeperImpl implements JFrameBoundsKeeper {
 		_persistence = persistence;
 	}
 	
+	@Override
 	public void keepBoundsFor(final JFrame frame, final String id){
 		Closure keepBoundsRunnable = keepBoundsClosure(frame, id);
 		

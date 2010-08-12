@@ -137,6 +137,7 @@ public class Language {
 		JButton button1 = new JButton(" Create Template File (.pot)");
 		button1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		button1.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				createTemplateFile();
 			}
@@ -144,6 +145,7 @@ public class Language {
 		JButton button2 = new JButton(" Create New Language file (.po)");
 		button2.setAlignmentX(Component.CENTER_ALIGNMENT);
 		button2.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				createLanguageFile();
 			}
@@ -151,6 +153,7 @@ public class Language {
 		JButton button3 = new JButton(" Create Merged Language file (.po_merge)");
 		button3.setAlignmentX(Component.CENTER_ALIGNMENT);
 		button3.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				merge();
 			}

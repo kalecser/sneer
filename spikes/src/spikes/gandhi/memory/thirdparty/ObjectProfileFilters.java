@@ -73,7 +73,8 @@ abstract class ObjectProfileFilters
 
     private static final class SizeFilter implements IObjectProfileNode.INodeFilter
     {
-        public boolean accept (final IObjectProfileNode node)
+        @Override
+		public boolean accept (final IObjectProfileNode node)
         {
             return node.size () >= m_threshold;
         }
@@ -92,7 +93,8 @@ abstract class ObjectProfileFilters
     
     private static final class RankFilter implements IObjectProfileNode.INodeFilter
     {
-        public boolean accept (final IObjectProfileNode node)
+        @Override
+		public boolean accept (final IObjectProfileNode node)
         {
             final IObjectProfileNode parent = node.parent ();
             if (parent == null) return true;
@@ -118,7 +120,8 @@ abstract class ObjectProfileFilters
     
     private static final class SizeFractionFilter implements IObjectProfileNode.INodeFilter
     {
-        public boolean accept (final IObjectProfileNode node)
+        @Override
+		public boolean accept (final IObjectProfileNode node)
         {
             if (node.size () >= m_threshold * node.root ().size ())
                 return true;
@@ -140,7 +143,8 @@ abstract class ObjectProfileFilters
     
     private static final class ParentSizeFractionFilter implements IObjectProfileNode.INodeFilter
     {
-        public boolean accept (final IObjectProfileNode node)
+        @Override
+		public boolean accept (final IObjectProfileNode node)
         {
             final IObjectProfileNode parent = node.parent ();
             if (parent == null)

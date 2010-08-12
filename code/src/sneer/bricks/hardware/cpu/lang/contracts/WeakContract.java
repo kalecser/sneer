@@ -4,6 +4,7 @@ package sneer.bricks.hardware.cpu.lang.contracts;
 public interface WeakContract extends Disposable {
 	
 	/** Terminates the service immediately (does not wait for this Contract to be garbage collected). */
+	@Override
 	void dispose();
 	
 }

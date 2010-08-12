@@ -8,6 +8,7 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface ContactComparator extends Comparator<Contact> {
 
+	@Override
 	int compare(Contact contact1, Contact contact2);
 
 }

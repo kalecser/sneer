@@ -18,10 +18,12 @@ public class XStreamServerSocket implements ObjectServerSocket {
 		_delegate = delegate;
 	}
 
+	@Override
 	public ObjectSocket accept() throws IOException {
 		return new XStreamSocket(_xStream, _delegate.accept());
 	}
 
+	@Override
 	public void close() {
 		_delegate.close();
 	}

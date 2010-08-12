@@ -42,6 +42,7 @@ public class TreeModelExample extends JFrame {
 		tree.setShowsRootHandles(true);
 		tree.addTreeExpansionListener(new TreeExpansionListener(){
 			
+			@Override
 			public void treeCollapsed(TreeExpansionEvent event) {
 				final NonLeafNode node = (NonLeafNode) event.getPath().getLastPathComponent();
 				System.out.println("collapse " + node);
@@ -51,16 +52,19 @@ public class TreeModelExample extends JFrame {
 				removeChildrenRecursive(node);
 			}
 
+			@Override
 			public void treeExpanded(TreeExpansionEvent event) {
 				//ignored
 			}
 		});
 
 		tree.addTreeWillExpandListener(new TreeWillExpandListener() {
+			@Override
 			public void treeWillCollapse(TreeExpansionEvent event) {
 				//ignored
 			}
 
+			@Override
 			public void treeWillExpand(TreeExpansionEvent event) {
 				final NonLeafNode node = (NonLeafNode) event.getPath().getLastPathComponent();
 				System.out.println("expand " + node);
