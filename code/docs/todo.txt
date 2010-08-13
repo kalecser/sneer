@@ -6,6 +6,8 @@ Following are the tasks each one of us has on his plate right now:
 
 Edmundo =================================================
 
+	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and ` can both use the same Gui.
+
 	- Platform exploration
 		- Study the following core features:
 			- Reactive Framework (Signals)
@@ -45,8 +47,6 @@ Igor ====================================================
 				:)    (...but I like it. Bring me similar ones.)
 				:|    (...and that's it.)
 				:(    (...or any similar tracks.)
-
-	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
 
 	- sovereigncomputing.net - Moralize. This is necessary to help promote Wusic.
 		- Talk to Klaus 
