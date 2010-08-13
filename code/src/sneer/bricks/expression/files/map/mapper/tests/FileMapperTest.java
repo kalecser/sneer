@@ -53,12 +53,12 @@ public class FileMapperTest extends BrickTestWithFiles {
 		byte[] hashForEmptyFolder = new byte[]{-49, -125, -31, 53, 126, -17, -72, -67, -15, 84}; //Obtained by regression
 		mapAndAssert(newFolder, hashForEmptyFolder);
 
-		File foo = createTmpFileWithFileNameAsContent("newFolder/foo");
-		File bar = createTmpFileWithFileNameAsContent("newFolder/bar");
-		mapAndAssert(newFolder, new byte[]{8, 45, -125, -40, 18, 87, -64, 24, 36, -116}); //Obtained by regression
+		File foo = createTmpFileWithFileNameAsContent("newFolder/foo.txt", 42);
+		File bar = createTmpFileWithFileNameAsContent("newFolder/bar.txt", 42);
+		mapAndAssert(newFolder, new byte[]{108, 99, 68, 62, 9, -113, -119, 118, -93, 7}); //Obtained by regression
 		
 		foo.delete();
-		mapAndAssert(newFolder, new byte[]{-124, -36, -118, 18, 78, 17, 1, -74, -84, -8}); //Obtained by regression
+		mapAndAssert(newFolder, new byte[]{74, -23, -27, -19, 110, -25, 38, 35, 69, 6}); //Obtained by regression
 		assertFalse(isMapped(foo));
 		assertTrue(isMapped(bar));
 
@@ -67,16 +67,28 @@ public class FileMapperTest extends BrickTestWithFiles {
 		assertFalse(isMapped(bar));
 	}
 
+	
+	@Test (timeout = 3000)
+	public void fat32LastModifiedPrecisionCompatibility() throws IOException, MappingStopped {
+		File newFolder = newFolder("newFolder");
+
+		File foo = createTmpFileWithFileNameAsContent("newFolder/foo.txt", 0);
+		mapAndAssert(newFolder, new byte[]{-22, 105, -64, -49, -44, 45, 64, 0, -57, 103}); //Obtained by regression
+		foo.setLastModified(1999);
+		mapAndAssert(newFolder, new byte[]{-22, 105, -64, -49, -44, 45, 64, 0, -57, 103}); //Obtained by regression
+		foo.setLastModified(2000);
+		mapAndAssert(newFolder, new byte[]{55, -29, 35, 100, -40, -33, -104, -27, -73, 24}); //Obtained by regression
+	}
+
 
 	private boolean isMapped(File file) {
 		return my(FileMap.class).getHash(file.getAbsolutePath()) != null;
 	}
 
 
-	@Override
-	protected File createTmpFileWithFileNameAsContent(String fileName)	throws IOException {
+	protected File createTmpFileWithFileNameAsContent(String fileName, long lastModified)	throws IOException {
 		File result = super.createTmpFileWithFileNameAsContent(fileName);
-		result.setLastModified(42000);
+		result.setLastModified(lastModified);
 		return result;
 	}
 
