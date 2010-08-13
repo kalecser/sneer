@@ -74,7 +74,7 @@ class ShoutPainter {
 	}
 
 	private String nick(Shout shout) {
-		if(ShoutUtils.isMyOwnShout(shout)) return "|W|";
+		if(ShoutUtils.isMyOwnShout(shout)) return "Me";
 		
 		return ShoutUtils.publisherNick(shout);
 	}
