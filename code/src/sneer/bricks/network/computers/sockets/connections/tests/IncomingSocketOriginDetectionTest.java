@@ -55,6 +55,7 @@ public class IncomingSocketOriginDetectionTest extends BrickTestWithFiles {
 			Sequence sequence = newSequence("seal");
 			oneOf(_socket).read(); will(returnValue(ProtocolTokens.SNEER_WIRE_PROTOCOL_1)); inSequence(sequence);
 			oneOf(_socket).read(); will(returnValue(new byte[]{1, 1, 1})); inSequence(sequence);
+			oneOf(_socket).read(); will(returnValue("Neide".getBytes("UTF-8"))); inSequence(sequence);
 			oneOf(_socket).write(ProtocolTokens.CONFIRMED); inSequence(sequence);
 
 			oneOf(_network).remoteIpFor(_socket); will(returnValue("10.42.10.42"));

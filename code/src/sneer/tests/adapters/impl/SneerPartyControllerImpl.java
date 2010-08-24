@@ -17,6 +17,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
+import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.iterables.Iterables;
@@ -34,6 +35,7 @@ import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.network.social.heartbeat.Heart;
 import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
+import sneer.bricks.network.social.rendezvous.Rendezvous;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -72,6 +74,9 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	private File _codeFolder;
 
+
+	private String _nameOfExpectedCaller;
+
 	
 	@Override
 	public void setSneerPort(int port) {
@@ -87,6 +92,13 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		my(InternetAddressKeeper.class).add(contact, MOCK_ADDRESS, other.sneerPort());
 	}
 
+
+	@Override
+	public void acceptConnectionFrom(String otherName) {
+		if (_nameOfExpectedCaller != null) throw new IllegalStateException();
+		_nameOfExpectedCaller = otherName;
+		approveConnectionRequestsIfAny();
+	}
 
 	private void putSeal(SneerParty other, Contact contact) {
 		try {
@@ -237,6 +249,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		startAndKeep(SocketOriginator.class);
 		startAndKeep(SocketReceiver.class);
 		startAndKeep(ProbeManager.class);
+		startAndKeep(Rendezvous.class);
 
 		startAndKeep(TupleLogger.class);
 
@@ -244,7 +257,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 		startAndKeep(FileServer.class);
 
-		startAndKeep(Heart.class);		
+		startAndKeep(Heart.class);
 	}
 
 	
@@ -413,10 +426,38 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		setSneerPort(port);
 
 		startSnapps();
+		startApprovingConnectionRequests();
 		accelerateHeartbeat();
 	}
 
 	
+	private void startApprovingConnectionRequests() {
+		_refToAvoidGc.add(my(BlinkingLights.class).lights().addPulseReceiver(new Runnable() {@Override public void run() {
+			approveConnectionRequestsIfAny();
+		}}));
+	}
+
+
+	private void approveConnectionRequestsIfAny() {
+		for (Light light : my(BlinkingLights.class).lights())
+			if (light.caption().startsWith(_nameOfExpectedCaller + " wants to connect to you")) {
+				runAcceptAction(light);
+				_nameOfExpectedCaller = null;
+			}
+	}
+
+
+	private void runAcceptAction(Light light) {
+		for (Action action : light.actions()) {
+			if (action.caption().equals("Accept")) {
+				action.run();
+				return;
+			}
+		}
+		throw new IllegalStateException("Accept action not found.");
+	}
+
+
 	private void generatePublicKey(String name) {
 		my(OwnKeys.class).generateKeyPair(pkSeedFrom(name));
 	}
@@ -472,4 +513,5 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 			? "myself"
 			: my(ContactSeals.class).contactGiven(seal).nickname().toString();
 	}
+
 }

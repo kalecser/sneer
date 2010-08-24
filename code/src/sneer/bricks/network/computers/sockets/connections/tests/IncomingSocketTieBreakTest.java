@@ -59,10 +59,12 @@ public class IncomingSocketTieBreakTest extends BrickTestWithFiles {
 
 			oneOf(_socketA).read(); will(returnValue(ProtocolTokens.SNEER_WIRE_PROTOCOL_1)); inSequence(sequence);
 			oneOf(_socketA).read(); will(returnValue(new byte[]{1, 1, 1})); inSequence(sequence);
+			oneOf(_socketA).read(); will(returnValue("Neide".getBytes("UTF-8"))); inSequence(sequence);
 			oneOf(_socketA).write(ProtocolTokens.CONFIRMED); inSequence(sequence);
 
 			oneOf(_socketB).read(); will(returnValue(ProtocolTokens.SNEER_WIRE_PROTOCOL_1)); inSequence(sequence);
 			oneOf(_socketB).read(); will(returnValue(new byte[]{3, 3, 3})); inSequence(sequence);
+			oneOf(_socketB).read(); will(returnValue("Maicon".getBytes("UTF-8"))); inSequence(sequence);
 			oneOf(_socketB).read(); will(returnValue(ProtocolTokens.CONFIRMED)); inSequence(sequence);
 
 			oneOf(_socketA).close();

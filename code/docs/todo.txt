@@ -5,7 +5,14 @@
 Following are the tasks each one of us has on his plate right now:
 
 Edmundo =================================================
-
+	- Freedom 2
+		- handshaking protocol
+			- refactor incominghandshaker (readContactsSealBytes method)
+			- when the caller is an unknown contact, a persisted blink light is displayed with options: Accept/Reject
+			- the callee can accept or reject recent request waiting for approval
+				- if rejected: add contact seal to black list
+				- if accepted: add contact seak to contact list (initially, contact nickname = name) 
+	
 	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and ` can both use the same Gui.
 
 	- Platform exploration
