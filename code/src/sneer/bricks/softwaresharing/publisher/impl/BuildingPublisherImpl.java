@@ -12,13 +12,13 @@ import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.bricks.softwaresharing.publisher.SourcePublisher;
-import sneer.bricks.softwaresharing.publisher.SrcFolderHash;
+import sneer.bricks.softwaresharing.publisher.BuildingPublisher;
+import sneer.bricks.softwaresharing.publisher.BuildingHash;
 
-class SourcePublisherImpl implements SourcePublisher {
+class BuildingPublisherImpl implements BuildingPublisher {
 
 	@Override
-	public void publishSourceFolder() {
+	public void publishMyOwnBuilding() {
 		GitWorkaround.standardizeLastModifiedDatesWhileWeStillUseGitBecauseGitDoesNotPreserveThem(srcFolder());
 
 		Hash hash;
@@ -31,7 +31,7 @@ class SourcePublisherImpl implements SourcePublisher {
 			return;
 		}
 
-		my(TupleSpace.class).acquire(new SrcFolderHash(hash));
+		my(TupleSpace.class).acquire(new BuildingHash(hash));
 	}
 
 	private File srcFolder() {
