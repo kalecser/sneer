@@ -87,7 +87,11 @@ class MapperWorker {
 		if (newContents.equals(mappedContents)) return mappedHash;
 		
 		unmapDeletedFiles(folderPath, newEntries, mappedContents);
-		return putFolderHash(folder, newContents);
+		
+		Hash result = putFolderHash(folder, newContents);
+		if (newContents.contents.size() != FileMap.getFolderContents(result).contents.size())
+			throw new IllegalStateException("" + folder + "\nexpected: " + Arrays.deepToString(newContents.contents.toArray()) + "\nactual: " + Arrays.deepToString(FileMap.getFolderContents(result).contents.toArray()));
+		return result;
 	}
 
 

@@ -302,7 +302,10 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		final Latch latch = my(Latches.class).produce();
 		
 		WeakContract contract = my(BrickSpace.class).newBuildingFound().addReceiver(new Consumer<Seal>() { @Override public void consume(Seal publisher) {
-			my(Logger.class).log("New brick configuration found for: " + print(publisher));
+			my(Logger.class).log(">>>>>New brick configuration found for: " + print(publisher));
+
+//			if (my(BrickSpace.class).availableBricks().isEmpty()) throw new IllegalStateException("There are no available bricks.");
+
 			if (isBrickAvailable(brickName, brickStatus)) latch.open();
 		}});
 		if (isBrickAvailable(brickName, brickStatus)) latch.open();
