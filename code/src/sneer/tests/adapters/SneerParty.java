@@ -11,6 +11,7 @@ public interface SneerParty extends SovereignParty {
 	int sneerPort();
 
 	void startConnectingTo(SneerParty other);
+	void acceptConnectionFrom(String otherName);
 	void waitUntilOnline(SneerParty other);
 	
 	void start(String name, int port);

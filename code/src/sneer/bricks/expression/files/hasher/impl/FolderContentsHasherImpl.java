@@ -25,12 +25,16 @@ class FolderContentsHasherImpl implements FolderContentsHasher {
 	private static Hash hash(FileOrFolder entry) {
 		Digester digester = my(Crypto.class).newDigester();
 		digester.update(bytesUtf8(entry.name));
-		digester.update(BigInteger.valueOf(entry.lastModified).toByteArray());
+		digester.update(BigInteger.valueOf(adjustToFat32Precision(entry.lastModified)).toByteArray());
 		digester.update(entry.hashOfContents.bytes.copy());
 		return digester.digest();
 	}
 
 	
+	private static long adjustToFat32Precision(long lastModified) {
+		return lastModified / 2000;
+	}
+
 	private static byte[] bytesUtf8(String string) {
 		try {
 			return string.getBytes("UTF-8");

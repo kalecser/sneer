@@ -66,7 +66,7 @@ class WindGuiImpl implements WindGui {
 			@Override 
 			public void consume(CollectionChange<Shout> change) {
 				if (!change.elementsRemoved().isEmpty()){
-					_shoutPainter.repaintAllShoults(_wind.shoutsHeard());
+					_shoutPainter.repaintAllShouts(_wind.shoutsHeard());
 					return;
 				}
 
@@ -87,7 +87,7 @@ class WindGuiImpl implements WindGui {
 	public void init(InstrumentPanel window) {
 		_container = window.contentPane();
 		initGui();
-		initShoutReceiver();
+		initShoutAnnouncer();
 		new WindClipboardSupport();
 	}
 
@@ -123,7 +123,7 @@ class WindGuiImpl implements WindGui {
 			@Override public void focusLost(FocusEvent e) {		_shoutsList.setEditable(true); }});
 	}
 
-	private void initShoutReceiver() {
+	private void initShoutAnnouncer() {
 		_refToAvoidGc = _wind.shoutsHeard().addReceiver(new Consumer<CollectionChange<Shout>>() { @Override public void consume(CollectionChange<Shout> shout) {
 			shoutAlert(shout.elementsAdded());
 		}});
@@ -140,8 +140,8 @@ class WindGuiImpl implements WindGui {
 	private synchronized void alertUser(Collection<Shout> shouts) {
 
 		String shoutsAsString = shoutsAsString(shouts);
-		my(TrayIcons.class).messageBalloon("New shouts heard", shoutsAsString.toString());
-		//		_player.play(this.getClass().getResource("alert.wav"));
+		my(TrayIcons.class).messageBalloon("New shouts heard", shoutsAsString);
+		// _player.play(this.getClass().getResource("alert.wav"));
 	}
 
 	private String shoutsAsString(Collection<Shout> shouts) {

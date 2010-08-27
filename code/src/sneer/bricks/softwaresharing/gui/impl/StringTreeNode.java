@@ -19,7 +19,7 @@ class StringTreeNode extends AbstractTreeNodeWrapper<Object> {
 	private static final ImageIcon _users = loadIcon("users.png");
 
 	private static ImageIcon loadIcon(String fileName){
-		return my(ImageFactory.class).getIcon(BrickInfoTreeNode.class, fileName);
+		return my(ImageFactory.class).getIcon(BrickHistoryTreeNode.class, fileName);
 	}
 	StringTreeNode(TreeNode parent, String name) {
 		super(parent, null);

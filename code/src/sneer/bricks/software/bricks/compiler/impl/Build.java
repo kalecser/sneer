@@ -5,7 +5,6 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,7 +21,6 @@ import sneer.bricks.software.code.compilers.CompilerException;
 import sneer.bricks.software.code.compilers.Language;
 import sneer.bricks.software.code.compilers.Result;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.foundation.lang.types.Classes;
 
 class Build {
 
@@ -93,7 +91,7 @@ class Build {
 			accumulateTestFiles(testFiles, brickFolder);
 		
 		if (testFiles.isEmpty()) return;
-		compile(testFiles);
+		compileTestFiles(testFiles);
 	}
 
 
@@ -110,23 +108,21 @@ class Build {
 			testFiles.addAll(listJavaFiles(testsFolder, fileFilters().any()));
 	}
 
+	
 	private Result compile(Collection<File> sourceFiles, File destination, File... classpath) throws IOException, CompilerException {
-		File classpathRoot = Classes.classpathRootFor(Builder.class);
-		List<File> extendedClasspath = new ArrayList<File>();
-		extendedClasspath.add(classpathRoot);
-		extendedClasspath.addAll(Arrays.asList(classpathWithLibs(classpathRoot)));
-		extendedClasspath.addAll(Arrays.asList(classpath));
-		return _language.compiler().compile(sourceFiles, destination, extendedClasspath.toArray(new File[0]));
+		return _language.compiler().compile(sourceFiles, destination, classpath);
 	}
 
-	private void compile(Collection<File> testFiles) throws IOException, BrickCompilerException {
+	
+	private void compileTestFiles(Collection<File> testFiles) throws IOException, BrickCompilerException {
 		try {
-			compile(testFiles, _destFolder, testClassPath());
+			compile(testFiles, _destFolder, classpathForTests());
 		} catch (CompilerException e) {
 			throw new BrickCompilerException(e);
 		}
 	}
 
+	
 	private void compileImplsTo(Collection<File> brickFolders, File tmpFolder) throws IOException, BrickCompilerException {
 		int i = 0;
 		for (File brickFolder : brickFolders) {
@@ -136,34 +132,34 @@ class Build {
 	}
 
 	
-	private File[] toFileArray(List<File> testClasspath) {
-		return testClasspath.toArray(new File[testClasspath.size()]);
+	private File[] toFileArray(List<File> list) {
+		return list.toArray(new File[list.size()]);
 	}
 
 	
-	private File[] testClassPath() {
+	private File[] classpathForTests() {
 		return classpathWithLibs(foundationSrcFolder());
 	}
 
 	
 	private File[] classpathWithLibs(File libFolder) {
-		if (!libFolder.exists()) {
+		if (!libFolder.exists())
 			return new File[] { _destFolder };
-		}
 		
-		List<File> classpath = jarsIn(libFolder);
-		classpath.add(_destFolder);
-		return toFileArray(classpath);
+		List<File> result = jarsIn(libFolder);
+		result.add(_destFolder);
+		return toFileArray(result);
 	}
 
 	
 	private List<File> jarsIn(File libFolder) {
-		List<File> classpath = new ArrayList<File>();
-		Iterator<File> foundationJars = files().iterate(libFolder, new String[] { "jar" }, true);
-		while (foundationJars.hasNext()) {
-			classpath.add(foundationJars.next());
-		}
-		return classpath;
+		List<File> result = new ArrayList<File>();
+		boolean recursive = true;
+		Iterator<File> jars = files().iterate(libFolder, new String[] { "jar" }, recursive);
+		while (jars.hasNext())
+			result.add(jars.next());
+
+		return result;
 	}
 
 	
@@ -178,9 +174,9 @@ class Build {
 
 	
 	private File cleanTmpBrickImplFolder() throws IOException {
-		File tmpFolder = new File(my(FolderConfig.class).tmpFolderFor(Builder.class), "brickimpls");
-		resetFolder(tmpFolder);
-		return tmpFolder;
+		File result = new File(my(FolderConfig.class).tmpFolderFor(Builder.class), "brickimpls");
+		resetFolder(result);
+		return result;
 	}
 
 	
@@ -192,18 +188,23 @@ class Build {
 	
 	private void compileBrick(File brickFolder, File tmpFolder) throws IOException, BrickCompilerException {
 		File[] classpath = classpathWithLibs(new File(brickFolder, "impl/lib"));
-		compile(new File(brickFolder, "impl"), tmpFolder, classpath);
+		File srcFolder = new File(brickFolder, "impl");
+		if (!srcFolder.exists()) return;
+		compile(srcFolder, tmpFolder, classpath);
 	}
 
 	
 	private void compile(File srcFolder, File binFolder, File... classpath) throws IOException, BrickCompilerException {
-		if (!srcFolder.exists()) return;
 		try {
-			List<File> srcFiles = new ArrayList<File>(my(IO.class).files().listFiles(srcFolder, new String[]{_language.fileExtension()}, true));
-			compile(srcFiles, binFolder, classpath);
+			compile(srcFilesIn(srcFolder), binFolder, classpath);
 		} catch (CompilerException e) {
 			throw new BrickCompilerException(e);
 		}
+	}
+
+
+	private ArrayList<File> srcFilesIn(File srcFolder) {
+		return new ArrayList<File>(my(IO.class).files().listFiles(srcFolder, new String[]{_language.fileExtension()}, true));
 	}
 
 	

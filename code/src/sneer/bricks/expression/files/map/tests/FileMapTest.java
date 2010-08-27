@@ -37,8 +37,6 @@ public class FileMapTest extends BrickTestWithFiles {
 		
 		_subject.rename("1/1", "1/1b");
 		
-		assertNull(_subject.getHash("1/1/1"));
-		assertNull(_subject.getHash("1/1/2"));
 		assertEquals(hash( 11), _subject.getHash("1/1b"));
 		assertEquals(hash(117), _subject.getHash("1/1b/7"));
 		assertEquals(hash(118), _subject.getHash("1/1b/8"));
@@ -48,6 +46,9 @@ public class FileMapTest extends BrickTestWithFiles {
 		assertEquals(118, _subject.getLastModified("1/1b/8"));
 		assertEquals(121, _subject.getLastModified("1/2/1"));
 		assertEquals(131, _subject.getLastModified("1/3/1"));
+		
+		assertNotNull(_subject.getFolder(hash(119)));
+		assertEquals(hash(119), _subject.getHash("AnotherFolderWithHash119"));
 	}
 
 	
@@ -64,6 +65,9 @@ public class FileMapTest extends BrickTestWithFiles {
 		assertNull(_subject.getHash("1/1"));
 		assertNull(_subject.getHash("1/1/7"));
 		assertNull(_subject.getHash("1/1/8"));
+
+		assertEquals("AnotherFolderWithHash119", _subject.getFolder(hash(119)));
+		assertEquals(hash(119), _subject.getHash("AnotherFolderWithHash119"));
 	}
 
 	
@@ -94,6 +98,8 @@ public class FileMapTest extends BrickTestWithFiles {
 		_subject.putFolder("1"    ,      hash(  1));
 		_subject.putFile(  "1/2/1", 121, hash(121));
 		_subject.putFile(  "1/3/1", 131, hash(131));
+		
+		_subject.putFolder("AnotherFolderWithHash119", hash(119));
 	}
 
 

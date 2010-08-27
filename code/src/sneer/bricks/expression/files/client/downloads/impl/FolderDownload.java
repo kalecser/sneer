@@ -12,7 +12,6 @@ import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FileRequest;
 import sneer.bricks.expression.files.protocol.FolderContents;
-import sneer.bricks.expression.files.writer.folder.FolderContentsWriter;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.crypto.Hash;
@@ -39,7 +38,7 @@ class FolderDownload extends AbstractDownload {
 
 
 	@Override
-	void subscribeToContents() {
+	protected void subscribeToContents() {
 		_folderContentConsumerContract = my(RemoteTuples.class).addSubscription(FolderContents.class, new Consumer<FolderContents>() { @Override public void consume(FolderContents folderContents) {
 			receiveFolder(folderContents);
 		}});
@@ -48,8 +47,6 @@ class FolderDownload extends AbstractDownload {
 	
 	synchronized
 	private void receiveFolder(FolderContents contents) {
-		registerActivity();
-
 		try {
 			tryToReceiveFolder(contents);
 		} catch (Exception e) {
@@ -63,14 +60,20 @@ class FolderDownload extends AbstractDownload {
 
 	    Hash hashOfFolder = my(FolderContentsHasher.class).hash(folderContents);
 	    if (!_hash.equals(hashOfFolder)) return;
-	    _contentsReceived = folderContents;
+	    
+	    finishWith(folderContents);
+	}
+
+
+	private void finishWith(FolderContents folderContents) throws IOException,	TimeoutException {
+		_contentsReceived = folderContents;
 
 	    if (!_path.exists() && !_path.mkdir()) throw new IOException("Unable to create folder: " + _path);
 
 	    for (FileOrFolder entry : folderContents.contents)
 	    	startSpinOffDownload(entry).waitTillFinished();
 
-	    finishRemoteDownloadWithSuccess();
+	    finishWithSuccess();
 	}
 
 
@@ -82,14 +85,14 @@ class FolderDownload extends AbstractDownload {
 
 
 	@Override
-	void updateFileMapWith(File tmpFolder, File actualFolder) {
-		my(FileMap.class).putFolder(tmpFolder.getAbsolutePath(), _hash);
-		my(FileMap.class).rename(tmpFolder.getAbsolutePath(), actualFolder.getAbsolutePath());
+	protected void updateFileMap() {
+		my(FileMap.class).putFolder(_path.getAbsolutePath(), _hash);
+		my(FileMap.class).rename(_path.getAbsolutePath(), _actualPath.getAbsolutePath());
 	}
 
 
 	@Override
-	Tuple requestToPublishIfNecessary() {
+	protected Tuple requestToPublishIfNecessary() {
 		return _contentsReceived != null
 			? null
 			: new FileRequest(source(), _hash, 0, _path.getAbsolutePath());
@@ -97,16 +100,20 @@ class FolderDownload extends AbstractDownload {
 
 
 	@Override
-	void copyContents(Object contents) throws IOException {
-		if (!(contents instanceof FolderContents)) throw new IOException("Wrong type of contents received. Should be FolderContents but was " + contents.getClass());
-		_contentsReceived = (FolderContents) contents;
-		my(FolderContentsWriter.class).writeToFolder(_path, _contentsReceived);
+	protected void finishWithLocalContents(Object contents) throws IOException, TimeoutException {
+		finishWith((FolderContents) contents);
 	}
 
 
 	@Override
-	Object mappedContentsBy(Hash hashOfContents) {
+	protected Object mappedContentsBy(Hash hashOfContents) {
 		return my(FileMap.class).getFolderContents(hashOfContents);
+	}
+
+
+	@Override
+	protected boolean isWaitingForActivity() {
+		return _contentsReceived == null;
 	}
 
 

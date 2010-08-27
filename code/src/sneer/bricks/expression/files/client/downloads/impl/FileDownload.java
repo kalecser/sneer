@@ -52,7 +52,7 @@ class FileDownload extends AbstractDownload {
 
 
 	@Override
-	void subscribeToContents() {
+	protected void subscribeToContents() {
 		_fileContentConsumerContract = my(RemoteTuples.class).addSubscription(FileContents.class, new Consumer<FileContents>() { @Override public void consume(FileContents contents) {
 			receiveFileBlock(contents);
 		}});
@@ -60,7 +60,7 @@ class FileDownload extends AbstractDownload {
 
 	
 	private void receiveFileBlock(FileContents contents) {
-		registerActivity();
+		recordActivity();
 
 		if (isFinished()) return;
 
@@ -95,9 +95,9 @@ class FileDownload extends AbstractDownload {
 		if (firstBlockWasAlreadyReceived()) return;
 		_fileSizeInBlocks = (contents.fileSize == 0) ? 0 : (int) ((contents.fileSize - 1) / Protocol.FILE_BLOCK_SIZE) + 1;
 		if (_fileSizeInBlocks > 0)
-			_output = new FileOutputStream(_path);			
+			_output = new FileOutputStream(_path);
 		else
-			finishRemoteDownloadWithSuccess();
+			finishWithSuccess();
 	}
 
 	
@@ -129,14 +129,14 @@ class FileDownload extends AbstractDownload {
 		++_nextBlockToWrite;
 		if (readyToFinish()) {
 			my(IO.class).crash(_output);
-			finishRemoteDownloadWithSuccess();
+			finishWithSuccess();
 		}
 	}
 
 
 	@Override
-	void updateFileMapWith(File tmpFile, File actualFile) {
-		my(FileMap.class).putFile(actualFile.getAbsolutePath(), actualFile.lastModified(), _hash);
+	protected void updateFileMap() {
+		my(FileMap.class).putFile(_actualPath.getAbsolutePath(), _actualPath.lastModified(), _hash);
 	}
 
 
@@ -146,7 +146,7 @@ class FileDownload extends AbstractDownload {
 
 	
 	@Override
-	Tuple requestToPublishIfNecessary() {
+	protected Tuple requestToPublishIfNecessary() {
 		if (isFirstRequest())
 			return nextBlockRequest();
 
@@ -171,15 +171,20 @@ class FileDownload extends AbstractDownload {
 
 
 	@Override
-	Object mappedContentsBy(Hash hashOfContents) {
+	protected Object mappedContentsBy(Hash hashOfContents) {
 		return my(FileMap.class).getFile(hashOfContents);
 	}
 
 
 	@Override
-	void copyContents(Object contents) throws IOException {
-		if (!(contents instanceof String)) throw new IOException("Wrong type of contents received. Should be String but was " + contents.getClass());
+	protected void finishWithLocalContents(Object contents) throws IOException {
 		my(IO.class).files().copyFile(new File((String)contents), _path);
+		finishWithSuccess();
+	}
+
+	@Override
+	protected boolean isWaitingForActivity() {
+		return !isFinished();
 	}
 
 }

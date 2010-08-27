@@ -21,7 +21,7 @@ public class FileVersionWrapper {
 	private static final ImageIcon _missing = loadIcon("missingFile.png");
 
 	private static ImageIcon loadIcon(String fileName){
-		return my(ImageFactory.class).getIcon(BrickInfoTreeNode.class, fileName);
+		return my(ImageFactory.class).getIcon(BrickHistoryTreeNode.class, fileName);
 	}
 	
 	private final FileVersion _fileVersion;

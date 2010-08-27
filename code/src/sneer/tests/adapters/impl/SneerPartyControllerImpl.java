@@ -17,6 +17,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
+import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.iterables.Iterables;
@@ -34,6 +35,7 @@ import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.network.social.heartbeat.Heart;
 import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
+import sneer.bricks.network.social.rendezvous.Rendezvous;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -44,11 +46,13 @@ import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.snapps.wind.Shout;
 import sneer.bricks.snapps.wind.Wind;
 import sneer.bricks.software.code.classutils.ClassUtils;
+import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.bricks.softwaresharing.BrickInfo;
+import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
-import sneer.bricks.softwaresharing.installer.BrickInstaller;
+import sneer.bricks.softwaresharing.stager.BrickStager;
+import sneer.bricks.softwaresharing.stager.tests.BrickStagerTest;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
@@ -70,6 +74,9 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	private File _codeFolder;
 
+
+	private String _nameOfExpectedCaller;
+
 	
 	@Override
 	public void setSneerPort(int port) {
@@ -85,6 +92,13 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		my(InternetAddressKeeper.class).add(contact, MOCK_ADDRESS, other.sneerPort());
 	}
 
+
+	@Override
+	public void acceptConnectionFrom(String otherName) {
+		if (_nameOfExpectedCaller != null) throw new IllegalStateException();
+		_nameOfExpectedCaller = otherName;
+		approveConnectionRequestsIfAny();
+	}
 
 	private void putSeal(SneerParty other, Contact contact) {
 		try {
@@ -230,9 +244,12 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private void startSnapps() {
+		startAndKeep(JavaCompiler.class);
+		
 		startAndKeep(SocketOriginator.class);
 		startAndKeep(SocketReceiver.class);
 		startAndKeep(ProbeManager.class);
+		startAndKeep(Rendezvous.class);
 
 		startAndKeep(TupleLogger.class);
 
@@ -296,7 +313,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private boolean isBrickAvailable(final String brickName, final String brickStatus) {
-		for (BrickInfo brickInfo : my(BrickSpace.class).availableBricks()) {
+		for (BrickHistory brickInfo : my(BrickSpace.class).availableBricks()) {
 			my(Logger.class).log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Brick found: " + brickInfo.name() + " status: " + brickInfo.status().name());
 			if (brickInfo.name().equals(brickName)
 				&& brickInfo.status().name().equals(brickStatus))
@@ -309,16 +326,16 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	@Override
 	public void stageBricksForInstallation(String... brickNames) {
 		for (String brickName : brickNames)
-			setStagedForInstallation(brickName);
+			setChosenForExecution(brickName);
 		
-		my(BrickInstaller.class).stageBricksForInstallation();
+		my(BrickStager.class).stageBricksForInstallation();
 	}
 
 	
 	@Override
 	public void enableCodeSharing() {
 		try {
-			tryToCopyRepositoryCode();
+			copyRepositoryCode();
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
@@ -326,9 +343,17 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	}
 
 	
-	private void tryToCopyRepositoryCode() throws IOException {
+	private void copyRepositoryCode() throws IOException {
 		my(Logger.class).log("Copying necessary repository code...");
-		copyRepositorySources();
+
+		BrickStagerTest.copyBrickBaseToSrcFolder();
+		BrickStagerTest.copyClassesToSrcFolder(
+			sneer.main.Sneer.class,
+			sneer.main.SneerVersionUpdater.class,
+			sneer.main.SneerFolders.class,
+			sneer.main.SneerCodeFolders.class
+		);
+		
 		copyUnupdatableBinFiles();
 		my(Logger.class).log("Copying necessary repository code... done.");
 	}
@@ -357,32 +382,27 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	}
 
 	
-	private void copyRepositorySources() throws IOException {
-		copyToSourceFolder(new File(repositoryBinFolder().getParentFile(), "src"));
-	}
-
-	
 	private File repositoryBinFolder() {
 		return my(ClassUtils.class).classpathRootFor(getClass());
 	}
 
 	
-	private void setStagedForInstallation(String brickName) {
-		final BrickInfo brick = availableBrick(brickName);
+	private void setChosenForExecution(String brickName) {
+		final BrickHistory brick = availableBrick(brickName);
 		final BrickVersion singleVersion = singleVersionOf(brick);
-		brick.setStagedForInstallation(singleVersion, true);
+		brick.setChosenForExecution(singleVersion, true);
 	}
 
 	
-	private BrickVersion singleVersionOf(BrickInfo brick) {
+	private BrickVersion singleVersionOf(BrickHistory brick) {
 		if (brick.versions().size() != 1)
 			throw new IllegalStateException();
 		return brick.versions().get(0);
 	}
 
 	
-	private BrickInfo availableBrick(String brickName) {
-		for (BrickInfo brick : my(BrickSpace.class).availableBricks())
+	private BrickHistory availableBrick(String brickName) {
+		for (BrickHistory brick : my(BrickSpace.class).availableBricks())
 			if (brick.name().equals(brickName))
 				return brick;
 		throw new IllegalArgumentException();
@@ -406,10 +426,38 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		setSneerPort(port);
 
 		startSnapps();
+		startApprovingConnectionRequests();
 		accelerateHeartbeat();
 	}
 
 	
+	private void startApprovingConnectionRequests() {
+		_refToAvoidGc.add(my(BlinkingLights.class).lights().addPulseReceiver(new Runnable() {@Override public void run() {
+			approveConnectionRequestsIfAny();
+		}}));
+	}
+
+
+	private void approveConnectionRequestsIfAny() {
+		for (Light light : my(BlinkingLights.class).lights())
+			if (light.caption().startsWith(_nameOfExpectedCaller + " wants to connect to you")) {
+				runAcceptAction(light);
+				_nameOfExpectedCaller = null;
+			}
+	}
+
+
+	private void runAcceptAction(Light light) {
+		for (Action action : light.actions()) {
+			if (action.caption().equals("Accept")) {
+				action.run();
+				return;
+			}
+		}
+		throw new IllegalStateException("Accept action not found.");
+	}
+
+
 	private void generatePublicKey(String name) {
 		my(OwnKeys.class).generateKeyPair(pkSeedFrom(name));
 	}
@@ -465,4 +513,5 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 			? "myself"
 			: my(ContactSeals.class).contactGiven(seal).nickname().toString();
 	}
+
 }

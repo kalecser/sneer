@@ -47,7 +47,7 @@ class ShoutPainter {
 		_document.addStyle("shout", _shout);
 	}
 
-	void repaintAllShoults(ListSignal<Shout> listSignal) {
+	void repaintAllShouts(ListSignal<Shout> listSignal) {
 		try {
 			_document.remove(0, _document.getLength());
 		} catch (BadLocationException e) {
@@ -74,7 +74,7 @@ class ShoutPainter {
 	}
 
 	private String nick(Shout shout) {
-		if(ShoutUtils.isMyOwnShout(shout)) return "|W|";
+		if(ShoutUtils.isMyOwnShout(shout)) return "Me";
 		
 		return ShoutUtils.publisherNick(shout);
 	}

@@ -11,6 +11,6 @@ public interface BrickSpace {
 
 	EventSource<Seal> newBuildingFound();
 
-	Collection<BrickInfo> availableBricks();
+	Collection<BrickHistory> availableBricks();
 	
 }

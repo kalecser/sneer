@@ -20,12 +20,12 @@ class BrickTreeCellRenderer extends DefaultTreeCellRenderer {
     if (icon != null) 
     	result.setIcon(icon);
 
-    if(value instanceof BrickInfoTreeNode)
-    	if(Util.isBrickStagedForExecution(((BrickInfoTreeNode)value).sourceObject()))
+    if(value instanceof BrickHistoryTreeNode)
+    	if(Util.isBrickStagedForExecution(((BrickHistoryTreeNode)value).sourceObject()))
 			isStaged(result);
     
     if(value instanceof BrickVersionTreeNode)
-    	if((((BrickVersionTreeNode)value).sourceObject()).isStagedForExecution())
+    	if((((BrickVersionTreeNode)value).sourceObject()).isChosenForExecution())
 			isStaged(result);
     
     return result;

@@ -15,7 +15,7 @@ import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.Lang.Strings;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.softwaresharing.BrickInfo;
+import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.ProducerX;
 
@@ -23,7 +23,7 @@ class Demolition implements FolderStructureVisitor {
 
 	private final Strings _strings = my(Lang.class).strings();
 	
-	private final CacheMap<String, BrickInfo> _bricksByName;
+	private final CacheMap<String, BrickHistory> _bricksByName;
 
 	private final Deque<String> _namePath = new LinkedList<String>();
 	private final Deque<Hash> _hashPath = new LinkedList<Hash>();
@@ -33,7 +33,7 @@ class Demolition implements FolderStructureVisitor {
 	private IOException _firstExceptionFound;
 	
 
-	Demolition(CacheMap<String,BrickInfo> bricksByName, Hash srcFolderHash, boolean isCurrent) throws IOException {
+	Demolition(CacheMap<String,BrickHistory> bricksByName, Hash srcFolderHash, boolean isCurrent) throws IOException {
 		_bricksByName = bricksByName;
 		_isCurrent = isCurrent;
 		my(FileMapGuide.class).guide(this, folderContents(srcFolderHash));
@@ -92,8 +92,8 @@ class Demolition implements FolderStructureVisitor {
 		final String brickName = _strings.chomp(packageName + "." + fileName, ".java");
 		final Hash packageHash = _hashPath.peekLast();
 
-		BrickInfoImpl existingBrick = (BrickInfoImpl) _bricksByName.get(brickName, new ProducerX<BrickInfo, IOException>() { @Override public BrickInfo produce() throws IOException {
-			return new BrickInfoImpl(brickName, packageHash, _isCurrent);
+		BrickHistoryImpl existingBrick = (BrickHistoryImpl) _bricksByName.get(brickName, new ProducerX<BrickHistory, IOException>() { @Override public BrickHistory produce() throws IOException {
+			return new BrickHistoryImpl(brickName, packageHash, _isCurrent);
 		}});
 		
 		existingBrick.addVersionIfNecessary(packageHash, _isCurrent);

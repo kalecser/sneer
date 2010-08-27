@@ -9,7 +9,6 @@ import java.io.IOException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.LoggerMocks;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.foundation.brickness.Brick;
@@ -17,9 +16,6 @@ import sneer.tests.SovereignFunctionalTestBase;
 import sneer.tests.SovereignParty;
 
 public class Freedom7Test extends SovereignFunctionalTestBase {
-	
-//	private final JavaCompiler _compiler = my(JavaCompiler.class);
-
 	
 	@Override
 	protected SovereignParty createParty(String name) {
@@ -29,11 +25,9 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 	}
 	
 	
-	@Ignore
-	@Test (timeout = 1000 * 60 * 5)
+	@Test (timeout = 1000 * 30)
 	public void meToo_TakesACoupleOfMinutesToRunAndRunsOnlyOnHeadlessServer() throws Exception {
-		if (!isHudsonServer()) return;
-		LoggerMocks.showLog = true;
+		//if (!isHudsonServer()) return;
 		
 		a().copyToSourceFolder(generateY());
 		
@@ -53,6 +47,7 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 	}
 
 	
+	@SuppressWarnings("unused")
 	private boolean isHudsonServer() {
 		return GraphicsEnvironment.isHeadless();
 	}

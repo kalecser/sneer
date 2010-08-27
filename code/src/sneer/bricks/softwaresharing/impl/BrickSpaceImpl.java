@@ -22,7 +22,7 @@ import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.bricks.softwaresharing.BrickInfo;
+import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.demolisher.Demolisher;
 import sneer.bricks.softwaresharing.publisher.SourcePublisher;
@@ -35,7 +35,7 @@ import sneer.foundation.lang.Consumer;
 
 class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
-	private final CacheMap<String, BrickInfo> _availableBricksByName = CacheMap.newInstance();
+	private final CacheMap<String, BrickHistory> _availableBricksByName = CacheMap.newInstance();
 
 	private final EventNotifier<Seal> _newBuildingFound = my(EventNotifiers.class).newInstance();
 	
@@ -44,12 +44,11 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	
 	{
 		my(Threads.class).startDaemon("BrickSpaceImpl init", new Closure() { @Override public void run() {
-			//init();
+			init();
 		}});
 	}
 
 	
-	@SuppressWarnings("unused")
 	private void init() {
 		my(TupleSpace.class).keep(SrcFolderHash.class);
 		receiveSrcFoldersFromPeers();
@@ -58,8 +57,8 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 	
 	@Override
-	public Collection<BrickInfo> availableBricks() {
-		return new ArrayList<BrickInfo>(_availableBricksByName.values());
+	public Collection<BrickHistory> availableBricks() {
+		return new ArrayList<BrickHistory>(_availableBricksByName.values());
 	}
 
 	
@@ -77,31 +76,30 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 		return _newBuildingFound.output();
 	}
 	
+	
+	synchronized
 	private void fetchIfNecessary(final SrcFolderHash srcFolderHash) {
-		shield("writing", new ClosureX<IOException>() { @Override public void run() throws IOException {
+		shield("writing", new ClosureX<Exception>() { @Override public void run() throws Exception {
 
-			File tmpFolderRoot = my(FolderConfig.class).tmpFolderFor(BrickSpace.class);
-			File tmpFolder = new File(tmpFolderRoot, String.valueOf(System.nanoTime()));
+			//if (!isMyOwn(srcFolderHash))
+				download(srcFolderHash);
 			
-			try {
-				Download download = my(FileClient.class).startFolderDownload(tmpFolder, srcFolderHash.value);
-				download.waitTillFinished();
-			} catch (TimeoutException e) {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-			}
-			
-			shield("reading", new ClosureX<IOException>() { @Override public void run() throws IOException {
+			shield("reading", new ClosureX<Exception>() { @Override public void run() throws Exception {
 				accumulateBricks(srcFolderHash);
 			}});
 		}});
 	}
 
 	
-	private void shield(String operation, ClosureX<IOException> closure) {
+	private void shield(String operation, ClosureX<Exception> closure) {
 		try {
 			closure.run();
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error " + operation + " brick sources.", "This might indicate problems with your file device (Hard Drive). :(", e, 30000);
+		} catch (TimeoutException e) {
+			my(BlinkingLights.class).turnOn(LightType.WARNING, "Timeout downloading brick sources.", null, e, 30000);
+		} catch (Exception e) {
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error " + operation + " brick sources.", null, e, 30000);
 		}
 	}
 
@@ -121,12 +119,23 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 		return srcFolderHash.publisher.equals(my(OwnSeal.class).get().currentValue());
 	}
 
+	
 	private void publishMySrcFolder() {
 		my(SourcePublisher.class).publishSourceFolder();
 	}
 
+	
 	private void receiveSrcFoldersFromPeers() {
 		_tupleSubscription = my(TupleSpace.class).addSubscription(SrcFolderHash.class, this);
+	}
+
+
+	private void download(final SrcFolderHash srcFolderHash) throws IOException, TimeoutException {
+		File tmpFolderRoot = my(FolderConfig.class).tmpFolderFor(BrickSpace.class);
+		File tmpFolder = new File(tmpFolderRoot, String.valueOf(System.nanoTime()));
+		
+		Download download = my(FileClient.class).startFolderDownload(tmpFolder, srcFolderHash.value);
+		download.waitTillFinished();
 	}
 
 }

@@ -1,11 +1,15 @@
 package sneer.bricks.pulp.blinkinglights.impl;
 
 import static sneer.foundation.environments.Environments.my;
+import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.pulp.reactive.collections.CollectionSignals;
+import sneer.bricks.pulp.reactive.collections.ListRegister;
+import sneer.bricks.pulp.reactive.collections.ListSignal;
 
 class LightImpl implements Light {
 	
@@ -18,6 +22,8 @@ class LightImpl implements Light {
 	String _caption;
 	Throwable _error;
 	String _helpMessage;
+
+	final private ListRegister<Action> _actions = my(CollectionSignals.class).newListRegister();
 
 	
 	LightImpl(LightType type) {
@@ -32,5 +38,15 @@ class LightImpl implements Light {
 	
 	void turnOff() {
 		_isOn.setter().consume(false);
+	}
+
+	@Override
+	public ListSignal<Action> actions() {
+		return _actions.output();
+	}
+
+	@Override
+	public void addAction(Action action) {
+		_actions.add(action);
 	}
 }

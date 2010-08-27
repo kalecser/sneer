@@ -10,14 +10,14 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
-import sneer.bricks.softwaresharing.BrickInfo;
+import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 
-class RootTreeNode extends AbstractTreeNodeWrapper<BrickInfo> {
+class RootTreeNode extends AbstractTreeNodeWrapper<BrickHistory> {
 
-	private List<BrickInfo> _infos;
+	private List<BrickHistory> _infos;
 
-	RootTreeNode(List<BrickInfo> infos) {
+	RootTreeNode(List<BrickHistory> infos) {
 		super(null, null);
 		_infos = infos;
 		sortBricks();
@@ -29,14 +29,14 @@ class RootTreeNode extends AbstractTreeNodeWrapper<BrickInfo> {
 	}
 
 	void load() {
-		_infos = new ArrayList<BrickInfo>();
-		Collection<BrickInfo> currentElements = my(BrickSpace.class).availableBricks();
+		_infos = new ArrayList<BrickHistory>();
+		Collection<BrickHistory> currentElements = my(BrickSpace.class).availableBricks();
 		_infos.addAll(currentElements);
 		sortBricks();
 	}
 
 	private void sortBricks() {
-		Comparator<BrickInfo> comparator = new Comparator<BrickInfo>(){ @Override public int compare(BrickInfo brick1, BrickInfo brick2) {
+		Comparator<BrickHistory> comparator = new Comparator<BrickHistory>(){ @Override public int compare(BrickHistory brick1, BrickHistory brick2) {
 			if(brick1.status().ordinal()==brick2.status().ordinal())
 				return brick1.name().compareTo(brick2.name());
 		
@@ -47,13 +47,13 @@ class RootTreeNode extends AbstractTreeNodeWrapper<BrickInfo> {
 	
 	@Override public String toString() {  return "root"; }
 	
-	@Override protected List<BrickInfo> listChildren() { 
+	@Override protected List<BrickHistory> listChildren() { 
 
 		return _infos; 
 	}
 	@SuppressWarnings("unchecked")
 	@Override protected AbstractTreeNodeWrapper wrapChild(int childIndex) {
-		return new BrickInfoTreeNode(this, listChildren().get(childIndex));
+		return new BrickHistoryTreeNode(this, listChildren().get(childIndex));
 	}
 
 	@Override public ImageIcon getIcon() { return null; }

@@ -35,14 +35,17 @@ abstract class AbstractDownload implements Download {
 	private static int DURATION_TIMEOUT = 30 * 60 * 1000;
 
 	static final int REQUEST_INTERVAL = 15 * 1000;
+	
+	private static final String DOT_PART = my(DotParts.class).dotPartExtention();
+	
 
-	File _path;
+	protected File _path;
+	protected final File _actualPath;
 	final long _lastModified;
 	final Hash _hash;
 
 	private final Seal _source;
 
-	private final File _actualPath;
 
 	private long _startTime;
 	private long _lastActivityTime;
@@ -60,23 +63,33 @@ abstract class AbstractDownload implements Download {
 
 
 	AbstractDownload(File path, long lastModified, Hash hashOfFile, Seal source, Runnable toCallWhenFinished) {
+		_actualPath = path;
+
 		_path = dotPartFor(path);
 		_lastModified = lastModified;
 		_hash = hashOfFile;
 
 		_source = source; 
 
-		_actualPath = path;
-
 		_toCallWhenFinished = toCallWhenFinished;
+
+		my(Logger.class).log("Downloading: {} Hash:", _actualPath, _hash);
 
 		finishIfLocallyAvailable();
 	}
 
+	
+	abstract protected void subscribeToContents();
+	abstract protected Tuple requestToPublishIfNecessary();
+	abstract protected boolean isWaitingForActivity();
+
+	abstract protected Object mappedContentsBy(Hash hashOfContents);
+	abstract protected void finishWithLocalContents(Object contents) throws IOException, TimeoutException;
+	
+	abstract protected void updateFileMap();
+
 
 	void start() {
-		my(Logger.class).log("Downloading: {} Hash:", _actualPath, _hash);
-
 		if (isFinished()) return;
 
 		subscribeToContents();
@@ -86,34 +99,13 @@ abstract class AbstractDownload implements Download {
 	}
 
 
-	abstract void subscribeToContents();
+	@Override	public File file() {	return _actualPath; }
+	@Override	public Hash hash() { return _hash; }
+	@Override	public Seal source() {	return _source; }
+	@Override	public Signal<Integer> progress() { return _progress.output(); }
 
 
-	@Override
-	public File file() {
-		return _actualPath;
-	}
-
-
-	@Override
-	public Hash hash() {
-		return _hash;
-	}
-
-
-	@Override
-	public Seal source() {
-		return _source;
-	}
-
-
-	@Override
-	public Signal<Integer> progress() {
-		return _progress.output();
-	}
-
-
-	void setProgress(float newValue) {
+	protected void setProgress(float newValue) {
 		_progress.setter().consume(Math.round(100 * newValue));
 	}
 
@@ -124,6 +116,7 @@ abstract class AbstractDownload implements Download {
 		if (_exception == null) return;
 		if (_exception instanceof IOException) throw (IOException) _exception;
 		if (_exception instanceof TimeoutException) throw (TimeoutException) _exception;
+		throw new IllegalStateException("Unexpected exception type: " + _exception.getClass(), _exception);
 	}
 
 
@@ -147,14 +140,12 @@ abstract class AbstractDownload implements Download {
 
 
 	private File dotPartFor(File path) {
-		File dotPart = null;
 		try {
-			dotPart = my(DotParts.class).openDotPartFor(path);
+			return my(DotParts.class).openDotPartFor(path);
 		} catch (IOException e) {
 			finishWith(e);
+			return null;
 		}
-
-		return dotPart;
 	}
 
 
@@ -165,11 +156,8 @@ abstract class AbstractDownload implements Download {
 		publish(request);
 	}
 
-	
-	abstract Tuple requestToPublishIfNecessary();
-	
 
-	void publish(Tuple request) {
+	protected void publish(Tuple request) {
 		my(TupleSpace.class).acquire(request);
 	}
 
@@ -186,20 +174,12 @@ abstract class AbstractDownload implements Download {
 	}
 
 
-	void finishRemoteDownloadWithSuccess() throws IOException {
-		finishWithSuccess(_path);
-	}
-
-
-	void finishWithSuccess(File mappedPath) throws IOException {
+	void finishWithSuccess() throws IOException {
 		my(DotParts.class).closeDotPart(_path, _lastModified);
-		updateFileMapWith(mappedPath, _actualPath);
-		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
+		updateFileMap();
 		finish();
+		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
 	}
-
-
-	abstract void updateFileMapWith(File tmpFile, File actualFile);
 
 
 	void finish() {
@@ -218,46 +198,46 @@ abstract class AbstractDownload implements Download {
 
 	void startSendingRequests() {
 		_timerContract = my(Timer.class).wakeUpNowAndEvery(REQUEST_INTERVAL, new Closure() { @Override public void run() {
-			checkForTimeOut();
+			checkForActivityTimeOut();
+			checkForDurationTimeOut();
 			publishRequestIfNecessary();
 		}});
 	}
 
 
 	private void finishIfLocallyAvailable() {
-		Object alreadyMapped = mappedContentsBy(_hash);
-		if (alreadyMapped == null) return;
+		String mappedPath = my(FileMap.class).getPath(_hash);
+		if (mappedPath == null) return;
+		if (mappedPath.contains(DOT_PART)) return; //Optimize Downloads that include identical files in different folders will download all of them redundantly. The problem is .part files can be renamed to their actual name at any moment. 
+
+		Object mappedContents = mappedContentsBy(_hash);
 		try {
-			copyContents(alreadyMapped);
-			finishWithSuccess(mappedFileBy(_hash));
-		} catch (IOException ioe) {
-			finishWith(ioe);
+			finishWithLocalContents(mappedContents);
+		} catch (Exception e) {
+			finishWith(e);
 		}
 	}
 
 
-	private File mappedFileBy(Hash hash) {
-		return new File(my(FileMap.class).getPath(hash));
-	}
-
-
-	abstract Object mappedContentsBy(Hash hashOfContents);
-
-	abstract void copyContents(Object contents) throws IOException;
-
-
-	protected void registerActivity() {
+	protected void recordActivity() {
 		_lastActivityTime = my(Clock.class).time().currentValue();
 	}
 
 
-	void checkForTimeOut() {
+	private void checkForDurationTimeOut() {
 		Long currentTime = my(Clock.class).time().currentValue();
-		if (currentTime - _lastActivityTime > ACTIVITY_TIMEOUT) timeout("Activity");
 		if (currentTime - _startTime > DURATION_TIMEOUT) timeout("Duration");
 	}
 
+	
+	private void checkForActivityTimeOut() {
+		if(!isWaitingForActivity())
+			return;
+		Long currentTime = my(Clock.class).time().currentValue();
+		if (currentTime - _lastActivityTime > ACTIVITY_TIMEOUT) timeout("Activity");
+	}
 
+	
 	private void timeout(String timeoutCase) {
 		finishWith(new TimeoutException(timeoutCase + " Timeout downloading " + _actualPath.getAbsolutePath()));
 	}

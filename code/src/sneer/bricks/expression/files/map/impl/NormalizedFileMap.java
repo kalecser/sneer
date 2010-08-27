@@ -14,9 +14,6 @@ import sneer.bricks.hardware.io.log.Logger;
  * Expects all path args to have unix-style separators "/" and no trailing separators.
  * 
  * IMPORTANT: Folders are represented with lastModifiedDate -1.
- *
- *   
- *   
  **/
 class NormalizedFileMap implements FileMap {
 
@@ -34,7 +31,20 @@ class NormalizedFileMap implements FileMap {
 	@Override
 	public void putFolder(String path, Hash hash) {
 		putPath(path, -1, hash);
+//		checkHash(path, hash);
 	}
+
+
+//	private void checkHash(String path, Hash expected) {
+//		FolderContents folderContents = getFolderContents(expected);
+//		Hash actual = my(FolderContentsHasher.class).hash(folderContents);
+//		if(!expected.equals(actual)) {
+//			String entries = "";
+//			for (FileOrFolder entry : folderContents.contents)
+//				entries += "\n" + entry.toString();
+//			throw new IllegalArgumentException("HASH: expected " + expected + ", got " + actual + " for " + path + " entries: " + entries);
+//		}
+//	}
 
 	
 	private void putPath(String path, long lastModified, Hash hash) {
@@ -98,6 +108,7 @@ class NormalizedFileMap implements FileMap {
 
 	@Override
 	public void rename(String from, String to) {
+		my(Logger.class).log("FileMap renaming {} to ", from, to);
 		movePath(from, to);
 	}
 	

@@ -162,7 +162,6 @@ public class BuilderTest extends BrickTestWithFiles {
 				Environment.class,
 				Environments.class,
 				Closure.class);
-		
 	}
 
 

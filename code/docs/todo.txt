@@ -4,6 +4,26 @@
 
 Following are the tasks each one of us has on his plate right now:
 
+Edmundo =================================================
+	- Freedom 2
+		- handshaking protocol
+			- refactor incominghandshaker (readContactsSealBytes method)
+			- when the caller is an unknown contact, a persisted blink light is displayed with options: Accept/Reject
+			- the callee can accept or reject recent request waiting for approval
+				- if rejected: add contact seal to black list
+				- if accepted: add contact seak to contact list (initially, contact nickname = name) 
+	
+	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and ` can both use the same Gui.
+
+	- Platform exploration
+		- Study the following core features:
+			- Reactive Framework (Signals)
+				- Have a look at EventSource's hierarchy (EventSource > Signal > AbstractSignal)
+				- Examine the types' implementations in the 'sneer.bricks.pulp.reactive.impl' package, especially 'RegisterImpl'
+				- See examples of how to use signals using the factory 'Signals'
+				- Run the ReactiveWidgetsDemo
+			- Dependency Injection (Environments)
+			- Natures
 
 Patrick =================================================
 
@@ -23,12 +43,6 @@ Bamboo =================================================
 
 Igor ==================================================== 
 
-	- Site
-		- About Us
-			- Spam bot deflection
-				- Remove the mailto: links.
-				- Replace @ in our emails with a graphical image: http://www.google.com/images?q=arroba
-
 	- Add list of friends to ContactInfoWindow
 		- Add "Me Too" button to add selected contact's contact as my contact
 
@@ -41,8 +55,6 @@ Igor ====================================================
 				:|    (...and that's it.)
 				:(    (...or any similar tracks.)
 
-	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
-
 	- sovereigncomputing.net - Moralize. This is necessary to help promote Wusic.
 		- Talk to Klaus 
 
@@ -54,10 +66,17 @@ Igor ====================================================
 
 René =================================================
 
+	- Revise 'sneer.bricks.snapps.games.go.GoMain'
+		- Talk to Klaus about issues in comments
+		- Make exchange of GoMoves work (see comments in GoMove tuple)
+
 	- Toroidal Go Snapp
-		- Board border (stronger square) is being drawn over stones - Fix.
-		- Detect and display victory/loss condition.
-		- Stone circle Anti-alias. 
+		- Detect and display victory/loss condition
+			- Sometimes it does not appear after I click resign.
+				- Could not replicate this.
+		- Fix: Extreme slowness during mouse movement, caused by a deepCopy() in board.canPlayStone().
+	
+	- Maybe toscoBall can become a single player game snapp.
 
 
 Klaus =================================================
@@ -89,11 +108,11 @@ Klaus =================================================
 		- Remove all calls to Thread.sleep() including indirect.
 
 	- Freedom7 - "Me Too" for Bricks 
-		- Unignore Freedom7.meToo
-			- BrickSpaceImpl.init() uncomment.
-			- BrickInstallerTest (requires BrickSpaceImpl#init())
-			- LocalBrickDiscoveryTest unignore. (requires BrickSpaceImpl#init())
+		- BrickSpaceImpl:
+			- Uncomment line  //if (!isMyOwn(srcFolderHash))
+			- remove synchronized from fetchIfNecessary
+			
+			
 		- Brick States - All
 			- Hierarchical View - Consider groups of bricks (brick package at any level, examples: bricks.hardware, bricks.software, bricks.hardware.io, etc) as an optional grouping for versioning and downloading from friends, not only individual bricks.
 				- Do not allow circular dependencies among any level of groups of bricks and voila: the world is free of cyclic dependencies.
-	

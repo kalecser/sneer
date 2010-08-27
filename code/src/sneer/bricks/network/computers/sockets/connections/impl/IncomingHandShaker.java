@@ -8,6 +8,7 @@ import java.util.Arrays;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
+import sneer.bricks.network.computers.sockets.connections.Call;
 import sneer.bricks.network.computers.sockets.connections.ContactSighting;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.pulp.events.EventNotifier;
@@ -23,12 +24,14 @@ class IncomingHandShaker {
 	private static final ContactSeals Seals = my(ContactSeals.class);
 	private static EventNotifier<ContactSighting> contactSightings = my(EventNotifiers.class).newInstance();
 
+	private static EventNotifier<Call> unknownCallers = my(EventNotifiers.class).newInstance();
 
 	static Seal greet(ByteArraySocket socket) throws IOException {
-		final Seal contactsSeal = readContactsSeal(socket);
+		Seal contactsSeal = readContactsSeal(socket);
+		String contactsName = readContactsName(socket);
 
 		rejectLoopback(contactsSeal);
-		rejectUnknownSeal(contactsSeal);
+		rejectUnknownSeal(contactsName, contactsSeal);
 
 //		my(Authenticator.class).authenticate(contactsSeal, socket);
 //		private static void authenticate(final Seal contactsSeal, ByteArraySocket socket) throws IOException {
@@ -44,15 +47,19 @@ class IncomingHandShaker {
 
 
 
+
+
 	private static void notifySighting(final Seal contactsSeal, ByteArraySocket socket) {
 		String ip = my(Network.class).remoteIpFor(socket);
 		contactSightings.notifyReceivers(new ContactSightingImpl(contactsSeal, ip));
 	}
 
 
-	private static void rejectUnknownSeal(Seal contactsSeal) throws IOException {
-		if (Seals.contactGiven(contactsSeal) == null)
-			throw new IOException("Incoming connection from unknown party. Seal: " + contactsSeal);
+	private static void rejectUnknownSeal(String contactsName, Seal contactsSeal) throws IOException {
+		if (Seals.contactGiven(contactsSeal) != null) return;
+		
+		unknownCallers.notifyReceivers(new CallImpl(contactsName, contactsSeal));
+		throw new IOException("Incoming connection from unknown party. Seal: " + contactsSeal);
 	}
 
 
@@ -65,6 +72,12 @@ class IncomingHandShaker {
 	private static Seal readContactsSeal(ByteArraySocket socket) throws IOException {
 		byte[] result = readContactsSealBytes(socket);
 		return new Seal(new ImmutableByteArray(result));
+	}
+
+
+	private static String readContactsName(ByteArraySocket socket) throws IOException {
+		byte[] result = socket.read();
+		return new String(result, "UTF-8");
 	}
 
 
@@ -81,8 +94,13 @@ class IncomingHandShaker {
 	}
 
 
-	public static EventSource<ContactSighting> contactSightings() {
+	static EventSource<ContactSighting> contactSightings() {
 		return contactSightings.output();
+	}
+
+
+	static EventSource<Call> unknownCallers() {
+		return unknownCallers.output();
 	}
 
 }

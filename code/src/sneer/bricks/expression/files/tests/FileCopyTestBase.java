@@ -67,14 +67,12 @@ public abstract class FileCopyTestBase extends BrickTestWithTuples {
 			}});
 
 		File copy = newTmpFile();
-		Hash hash = null;
-		if (fileOrFolder.isDirectory()) {
-			hash = _fileMapper.mapFolder(fileOrFolder);
+		Hash hash = _fileMapper.mapFileOrFolder(fileOrFolder);
+		if (fileOrFolder.isDirectory())
 			copyFolderFromFileMap(hash, copy);
-		} else {
-			hash = _fileMapper.mapFile(fileOrFolder);
+		else
 			copyFileFromFileMap(hash, copy);
-		}
+
 		assertNotNull(hash);
 
 		assertSameContents(fileOrFolder, copy);

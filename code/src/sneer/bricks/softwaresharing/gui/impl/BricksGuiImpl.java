@@ -35,12 +35,12 @@ import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.diff.text.gui.TextDiffPanel;
 import sneer.bricks.snapps.diff.text.gui.TextDiffPanels;
 import sneer.bricks.snapps.system.log.gui.LogConsole;
-import sneer.bricks.softwaresharing.BrickInfo;
+import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.BrickVersion.Status;
 import sneer.bricks.softwaresharing.gui.BricksGui;
-import sneer.bricks.softwaresharing.installer.BrickInstaller;
+import sneer.bricks.softwaresharing.stager.BrickStager;
 import sneer.foundation.lang.Closure;
 
 class BricksGuiImpl extends JFrame implements BricksGui {
@@ -98,8 +98,8 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		
 		_selectButton.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
 			BrickVersion version = selectedBrickVersion();
-			selectedBrick().setStagedForInstallation(version, !version.isStagedForExecution());
-			_selectButton.setSelected(version.isStagedForExecution());
+			selectedBrick().setChosenForExecution(version, !version.isChosenForExecution());
+			_selectButton.setSelected(version.isChosenForExecution());
 			_tree.repaint();
 		}});
 		
@@ -126,7 +126,7 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 			return;
 		
 		_selectButton.setEnabled(true);
-		_selectButton.setSelected(version.isStagedForExecution());
+		_selectButton.setSelected(version.isChosenForExecution());
 
 		_rejectButton.setEnabled(true);
 		_rejectButton.setSelected(version.status()==Status.REJECTED);
@@ -140,8 +140,8 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		return (BrickVersionTreeNode) _lastSelectedNode;
 	}
 	
-	private BrickInfo selectedBrick() {
-		return ((BrickInfoTreeNode)selectedBrickVersionTreeNode()._parent).sourceObject();
+	private BrickHistory selectedBrick() {
+		return ((BrickHistoryTreeNode)selectedBrickVersionTreeNode()._parent).sourceObject();
 	}
 
 	private void tryShowFiles() {
@@ -231,7 +231,7 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 			button.setEnabled(false);
 			my(Threads.class).startDaemon("BricksGui MeToo", new Closure() { @Override public void run() {
 				try {
-					my(BrickInstaller.class).stageBricksForInstallation();
+					my(BrickStager.class).stageBricksForInstallation();
 				} finally {
 					button.setEnabled(true);
 				}

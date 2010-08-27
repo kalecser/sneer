@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.bricks.softwaresharing.BrickInfo;
+import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.BrickVersion.Status;
@@ -14,9 +14,9 @@ class FakeModel {
 
 	private static long _initialTimeStamp = System.currentTimeMillis();
 
-	static List<BrickInfo> bricks(){
+	static List<BrickHistory> bricks(){
 		List<FileVersion> files = new ArrayList<FileVersion>();
-		List<BrickInfo> infos = new ArrayList<BrickInfo>();
+		List<BrickHistory> infos = new ArrayList<BrickHistory>();
 
 		files.add(newFileVersion(FakeContent.first(), FakeContent.second(), 
 				"Clockjava", sneer.bricks.softwaresharing.FileVersion.Status.DIFFERENT));
@@ -30,16 +30,16 @@ class FakeModel {
 		files.add(newFileVersion("", "adsafimww\n222222\n3333333\n44444444\n555555", 
 				"impl/lib/otherlib.jar", sneer.bricks.softwaresharing.FileVersion.Status.EXTRA));
 
-		infos.add(newBrickInfo("BrickInfo5", newVersions(files), BrickInfo.Status.DIFFERENT));
-		infos.add(newBrickInfo("BrickInfo2", newVersions(files), BrickInfo.Status.NEW));
-		infos.add(newBrickInfo("BrickInfo10", newVersions(files), BrickInfo.Status.REJECTED));
-		infos.add(newBrickInfo("BrickInfo8", newVersions(files), BrickInfo.Status.DIVERGING));
-		infos.add(newBrickInfo("BrickInfo4", newVersions(files), BrickInfo.Status.CURRENT));
-		infos.add(newBrickInfo("BrickInfo7", newVersions(files), BrickInfo.Status.DIVERGING));
-		infos.add(newBrickInfo("BrickInfo3", newVersions(files), BrickInfo.Status.CURRENT));
-		infos.add(newBrickInfo("BrickInfo9", newVersions(files), BrickInfo.Status.REJECTED));
-		infos.add(newBrickInfo("BrickInfo1", newVersions(files), BrickInfo.Status.NEW));
-		infos.add(newBrickInfo("BrickInfo6", newVersions(files), BrickInfo.Status.DIFFERENT));
+		infos.add(newBrickInfo("BrickInfo5", newVersions(files), BrickHistory.Status.DIFFERENT));
+		infos.add(newBrickInfo("BrickInfo2", newVersions(files), BrickHistory.Status.NEW));
+		infos.add(newBrickInfo("BrickInfo10", newVersions(files), BrickHistory.Status.REJECTED));
+		infos.add(newBrickInfo("BrickInfo8", newVersions(files), BrickHistory.Status.DIVERGING));
+		infos.add(newBrickInfo("BrickInfo4", newVersions(files), BrickHistory.Status.CURRENT));
+		infos.add(newBrickInfo("BrickInfo7", newVersions(files), BrickHistory.Status.DIVERGING));
+		infos.add(newBrickInfo("BrickInfo3", newVersions(files), BrickHistory.Status.CURRENT));
+		infos.add(newBrickInfo("BrickInfo9", newVersions(files), BrickHistory.Status.REJECTED));
+		infos.add(newBrickInfo("BrickInfo1", newVersions(files), BrickHistory.Status.NEW));
+		infos.add(newBrickInfo("BrickInfo6", newVersions(files), BrickHistory.Status.DIFFERENT));
 
 		return infos;
 	}
@@ -72,7 +72,7 @@ class FakeModel {
 			private final List<String> _users = Arrays.asList(new String[]{"User 4", "User 1", "User 3", "User 2"});
 			
 			@Override public List<FileVersion> files() {return _fileVersions;}
-			@Override public boolean isStagedForExecution() {return _staged;}
+			@Override public boolean isChosenForExecution() {return _staged;}
 			@Override public Status status() {return _status; }
 			@Override public List<String> users() {  return  _users;}			
 			
@@ -94,14 +94,14 @@ class FakeModel {
 		};
 	}
 
-	private static BrickInfo newBrickInfo(final String name, final List<BrickVersion> versions, final BrickInfo.Status status) {
-		return new BrickInfo(){
+	private static BrickHistory newBrickInfo(final String name, final List<BrickVersion> versions, final BrickHistory.Status status) {
+		return new BrickHistory(){
 			@Override public boolean isSnapp() { return false; }
 			@Override public String name() {return name; }
 			@Override public List<BrickVersion> versions() { return versions;}
-			@Override public void setStagedForInstallation(BrickVersion version, boolean staged) {}
-			@Override public BrickInfo.Status status() { return status; }
-			@Override public BrickVersion getVersionStagedForInstallation() { return null; }
+			@Override public void setChosenForExecution(BrickVersion version, boolean staged) {}
+			@Override public BrickHistory.Status status() { return status; }
+			@Override public BrickVersion getVersionChosenForInstallation() { return null; }
 		};
 	}
 }
