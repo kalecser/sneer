@@ -97,11 +97,19 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 			bytes = getFileBlockBytes(requestedFile, request.blockNumber);
 
 		String debugInfo = requestedFile.getName();
+		assertExists(requestedFile);
+		
 		FileContents fileContents = request.blockNumber == 0
 			? new FileContentsFirstBlock(request.publisher, request.hashOfContents, requestedFile.length(), bytes, debugInfo)
 			: new FileContents			(request.publisher, request.hashOfContents, request.blockNumber, 	bytes, debugInfo);
 		log(fileContents);
 		return fileContents;
+	}
+
+
+	private void assertExists(File requestedFile) throws IOException {
+		if (!requestedFile.exists())
+			throw new IOException("File to be uploaded does not exist: " + requestedFile);
 	}
 
 
