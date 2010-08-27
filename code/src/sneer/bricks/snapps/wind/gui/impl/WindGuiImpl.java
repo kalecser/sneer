@@ -66,7 +66,7 @@ class WindGuiImpl implements WindGui {
 			@Override 
 			public void consume(CollectionChange<Shout> change) {
 				if (!change.elementsRemoved().isEmpty()){
-					_shoutPainter.repaintAllShoults(_wind.shoutsHeard());
+					_shoutPainter.repaintAllShouts(_wind.shoutsHeard());
 					return;
 				}
 
