@@ -110,10 +110,11 @@ class TrackExchangeImpl implements TrackExchange {
 	private void mapSharedTracksFolder(File newSharedTracksFolder) {
 		try {
 			my(FileMapper.class).mapFileOrFolder(newSharedTracksFolder, "mp3");
-			_isMapping.setter().consume(false);
 		} catch (MappingStopped ignored) {
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error while reading tracks.", "", e);
+		} finally {
+			_isMapping.setter().consume(false);
 		}
 	}
 
