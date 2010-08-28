@@ -4,6 +4,12 @@
 
 Following are the tasks each one of us has on his plate right now:
 
+Henrique =================================================
+	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and ` can both use the same Gui.
+		- Create a PrivateChatWindow that will use wind's extracted GUI behaviour.
+		- Enable multiple instances of the window, one for each contact
+		- The window should use o3chat library/brick
+
 Edmundo =================================================
 	- Freedom 2
 		- handshaking protocol
@@ -13,7 +19,9 @@ Edmundo =================================================
 				- if rejected: add contact seal to black list
 				- if accepted: add contact seak to contact list (initially, contact nickname = name) 
 	
-	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and ` can both use the same Gui.
+		- unify Wind/PrivateChat GUI behavior
+			- bricks.expression.messages.MessageDispatcher (BRICK, dispatch, impl/test)
+				- its client apps: PrivateChatGui and WindGui (maybe MessageWindow will handle MessageDispatchers)
 
 	- Platform exploration
 		- Study the following core features:
