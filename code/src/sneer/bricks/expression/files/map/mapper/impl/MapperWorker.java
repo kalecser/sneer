@@ -23,6 +23,7 @@ import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.io.log.stacktrace.StackTraceLogger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Closure;
@@ -89,8 +90,24 @@ class MapperWorker {
 		unmapDeletedFiles(folderPath, newEntries, mappedContents);
 		
 		Hash result = putFolderHash(folder, newContents);
-		if (newContents.contents.size() != FileMap.getFolderContents(result).contents.size())
-			throw new IllegalStateException("" + folder + "\nexpected: " + Arrays.deepToString(newContents.contents.toArray()) + "\nactual: " + Arrays.deepToString(FileMap.getFolderContents(result).contents.toArray()));
+		checkPutHasWorked(folder, newContents, result);
+		return result;
+	}
+
+
+	private void checkPutHasWorked(File folder, FolderContents expected, Hash hash) {
+		FolderContents actual = FileMap.getFolderContents(hash);
+		if (expected.contents.size() == actual.contents.size()) return;
+
+		my(BlinkingLights.class).turnOn(LightType.ERROR, "" + folder + " not mapped correctly.", "Expected: " + entries(expected) + " Actual: " + entries(actual));
+		my(StackTraceLogger.class).logStack();
+	}
+
+
+	private String entries(FolderContents expected) {
+		String result = "";
+		for (FileOrFolder entry : expected.contents)
+			result += entry.name + ", ";
 		return result;
 	}
 
