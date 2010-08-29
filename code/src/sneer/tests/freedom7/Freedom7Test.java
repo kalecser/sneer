@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.LoggerMocks;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.foundation.brickness.Brick;
@@ -18,7 +19,7 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 	@Ignore
 	@Test (timeout = 1000 * 20)
 	public void meToo_TakesACoupleOfMinutesToRunAndRunsOnlyOnHeadlessServer() throws Exception {
-		//LoggerMocks.showLog = true;
+		LoggerMocks.showLog = true;
 
 		a().enableCodeSharing();
 		b().enableCodeSharing();
