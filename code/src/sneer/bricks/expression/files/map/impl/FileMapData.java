@@ -1,9 +1,9 @@
 package sneer.bricks.expression.files.map.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
 
@@ -20,10 +20,11 @@ class FileMapData {
 	}
 
 
-	private final Map<Hash, Object>  _pathsByHash	= new ConcurrentHashMap<Hash, Object>();
-	private final Map<String, Entry> _entriesByPath	= new ConcurrentHashMap<String, Entry>();
+	private final Map<Hash, Object>  _pathsByHash	= new HashMap<Hash, Object>();
+	private final Map<String, Entry> _entriesByPath	= new HashMap<String, Entry>();
 
 
+	synchronized
 	void put(String path, long lastModified, Hash hash) {
 		Object wrapping = _pathsByHash.get(hash);
 		_pathsByHash.put(hash, addToWrapping(wrapping, path));
@@ -31,23 +32,27 @@ class FileMapData {
 	}
 
 
+	synchronized
 	String getPath(Hash hash) {
 		return unwrap(_pathsByHash.get(hash));
 	}
 
 
+	synchronized
 	Hash getHash(String path) {
 		Entry entry = _entriesByPath.get(path);
 		return entry == null ? null : entry.hash;
 	}
 
 
+	synchronized
 	Long getLastModified(String path) {
 		Entry entry = _entriesByPath.get(path);
 		return entry == null ? null : entry.lastModified;
 	}
 
 
+	synchronized
 	Entry remove(String path) {
 		Entry result = _entriesByPath.remove(path);
 		if (result == null) throw new IllegalArgumentException("Path to be removed is not mapped: " + path);
@@ -63,6 +68,7 @@ class FileMapData {
 	}
 
 
+	synchronized
 	String[] allPaths() {
 		return _entriesByPath.keySet().toArray(EMPTY_STRING_ARRAY);
 	}
