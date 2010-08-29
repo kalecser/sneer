@@ -90,6 +90,8 @@ René =================================================
 
 Klaus =================================================
 
+	- ContactInternetAddressesTest - Unignore
+
 	- InternetAddresses thread leak - Fix
 		- Simplify connection
 	
