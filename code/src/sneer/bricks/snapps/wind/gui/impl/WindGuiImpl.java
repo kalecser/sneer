@@ -31,6 +31,7 @@ import sneer.bricks.hardware.gui.trayicon.TrayIcons;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
@@ -159,7 +160,10 @@ class WindGuiImpl implements WindGui {
 	}
 
 	private String nicknameOf(Seal publisher) {
-		return my(ContactSeals.class).nicknameGiven(publisher).currentValue();
+		Signal<String> result = my(ContactSeals.class).nicknameGiven(publisher);
+		return result == null
+			? "Unknown"
+			: result.currentValue();
 	}
 
 	@Override
