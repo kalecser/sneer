@@ -5,7 +5,7 @@ import sneer.foundation.lang.Consumer;
 
 class LoggerMock implements Logger {
 
-	private static final String SPACES = "                                                                                               ";
+	private static final String SPACES = "                                                                                                                                                                                                                                                                                             ";
 	private final Consumer<String> _messageConsumer;
 
 	
@@ -26,8 +26,8 @@ class LoggerMock implements Logger {
 	
 	private String appendCaller(String message) {
 		return message.length() > SPACES.length()
-			? message + "     " + caller()
-			: message + SPACES.substring(message.length()) + " " + caller();
+			? message + "     || " + caller()
+			: message + SPACES.substring(message.length()) + " || " + caller();
 	}
 
 	

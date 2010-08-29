@@ -10,11 +10,10 @@ import java.util.Collection;
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
+import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -25,21 +24,25 @@ import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.demolisher.Demolisher;
-import sneer.bricks.softwaresharing.publisher.SourcePublisher;
-import sneer.bricks.softwaresharing.publisher.SrcFolderHash;
+import sneer.bricks.softwaresharing.publisher.BuildingHash;
+import sneer.bricks.softwaresharing.publisher.BuildingPublisher;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.Consumer;
 
 
-class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
+class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 
 	private final CacheMap<String, BrickHistory> _availableBricksByName = CacheMap.newInstance();
 
 	private final EventNotifier<Seal> _newBuildingFound = my(EventNotifiers.class).newInstance();
 	
+	private BuildingHash _myOwnBuilding;
+
 	@SuppressWarnings("unused")	private WeakContract _tupleSubscription;
+
+
 
 	
 	{
@@ -50,9 +53,9 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 	
 	private void init() {
-		my(TupleSpace.class).keep(SrcFolderHash.class);
-		receiveSrcFoldersFromPeers();
-		publishMySrcFolder();
+		my(TupleSpace.class).keep(BuildingHash.class);
+		if (!tryToPublishMyOwnBuilding()) return;
+		startReceivingBuildingsFromPeers();
 	}
 
 	
@@ -63,8 +66,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 
 	
 	@Override
-	public void consume(final SrcFolderHash srcFolderHash) {
-		my(Logger.class).log("Consuming SrcFolderHash");
+	public void consume(final BuildingHash srcFolderHash) {
 		my(Threads.class).startDaemon("BrickSpace Fetcher", new Closure() { @Override public void run() {
 			fetchIfNecessary(srcFolderHash);
 		}});
@@ -78,16 +80,20 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	
 	
 	synchronized
-	private void fetchIfNecessary(final SrcFolderHash srcFolderHash) {
+	private void fetchIfNecessary(final BuildingHash buildingHash) {
 		shield("writing", new ClosureX<Exception>() { @Override public void run() throws Exception {
-
-			//if (!isMyOwn(srcFolderHash))
-				download(srcFolderHash);
+			if (!isAlreadyMapped(buildingHash))
+				download(buildingHash);
 			
 			shield("reading", new ClosureX<Exception>() { @Override public void run() throws Exception {
-				accumulateBricks(srcFolderHash);
+				accumulateBricks(buildingHash, false);
 			}});
 		}});
+	}
+
+
+	private boolean isAlreadyMapped(final BuildingHash buildingHash) {
+		return my(FileMap.class).getPath(buildingHash.value) != null;
 	}
 
 	
@@ -104,33 +110,36 @@ class BrickSpaceImpl implements BrickSpace, Consumer<SrcFolderHash> {
 	}
 
 
-	private void accumulateBricks(final SrcFolderHash srcFolderHash) throws IOException {
+	private void accumulateBricks(final BuildingHash buildingHash, boolean isMyOwn) throws IOException {
 		my(Demolisher.class).demolishBuildingInto(
 			_availableBricksByName,
-			srcFolderHash.value,
-			isMyOwn(srcFolderHash)
+			buildingHash.value,
+			isMyOwn
 		);
+
+		_newBuildingFound.notifyReceivers(buildingHash.publisher);
+	}
+
+
+	private boolean tryToPublishMyOwnBuilding() {
+		try {
+			_myOwnBuilding = my(BuildingPublisher.class).publishMyOwnBuilding();
+			accumulateBricks(_myOwnBuilding, true);
+		} catch (IOException e) {
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error while reading bricks' code.", "", e);
+			return false;
+		}
 		
-		_newBuildingFound.notifyReceivers(srcFolderHash.publisher);
-	}
-
-
-	private boolean isMyOwn(SrcFolderHash srcFolderHash) {
-		return srcFolderHash.publisher.equals(my(OwnSeal.class).get().currentValue());
+		return true;
 	}
 
 	
-	private void publishMySrcFolder() {
-		my(SourcePublisher.class).publishSourceFolder();
-	}
-
-	
-	private void receiveSrcFoldersFromPeers() {
-		_tupleSubscription = my(TupleSpace.class).addSubscription(SrcFolderHash.class, this);
+	private void startReceivingBuildingsFromPeers() {
+		_tupleSubscription = my(TupleSpace.class).addSubscription(BuildingHash.class, this);
 	}
 
 
-	private void download(final SrcFolderHash srcFolderHash) throws IOException, TimeoutException {
+	private void download(final BuildingHash srcFolderHash) throws IOException, TimeoutException {
 		File tmpFolderRoot = my(FolderConfig.class).tmpFolderFor(BrickSpace.class);
 		File tmpFolder = new File(tmpFolderRoot, String.valueOf(System.nanoTime()));
 		

@@ -28,9 +28,9 @@ public class GoTest extends BrickTestWithFiles {
 		_board.playStone(5, 3);
 		_board.playStone(5, 4);
 
-		assertTrue(_board.stoneAt(4, 3) != null);
+		assertNotNull(_board.stoneAt(4, 3));
 		_board.playStone(4,4);
-		assertTrue(_board.stoneAt(4, 3) == null);
+		assertNull(   _board.stoneAt(4, 3));
 	}
 
 	@Test

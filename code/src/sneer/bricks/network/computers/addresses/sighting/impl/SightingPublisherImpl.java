@@ -13,6 +13,7 @@ import sneer.foundation.lang.Consumer;
 class SightingPublisherImpl implements SightingPublisher {
 
 	private final ConnectionManager connectionManager = my(ConnectionManager.class);
+	
 	{
 		my(TupleSpace.class).keep(Sighting.class);
 	}	

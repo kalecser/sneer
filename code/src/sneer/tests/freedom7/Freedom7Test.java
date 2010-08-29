@@ -2,36 +2,32 @@ package sneer.tests.freedom7;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.LoggerMocks;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.foundation.brickness.Brick;
 import sneer.tests.SovereignFunctionalTestBase;
-import sneer.tests.SovereignParty;
 
 public class Freedom7Test extends SovereignFunctionalTestBase {
 	
-	@Override
-	protected SovereignParty createParty(String name) {
-		SovereignParty result = super.createParty(name);
-		result.enableCodeSharing();
-		return result;
-	}
-	
-	
-	@Test (timeout = 1000 * 30)
+	@Ignore
+	@Test (timeout = 1000 * 20)
 	public void meToo_TakesACoupleOfMinutesToRunAndRunsOnlyOnHeadlessServer() throws Exception {
-		//if (!isHudsonServer()) return;
-		
+		LoggerMocks.showLog = true;
+
+		a().enableCodeSharing();
+		b().enableCodeSharing();
+
 		a().copyToSourceFolder(generateY());
 		
 		newSession(a());
+		a().enableCodeSharing();
 		
 		a().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
 		b().waitForAvailableBrick("freedom7.y.Y", "NEW");
@@ -40,16 +36,11 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 
 		System.clearProperty("freedom7.y.Y.installed");
 		newSession(b());
+		b().enableCodeSharing();
 		b().loadBrick("freedom7.y.Y");
 		assertEquals("true", System.getProperty("freedom7.y.Y.installed"));
 
 		b().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
-	}
-
-	
-	@SuppressWarnings("unused")
-	private boolean isHudsonServer() {
-		return GraphicsEnvironment.isHeadless();
 	}
 
 	

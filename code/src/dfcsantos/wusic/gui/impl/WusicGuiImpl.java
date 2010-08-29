@@ -29,12 +29,9 @@ class WusicGuiImpl implements WusicGui {
 
     private JFrame _frame;
 
-    private boolean _isInitialized = false;
-
     {
-		my(MainMenu.class).addAction(30, "Wusic", new Closure() { @Override public void run() {
-			if (!_isInitialized){
-				_isInitialized = true;
+		my(MainMenu.class).addAction(30, "Wusic", new Closure() { @Override synchronized public void run() {
+			if (_frame == null){
 				_frame = initFrame();
 				_controller.start();
 			}

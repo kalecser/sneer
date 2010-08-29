@@ -34,9 +34,18 @@ class DotPartsImpl implements DotParts {
 		
 		final File actualFile = actualFile(dotPartFile);
 		if (!dotPartFile.renameTo(actualFile))
-			throw new IOException("Unable to rename .part file/folder to actual file/folder: " + actualFile);
+			throw new IOException(unableToRenameMessage(dotPartFile, actualFile));
 
 		return actualFile;
+	}
+
+
+	private String unableToRenameMessage(File dotPartFile, File actualFile) {
+		String result = "Unable to rename .part file/folder to actual file/folder: " + actualFile;
+		if (actualFile.exists()  ) result += " (actual file/folder already exists)";
+		if (!dotPartFile.exists()) result += " (.part file/folder does not exist)";
+		
+		return result;
 	}
 
 

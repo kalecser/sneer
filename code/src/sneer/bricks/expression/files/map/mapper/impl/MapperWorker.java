@@ -23,6 +23,7 @@ import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.io.log.stacktrace.StackTraceLogger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.foundation.lang.Closure;
@@ -87,7 +88,29 @@ class MapperWorker {
 		if (newContents.equals(mappedContents)) return mappedHash;
 		
 		unmapDeletedFiles(folderPath, newEntries, mappedContents);
-		return putFolderHash(folder, newContents);
+		
+		Hash result = putFolderHash(folder, newContents);
+		checkPutHasWorked(folder, newContents, result);
+		return result;
+	}
+
+
+	private void checkPutHasWorked(File folder, FolderContents expected, Hash hash) {
+		FolderContents actual = FileMap.getFolderContents(hash);
+		if (actual != null && actual.contents.size() == expected.contents.size()) return;
+
+		my(BlinkingLights.class).turnOn(LightType.ERROR, "" + folder + " not mapped correctly.", "Expected: " + entries(expected) + " Actual: " + entries(actual));
+		my(StackTraceLogger.class).logStack();
+	}
+
+
+	private String entries(FolderContents contents) {
+		if (contents == null) return "null";
+		if (contents.contents.isEmpty()) return "(empty)";
+		String result = "";
+		for (FileOrFolder entry : contents.contents)
+			result += entry.name + ", ";
+		return result;
 	}
 
 

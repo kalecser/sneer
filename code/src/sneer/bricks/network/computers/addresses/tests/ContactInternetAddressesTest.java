@@ -3,6 +3,7 @@ package sneer.bricks.network.computers.addresses.tests;
 import static sneer.foundation.environments.Environments.my;
 
 import org.jmock.Expectations;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
@@ -19,10 +20,11 @@ import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
+import sneer.foundation.environments.EnvironmentUtils;
+import sneer.foundation.lang.Producer;
 import sneer.foundation.lang.exceptions.Refusal;
 
+@Ignore
 public class ContactInternetAddressesTest extends BrickTestWithTuples {
 
 	@Bind private final Attributes _attributes = mock(Attributes.class);
@@ -44,6 +46,7 @@ public class ContactInternetAddressesTest extends BrickTestWithTuples {
 	@Test(timeout=2000)
 	public void dnsAddressesAreFound() {
 		see("10.42.10.42", 8081);
+		
 		InternetAddress kept = firstKeptAddress();
 		assertEquals(remoteContact(), kept.contact());
 		assertEquals("10.42.10.42", kept.host());
@@ -51,10 +54,15 @@ public class ContactInternetAddressesTest extends BrickTestWithTuples {
 	}
 
 	private void see(final String ip, final int port) {
-		Environments.runWith(remote(), new Closure() { @Override public void run() {
-			my(TupleSpace.class).acquire(new Sighting(ownSeal(), ip));
+		System.out.println(my(TupleSpace.class).keptTuples().size());
+		Sighting sighting =	EnvironmentUtils.produceIn(remote(), new Producer<Sighting>() { @Override public Sighting produce() {
+			Sighting result = new Sighting(ownSeal(), ip);
+			my(TupleSpace.class).acquire(result);
+			return result;
 		}});
 		waitForAllDispatchingToFinish();
+		System.out.println(my(TupleSpace.class).keptTuples().size());
+		assertTrue(my(TupleSpace.class).keptTuples().contains(sighting));
 		
 		checking(new Expectations() {{
 			oneOf(_attributes).attributeValueFor(remoteContact(), OwnPort.class, Integer.class); 

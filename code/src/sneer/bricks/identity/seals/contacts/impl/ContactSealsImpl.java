@@ -72,7 +72,10 @@ class ContactSealsImpl implements ContactSeals {
 
 	@Override
 	public Signal<String> nicknameGiven(Seal peersSeal) {
-		return contactGiven(peersSeal).nickname();
+		Contact contact = contactGiven(peersSeal);
+		return contact == null
+			? null
+			: contact.nickname();
 	}
 
 }

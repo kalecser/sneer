@@ -2,6 +2,7 @@ package sneer.bricks.snapps.contacts.gui.o3chat.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -18,7 +19,7 @@ class OneOnOneChatImpl implements OneOnOneChat {
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
 
 	{
-		_refToAvoidGc = my(TupleSpace.class).addSubscription(ChatMessage.class, new Consumer<ChatMessage>() { @Override public void consume(ChatMessage message) {
+		_refToAvoidGc = my(RemoteTuples.class).addSubscription(ChatMessage.class, new Consumer<ChatMessage>() { @Override public void consume(ChatMessage message) {
 			String reply = ChatWindow.showInputDialog(my(ContactSeals.class).contactGiven(message.publisher).nickname() + " says: " + message.text);
 			if (reply == null) return;
 			sendTo(message.publisher, reply);

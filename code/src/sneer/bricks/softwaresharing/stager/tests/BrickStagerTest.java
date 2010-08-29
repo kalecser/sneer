@@ -69,7 +69,7 @@ public class BrickStagerTest extends BrickTestWithFiles {
 		
 		assertEquals(0, errorLights().size());
 		_subject.stageBricksForInstallation();
-		assertEquals(1, errorLights().size());
+		assertTrue(errorLights().size() > 0);
 	}
 
 	

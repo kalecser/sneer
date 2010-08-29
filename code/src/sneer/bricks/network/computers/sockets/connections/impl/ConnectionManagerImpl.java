@@ -7,6 +7,7 @@ import java.io.IOException;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.network.computers.sockets.connections.Call;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ContactSighting;
 import sneer.bricks.network.social.Contact;
@@ -64,6 +65,12 @@ class ConnectionManagerImpl implements ConnectionManager {
 	@Override
 	public EventSource<ContactSighting> contactSightings() {
 		return IncomingHandShaker.contactSightings();
+	}
+
+
+	@Override
+	public EventSource<Call> unknownCallers() {
+		return IncomingHandShaker.unknownCallers();
 	}
 
 }

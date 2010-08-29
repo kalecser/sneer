@@ -4,7 +4,25 @@
 
 Following are the tasks each one of us has on his plate right now:
 
+Henrique =================================================
+	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and ` can both use the same Gui.
+		- Create a PrivateChatWindow that will use wind's extracted GUI behaviour.
+		- Enable multiple instances of the window, one for each contact
+		- The window should use o3chat library/brick
+
 Edmundo =================================================
+	- Freedom 2
+		- handshaking protocol
+			- refactor incominghandshaker (readContactsSealBytes method)
+			- when the caller is an unknown contact, a persisted blink light is displayed with options: Accept/Reject
+			- the callee can accept or reject recent request waiting for approval
+				- if rejected: add contact seal to black list
+				- if accepted: add contact seak to contact list (initially, contact nickname = name) 
+	
+		- unify Wind/PrivateChat GUI behavior
+			- bricks.expression.messages.MessageDispatcher (BRICK, dispatch, impl/test)
+				- its client apps: PrivateChatGui and WindGui (maybe MessageWindow will handle MessageDispatchers)
+				- Klaus: Why have a dispatcher? The TupleSpace acts as a dispatcher already. Wind uses one kind of Tuple (Shout) and Chat uses another. Each GUI can simply subscribe to the correct kind of tuple and react accordingly, no?
 
 	- Platform exploration
 		- Study the following core features:
@@ -46,8 +64,6 @@ Igor ====================================================
 				:|    (...and that's it.)
 				:(    (...or any similar tracks.)
 
-	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and Chat can both use the same Gui.
-
 	- sovereigncomputing.net - Moralize. This is necessary to help promote Wusic.
 		- Talk to Klaus 
 
@@ -73,6 +89,8 @@ René =================================================
 
 
 Klaus =================================================
+
+	- ContactInternetAddressesTest - Unignore
 
 	- InternetAddresses thread leak - Fix
 		- Simplify connection
