@@ -97,16 +97,18 @@ class MapperWorker {
 
 	private void checkPutHasWorked(File folder, FolderContents expected, Hash hash) {
 		FolderContents actual = FileMap.getFolderContents(hash);
-		if (expected.contents.size() == actual.contents.size()) return;
+		if (actual != null && actual.contents.size() == expected.contents.size()) return;
 
 		my(BlinkingLights.class).turnOn(LightType.ERROR, "" + folder + " not mapped correctly.", "Expected: " + entries(expected) + " Actual: " + entries(actual));
 		my(StackTraceLogger.class).logStack();
 	}
 
 
-	private String entries(FolderContents expected) {
+	private String entries(FolderContents contents) {
+		if (contents == null) return "null";
+		if (contents.contents.isEmpty()) return "(empty)";
 		String result = "";
-		for (FileOrFolder entry : expected.contents)
+		for (FileOrFolder entry : contents.contents)
 			result += entry.name + ", ";
 		return result;
 	}
