@@ -51,7 +51,7 @@ class OwnSealImpl implements OwnSeal {
 	private Seal newTemporarySealForTests() {
 		try {
 			Seal tmpSeal = new Seal(new ImmutableByteArray(Long.toHexString(System.nanoTime()).getBytes("UTF-8")));
-			my(BlinkingLights.class).turnOn(LightType.WARNING, "Public key not found. Created tmp seal for tests: " + tmpSeal, "As a real user, you should not be seeing this warning.");
+			//my(BlinkingLights.class).turnOn(LightType.WARNING, "Public key not found. Created tmp seal for tests: " + tmpSeal, "As a real user, you should not be seeing this warning.");
 			return tmpSeal;
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalStateException(e);
