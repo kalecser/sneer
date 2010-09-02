@@ -22,6 +22,8 @@ import sneer.foundation.lang.exceptions.FriendlyException;
 
 class BlinkingLightsImpl implements BlinkingLights {
 	
+	private final Object _lock = new Object();
+	
 	private final ListRegister<Light> _lights = my(CollectionSignals.class).newListRegister();
 	private final Set<WeakContract> _turnOffContracts = new HashSet<WeakContract>();
 	
@@ -54,10 +56,11 @@ class BlinkingLightsImpl implements BlinkingLights {
 	
 	@Override
 	public void turnOffIfNecessary(Light light) {
-		if (!light.isOn().currentValue()) return;
-		
-		_lights.remove(light);
-		((LightImpl)light).turnOff();
+		synchronized(_lock) {
+			if (!light.isOn().currentValue()) return;
+			_lights.remove(light);
+			((LightImpl)light).turnOff();
+		}
 	}
 	
 	private void turnOffIn(final Light light, int millisFromNow) {
@@ -107,22 +110,23 @@ class BlinkingLightsImpl implements BlinkingLights {
 	
 	@Override
 	public void turnOnIfNecessary(Light light_, String caption, String helpMessage, Throwable t, int timeout) {
-		LightImpl light = (LightImpl)light_;
-
-		if (light.isOn().currentValue()) return;
-		light._isOn.setter().consume(true);
-		light._caption = caption;
-		light._error = t;
-		light._helpMessage = helpMessage == null ? "If this problem doesn't go away on its own, get an expert sovereign friend to help you. ;)" : helpMessage;
-		
-		log(light_.type(), caption);
-		
-		_lights.add(light);
-		
-		if (timeout != LightImpl.NEVER)
-			turnOffIn(light, timeout);
+		synchronized(_lock) {
+			LightImpl light = (LightImpl)light_;
+	
+			if (light.isOn().currentValue()) return;
+			light.turnOn();
+			light._caption = caption;
+			light._error = t;
+			light._helpMessage = helpMessage == null ? "If this problem doesn't go away on its own, get an expert sovereign friend to help you. ;)" : helpMessage;
+			
+			log(light_.type(), caption);
+			
+			_lights.add(light);
+			
+			if (timeout != LightImpl.NEVER)
+				turnOffIn(light, timeout);
+		}
 	}
-
 
 	private void log(LightType lightType, String caption) {
 		my(Logger.class).log(severityTag(lightType), caption);

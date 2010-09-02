@@ -40,6 +40,10 @@ class LightImpl implements Light {
 		_isOn.setter().consume(false);
 	}
 
+	void turnOn() {
+		_isOn.setter().consume(true);
+	}
+
 	@Override
 	public ListSignal<Action> actions() {
 		return _actions.output();
