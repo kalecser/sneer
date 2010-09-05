@@ -22,7 +22,7 @@ class ThreadMeterImpl implements ThreadMeter {
 	
 	private void logIfPeak() {
 		int count = Thread.getAllStackTraces().size();
-		if (count < _threadCountPeak) return;
+		if (count <= _threadCountPeak) return;
 		_threadCountPeak = count;
 		my(Logger.class).log("Thread peak reached: {} threads.", _threadCountPeak);
 	}
