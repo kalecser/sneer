@@ -5,6 +5,8 @@ import static sneer.foundation.environments.Environments.my;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.ByteArrayOutputStream;
@@ -13,9 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.BoundedRangeModel;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
@@ -27,6 +31,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -107,6 +112,7 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 		private JDialog _window;
 		private JTextPane _textPane;
 		private JScrollPane _scroll;
+		private JPanel _actionsPanel;
 
 		protected Light _light;
 		
@@ -117,6 +123,7 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 
 		private void initGui() {
 			_window = new JDialog((JFrame)SwingUtilities.windowForComponent(_container), false);
+			_window.setSize(300, 300);
 			
 			_textPane = new JTextPane();
 			_textPane.setOpaque(false);
@@ -127,9 +134,12 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 			_scroll.getViewport().add(_textPane);
 			_scroll.setOpaque(false);
 			
+			_actionsPanel = new JPanel();
+			
 			Container panel = _window.getContentPane();
 			panel.setLayout(new BorderLayout());		
 			panel.add(_scroll, BorderLayout.CENTER);
+			panel.add(_actionsPanel, BorderLayout.SOUTH);
 			_scroll.setBorder(new EmptyBorder(5,5,5,5));
 		}
 
@@ -151,6 +161,7 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 		private void show(final Light light){
 			setWindowTitle(light);
 			setWindowsMessage(light);
+			addButtonsToActionsPanel(light);
 			setWindowBounds();
 			_window.setVisible(true);
 			placeScrollAtTheBegining();
@@ -185,8 +196,23 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 			ps.close();
 			
 			appendStyledText(doc, "\n\n" + stack.trim(), STACK_TRACE);
-		}	
+		}
 		
+		private void addButtonsToActionsPanel(Light light) {
+			_actionsPanel.removeAll();
+			for (final Action action : light.actions()) {
+				JButton button = new JButton(action.caption());
+				button.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						action.run();
+						_window.setVisible(false);
+					}
+				});
+				_actionsPanel.add(button);
+			}
+		}
+
 		private void setWindowBounds() {
 			_window.pack();
 //			my(WindowBoundsSetter.class).setBestBounds(_window, _container, HORIZONTAL_LIMIT);

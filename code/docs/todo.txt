@@ -13,11 +13,10 @@ Henrique =================================================
 Edmundo =================================================
 	- Freedom 2
 		- handshaking protocol
-			- refactor incominghandshaker (readContactsSealBytes method)
-			- when the caller is an unknown contact, a persisted blink light is displayed with options: Accept/Reject
 			- the callee can accept or reject recent request waiting for approval
 				- if rejected: add contact seal to black list
-				- if accepted: add contact seak to contact list (initially, contact nickname = name) 
+				- if accepted: add contact seal to contact list (initially, contact nickname = name) 
+			- refactor incominghandshaker (readContactsSealBytes method)
 	
 		- unify Wind/PrivateChat GUI behavior
 			- bricks.expression.messages.MessageDispatcher (BRICK, dispatch, impl/test)

@@ -24,15 +24,14 @@ class RendezvousImpl implements Rendezvous {
 	}
 
 	private void receiveCallFromUnknownCaller(final Call call) {
-		Light light = my(BlinkingLights.class).prepare(LightType.GOOD_NEWS);
+		final Light light = my(BlinkingLights.class).prepare(LightType.GOOD_NEWS);
 		light.addAction(new Action() {
-
 			@Override public String caption() {return "Accept";}
-
-			@Override public void run() {
-				acceptCall(call);
-			}
-			
+			@Override public void run() {acceptCall(call); my(BlinkingLights.class).turnOffIfNecessary(light);}
+		});
+		light.addAction(new Action() {
+			@Override public String caption() {return "Reject";}
+			@Override public void run() {my(BlinkingLights.class).turnOffIfNecessary(light);}
 		});
 		my(BlinkingLights.class).turnOnIfNecessary(light, getMessage(call), getHelpMessage());
 	}
