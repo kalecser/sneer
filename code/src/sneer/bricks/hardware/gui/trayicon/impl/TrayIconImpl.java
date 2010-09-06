@@ -70,7 +70,7 @@ class TrayIconImpl implements TrayIcon {
 				}
 			}
 		});
-		result.setImageAutoSize(false);
+		result.setImageAutoSize(true);
 		return result;
 	}
 
@@ -91,10 +91,21 @@ class TrayIconImpl implements TrayIcon {
 		popup.add(menuItem);
 	}
 
+	
 	@Override
 	public void messageBalloon(String title, String message) {
+		title = pad(title);
+		message = pad(message);
 		_trayIcon.displayMessage(title, message, MessageType.NONE);
 	}
+	
+	
+	private String pad(String message) {
+		if (message == null) return " ";
+		if (message.isEmpty()) return " ";
+		return message;
+	}
+
 	
 	@Override
 	public void clearActions(){
