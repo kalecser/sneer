@@ -62,8 +62,10 @@ public abstract class FileCopyTestBase extends BrickTestWithTuples {
 	private void testWith(File fileOrFolder) throws Exception {
 		@SuppressWarnings("unused")	WeakContract refToAvoidGc =
 			my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>(){@Override public void consume(CollectionChange<Light> deltas) {
-				if (!deltas.elementsAdded().isEmpty())
-					deltas.elementsAdded().iterator().next().error().printStackTrace();
+				if (!deltas.elementsAdded().isEmpty()) {
+					Throwable error = deltas.elementsAdded().iterator().next().error();
+					if (error != null) error.printStackTrace();
+				}
 			}});
 
 		File copy = newTmpFile();

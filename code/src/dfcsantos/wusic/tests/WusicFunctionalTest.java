@@ -107,8 +107,15 @@ public class WusicFunctionalTest extends BrickTestWithTuples {
 		waitForSignalValue(_subject1.isPlaying(), false);
 
 		_subject1.pauseResume();
-		Light light = my(BlinkingLights.class).lights().currentGet(0);
-		assertEquals("No Tracks to Play", light.caption());		
+		assertLightExists("No Tracks to Play");
+	}
+
+
+	private void assertLightExists(String caption) {
+		for (Light light : my(BlinkingLights.class).lights())
+			if (caption.equals(light.caption()))
+				return;
+		fail("Light not found: '" +caption + "'");
 	}
 
 	

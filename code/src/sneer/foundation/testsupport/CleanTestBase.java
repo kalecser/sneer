@@ -16,6 +16,10 @@ import org.junit.runner.RunWith;
 @RunWith(CleanTestRunner.class)
 public abstract class CleanTestBase extends AssertUtils {
 
+	static {
+		System.setProperty("sneer.testmode", "true"); //USE ONLY FOR DEBUGGING. It is bad practice to use this otherwise.
+	}
+	
 	private File _tmpFolder;
 	private String _tmpFolderName;
 	
