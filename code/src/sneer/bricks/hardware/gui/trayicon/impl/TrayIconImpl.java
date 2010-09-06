@@ -94,13 +94,11 @@ class TrayIconImpl implements TrayIcon {
 	
 	@Override
 	public void messageBalloon(String title, String message) {
-		title = pad(title);
-		message = pad(message);
-		_trayIcon.displayMessage(title, message, MessageType.NONE);
+		_trayIcon.displayMessage(pad(title), pad(message), MessageType.NONE);
 	}
 	
 	
-	private String pad(String message) {
+	private String pad(String message) { //Avoids a bug um Swing´s TrayIcon
 		if (message == null) return " ";
 		if (message.isEmpty()) return " ";
 		return message;
