@@ -76,13 +76,21 @@ class ThreadsImpl implements Threads {
 		hasStarted.waitTillOpen();
 	}
 
+	
 	@Override
 	public Contract startStepping(Runnable steppable) {
+		return startStepping(inferThreadName(), steppable);
+	}
+
+	
+	@Override
+	public Contract startStepping(String threadName, Runnable steppable) {
 		Stepper result = new Stepper(steppable);
-		startDaemon(inferThreadName(), result);
+		startDaemon(threadName, result);
 		return result;
 	}
 
+	
 	private String inferThreadName() {
 		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 		StackTraceElement element = stackTrace[3];

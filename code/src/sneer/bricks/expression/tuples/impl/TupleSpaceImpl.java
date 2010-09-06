@@ -51,7 +51,7 @@ class TupleSpaceImpl implements TupleSpace {
 			_filter = filter;
 			_environment = my(Environment.class);
 			
-			_stepperContract = _threads.startStepping(notifier());
+			_stepperContract = _threads.startStepping("Tuple Subscription: " + tupleType, notifier());
 		}
 
 		

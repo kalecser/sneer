@@ -33,9 +33,15 @@ public class ThreadsMock implements Threads {
 	
 
 	@Override
-	public synchronized Contract startStepping(final Runnable stepper) {
+	public synchronized Contract startStepping(Runnable stepper) {
 		_steppers.add(stepper);
 		return null;
+	}
+
+	
+	@Override
+	public synchronized Contract startStepping(String threadNameIgnored, Runnable stepper) {
+		return startStepping(stepper);
 	}
 
 	public synchronized Runnable getStepper(int i) {
