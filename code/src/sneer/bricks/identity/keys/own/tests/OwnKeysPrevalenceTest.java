@@ -13,31 +13,37 @@ import sneer.foundation.lang.Closure;
 public class OwnKeysPrevalenceTest extends BrickTestWithFiles {
 
 	private static final String PASSPHRASE = "long passphrase 123456789012345678901234567890123456789012345678901234567890";
-	private static final int NUM_RUNS = 10;
+	private static final int NUM_RUNS = 4;
 
+	
 	@Test
 	public void recoversFromPrevalence() {
 		my(OwnKeys.class).generateKeyPair(PASSPHRASE.getBytes());
-		final byte[] encoded = my(OwnKeys.class).ownPublicKey().currentValue().getEncoded();
+		final byte[] encoded = myPK();
 		for (int i = 0; i < NUM_RUNS; i++) {
 			Environments.runWith(newTestEnvironment(my(OwnKeys.class)), new Closure() { @Override public void run() {
-				assertArrayEquals(encoded, my(OwnKeys.class).ownPublicKey().currentValue().getEncoded());
+				assertArrayEquals(encoded, myPK());
 			}});
-			assertArrayEquals(encoded, my(OwnKeys.class).ownPublicKey().currentValue().getEncoded());
+			assertArrayEquals(encoded, myPK());
 		}
 	}
 
+	
 	@Test
 	public void recoversChangedFromPrevalence() {
 		my(OwnKeys.class).generateKeyPair(PASSPHRASE.getBytes());
-		final ByRef<byte[]> encoded = ByRef.newInstance(my(OwnKeys.class).ownPublicKey().currentValue().getEncoded());
+		final ByRef<byte[]> encoded = ByRef.newInstance(myPK());
 		for (int i = 0; i < NUM_RUNS; i++) {
 			Environments.runWith(newTestEnvironment(my(OwnKeys.class)), new Closure() { @Override public void run() {
-				assertArrayEquals(encoded.value, my(OwnKeys.class).ownPublicKey().currentValue().getEncoded());
+				assertArrayEquals(encoded.value, myPK());
 				my(OwnKeys.class).generateKeyPair(PASSPHRASE.getBytes());
-				encoded.value = my(OwnKeys.class).ownPublicKey().currentValue().getEncoded();
+				encoded.value = myPK();
 			}});
 		}
+	}
+
+	private byte[] myPK() {
+		return my(OwnKeys.class).ownPublicKey().currentValue().getEncoded();
 	}
 
 }
