@@ -1,5 +1,6 @@
 package sneer.bricks.expression.files.client.downloads.gui;
 
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Window;
 
@@ -32,7 +33,9 @@ public class DownloadsPanel extends Box {
 	}
 
 	void update() {
-		((Window) getTopLevelAncestor()).pack(); // Fix: Is there another way?
+		Container ancestor = getTopLevelAncestor();
+		if (ancestor == null) return; //It happens.
+		((Window) ancestor).pack(); // Fix: Is there another way?
 	}
 
 	private JPanel newDetailsPanelFor(Download download) {
