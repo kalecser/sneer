@@ -70,11 +70,13 @@ class TupleSpaceImpl implements TupleSpace {
 			final Consumer<? super Tuple> subscriber = _subscriber;
 			if (subscriber == null) return;
 			
+			_dispatchingThreads.add(Thread.currentThread());
 			_exceptionHandler.shield(new Closure() { @Override public void run() {
 				Environments.runWith(_environment, new Closure() { @Override public void run() {
 					subscriber.consume(tuple);
 				}});
 			}});
+			_dispatchingThreads.remove(Thread.currentThread());
 		}
 
 		
@@ -138,6 +140,7 @@ class TupleSpaceImpl implements TupleSpace {
 
 	private final Object _dispatchCounterMonitor = new Object();
 	private int _dispatchCounter = 0;
+	private final Set<Thread> _dispatchingThreads = new HashSet<Thread>();
 
 	private final Set<Tuple> _floodedTupleCache = new LinkedHashSet<Tuple>();
 	private final Set<Class<? extends Tuple>> _typesToKeep = new HashSet<Class<? extends Tuple>>();
@@ -269,6 +272,9 @@ class TupleSpaceImpl implements TupleSpace {
 	
 	@Override	
 	public void waitForAllDispatchingToFinish() {
+		if (_dispatchingThreads.contains(Thread.currentThread()))
+			throw new IllegalStateException("Dispatching thread cannot wait for dispatching to finish.");
+		
 		synchronized (_dispatchCounterMonitor ) {
 			while (_dispatchCounter != 0)
 				_threads.waitWithoutInterruptions(_dispatchCounterMonitor);
