@@ -13,31 +13,35 @@ import sneer.bricks.hardware.ram.reflection.visitation.ReflectionVisitor;
 
 class ReflectionGuideImpl implements ReflectionGuide {
 
-	private final Set<Object> _attractionsVisited = new HashSet<Object>();
+	private final Set<Object> _targetsVisited = new HashSet<Object>();
 	private final LinkedList<TourImpl> _toursToVisit = new LinkedList<TourImpl>();
 
 	
 	@Override
+	synchronized
 	public void guide(ReflectionVisitor visitor, Object start) {
 		visitLater(new TourImpl(start));
 		while (!_toursToVisit.isEmpty())
 			guide(visitor, _toursToVisit.removeFirst());
+		
+		_targetsVisited.clear();
 	}
 
 	
-	protected void guide(ReflectionVisitor visitor, TourImpl tour) {
-		Object attraction = tour.target();
+	private void guide(ReflectionVisitor visitor, TourImpl tour) {
+		Object target = tour.target();
 
-		if (!_attractionsVisited.add(attraction)) return;
+		if (target == this) return;
+		if (!_targetsVisited.add(target)) return;
 
 		if (!visitor.visit(tour)) return;
 
-		Class<?> type = attraction.getClass();
+		Class<?> type = target.getClass();
 		visitFieldsLater(tour, type);
 	}
 
 	
-	protected void visitFieldsLater(TourImpl tour, Class<?> type) {
+	private void visitFieldsLater(TourImpl tour, Class<?> type) {
 		for (Field field : type.getDeclaredFields())
 			visitLater(tour, field);
 
@@ -71,13 +75,13 @@ class ReflectionGuideImpl implements ReflectionGuide {
 	}
 
 	
-	protected void visitArrayLater(TourImpl tour, Object array) {
+	private void visitArrayLater(TourImpl tour, Object array) {
 		for (int i = 0; i < Array.getLength(array); i++)
 			visitLater(tour.fork("" + i, Array.get(array, i)));
 	}
 
 	
-	protected void visitLater(TourImpl tour) {
+	private void visitLater(TourImpl tour) {
 		Object attraction = tour.target();
 		if (attraction == null) return;
 		
@@ -93,7 +97,7 @@ class ReflectionGuideImpl implements ReflectionGuide {
 	}
 
 	
-	protected boolean isDeadEnd(Class<?> type) {
+	private boolean isDeadEnd(Class<?> type) {
 		if (type == String.class) return true;
 
 		if (type.isPrimitive()) return true;
