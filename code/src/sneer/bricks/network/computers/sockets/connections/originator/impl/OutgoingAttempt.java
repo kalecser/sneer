@@ -17,18 +17,25 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.Consumer;
 
 class OutgoingAttempt {
 
 	private final Network _network = my(Network.class);
 	private final ConnectionManager _connectionManager = my(ConnectionManager.class);
 	private final InternetAddress _address;
+	private int _port;
 	private final WeakContract _steppingContract;
 	private final Light _light = my(BlinkingLights.class).prepare(LightType.WARNING);
+	
+	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
 
 	
 	OutgoingAttempt(final InternetAddress address) {
 		_address = address;
+		_refToAvoidGc = _address.port().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer port) {
+			_port = port;
+		}});
 
 		_steppingContract = my(Timer.class).wakeUpNowAndEvery(20 * 1000, new Closure() { @Override public String toString() { return "Outgoing Connection Attempt: " + address; } @Override public void run() {
 			tryToOpen();
@@ -40,17 +47,17 @@ class OutgoingAttempt {
 		if (hasSocketAlready()) return;
 		if (!contactHasSeal()) return;
 		
-		my(Logger.class).log("Trying to open socket to: {} port: {}", _address.host(), _address.port());
+		my(Logger.class).log("Trying to open socket to: {} port: {}", _address.host(), _port);
 
 		ByteArraySocket socket;
 		try {
-			socket = _network.openSocket(_address.host(), _address.port().currentValue());
+			socket = _network.openSocket(_address.host(), _port);
 		} catch (IOException e) {
-			my(Logger.class).log("{} host: {} port: ", e.getMessage(),_address.host(), _address.port().currentValue());
+			my(Logger.class).log("{} host: {} port: ", e.getMessage(),_address.host(), _port);
 			return;
 		}
 
-		my(Logger.class).log("Socket opened to: {} port: {}", _address.host(), _address.port());
+		my(Logger.class).log("Socket opened to: {} port: {}", _address.host(), _port);
 		_connectionManager.manageOutgoingSocket(socket, contact());
 	}
 
