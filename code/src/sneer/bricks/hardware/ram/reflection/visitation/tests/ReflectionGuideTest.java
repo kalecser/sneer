@@ -5,9 +5,9 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.hardware.ram.reflection.visitation.ReflectionGuide;
-import sneer.foundation.brickness.testsupport.BrickTestBase;
+import sneer.foundation.brickness.testsupport.BrickTestWithMocks;
 
-public class ReflectionGuideTest extends BrickTestBase {
+public class ReflectionGuideTest extends BrickTestWithMocks {
 
 	ReflectionGuide _subject = my(ReflectionGuide.class);
 	

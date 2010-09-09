@@ -16,11 +16,11 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.collections.listsorter.ListSorter;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.snapps.contacts.gui.comparator.ContactComparator;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.testsupport.AssertUtils;
 
-public class ContactComparatorTest extends BrickTestWithFiles {
+public class ContactComparatorTest extends BrickTestBase {
 	
 	@Bind final Stethoscope _stethoscopeMock = new StethoscopeMock();
 	

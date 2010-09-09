@@ -1,6 +1,7 @@
 package sneer.bricks.network.social.impl;
 
 import static sneer.foundation.environments.Environments.my;
+import sneer.bricks.hardware.io.log.stacktrace.StackTraceLogger;
 import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
@@ -25,6 +26,8 @@ class ContactsImpl implements Contacts {
 
 	
 	private Contact doAddContact(String nickname) {
+		if (nickname.equals("Dummy")) my(StackTraceLogger.class).logStack();
+		
 		final Contact result = new ContactImpl(nickname);
 		my(PrevalenceMap.class).register(result);
 		_contacts.add(result);

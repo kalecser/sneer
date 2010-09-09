@@ -5,9 +5,9 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.software.bricks.introspection.Introspector;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
-public class IntrospectorTest extends BrickTestWithFiles {
+public class IntrospectorTest extends BrickTestBase {
 	
 	@Test
 	public void brickInterfaceFor() {

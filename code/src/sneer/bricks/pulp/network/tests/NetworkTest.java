@@ -10,11 +10,11 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.network.ByteArrayServerSocket;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Closure;
 
 
-public class NetworkTest extends BrickTestWithFiles {
+public class NetworkTest extends BrickTestBase {
 	
 	private final Threads _threads = my(Threads.class);
 	

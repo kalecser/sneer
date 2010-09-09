@@ -5,11 +5,11 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.brickness.testsupport.BrickTestBase;
+import sneer.foundation.brickness.testsupport.BrickTestWithMocks;
 import sneer.foundation.brickness.testsupport.tests.bar.BarBrick;
 import sneer.foundation.brickness.testsupport.tests.foo.FooBrick;
 
-public class BrickTestTest extends BrickTestBase {
+public class BrickTestTest extends BrickTestWithMocks {
 	
 	@Bind final BarBrick _bar = new BarBrick() {};
 	

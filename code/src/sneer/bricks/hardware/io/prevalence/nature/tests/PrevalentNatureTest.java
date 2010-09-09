@@ -10,11 +10,11 @@ import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.Item;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.SomePrevalentBrick;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.brick2.PrevalentBrick2;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
-public class PrevalentNatureTest extends BrickTestWithFiles {
+public class PrevalentNatureTest extends BrickTestBase {
 	
 	
 	@Test (timeout = 3000)

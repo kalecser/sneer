@@ -56,7 +56,7 @@ class ThreadsImpl implements Threads {
 	@Override
 	public void startDaemon(final String threadName, final Runnable runnable) {
 		if (_isCrashing)
-			Daemon.killQuietly(Thread.currentThread());
+			Daemons.killQuietly(Thread.currentThread());
 
 		final Environment environment = my(Environment.class);
 		final int maxCpuUsage = my(CpuThrottle.class).maxCpuUsage();
@@ -67,7 +67,7 @@ class ThreadsImpl implements Threads {
 			Environments.runWith(environment, new Closure() { @Override public void run() {
 				Counter.increment(threadName);
 				my(CpuThrottle.class).limitMaxCpuUsage(maxCpuUsage, new Closure() { @Override public void run() {
-					ExceptionHandler.shield(runnable);				
+					ExceptionHandler.shield(runnable);
 				}});
 			}});
 			Counter.decrement(threadName);
@@ -113,7 +113,7 @@ class ThreadsImpl implements Threads {
 	public void crashAllThreads() {
 		_isCrashing = true;
 
-		Daemon.killAllInstances();
+		Daemons.killAllInstances();
 
 		_crashedPulser.sendPulse();
 		_crash.open();

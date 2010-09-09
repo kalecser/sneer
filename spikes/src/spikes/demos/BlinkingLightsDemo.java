@@ -10,9 +10,9 @@ import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.skin.main.dashboard.Dashboard;
 import sneer.bricks.snapps.system.blinkinglights.gui.BlinkingLightsGui;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
-public class BlinkingLightsDemo extends BrickTestWithFiles {
+public class BlinkingLightsDemo extends BrickTestBase {
 
 	@Test
 	public void testBL() throws Exception {

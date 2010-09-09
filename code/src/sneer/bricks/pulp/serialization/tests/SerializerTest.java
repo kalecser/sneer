@@ -6,9 +6,9 @@ import org.junit.Test;
 
 import sneer.bricks.pulp.serialization.Serializer;
 import sneer.bricks.pulp.serialization.tests.fixtures.brickwithlib.BrickToBeSerialized;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
-public class SerializerTest extends BrickTestWithFiles {
+public class SerializerTest extends BrickTestBase {
 
 	private final Serializer _subject = my(Serializer.class);
 	

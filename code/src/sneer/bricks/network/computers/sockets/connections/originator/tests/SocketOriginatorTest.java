@@ -21,11 +21,11 @@ import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
 
-public class SocketOriginatorTest extends BrickTestWithFiles {
+public class SocketOriginatorTest extends BrickTestBase {
 
 	@SuppressWarnings("unused")
 	private SocketOriginator _subject;

@@ -10,10 +10,10 @@ import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.expression.tuples.tests.TestTuple;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Consumer;
 
-public class RemoteTuplesTest extends BrickTestWithFiles {
+public class RemoteTuplesTest extends BrickTestBase {
 
 	private RemoteTuples _subject = my(RemoteTuples.class);
 

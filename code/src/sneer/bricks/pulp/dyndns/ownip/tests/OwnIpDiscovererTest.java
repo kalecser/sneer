@@ -16,11 +16,11 @@ import sneer.bricks.pulp.dyndns.checkip.CheckIp;
 import sneer.bricks.pulp.dyndns.ownip.OwnIpDiscoverer;
 import sneer.bricks.pulp.propertystore.PropertyStore;
 import sneer.bricks.pulp.propertystore.mocks.TransientPropertyStore;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
 
-public class OwnIpDiscovererTest extends BrickTestWithFiles {
+public class OwnIpDiscovererTest extends BrickTestBase {
 	
 	@Bind private final CheckIp _checkip = mock(CheckIp.class);
 	@Bind private final Timer _timer = mock(Timer.class);

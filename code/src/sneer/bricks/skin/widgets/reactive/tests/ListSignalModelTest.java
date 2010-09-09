@@ -16,9 +16,9 @@ import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
-public class ListSignalModelTest extends BrickTestWithFiles {
+public class ListSignalModelTest extends BrickTestBase {
 
 	private final ReactiveWidgetFactory _factory = my(ReactiveWidgetFactory.class); 
 	

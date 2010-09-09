@@ -23,7 +23,7 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.skin.image.ImageFactory;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
@@ -31,7 +31,7 @@ import sneer.foundation.lang.Consumer;
 import spikes.sneer.bricks.skin.screenshotter.Screenshotter;
 import spikes.sneer.bricks.snapps.watchme.WatchMe;
 
-public class WatchMeTest extends BrickTestWithFiles {
+public class WatchMeTest extends BrickTestBase {
 	
 	@Bind
 	final private Screenshotter _shotter = mock(Screenshotter.class);

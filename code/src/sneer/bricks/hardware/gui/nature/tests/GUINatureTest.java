@@ -8,14 +8,14 @@ import java.awt.event.ActionListener;
 import org.junit.Test;
 
 import sneer.bricks.hardware.gui.nature.tests.fixtures.SomeGuiBrick;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
 //TODO: nature inheritance (annotation Instrument interface for instance)
 //TODO: methods declaring checked exceptions
-public class GUINatureTest extends BrickTestWithFiles {
+public class GUINatureTest extends BrickTestBase {
 
 	@Test
 	public void instantiationHappensInTheSwingThread() {

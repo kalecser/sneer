@@ -6,9 +6,9 @@ import org.junit.Test;
 
 import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.network.social.attributes.Attributes;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
-public class OwnNameTest extends BrickTestWithFiles {
+public class OwnNameTest extends BrickTestBase {
 
 	@Test
 	public void test() throws Exception {

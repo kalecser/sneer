@@ -25,7 +25,7 @@ import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.stager.BrickStager;
@@ -33,7 +33,7 @@ import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Predicate;
 
-public class BrickStagerTest extends BrickTestWithFiles {
+public class BrickStagerTest extends BrickTestBase {
 
 	{
 		my(JavaCompiler.class);

@@ -15,8 +15,8 @@ public class BricknessEnvironmentTest extends Assert {
 	
 	Environment _subject = Brickness.newBrickContainer();
 
-	
-	@Test
+
+	@Test (timeout = 2000)
 	public void brickInstantiationPreservesEnvironment() throws Exception {
 		Environments.runWith(_subject, new Closure() { @Override public void run() {
 			assertSame(_subject, my(BrickA.class).instantiationEnvironment());

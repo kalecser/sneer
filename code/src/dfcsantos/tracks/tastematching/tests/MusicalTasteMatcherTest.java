@@ -6,11 +6,11 @@ import org.junit.Test;
 
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.exceptions.Refusal;
 import dfcsantos.tracks.tastematching.MusicalTasteMatcher;
 
-public class MusicalTasteMatcherTest extends BrickTestWithFiles {
+public class MusicalTasteMatcherTest extends BrickTestBase {
 
 	private MusicalTasteMatcher _subject = my(MusicalTasteMatcher.class);
 

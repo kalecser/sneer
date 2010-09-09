@@ -6,9 +6,9 @@ import org.junit.Test;
 
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.social.attributes.Attributes;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
-public class OwnPortTest extends BrickTestWithFiles {
+public class OwnPortTest extends BrickTestBase {
 
 	@Test (timeout = 2000)
 	public void setOwnPort() throws Exception {

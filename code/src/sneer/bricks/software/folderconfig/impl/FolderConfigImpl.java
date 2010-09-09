@@ -41,6 +41,11 @@ public class FolderConfigImpl implements FolderConfig {
 		return brickFolderIn(storageFolder().get(), brick);
 	}
 
+	@Override
+	public File tmpFolderFor(Class<?> brick) {
+		return brickFolderIn(tmpFolder().get(), brick);
+	}
+	
 	private File brickFolderIn(File parent, Class<?> brick) {
 		final File folder = new File(parent, "bricks/" + brick.getName());
 		folder.mkdirs();
@@ -59,11 +64,6 @@ public class FolderConfigImpl implements FolderConfig {
 	@Override
 	public ImmutableReference<File> srcFolder() {
 		return _srcFolder;
-	}
-
-	@Override
-	public File tmpFolderFor(Class<?> brick) {
-		return brickFolderIn(tmpFolder().get(), brick);
 	}
 
 	@Override

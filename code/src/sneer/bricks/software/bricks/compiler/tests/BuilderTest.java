@@ -16,7 +16,7 @@ import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.jar.JarBuilder;
 import sneer.bricks.software.code.jar.Jars;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.brickness.ClassDefinition;
 import sneer.foundation.brickness.Nature;
@@ -25,7 +25,7 @@ import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
 
-public class BuilderTest extends BrickTestWithFiles {
+public class BuilderTest extends BrickTestBase {
 	
 	{
 		my(JavaCompiler.class);

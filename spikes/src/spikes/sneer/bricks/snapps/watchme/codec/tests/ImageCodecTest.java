@@ -14,13 +14,13 @@ import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.pulp.serialization.Serializer;
 import sneer.bricks.skin.image.ImageFactory;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageCodec;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageDelta;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageCodec.Decoder;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageCodec.Encoder;
 
-public class ImageCodecTest extends BrickTestWithFiles {
+public class ImageCodecTest extends BrickTestBase {
 	
 	private final ImageCodec _subject = my(ImageCodec.class);
 	

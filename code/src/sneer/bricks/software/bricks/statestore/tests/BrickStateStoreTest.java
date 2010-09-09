@@ -9,9 +9,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.software.bricks.statestore.BrickStateStore;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
-public class BrickStateStoreTest extends BrickTestWithFiles {
+public class BrickStateStoreTest extends BrickTestBase {
 	
 	private final BrickStateStore _subject = my(BrickStateStore.class);
 

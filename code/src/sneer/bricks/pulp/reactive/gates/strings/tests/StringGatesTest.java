@@ -8,9 +8,9 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.gates.strings.StringGates;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
-public class StringGatesTest extends BrickTestWithFiles {
+public class StringGatesTest extends BrickTestBase {
 
 	private final StringGates _subject =  my(StringGates.class);
 

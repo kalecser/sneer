@@ -10,10 +10,10 @@ import org.junit.Test;
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
 import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.skin.image.ImageFactory;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import spikes.sneer.bricks.pulp.own.avatar.OwnAvatarKeeper;
 
-public class OwnAvatarKeeperTest extends BrickTestWithFiles {
+public class OwnAvatarKeeperTest extends BrickTestBase {
 
 	private final OwnAvatarKeeper _avatarKeeper = my(OwnAvatarKeeper.class);
 	

@@ -11,7 +11,7 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.environments.Environments;
@@ -19,7 +19,7 @@ import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Producer;
 import sneer.foundation.lang.exceptions.Refusal;
 
-public abstract class BrickTestWithTuples extends BrickTestWithFiles {
+public abstract class BrickTestWithTuples extends BrickTestBase {
 
 	private Environment _remote;
 	private TuplePump _tuplePump;

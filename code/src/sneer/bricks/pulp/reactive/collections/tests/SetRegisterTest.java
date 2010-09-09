@@ -15,11 +15,11 @@ import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.testsupport.AssertUtils;
 
-public class SetRegisterTest extends BrickTestWithFiles {
+public class SetRegisterTest extends BrickTestBase {
 
 	private final SetRegister<String> _subject = my(CollectionSignals.class).newSetRegister();
 

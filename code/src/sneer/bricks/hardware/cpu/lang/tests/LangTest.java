@@ -5,9 +5,9 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
-public class LangTest extends BrickTestWithFiles {
+public class LangTest extends BrickTestBase {
 
 	private final Lang _subject = my(Lang.class);
 

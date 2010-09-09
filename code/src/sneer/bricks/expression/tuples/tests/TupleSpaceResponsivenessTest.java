@@ -8,10 +8,10 @@ import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Consumer;
 
-public class TupleSpaceResponsivenessTest extends BrickTestWithFiles {
+public class TupleSpaceResponsivenessTest extends BrickTestBase {
 
 	private final TupleSpace _subject = my(TupleSpace.class);
 	

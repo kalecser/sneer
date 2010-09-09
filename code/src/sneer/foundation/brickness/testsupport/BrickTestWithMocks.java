@@ -15,7 +15,7 @@ import sneer.foundation.environments.Environment;
 import sneer.foundation.testsupport.CleanTestBase;
 
 @RunWith(BrickTestWithMockRunner.class)
-public abstract class BrickTestBase extends CleanTestBase {
+public abstract class BrickTestWithMocks extends CleanTestBase {
 
 	private final Mockery _mockery = new JUnit4Mockery();
 
@@ -25,7 +25,7 @@ public abstract class BrickTestBase extends CleanTestBase {
 	}
 
 	
-	protected BrickTestBase() {
+	protected BrickTestWithMocks() {
 		super();
 	}
 

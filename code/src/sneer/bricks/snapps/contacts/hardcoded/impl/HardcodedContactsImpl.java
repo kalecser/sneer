@@ -11,6 +11,7 @@ import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.snapps.contacts.hardcoded.HardcodedContacts;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
+import sneer.foundation.lang.exceptions.NotImplementedYet;
 import sneer.foundation.lang.exceptions.Refusal;
 
 public class HardcodedContactsImpl implements HardcodedContacts {
@@ -20,8 +21,14 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 
 	
 	HardcodedContactsImpl() {
-		if(!_contactManager.contacts().currentElements().isEmpty()) 
+		System.out.println(">>>>>>BEFORE");
+		if(!_contactManager.contacts().currentElements().isEmpty()) {
+			for (Contact contact : _contactManager.contacts().currentElements()) {
+				System.out.println(contact.nickname());
+			}
 			return;
+		}
+		System.out.println(">>>>>>AFTER");
 				
 		for (ContactInfo contact : contacts())
 			add(contact);
@@ -42,7 +49,7 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 		try {
 			my(ContactSeals.class).put(contact._nick, contact._seal);
 		} catch (Refusal e) {
-			throw new IllegalStateException(e); // Fix Handle this exception.
+			throw new NotImplementedYet(e);
 		}
 	}
 
@@ -71,7 +78,7 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 	
 	private ContactInfo[] contacts() {
 		return new ContactInfo[] {
-//			new ContactInfo("Bamboo","rbo.selfip.net",5923),
+			new ContactInfo("Bamboo","rbo.selfip.net",5923),
 //			new ContactInfo("Bihaiko", "bihaiko.dyndns.org", 6789),
 //			new ContactInfo("Daniel Santos", "dfcsantos.homeip.net", 7777),
 			new ContactInfo("Dummy", "localhost", 7777, newSeal("1b7b8e78558d0389fc39ed3fc3f6d588a1c40af8cdac9aaf1f7b918f508589b5d2ec9b5bec0179926140c2cabe8ec202e8529421fc60380cac123f97a81e7608")),

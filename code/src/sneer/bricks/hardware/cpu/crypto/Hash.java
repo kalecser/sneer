@@ -11,6 +11,10 @@ public class Hash extends Immutable {
 		bytes = bytes_;
 	}
 
+	public Hash(byte[] bytes_) {
+		this(new ImmutableByteArray(bytes_));
+	}
+
 	
 }
 

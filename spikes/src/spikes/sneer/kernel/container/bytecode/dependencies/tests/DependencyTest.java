@@ -11,11 +11,11 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.testsupport.AssertUtils;
 import spikes.sneer.kernel.container.bytecode.dependencies.DependencyFinder;
 
-public class DependencyTest extends BrickTestWithFiles {
+public class DependencyTest extends BrickTestBase {
 	
 	@Test
 	public void testFindDependencies() throws IOException {

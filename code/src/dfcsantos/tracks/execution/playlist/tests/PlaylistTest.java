@@ -10,11 +10,11 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import dfcsantos.tracks.execution.playlist.Playlist;
 import dfcsantos.tracks.execution.playlist.Playlists;
 
-public class PlaylistTest extends BrickTestWithFiles {
+public class PlaylistTest extends BrickTestBase {
 
 	private final Playlists _playlistFactory = my(Playlists.class);
 

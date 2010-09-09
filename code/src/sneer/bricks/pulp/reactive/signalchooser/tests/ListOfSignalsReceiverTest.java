@@ -16,9 +16,9 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.signalchooser.ListOfSignalsReceiver;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChoosers;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
-public class ListOfSignalsReceiverTest extends BrickTestWithFiles {
+public class ListOfSignalsReceiverTest extends BrickTestBase {
 
 	private final SignalChoosers _factory = my(SignalChoosers.class); 
 	

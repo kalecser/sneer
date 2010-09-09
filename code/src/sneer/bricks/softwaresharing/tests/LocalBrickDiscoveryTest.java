@@ -17,7 +17,7 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
@@ -28,7 +28,7 @@ import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 import sneer.foundation.testsupport.AssertUtils;
 
-public class LocalBrickDiscoveryTest extends BrickTestWithFiles {
+public class LocalBrickDiscoveryTest extends BrickTestBase {
 
 	@Test (timeout = 4000)
 	public void localBrickDiscoveryWithBricksInSubfolders() throws IOException {

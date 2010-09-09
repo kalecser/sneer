@@ -21,12 +21,12 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.serialization.Serializer;
 import sneer.bricks.software.bricks.statestore.BrickStateStore;
 import sneer.bricks.software.bricks.statestore.tests.BrickStateStoreMock;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
 
-public class ProbeManagerTest extends BrickTestWithFiles {
+public class ProbeManagerTest extends BrickTestBase {
 
 	@Bind private final ConnectionManager _connectionManager = mock(ConnectionManager.class);
 	@SuppressWarnings("unused")

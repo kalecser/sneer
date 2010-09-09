@@ -11,7 +11,7 @@ import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
 
-public abstract class BrickTestWithFiles extends BrickTestWithThreads {
+public abstract class BrickTestBase extends BrickTestWithThreads {
 
 	{
 		my(FolderConfig.class).storageFolder().set(new File(tmpFolderName(), "data"));

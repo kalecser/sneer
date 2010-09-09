@@ -5,10 +5,10 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.log.formatter.LogFormatter;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
 
-public class LogFormatterTest extends BrickTestWithFiles {
+public class LogFormatterTest extends BrickTestBase {
 
 	@SuppressWarnings("unused")	private Object _referenceToAvoidGc;
 

@@ -11,10 +11,10 @@ import org.junit.Test;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.authentication.PublicKeyChallenges;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
 
-public class PublicKeyChallengesTest extends BrickTestWithFiles {
+public class PublicKeyChallengesTest extends BrickTestBase {
 
 	private final PublicKeyChallenges _subject = my(PublicKeyChallenges.class);
 	

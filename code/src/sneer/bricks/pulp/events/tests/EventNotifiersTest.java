@@ -10,10 +10,10 @@ import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Producer;
 
-public class EventNotifiersTest extends BrickTestWithFiles {
+public class EventNotifiersTest extends BrickTestBase {
 	
 	@Test (expected = Throwable.class)
 	public void throwablesBubbleUpDuringTests() {

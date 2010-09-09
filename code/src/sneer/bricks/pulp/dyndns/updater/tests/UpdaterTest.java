@@ -16,11 +16,11 @@ import sneer.bricks.pulp.dyndns.updater.UnexpectedResponseException;
 import sneer.bricks.pulp.dyndns.updater.Updater;
 import sneer.bricks.pulp.dyndns.updater.UpdaterException;
 import sneer.bricks.pulp.httpclient.HttpClient;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Pair;
 
-public class UpdaterTest extends BrickTestWithFiles {
+public class UpdaterTest extends BrickTestBase {
 
 	@Bind final HttpClient client = mock(HttpClient.class);
 	

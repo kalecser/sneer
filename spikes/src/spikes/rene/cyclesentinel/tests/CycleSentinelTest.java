@@ -2,12 +2,12 @@ package spikes.rene.cyclesentinel.tests;
 
 import org.junit.Test;
 
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import spikes.rene.cyclesentinel.CycleSentinel;
 import spikes.rene.cyclesentinel.DependencyCycle;
 import spikes.rene.cyclesentinel.impl.CycleSentinelImpl;
 
-public class CycleSentinelTest extends BrickTestWithFiles {
+public class CycleSentinelTest extends BrickTestBase {
 
 	private CycleSentinel _subject = new CycleSentinelImpl();
 

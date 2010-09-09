@@ -22,46 +22,45 @@ import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 class WackupImpl implements Wackup {
 
-	private Pulser _newFileArrived=my(Pulsers.class).newInstance();
-	@SuppressWarnings("unused")
-	private WeakContract _refToAvoidGC;
-	@SuppressWarnings("unused")
-	private WeakContract _refToAvoidGC2;
+	private final Pulser _newFileArrived = my(Pulsers.class).newInstance();
+	
+	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGC;
+	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGC2;
 
+	
 	{
-		_refToAvoidGC2 = my(RemoteTuples.class).addSubscription(NewFile.class, new Consumer<NewFile>() {
-
-			@Override
-			public void consume(NewFile newFile) {
-				onNewFile(newFile);
-			}
-		});
+		_refToAvoidGC = my(RemoteTuples.class).addSubscription(NewFile.class, new Consumer<NewFile>() { @Override public void consume(NewFile newFile) {
+			onNewFile(newFile);
+		}});
 		
-		_refToAvoidGC = my(Timer.class).wakeUpNowAndEvery(60*1000, new Runnable() {
-
-			@Override
-			public void run() {
-				poll();
-			}});
+		_refToAvoidGC2 = my(Timer.class).wakeUpNowAndEvery(60*1000, new Runnable() { @Override public void run() {
+			poll();
+		}});
 	}
+
 	
 	@Override
 	public File folder() {
 		return my(FolderConfig.class).storageFolderFor(Wackup.class);
 	}
 
-	protected void onNewFile(NewFile newFile) {
+	
+	private void onNewFile(NewFile newFile) {
 		try {
-		//	System.out.println("OnNewFile " + newFile);
-			my(IO.class).files().writeByteArrayToFile(new File(folder(), newFile._name), newFile._content.copy());
+			writeContents(newFile);
 			_newFileArrived.sendPulse();
 		} catch (IOException e) {
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 	}
 
-	protected void poll() {
-		// System.out.println("Polling..." + folder());
+
+	private void writeContents(NewFile newFile) throws IOException {
+		my(IO.class).files().writeByteArrayToFile(new File(folder(), newFile._name), newFile._content.copy());
+	}
+
+	
+	private void poll() {
 		if (folder().listFiles().length == 0) return;
 		try {
 			publish(folder().listFiles()[0]);
@@ -70,12 +69,14 @@ class WackupImpl implements Wackup {
 		}
 	}
 
+	
 	private void publish(File file) throws IOException {
 		// System.out.println("Publish " + file);
 		byte[] content = my(IO.class).files().readBytes(file);
 		my(TupleSpace.class).acquire(new NewFile(file.getName(), new ImmutableByteArray(content)));
 	}
 
+	
 	@Override
 	public PulseSource newFileArrived() {
 		return _newFileArrived.output();

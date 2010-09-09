@@ -13,7 +13,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.skin.rooms.ActiveRoomKeeper;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Consumer;
@@ -28,7 +28,7 @@ import spikes.sneer.bricks.snapps.whisper.speextuples.SpeexTuples;
 
 
 @Ignore //SpeexTuples no longer produces PcmSoundPacket tuples. It uses Mic.sound() and Speaker.acquireLine() directly. This test must be fixed accordingly.
-public class SpeexTuplesTest extends BrickTestWithFiles {
+public class SpeexTuplesTest extends BrickTestBase {
 
 	private final TupleSpace _tupleSpace = my(TupleSpace.class);
 	

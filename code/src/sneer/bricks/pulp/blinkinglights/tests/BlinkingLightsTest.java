@@ -10,9 +10,9 @@ import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
-public class BlinkingLightsTest extends BrickTestWithFiles {
+public class BlinkingLightsTest extends BrickTestBase {
 
 	private final BlinkingLights _subject = my(BlinkingLights.class);
 

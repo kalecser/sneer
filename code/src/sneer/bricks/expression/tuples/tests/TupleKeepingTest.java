@@ -6,10 +6,10 @@ import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Consumer;
 
-public class TupleKeepingTest extends BrickTestWithFiles {
+public class TupleKeepingTest extends BrickTestBase {
 
 	private int _notificationCounter;
 	

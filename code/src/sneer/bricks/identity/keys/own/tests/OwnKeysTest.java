@@ -7,10 +7,10 @@ import java.security.PublicKey;
 import org.junit.Test;
 
 import sneer.bricks.identity.keys.own.OwnKeys;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
 
-public class OwnKeysTest extends BrickTestWithFiles {
+public class OwnKeysTest extends BrickTestBase {
 
 	private static final String PASSPHRASE = "long passphrase 123456789012345678901234567890123456789012345678901234567890";
 	private static final int NUM_RECREATIONS = 10;

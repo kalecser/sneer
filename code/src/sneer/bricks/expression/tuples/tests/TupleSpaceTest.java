@@ -10,11 +10,11 @@ import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Consumer;
 
-public class TupleSpaceTest extends BrickTestWithFiles {
+public class TupleSpaceTest extends BrickTestBase {
 
 	private final TupleSpace _subject = my(TupleSpace.class);
 	

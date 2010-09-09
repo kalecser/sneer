@@ -8,11 +8,11 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestWithFiles;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 
-public class SignalsTest extends BrickTestWithFiles {
+public class SignalsTest extends BrickTestBase {
 
 	private final Signals _subject = my(Signals.class);
 
