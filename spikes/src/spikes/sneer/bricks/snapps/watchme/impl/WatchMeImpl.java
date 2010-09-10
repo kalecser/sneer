@@ -21,6 +21,7 @@ import sneer.bricks.pulp.datastructures.cache.CacheFactory;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.EventSource;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
 import sneer.foundation.lang.exceptions.FriendlyException;
@@ -28,9 +29,9 @@ import spikes.sneer.bricks.skin.screenshotter.Screenshotter;
 import spikes.sneer.bricks.snapps.watchme.ImageDeltaPacket;
 import spikes.sneer.bricks.snapps.watchme.WatchMe;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageCodec;
-import spikes.sneer.bricks.snapps.watchme.codec.ImageDelta;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageCodec.Decoder;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageCodec.Encoder;
+import spikes.sneer.bricks.snapps.watchme.codec.ImageDelta;
 
 class WatchMeImpl implements WatchMe {
 
@@ -95,7 +96,7 @@ class WatchMeImpl implements WatchMe {
 
 	@Override
 	public void startShowingMyScreen() {
-		_stepperContract = _threads.startStepping(new Runnable(){ @Override public void run() {
+		_stepperContract = _threads.startStepping(new Closure(){ @Override public void run() {
 			doPublishShot();
 			my(Timer.class).sleepAtLeast(PERIOD_IN_MILLIS);
 		}});

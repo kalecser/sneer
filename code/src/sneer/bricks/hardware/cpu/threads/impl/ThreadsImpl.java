@@ -5,19 +5,14 @@ import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import sneer.bricks.pulp.events.pulsers.PulseSource;
 import sneer.bricks.pulp.events.pulsers.Pulser;
 import sneer.bricks.pulp.events.pulsers.Pulsers;
-import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 
 class ThreadsImpl implements Threads {
 
 	private static final Latches Latches = my(Latches.class);
-	private static final ExceptionHandler ExceptionHandler = my(ExceptionHandler.class);
 
 	private final Latch _crash = Latches.produce();
 	private final Pulser _crashedPulser = my(Pulsers.class).newInstance();
@@ -54,37 +49,24 @@ class ThreadsImpl implements Threads {
 	}
 
 	@Override
-	public void startDaemon(final String threadName, final Runnable runnable) {
-		if (_isCrashing)
+	public void startDaemon(final String threadName, final Closure closure) {
+		if (_isCrashing) {
 			Daemons.killQuietly(Thread.currentThread());
+			return;
+		}
 
-		final Environment environment = my(Environment.class);
-		final int maxCpuUsage = my(CpuThrottle.class).maxCpuUsage();
-		final Latch hasStarted = Latches.produce();
-
-		new Daemon(threadName) { @Override public void run() {
-			hasStarted.open();
-			Environments.runWith(environment, new Closure() { @Override public void run() {
-				Counter.increment(threadName);
-				my(CpuThrottle.class).limitMaxCpuUsage(maxCpuUsage, new Closure() { @Override public void run() {
-					ExceptionHandler.shield(runnable);
-				}});
-			}});
-			Counter.decrement(threadName);
-		}};
-		
-		hasStarted.waitTillOpen();
+		new Daemon(threadName, closure);
 	}
 
 	
 	@Override
-	public Contract startStepping(Runnable steppable) {
+	public Contract startStepping(Closure steppable) {
 		return startStepping(inferThreadName(), steppable);
 	}
 
 	
 	@Override
-	public Contract startStepping(String threadName, Runnable steppable) {
+	public Contract startStepping(String threadName, Closure steppable) {
 		Stepper result = new Stepper(steppable);
 		startDaemon(threadName, result);
 		return result;

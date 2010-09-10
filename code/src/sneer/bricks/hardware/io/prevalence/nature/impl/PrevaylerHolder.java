@@ -40,7 +40,7 @@ class PrevaylerHolder {
 	
 
 	private static void startReplayingTransactions() {
-		my(Threads.class).startDaemon("Prevalent transaction log replay.", new Runnable() { @Override public void run() {
+		my(Threads.class).startDaemon("Prevalent transaction log replay.", new Closure() { @Override public void run() {
 			_prevayler = createPrevayler(prevalenceBase());
 			setBuildingIfNecessary((PrevalentBuilding)_prevayler.prevalentSystem());
 			_transactionLogReplayed.open();

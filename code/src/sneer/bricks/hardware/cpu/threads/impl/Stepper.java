@@ -3,14 +3,15 @@ package sneer.bricks.hardware.cpu.threads.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
+import sneer.foundation.lang.Closure;
 
-class Stepper implements Runnable, Contract {
+class Stepper implements Closure, Contract {
 
-	private final Runnable _steppable;
+	private final Closure _steppable;
 	private volatile boolean _isDisposed = false;
 
 	
-	Stepper(Runnable steppable) {
+	Stepper(Closure steppable) {
 		_steppable = steppable;
 	}
 

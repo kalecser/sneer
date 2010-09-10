@@ -9,6 +9,7 @@ import javax.sound.sampled.TargetDataLine;
 
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.foundation.lang.Closure;
 import spikes.sneer.bricks.skin.audio.kernel.Audio;
 class Recorder {
 	
@@ -28,7 +29,7 @@ class Recorder {
 		
 		_buffer = buffer;
 
-		_stepperContract = my(Threads.class).startStepping(new Runnable() { @Override public void run() {
+		_stepperContract = my(Threads.class).startStepping(new Closure() { @Override public void run() {
 			record(_targetDataLine);
 		}});
 		return true;

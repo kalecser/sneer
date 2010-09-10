@@ -1,5 +1,7 @@
 package spikes.gandhi.treemodel;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
@@ -21,7 +23,6 @@ import javax.swing.tree.MutableTreeNode;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.foundation.lang.Closure;
-import static sneer.foundation.environments.Environments.my;
 
 public class TreeModelExample extends JFrame {
 
@@ -100,8 +101,8 @@ public class TreeModelExample extends JFrame {
 		my(Threads.class).startDaemon("Tree Model Node Remover", nodeRemover());
 	}
 
-	private Runnable nodeAdder() {
-		return new Runnable() { @Override public void run() {
+	private Closure nodeAdder() {
+		return new Closure() { @Override public void run() {
 			while (true) {
 				my(GuiThread.class).invokeAndWait(new Closure() { @Override public void run() {
 					addNode();
@@ -110,8 +111,8 @@ public class TreeModelExample extends JFrame {
 		}};
 	}
 
-	private Runnable nodeRemover() {
-		return new Runnable() { @Override public void run() {
+	private Closure nodeRemover() {
+		return new Closure() { @Override public void run() {
 			while (true) {
 				my(GuiThread.class).invokeAndWait(new Closure() { @Override public void run() {
 					removeNode();

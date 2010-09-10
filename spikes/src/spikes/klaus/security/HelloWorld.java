@@ -8,8 +8,9 @@ import java.io.IOException;
 import javax.swing.JFrame;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.foundation.lang.Closure;
 
-public class HelloWorld implements Runnable {
+public class HelloWorld implements Closure {
 
 	public HelloWorld() throws Exception {
 //		AccessController.doPrivileged(new PrivilegedAction<Object>() { @Override public Object run() {

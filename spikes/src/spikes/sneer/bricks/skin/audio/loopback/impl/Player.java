@@ -9,6 +9,7 @@ import javax.sound.sampled.SourceDataLine;
 
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.foundation.lang.Closure;
 import spikes.sneer.bricks.skin.audio.kernel.Audio;
 
 class Player {
@@ -32,7 +33,7 @@ class Player {
 
 		_buffer = buffer;
 		
-		_stepperContract = my(Threads.class).startStepping(new Runnable() { @Override public void run() {
+		_stepperContract = my(Threads.class).startStepping(new Closure() { @Override public void run() {
 			playBuffer();
 		}});
 		return true;

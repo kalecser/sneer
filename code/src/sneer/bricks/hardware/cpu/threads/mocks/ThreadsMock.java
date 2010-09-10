@@ -14,12 +14,13 @@ import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.pulsers.PulseSource;
 import sneer.foundation.brickness.impl.BricknessImpl;
+import sneer.foundation.lang.Closure;
 
 public class ThreadsMock implements Threads {
 
 	private final Threads _delegate = my(BricknessImpl.class).provide(Threads.class);
 	
-	List<Runnable> _steppers = new ArrayList<Runnable>();
+	List<Closure> _steppers = new ArrayList<Closure>();
 	
 	private final String _daemonNameFragmentToHold;
 	private Map<Runnable, String> _daemonNamesByRunnable = new HashMap<Runnable, String>();
@@ -33,18 +34,18 @@ public class ThreadsMock implements Threads {
 	
 
 	@Override
-	public synchronized Contract startStepping(Runnable stepper) {
+	public synchronized Contract startStepping(Closure stepper) {
 		_steppers.add(stepper);
 		return null;
 	}
 
 	
 	@Override
-	public synchronized Contract startStepping(String threadNameIgnored, Runnable stepper) {
+	public synchronized Contract startStepping(String threadNameIgnored, Closure stepper) {
 		return startStepping(stepper);
 	}
 
-	public synchronized Runnable getStepper(int i) {
+	public synchronized Closure getStepper(int i) {
 		return _steppers.get(i);
 	}
 
@@ -82,11 +83,11 @@ public class ThreadsMock implements Threads {
 	}
 
 	@Override
-	public void startDaemon(String threadName, Runnable runnable) {
+	public void startDaemon(String threadName, Closure closure) {
 		if (threadName.indexOf(_daemonNameFragmentToHold) == -1)
-			_delegate.startDaemon(threadName, runnable);
+			_delegate.startDaemon(threadName, closure);
 		else
-			_daemonNamesByRunnable.put(runnable, threadName);
+			_daemonNamesByRunnable.put(closure, threadName);
 	}
 
 	

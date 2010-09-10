@@ -55,7 +55,7 @@ class TupleSpaceImpl implements TupleSpace {
 		}
 
 		
-		private Runnable notifier() {
+		private Closure notifier() {
 			return new Closure() { @Override public void run() {
 				Tuple nextTuple = waitToPopTuple();
 				if (_isDisposed) return;

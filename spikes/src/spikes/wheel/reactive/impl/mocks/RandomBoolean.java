@@ -8,6 +8,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.foundation.lang.Closure;
 
 public class RandomBoolean {
 
@@ -15,7 +16,7 @@ public class RandomBoolean {
 	private Register<Boolean> _register = my(Signals.class).newRegister(false);
 
 	{
-		my(Threads.class).startStepping(new Runnable() { @Override public void run() {
+		my(Threads.class).startStepping(new Closure() { @Override public void run() {
 			sleepAndFlip();
 		}});
 	}

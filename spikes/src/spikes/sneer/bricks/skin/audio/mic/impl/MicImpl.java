@@ -12,6 +12,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.retrier.Retrier;
 import sneer.bricks.pulp.retrier.RetrierManager;
 import sneer.bricks.pulp.retrier.Task;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
 import sneer.foundation.lang.exceptions.FriendlyException;
 import spikes.sneer.bricks.skin.audio.mic.Mic;
@@ -47,7 +48,7 @@ class MicImpl implements Mic {
 	private void startToWorkIfNecessary() {
 		if (_stepperContract != null) return;
 
-		_stepperContract = _threads.startStepping(new Runnable() { @Override public void run() {
+		_stepperContract = _threads.startStepping(new Closure() { @Override public void run() {
 			work();
 		}});
 	}

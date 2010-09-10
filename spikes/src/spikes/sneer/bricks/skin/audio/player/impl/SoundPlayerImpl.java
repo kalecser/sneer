@@ -19,11 +19,12 @@ import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 import spikes.sneer.bricks.skin.audio.kernel.Audio;
 import spikes.sneer.bricks.skin.audio.player.SoundPlayer;
 
-class SoundPlayerImpl implements SoundPlayer, Runnable {
+class SoundPlayerImpl implements SoundPlayer, Closure {
 
 	private final Audio _audio = my(Audio.class);
 	private final List<URL> urls = Collections.synchronizedList(new ArrayList<URL>());

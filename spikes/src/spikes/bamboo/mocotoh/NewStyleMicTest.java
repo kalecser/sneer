@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import spikes.sneer.bricks.skin.audio.kernel.Audio;
 import spikes.sneer.bricks.skin.audio.mic.Mic;
@@ -37,7 +38,7 @@ public class NewStyleMicTest {
 					_tupleSpaceContract = tuples.addSubscription(PcmSoundPacket.class, subscriber);
 				}};
 	
-				final Runnable stepper = capture();
+				final Closure stepper = capture();
 				new Stimulus() {{
 					mic.open();
 						threads.startStepping(stepper);
