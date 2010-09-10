@@ -6,14 +6,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
-import sneer.foundation.lang.Producer;
+import sneer.foundation.lang.ProducerX;
 
-class Invocation implements Producer<Object> {
+class Invocation implements ProducerX<Object, Exception> {
 
 	protected static final PrevalenceMap PrevalenceMap = my(PrevalenceMap.class);
 
 	
-	Invocation(Producer<Object> targetProducer, Method method, Object[] args) {
+	Invocation(ProducerX<Object, ? extends Exception> targetProducer, Method method, Object[] args) {
 		_targetProducer = targetProducer;
 		_method = method.getName();
 		_argsTypes = method.getParameterTypes();
@@ -21,29 +21,26 @@ class Invocation implements Producer<Object> {
 	}
 
 
-	private final Producer<Object> _targetProducer;
+	private final ProducerX<Object, ? extends Exception> _targetProducer;
 	private final String _method;
 	private final Class<?>[] _argsTypes;
 	private final Object[] _args;
 	
 	
 	@Override
-	public Object produce() {
+	public Object produce() throws Exception {
 		Object target = _targetProducer.produce();
 		return invoke(target, _method, _argsTypes, unmarshal(_args));
 	}
 
 
-	static private Object invoke(Object receiver, String methodName, Class<?>[] argTypes, Object... args) {
+	static private Object invoke(Object receiver, String methodName, Class<?>[] argTypes, Object... args) throws Exception {
 		try {
 			Method method = receiver.getClass().getMethod(methodName, argTypes);
 			method.setAccessible(true);
 			return method.invoke(receiver, args);
 		} catch (InvocationTargetException e) {
-			Throwable cause = e.getTargetException();
-			if (cause instanceof RuntimeException)
-				throw (RuntimeException)cause;
-			throw new IllegalStateException("Exception trying to invoke " + receiver.getClass() + "." + methodName, cause);
+			throw (Exception)e.getTargetException();
 		} catch (Exception e) {
 			throw new IllegalStateException("Exception trying to invoke " + receiver.getClass() + "." + methodName, e);
 		}

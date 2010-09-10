@@ -13,6 +13,7 @@ import sneer.bricks.hardware.io.prevalence.nature.Transaction;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Immutable;
 import sneer.foundation.lang.Producer;
+import sneer.foundation.lang.ProducerX;
 import sneer.foundation.lang.ReadOnly;
 import sneer.foundation.lang.types.Classes;
 
@@ -23,14 +24,14 @@ class Bubble implements InvocationHandler {
 	private static final CacheMap<Object, Object> _proxiesByObject = CacheMap.newInstance();
 	
 
-	static <T> T wrapped(final Object object, final Producer<Object> path) {
+	static <T> T wrapped(final Object object, final ProducerX<Object, ? extends Exception> path) {
 		return (T)_proxiesByObject.get(object, new Producer<Object>() { @Override public Object produce() {
 			return newProxyFor(object, path);
 		}});
 	}
 
 
-	private static Object newProxyFor(Object object, Producer<Object> path) {
+	private static Object newProxyFor(Object object, ProducerX<Object, ? extends Exception> path) {
 		if (isRegistered(object))
 			path = new MapLookup(object);
 
@@ -40,23 +41,23 @@ class Bubble implements InvocationHandler {
 	}
 
 
-	private Bubble(Producer<Object> producer) {
+	private Bubble(ProducerX<Object, ? extends Exception> producer) {
 		_invocationPath = producer;
 	}
 
 
-	private final Producer<Object> _invocationPath;
+	private final ProducerX<Object, ? extends Exception> _invocationPath;
 	
 	
 	@Override
-	public Object invoke(Object proxyImplied, Method method, Object[] args) throws Throwable {
-		Producer<Object> path = extendedPath(method, args);
+	public Object invoke(Object proxyImplied, Method method, Object[] args) throws Exception {
+		ProducerX<Object, Exception> path = extendedPath(method, args);
 		Object result = path.produce();
 		return wrapIfNecessary(result, path);
 	}
 
 
-	private Object wrapIfNecessary(Object object, Producer<Object> path) {
+	private Object wrapIfNecessary(Object object, ProducerX<Object, Exception> path) {
 		if (object == null) return object;
 		
 		Class<?> type = object.getClass();
@@ -70,7 +71,7 @@ class Bubble implements InvocationHandler {
 	}
 
 
-	private Producer<Object> extendedPath(Method method, Object[] args) {
+	private ProducerX<Object, Exception> extendedPath(Method method, Object[] args) {
 		if (!isTransaction(method))
 			return new Invocation(_invocationPath, method, args);
 
@@ -81,8 +82,8 @@ class Bubble implements InvocationHandler {
 	}
 
 
-	private Producer<Object> withPrevayler(final TransactionInvocation transaction) {
-		return new Producer<Object>() { @Override public Object produce() {
+	private ProducerX<Object, Exception> withPrevayler(final TransactionInvocation transaction) {
+		return new ProducerX<Object, Exception>() { @Override public Object produce() throws Exception {
 			return PrevaylerHolder._prevayler.execute(transaction);
 		}};
 	}
