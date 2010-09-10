@@ -462,6 +462,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 
 	private void generatePublicKey(String name) {
+		if (my(OwnKeys.class).ownPublicKey().currentValue() != null) return;
 		my(OwnKeys.class).generateKeyPair(pkSeedFrom(name));
 	}
 
