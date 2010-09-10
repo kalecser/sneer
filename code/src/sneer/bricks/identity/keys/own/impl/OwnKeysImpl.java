@@ -19,13 +19,13 @@ import sneer.bricks.pulp.reactive.Signals;
 class OwnKeysImpl implements OwnKeys {
 	
 	private final Register<PublicKey> _ownPublicKey = my(Signals.class).newRegister(null);
-	@SuppressWarnings("unused")
 	private PrivateKey _ownPrivateKey;
 
 	
 	@Override
 	public void generateKeyPair(byte[] seed) {
 		my(Logger.class).log("Generating key pair using seed: ", my(Codec.class).hex().encode(seed));
+		if(_ownPrivateKey != null) throw new IllegalStateException("Private key has already been generated.");
 		
 		KeyPair newPair = newKeyPair(seed);
 		_ownPublicKey.setter().consume(newPair.getPublic());
