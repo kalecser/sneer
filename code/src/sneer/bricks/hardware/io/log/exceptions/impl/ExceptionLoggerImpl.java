@@ -19,11 +19,11 @@ class ExceptionLoggerImpl implements ExceptionLogger {
 	public void log(Throwable throwable, String message, Object... messageInsets) {
 		message += "\n" + my(StackTraceLogger.class).stackTrace(throwable);
 		my(Logger.class).log(message, messageInsets);
-		leakIfNecessary(throwable, message);
+		leakIfNecessary(throwable);
 	}
 
 	
-	private void leakIfNecessary(Throwable throwable, String message) {
+	private void leakIfNecessary(Throwable throwable) {
 		if (my(RobustExceptionLogging.class).isOn()) return;
 		
 		if (throwable instanceof RuntimeException) throw (RuntimeException)throwable;

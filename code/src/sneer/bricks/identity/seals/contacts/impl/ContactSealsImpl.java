@@ -1,6 +1,7 @@
 package sneer.bricks.identity.seals.contacts.impl;
 
 import static sneer.foundation.environments.Environments.my;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
@@ -8,7 +9,9 @@ import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.Producer;
 import sneer.foundation.lang.exceptions.Refusal;
@@ -16,7 +19,16 @@ import sneer.foundation.testsupport.PrettyPrinter;
 
 class ContactSealsImpl implements ContactSeals {
 
+	@SuppressWarnings("unused")
+	private WeakContract _refToAvoidGc;
+
+
 	{
+		_refToAvoidGc = my(Contacts.class).contacts().addReceiver(new Consumer<CollectionChange<Contact>>() { @Override public void consume(CollectionChange<Contact> change) {
+			for (Contact removedContact : change.elementsRemoved())
+				_sealsByContact.remove(removedContact);
+		}});
+		
 		PrettyPrinter.registerFor(Seal.class, new Functor<Seal, String>() { @Override public String evaluate(Seal seal) {
 			Contact contact = contactGiven(seal);
 			if (contact == null) return seal.toString();

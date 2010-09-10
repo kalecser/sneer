@@ -1,20 +1,33 @@
 package sneer.bricks.identity.seals.contacts;
 
-import org.junit.Ignore;
+import static sneer.foundation.environments.Environments.my;
+
 import org.junit.Test;
 
-import sneer.foundation.brickness.testsupport.BrickTestWithMocks;
+import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.Contacts;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
+import sneer.foundation.lang.exceptions.Refusal;
 
-public class ContactSealsTest extends BrickTestWithMocks {
+public class ContactSealsTest extends BrickTestBase {
 
-//	ContactSeals _subject = my(ContactSeals.class);
+	ContactSeals _subject = my(ContactSeals.class);
 	
-	@Ignore
 	@Test
-	public void contactDeletionCascadesToItsSeals() {
-//		Seal seal = new Seal(new byte[]{1, 2, 3});
-//		_subject.put("Neide", seal);
+	public void contactDeletionCascadesToItsSeals() throws Refusal {
+		Contact neide = my(Contacts.class).produceContact("Neide");
+		Seal seal = new Seal(new byte[] {1, 2, 3});
+		_subject.put("Neide", seal);
 		
+		my(Contacts.class).produceContact("Pedro");
+		try {
+			_subject.put("Pedro", seal);
+			fail("Seal already belongs to Neide");
+		} catch (Refusal expected) {}
+
+		my(Contacts.class).removeContact(neide);
+		_subject.put("Pedro", seal);
 	}
 	
 }
