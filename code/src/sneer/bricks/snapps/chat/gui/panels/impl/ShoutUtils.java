@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.wind.gui.impl;
+package sneer.bricks.snapps.chat.gui.panels.impl;
 
 import static sneer.foundation.environments.Environments.my;
 

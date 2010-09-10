@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.wind.gui.impl;
+package sneer.bricks.snapps.chat.gui.panels.impl;
 
 import java.awt.Color;
 
@@ -47,30 +47,30 @@ class ShoutPainter {
 		_document.addStyle("shout", _shout);
 	}
 
-	void repaintAllShouts(ListSignal<ChatMessage> listSignal) {
+	void repaintAllShouts(ListSignal<ChatMessage> messages) {
 		try {
 			_document.remove(0, _document.getLength());
 		} catch (BadLocationException e) {
 			throw new NotImplementedYet(e); // Fix Handle this exception.
 		}
-		for (ChatMessage shout : listSignal) 
-			appendShout(shout);
+		for (ChatMessage message : messages) 
+			appendMessage(message);
 	}
 	
-	void appendShout(ChatMessage shout) {
+	void appendMessage(ChatMessage message) {
 		try {
-			_document.insertString(_document.getLength(), nick(shout) ,  _nick);
-			_document.insertString(_document.getLength(), header(shout) ,  _time);
-			_document.insertString(_document.getLength(), shout.text ,  _shout);
+			_document.insertString(_document.getLength(), nick(message) ,  _nick);
+			_document.insertString(_document.getLength(), header(message) ,  _time);
+			_document.insertString(_document.getLength(), message.text ,  _shout);
 			_document.insertString(_document.getLength(), "\n\n" ,  _space);
 		} catch (BadLocationException e) {
 			throw new NotImplementedYet(e); // Fix Handle this exception.
 		}	
 	}
 	
-	private String header(ChatMessage shout){		
+	private String header(ChatMessage message){		
 		return new StringBuilder().append(" - ")
-			.append(ShoutUtils.getFormatedShoutTime(shout)).append("\n").toString();
+			.append(ShoutUtils.getFormatedShoutTime(message)).append("\n").toString();
 	}
 
 	private String nick(ChatMessage shout) {

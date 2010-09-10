@@ -12,4 +12,13 @@ public class ChatMessage extends Tuple {
 		this.text = text_;
 	}
 
+	public ChatMessage(String phrase) {
+		this(null, phrase);
+	}
+
+	@Override
+	public String toString() {
+		return text;
+	}
+	
 }

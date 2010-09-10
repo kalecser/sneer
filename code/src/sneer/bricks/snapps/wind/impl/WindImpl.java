@@ -11,32 +11,32 @@ import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.collections.listsorter.ListSorter;
-import sneer.bricks.snapps.wind.Shout;
+import sneer.bricks.snapps.chat.ChatMessage;
 import sneer.bricks.snapps.wind.Wind;
 import sneer.foundation.lang.Consumer;
 
-class WindImpl implements Wind, Consumer<Shout> {
+class WindImpl implements Wind, Consumer<ChatMessage> {
 
-	private final ListSignal<Shout> _sortedShouts;
-	private final ListRegister<Shout> _shoutsHeard = my(CollectionSignals.class).newListRegister();
+	private final ListSignal<ChatMessage> _sortedShouts;
+	private final ListRegister<ChatMessage> _shoutsHeard = my(CollectionSignals.class).newListRegister();
 	@SuppressWarnings("unused")	private final WeakContract _tupleSpaceContract;
 
 	WindImpl(){
-		_tupleSpaceContract = my(TupleSpace.class).addSubscription(Shout.class, this);
-		my(TupleSpace.class).keep(Shout.class);
+		_tupleSpaceContract = my(TupleSpace.class).addSubscription(ChatMessage.class, this);
+		my(TupleSpace.class).keep(ChatMessage.class);
 		
-		_sortedShouts = my(ListSorter.class).sort(_shoutsHeard.output(), new Comparator<Shout>(){ @Override public int compare(Shout o1, Shout o2) {
+		_sortedShouts = my(ListSorter.class).sort(_shoutsHeard.output(), new Comparator<ChatMessage>(){ @Override public int compare(ChatMessage o1, ChatMessage o2) {
 			return (int) (o1.publicationTime - o2.publicationTime);
 		}});
 	}
 
 	@Override
-	public ListSignal<Shout> shoutsHeard() {
+	public ListSignal<ChatMessage> shoutsHeard() {
 		return _sortedShouts;
 	}
 
 	@Override
-	public void consume(Shout shout) {
+	public void consume(ChatMessage shout) {
 		if (my(Clock.class).time().currentValue() - shout.publicationTime > 1000 * 60 * 60 * 24) return;
 		_shoutsHeard.adder().consume(shout);
 	}
@@ -49,6 +49,6 @@ class WindImpl implements Wind, Consumer<Shout> {
 	}
 
 	private void shout(String phrase) {
-		my(TupleSpace.class).acquire(new Shout(phrase));
+		my(TupleSpace.class).acquire(new ChatMessage(phrase));
 	}
 }

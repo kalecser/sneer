@@ -19,9 +19,9 @@ Edmundo =================================================
 			- refactor incominghandshaker (readContactsSealBytes method)
 	
 		- unify Wind/PrivateChat GUI behavior
-			- bricks.expression.messages.MessageDispatcher (BRICK, dispatch, impl/test)
-				- its client apps: PrivateChatGui and WindGui (maybe MessageWindow will handle MessageDispatchers)
-				- Klaus: Why have a dispatcher? The TupleSpace acts as a dispatcher already. Wind uses one kind of Tuple (Shout) and Chat uses another. Each GUI can simply subscribe to the correct kind of tuple and react accordingly, no?
+			- PrivateChat must filter tuples by contact
+			- Finish GUI refactoring involving Wind and PrivateChat 
+			- enter's and reordering's bug 			
 
 	- Platform exploration
 		- Study the following core features:

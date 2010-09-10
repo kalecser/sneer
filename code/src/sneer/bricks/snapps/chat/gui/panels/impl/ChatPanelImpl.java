@@ -1,9 +1,8 @@
-package sneer.bricks.snapps.wind.gui.impl;
+package sneer.bricks.snapps.chat.gui.panels.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -34,90 +33,76 @@ import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
-import sneer.bricks.skin.main.dashboard.InstrumentPanel;
-import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
-import sneer.bricks.skin.main.synth.Synth;
-import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
+import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
 import sneer.bricks.snapps.chat.ChatMessage;
-import sneer.bricks.snapps.wind.Wind;
-import sneer.bricks.snapps.wind.gui.WindGui;
 import sneer.foundation.lang.Consumer;
 
-class WindGuiImpl implements WindGui {
+class ChatPanelImpl extends JPanel {
 
-	{ my(Synth.class).load(this.getClass()); }
-
-	private Container _container;
-	private final Wind _wind = my(Wind.class);
+	private final ListSignal<ChatMessage> _messages;
+	private final JScrollPane _listScrollPane;
 	private final JTextPane _shoutsList = new JTextPane();
+	private final ShoutPainter _shoutPainter = new ShoutPainter((DefaultStyledDocument) _shoutsList.getStyledDocument());
 
-	private final TextWidget<JTextPane> _myShout = my(ReactiveWidgetFactory.class).newTextPane(
-		my(Signals.class).newRegister("").output(),  _wind.megaphone(), NotificationPolicy.OnEnterPressed
-	);
-
-	private final JScrollPane _scrollPane = my(ReactiveAutoScroll.class).create(_wind.shoutsHeard(),
-		new Consumer<CollectionChange<ChatMessage>>() { 
-
-			ShoutPainter _shoutPainter = new ShoutPainter((DefaultStyledDocument) _shoutsList.getStyledDocument());
-
-			@Override 
-			public void consume(CollectionChange<ChatMessage> change) {
-				if (!change.elementsRemoved().isEmpty()){
-					_shoutPainter.repaintAllShouts(_wind.shoutsHeard());
-					return;
-				}
-
-				for (ChatMessage shout : change.elementsAdded())
-					_shoutPainter.appendShout(shout);
-
-			}
-		}
-	);
+	private final TextWidget<JTextPane> _messageInputPane;
 
 	@SuppressWarnings("unused") private Object _refToAvoidGc;
 
-	public WindGuiImpl() {
-		my(InstrumentRegistry.class).registerInstrument(this);
+	ChatPanelImpl(ListSignal<ChatMessage> messages, Consumer<String> messageSender) {
+		_messages = messages;
+		_listScrollPane = my(ReactiveAutoScroll.class).create(messages, new Consumer<CollectionChange<ChatMessage>>() { @Override public void consume(CollectionChange<ChatMessage> change) {
+			if (!change.elementsRemoved().isEmpty()){
+				_shoutPainter.repaintAllShouts(_messages);
+				return;
+			}
+
+			for (ChatMessage shout : change.elementsAdded())
+				_shoutPainter.appendMessage(shout);
+		}});
+
+		_messageInputPane = my(ReactiveWidgetFactory.class).newTextPane(
+			my(Signals.class).newRegister("").output(), messageSender, NotificationPolicy.OnEnterPressed
+		);
+		
+		init();
 	} 
 	
-	@Override
-	public void init(InstrumentPanel window) {
-		_container = window.contentPane();
+	private void init() {
 		initGui();
 		initShoutAnnouncer();
 		new WindClipboardSupport();
 	}
 
 	private void initGui() {
-		_scrollPane.getViewport().add(_shoutsList);
-		JScrollPane scrollShout = my(SynthScrolls.class).create();
+		_listScrollPane.getViewport().add(_shoutsList);
+		JScrollPane inputScrollPane = new JScrollPane();
 		JPanel horizontalLimit = new JPanel(){
 			@Override
 			public Dimension getPreferredSize() {
 				Dimension preferredSize = super.getPreferredSize();
-				preferredSize.setSize(_container.getWidth()-30, preferredSize.getHeight());
+				preferredSize.setSize(getWidth()-30, preferredSize.getHeight());
 				return preferredSize;
 			}
 		};
 		horizontalLimit.setLayout(new BorderLayout());
-		horizontalLimit.add(_myShout.getComponent());
-		scrollShout.getViewport().add(horizontalLimit);	
+		horizontalLimit.add(_messageInputPane.getComponent());
+		inputScrollPane.getViewport().add(horizontalLimit);	
 		
-		JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, _scrollPane, scrollShout);
+		JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, _listScrollPane, inputScrollPane);
 		split.setBorder(new EmptyBorder(0,0,0,0));
 
 		split.setOpaque(false);
-		split.setDividerLocation((int) (defaultHeight()*0.68)); 
+		split.setDividerLocation((int) (getHeight()*0.68)); 
 		split.setDividerSize(3);
-		_container.setLayout(new BorderLayout());
-		_container.add(split, BorderLayout.CENTER);
+		setLayout(new BorderLayout());
+		add(split, BorderLayout.CENTER);
 
 		_shoutsList.setBorder(new EmptyBorder(0,0,0,0));
-		_myShout.getComponent().setBorder(new EmptyBorder(0,0,0,0));
+		_messageInputPane.getComponent().setBorder(new EmptyBorder(0,0,0,0));
 		
 		_shoutsList.addFocusListener(new FocusListener(){
 			@Override public void focusGained(FocusEvent e) { 	_shoutsList.setEditable(false); }
@@ -125,13 +110,13 @@ class WindGuiImpl implements WindGui {
 	}
 
 	private void initShoutAnnouncer() {
-		_refToAvoidGc = _wind.shoutsHeard().addReceiver(new Consumer<CollectionChange<ChatMessage>>() { @Override public void consume(CollectionChange<ChatMessage> shout) {
+		_refToAvoidGc = _messages.addReceiver(new Consumer<CollectionChange<ChatMessage>>() { @Override public void consume(CollectionChange<ChatMessage> shout) {
 			shoutAlert(shout.elementsAdded());
 		}});
 	}
 	
 	private void shoutAlert(Collection<ChatMessage> shouts) {
-		Window window = SwingUtilities.windowForComponent(_container);
+		Window window = SwingUtilities.windowForComponent(this);
 		boolean windowActive = window.isActive();
 		if(windowActive) return;
 		
@@ -139,22 +124,20 @@ class WindGuiImpl implements WindGui {
 	}
 
 	private synchronized void alertUser(Collection<ChatMessage> shouts) {
-
 		String shoutsAsString = shoutsAsString(shouts);
 		my(TrayIcons.class).messageBalloon("New shouts heard", shoutsAsString);
-		// _player.play(this.getClass().getResource("alert.wav"));
 	}
 
-	private String shoutsAsString(Collection<ChatMessage> shouts) {
+	private String shoutsAsString(Collection<ChatMessage> messages) {
 		StringBuilder shoutsAsString = new StringBuilder();
-		for (ChatMessage shout : shouts){
+		for (ChatMessage message : messages){
 			
 			if (shoutsAsString.length() > 0){
 				shoutsAsString.append("\n");
 			}
 			
-			Seal publisher = shout.publisher;
-			shoutsAsString.append(nicknameOf(publisher) + " - " + shout.text);
+			Seal publisher = message.publisher;
+			shoutsAsString.append(nicknameOf(publisher) + " - " + message.text);
 		}
 		return shoutsAsString.toString();
 	}
@@ -166,16 +149,6 @@ class WindGuiImpl implements WindGui {
 			: result.currentValue();
 	}
 
-	@Override
-	public int defaultHeight() {
-		return 248;
-	}
-
-	@Override
-	public String title() {
-		return "Wind";
-	}
-	
 	private final class WindClipboardSupport implements ClipboardOwner{
 		
 		private WindClipboardSupport(){
@@ -205,5 +178,6 @@ class WindGuiImpl implements WindGui {
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(fieldContent, this);	
 		}
 	}
+
 
 }

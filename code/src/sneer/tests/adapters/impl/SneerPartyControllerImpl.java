@@ -43,7 +43,7 @@ import sneer.bricks.pulp.probe.ProbeManager;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
-import sneer.bricks.snapps.wind.Shout;
+import sneer.bricks.snapps.chat.ChatMessage;
 import sneer.bricks.snapps.wind.Wind;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
@@ -225,8 +225,8 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	}
 
 	
-	private String concat(Iterable<Shout> shouts) {
-		List<Shout> sorted = my(Iterables.class).sortByToString(shouts);
+	private String concat(Iterable<ChatMessage> shouts) {
+		List<ChatMessage> sorted = my(Iterables.class).sortByToString(shouts);
 		return my(Lang.class).strings().join(sorted, ", ");
 	}
 

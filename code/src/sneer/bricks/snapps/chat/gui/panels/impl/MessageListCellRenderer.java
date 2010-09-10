@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.wind.gui.impl;
+package sneer.bricks.snapps.chat.gui.panels.impl;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -25,7 +25,7 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.snapps.chat.ChatMessage;
 
-class WindListCellRenderer implements ListCellRenderer {
+class MessageListCellRenderer implements ListCellRenderer {
 
 	private static final int MIN_SHOUT_WIDTH = 200;
 	private static final String SHOUT = "shout";
@@ -36,7 +36,7 @@ class WindListCellRenderer implements ListCellRenderer {
 	
 	private final LabelProvider<ChatMessage> _labelProvider;
 	
-	WindListCellRenderer(LabelProvider<ChatMessage> labelProvider) {
+	MessageListCellRenderer(LabelProvider<ChatMessage> labelProvider) {
 		_labelProvider = labelProvider;
 	}
 

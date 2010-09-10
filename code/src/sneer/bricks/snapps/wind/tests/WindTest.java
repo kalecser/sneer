@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.Clock;
-import sneer.bricks.snapps.wind.Shout;
+import sneer.bricks.snapps.chat.ChatMessage;
 import sneer.bricks.snapps.wind.Wind;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
@@ -17,12 +17,12 @@ public class WindTest extends BrickTestBase {
 	
 	@Test(timeout = 4000)
 	public void oldShoutsAreNotHeard() {
-		Shout ahhh = new Shout("AHHH!!!");
+		ChatMessage ahhh = new ChatMessage("AHHH!!!");
 
 		my(Clock.class).advanceTimeTo(YEAR_ONE);
 		tupleSpace().acquire(ahhh);
 
-		Shout choo = new Shout("CHOOO!!!");
+		ChatMessage choo = new ChatMessage("CHOOO!!!");
 		tupleSpace().acquire(choo);
 
 		tupleSpace().waitForAllDispatchingToFinish();
@@ -35,21 +35,21 @@ public class WindTest extends BrickTestBase {
 	@Test(timeout = 4000)
 	public void testSortedShoutsHeard() {
 		my(Clock.class).advanceTimeTo(15);
-		tupleSpace().acquire(new Shout(""+15));
+		tupleSpace().acquire(new ChatMessage(""+15));
 
 		for (int i = 30; i > 20; i--) {
 			my(Clock.class).advanceTimeTo(i);
-			tupleSpace().acquire(new Shout(""+i));
+			tupleSpace().acquire(new ChatMessage(""+i));
 		}
 		
 		for (int i = 10; i > 0; i--) {
 			my(Clock.class).advanceTimeTo(i);
-			tupleSpace().acquire(new Shout(""+i));
+			tupleSpace().acquire(new ChatMessage(""+i));
 		}
 
 		tupleSpace().waitForAllDispatchingToFinish();
-		Shout previousShout = null;
-		for (Shout shout : _subject.shoutsHeard()) {
+		ChatMessage previousShout = null;
+		for (ChatMessage shout : _subject.shoutsHeard()) {
 			
 			if (previousShout == null) {
 				previousShout = shout;
