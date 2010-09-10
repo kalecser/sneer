@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.contacts.gui.o3chat.impl;
+package sneer.bricks.snapps.chat.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.expression.tuples.TupleSpace;
@@ -7,14 +7,14 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
+import sneer.bricks.snapps.chat.ChatMessage;
+import sneer.bricks.snapps.chat.PrivateChat;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
-import sneer.bricks.snapps.contacts.gui.o3chat.ChatMessage;
-import sneer.bricks.snapps.contacts.gui.o3chat.OneOnOneChat;
 import sneer.foundation.lang.Consumer;
 
-class OneOnOneChatImpl implements OneOnOneChat {
+class PrivateChatImpl implements PrivateChat {
 
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
 

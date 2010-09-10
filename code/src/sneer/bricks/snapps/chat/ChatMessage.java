@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.contacts.gui.o3chat;
+package sneer.bricks.snapps.chat;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.identity.seals.Seal;

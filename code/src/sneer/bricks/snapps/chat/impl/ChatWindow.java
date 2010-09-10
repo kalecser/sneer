@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.contacts.gui.o3chat.impl;
+package sneer.bricks.snapps.chat.impl;
 
 import javax.swing.JOptionPane;
 
