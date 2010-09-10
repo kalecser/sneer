@@ -26,7 +26,6 @@ class ExceptionLoggerImpl implements ExceptionLogger {
 	private void leakIfNecessary(Throwable throwable, String message) {
 		if (my(RobustExceptionLogging.class).isOn()) return;
 		
-		System.err.println(message);
 		if (throwable instanceof RuntimeException) throw (RuntimeException)throwable;
 		if (throwable instanceof Error) throw (Error)throwable;
 		throw new RuntimeException("Throwable leaked by ExceptionLogger", throwable);
