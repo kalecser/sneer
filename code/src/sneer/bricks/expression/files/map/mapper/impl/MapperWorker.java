@@ -100,7 +100,7 @@ class MapperWorker {
 		if (actual != null && actual.contents.size() == expected.contents.size()) return;
 
 		my(BlinkingLights.class).turnOn(LightType.ERROR, "" + folder + " not mapped correctly.", "Expected: " + entries(expected) + " Actual: " + entries(actual));
-		my(StackTraceLogger.class).logStack();
+		my(StackTraceLogger.class).logStackTrace();
 	}
 
 

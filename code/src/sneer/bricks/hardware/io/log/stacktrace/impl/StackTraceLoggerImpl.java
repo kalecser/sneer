@@ -11,13 +11,20 @@ import sneer.bricks.hardware.io.log.stacktrace.StackTraceLogger;
 class StackTraceLoggerImpl implements StackTraceLogger{
 
 	@Override
-	public void logStack() {
+	public String stackTrace() {
 		class StackTrace extends RuntimeException{};
-		my(Logger.class).log(stackToString(new StackTrace()));
+		return stackTrace(new StackTrace());
 	}
 
+	
 	@Override
-	public String stackToString(Throwable throwable) {
+	public void logStackTrace() {
+		my(Logger.class).log(stackTrace());
+	}
+
+	
+	@Override
+	public String stackTrace(Throwable throwable) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PrintWriter _log = new PrintWriter(out, true);
 		throwable.printStackTrace(_log);
