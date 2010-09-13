@@ -27,12 +27,6 @@ public class Freedom5Test extends SovereignFunctionalTestBase {
 		c  .waitForShouts("A!!!, B!!!, C!!!, D!!!");
 		d  .waitForShouts("A!!!, B!!!, C!!!, D!!!");
 		
-		//Implement: Measure traffic among peers
-//		assertSame(8, abTraffic.currentValue());
-//		assertSame(8, bcTraffic.currentValue());
-//		assertSame(8, acTraffic.currentValue());
-//		assertSame(8, cdTraffic.currentValue());
-		
 	}
 	
 
