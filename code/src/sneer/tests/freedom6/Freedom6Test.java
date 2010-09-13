@@ -2,7 +2,6 @@ package sneer.tests.freedom6;
 
 import org.junit.Test;
 
-import sneer.bricks.snapps.wackup.Wackup;
 import sneer.tests.SovereignFunctionalTestBase;
 
 
