@@ -59,7 +59,9 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 		}
 
 		private Set<T> contentsCopy() {
-			return new HashSet<T>(_contents);
+			Set<T> copy = new HashSet<T>();
+			copy.addAll(_contents);
+			return copy;
 		}
 
 		@Override
