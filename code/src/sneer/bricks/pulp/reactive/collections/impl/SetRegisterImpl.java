@@ -48,22 +48,18 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 		
 		@Override
 		public Collection<T> currentElements() {
-			synchronized (_contents) {
-				return new HashSet<T>(_contents);
-			}
+			return contentsCopy();
 		}
 
 		@Override
 		public Iterator<T> iterator() {
-			return _contents.iterator();
+			return contentsCopy().iterator();
 		}
 
 		private Set<T> contentsCopy() {
-			Set<T> copy = new HashSet<T>();
 			synchronized (_contents) {
-				copy.addAll(_contents);
+				return new HashSet<T>(_contents);
 			}
-			return copy;
 		}
 
 		@Override
@@ -102,7 +98,7 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 	@Override
 	public void change(CollectionChange<T> change) {
 		synchronized (_contents) {
-			preserveDeltas(change);
+			preserveOnlyActualChanges(change);
 			if (change.elementsAdded().isEmpty() && change.elementsRemoved().isEmpty())
 				return;
 			
@@ -120,7 +116,7 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 			_size.setter().consume(size);
 	}
 
-	private void preserveDeltas(CollectionChange<T> change) {
+	private void preserveOnlyActualChanges(CollectionChange<T> change) {
 		change.elementsAdded().removeAll(_contents);
 		change.elementsRemoved().retainAll(_contents);
 	}
