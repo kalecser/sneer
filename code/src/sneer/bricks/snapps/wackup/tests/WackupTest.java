@@ -2,61 +2,61 @@ package sneer.bricks.snapps.wackup.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.File;
-import java.io.IOException;
-
+import org.junit.After;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
-import sneer.bricks.hardware.clock.Clock;
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.bricks.hardware.io.IO;
+import sneer.bricks.snapps.wackup.BlockNumberOutOfRange;
 import sneer.bricks.snapps.wackup.Wackup;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
 
 public class WackupTest extends BrickTestWithTuples {
-	
-	Wackup wackup2;
-	@SuppressWarnings("unused")
-	private WeakContract _refToAvoidGC;
-	
-	@Test(timeout=5000)
-	public void newFileIsBackedup() {
-		Wackup wackup1 = my(Wackup.class);
 
-	//	System.out.println(wackup1.folder());
+	private static final int BLOCK_SIZE = 8 * 1024;
+
+	private static final byte[] BLANK_BLOCK = new byte[BLOCK_SIZE];
+
+	private final Wackup _subject = my(Wackup.class);
+
+	@Test (expected = BlockNumberOutOfRange.class)
+	public void readOutOfRange() throws Exception {
+		_subject.read(42);
+	}
+
+	@Test
+	public void readWithoutWrite() throws Exception {
+		_subject.setSize(1);
+		assertArrayEquals(BLANK_BLOCK, _subject.read(0));
+
+		_subject.setSize(42);
+		assertArrayEquals(BLANK_BLOCK, _subject.read(41));
+	}
+
+	@Test
+	public void write() throws Exception {
+		_subject.setSize(10);
+		_subject.write(7, new byte[] { 0, 1, 2 });
 		
-		assertFalse(new File(wackup1.folder(),"my_new_file.txt").exists());
+		byte[] block = _subject.read(7);
+		assertStartsWith(new byte[] { 0, 1, 2 }, block);
+		for (int i = 3; i < block.length; i++)
+			assertEquals(0, block[i]);
+	}
 
-		//Conectando as pontas do pulso de chegada do arquivo
-		Latch latch = my(Latches.class).produce();		
-		_refToAvoidGC = wackup1.newFileArrived().addPulseReceiver(latch);
+	@Test
+	public void resizing() throws Exception {
+		_subject.setSize(10);
+		_subject.write(7, new byte[] { 42 });
 
-		Environments.runWith(remote(), new Closure() {
-			@Override
-			public void run() {
-				wackup2 = my(Wackup.class);
-			//	System.out.println(wackup2.folder());
-				writeFile(wackup2.folder());
-				my(Clock.class).advanceTime(60*1000);
-			} });
-	
-		// Esperando pelo arquivo transferido
-		latch.waitTillOpen();
-		
-		assertTrue(new File(wackup1.folder(),"my_new_file.txt").exists());
+		_subject.setSize(20);
+
+		byte[] block = _subject.read(7);
+		assertStartsWith(new byte[] { 42 }, block);
 
 	}
 
-	private void writeFile(File folder) {
-		try {
-			my(IO.class).files().writeString(new File(folder,"my_new_file.txt"), "My new file content");
-		} catch (IOException e) {
-			throw new IllegalStateException(e);
-		}
+	@After
+	public void afterWackupTest() {
+		_subject.crash();
 	}
 
 }

@@ -1,15 +1,18 @@
 package sneer.bricks.snapps.wackup;
 
-import java.io.File;
+import java.io.IOException;
 
-import sneer.bricks.pulp.events.pulsers.PulseSource;
 import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface Wackup {
 
-	File folder();
+	byte[] read(long blockNumber) throws BlockNumberOutOfRange, IOException;
 
-	PulseSource newFileArrived();
+	void setSize(long sizeInBlocks) throws IOException;
+
+	void write(long blockNumber, byte[] block) throws IOException;
+
+	void crash();
 
 }

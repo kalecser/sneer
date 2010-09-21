@@ -4,82 +4,65 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.Arrays;
 
-import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.expression.tuples.remote.RemoteTuples;
-import sneer.bricks.hardware.clock.timer.Timer;
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.pulp.events.pulsers.PulseSource;
-import sneer.bricks.pulp.events.pulsers.Pulser;
-import sneer.bricks.pulp.events.pulsers.Pulsers;
-import sneer.bricks.snapps.wackup.NewFile;
+import sneer.bricks.snapps.wackup.BlockNumberOutOfRange;
 import sneer.bricks.snapps.wackup.Wackup;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 
 class WackupImpl implements Wackup {
 
-	private final Pulser _newFileArrived = my(Pulsers.class).newInstance();
-	
-	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGC;
-	@SuppressWarnings("unused")	private final WeakContract _refToAvoidGC2;
+	private static final byte[] BLANK_BLOCK = new byte[0];
 
-	
-	{
-		_refToAvoidGC = my(RemoteTuples.class).addSubscription(NewFile.class, new Consumer<NewFile>() { @Override public void consume(NewFile newFile) {
-			onNewFile(newFile);
-		}});
+	private static final int BLOCK_SIZE = 8 * 1024;
+
+	private RandomAccessFile _space;
+
+	private long _sizeInBlocks;
+
+	@Override
+	public byte[] read(long number) throws BlockNumberOutOfRange, IOException {
+		if (number < 0 || number > _sizeInBlocks)
+			throw new BlockNumberOutOfRange("Trying to read block: " + number + "(space size set to " + _sizeInBlocks + " blocks)");
+
+		_space.seek(number * BLOCK_SIZE);
 		
-		_refToAvoidGC2 = my(Timer.class).wakeUpNowAndEvery(60*1000, new Runnable() { @Override public void run() {
-			poll();
-		}});
+		byte[] result = new byte[BLOCK_SIZE];
+		_space.readFully(result);
+		return result;
 	}
 
-	
 	@Override
-	public File folder() {
-		return my(FolderConfig.class).storageFolderFor(Wackup.class);
-	}
-
-	
-	private void onNewFile(NewFile newFile) {
-		try {
-			writeContents(newFile);
-			_newFileArrived.sendPulse();
-		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+	public void setSize(long newSize) throws IOException {
+		boolean increasing = newSize > _sizeInBlocks;
+		_sizeInBlocks = newSize;
+		if (_space == null) {
+			File tmpFolderFor = my(FolderConfig.class).tmpFolderFor(Wackup.class);
+			_space = new RandomAccessFile(new File(tmpFolderFor, "data"), "rw");
 		}
+		if (increasing)
+			write(_sizeInBlocks - 1, BLANK_BLOCK);
 	}
 
-
-	private void writeContents(NewFile newFile) throws IOException {
-		my(IO.class).files().writeByteArrayToFile(new File(folder(), newFile._name), newFile._content.copy());
-	}
-
-	
-	private void poll() {
-		if (folder().listFiles().length == 0) return;
-		try {
-			publish(folder().listFiles()[0]);
-		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		}
-	}
-
-	
-	private void publish(File file) throws IOException {
-		// System.out.println("Publish " + file);
-		byte[] content = my(IO.class).files().readBytes(file);
-		my(TupleSpace.class).acquire(new NewFile(file.getName(), new ImmutableByteArray(content)));
-	}
-
-	
 	@Override
-	public PulseSource newFileArrived() {
-		return _newFileArrived.output();
+	public void write(long blockNumber, byte[] block) throws IOException {
+		if (block.length > BLOCK_SIZE) throw new IllegalArgumentException();
+		
+		byte[] blockToWrite = block.length < BLOCK_SIZE
+			? Arrays.copyOf(block, BLOCK_SIZE)
+			: block;
+		
+		_space.seek(blockNumber * BLOCK_SIZE);
+		_space.write(blockToWrite);
+	}
+
+	@Override
+	public void crash() {
+		if (_space == null) return;
+		my(IO.class).crash(_space);
 	}
 
 }
