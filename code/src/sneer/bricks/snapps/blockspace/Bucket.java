@@ -1,11 +1,8 @@
-package sneer.bricks.snapps.wackup;
+package sneer.bricks.snapps.blockspace;
 
 import java.io.IOException;
 
-import sneer.foundation.brickness.Brick;
-
-@Brick
-public interface Wackup {
+public interface Bucket {
 
 	byte[] read(long blockNumber) throws BlockNumberOutOfRange, IOException;
 

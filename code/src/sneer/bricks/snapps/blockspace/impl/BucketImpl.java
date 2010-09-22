@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.wackup.impl;
+package sneer.bricks.snapps.blockspace.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -9,12 +9,12 @@ import java.io.RandomAccessFile;
 import java.util.Arrays;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.snapps.wackup.BlockNumberOutOfRange;
-import sneer.bricks.snapps.wackup.Wackup;
+import sneer.bricks.snapps.blockspace.BlockNumberOutOfRange;
+import sneer.bricks.snapps.blockspace.Bucket;
 import sneer.bricks.software.folderconfig.FolderConfig;
 
 
-class WackupImpl implements Wackup {
+class BucketImpl implements Bucket {
 
 	private static final byte[] BLANK_BLOCK = new byte[0];
 	private static final int BLOCK_SIZE = 8 * 1024;
@@ -63,7 +63,7 @@ class WackupImpl implements Wackup {
 
 
 	private void initSpace() throws FileNotFoundException {
-		File tmpFolderFor = my(FolderConfig.class).tmpFolderFor(Wackup.class);
+		File tmpFolderFor = my(FolderConfig.class).tmpFolderFor(Bucket.class);
 		_space = new RandomAccessFile(new File(tmpFolderFor, "data"), "rw");
 	}
 

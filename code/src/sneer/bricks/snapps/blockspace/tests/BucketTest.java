@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.wackup.tests;
+package sneer.bricks.snapps.blockspace.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -6,16 +6,17 @@ import org.junit.After;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
-import sneer.bricks.snapps.wackup.BlockNumberOutOfRange;
-import sneer.bricks.snapps.wackup.Wackup;
+import sneer.bricks.snapps.blockspace.BlockNumberOutOfRange;
+import sneer.bricks.snapps.blockspace.BlockSpace;
+import sneer.bricks.snapps.blockspace.Bucket;
 
-public class WackupTest extends BrickTestWithTuples {
+public class BucketTest extends BrickTestWithTuples {
 
 	private static final int BLOCK_SIZE = 8 * 1024;
 	private static final byte[] BLANK_BLOCK = new byte[BLOCK_SIZE];
 
 	
-	private final Wackup _subject = my(Wackup.class);
+	private final Bucket _subject = my(BlockSpace.class).localBucket();
 
 	
 	@Test (expected = BlockNumberOutOfRange.class)

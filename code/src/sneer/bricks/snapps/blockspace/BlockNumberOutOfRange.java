@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.wackup;
+package sneer.bricks.snapps.blockspace;
 
 public class BlockNumberOutOfRange extends Exception {
 
