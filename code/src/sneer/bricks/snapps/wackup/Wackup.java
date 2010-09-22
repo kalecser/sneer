@@ -11,7 +11,7 @@ public interface Wackup {
 
 	void setSize(long sizeInBlocks) throws IOException;
 
-	void write(long blockNumber, byte[] block) throws IOException;
+	void write(long blockNumber, byte[] block) throws IOException, BlockNumberOutOfRange;
 
 	void crash();
 
