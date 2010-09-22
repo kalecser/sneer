@@ -1,22 +1,19 @@
 package sneer.bricks.snapps.blockspace.tests;
 
-import static sneer.foundation.environments.Environments.my;
-
 import org.junit.After;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
 import sneer.bricks.snapps.blockspace.BlockNumberOutOfRange;
-import sneer.bricks.snapps.blockspace.BlockSpace;
 import sneer.bricks.snapps.blockspace.Bucket;
 
-public class BucketTest extends BrickTestWithTuples {
+public abstract class BucketTestBase extends BrickTestWithTuples {
 
 	private static final int BLOCK_SIZE = 8 * 1024;
 	private static final byte[] BLANK_BLOCK = new byte[BLOCK_SIZE];
 
 	
-	private final Bucket _subject = my(BlockSpace.class).localBucket();
+	private final Bucket _subject = subject();
 
 	
 	@Test (expected = BlockNumberOutOfRange.class)
@@ -25,6 +22,8 @@ public class BucketTest extends BrickTestWithTuples {
 	}
 
 	
+	abstract protected Bucket subject();
+
 	@Test (expected = BlockNumberOutOfRange.class)
 	public void writeInAVacuum() throws Exception {
 		_subject.write(42, new byte[]{ 0, 1, 2 });
