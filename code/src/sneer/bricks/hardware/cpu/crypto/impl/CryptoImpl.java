@@ -5,11 +5,11 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
 import java.security.Security;
 import java.security.Signature;
 
@@ -77,21 +77,25 @@ class CryptoImpl implements Crypto {
 
 	
 	@Override
-	public SecureRandom newSecureRandom() {
-		return safelyProduce(new ProducerX<SecureRandom, Exception>() { @Override public SecureRandom produce() throws NoSuchAlgorithmException, NoSuchProviderException {
-			return SecureRandom.getInstance("SHA1PRNG", "SUN");
-		}});
+	public Signature getSHA512WithECDSA() {
+		try {
+			return Signature.getInstance("SHA512WITHECDSA", "BC");
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	
 	@Override
-	public KeyPairGenerator newKeyPairGeneratorForECDSA() {
-		return safelyProduce(new ProducerX<KeyPairGenerator, Exception>() { @Override public KeyPairGenerator produce() throws NoSuchAlgorithmException, NoSuchProviderException {
-			return KeyPairGenerator.getInstance("ECDSA", BOUNCY_CASTLE);
+	public KeyPair newECDSAKeyPair(final byte[] seed) {
+		return safelyProduce(new ProducerX<KeyPair, Exception>() { @Override public KeyPair produce() throws NoSuchAlgorithmException, NoSuchProviderException {
+			KeyPairGenerator generator = KeyPairGenerator.getInstance("ECDSA", BOUNCY_CASTLE);
+			generator.initialize(256, new UsableSecureRandom(seed));
+			return generator.generateKeyPair();
 		}});
 	}
 
-
+	
 	private <T> T safelyProduce(ProducerX<T, Exception> producer) {
 		try {
 			return producer.produce();
@@ -99,14 +103,5 @@ class CryptoImpl implements Crypto {
 			throw new IllegalStateException(e);
 		}
 
-	}
-
-	@Override
-	public Signature getSHA512WithECDSA() {
-		try {
-			return Signature.getInstance("SHA512WITHECDSA", "BC");
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
 	}
 }
