@@ -1,32 +1,31 @@
-package sneer.bricks.snapps.wackup.impl;
+package sneer.bricks.snapps.blockspace.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.snapps.wackup.BlockNumberOutOfRange;
-import sneer.bricks.snapps.wackup.Wackup;
+import sneer.bricks.snapps.blockspace.BlockNumberOutOfRange;
+import sneer.bricks.snapps.blockspace.Bucket;
 import sneer.bricks.software.folderconfig.FolderConfig;
 
 
-class WackupImpl implements Wackup {
+class BucketImpl implements Bucket {
 
 	private static final byte[] BLANK_BLOCK = new byte[0];
-
 	private static final int BLOCK_SIZE = 8 * 1024;
 
+	private long _sizeInBlocks;
 	private RandomAccessFile _space;
 
-	private long _sizeInBlocks;
-
+	
 	@Override
 	public byte[] read(long number) throws BlockNumberOutOfRange, IOException {
-		if (number < 0 || number > _sizeInBlocks)
-			throw new BlockNumberOutOfRange("Trying to read block: " + number + "(space size set to " + _sizeInBlocks + " blocks)");
+		checkRange(number);
 
 		_space.seek(number * BLOCK_SIZE);
 		
@@ -35,20 +34,42 @@ class WackupImpl implements Wackup {
 		return result;
 	}
 
+
+	private void checkRange(long number) throws BlockNumberOutOfRange {
+		if (number < 0 || number > _sizeInBlocks)
+			throw new BlockNumberOutOfRange("Trying to read block: " + number + "(space size set to " + _sizeInBlocks + " blocks)");
+	}
+
+	
 	@Override
 	public void setSize(long newSize) throws IOException {
 		boolean increasing = newSize > _sizeInBlocks;
 		_sizeInBlocks = newSize;
-		if (_space == null) {
-			File tmpFolderFor = my(FolderConfig.class).tmpFolderFor(Wackup.class);
-			_space = new RandomAccessFile(new File(tmpFolderFor, "data"), "rw");
-		}
+		if (_space == null)
+			initSpace();
+
 		if (increasing)
+			allocateSpace();
+	}
+
+
+	private void allocateSpace() throws IOException {
+		try {
 			write(_sizeInBlocks - 1, BLANK_BLOCK);
+		} catch (BlockNumberOutOfRange e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+
+	private void initSpace() throws FileNotFoundException {
+		File tmpFolderFor = my(FolderConfig.class).tmpFolderFor(Bucket.class);
+		_space = new RandomAccessFile(new File(tmpFolderFor, "data"), "rw");
 	}
 
 	@Override
-	public void write(long blockNumber, byte[] block) throws IOException {
+	public void write(long blockNumber, byte[] block) throws IOException, BlockNumberOutOfRange {
+		checkRange(blockNumber);
 		if (block.length > BLOCK_SIZE) throw new IllegalArgumentException();
 		
 		byte[] blockToWrite = block.length < BLOCK_SIZE
@@ -61,7 +82,6 @@ class WackupImpl implements Wackup {
 
 	@Override
 	public void crash() {
-		if (_space == null) return;
 		my(IO.class).crash(_space);
 	}
 
