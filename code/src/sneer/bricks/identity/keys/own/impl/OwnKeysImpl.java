@@ -30,6 +30,8 @@ class OwnKeysImpl implements OwnKeys {
 		KeyPair newPair = newKeyPair(seed);
 		_ownPublicKey.setter().consume(newPair.getPublic());
 		_ownPrivateKey = newPair.getPrivate();
+		my(Logger.class).log(">>> ownPublickey's: ", newPair.getPublic());
+		my(Logger.class).log(">>> ownPublickey's current value: ", _ownPublicKey.output().currentValue());
 	}
 
 
@@ -46,6 +48,7 @@ class OwnKeysImpl implements OwnKeys {
 	
 	@Override
 	public Signal<PublicKey> ownPublicKey() {
+		my(Logger.class).log(">>> ownPublickey's current value: ", _ownPublicKey.output().currentValue());
 		return _ownPublicKey.output();
 	}
 
