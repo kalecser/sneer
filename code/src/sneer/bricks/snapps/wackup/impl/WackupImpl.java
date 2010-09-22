@@ -61,7 +61,6 @@ class WackupImpl implements Wackup {
 
 	@Override
 	public void crash() {
-		if (_space == null) return;
 		my(IO.class).crash(_space);
 	}
 
