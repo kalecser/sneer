@@ -21,14 +21,12 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 
 	
 	HardcodedContactsImpl() {
-		System.out.println(">>>>>>BEFORE");
 		if(!_contactManager.contacts().currentElements().isEmpty()) {
 			for (Contact contact : _contactManager.contacts().currentElements()) {
 				System.out.println(contact.nickname());
 			}
 			return;
 		}
-		System.out.println(">>>>>>AFTER");
 				
 		for (ContactInfo contact : contacts())
 			add(contact);
