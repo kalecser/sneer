@@ -76,7 +76,7 @@ class SerializerImpl implements Serializer {
 			Throwable cause = rx;
 			while (cause != null) {
 				if (cause.getClass().getName().contains("CannotResolveClassException"))
-					throw new ClassNotFoundException("Unable to resolve some class.", cause);
+					throw new ClassNotFoundException(cause.getMessage(), cause);
 				cause = cause.getCause();
 			}
 			
