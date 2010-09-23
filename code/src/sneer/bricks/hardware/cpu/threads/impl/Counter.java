@@ -41,7 +41,7 @@ class Counter {
 	
 	private static void checkPeakReached() {
 		if (_count <= _countPeak) return;
-		_countPeak = (int)(_count * 1.2);
+		_countPeak = (int)(_count * 1.3);
 		log();
 	}
 
