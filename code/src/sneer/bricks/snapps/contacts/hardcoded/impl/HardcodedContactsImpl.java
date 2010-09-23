@@ -61,15 +61,15 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 	
 	private ContactInfo[] contacts() {
 		return new ContactInfo[] {
-			new ContactInfo("Bamboo","rbo.selfip.net",5923),
+			new ContactInfo("Bamboo","rbo.selfip.net", 5923),
 //			new ContactInfo("Bihaiko", "bihaiko.dyndns.org", 6789),
 //			new ContactInfo("Daniel Santos", "dfcsantos.homeip.net", 7777),
-			new ContactInfo("Dummy", "localhost", 7777, newSeal("1b7b8e78558d0389fc39ed3fc3f6d588a1c40af8cdac9aaf1f7b918f508589b5d2ec9b5bec0179926140c2cabe8ec202e8529421fc60380cac123f97a81e7608")),
+			new ContactInfo("Dummy", "localhost", 7777, newSeal("c0e0ae71b239640fded22b880f7cb63772f04a6f9c7685689c2610f395dbff1d3cfc11f36f20d54305ff51b26cd171e4882d628ea4a1ac201641cf17fea6912c")),
 			new ContactInfo("Edmundo", "edmundo.selfip.net", 8888, newSeal("cd27ee9965cc808ffb2f5379d8c246dd26e050541927ef886541ef0c7e7af527ae98c87075418806748f72f7ef60496d49d6ab317f9c08f75f542253b3487014")),
 			new ContactInfo("Igor Arouca", "igorarouca.selfip.net", 6789, newSeal("937c611591d4bca0b56e1a661e4fa7e0552a7c85692f3352a9d7ac5019769cd4c1be6300b3bab890c77a29ca7506baadc8d329c7eac16254e9afec43d92e5da3")),
-			new ContactInfo("Kalecser", "kalecser.dyndns.org", 7770, newSeal("535e7bf346a0b398b43621c03c4810f685d80014a7197e8adb5ecc9ba35af01e76589b2a0dc0661ca5c55a4d45aa11a6aedba97f1e68665a75b80008c65b998b")),
+			new ContactInfo("Kalecser", "kalecser.dyndns.org", 7770),
 			new ContactInfo("Klaus", "klausw.selfip.net", 5923, newSeal("9fa8ae50bde46dc175527015afc3d9005cfccb2dfaaac7c51d8c854419bb5381efb34a15876cef1e25d170babd451d25e3d5e20a96404094a0e62c94524755b8")),
-			new ContactInfo("Patrick Roemer", "judgefang.dontexist.net", 4711, newSeal("7413fe5a316c22970a4b1dc44a686a176f743618be4437131986d17df6841ec4443ec22994672322ed0c0ae78ba921072dd60c9d8e3adbfae9d6f9e16381ef5e")),
+			new ContactInfo("Patrick Roemer", "judgefang.dontexist.net", 4711),
 		};
 	}
 
