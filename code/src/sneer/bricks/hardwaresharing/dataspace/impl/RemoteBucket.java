@@ -1,14 +1,14 @@
-package sneer.bricks.snapps.blockspace.impl;
+package sneer.bricks.hardwaresharing.dataspace.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
+import sneer.bricks.hardwaresharing.dataspace.BlockRead;
+import sneer.bricks.hardwaresharing.dataspace.BlockReadResponse;
+import sneer.bricks.hardwaresharing.dataspace.Bucket;
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.snapps.blockspace.BlockRead;
-import sneer.bricks.snapps.blockspace.BlockReadResponse;
-import sneer.bricks.snapps.blockspace.Bucket;
 import sneer.foundation.lang.Consumer;
 
 class RemoteBucket implements Bucket {

@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.blockspace.impl;
+package sneer.bricks.hardwaresharing.dataspace.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -9,8 +9,8 @@ import java.io.RandomAccessFile;
 import java.util.Arrays;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.snapps.blockspace.BlockNumberOutOfRange;
-import sneer.bricks.snapps.blockspace.Bucket;
+import sneer.bricks.hardwaresharing.dataspace.BlockNumberOutOfRange;
+import sneer.bricks.hardwaresharing.dataspace.Bucket;
 import sneer.bricks.software.folderconfig.FolderConfig;
 
 

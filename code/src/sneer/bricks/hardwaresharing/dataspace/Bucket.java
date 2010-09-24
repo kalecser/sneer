@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.blockspace;
+package sneer.bricks.hardwaresharing.dataspace;
 
 import java.io.IOException;
 

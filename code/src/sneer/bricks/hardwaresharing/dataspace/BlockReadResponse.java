@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.blockspace;
+package sneer.bricks.hardwaresharing.dataspace;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.foundation.lang.arrays.ImmutableByteArray;

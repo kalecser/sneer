@@ -1,11 +1,11 @@
-package sneer.bricks.snapps.blockspace.tests;
+package sneer.bricks.hardwaresharing.dataspace.tests;
 
 import org.junit.After;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
-import sneer.bricks.snapps.blockspace.BlockNumberOutOfRange;
-import sneer.bricks.snapps.blockspace.Bucket;
+import sneer.bricks.hardwaresharing.dataspace.BlockNumberOutOfRange;
+import sneer.bricks.hardwaresharing.dataspace.Bucket;
 
 public abstract class BucketTestBase extends BrickTestWithTuples {
 
