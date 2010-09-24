@@ -16,7 +16,7 @@ public abstract class BucketTestBase extends BrickTestWithTuples {
 	private final Bucket _subject = subject();
 
 	
-	@Test (expected = BlockNumberOutOfRange.class)
+	@Test (expected = BlockNumberOutOfRange.class, timeout = 2000)
 	public void readInAVacuum() throws Exception {
 		_subject.read(42);
 	}
@@ -24,13 +24,13 @@ public abstract class BucketTestBase extends BrickTestWithTuples {
 	
 	abstract protected Bucket subject();
 
-	@Test (expected = BlockNumberOutOfRange.class)
+	@Test (expected = BlockNumberOutOfRange.class, timeout = 2000)
 	public void writeInAVacuum() throws Exception {
 		_subject.write(42, new byte[]{ 0, 1, 2 });
 	}
 
 	
-	@Test
+	@Test (timeout = 2000)
 	public void readWithoutWrite() throws Exception {
 		_subject.setSize(1);
 		assertArrayEquals(BLANK_BLOCK, _subject.read(0));
@@ -40,7 +40,7 @@ public abstract class BucketTestBase extends BrickTestWithTuples {
 	}
 
 	
-	@Test
+	@Test (timeout = 2000)
 	public void write() throws Exception {
 		_subject.setSize(10);
 		_subject.write(7, new byte[] { 0, 1, 2 });
@@ -57,7 +57,7 @@ public abstract class BucketTestBase extends BrickTestWithTuples {
 	}
 
 	
-	@Test
+	@Test (timeout = 2000)
 	public void resizing() throws Exception {
 		_subject.setSize(10);
 		_subject.write(7, new byte[] { 42 });
