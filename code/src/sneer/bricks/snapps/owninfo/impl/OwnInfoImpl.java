@@ -62,6 +62,8 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 	private Object _refToAvoidGC;
 	
 	OwnInfoImpl() {
+		setDummyInfoIfNecessary();
+		
 		addOpenWindowAction();
 
 		_environment = my(Environment.class);
@@ -73,6 +75,16 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		}});
 	}
 
+	
+	private void setDummyInfoIfNecessary() {
+		if (!"true".equals(System.getProperty("sneer.dummy")))
+			return;
+		
+		my(Attributes.class).myAttributeSetter(OwnName.class).consume("Dummy");
+		my(Attributes.class).myAttributeSetter(OwnPort.class).consume(7777);
+	}
+
+	
 	protected void openIfNeedConfig() {
 		if(ownName().currentValue().trim().isEmpty()) 
 			open();
