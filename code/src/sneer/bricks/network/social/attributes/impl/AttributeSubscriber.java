@@ -42,7 +42,6 @@ class AttributeSubscriber<T> implements Consumer<AttributeValue> {
 		_value = my(Signals.class).newRegister(defaultValue());
 		
 		_toAvoidGC = my(TupleSpace.class).addSubscription(AttributeValue.class, this);
-		my(TupleSpace.class).waitForAllDispatchingToFinish(); // Optimize: Find a better way to do the synchronization
 	}
 
 	

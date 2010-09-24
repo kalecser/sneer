@@ -59,6 +59,22 @@ public class TupleSpaceTest extends BrickTestBase {
 		}
 	}
 
+
+	@Test (timeout = 1000)
+	public void subscriptionIsNotifiedSynchronously() {
+		_subject.keep(TestTuple.class);
+		_subject.acquire(new TestTuple(1));
+		_subject.acquire(new TestTuple(2));
+		_subject.acquire(new TestTuple(3));
+		
+		final ByRef<Integer> counter = ByRef.newInstance(0);
+		_subject.addSubscription(TestTuple.class, new Consumer<TestTuple>() { @Override public void consume(TestTuple tuple) {
+			counter.value++;
+		}});
+		
+		assertEquals((Object)3, counter.value);
+	}
+
 }
 
 

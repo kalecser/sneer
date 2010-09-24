@@ -80,12 +80,25 @@ class TupleSpaceImpl implements TupleSpace {
 		}
 
 		
-		void filterAndNotify(final Tuple tuple) {
-			if (!_tupleType.isInstance(tuple)) return;
-			if (!_filter.evaluate((T)tuple)) return;
+		void filterAndPushToNotify(final Tuple tuple) {
+			if (!isRelevant(tuple)) return;
 			
 			dispatchCounterIncrement();
 			pushTuple(tuple);
+		}
+
+
+		void filterAndNotify(final Tuple tuple) {
+			if (!isRelevant(tuple)) return;
+			
+			notifySubscriber(tuple);
+		}
+		
+		
+		private boolean isRelevant(final Tuple tuple) {
+			if (!_tupleType.isInstance(tuple)) return false;
+			if (!_filter.evaluate((T)tuple)) return false;
+			return true;
 		}
 		
 		
@@ -195,7 +208,7 @@ class TupleSpaceImpl implements TupleSpace {
 	
 	private void notifySubscriptions(Tuple tuple) {
 		for (Subscription<?> subscription : _subscriptions.toArray(SUBSCRIPTION_ARRAY))
-			subscription.filterAndNotify(tuple);
+			subscription.filterAndPushToNotify(tuple);
 	}
 
 
