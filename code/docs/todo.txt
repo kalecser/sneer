@@ -63,9 +63,6 @@ Igor ====================================================
 				:|    (...and that's it.)
 				:(    (...or any similar tracks.)
 
-	- sovereigncomputing.net - Moralize. This is necessary to help promote Wusic.
-		- Talk to Klaus 
-
 	- New Contact Stati (Test Driven, of course)
 		- Away
 			- Presence detection spike based on TimeboxedEventQueue that already intercepts all gui activity. 
