@@ -79,9 +79,10 @@ public abstract class Immutable implements ReadOnly {
 	
 	private Object getFieldValue(Field field, Object object) {
 		try {
+			field.setAccessible(true);
 			return checkForArray(field.get(object));
 		} catch (IllegalAccessException e) {
-			throw new IllegalStateException("Immutable classes should be public and all of their fields should be public and not static. This was not the case with: " + object.getClass() + "." + field.getName() + " Also, tuple classes declared as inner classes dont work.", e);
+			throw new IllegalStateException("Immutable classes should be public and all of their fields should be non-static. This was not the case with: " + object.getClass() + "." + field.getName() + " Also, Immutable classes declared as inner classes dont work.", e);
 		}
 	}
 
