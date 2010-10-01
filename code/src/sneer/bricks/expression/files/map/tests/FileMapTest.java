@@ -89,6 +89,15 @@ public class FileMapTest extends BrickTestBase {
 		
 	}
 
+	
+	@Test
+	public void twoPathsWithSameHash() {
+		_subject.putFolder("1a", hash(1));
+		_subject.putFolder("1b", hash(1));
+		_subject.remove("1b");
+		assertEquals("1a", _subject.getPath(hash(1)));
+	}
+
 
 	private void populateSubject() {
 		_subject.putFile(  "1/1/7", 117, hash(117));

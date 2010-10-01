@@ -84,11 +84,16 @@ class FileMapData {
 	
 	private Object addToWrapping(Object previous, String path) {
 		if (previous == null) return path;
-		List<String> list = previous instanceof List<?>
-			? (ArrayList<String>)previous
-			: new ArrayList<String>();
-		list.add(path);
-		return list;
+		
+		List<String> result;
+		if (previous instanceof List<?>)
+			result = (ArrayList<String>)previous;
+		else {
+			result = new ArrayList<String>();
+			result.add((String)previous);
+		}
+		result.add(path);
+		return result;
 	}
 
 
