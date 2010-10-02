@@ -23,16 +23,6 @@ Edmundo =================================================
 			- Finish GUI refactoring involving Wind and PrivateChat 
 			- enter's and reordering's bug 			
 
-	- Platform exploration
-		- Study the following core features:
-			- Reactive Framework (Signals)
-				- Have a look at EventSource's hierarchy (EventSource > Signal > AbstractSignal)
-				- Examine the types' implementations in the 'sneer.bricks.pulp.reactive.impl' package, especially 'RegisterImpl'
-				- See examples of how to use signals using the factory 'Signals'
-				- Run the ReactiveWidgetsDemo
-			- Dependency Injection (Environments)
-			- Natures
-
 Patrick =================================================
 
 	- ScalaCompilerTest - Permgen issue. Unignore.
