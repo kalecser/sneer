@@ -117,8 +117,17 @@ class MapperWorker {
 	private void unmapDeletedFiles(String folderPath, List<FileOrFolder> newEntries, FolderContents oldContents) {
 		if (oldContents == null) return;
 		for (FileOrFolder oldEntry : oldContents.contents)
-			if (!newEntries.contains(oldEntry))
+			//if (!newEntries.contains(oldEntry))
+			if (!containsFileName(newEntries, oldEntry))
 				unmap(folderPath, oldEntry);
+	}
+
+
+	private boolean containsFileName(List<FileOrFolder> newEntries, FileOrFolder oldEntry) {
+		for (FileOrFolder newEntry : newEntries)
+			if (newEntry.name.equals(oldEntry.name))
+				return true;
+		return false;
 	}
 
 
