@@ -21,7 +21,7 @@ class InternetAddressKeeperImpl implements InternetAddressKeeper {
 	private void restore() {
 		for (Object[] address : Store.restore()) {
 			Contact contact = _contactManager.contactGiven((String)address[0]);
-			if(contact==null) continue;
+			if (contact == null) continue;
 			
 			add(contact, (String)address[1], (Integer)address[2]);
 		}
