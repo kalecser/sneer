@@ -26,7 +26,6 @@ public class GoFrame extends JFrame {
 	
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Go - " + _side.name());	  
-	    setResizable(true);
 	    setResizable(false);
 	    addComponentPanel(_move);
 	    setVisible(true);
