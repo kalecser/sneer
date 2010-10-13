@@ -56,7 +56,7 @@ class WindGuiImpl implements WindGui {
 	private final JTextPane _shoutsList = new JTextPane();
 
 	private final TextWidget<JTextPane> _myShout = my(ReactiveWidgetFactory.class).newTextPane(
-		my(Signals.class).newRegister("").output(),  _wind.megaphone(), NotificationPolicy.OnEnterPressed
+		my(Signals.class).constant(""), _wind.megaphone(), NotificationPolicy.OnEnterPressed
 	);
 
 	private final JScrollPane _scrollPane = my(ReactiveAutoScroll.class).create(_wind.shoutsHeard(),
