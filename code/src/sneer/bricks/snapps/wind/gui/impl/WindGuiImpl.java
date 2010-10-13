@@ -51,14 +51,17 @@ class WindGuiImpl implements WindGui {
 
 	{ my(Synth.class).load(this.getClass()); }
 
+	
 	private Container _container;
 	private final Wind _wind = my(Wind.class);
 	private final JTextPane _shoutsList = new JTextPane();
 
+	
 	private final TextWidget<JTextPane> _myShout = my(ReactiveWidgetFactory.class).newTextPane(
 		my(Signals.class).constant(""), _wind.megaphone(), NotificationPolicy.OnEnterPressed
 	);
 
+	
 	private final JScrollPane _scrollPane = my(ReactiveAutoScroll.class).create(_wind.shoutsHeard(),
 		new Consumer<CollectionChange<ChatMessage>>() { 
 
@@ -78,11 +81,14 @@ class WindGuiImpl implements WindGui {
 		}
 	);
 
+	
 	@SuppressWarnings("unused") private Object _refToAvoidGc;
 
+	
 	public WindGuiImpl() {
 		my(InstrumentRegistry.class).registerInstrument(this);
 	} 
+
 	
 	@Override
 	public void init(InstrumentPanel window) {
