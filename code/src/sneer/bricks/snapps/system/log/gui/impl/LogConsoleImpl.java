@@ -159,9 +159,9 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		wbSetter.runWhenBaseContainerIsReady(new Closure() { @Override public void run() {
 			Rectangle unused = wbSetter.unusedArea();
 			setBounds(_X , unused.height-_HEIGHT-_OFFSET_Y, unused.width-_OFFSET_X, _HEIGHT-_OFFSET_Y);
-			setFocusableWindowState(false);
-			setVisible(true);
-			setFocusableWindowState(true);
+//			setFocusableWindowState(false);
+//			setVisible(true);
+//			setFocusableWindowState(true);
 		}});
 	}
 
