@@ -2,8 +2,8 @@ package sneer.main;
 
 import static sneer.foundation.environments.Environments.my;
 import static sneer.main.SneerCodeFolders.BIN;
-import static sneer.main.SneerCodeFolders.STAGE;
 import static sneer.main.SneerCodeFolders.SRC;
+import static sneer.main.SneerCodeFolders.STAGE;
 import static sneer.main.SneerFolders.DATA;
 import static sneer.main.SneerFolders.LOG_FILE;
 import static sneer.main.SneerFolders.OWN_BIN;
@@ -11,6 +11,7 @@ import static sneer.main.SneerFolders.TMP;
 
 import java.io.File;
 
+import sneer.bricks.hardware.clock.ticker.ClockTicker;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.robust.RobustExceptionLogging;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
@@ -36,9 +37,11 @@ public class SneerSession {
 	private void start() {
 		setContextClassLoader();
 		configure(my(FolderConfig.class));
+		my(ClockTicker.class);
 		startLogging();
 		my(PublicKeyDialog.class).initPublicKeyIfNecessary();
 		my(SnappStarter.class).startSnapps();
+		
 		my(Threads.class).waitUntilCrash();
 	}
 
