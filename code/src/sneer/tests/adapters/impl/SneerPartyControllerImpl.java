@@ -413,7 +413,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	@Override
-	public void crash() {
+	public	void crash() {
 		my(Threads.class).crashAllThreads();
 	}
 

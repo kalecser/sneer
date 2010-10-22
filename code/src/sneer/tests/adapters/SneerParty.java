@@ -16,5 +16,4 @@ public interface SneerParty extends SovereignParty {
 	
 	void start(String name, int port);
 	void crash();
-
 }
