@@ -32,12 +32,12 @@ class ClassLoaderForPackage extends ClassLoaderForBricks {
 
 	@Override
 	public String toString() {
-		return ClassLoaderForPackage.class.getSimpleName()+ ":" + _package;
+		return ClassLoaderForPackage.class.getSimpleName()+ ":" + _package + ":" + hashCode();
 	}
 
 	@Override
 	public Kind kind() {
 		return Kind.IMPL;
-	}	
+	}
 	
 }
