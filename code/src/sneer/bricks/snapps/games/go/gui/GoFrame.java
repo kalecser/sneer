@@ -9,10 +9,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
 import sneer.bricks.pulp.reactive.Register;
-import sneer.bricks.snapps.games.go.Move;
 import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
+import sneer.bricks.snapps.games.go.Move;
 import sneer.foundation.lang.Closure;
 
 public class GoFrame extends JFrame {
@@ -23,9 +24,8 @@ public class GoFrame extends JFrame {
 	public GoFrame(Register<Move> _move, StoneColor side, int horizontalPosition) {
 		_side = side;
 	
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Go - " + _side.name());	  
-	    setResizable(true);
 	    setResizable(false);
 	    addComponentPanel(_move);
 	    setVisible(true);

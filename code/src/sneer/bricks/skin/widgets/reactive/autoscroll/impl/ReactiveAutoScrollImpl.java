@@ -27,11 +27,11 @@ public class ReactiveAutoScrollImpl implements ReactiveAutoScroll {
 			}});
 		}});
 		
-		holdReceivers(result, reception);
+		hackToHoldReceivers(result, reception);
 		return result;
 	}
 
-	private void holdReceivers(JScrollPane scroll, final WeakContract contract) {
+	private void hackToHoldReceivers(JScrollPane scroll, final WeakContract contract) {
 		scroll.addFocusListener(new FocusAdapter(){
 			@SuppressWarnings({ "unused" })
 			WeakContract _refToAvoidGc = contract;
