@@ -1,20 +1,22 @@
 package spikes.klaus.wanderer.sneer;
 
-import java.util.Random;
-
 import org.junit.Test;
 
+import sneer.bricks.hardware.io.log.tests.LoggerMocks;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
+
 
 public class SneerWandererTest extends BrickTestBase {
 
 	@Test
 	public void wander() {
-		Random random = new Random(0);
-		SneerCommunityWanderer wanderer = new SneerCommunityWanderer(tmpFolder());
+		LoggerMocks.showLog = true;
+		
+		Chooser chooser =  new Chooser();
+		SneerCommunityWanderer wanderer = new SneerCommunityWanderer(chooser, tmpFolder());
 		
 		while (true)
-			wanderer.wanderAt(random);
+			wanderer.wander();
 	}
 
 }

@@ -3,41 +3,42 @@ package spikes.klaus.wanderer.sneer;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import sneer.tests.SovereignParty;
 import sneer.tests.adapters.SneerCommunity;
 
 public class SneerCommunityWanderer {
 
+	private final Chooser _chooser;
 	private final SneerCommunity _community;
-	private final List<SovereignParty> _parties = new ArrayList<SovereignParty>();
+	private final List<PartyWanderer> _parties = new ArrayList<PartyWanderer>();
+	private final NameGenerator _nameGenerator;
 
 
-	public SneerCommunityWanderer(File tmpFolder) {
+	public SneerCommunityWanderer(Chooser chooser, File tmpFolder) {
+		_chooser = chooser;
 		_community = new SneerCommunity(tmpFolder);
+		_nameGenerator = new NameGenerator(_chooser);
 	}
 
 
-	public void wanderAt(Random random) {
-		if (_parties.isEmpty()) {
-			createParty(random);
+	public void wander() {
+		if (_parties.size() < 5) {
+			_parties.add(connectNewParty());
 			return;
 		}
-		
-		if (random.nextInt(10) == 0) {
-			
-			return;
-		}
-		
-	}
-	
-	
-	private void createParty(Random random) {
-		String name = new NameGenerator().generateName(random);
-		SovereignParty party = _community.createParty(name);
-		_parties.add(party);
+
+		_chooser.pickOne(_parties).wander();
 	}
 
+
+	private PartyWanderer connectNewParty() {
+		SovereignParty result = _community.createParty(_nameGenerator.generateName());
+		for (PartyWanderer other : _parties) {
+			if (_chooser.nextBoolean())
+				_community.connect(result, other.delegate());
+		}
+		return new PartyWanderer(result);
+	}
 
 }
