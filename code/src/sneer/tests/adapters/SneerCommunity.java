@@ -24,7 +24,7 @@ import sneer.tests.adapters.impl.SneerPartyApiClassLoaderImpl;
 import sneer.tests.adapters.impl.utils.network.InProcessNetwork;
 
 public class SneerCommunity implements SovereignCommunity {
-
+	
 	private final Network _network = new InProcessNetwork();
 	private int _nextPort = 10000;
 
@@ -82,9 +82,10 @@ public class SneerCommunity implements SovereignCommunity {
 	}
 
 
-	private void crash(SneerParty sneerParty) {
-		sneerParty.crash();
-		_allParties.remove(sneerParty);
+	@Override
+	public void crash(SovereignParty party) {
+		((SneerParty) party).crash();
+		_allParties.remove(party);
 	}
 
 	private File makeFolder(File parent, String child) {

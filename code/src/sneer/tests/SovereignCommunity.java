@@ -1,6 +1,7 @@
 package sneer.tests;
 
 
+
 public interface SovereignCommunity {
 
     SovereignParty createParty(String name);
@@ -8,6 +9,7 @@ public interface SovereignCommunity {
 
 	void connect(SovereignParty a, SovereignParty b);
 
+	void crash(SovereignParty party);
 	void crash();
 
 }
