@@ -106,7 +106,7 @@ abstract class AbstractDownload implements Download {
 
 
 	protected void setProgress(float newValue) {
-		_progress.setter().consume(Math.round(100 * newValue));
+		_progress.setter().consume((int) (100 * newValue));
 	}
 
 
