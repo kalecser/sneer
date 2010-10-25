@@ -6,7 +6,6 @@ import java.io.IOException;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.pulp.events.pulsers.PulseSource;
 import sneer.bricks.pulp.reactive.Signal;
 
 public interface Download extends WeakContract {
@@ -21,7 +20,7 @@ public interface Download extends WeakContract {
 
 	void waitTillFinished() throws IOException, TimeoutException;
 
-	PulseSource finished();
+	Signal<Boolean> finished();
 
 	boolean hasFinishedSuccessfully();
 

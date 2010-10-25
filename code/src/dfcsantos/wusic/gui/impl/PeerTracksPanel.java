@@ -14,7 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import sneer.bricks.expression.files.client.downloads.gui.DownloadsPanel;
+import sneer.bricks.expression.files.client.downloads.gui.DownloadListPanels;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
 import sneer.bricks.pulp.reactive.Signals;
@@ -71,7 +71,7 @@ class PeerTracksPanel extends AbstractTabPane {
         }});
         customPanel().add(_downloadsDetails);
 
-        _downloadsDetailsWindow.add(new DownloadsPanel(_controller.activeDownloads()));
+        _downloadsDetailsWindow.add(my(DownloadListPanels.class).produce(_controller.activeDownloads()));
         _downloadsDetailsWindow.setLocationRelativeTo(customPanel().getTopLevelAncestor());
         _downloadsDetailsWindow.setMinimumSize(new Dimension(365, 80));
         _downloadsDetailsWindow.setResizable(false);

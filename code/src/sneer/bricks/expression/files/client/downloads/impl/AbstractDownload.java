@@ -21,9 +21,6 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.bricks.pulp.events.pulsers.PulseSource;
-import sneer.bricks.pulp.events.pulsers.Pulser;
-import sneer.bricks.pulp.events.pulsers.Pulsers;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -53,7 +50,7 @@ abstract class AbstractDownload implements Download {
 	private final Register<Integer> _progress = my(Signals.class).newRegister(0);
 
 	private final Latch _isFinished = my(Latches.class).produce();
-	private Pulser _finished = my(Pulsers.class).newInstance();
+	private Register<Boolean> _finished = my(Signals.class).newRegister(false);
 
 	private Exception _exception;
 
@@ -127,7 +124,7 @@ abstract class AbstractDownload implements Download {
 
 
 	@Override
-	public PulseSource finished() {
+	public Signal<Boolean> finished() {
 		return _finished.output();
 	}
 
@@ -185,7 +182,7 @@ abstract class AbstractDownload implements Download {
 	void finish() {
 		stopSendingRequests();
 		_isFinished.open();
-		_finished.sendPulse();
+		_finished.setter().consume(true);
 		if (_toCallWhenFinished != null) _toCallWhenFinished.run();
 	}
 

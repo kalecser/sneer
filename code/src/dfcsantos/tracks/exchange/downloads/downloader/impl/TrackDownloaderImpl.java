@@ -76,9 +76,9 @@ class TrackDownloaderImpl implements TrackDownloader {
 		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash, endorsement.publisher);
 		_downloadsAndMatchRatings.put(download, matchRatingFor(endorsement));
 
-		WeakContract weakContract = download.finished().addPulseReceiver(new Runnable() { @Override public void run() {
-			my(TrackDownloadCounter.class).increment(download.hasFinishedSuccessfully());
-			_downloadsAndMatchRatings.remove(download);
+		WeakContract weakContract = download.finished().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean finished) {
+			if (finished)
+				dealWithFinishedDownload(download);
 		}});
 
 		my(WeakReferenceKeeper.class).keep(download, weakContract);
@@ -195,6 +195,12 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 	private boolean hasReachedDownloadLimit() {
 		return _downloadsAndMatchRatings.output().size().currentValue() >= CONCURRENT_DOWNLOADS_LIMIT; 
+	}
+
+
+	private void dealWithFinishedDownload(final Download download) {
+		my(TrackDownloadCounter.class).increment(download.hasFinishedSuccessfully());
+		_downloadsAndMatchRatings.remove(download);
 	}
 
 
