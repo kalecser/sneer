@@ -14,7 +14,7 @@ public class RemoteBucketTest extends BucketTestBase {
 	@Override
 	protected Bucket subject() {
 		Seal seal = remoteSeal();
-		return my(DataSpace.class).remoteBucketBy(seal);		
+		return my(DataSpace.class).remoteBucketFor(seal);		
 	}
 
 }

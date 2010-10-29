@@ -16,7 +16,7 @@ import sneer.bricks.software.folderconfig.FolderConfig;
 
 class BucketImpl implements Bucket {
 
-	private static final byte[] BLANK_BLOCK = new byte[0];
+	private static final byte[] EMPTY_BLOCK = new byte[0];
 	private static final int BLOCK_SIZE = 8 * 1024;
 
 	private long _sizeInBlocks;
@@ -55,7 +55,7 @@ class BucketImpl implements Bucket {
 
 	private void allocateSpace() throws IOException {
 		try {
-			write(_sizeInBlocks - 1, BLANK_BLOCK);
+			write(_sizeInBlocks - 1, EMPTY_BLOCK);
 		} catch (BlockNumberOutOfRange e) {
 			throw new IllegalStateException(e);
 		}

@@ -7,5 +7,5 @@ import sneer.foundation.brickness.Brick;
 public interface DataSpace {
 
 	Bucket localBucket();
-	Bucket remoteBucketBy(Seal seal);
+	Bucket remoteBucketFor(Seal seal);
 }

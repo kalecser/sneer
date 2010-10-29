@@ -12,7 +12,7 @@ public class DataSpaceImpl implements DataSpace {
 	}
 
 	@Override
-	public Bucket remoteBucketBy(Seal seal) {
+	public Bucket remoteBucketFor(Seal seal) {
 		return new RemoteBucket(seal);
 	}
 

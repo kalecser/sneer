@@ -14,7 +14,8 @@ public abstract class BucketTestBase extends BrickTestWithTuples {
 
 	
 	private final Bucket _subject = subject();
-
+	abstract protected Bucket subject();
+	
 	
 	@Test (expected = BlockNumberOutOfRange.class, timeout = 2000)
 	public void readInAVacuum() throws Exception {
@@ -22,8 +23,6 @@ public abstract class BucketTestBase extends BrickTestWithTuples {
 	}
 
 	
-	abstract protected Bucket subject();
-
 	@Test (expected = BlockNumberOutOfRange.class, timeout = 2000)
 	public void writeInAVacuum() throws Exception {
 		_subject.write(42, new byte[]{ 0, 1, 2 });
@@ -70,7 +69,7 @@ public abstract class BucketTestBase extends BrickTestWithTuples {
 
 	
 	@After
-	public void afterWackupTest() {
+	public void afterBucketTest() {
 		_subject.crash();
 	}
 
