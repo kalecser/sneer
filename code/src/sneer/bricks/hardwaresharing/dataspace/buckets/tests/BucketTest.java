@@ -1,20 +1,23 @@
-package sneer.bricks.hardwaresharing.dataspace.tests;
+package sneer.bricks.hardwaresharing.dataspace.buckets.tests;
+
+import static sneer.foundation.environments.Environments.my;
 
 import org.junit.After;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
-import sneer.bricks.hardwaresharing.dataspace.BlockNumberOutOfRange;
-import sneer.bricks.hardwaresharing.dataspace.Bucket;
+import sneer.bricks.hardwaresharing.dataspace.buckets.BlockNumberOutOfRange;
+import sneer.bricks.hardwaresharing.dataspace.buckets.Bucket;
+import sneer.bricks.hardwaresharing.dataspace.buckets.Buckets;
 
-public abstract class BucketTestBase extends BrickTestWithTuples {
+
+public class BucketTest extends BrickTestWithTuples {
 
 	private static final int BLOCK_SIZE = 8 * 1024;
 	private static final byte[] BLANK_BLOCK = new byte[BLOCK_SIZE];
 
 	
-	private final Bucket _subject = subject();
-	abstract protected Bucket subject();
+	private final Bucket _subject = my(Buckets.class).produce();
 	
 	
 	@Test (expected = BlockNumberOutOfRange.class, timeout = 2000)

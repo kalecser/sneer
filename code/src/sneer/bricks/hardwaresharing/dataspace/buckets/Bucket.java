@@ -1,4 +1,4 @@
-package sneer.bricks.hardwaresharing.dataspace;
+package sneer.bricks.hardwaresharing.dataspace.buckets;
 
 import java.io.IOException;
 

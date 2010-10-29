@@ -1,4 +1,4 @@
-package sneer.bricks.hardwaresharing.dataspace.impl;
+package sneer.bricks.hardwaresharing.dataspace.buckets.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -9,8 +9,8 @@ import java.io.RandomAccessFile;
 import java.util.Arrays;
 
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardwaresharing.dataspace.BlockNumberOutOfRange;
-import sneer.bricks.hardwaresharing.dataspace.Bucket;
+import sneer.bricks.hardwaresharing.dataspace.buckets.BlockNumberOutOfRange;
+import sneer.bricks.hardwaresharing.dataspace.buckets.Bucket;
 import sneer.bricks.software.folderconfig.FolderConfig;
 
 
@@ -20,17 +20,17 @@ class BucketImpl implements Bucket {
 	private static final int BLOCK_SIZE = 8 * 1024;
 
 	private long _sizeInBlocks;
-	private RandomAccessFile _space;
+	private RandomAccessFile _file;
 
 	
 	@Override
 	public byte[] read(long number) throws BlockNumberOutOfRange, IOException {
 		checkRange(number);
 
-		_space.seek(number * BLOCK_SIZE);
+		_file.seek(number * BLOCK_SIZE);
 		
 		byte[] result = new byte[BLOCK_SIZE];
-		_space.readFully(result);
+		_file.readFully(result);
 		return result;
 	}
 
@@ -45,7 +45,7 @@ class BucketImpl implements Bucket {
 	public void setSize(long newSize) throws IOException {
 		boolean increasing = newSize > _sizeInBlocks;
 		_sizeInBlocks = newSize;
-		if (_space == null)
+		if (_file == null)
 			initSpace();
 
 		if (increasing)
@@ -64,7 +64,7 @@ class BucketImpl implements Bucket {
 
 	private void initSpace() throws FileNotFoundException {
 		File tmpFolderFor = my(FolderConfig.class).tmpFolderFor(Bucket.class);
-		_space = new RandomAccessFile(new File(tmpFolderFor, "data"), "rw");
+		_file = new RandomAccessFile(new File(tmpFolderFor, "data"), "rw");
 	}
 
 	@Override
@@ -76,13 +76,13 @@ class BucketImpl implements Bucket {
 			? Arrays.copyOf(block, BLOCK_SIZE)
 			: block;
 		
-		_space.seek(blockNumber * BLOCK_SIZE);
-		_space.write(blockToWrite);
+		_file.seek(blockNumber * BLOCK_SIZE);
+		_file.write(blockToWrite);
 	}
 
 	@Override
 	public void crash() {
-		my(IO.class).crash(_space);
+		my(IO.class).crash(_file);
 	}
 
 }

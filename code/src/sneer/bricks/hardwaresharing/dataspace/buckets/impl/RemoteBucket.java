@@ -1,13 +1,13 @@
-package sneer.bricks.hardwaresharing.dataspace.impl;
+package sneer.bricks.hardwaresharing.dataspace.buckets.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.bricks.hardwaresharing.dataspace.BlockRead;
-import sneer.bricks.hardwaresharing.dataspace.BlockReadResponse;
-import sneer.bricks.hardwaresharing.dataspace.Bucket;
+import sneer.bricks.hardwaresharing.dataspace.buckets.BlockRead;
+import sneer.bricks.hardwaresharing.dataspace.buckets.BlockReadResponse;
+import sneer.bricks.hardwaresharing.dataspace.buckets.Bucket;
 import sneer.bricks.identity.seals.Seal;
 import sneer.foundation.lang.Consumer;
 
