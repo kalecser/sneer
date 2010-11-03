@@ -517,4 +517,16 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 			: my(ContactSeals.class).contactGiven(seal).nickname().toString();
 	}
 
+
+	@Override
+	public void setFolderToBeBackedUp(File folder) {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	}
+
+
+	@Override
+	public void syncBackups() {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	}
+
 }

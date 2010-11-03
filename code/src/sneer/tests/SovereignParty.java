@@ -22,6 +22,10 @@ public interface SovereignParty {
 	void shout(String string);
 	void waitForShouts(String shoutsExpected);
 
+	//Freedom6
+	void setFolderToBeBackedUp(File folder);
+	void syncBackups();
+	
 	//Freedom7
 	void enableCodeSharing();
 	void waitForAvailableBrick(String brickName, String brickStatus);
