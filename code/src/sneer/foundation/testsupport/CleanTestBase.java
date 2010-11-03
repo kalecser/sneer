@@ -276,7 +276,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		File file = newTmpFile(fileName);
 		if (!file.getParentFile().exists())
 			assertTrue("Unable to mkdirs: " + file.getParentFile(), file.getParentFile().mkdirs());
-		file.createNewFile();
+		assertTrue(file.createNewFile());
 		return file;
 	}
 
