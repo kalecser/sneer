@@ -58,7 +58,7 @@ public class SneerCommunity implements SovereignCommunity {
 		Environment container = Brickness.newBrickContainer(_network, newLogger(name));
 		URLClassLoader apiClassLoader = apiClassLoader(privateBin, sharedBin, name);
 		
-		SneerParty partyImpl = (SneerParty)EnvironmentUtils.retrieveFrom(container, loadProbeClassUsing(apiClassLoader));
+		SneerParty partyImpl = (SneerParty)EnvironmentUtils.retrieveFrom(container, loadControllerUsing(apiClassLoader));
 		final SneerParty party = ProxyInEnvironment.newInstance(container, partyImpl);
 		
 		party.configDirectories(dataFolder, tmpFolder, currentCodeFolder, privateSrc, privateBin, stageFolder);
@@ -95,7 +95,7 @@ public class SneerCommunity implements SovereignCommunity {
 		return result;
 	}
 
-	private Class<?> loadProbeClassUsing(URLClassLoader apiClassLoader) {
+	private Class<?> loadControllerUsing(URLClassLoader apiClassLoader) {
 		try {
 			return apiClassLoader.loadClass(SneerPartyController.class.getName());
 		} catch (ClassNotFoundException e) {

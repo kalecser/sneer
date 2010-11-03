@@ -70,7 +70,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private Collection<Object> _refToAvoidGc = new ArrayList<Object>();
-	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc2;
 
 	private File _codeFolder;
 
@@ -488,11 +487,11 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private void throwOnBlinkingErrors() {
-		_refToAvoidGc2 = my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>() { @Override public void consume(CollectionChange<Light> value) {
+		_refToAvoidGc.add(my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>() { @Override public void consume(CollectionChange<Light> value) {
 			for (Light l : value.elementsAdded())
 				if (l.type() == LightType.ERROR)
 					throw new IllegalStateException("ERROR blinking light detected", l.error());
-		}});
+		}}));
 	}
 
 	
