@@ -27,7 +27,8 @@ class LogFilterImpl implements LogFilter {
 		_phrases.add("Thread");
 		_phrases.add("block: 0");
 		_phrases.add("Endorsement");
-//		_phrases.add("Shout");
+		_phrases.add("Enter");
+		_phrases.add("Shouting");
 //		_phrases.add("Stepper");
 //		_phrases.add("Sending");
 //		_phrases.add("[");
