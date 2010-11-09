@@ -15,6 +15,15 @@
 	<classpathentry kind="lib" path="lib/commons-io-1.4.jar"/>
 	<classpathentry kind="lib" path="src/spikes/sneer/bricks/snapps/whisper/speex/impl/lib/speex.jar"/>
 	<classpathentry kind="lib" path="src/spikes/klaus/mp3/lib/jl1.0.1.jar" sourcepath="src/spikes/klaus/mp3/lib/jl1.0.1-src.zip"/>
+	<classpathentry kind="lib" path="lib/upnp/commons-jxpath-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/upnp/commons-logging-api.jar"/>
+	<classpathentry kind="lib" path="lib/upnp/commons-logging.jar"/>
+	<classpathentry kind="lib" path="lib/upnp/mx4j-impl.jar"/>
+	<classpathentry kind="lib" path="lib/upnp/mx4j-jmx.jar"/>
+	<classpathentry kind="lib" path="lib/upnp/mx4j-remote.jar"/>
+	<classpathentry kind="lib" path="lib/upnp/mx4j-tools.jar"/>
+	<classpathentry kind="lib" path="lib/upnp/sbbi-jmx-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/upnp/sbbi-upnplib-1.0.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/sneer"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
