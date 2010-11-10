@@ -20,6 +20,7 @@ import javax.swing.JComponent;
 import javax.swing.text.JTextComponent;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
@@ -31,7 +32,6 @@ import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.exceptions.Refusal;
-
 
 abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDGET> implements TextWidget<WIDGET> {
 	
@@ -136,10 +136,18 @@ abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDG
 	}
 
 	public void commitTextChanges() {
+		my(Logger.class).log("Enter: commitingTextChanges");
+
 		String text = getText();
 		if (text.equals(currentValue())) return;
+		my(Logger.class).log("Enter: text was different");
+		
 		my(GuiThread.class).assertInGuiThread();
+		my(Logger.class).log("Enter: was in gui thread");
+
 		consume(text);
+		my(Logger.class).log("Enter: Consumed");
+
 		refreshTextComponent();
 		setNotified(true, text);
 	}
