@@ -72,12 +72,14 @@ class ChatPanelImpl extends JPanel {
 		init();
 	} 
 	
+	
 	private void init() {
 		initGui();
 		initShoutAnnouncer();
 		new WindClipboardSupport();
 	}
 
+	
 	private void initGui() {
 		_listScrollPane.getViewport().add(_shoutsList);
 		JScrollPane inputScrollPane = new JScrollPane();
