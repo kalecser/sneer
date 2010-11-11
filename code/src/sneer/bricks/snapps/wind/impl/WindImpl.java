@@ -18,7 +18,7 @@ import sneer.foundation.lang.Consumer;
 
 class WindImpl implements Wind, Consumer<ChatMessage> {
 
-	private static final int TEN_DAYS = 1000 * 60 * 60 * 24 * 10;
+	private static final long TEN_DAYS = 1000l * 60l * 60l * 24l * 10l;
 	
 	
 	private final ListSignal<ChatMessage> _sortedShouts;
