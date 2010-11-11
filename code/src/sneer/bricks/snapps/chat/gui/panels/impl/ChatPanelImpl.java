@@ -51,6 +51,7 @@ class ChatPanelImpl extends JPanel {
 	private final TextWidget<JTextPane> _messageInputPane;
 
 	@SuppressWarnings("unused") private Object _refToAvoidGc;
+	
 
 	ChatPanelImpl(ListSignal<ChatMessage> messages, Consumer<String> messageSender) {
 		_messages = messages;
