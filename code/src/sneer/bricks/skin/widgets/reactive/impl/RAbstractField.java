@@ -146,7 +146,6 @@ abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDG
 		my(Logger.class).log("Enter: was in gui thread");
 
 		consume(text);
-		my(Logger.class).log("Enter: Consumed");
 
 		refreshTextComponent();
 		setNotified(true, text);
@@ -236,9 +235,11 @@ abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDG
 		}});
 	}
 	
-	protected void consume(String text) {
+	private void consume(String text) {
 		try {
+			my(Logger.class).log("Enter: Before consume");
 			_setter.consume(text);
+			my(Logger.class).log("Enter: After consume");
 		} catch (Refusal ip) {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "Invalid Field Value: " + text, ip.getMessage(), ip, 20000);
 			requestFocus();
