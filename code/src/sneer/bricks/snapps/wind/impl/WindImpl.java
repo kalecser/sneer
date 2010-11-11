@@ -18,10 +18,14 @@ import sneer.foundation.lang.Consumer;
 
 class WindImpl implements Wind, Consumer<ChatMessage> {
 
+	private static final int TEN_DAYS = 1000 * 60 * 60 * 24 * 10;
+	
+	
 	private final ListSignal<ChatMessage> _sortedShouts;
 	private final ListRegister<ChatMessage> _shoutsHeard = my(CollectionSignals.class).newListRegister();
 	@SuppressWarnings("unused")	private final WeakContract _tupleSpaceContract;
 
+	
 	WindImpl(){
 		_tupleSpaceContract = my(TupleSpace.class).addSubscription(ChatMessage.class, this);
 		my(TupleSpace.class).keep(ChatMessage.class);
@@ -31,17 +35,22 @@ class WindImpl implements Wind, Consumer<ChatMessage> {
 		}});
 	}
 
+	
 	@Override
 	public ListSignal<ChatMessage> shoutsHeard() {
 		return _sortedShouts;
 	}
 
+	
 	@Override
 	public void consume(ChatMessage shout) {
-		if (my(Clock.class).time().currentValue() - shout.publicationTime > 1000 * 60 * 60 * 24) return;
+		if (my(Clock.class).time().currentValue() - shout.publicationTime > TEN_DAYS) return;
+		if (shout.addressee != null) return;
+		
 		_shoutsHeard.adder().consume(shout);
 	}
 
+	
 	@Override
 	public Consumer<String> megaphone() {
 		return new Consumer<String>(){ @Override public void consume(String phrase) {
@@ -49,8 +58,10 @@ class WindImpl implements Wind, Consumer<ChatMessage> {
 		}};
 	}
 
+	
 	private void shout(String phrase) {
 		my(Logger.class).log("Shouting: " + phrase);
 		my(TupleSpace.class).acquire(new ChatMessage(phrase));
 	}
+	
 }
