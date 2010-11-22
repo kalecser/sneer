@@ -32,7 +32,7 @@ class MapGuiImpl implements MapGui{
 
 	private static final int MIN_ZOOM = 0;
 	private static final int MAX_ZOOM = 17;
-	private static final String DEFAULT_ADDRESS = "Florianópolis";
+	private static final String DEFAULT_ADDRESS = "PUC, Porto Alegre";
 
 	private final JLabel _mapHolder = new JLabel();
 	private final JTextField _address = new JTextField(DEFAULT_ADDRESS);
