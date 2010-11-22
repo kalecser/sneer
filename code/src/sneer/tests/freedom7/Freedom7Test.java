@@ -8,26 +8,23 @@ import java.io.IOException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.hardware.io.log.tests.LoggerMocks;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.foundation.brickness.Brick;
 import sneer.tests.SovereignFunctionalTestBase;
 
 public class Freedom7Test extends SovereignFunctionalTestBase {
-	
+
 	@Ignore
 	@Test (timeout = 1000 * 20)
-	public void meToo_TakesACoupleOfMinutesToRunAndRunsOnlyOnHeadlessServer() throws Exception {
-		LoggerMocks.showLog = true;
-
-		a().enableCodeSharing();
-		b().enableCodeSharing();
+	public void meToo() throws Exception {
+		//LoggerMocks.showLog = true;
 
 		a().copyToSourceFolder(generateY());
 		
 		newSession(a());
 		a().enableCodeSharing();
+		b().enableCodeSharing();
 		
 		a().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
 		b().waitForAvailableBrick("freedom7.y.Y", "NEW");
