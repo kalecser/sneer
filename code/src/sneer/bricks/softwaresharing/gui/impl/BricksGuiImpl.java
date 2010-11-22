@@ -73,10 +73,10 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		
 		my(LogConsole.class);
 		Synth _synth = my(Synth.class);
-		_OFFSET_X = (Integer) _synth.getDefaultProperty("LodConsoleImpl.offsetX");
-		_OFFSET_Y = (Integer) _synth.getDefaultProperty("LodConsoleImpl.offsetY");
-		_HEIGHT = (Integer) _synth.getDefaultProperty("LodConsoleImpl.height");
-		_X = (Integer) _synth.getDefaultProperty("LodConsoleImpl.x");		
+		_OFFSET_X = (Integer) _synth.getDefaultProperty("LogConsoleImpl.offsetX");
+		_OFFSET_Y = (Integer) _synth.getDefaultProperty("LogConsoleImpl.offsetY");
+		_HEIGHT = (Integer) _synth.getDefaultProperty("LogConsoleImpl.height");
+		_X = (Integer) _synth.getDefaultProperty("LogConsoleImpl.x");		
 		
 		initGui(); 
 		initListeners();
