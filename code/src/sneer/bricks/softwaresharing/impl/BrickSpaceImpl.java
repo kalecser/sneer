@@ -12,6 +12,7 @@ import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.seals.Seal;
@@ -135,7 +136,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 
 	
 	private void startReceivingBuildingsFromPeers() {
-		_tupleSubscription = my(TupleSpace.class).addSubscription(BuildingHash.class, this);
+		_tupleSubscription = my(RemoteTuples.class).addSubscription(BuildingHash.class, this);
 	}
 
 
