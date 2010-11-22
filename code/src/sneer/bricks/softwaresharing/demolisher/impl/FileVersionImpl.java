@@ -1,23 +1,19 @@
 package sneer.bricks.softwaresharing.demolisher.impl;
 
-import static sneer.foundation.environments.Environments.my;
-
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-
-import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.softwaresharing.FileVersion;
 
 class FileVersionImpl implements FileVersion {
 
 	private final String _name;
 	private final byte[] _contents;
+	private final byte[] _contentsInCurrentVersion;
 	private final long _lastModified;
 	private final Status _status;
 
-	FileVersionImpl(List<String> path, byte[] contents, long lastModified, boolean isCurrent) {
-		_name = my(Lang.class).strings().join(path, "/");
+	FileVersionImpl(String path, byte[] contents, byte[] contentsInCurrentVersion, long lastModified, boolean isCurrent) {
+		_name = path;
 		_contents = contents;
+		_contentsInCurrentVersion = contentsInCurrentVersion;
 		_lastModified = lastModified;
 		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
 	}
@@ -29,11 +25,7 @@ class FileVersionImpl implements FileVersion {
 
 	@Override
 	public byte[] contentsInCurrentVersion() {
-		try {
-			return "implement: contentsInCurrentVersion()".getBytes("UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		}
+		return _contentsInCurrentVersion;
 	}
 
 	@Override

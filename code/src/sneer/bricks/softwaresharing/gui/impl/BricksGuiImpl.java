@@ -12,6 +12,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -26,6 +27,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.skin.image.ImageFactory;
 import sneer.bricks.skin.main.menu.MainMenu;
@@ -36,9 +38,10 @@ import sneer.bricks.snapps.diff.text.gui.TextDiffPanel;
 import sneer.bricks.snapps.diff.text.gui.TextDiffPanels;
 import sneer.bricks.snapps.system.log.gui.LogConsole;
 import sneer.bricks.softwaresharing.BrickHistory;
+import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
-import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.BrickVersion.Status;
+import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.gui.BricksGui;
 import sneer.bricks.softwaresharing.stager.BrickStager;
 import sneer.foundation.lang.Closure;
@@ -56,6 +59,10 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 	private final int _HEIGHT;
 	private final int _X;
 	protected Object _lastSelectedNode;
+	
+	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc;
+	private JLabel _loadingLabel;
+	private JScrollPane _scrollTree;
 	
 	private static ImageIcon loadIcon(String fileName){
 		return my(ImageFactory.class).getIcon(BricksGuiImpl.class, fileName);
@@ -171,13 +178,11 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 	}
 	
 	private void initGui() {
-//		final RootTreeNode root = new RootTreeNode();
-		final RootTreeNode root = new RootTreeNode(FakeModel.bricks());
 
 		_tree.setRootVisible(false);
-		_tree.setModel(new DefaultTreeModel(root));
-		_tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+//		_tree.setModel(new DefaultTreeModel(root));
 		_tree.setCellRenderer(new BrickTreeCellRenderer());
+		_tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		_tree.setBorder(new EmptyBorder(5,5,5,5));
 		_tree.setShowsRootHandles(true);
 		
@@ -195,19 +200,11 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		toolbar.add(_selectButton);
 		toolbar.add(_rejectButton);
 		
-		JButton reload = new JButton(loadIcon("reload.png"));
-		toolbar.add(reload);
-		reload.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
-			root.load();
-			_tree.setModel(new DefaultTreeModel(root));
-			_files.setModel(new DefaultListModel());
-		}});
-		
 		addMeTooButton(toolbar);
 		
-		JScrollPane scrollTree = my(SynthScrolls.class).create();
+		_scrollTree = my(SynthScrolls.class).create();
 		JScrollPane scrollFiles = my(SynthScrolls.class).create();
-		JSplitPane verticalSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollTree, scrollFiles);
+		JSplitPane verticalSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, _scrollTree, scrollFiles);
 		
 		JScrollPane scrollDiff = my(SynthScrolls.class).create();
 		JSplitPane horizontalSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, verticalSplit, scrollDiff);
@@ -219,9 +216,15 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		verticalSplit.setDividerLocation(300);
 		horizontalSplit.setDividerLocation(300);
 	
-		scrollTree.getViewport().add(_tree);
+		_loadingLabel = new JLabel("              Loading...");
+		_scrollTree.getViewport().add(_loadingLabel);
+		
 		scrollDiff.getViewport().add(_diffPanel.component());
 		scrollFiles.getViewport().add(_files);
+
+		_refToAvoidGc = my(BrickSpace.class).newBuildingFound().addPulseReceiver(new Runnable() { @Override public void run() {
+			refreshBrickTree();
+		}});
 	}
 
 	private void addMeTooButton(JToolBar toolbar) {
@@ -245,5 +248,15 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		setFocusableWindowState(false);
 		setVisible(true);
 		setFocusableWindowState(true);
+	}
+
+	private void refreshBrickTree() {
+		_scrollTree.getViewport().remove(_loadingLabel);
+		_scrollTree.getViewport().add(_tree);
+
+		RootTreeNode root = new RootTreeNode();
+//		RootTreeNode root = new RootTreeNode(FakeModel.bricks());
+		_tree.setModel(new DefaultTreeModel(root));
+		_files.setModel(new DefaultListModel());
 	}
 }

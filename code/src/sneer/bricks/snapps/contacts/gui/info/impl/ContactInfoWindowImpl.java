@@ -2,6 +2,7 @@ package sneer.bricks.snapps.contacts.gui.info.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -19,13 +21,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import sneer.bricks.hardware.cpu.codec.DecodeException;
 import sneer.bricks.hardware.cpu.lang.Lang;
-import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.codec.SealCodec;
@@ -48,38 +48,39 @@ import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.bricks.snapps.contacts.gui.info.ContactInfoWindow;
-import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.exceptions.Refusal;
 
 class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 
-	private final ContactInternetAddressList _contactAddresses = new ContactInternetAddressList();
-	
-	private final ListWidget<InternetAddress> _lstAddresses; {
-		final Object ref[] = new Object[1];
-		my(GuiThread.class).invokeAndWait(new Closure(){ @Override public void run() {//Fix Use GUI Nature
-			ref[0] = my(ReactiveWidgetFactory.class).newList(_contactAddresses.addresses(), 
-			new LabelProvider<InternetAddress>(){
-				@Override public Signal<Image> imageFor(InternetAddress element) {
-					return my(Signals.class).constant(null);
-				}
-
-				@Override public Signal<String> textFor(InternetAddress element) {
-					return my(Signals.class).constant(element.host()+" : "+element.port().currentValue());
-				}});
-		}});
-		_lstAddresses = (ListWidget<InternetAddress>) ref[0];
-	}
-	
-	private final JTextField _host = new JTextField();
-	private final JTextField _port = new JTextField();
-	private TextWidget<JTextPane> _seal;
-	private InternetAddress _selectedAdress;
-	
 	private boolean _isGuiInitialized = false;
-	private TextWidget<JTextField> _txtNickname;
+
+	private JLabel _nicknameLb;
+	private TextWidget<JTextField> _nicknameTF;
+
+	private JLabel _sealLb;
+	private TextWidget<JTextPane> _sealTP;
+	private JScrollPane _sealScroll;
+
+	private JLabel _friendsLb;
+	private JComboBox _friendsCb;
+	private JButton _acceptFriendBt;
+
+	private ListWidget<InternetAddress> _inetAddressesList;
+	private InternetAddress _selectedAdress;
+	private JPanel _inetAddressesPanel;
+	private JScrollPane _inetAddressesScroll;
+
+	private JLabel _hostLb;
+	private JTextField _hostTF;
+
+	private JLabel _portLb;
+	private JTextField _portTF;
+
+	private JButton _newBt;
+	private JButton _saveBt;
+	private JButton _deleteBt;
 
 	ContactInfoWindowImpl() {
 		addContactEditAction();
@@ -109,57 +110,83 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 		setTitle("Contact Info:");
 		setResizable(false);
 
-		JPanel panel = new JPanel();
-		panel.setBorder(new TitledBorder("Internet Adresses:"));
-		JLabel labNickname = new JLabel("Nickname:");
-		JLabel labPort = new JLabel("Port:");
-		JLabel labHost = new JLabel("Host:");
-		JLabel labSeal = new JLabel("Seal:");
-		
+		_nicknameLb = new JLabel("Nickname:");
+		_nicknameTF = my(ReactiveWidgetFactory.class).newTextField(
+			nicknameString(), nicknameSetter(), NotificationPolicy.OnEnterPressedOrLostFocus
+		);
+
+		_sealLb = new JLabel("Seal:");
+		_sealTP = my(ReactiveWidgetFactory.class).newTextPane(
+			contactsFormattedSealString(), contactsSealSetter(), NotificationPolicy.OnEnterPressedOrLostFocus
+		);
+		_sealTP.getMainWidget().setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+		_sealScroll = new JScrollPane(
+			_sealTP.getMainWidget(),
+			ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
+		);
+
+		_friendsLb = new JLabel("Friends:");
+		_friendsCb = new JComboBox(new String[] { "Whatsit", "Whatsisname", "Whatsername", "Whatchamacallit" });
+		_acceptFriendBt = new JButton("Accept");
+
+		_inetAddressesList = my(ReactiveWidgetFactory.class).newList(new ContactInternetAddressList().addresses(), 
+			new LabelProvider<InternetAddress>() {
+				@Override public Signal<Image> imageFor(InternetAddress element) {
+					return my(Signals.class).constant(null);
+				}
+
+				@Override public Signal<String> textFor(InternetAddress element) {
+					return my(Signals.class).constant(element.host() + " : " + element.port().currentValue());
+				}
+			}
+		);
+
+		 _inetAddressesPanel = new JPanel();
+		_inetAddressesScroll = my(SynthScrolls.class).create();
+		_inetAddressesScroll.getViewport().add(addresses());
+
+		_hostLb = new JLabel("Host:");
+		_hostTF = new JTextField();
+
+		_portLb = new JLabel("Port:");
+		_portTF = new JTextField();
+
+		_newBt = new JButton("New");
+		_newBt.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
+			newInternetAddress();
+		}});
+
+		_saveBt = new JButton("Save");
+		_saveBt.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
+			saveInternetAddress();
+		}});
+
+		_deleteBt = new JButton("Delete");
+		_deleteBt.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
+			delInternetAddress();
+		}});
+
+		setGridBagLayout();
+		addListSelectionListestener();
+
+		this.setSize(330, 310);
+	}
+
+	private PickyConsumer<String> nicknameSetter() {
+		PickyConsumer<String> nicknameSetter = new PickyConsumer<String>(){@Override public void consume(String value) throws Refusal {
+			my(Contacts.class).nicknameSetterFor(selectedContact()).consume(value);
+		}};
+		return nicknameSetter;
+	}
+
+	private Signal<String> nicknameString() {
 		Signal<String> nickname = my(Signals.class).adaptSignal(
 			my(ContactsGui.class).selectedContact(), new Functor<Contact, Signal<String>>() { @Override public Signal<String> evaluate(Contact contact) {
 				return (contact == null) ? my(Signals.class).constant("") : contact.nickname();
 			}}
 		);
-
-		PickyConsumer<String> setter = new PickyConsumer<String>(){@Override public void consume(String value) throws Refusal {
-			my(Contacts.class).nicknameSetterFor(selectedContact()).consume(value);
-		}};
-
-		_txtNickname = my(ReactiveWidgetFactory.class).newTextField(nickname, setter, NotificationPolicy.OnEnterPressedOrLostFocus);
-
-		_seal = my(ReactiveWidgetFactory.class).newTextPane(contactsFormattedSealString(), contactsSealSetter(), NotificationPolicy.OnEnterPressedOrLostFocus);
-		_seal.getMainWidget().setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-
-		JScrollPane sealScroll =
-			new JScrollPane(
-				_seal.getMainWidget(),
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
-			);
-
-		JScrollPane addressesScroll = my(SynthScrolls.class).create();
-		addressesScroll.getViewport().add(addresses());
-
-		JButton btnNew = new JButton("New");
-		btnNew.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
-			newInternetAddress();
-		}});
-		
-		JButton btnSave = new JButton("Save");
-		btnSave.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
-			saveInternetAddress();
-		}});
-		
-		JButton btnDel = new JButton("Delete");
-		btnDel.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
-			delInternetAddress();
-		}});
-		
-		setGridBagLayout(panel, labNickname, labSeal, sealScroll, labPort, labHost, addressesScroll, btnNew, btnSave, btnDel);
-		addListSelectionListestener();
-
-		this.setSize(330, 310);
+		return nickname;
 	}
 
 	private Signal<String> contactsFormattedSealString() {
@@ -194,122 +221,135 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 		}
 	}
 
-	private void setGridBagLayout(JPanel panel, JLabel labNickname, JLabel labSeal, JScrollPane sealScroll, JLabel labPort, JLabel labHost, JScrollPane addressesScroll, JButton btnNew, JButton btnSave, JButton btnDel) {
-		getContentPane().setLayout(new GridBagLayout());
-		getContentPane().add(labNickname,  new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, 
+	private void setGridBagLayout() {
+		Container contentPane = getContentPane();
+		contentPane.setLayout(new GridBagLayout());
+
+		contentPane.add(_nicknameLb,  new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, 
 				GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5,5,0,5), 0, 0) );
 
-		getContentPane().add(_txtNickname.getComponent(),  new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0, 
+		contentPane.add(_nicknameTF.getComponent(),  new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0, 
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(5,0,0,5), 0, 0) );
 
-		getContentPane().add(labSeal,  new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, 
+		contentPane.add(_sealLb,  new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, 
 				GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5,5,0,5), 0, 0) );
 
-		getContentPane().add(sealScroll,  new GridBagConstraints(0, 2, 5, 1, 0.5, 0.5, 
+		contentPane.add(_sealScroll,  new GridBagConstraints(0, 2, 5, 1, 0.5, 0.5, 
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
 
-		getContentPane().add(panel,  new GridBagConstraints(0, 3, 2, 1, 1.0, 0.2, 
-				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
-		
-		panel.setLayout(new GridBagLayout());
-		panel.add(addressesScroll,  new GridBagConstraints(0, 1, 12, 1, 1.0, 1.0, 
+		contentPane.add(_inetAddressesPanel,  new GridBagConstraints(0, 3, 2, 1, 1.0, 0.2, 
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
 
-		panel.add(labHost, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, 
+		contentPane.add(_friendsLb,  new GridBagConstraints(0, 3, 2, 1, 1.0, 0.2, 
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
+
+		contentPane.add(_friendsCb,  new GridBagConstraints(0, 3, 2, 1, 1.0, 0.2, 
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
+
+		contentPane.add(_acceptFriendBt,  new GridBagConstraints(0, 3, 2, 1, 1.0, 0.2, 
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
+
+		_inetAddressesPanel.setLayout(new GridBagLayout());
+		_inetAddressesPanel.add(_inetAddressesScroll,  new GridBagConstraints(0, 1, 12, 1, 1.0, 1.0, 
+				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
+
+		_inetAddressesPanel.add(_hostLb, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, 
 				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,5,0,5), 0, 0) );
 
-		panel.add(_host, new GridBagConstraints(1, 2, 7, 1, 2.0, 0.0, 
+		_inetAddressesPanel.add(_hostTF, new GridBagConstraints(1, 2, 7, 1, 2.0, 0.0, 
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0) );
 
-		panel.add(labPort, new GridBagConstraints(9, 2, 1, 1, 0.0, 0.0, 
+		_inetAddressesPanel.add(_portLb, new GridBagConstraints(9, 2, 1, 1, 0.0, 0.0, 
 				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,5,5,5), 0, 0) );
 		
-		panel.add(_port, new GridBagConstraints(10, 2, 2, 1, 0.0, 0.0, 
+		_inetAddressesPanel.add(_portTF, new GridBagConstraints(10, 2, 2, 1, 0.0, 0.0, 
 				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,5), 0, 0) );
 		
-		panel.add(btnNew, new GridBagConstraints(7, 4, 1, 1, 0.0, 0.0, 
+		_inetAddressesPanel.add(_newBt, new GridBagConstraints(7, 4, 1, 1, 0.0, 0.0, 
 				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0) );
 
-		panel.add(btnSave, new GridBagConstraints(8, 4, 3, 1, 0.0, 0.0, 
+		_inetAddressesPanel.add(_saveBt, new GridBagConstraints(8, 4, 3, 1, 0.0, 0.0, 
 				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0) );
 
-		panel.add(btnDel, new GridBagConstraints(11, 4, 1, 1, 0.0, 0.0, 
+		_inetAddressesPanel.add(_deleteBt, new GridBagConstraints(11, 4, 1, 1, 0.0, 0.0, 
 				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0) );
 	}
 	
 	private void addListSelectionListestener() {
 		addresses().getSelectionModel().addListSelectionListener(
-				new ListSelectionListener(){ @Override public void valueChanged(ListSelectionEvent e) {
-					InternetAddress selected = (InternetAddress) addresses().getSelectedValue();
-					if(selected==null){
+			new ListSelectionListener() { @Override public void valueChanged(ListSelectionEvent e) {
+				InternetAddress selected = (InternetAddress) addresses().getSelectedValue();
+					if (selected == null) {
 						cleanFields();
 						return;
 					}
-					
+
 					_selectedAdress = selected;
-					_host.setText(_selectedAdress.host());
-					_port.setText(""+_selectedAdress.port());
-				}});
+					_hostTF.setText(_selectedAdress.host());
+					_portTF.setText(""+_selectedAdress.port());
+			}}
+		);
 	}
-	
+
 	private void logPortValueException(Exception e) {
-		my(BlinkingLights.class).turnOn(LightType.ERROR, "Invalid Port Value: " + _port.getText(), e.getMessage(), e, 20000);
-		my(Logger.class).log("Invalid Port Value: {}", _port.getText());
-		_port.requestFocus();
+		my(BlinkingLights.class).turnOn(LightType.ERROR, "Invalid Port Value: " + _portTF.getText(), e.getMessage(), e, 20000);
+		my(Logger.class).log("Invalid Port Value: {}", _portTF.getText());
+		_portTF.requestFocus();
 	}
-	
+
 	private void saveInternetAddress() {
 		try {
 			InternetAddress address = _selectedAdress;
-			if(address == null || _host.getText().trim().length()==0) return;
-			
-			if(  _selectedAdress.host().equals(_host.getText())
-			&& _selectedAdress.port().currentValue() == Integer.parseInt(_port.getText())
-			&& _selectedAdress.contact() == my(ContactsGui.class).selectedContact().currentValue()){
-				_lstAddresses.clearSelection();
+			if (address == null || _hostTF.getText().trim().length() == 0) return;
+
+			if (_selectedAdress.host().equals(_hostTF.getText()) &&
+				_selectedAdress.port().currentValue() == Integer.parseInt(_portTF.getText()) &&
+				_selectedAdress.contact() == my(ContactsGui.class).selectedContact().currentValue()) {
+
+				_inetAddressesList.clearSelection();
 				return;
 			}
-			
+
 			newInternetAddress();
 			my(InternetAddressKeeper.class).remove(address);
-			_lstAddresses.clearSelection();
+			_inetAddressesList.clearSelection();
 		} catch (NumberFormatException e) {
 			logPortValueException(e);			
 		}
 	}
-	
+
 	private void delInternetAddress() {
 		InternetAddress address = _selectedAdress;
-		if(address == null || _host.getText().trim().length()==0) return;
-		
+		if(address == null || _hostTF.getText().trim().length() == 0) return;
+
 		my(InternetAddressKeeper.class).remove(address);
-		_lstAddresses.clearSelection();
+		_inetAddressesList.clearSelection();
 	}
-	
+
 	private void newInternetAddress() {
 		try{
-			String host = _host.getText();
-			if(host==null || host.trim().length()==0) return;
+			String host = _hostTF.getText();
+			if (host == null || host.trim().length() == 0) return;
 			
-			int port = Integer.parseInt(_port.getText());
+			int port = Integer.parseInt(_portTF.getText());
 			my(InternetAddressKeeper.class).add(selectedContact(), host, port);
-			
-			_lstAddresses.clearSelection();
+
+			_inetAddressesList.clearSelection();
 			cleanFields();
 		} catch (NumberFormatException e) {
 			logPortValueException(e);			
 		}
 	}
-	
+
 	private JList addresses() {
-		return _lstAddresses.getMainWidget();
+		return _inetAddressesList.getMainWidget();
 	}
 
 	private void cleanFields() {
-		_host.setText("");
-		_port.setText("");
+		_hostTF.setText("");
+		_portTF.setText("");
 	}
-	
+
 	private Contact selectedContact() {
 		return my(ContactsGui.class).selectedContact().currentValue();
 	}

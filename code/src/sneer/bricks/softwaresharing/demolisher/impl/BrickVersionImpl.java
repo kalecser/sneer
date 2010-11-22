@@ -13,6 +13,7 @@ import sneer.bricks.expression.files.map.visitors.FileMapGuide;
 import sneer.bricks.expression.files.map.visitors.FolderStructureVisitor;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
+import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
 
@@ -25,9 +26,9 @@ class BrickVersionImpl implements BrickVersion {
 	private boolean _stagedForExecution;
 	
 	BrickVersionImpl(Hash hashOfPackage, boolean isCurrent) throws IOException {
+		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
 		_contents = BrickFilter.retrieveOnlyFilesFromThisBrick(hashOfPackage);
 		_files = findFiles();
-		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
 	}
 
 
@@ -105,10 +106,21 @@ class BrickVersionImpl implements BrickVersion {
 
 		@Override
 		public void visitFileContents(byte[] fileContents) {
-			_visitedFiles.add(new FileVersionImpl((List<String>)_path, fileContents, _lastModified, isCurrent()));
+			String path = pathToString();
+			byte[] fileContentsInCurrentVersion = isCurrent() ? fileContents : fileContentsInCurrentVersion(path);
+			_visitedFiles.add(new FileVersionImpl(path, fileContents, fileContentsInCurrentVersion, _lastModified, isCurrent()));
 			_path.removeLast();
 		}
 
+		private String pathToString() {
+			return my(Lang.class).strings().join(_path, "/");
+		}
+
+	}
+
+
+	private byte[] fileContentsInCurrentVersion(@SuppressWarnings("unused") String path) {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 

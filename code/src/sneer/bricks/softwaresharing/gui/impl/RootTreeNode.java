@@ -28,7 +28,7 @@ class RootTreeNode extends AbstractTreeNodeWrapper<BrickHistory> {
 		load();		
 	}
 
-	void load() {
+	private void load() {
 		_infos = new ArrayList<BrickHistory>();
 		Collection<BrickHistory> currentElements = my(BrickSpace.class).availableBricks();
 		_infos.addAll(currentElements);

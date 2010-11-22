@@ -5,19 +5,19 @@ import java.util.List;
 public interface BrickHistory {
 	
 	public enum Status {
-		/** A brick that has only rejected versions. */
+		/** A brick that has only rejected versions. (Icon: Light gray)*/
 		REJECTED,
 
-		/** A brick that has one or more DIVERGING versions.*/
+		/** A brick that has one or more DIVERGING versions. (Icon: Red with pencil)*/
 		DIVERGING,
 		
-		/** A brick that has no CURRENT version and has one or more DIFFERENT versions. */
+		/** A brick that has no CURRENT version and has one or more DIFFERENT versions. (Icon: Yellow)*/
 		NEW,
 		
-		/** A brick that has one CURRENT and zero DIFFERENT and zero DIVERGING versions. */
+		/** A brick that has one CURRENT and zero DIFFERENT and zero DIVERGING versions. (Icon: Black)*/
 		CURRENT,
 		
-		/** A brick that has one or more DIFFERENT versions and zero DIVERGING versions. */
+		/** A brick that has one or more DIFFERENT versions and zero DIVERGING versions. (Icon: Black with pencil)*/
 		DIFFERENT,
 	}
 	

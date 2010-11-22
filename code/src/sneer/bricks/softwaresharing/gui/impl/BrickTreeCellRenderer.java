@@ -15,7 +15,9 @@ class BrickTreeCellRenderer extends DefaultTreeCellRenderer {
 	  
 	JLabel result = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus_);
     
-    ImageIcon icon = ((AbstractTreeNodeWrapper<?>) value).getIcon();
+    ImageIcon icon = value instanceof AbstractTreeNodeWrapper
+    	? ((AbstractTreeNodeWrapper<?>) value).getIcon()
+    	: null;
     
     if (icon != null) 
     	result.setIcon(icon);
