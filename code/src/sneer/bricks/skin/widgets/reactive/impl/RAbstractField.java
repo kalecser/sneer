@@ -1,5 +1,7 @@
 package sneer.bricks.skin.widgets.reactive.impl;
 
+import static sneer.bricks.skin.widgets.reactive.NotificationPolicy.OnEnterPressedOrLostFocus;
+import static sneer.bricks.skin.widgets.reactive.NotificationPolicy.OnTyping;
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Color;
@@ -18,6 +20,7 @@ import javax.swing.JComponent;
 import javax.swing.text.JTextComponent;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
@@ -30,7 +33,6 @@ import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.exceptions.Refusal;
 
-
 abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDGET> implements TextWidget<WIDGET> {
 	
 	private static final long serialVersionUID = 1L;
@@ -38,7 +40,6 @@ abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDG
 	protected final Signal<?> _source;
 	protected final PickyConsumer<? super String> _setter;
 	protected final WIDGET _textComponent;
-	protected final NotificationPolicy _notificationPolicy;
 
 	protected ChangeInfoDecorator _decorator;
 	protected String _lastNotified = "";
@@ -49,9 +50,11 @@ abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDG
 
 	@SuppressWarnings("unused")	private Object _referenceToAvoidGc;
 
+	
 	RAbstractField(WIDGET textComponent, Signal<?> source) {
 		this(textComponent, source, null, NotificationPolicy.OnTyping);
 	}
+	
 	
 	RAbstractField(WIDGET textComponent, Signal<?> source, PickyConsumer<? super String> setter, NotificationPolicy notificationPolicy) {
 		_environment = my(Environment.class);
@@ -59,49 +62,54 @@ abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDG
 		_source = source;
 		_setter = setter;
 		_textComponent = textComponent;
-		_notificationPolicy = notificationPolicy;
 		startReceiving();
 		_decorator = new ChangeInfoDecorator(_textComponent);
 		
 		initGui();
-		initChangeListeners();
+		initChangeListeners(notificationPolicy);
 	}
 	
+	
 	private void initGui() {
-		if(_setter == null){
+		if(_setter == null)
 			_textComponent.setEditable(false);
-		}
 		
 		setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints(0,0,1,1,1.0,1.0, 
-													 GridBagConstraints.EAST, 
-													 GridBagConstraints.BOTH, new Insets(0,0,0,0),0,0);
+		GridBagConstraints c = new GridBagConstraints(
+			0,0,1,1,1.0,1.0, 
+			GridBagConstraints.EAST, 
+			GridBagConstraints.BOTH, new Insets(0,0,0,0),0,0
+		);
 		add(_textComponent, c);
 		setOpaque(false);
 	}
 
-	private void initChangeListeners() {
-		addKeyListenerToCommitOnKeyTyped();
-		if ( _notificationPolicy == NotificationPolicy.OnEnterPressedOrLostFocus )
-			addFocusListenerToCommitWhenLost();
+	
+	private void initChangeListeners(NotificationPolicy notificationPolicy) {
+		_textComponent.addKeyListener(new KeyAdapter() { @Override public void keyTyped(KeyEvent e) {
+			setNotified(false,  getText());
+		}});
+		
+		if (notificationPolicy == OnTyping) addKeyListenerToCommitOnKeyTyped();
+		if (notificationPolicy == OnEnterPressedOrLostFocus) addFocusListenerToCommitWhenLost();
 		addDoneListenerCommiter();
 	}
 
 
 	private void addKeyListenerToCommitOnKeyTyped() {
 		_textComponent.addKeyListener(new KeyAdapter() { @Override public void keyTyped(KeyEvent e) {
-			setNotified(_notificationPolicy == NotificationPolicy.OnTyping,  getText());
 			Environments.runWith(_environment, new Closure() { @Override public void run() {
-				commitIfNecessary();
+				commitOnKeyTyped();
 			}});
-		}
+		}});
 
-		private void commitIfNecessary() {
-			my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
-				_textComponent.invalidate();
-				_textComponent.getParent().validate();
-				if ( _notificationPolicy == NotificationPolicy.OnTyping ) commitTextChanges();
-			}});
+	}
+	
+	private void commitOnKeyTyped() {
+		my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
+			_textComponent.invalidate();
+			_textComponent.getParent().validate();
+			commitTextChanges();
 		}});
 	}
 	
@@ -128,10 +136,17 @@ abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDG
 	}
 
 	public void commitTextChanges() {
+		my(Logger.class).log("Enter: commitingTextChanges");
+
 		String text = getText();
-		if (text.equals( currentValue())) return;
+		if (text.equals(currentValue())) return;
+		my(Logger.class).log("Enter: text was different");
+		
 		my(GuiThread.class).assertInGuiThread();
+		my(Logger.class).log("Enter: was in gui thread");
+
 		consume(text);
+
 		refreshTextComponent();
 		setNotified(true, text);
 	}
@@ -145,26 +160,18 @@ abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDG
 		return valueToString(_source.currentValue());
 	}
 
-	private String valueToString(Object value) {
-		return (value==null)?"":value.toString();
-	}
-	
 	public String getText() {
-		String tmp = tryReadText();
-		return tmp==null ? "": tmp;
+		return valueToString(tryReadText());
 	}
-	
-	public void setText(final String text) {
+
+	public void setText(String text) {
 		my(GuiThread.class).assertInGuiThread();
-		String currentValue = tryReadText();
 		
-		if(currentValue==null || text==null){
-			trySetText(text);
-			return;
-		}
+		text = valueToString(text);
+		String currentValue = valueToString(tryReadText());
 		
-		if(!currentValue.equals(text))
-			trySetText(text);
+		if(currentValue.equals(text)) return;
+		trySetText(text);
 	}
 	
 	private void trySetText(final String text){
@@ -182,6 +189,14 @@ abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDG
 			throw new sneer.foundation.lang.exceptions.NotImplementedYet("Invalid Widget", e);
 		}
 	}
+	
+	
+	private String valueToString(Object value) {
+		return value == null
+			? ""
+			: value.toString();
+	}
+
 	
 	@Override
 	public WIDGET getMainWidget() {
@@ -205,7 +220,7 @@ abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDG
 		_notified = isNotified;
 		_decorator.decorate(isNotified);
 		
-		if(isNotified) _lastNotified = newText;
+		if (isNotified) _lastNotified = newText;
 	}
 	
 	@Override
@@ -220,9 +235,11 @@ abstract class RAbstractField<WIDGET extends JTextComponent> extends RPanel<WIDG
 		}});
 	}
 	
-	protected void consume(String text) {
+	private void consume(String text) {
 		try {
+			my(Logger.class).log("Enter: Before consume");
 			_setter.consume(text);
+			my(Logger.class).log("Enter: After consume");
 		} catch (Refusal ip) {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "Invalid Field Value: " + text, ip.getMessage(), ip, 20000);
 			requestFocus();

@@ -22,11 +22,12 @@ public class Freedom6Test extends SovereignFunctionalTestBase {
 		a().setFolderToBeBackedUp(importantFolderA);
 		File file = createTmpFileWithFileNameAsContent("important_folder/important_file.txt");
 		
-		a().syncBackups(); //Backups the file.
+		b().lendBackupSpaceTo(a().ownName(), 10);
+		a().waitForBackupSync(); //Backups the file.
 		
 		file.delete(); //Oops
 		assertFalse(file.exists());
-		a().syncBackups(); //Recovers the file.
+		a().recoverFileFromBackup("important_file.txt"); //Recovers the file.
 		assertTrue(file.exists());
 		
 		String contents = my(IO.class).files().readString(file);

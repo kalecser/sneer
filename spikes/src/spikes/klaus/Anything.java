@@ -3,12 +3,53 @@ package spikes.klaus;
 import java.io.File;
 import java.lang.ref.WeakReference;
 
+import net.sbbi.upnp.impls.InternetGatewayDevice;
+
 
 @SuppressWarnings("deprecation")
 public class Anything {
 
 	public static void main(String[] args) throws Exception {
 
+		
+		int discoveryTimeout = 5000; // 5 secs to receive a response from
+										// devices
+		try {
+			InternetGatewayDevice[] IGDs = InternetGatewayDevice
+					.getDevices(discoveryTimeout);
+			if (IGDs != null) {
+				// let's the the first device found
+				InternetGatewayDevice testIGD = IGDs[0];
+				System.out.println("Found device "
+						+ testIGD.getIGDRootDevice().getModelName());
+				// now let's open the port
+				String localHostIP = "192.168.1.100";
+				System.out.println("My ip: " + localHostIP);
+				// we assume that localHostIP is something else than 127.0.0.1
+				boolean mapped = testIGD.addPortMapping(
+						"Some mapping description", null, 5900, 9090,
+						localHostIP, 0, "TCP");
+				if (mapped) {
+					System.out.println("Port 9090 mapped to " + localHostIP);
+					// and now close it
+//					boolean unmapped = testIGD.deletePortMapping(null, 9090,
+//							"TCP");
+//					if (unmapped) {
+//						System.out.println("Port 9090 unmapped");
+//					}
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+//		catch (UPNPResponseException respEx) {
+//			// oups the IGD did not like something !!
+//		}
+		
+		
+		System.exit(0);
+		
+		
 		File classFile = new File(Anything.class.getResource("Anything.class").toURI());
 //		File classFile = new File("lixo35345435");
 		System.out.println(classFile);

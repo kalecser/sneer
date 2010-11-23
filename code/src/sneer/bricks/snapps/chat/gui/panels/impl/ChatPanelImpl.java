@@ -51,6 +51,7 @@ class ChatPanelImpl extends JPanel {
 	private final TextWidget<JTextPane> _messageInputPane;
 
 	@SuppressWarnings("unused") private Object _refToAvoidGc;
+	
 
 	ChatPanelImpl(ListSignal<ChatMessage> messages, Consumer<String> messageSender) {
 		_messages = messages;
@@ -71,12 +72,14 @@ class ChatPanelImpl extends JPanel {
 		init();
 	} 
 	
+	
 	private void init() {
 		initGui();
 		initShoutAnnouncer();
 		new WindClipboardSupport();
 	}
 
+	
 	private void initGui() {
 		_listScrollPane.getViewport().add(_shoutsList);
 		JScrollPane inputScrollPane = new JScrollPane();

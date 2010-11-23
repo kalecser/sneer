@@ -24,7 +24,9 @@ public interface SovereignParty {
 
 	//Freedom6
 	void setFolderToBeBackedUp(File folder);
-	void syncBackups();
+	void lendBackupSpaceTo(String contactNick, int megaBytes);
+	void waitForBackupSync();
+	void recoverFileFromBackup(String fileName);
 	
 	//Freedom7
 	void enableCodeSharing();

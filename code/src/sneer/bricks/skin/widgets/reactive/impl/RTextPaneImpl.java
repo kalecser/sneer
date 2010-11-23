@@ -10,9 +10,11 @@ import javax.swing.text.Keymap;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.foundation.lang.PickyConsumer;
+import static sneer.foundation.environments.Environments.my;
 
 class RTextPaneImpl extends RAbstractField<JTextPane> {
 	
@@ -28,8 +30,9 @@ class RTextPaneImpl extends RAbstractField<JTextPane> {
 
 	@Override
 	protected void addDoneListenerCommiter() {
-        Keymap kMap=_textComponent.getKeymap();
+        Keymap kMap = _textComponent.getKeymap();
         kMap.addActionForKeyStroke(KeyStroke.getKeyStroke("ENTER"), new AbstractAction(){ @Override public void actionPerformed(ActionEvent e) {
+        	my(Logger.class).log("Enter key pressed.");
         	commitTextChanges();
  		}});
         insertLineBreakerListenerFor(kMap, "control ENTER");

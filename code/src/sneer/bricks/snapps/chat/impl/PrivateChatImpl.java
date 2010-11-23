@@ -3,7 +3,9 @@ package sneer.bricks.snapps.chat.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
+import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
@@ -16,10 +18,14 @@ import sneer.foundation.lang.Consumer;
 
 class PrivateChatImpl implements PrivateChat {
 
+	private static final int TEN_MINUTES = 1000 * 60 * 10;
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
 
 	{
 		_refToAvoidGc = my(RemoteTuples.class).addSubscription(ChatMessage.class, new Consumer<ChatMessage>() { @Override public void consume(ChatMessage message) {
+			if (!isForMe(message)) return;
+			if (isOld(message)) return;
+			
 			String reply = ChatWindow.showInputDialog(my(ContactSeals.class).contactGiven(message.publisher).nickname() + " says: " + message.text);
 			if (reply == null) return;
 			sendTo(message.publisher, reply);
@@ -43,8 +49,25 @@ class PrivateChatImpl implements PrivateChat {
 		});
 	}
 
+	
 	private void sendTo(Seal to, String text) {
 		my(TupleSpace.class).acquire(new ChatMessage(to, text));
+	}
+	
+	
+	private boolean isForMe(ChatMessage message) {
+		Seal ownSeal = my(OwnSeal.class).get().currentValue();
+		return ownSeal.equals(message.addressee);
+	}
+
+	
+	private boolean isOld(ChatMessage message) {
+		return now() - message.publicationTime > TEN_MINUTES;
+	}
+
+	
+	private long now() {
+		return my(Clock.class).time().currentValue();
 	}
 
 }
