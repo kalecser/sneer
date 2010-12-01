@@ -541,7 +541,8 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	@Override
 	public void lendBackupSpaceTo(String contactNick, int megaBytes) {
-		//throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		Contact contact = my(Contacts.class).contactGiven(contactNick);
+		my(Snackup.class).lendBackupSpaceTo(contact, megaBytes);
 	}
 
 }

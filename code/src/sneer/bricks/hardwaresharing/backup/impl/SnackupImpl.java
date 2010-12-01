@@ -10,6 +10,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.backup.FolderToBeBackedUp;
 import sneer.bricks.hardwaresharing.backup.Snackup;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.attributes.Attributes;
 
 class SnackupImpl implements Snackup {
@@ -48,6 +49,12 @@ class SnackupImpl implements Snackup {
 
 	private String folderToBeBackedUp() {
 		return my(Attributes.class).myAttributeValue(FolderToBeBackedUp.class).currentValue();
+	}
+
+
+	@Override
+	public void lendBackupSpaceTo(Contact contact, int megaBytes) {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 }
