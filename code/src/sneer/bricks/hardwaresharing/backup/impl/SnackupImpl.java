@@ -54,6 +54,7 @@ class SnackupImpl implements Snackup {
 
 	@Override
 	public void lendBackupSpaceTo(Contact contact, int megaBytes) {
+		my(Attributes.class);
 		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
