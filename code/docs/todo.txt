@@ -41,9 +41,6 @@ Bamboo =================================================
 
 Igor ==================================================== 
 
-	- Site
-		- Getting Started (page title and menu item) (Big button on the titlebar remains "Download")
-
 	- Properties? Attributes? Window - For reading/setting my own Property/Attribute values and for contacts' values.
 	
 	- Add list of friends to ContactInfoWindow
