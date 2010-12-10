@@ -16,22 +16,22 @@ import sneer.tests.SovereignFunctionalTestBase;
 public class Freedom6Test extends SovereignFunctionalTestBase {
 
 	@Ignore
-	@Test (timeout = 3000)
-	public void shareAFile() throws IOException {
-		File importantFolderA = createFolder("important_folder");
-		a().setFolderToBeBackedUp(importantFolderA);
-		File file = createTmpFileWithFileNameAsContent("important_folder/important_file.txt");
+	@Test (timeout = 6000)
+	public void syncAFile() throws IOException {
+		File folder = createFolder("important_folder");
+		a().setFolderToSync(folder);
+		createTmpFileWithFileNameAsContent("important_folder/important_file.txt");
 		
 		b().lendBackupSpaceTo(a().ownName(), 10);
-		a().waitForBackupSync(); //Backups the file.
+		a().waitForSync();
+
+		File newFolder = createFolder("new_folder");
+		a().setFolderToSync(newFolder);
+		a().waitForSync();
 		
-		file.delete(); //Oops
-		assertFalse(file.exists());
-		a().recoverFileFromBackup("important_file.txt"); //Recovers the file.
-		assertTrue(file.exists());
-		
-		String contents = my(IO.class).files().readString(file);
-		assertEquals("important_folder/important_file.txt", contents);
+		File recoveredFile = new File(newFolder, "important_file.txt");
+		String contents = my(IO.class).files().readString(recoveredFile);
+		assertEquals("new_folder/important_file.txt", contents);
 	}
 
 	private File createFolder(String fileName) {

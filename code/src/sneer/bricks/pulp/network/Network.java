@@ -5,7 +5,7 @@ import java.io.IOException;
 import sneer.foundation.brickness.Brick;
 
 @Brick
-public interface Network{
+public interface Network {
 
 	ByteArraySocket openSocket(String hostAddress, int port) throws IOException;
 

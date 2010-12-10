@@ -21,7 +21,7 @@ import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.iterables.Iterables;
-import sneer.bricks.hardwaresharing.backup.FolderToBeBackedUp;
+import sneer.bricks.hardwaresharing.backup.FolderToSync;
 import sneer.bricks.hardwaresharing.backup.Snackup;
 import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.identity.name.OwnName;
@@ -521,14 +521,14 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 
 	@Override
-	public void setFolderToBeBackedUp(File folder) {
-		my(Attributes.class).myAttributeSetter(FolderToBeBackedUp.class)
+	public void setFolderToSync(File folder) {
+		my(Attributes.class).myAttributeSetter(FolderToSync.class)
 			.consume(folder.getAbsolutePath());
 	}
 
 
 	@Override
-	public void waitForBackupSync() {
+	public void waitForSync() {
 		my(Snackup.class).sync();
 	}
 

@@ -8,7 +8,7 @@ import java.util.Iterator;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.hardwaresharing.backup.FolderToBeBackedUp;
+import sneer.bricks.hardwaresharing.backup.FolderToSync;
 import sneer.bricks.hardwaresharing.backup.Snackup;
 import sneer.bricks.network.social.attributes.Attributes;
 
@@ -21,33 +21,33 @@ class SnackupImpl implements Snackup {
 
 	{
 		_refToAvoidGc = my(Timer.class).wakeUpNowAndEvery(FIVE_MINUTES, new Runnable() { @Override public void run() {
-			updateFolderToBeBackedUp();
+			updateFolderToSync();
 		}});
 	}
 	
 	
 	@Override
 	public void sync() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		updateFolderToSync();
 	}
 
 	
-	protected void updateFolderToBeBackedUp() {
-		String folder = folderToBeBackedUp();
+	protected void updateFolderToSync() {
+		String folder = folderToSync();
 		if (folder == null) return;
 		
 		Iterator<File> files = my(IO.class).files().iterate(new File(folder), null, true);
 		while (files.hasNext())
-			updateFileToBeBackedUp(files.next());
+			updateFileToSync(files.next());
 	}
 
 	
-	private void updateFileToBeBackedUp(@SuppressWarnings("unused") File file) {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	private void updateFileToSync(@SuppressWarnings("unused") File file) {
+		//my(TupleSpace.class).acquire(new FileToSync(relativeName(file)));
 	}
 
-	private String folderToBeBackedUp() {
-		return my(Attributes.class).myAttributeValue(FolderToBeBackedUp.class).currentValue();
+	private String folderToSync() {
+		return my(Attributes.class).myAttributeValue(FolderToSync.class).currentValue();
 	}
 
 }
