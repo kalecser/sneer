@@ -2,6 +2,7 @@ package sneer.bricks.network.social.attributes.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
@@ -10,8 +11,10 @@ import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.network.social.attributes.tests.fixtures.AnotherAttribute;
 import sneer.bricks.network.social.attributes.tests.fixtures.AttributeWithDefaultValue;
 import sneer.bricks.network.social.attributes.tests.fixtures.SomeAttribute;
+import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.Consumer;
 
 public class AttributesTest extends BrickTestWithTuples {
 
@@ -52,6 +55,13 @@ public class AttributesTest extends BrickTestWithTuples {
 		testPeerAttribute(AnotherAttribute.class, null);
 	}
 
+	@Ignore
+	@Test
+	public void loadAttributes() {
+		my(Attributes.class).myAttributes().addReceiver(new Consumer<CollectionChange<Attribute<?>>>() { @Override public void consume(CollectionChange<Attribute<?>> attributes) {
+			assertTrue(attributes.elementsAdded().contains(SomeAttribute.class));
+		}});
+	}
 
 	private <T> void testPeerAttribute(Class<? extends Attribute<T>> attribute, T value) {
 		setPeerAttribute(attribute, value);
@@ -63,7 +73,7 @@ public class AttributesTest extends BrickTestWithTuples {
 	
 	private <T> void setPeerAttribute(final Class<? extends Attribute<T>> attribute, final T value) {
 		Environments.runWith(remote(), new Closure() { @Override public void run() {
-			my(Attributes.class).myAttributeSetter(attribute).consume(value);
+			_subject.myAttributeSetter(attribute).consume(value);
 		}});
 	}
 }
