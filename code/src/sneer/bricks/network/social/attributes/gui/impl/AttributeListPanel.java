@@ -10,33 +10,30 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.network.social.attributes.Attribute;
-import sneer.bricks.network.social.attributes.Attributes;
-import sneer.bricks.pulp.reactive.collections.CollectionChange;
+import sneer.bricks.network.social.attributes.gui.AttributePanelElement;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.lang.Consumer;
 
-import static sneer.foundation.environments.Environments.my;
-
-class MainPanel extends Box {
+class AttributeListPanel extends Box {
 
 	@SuppressWarnings("unused") private WeakContract _toAvoidGC;
-	private final SetSignal<Class<? extends Attribute<?>>> _attributes;
+	private final SetSignal<AttributePanelElement> _attributes;
 
-	MainPanel() {
+	AttributeListPanel(SetSignal<AttributePanelElement> elements) {
 		super(BoxLayout.Y_AXIS);
-		_attributes = my(Attributes.class).all();
+		_attributes = elements;
 
 		setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
 
-		_toAvoidGC = _attributes.addReceiver(new Consumer<CollectionChange<Class<? extends Attribute<?>>>>() { @Override public void consume(CollectionChange<Class<? extends Attribute<?>>> changes) {
-			addNewAttributePanels((Class<? extends Attribute<?>>[]) changes.elementsAdded().toArray());
+		_toAvoidGC = elements.addReceiver(new Consumer<Object>() { @Override public void consume(Object ignored) {
+			refresh();
 		}});
 	}
 
-	private void addNewAttributePanels(Class<? extends Attribute<?>>[] attributes) {
-		for (Class<? extends Attribute<?>> attribute : attributes)
-			add(newAttributePanelFor(attribute));
+	private void refresh() {
+		removeAll();
+		for (AttributePanelElement element : _attributes)
+			add(newAttributePanelFor(element));
 		smartPack();
 	}
 
@@ -47,7 +44,7 @@ class MainPanel extends Box {
 	}
 
 	
-	private JPanel newAttributePanelFor(Class<? extends Attribute<?>> attribute) {
+	private JPanel newAttributePanelFor(AttributePanelElement attribute) {
 		JPanel result = new AttributePanel(attribute);
 		result.setMaximumSize(new Dimension(340, 60));
 		result.setBorder(BorderFactory.createEmptyBorder(0, 6, 6, 6));
