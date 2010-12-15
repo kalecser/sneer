@@ -58,7 +58,7 @@ public class AttributesTest extends BrickTestWithTuples {
 	@Ignore
 	@Test
 	public void loadAttributes() {
-		my(Attributes.class).myAttributes().addReceiver(new Consumer<CollectionChange<Attribute<?>>>() { @Override public void consume(CollectionChange<Attribute<?>> attributes) {
+		my(Attributes.class).all().addReceiver(new Consumer<CollectionChange<Class<? extends Attribute<?>>>>() { @Override public void consume(CollectionChange<Class<? extends Attribute<?>>> attributes) {
 			assertTrue(attributes.elementsAdded().contains(SomeAttribute.class));
 		}});
 	}

@@ -21,11 +21,11 @@ import sneer.foundation.lang.exceptions.Refusal;
 
 class AttributesImpl implements Attributes {
 
-	private SetRegister<Attribute<?>> _myAttributes;
+	private SetRegister<Class<? extends Attribute<?>>> _all;
 
 
 	private AttributesImpl() {
-		_myAttributes = my(CollectionSignals.class).newSetRegister();
+		_all = my(CollectionSignals.class).newSetRegister();
 		my(TupleSpace.class).keep(AttributeValue.class);
 	}
 
@@ -56,7 +56,7 @@ class AttributesImpl implements Attributes {
 		}};
 	}
 
-	
+
 	@Override
 	public <T> Signal<T> attributeValueFor(final Contact contact, final Class<? extends Attribute<T>> attribute, Class<T> valueType) {
 		return new AttributeSubscriber<T>(contact, attribute, valueType).output();
@@ -67,14 +67,16 @@ class AttributesImpl implements Attributes {
 		return new ImmutableByteArray(my(Serializer.class).serialize(value));
 	}
 
-	@Override
-	public void registerAttribute(Attribute<?> newAttribute) {
-		_myAttributes.add(newAttribute);
-	}
 
 	@Override
-	public SetSignal<Attribute<?>> myAttributes() {
-		return _myAttributes.output();
+	public void registerAttribute(Class<? extends Attribute<?>> newAttribute) {
+		_all.add(newAttribute);
+	}
+
+
+	@Override
+	public SetSignal<Class<? extends Attribute<?>>> all() {
+		return _all.output();
 	}
 
 

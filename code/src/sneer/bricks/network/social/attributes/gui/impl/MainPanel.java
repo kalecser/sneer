@@ -21,21 +21,21 @@ import static sneer.foundation.environments.Environments.my;
 class MainPanel extends Box {
 
 	@SuppressWarnings("unused") private WeakContract _toAvoidGC;
-	private final SetSignal<Attribute<?>> _attributes;
+	private final SetSignal<Class<? extends Attribute<?>>> _attributes;
 
 	MainPanel() {
 		super(BoxLayout.Y_AXIS);
-		_attributes = my(Attributes.class).myAttributes();
+		_attributes = my(Attributes.class).all();
 
 		setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
 
-		_toAvoidGC = _attributes.addReceiver(new Consumer<CollectionChange<Attribute<?>>>() { @Override public void consume(CollectionChange<Attribute<?>> changes) {
-			addNewAttributePanels(changes.elementsAdded().toArray(new Attribute<?>[0]));
+		_toAvoidGC = _attributes.addReceiver(new Consumer<CollectionChange<Class<? extends Attribute<?>>>>() { @Override public void consume(CollectionChange<Class<? extends Attribute<?>>> changes) {
+			addNewAttributePanels((Class<? extends Attribute<?>>[]) changes.elementsAdded().toArray());
 		}});
 	}
 
-	private void addNewAttributePanels(Attribute<?>[] attributes) {
-		for (Attribute<?> attribute : attributes)
+	private void addNewAttributePanels(Class<? extends Attribute<?>>[] attributes) {
+		for (Class<? extends Attribute<?>> attribute : attributes)
 			add(newAttributePanelFor(attribute));
 		smartPack();
 	}
@@ -47,7 +47,7 @@ class MainPanel extends Box {
 	}
 
 	
-	private JPanel newAttributePanelFor(Attribute<?> attribute) {
+	private JPanel newAttributePanelFor(Class<? extends Attribute<?>> attribute) {
 		JPanel result = new AttributePanel(attribute);
 		result.setMaximumSize(new Dimension(340, 60));
 		result.setBorder(BorderFactory.createEmptyBorder(0, 6, 6, 6));

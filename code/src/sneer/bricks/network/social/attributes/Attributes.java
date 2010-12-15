@@ -10,8 +10,8 @@ import sneer.foundation.lang.PickyConsumer;
 @Brick
 public interface Attributes {
 
-	void registerAttribute(Attribute<?> newAttribute);
-	SetSignal<Attribute<?>> myAttributes();
+	void registerAttribute(Class<? extends Attribute<?>> newAttribute);
+	SetSignal<Class<? extends Attribute<?>>> all();
 
 	<T> Consumer<T> myAttributeSetter(Class<? extends Attribute<T>> attribute);
 	<T> Signal<T> myAttributeValue(Class<? extends Attribute<T>> attribute);
