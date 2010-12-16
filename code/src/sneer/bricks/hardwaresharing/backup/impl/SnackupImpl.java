@@ -9,8 +9,12 @@ import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardwaresharing.backup.FolderToSync;
+import sneer.bricks.hardwaresharing.backup.HardDriveMegabytesLent;
 import sneer.bricks.hardwaresharing.backup.Snackup;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.attributes.Attributes;
+import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.exceptions.Refusal;
 
 class SnackupImpl implements Snackup {
 	
@@ -48,6 +52,18 @@ class SnackupImpl implements Snackup {
 
 	private String folderToSync() {
 		return my(Attributes.class).myAttributeValue(FolderToSync.class).currentValue();
+	}
+
+
+	@Override
+	public void lendSpaceTo(Contact contact, int megaBytes) throws Refusal {
+		my(Attributes.class).attributeSetterFor(contact, HardDriveMegabytesLent.class).consume(megaBytes);
+	}
+
+
+	@Override
+	public Consumer<String> folderToSyncSetter() {
+		return my(Attributes.class).myAttributeSetter(FolderToSync.class);
 	}
 
 }

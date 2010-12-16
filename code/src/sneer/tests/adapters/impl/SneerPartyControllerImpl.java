@@ -21,7 +21,6 @@ import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.iterables.Iterables;
-import sneer.bricks.hardwaresharing.backup.FolderToSync;
 import sneer.bricks.hardwaresharing.backup.Snackup;
 import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.identity.name.OwnName;
@@ -73,7 +72,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	private Collection<Object> _refToAvoidGc = new ArrayList<Object>();
 
-	private File _codeFolder;
+	private File _codeFolder;	
 
 
 	private String _nameOfExpectedCaller;
@@ -522,8 +521,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	@Override
 	public void setFolderToSync(File folder) {
-		my(Attributes.class).myAttributeSetter(FolderToSync.class)
-			.consume(folder.getAbsolutePath());
+		my(Snackup.class).folderToSyncSetter().consume(folder.getAbsolutePath());
 	}
 
 
@@ -540,8 +538,13 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 
 	@Override
-	public void lendBackupSpaceTo(String contactNick, int megaBytes) {
-		//throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	public void lendSpaceTo(String contactNick, int megaBytes) {
+		Contact contact = my(Contacts.class).contactGiven(contactNick);
+		try {
+			my(Snackup.class).lendSpaceTo(contact, megaBytes);
+		} catch (Refusal e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 }
