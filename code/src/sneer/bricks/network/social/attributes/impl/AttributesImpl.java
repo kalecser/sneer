@@ -10,6 +10,9 @@ import sneer.bricks.network.social.attributes.Attribute;
 import sneer.bricks.network.social.attributes.AttributeValue;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.collections.CollectionSignals;
+import sneer.bricks.pulp.reactive.collections.SetRegister;
+import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.bricks.pulp.serialization.Serializer;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;
@@ -18,11 +21,15 @@ import sneer.foundation.lang.exceptions.Refusal;
 
 class AttributesImpl implements Attributes {
 
-	{
+	private SetRegister<Class<? extends Attribute<?>>> _all;
+
+
+	private AttributesImpl() {
+		_all = my(CollectionSignals.class).newSetRegister();
 		my(TupleSpace.class).keep(AttributeValue.class);
 	}
 
-	
+
 	@Override
 	public <T> Consumer<T> myAttributeSetter(final Class<? extends Attribute<T>> attribute) {
 		return new Consumer<T>() { @Override public void consume(T value) {
@@ -30,14 +37,14 @@ class AttributesImpl implements Attributes {
 			my(Logger.class).log("Setting value of my '{}' attribute to: {}", attribute.getSimpleName(), value);
 		}};
 	}
-	
-	
+
+
 	@Override
 	public <T> Signal<T> myAttributeValue(final Class<? extends Attribute<T>> attribute) {
 		return new AttributeSubscriber<T>(null, attribute, Object.class).output();
 	}
 
-	
+
 	@Override
 	public <T> PickyConsumer<T> attributeSetterFor(final Contact contact, final Class<? extends Attribute<T>> attribute) {
 		return new PickyConsumer<T>() { @Override public void consume(T value) throws Refusal {
@@ -48,15 +55,29 @@ class AttributesImpl implements Attributes {
 			my(Logger.class).log("Setting attribute '{}' for contact '{}' to: {}", attribute.getSimpleName(), contact, value);
 		}};
 	}
-	
-	
+
+
 	@Override
 	public <T> Signal<T> attributeValueFor(final Contact contact, final Class<? extends Attribute<T>> attribute, Class<T> valueType) {
 		return new AttributeSubscriber<T>(contact, attribute, valueType).output();
 	}
-	
+
 
 	private ImmutableByteArray serialize(Object value) {
 		return new ImmutableByteArray(my(Serializer.class).serialize(value));
 	}
+
+
+	@Override
+	public void registerAttribute(Class<? extends Attribute<?>> newAttribute) {
+		_all.add(newAttribute);
+	}
+
+
+	@Override
+	public SetSignal<Class<? extends Attribute<?>>> all() {
+		return _all.output();
+	}
+
+
 }
