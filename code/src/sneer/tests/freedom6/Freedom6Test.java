@@ -22,7 +22,7 @@ public class Freedom6Test extends SovereignFunctionalTestBase {
 		a().setFolderToSync(folder);
 		createTmpFileWithFileNameAsContent("important_folder/important_file.txt");
 		
-		b().lendBackupSpaceTo(a().ownName(), 10);
+		b().lendSpaceTo(a().ownName(), 10);
 		a().waitForSync();
 
 		File newFolder = createFolder("new_folder");
@@ -30,8 +30,12 @@ public class Freedom6Test extends SovereignFunctionalTestBase {
 		a().waitForSync();
 		
 		File recoveredFile = new File(newFolder, "important_file.txt");
+		assertEquals("new_folder/important_file.txt", contents(recoveredFile));
+	}
+
+	private String contents(File recoveredFile) throws IOException {
 		String contents = my(IO.class).files().readString(recoveredFile);
-		assertEquals("new_folder/important_file.txt", contents);
+		return contents;
 	}
 
 	private File createFolder(String fileName) {
