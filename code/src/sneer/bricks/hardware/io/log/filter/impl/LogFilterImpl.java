@@ -30,6 +30,7 @@ class LogFilterImpl implements LogFilter {
 		_phrases.add("Brick");
 		_phrases.add("Enter");
 		_phrases.add("Shouting");
+		_phrases.add("Attribute");
 //		_phrases.add("Stepper");
 //		_phrases.add("Sending");
 //		_phrases.add("[");
