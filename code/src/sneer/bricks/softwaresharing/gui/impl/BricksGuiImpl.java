@@ -180,7 +180,6 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 	private void initGui() {
 
 		_tree.setRootVisible(false);
-//		_tree.setModel(new DefaultTreeModel(root));
 		_tree.setCellRenderer(new BrickTreeCellRenderer());
 		_tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		_tree.setBorder(new EmptyBorder(5,5,5,5));
@@ -225,6 +224,7 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		_refToAvoidGc = my(BrickSpace.class).newBuildingFound().addPulseReceiver(new Runnable() { @Override public void run() {
 			refreshBrickTree();
 		}});
+//		refreshBrickTree(); //Uncomment to see mock data.
 	}
 
 	private void addMeTooButton(JToolBar toolbar) {
@@ -255,7 +255,8 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		_scrollTree.getViewport().add(_tree);
 
 		RootTreeNode root = new RootTreeNode();
-//		RootTreeNode root = new RootTreeNode(FakeModel.bricks());
+//		RootTreeNode root = new RootTreeNode(FakeModel.bricks()); //Uncomment to see mock data.
+		
 		_tree.setModel(new DefaultTreeModel(root));
 		_files.setModel(new DefaultListModel());
 	}
