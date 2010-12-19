@@ -37,4 +37,10 @@ final class InternetAddressImpl implements InternetAddress {
 	public Contact contact() {
 		return _contact;
 	}
+	
+	@Override
+	public String toString() {
+		return "Sighting: " + _contact+" (" + host() + ")";
+	}
+
 }
