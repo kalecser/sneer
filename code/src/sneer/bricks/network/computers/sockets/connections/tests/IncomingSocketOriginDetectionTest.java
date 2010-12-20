@@ -6,6 +6,7 @@ import org.jmock.Expectations;
 import org.jmock.Sequence;
 import org.junit.Test;
 
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
@@ -14,7 +15,7 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
-import sneer.bricks.network.computers.sockets.connections.ContactSighting;
+import sneer.bricks.network.computers.sockets.connections.Sighting;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.network.ByteArraySocket;
@@ -64,17 +65,18 @@ public class IncomingSocketOriginDetectionTest extends BrickTestBase {
 			
 		}});
 
-		final Latch ipDetected = my(Latches.class).produce();
+		final Latch sightingNotified = my(Latches.class).produce();
 		@SuppressWarnings("unused")
-		WeakContract refToAvoidGc = _subject.contactSightings().addReceiver(new Consumer<ContactSighting>() { @Override public void consume(ContactSighting sighting) {
-			assertEquals(_otherSeal, sighting.seal());
-			assertEquals("10.42.10.42", sighting.ip());
-			ipDetected.open();
+		WeakContract refToAvoidGc = my(TupleSpace.class).addSubscription(Sighting.class, new Consumer<Sighting>() { @Override public void consume(Sighting sighting) {
+			assertEquals(_otherSeal, sighting.peersSeal);
+			assertEquals("10.42.10.42", sighting.ip);
+			sightingNotified.open();
 		}});
 
 		_subject.manageIncomingSocket(_socket);
 		
-		ipDetected.waitTillOpen();
+		my(TupleSpace.class).waitForAllDispatchingToFinish();
+		sightingNotified.waitTillOpen();
 		
 		my(Threads.class).crashAllThreads();
 	}

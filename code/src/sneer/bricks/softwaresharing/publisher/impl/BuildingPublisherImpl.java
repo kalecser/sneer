@@ -27,7 +27,7 @@ class BuildingPublisherImpl implements BuildingPublisher {
 		}
 
 		BuildingHash result = new BuildingHash(hash);
-		my(TupleSpace.class).acquire(result);
+		my(TupleSpace.class).add(result);
 		return result;
 	}
 

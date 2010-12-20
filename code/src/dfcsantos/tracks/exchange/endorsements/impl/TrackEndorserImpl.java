@@ -86,7 +86,7 @@ class TrackEndorserImpl implements TrackEndorser {
 			return;
 		}
 
-		my(TupleSpace.class).acquire(new TrackEndorsement(relativePath(track), track.lastModified(), hash));
+		my(TupleSpace.class).add(new TrackEndorsement(relativePath(track), track.lastModified(), hash));
 	}
 
 	private <T> T pickOneAtRandom(T[] list) {

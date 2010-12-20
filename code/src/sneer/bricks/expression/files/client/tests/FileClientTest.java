@@ -92,7 +92,7 @@ public class FileClientTest extends BrickTestWithTuples {
 
 	private void sendFileContentBlocksUponRequest(final Iterator<FileContents> blocks) {
 		_toAvoidGC = my(RemoteTuples.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
-			my(TupleSpace.class).acquire(blocks.next());
+			my(TupleSpace.class).add(blocks.next());
 			my(Clock.class).advanceTime(1); // To avoid duplicated tuples
 		}});
 	}

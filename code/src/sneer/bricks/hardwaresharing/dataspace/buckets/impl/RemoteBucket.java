@@ -24,7 +24,7 @@ class RemoteBucket implements Bucket {
 	@Override
 	public byte[] read(final long blockNumber) {
 		final byte[] result = null;
-		my(TupleSpace.class).acquire(new BlockRead(_seal, blockNumber));
+		my(TupleSpace.class).add(new BlockRead(_seal, blockNumber));
 
 		final Latch latch = my(Latches.class).produce();
 		

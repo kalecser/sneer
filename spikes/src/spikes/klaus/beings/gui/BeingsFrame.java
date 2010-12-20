@@ -4,6 +4,8 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -12,13 +14,16 @@ import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 
 
+@SuppressWarnings("rawtypes")
 public class BeingsFrame extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final int WORLD_WIDTH = 401;  //Prime number to avoid "wind" effects of scanning adjacent cells in a specific direction.
-	private static final int WORLD_HEIGHT = 307; //Prime number to avoid "wind" effects of scanning adjacent cells in a specific direction.
+	static final int WORLD_WIDTH = 181;  //Prime number to avoid "wind" effects of scanning adjacent cells in a specific direction.
+	static final int WORLD_HEIGHT = 167; //Prime number to avoid "wind" effects of scanning adjacent cells in a specific direction.
 	private static final long WORLD_CELL_COUNT = WORLD_WIDTH * WORLD_HEIGHT;
+
+	private static final int MARGIN = 30;
 	
 	private static Being FOOD = new Food(); 
 	
@@ -44,15 +49,26 @@ public class BeingsFrame extends JFrame {
 
 	
 	private void stepAllCells() {
+		Map countByType = new HashMap();
 		int x = 0;
 		int y = 0;
 		for (long i = WORLD_CELL_COUNT - 1; i >= 0; i--) {
 			x = (x + 200) % WORLD_WIDTH;
 			y = (y + 150) % WORLD_HEIGHT;
 			Being occupant = _world[x][y];
-			if (occupant != null)
-				occupant.step(_world, x, y);
+			if (occupant == null) continue;
+			
+			occupant.step(_world, x, y);
+			
+			Class type = occupant.getClass();
+			Integer count = (Integer) countByType.get(type);
+			if (count == null) count = 0;
+			countByType.put(type, count + 1);
 		}
+		
+		System.out.println("\n\n\n\n");
+		for (Object type : countByType.keySet())
+			System.out.println("" + type + ": " + countByType.get(type) );
 	}
 
 
@@ -62,7 +78,7 @@ public class BeingsFrame extends JFrame {
 			for (int y = WORLD_HEIGHT - 1; y >= 0; y--) {
 				Being occupant = _world[x][y];
 				graphics.setColor(occupant == null ? Color.GRAY : occupant.color());
-				graphics.drawLine(x, y, x, y);
+				graphics.fillRect(x * 3 + MARGIN, y * 3 + MARGIN, 3, 3);
 			}
 		}
 	}

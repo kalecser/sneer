@@ -4,33 +4,31 @@
 
 Following are the tasks each one of us has on his plate right now:
 
-Henrique =================================================
+Volunteers ==============================================
 	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and ` can both use the same Gui.
 		- Create a PrivateChatWindow that will use wind's extracted GUI behaviour.
 		- Enable multiple instances of the window, one for each contact
 		- The window should use o3chat library/brick
+		- unify Wind/PrivateChat GUI behavior
+			- PrivateChat must filter tuples by contact
+			- Finish GUI refactoring involving Wind and PrivateChat 
+			- enter's and reordering's bug 			
 
-Edmundo =================================================
 	- Freedom 2
 		- handshaking protocol
 			- the callee can accept or reject recent request waiting for approval
 				- if rejected: add contact seal to black list
 				- if accepted: add contact seal to contact list (initially, contact nickname = name) 
 			- refactor incominghandshaker (readContactsSealBytes method)
+
+	- LogConsole filters in textfield instead of list.
 	
-		- unify Wind/PrivateChat GUI behavior
-			- PrivateChat must filter tuples by contact
-			- Finish GUI refactoring involving Wind and PrivateChat 
-			- enter's and reordering's bug 			
+	- ToroidalGo - "Finish Him"
+	
 
 Patrick =================================================
 
 	- ScalaCompilerTest - Permgen issue. Unignore.
-
-
-Kalecser =================================================
-
-	- LogConsole filters in textfield instead of list.
 
 
 Bamboo =================================================
@@ -60,27 +58,9 @@ Igor ====================================================
 		- Busy
 
 
-René =================================================
-
-	- Revise 'sneer.bricks.snapps.games.go.GoMain'
-		- Talk to Klaus about issues in comments
-		- Make exchange of GoMoves work (see comments in GoMove tuple)
-
-	- Toroidal Go Snapp
-		- Detect and display victory/loss condition
-			- Sometimes it does not appear after I click resign.
-				- Could not replicate this.
-		- Fix: Extreme slowness during mouse movement, caused by a deepCopy() in board.canPlayStone().
-	
-	- Maybe toscoBall can become a single player game snapp.
-
-
 Klaus =================================================
 
-	- ContactInternetAddressesTest - Unignore
-
-	- InternetAddresses thread leak - Fix
-		- Simplify connection
+	- InternetAddresses - Make OwnHost into an attribute. Remove list of internet addresses from Contact Gui window. Use a single "Attempted Host" and "Attempted Port" attribute pair.
 	
 	- Prevalence loading impls in API classloader during tests - Fix
 		- Uncomment in BrickTestRunner the following line (around line 100):  //  if (name.indexOf(".impl.")...
@@ -89,8 +69,6 @@ Klaus =================================================
 	- GUI Nature
 		- [Klaus] Announce to community
 	
-	- OwnKeysImpl - Debug with leo and remove logging
-
 	- Prevalence
 		- ContactSeals.void put(String contactNickname, Seal seal) throws Refusal; -> PickyConsumer<Seal> sealPutterFor(Contact contact) throws Refusal;
 			- Change MusicalTasteMatcher's interface to use the contact instead of the nickname (string)

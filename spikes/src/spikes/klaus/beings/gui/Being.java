@@ -1,9 +1,12 @@
 package spikes.klaus.beings.gui;
 
 import java.awt.Color;
+import java.util.Random;
 
 
 abstract class Being {
+
+	static Random RANDOM = new Random();
 
 	abstract public Color color();
 

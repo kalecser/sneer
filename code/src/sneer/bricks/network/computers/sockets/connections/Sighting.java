@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.addresses.sighting;
+package sneer.bricks.network.computers.sockets.connections;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.identity.seals.Seal;
@@ -15,7 +15,7 @@ public class Sighting extends Tuple {
 	
 	@Override
 	public String toString() {
-		return "Dns entry seal: " + peersSeal + " ip: " + ip;
+		return "Peer Sighting seal: " + peersSeal + " ip: " + ip;
 	}
 	
 }

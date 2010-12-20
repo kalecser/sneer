@@ -67,7 +67,7 @@ public class SpeexTuplesTest extends BrickTestBase {
 		
 		setRoom("MyChannel");
 		for (byte[] frame : frames())
-			_tupleSpace.acquire(myPacket(frame));
+			_tupleSpace.add(myPacket(frame));
 		
 		_tupleSpace.waitForAllDispatchingToFinish();
 		
@@ -96,11 +96,11 @@ public class SpeexTuplesTest extends BrickTestBase {
 			packet.value = value;
 		}});
 		
-		_tupleSpace.acquire(speexPacketFrom(contactKey(), speexPacketPayload, "MyRoom", (short)0));
+		_tupleSpace.add(speexPacketFrom(contactKey(), speexPacketPayload, "MyRoom", (short)0));
 		// tuples with ownPublicKey should be ignored
-		_tupleSpace.acquire(speexPacketFrom(ownPublicKey(), speexPacketPayload, "MyRoom", (short)1));
+		_tupleSpace.add(speexPacketFrom(ownPublicKey(), speexPacketPayload, "MyRoom", (short)1));
 			// tuples with different channel should be ignored
-		_tupleSpace.acquire(speexPacketFrom(contactKey(), speexPacketPayload, "OtherRoom", (short)2));
+		_tupleSpace.add(speexPacketFrom(contactKey(), speexPacketPayload, "OtherRoom", (short)2));
 		
 		_tupleSpace.waitForAllDispatchingToFinish();
 		final PcmSoundPacket pcmPacket = packet.value;

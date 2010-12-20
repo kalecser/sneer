@@ -62,7 +62,7 @@ class ProbeManagerImpl implements ProbeManager {
 		return new Consumer<byte[]>(){ @Override public void consume(byte[] packet) {
 			final Object tuple = desserialize(packet, contact);
 			if (tuple == null) return;
-			TupleSpace.acquire((Tuple) tuple);
+			TupleSpace.add((Tuple) tuple);
 		}};
 	}
 

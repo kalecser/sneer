@@ -15,7 +15,6 @@ public interface ConnectionManager {
 
 	void closeConnectionFor(Contact contact);
 	
-	EventSource<ContactSighting> contactSightings();
 	EventSource<Call> unknownCallers();
 
 }

@@ -9,7 +9,6 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.sockets.connections.Call;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
-import sneer.bricks.network.computers.sockets.connections.ContactSighting;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.network.ByteArraySocket;
@@ -59,12 +58,6 @@ class ConnectionManagerImpl implements ConnectionManager {
 	public void closeConnectionFor(Contact contact) {
 		ByteConnectionImpl connection = ConnectionsByContact.remove(contact);
 		if (connection != null) connection.close();
-	}
-
-
-	@Override
-	public EventSource<ContactSighting> contactSightings() {
-		return IncomingHandShaker.contactSightings();
 	}
 
 

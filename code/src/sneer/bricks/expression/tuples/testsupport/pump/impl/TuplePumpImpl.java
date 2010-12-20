@@ -41,7 +41,7 @@ class TuplePumpImpl implements TuplePump {
 				if (_tuplesThatWillEcho.remove(tuple)) return; //Tuple that was sent and is returning.
 				_tuplesThatWillEcho.add(tuple);
 				Environments.runWith(to, new Closure() { @Override public void run() {
-					my(TupleSpace.class).acquire(tuple);
+					my(TupleSpace.class).add(tuple);
 				}});
 			}});
 		}});

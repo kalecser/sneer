@@ -1,13 +1,13 @@
 package sneer.bricks.network.computers.addresses.impl;
 
 import static sneer.foundation.environments.Environments.my;
-import sneer.bricks.expression.tuples.remote.RemoteTuples;
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
-import sneer.bricks.network.computers.addresses.sighting.Sighting;
+import sneer.bricks.network.computers.sockets.connections.Sighting;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
@@ -19,9 +19,13 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 
 	SetRegister<InternetAddress> _addresses = my(CollectionSignals.class).newSetRegister();
 	
+	{
+		my(TupleSpace.class).keep(Sighting.class);
+	}
+	
 	
 	@SuppressWarnings("unused")
-	private final WeakContract _refToAvoidGc = my(RemoteTuples.class).addSubscription(Sighting.class, new Consumer<Sighting>() { @Override public void consume(Sighting sighting) {
+	private final WeakContract _refToAvoidGc = my(TupleSpace.class).addSubscription(Sighting.class, new Consumer<Sighting>() { @Override public void consume(Sighting sighting) {
 		handle(sighting);
 	}});
 

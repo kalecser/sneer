@@ -5,8 +5,8 @@ package sneer.bricks.network.computers.addresses.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
-import sneer.bricks.network.computers.addresses.sighting.Sighting;
 import sneer.bricks.network.computers.ports.OwnPort;
+import sneer.bricks.network.computers.sockets.connections.Sighting;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Signal;
@@ -42,5 +42,31 @@ final class InternetAddressImpl implements InternetAddress {
 	public String toString() {
 		return "Sighting: " + _contact+" (" + host() + ")";
 	}
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ contact().hashCode();
+		result = prime * result
+				+ host().hashCode();
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!(obj instanceof InternetAddress)) return false;
+		InternetAddress other = (InternetAddress) obj;
+		if (!other.contact().equals(contact()))	return false;
+		if (!other.host().equals(host())) return false;
+		return true;
+	}
+	
+	
 
 }

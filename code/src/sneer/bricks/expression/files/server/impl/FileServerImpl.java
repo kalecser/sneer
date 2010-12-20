@@ -47,7 +47,7 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 	private void tryToReply(FileRequest request) throws IOException {
 		Tuple response = createResponseFor(request);
 		if (response == null) return;
-		my(TupleSpace.class).acquire(response);
+		my(TupleSpace.class).add(response);
 	}
 
 

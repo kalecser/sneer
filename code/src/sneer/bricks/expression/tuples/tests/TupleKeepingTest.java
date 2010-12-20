@@ -24,9 +24,9 @@ public class TupleKeepingTest extends BrickTestBase {
 		
 		subject().keep(KeptTuple.class);
 		KeptTuple tuple = new KeptTuple(1);
-		subject().acquire(tuple);
+		subject().add(tuple);
 		flushCache();
-		subject().acquire(tuple);
+		subject().add(tuple);
 		
 		subject().waitForAllDispatchingToFinish();
 
@@ -48,7 +48,7 @@ public class TupleKeepingTest extends BrickTestBase {
 
 	private void publishTestTuples(int amount) {
 		for (int i = 0; i < amount; i++)
-			subject().acquire(new TestTuple(i));
+			subject().add(new TestTuple(i));
 	}
 	
 }

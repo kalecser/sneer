@@ -57,17 +57,17 @@ public class ProbeManagerTest extends BrickTestBase {
 		my(Contacts.class).addContact("Neide");
 		my(ContactSeals.class).put("Neide", newSeal(new byte[]{1}));
 
-		_tuples.acquire(new TupleTypeA(1));
+		_tuples.add(new TupleTypeA(1));
 		assertPacketToSend(1);
-		_tuples.acquire(new TupleTypeB(2));
+		_tuples.add(new TupleTypeB(2));
 		assertPacketToSend(2);
 
 		_filter.block(TupleTypeB.class);
 		
-		_tuples.acquire(new TupleTypeA(3));
-		_tuples.acquire(new TupleTypeB(4));
+		_tuples.add(new TupleTypeA(3));
+		_tuples.add(new TupleTypeB(4));
 		assertPacketToSend(3);
-		_tuples.acquire(new TupleTypeA(5));
+		_tuples.add(new TupleTypeA(5));
 		assertPacketToSend(5);
 	}
 
