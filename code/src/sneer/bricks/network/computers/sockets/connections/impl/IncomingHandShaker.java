@@ -51,7 +51,7 @@ class IncomingHandShaker {
 
 	private static void notifySighting(final Seal contactsSeal, ByteArraySocket socket) {
 		String ip = my(Network.class).remoteIpFor(socket);
-		my(TupleSpace.class).acquire(new Sighting(contactsSeal, ip));
+		my(TupleSpace.class).add(new Sighting(contactsSeal, ip));
 	}
 
 

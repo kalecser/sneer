@@ -59,7 +59,7 @@ public class ContactInternetAddressesTest extends BrickTestWithTuples {
 		System.out.println(my(TupleSpace.class).keptTuples().size());
 		Sighting sighting =	EnvironmentUtils.produceIn(remote(), new Producer<Sighting>() { @Override public Sighting produce() {
 			Sighting result = new Sighting(ownSeal(), ip);
-			my(TupleSpace.class).acquire(result);
+			my(TupleSpace.class).add(result);
 			return result;
 		}});
 		waitForAllDispatchingToFinish();

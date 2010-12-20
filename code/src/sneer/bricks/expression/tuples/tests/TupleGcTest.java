@@ -33,7 +33,7 @@ public class TupleGcTest extends BrickTestBase {
 
 	private void publishMyTestTuples(int amount) {
 		for (int i = 0; i < amount; i++)
-			_subject.acquire(new GcTestTuple(i));
+			_subject.add(new GcTestTuple(i));
 	}
 	
 }

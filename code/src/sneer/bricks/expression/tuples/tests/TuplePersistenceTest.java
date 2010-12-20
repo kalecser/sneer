@@ -27,9 +27,9 @@ public class TuplePersistenceTest extends BrickTestBase {
 			assertEquals(0, subject1.keptTuples().size());
 	
 			subject1.keep(TestTuple.class);
-			subject1.acquire(tuple(0));
-			subject1.acquire(tuple(1));
-			subject1.acquire(tuple(2));
+			subject1.add(tuple(0));
+			subject1.add(tuple(1));
+			subject1.add(tuple(2));
 		}});
 
 		runInNewEnvironment(new Closure() { @Override public void run() {
@@ -48,7 +48,7 @@ public class TuplePersistenceTest extends BrickTestBase {
 	public void filesAreClosedUponCrash() throws IOException {
 		
 		my(TupleSpace.class).keep(TestTuple.class);
-		my(TupleSpace.class).acquire(tuple(42));
+		my(TupleSpace.class).add(tuple(42));
 		
 		my(Threads.class).crashAllThreads();
 		

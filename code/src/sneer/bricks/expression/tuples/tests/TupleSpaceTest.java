@@ -26,12 +26,12 @@ public class TupleSpaceTest extends BrickTestBase {
 		}});
 		
 		final TestTuple tuple = new TestTuple(42);
-		_subject.acquire(tuple);
+		_subject.add(tuple);
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 
 		contract.dispose();
 		
-		_subject.acquire(new TestTuple(-1));
+		_subject.add(new TestTuple(-1));
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 		assertArrayEquals(new Object[] { tuple }, tuples.toArray());
 	}
@@ -63,9 +63,9 @@ public class TupleSpaceTest extends BrickTestBase {
 	@Test (timeout = 1000)
 	public void subscriptionIsNotifiedSynchronously() {
 		_subject.keep(TestTuple.class);
-		_subject.acquire(new TestTuple(1));
-		_subject.acquire(new TestTuple(2));
-		_subject.acquire(new TestTuple(3));
+		_subject.add(new TestTuple(1));
+		_subject.add(new TestTuple(2));
+		_subject.add(new TestTuple(3));
 		
 		final ByRef<Integer> counter = ByRef.newInstance(0);
 		_subject.addSubscription(TestTuple.class, new Consumer<TestTuple>() { @Override public void consume(TestTuple tuple) {

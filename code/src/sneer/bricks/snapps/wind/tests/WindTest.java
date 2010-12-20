@@ -20,10 +20,10 @@ public class WindTest extends BrickTestBase {
 		ChatMessage ahhh = new ChatMessage("AHHH!!!");
 
 		my(Clock.class).advanceTimeTo(YEAR_ONE);
-		tupleSpace().acquire(ahhh);
+		tupleSpace().add(ahhh);
 
 		ChatMessage choo = new ChatMessage("CHOOO!!!");
-		tupleSpace().acquire(choo);
+		tupleSpace().add(choo);
 
 		tupleSpace().waitForAllDispatchingToFinish();
 
@@ -35,16 +35,16 @@ public class WindTest extends BrickTestBase {
 	@Test(timeout = 4000)
 	public void testSortedShoutsHeard() {
 		my(Clock.class).advanceTimeTo(15);
-		tupleSpace().acquire(new ChatMessage(""+15));
+		tupleSpace().add(new ChatMessage(""+15));
 
 		for (int i = 30; i > 20; i--) {
 			my(Clock.class).advanceTimeTo(i);
-			tupleSpace().acquire(new ChatMessage(""+i));
+			tupleSpace().add(new ChatMessage(""+i));
 		}
 		
 		for (int i = 10; i > 0; i--) {
 			my(Clock.class).advanceTimeTo(i);
-			tupleSpace().acquire(new ChatMessage(""+i));
+			tupleSpace().add(new ChatMessage(""+i));
 		}
 
 		tupleSpace().waitForAllDispatchingToFinish();

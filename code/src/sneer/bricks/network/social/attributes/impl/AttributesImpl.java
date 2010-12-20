@@ -33,7 +33,7 @@ class AttributesImpl implements Attributes {
 	@Override
 	public <T> Consumer<T> myAttributeSetter(final Class<? extends Attribute<T>> attribute) {
 		return new Consumer<T>() { @Override public void consume(T value) {
-			my(TupleSpace.class).acquire(new AttributeValue(null, attribute.getName(), serialize(value)));
+			my(TupleSpace.class).add(new AttributeValue(null, attribute.getName(), serialize(value)));
 			my(Logger.class).log("Setting value of my '{}' attribute to: {}", attribute.getSimpleName(), value);
 		}};
 	}
@@ -51,7 +51,7 @@ class AttributesImpl implements Attributes {
 			Seal seal = my(ContactSeals.class).sealGiven(contact).currentValue();
 			if (seal == null) throw new Refusal("Unable to set attribute '" + attribute.getSimpleName() + "' to value '" + value + "' because contact '" + contact + "' has no Seal.");
 			
-			my(TupleSpace.class).acquire(new AttributeValue(seal, attribute.getName(), serialize(value)));
+			my(TupleSpace.class).add(new AttributeValue(seal, attribute.getName(), serialize(value)));
 			my(Logger.class).log("Setting attribute '{}' for contact '{}' to: {}", attribute.getSimpleName(), contact, value);
 		}};
 	}

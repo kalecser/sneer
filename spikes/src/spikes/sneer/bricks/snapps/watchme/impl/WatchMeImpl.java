@@ -124,14 +124,14 @@ class WatchMeImpl implements WatchMe {
 		if (cache().contains(delta.imageData))
 			publishCacheHit(delta);
 		else
-			_tupleSpace.acquire(new ImageDeltaPacket(delta.x, delta.y, delta.imageData, 0));
+			_tupleSpace.add(new ImageDeltaPacket(delta.x, delta.y, delta.imageData, 0));
 		
 		cache().keep(delta.imageData);
 	}
 
 	private void publishCacheHit(ImageDelta delta) {
 		int handle = cache().handleFor(delta.imageData);
-		_tupleSpace.acquire(new ImageDeltaPacket(delta.x, delta.y, null, handle));
+		_tupleSpace.add(new ImageDeltaPacket(delta.x, delta.y, null, handle));
 	}
 
 	private Encoder encoder() {

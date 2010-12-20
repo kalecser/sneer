@@ -23,7 +23,7 @@ public class TupleSpaceResponsivenessTest extends BrickTestBase {
 			latch.open();
 		}});
 
-		_subject.acquire(new TestTuple(42));
+		_subject.add(new TestTuple(42));
 		latch.waitTillOpen();
 	}
 	

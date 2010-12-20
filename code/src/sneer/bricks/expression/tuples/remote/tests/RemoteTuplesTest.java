@@ -31,9 +31,9 @@ public class RemoteTuplesTest extends BrickTestBase {
 				fail();
 			}});
 
-		my(TupleSpace.class).acquire(new TestTuple(0));
-		my(TupleSpace.class).acquire(new TestTuple(1));
-		my(TupleSpace.class).acquire(new TestTuple(2));
+		my(TupleSpace.class).add(new TestTuple(0));
+		my(TupleSpace.class).add(new TestTuple(1));
+		my(TupleSpace.class).add(new TestTuple(2));
 
 		my(TupleSpace.class).waitForAllDispatchingToFinish();
 

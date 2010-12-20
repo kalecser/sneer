@@ -59,7 +59,7 @@ class GoMainImpl implements GoMain {
 				Contact contact = my(ContactsGui.class).selectedContact().currentValue();
 				_adversary = my(ContactSeals.class).sealGiven(contact).currentValue();
 				
-				my(TupleSpace.class).acquire(
+				my(TupleSpace.class).add(
 					new GoInvitation(_adversary, "Wanna play Go with " + my(Attributes.class).myAttributeValue(OwnName.class)  + "?")
 				);
 				
@@ -94,7 +94,7 @@ class GoMainImpl implements GoMain {
 		_refToAvoidGc2 = _moveRegister.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) {
 			if(move == null ) return;
 			if(move.equals(_remoteMove)) return;	
-			my(TupleSpace.class).acquire(new GoMove(_adversary, move));
+			my(TupleSpace.class).add(new GoMove(_adversary, move));
 		}});
 	}	
 	

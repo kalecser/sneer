@@ -166,7 +166,7 @@ class TupleSpaceImpl implements TupleSpace {
 	
 	
 	@Override
-	public synchronized void acquire(Tuple tuple) {
+	public synchronized void add(Tuple tuple) {
 		if (tuple.addressee == null) {
 			if (dealWithFloodedTuple(tuple)) return;
 		} else

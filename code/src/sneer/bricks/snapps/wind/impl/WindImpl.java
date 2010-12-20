@@ -61,7 +61,7 @@ class WindImpl implements Wind, Consumer<ChatMessage> {
 	
 	private void shout(String phrase) {
 		my(Logger.class).log("Shouting: " + phrase);
-		my(TupleSpace.class).acquire(new ChatMessage(phrase));
+		my(TupleSpace.class).add(new ChatMessage(phrase));
 	}
 	
 }

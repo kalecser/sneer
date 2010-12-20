@@ -51,7 +51,7 @@ class PrivateChatImpl implements PrivateChat {
 
 	
 	private void sendTo(Seal to, String text) {
-		my(TupleSpace.class).acquire(new ChatMessage(to, text));
+		my(TupleSpace.class).add(new ChatMessage(to, text));
 	}
 	
 	
