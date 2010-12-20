@@ -15,7 +15,7 @@ public class Sighting extends Tuple {
 	
 	@Override
 	public String toString() {
-		return "Dns entry seal: " + peersSeal + " ip: " + ip;
+		return "Peer Sighting seal: " + peersSeal + " ip: " + ip;
 	}
 	
 }
