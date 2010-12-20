@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.addresses.sighting;
+package sneer.bricks.network.computers.sockets.connections;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.identity.seals.Seal;

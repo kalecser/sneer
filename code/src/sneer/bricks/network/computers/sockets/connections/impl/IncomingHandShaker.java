@@ -5,11 +5,12 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.IOException;
 import java.util.Arrays;
 
+import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.connections.Call;
-import sneer.bricks.network.computers.sockets.connections.ContactSighting;
+import sneer.bricks.network.computers.sockets.connections.Sighting;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
@@ -22,7 +23,6 @@ class IncomingHandShaker {
 
 	
 	private static final ContactSeals Seals = my(ContactSeals.class);
-	private static EventNotifier<ContactSighting> contactSightings = my(EventNotifiers.class).newInstance();
 
 	private static EventNotifier<Call> unknownCallers = my(EventNotifiers.class).newInstance();
 
@@ -51,7 +51,7 @@ class IncomingHandShaker {
 
 	private static void notifySighting(final Seal contactsSeal, ByteArraySocket socket) {
 		String ip = my(Network.class).remoteIpFor(socket);
-		contactSightings.notifyReceivers(new ContactSightingImpl(contactsSeal, ip));
+		my(TupleSpace.class).acquire(new Sighting(contactsSeal, ip));
 	}
 
 
@@ -91,11 +91,6 @@ class IncomingHandShaker {
 			
 			socket.write(ProtocolTokens.FALLBACK);
 		}
-	}
-
-
-	static EventSource<ContactSighting> contactSightings() {
-		return contactSightings.output();
 	}
 
 

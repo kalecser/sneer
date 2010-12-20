@@ -7,7 +7,7 @@ import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
-import sneer.bricks.network.computers.addresses.sighting.Sighting;
+import sneer.bricks.network.computers.sockets.connections.Sighting;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
