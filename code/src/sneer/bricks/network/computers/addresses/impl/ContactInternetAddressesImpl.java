@@ -19,6 +19,10 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 
 	SetRegister<InternetAddress> _addresses = my(CollectionSignals.class).newSetRegister();
 	
+	{
+		my(TupleSpace.class).keep(Sighting.class);
+	}
+	
 	
 	@SuppressWarnings("unused")
 	private final WeakContract _refToAvoidGc = my(TupleSpace.class).addSubscription(Sighting.class, new Consumer<Sighting>() { @Override public void consume(Sighting sighting) {

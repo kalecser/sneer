@@ -3,7 +3,6 @@ package sneer.bricks.network.computers.addresses.tests;
 import static sneer.foundation.environments.Environments.my;
 
 import org.jmock.Expectations;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
@@ -20,8 +19,8 @@ import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.environments.EnvironmentUtils;
-import sneer.foundation.lang.Producer;
+import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.exceptions.Refusal;
 
 public class ContactInternetAddressesTest extends BrickTestWithTuples {
@@ -43,9 +42,8 @@ public class ContactInternetAddressesTest extends BrickTestWithTuples {
 	}
 
 	
-	@Ignore
 	@Test(timeout=2000)
-	public void dnsAddressesAreFound() {
+	public void sightingAddressesAreFound() {
 		see("10.42.10.42", 8081);
 		
 		InternetAddress kept = firstKeptAddress();
@@ -56,15 +54,11 @@ public class ContactInternetAddressesTest extends BrickTestWithTuples {
 
 	
 	private void see(final String ip, final int port) {
-		System.out.println(my(TupleSpace.class).keptTuples().size());
-		Sighting sighting =	EnvironmentUtils.produceIn(remote(), new Producer<Sighting>() { @Override public Sighting produce() {
+		Environments.runWith(remote(), new Closure() { @Override public void run() {
 			Sighting result = new Sighting(ownSeal(), ip);
 			my(TupleSpace.class).add(result);
-			return result;
 		}});
 		waitForAllDispatchingToFinish();
-		System.out.println(my(TupleSpace.class).keptTuples().size());
-		assertTrue(my(TupleSpace.class).keptTuples().contains(sighting));
 		
 		checking(new Expectations() {{
 			oneOf(_attributes).attributeValueFor(remoteContact(), OwnPort.class, Integer.class); 
