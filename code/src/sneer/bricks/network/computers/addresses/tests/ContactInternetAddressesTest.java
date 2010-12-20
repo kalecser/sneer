@@ -54,6 +54,7 @@ public class ContactInternetAddressesTest extends BrickTestWithTuples {
 		assertEquals(8081, (int)kept.port().currentValue());
 	}
 
+	
 	private void see(final String ip, final int port) {
 		System.out.println(my(TupleSpace.class).keptTuples().size());
 		Sighting sighting =	EnvironmentUtils.produceIn(remote(), new Producer<Sighting>() { @Override public Sighting produce() {
@@ -71,10 +72,12 @@ public class ContactInternetAddressesTest extends BrickTestWithTuples {
 		}});
 	}
 	
+	
 	private InternetAddress firstKeptAddress() {
 		return _subject.addresses().currentElements().iterator().next();
 	}
 
+	
 	private Seal ownSeal() {
 		return my(OwnSeal.class).get().currentValue();
 	}

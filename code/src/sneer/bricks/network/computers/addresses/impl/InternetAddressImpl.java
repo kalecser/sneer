@@ -43,4 +43,30 @@ final class InternetAddressImpl implements InternetAddress {
 		return "Sighting: " + _contact+" (" + host() + ")";
 	}
 
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ contact().hashCode();
+		result = prime * result
+				+ host().hashCode();
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!(obj instanceof InternetAddress)) return false;
+		InternetAddress other = (InternetAddress) obj;
+		if (!other.contact().equals(contact()))	return false;
+		if (!other.host().equals(host())) return false;
+		return true;
+	}
+	
+	
+
 }
