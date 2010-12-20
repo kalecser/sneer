@@ -24,7 +24,6 @@ import sneer.foundation.environments.EnvironmentUtils;
 import sneer.foundation.lang.Producer;
 import sneer.foundation.lang.exceptions.Refusal;
 
-@Ignore
 public class ContactInternetAddressesTest extends BrickTestWithTuples {
 
 	@Bind private final Attributes _attributes = mock(Attributes.class);
@@ -43,6 +42,8 @@ public class ContactInternetAddressesTest extends BrickTestWithTuples {
 		assertEquals(42, (int)kept.port().currentValue());
 	}
 
+	
+	@Ignore
 	@Test(timeout=2000)
 	public void dnsAddressesAreFound() {
 		see("10.42.10.42", 8081);
