@@ -11,15 +11,15 @@ import javax.swing.JPanel;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.social.attributes.gui.AttributePanelElement;
-import sneer.bricks.pulp.reactive.collections.SetSignal;
+import sneer.bricks.pulp.reactive.collections.CollectionSignal;
 import sneer.foundation.lang.Consumer;
 
 class AttributeListPanel extends Box {
 
 	@SuppressWarnings("unused") private WeakContract _toAvoidGC;
-	private final SetSignal<AttributePanelElement> _attributes;
+	private final CollectionSignal<AttributePanelElement> _attributes;
 
-	AttributeListPanel(SetSignal<AttributePanelElement> elements) {
+	AttributeListPanel(CollectionSignal<AttributePanelElement> elements) {
 		super(BoxLayout.Y_AXIS);
 		_attributes = elements;
 

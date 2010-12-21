@@ -2,6 +2,8 @@ package sneer.bricks.network.social.attributes.gui.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.awt.Dimension;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -17,12 +19,16 @@ class AttributePanel extends JPanel {
 
 	AttributePanel(AttributePanelElement attribute) {
 		_name = new JLabel(attribute.name());
+		_name.setAlignmentX(LEFT_ALIGNMENT);
 		add(_name);
 
 		_value = my(ReactiveWidgetFactory.class).newTextField(
 			attribute.value(), attribute.valueSetter()
 		);
-		add(_value.getMainWidget());
+		JTextField valueTextFiled = _value.getMainWidget();
+		valueTextFiled.setPreferredSize(new Dimension(90, 18));
+		valueTextFiled.setAlignmentX(LEFT_ALIGNMENT);
+		add(valueTextFiled);
 
 	}
 
