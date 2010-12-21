@@ -2,24 +2,16 @@ package sneer.bricks.network.social.attributes.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.network.social.attributes.Attribute;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.network.social.attributes.tests.fixtures.AnotherAttribute;
 import sneer.bricks.network.social.attributes.tests.fixtures.AttributeWithDefaultValue;
 import sneer.bricks.network.social.attributes.tests.fixtures.SomeAttribute;
-import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 public class AttributesTest extends BrickTestWithTuples {
 
@@ -60,27 +52,14 @@ public class AttributesTest extends BrickTestWithTuples {
 		testPeerAttribute(AnotherAttribute.class, null);
 	}
 
-	@Test //(timeout = 2000)
+	@Test
 	public void regsiterAttributes() {
-		final List<Class<? extends Attribute<?>>> attributesToBeLoaded = new ArrayList<Class<? extends Attribute<?>>>(
-			Arrays.asList(AnotherAttribute.class, AttributeWithDefaultValue.class, SomeAttribute.class)
-		);
-
-		final Latch numberOfRegisteredAttributes = my(Latches.class).produce(attributesToBeLoaded.size());
-		my(Attributes.class).all().addReceiver(new Consumer<CollectionChange<Class<? extends Attribute<?>>>>() { @Override public void consume(CollectionChange<Class<? extends Attribute<?>>> registeredAttributes) {
-			for (Class<? extends Attribute<?>> registeredAttribute : registeredAttributes.elementsAdded()) {
-				assertTrue(attributesToBeLoaded.contains(registeredAttribute));
-				attributesToBeLoaded.remove(registeredAttribute);
-				numberOfRegisteredAttributes.countDown();				
-			}
-		}});
-
 		// Load Attributes
-		my(AnotherAttribute.class);
-		my(AttributeWithDefaultValue.class);
-		my(SomeAttribute.class);
+		my(Attributes.class).registerAttribute(AnotherAttribute.class);
+		my(Attributes.class).registerAttribute(AttributeWithDefaultValue.class);
+		my(Attributes.class).registerAttribute(SomeAttribute.class);
 
-		numberOfRegisteredAttributes.waitTillOpen();
+		assertContentsInAnyOrder(my(Attributes.class).all(), AnotherAttribute.class, AttributeWithDefaultValue.class, SomeAttribute.class);
 	}
 
 	private <T> void testPeerAttribute(Class<? extends Attribute<T>> attribute, T value) {
