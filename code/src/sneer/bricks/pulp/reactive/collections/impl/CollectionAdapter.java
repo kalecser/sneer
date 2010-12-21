@@ -7,6 +7,7 @@ import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.CollectionSignal;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
+import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 
@@ -27,7 +28,7 @@ class CollectionAdapter<IN, OUT> {
 		}});
 	}
 
-	CollectionSignal<OUT> output() {
+	SetSignal<OUT> output() {
 		return my(WeakReferenceKeeper.class).keep(_register.output(), this);
 	}
 

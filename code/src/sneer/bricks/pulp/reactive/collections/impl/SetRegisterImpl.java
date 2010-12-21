@@ -119,6 +119,7 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 	private void preserveOnlyActualChanges(CollectionChange<T> change) {
 		change.elementsAdded().removeAll(_contents);
 		change.elementsRemoved().retainAll(_contents);
+		change.elementsAdded().removeAll(change.elementsRemoved());
 	}
 
 	@Override

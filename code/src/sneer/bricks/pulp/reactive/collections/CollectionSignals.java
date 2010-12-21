@@ -12,6 +12,7 @@ public interface CollectionSignals {
 
 	<K, V> MapRegister<K, V> newMapRegister();
 
-	<A, B> CollectionSignal<B> adapt(CollectionSignal<A> input, Functor<A, B> functor);
+	<A, B> ListSignal<B> adapt(ListSignal<A> input, Functor<A, B> functor);
+	<A, B> SetSignal<B> adapt(CollectionSignal<A> input, Functor<A, B> functor);
 
 }
