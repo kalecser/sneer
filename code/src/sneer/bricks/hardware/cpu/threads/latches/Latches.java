@@ -4,8 +4,4 @@ import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.Factory;
 
 @Brick
-public interface Latches extends Factory<Latch> {
-
-	Latch produce(int count);
-
-}
+public interface Latches extends Factory<Latch> {}

@@ -6,11 +6,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latch;
 
 class LatchImpl implements Latch {
 
-	private final CountDownLatch _delegate;
-
-	LatchImpl(int count) {
-		_delegate = new CountDownLatch(count);
-	}
+	private final CountDownLatch _delegate = new CountDownLatch(1);
 
 	@Override
 	public void waitTillOpen() {
@@ -23,16 +19,11 @@ class LatchImpl implements Latch {
 
 	@Override
 	public void run() {
-		countDown();
+		open();
 	}
 
 	@Override
 	public void open() {
-		countDown();
-	}
-
-	@Override
-	public void countDown() {
 		_delegate.countDown();
 	}
 
