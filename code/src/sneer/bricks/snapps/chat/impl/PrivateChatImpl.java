@@ -1,19 +1,26 @@
 package sneer.bricks.snapps.chat.impl;
 
 import static sneer.foundation.environments.Environments.my;
+
+import javax.swing.JFrame;
+
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.snapps.chat.ChatMessage;
 import sneer.bricks.snapps.chat.PrivateChat;
+import sneer.bricks.snapps.chat.gui.panels.ChatPanels;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
+import sneer.bricks.snapps.wind.Wind;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class PrivateChatImpl implements PrivateChat {
@@ -22,6 +29,8 @@ class PrivateChatImpl implements PrivateChat {
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
 
 	{
+		initFrame();
+		
 		_refToAvoidGc = my(RemoteTuples.class).addSubscription(ChatMessage.class, new Consumer<ChatMessage>() { @Override public void consume(ChatMessage message) {
 			if (!isForMe(message)) return;
 			if (isOld(message)) return;
@@ -47,6 +56,16 @@ class PrivateChatImpl implements PrivateChat {
 			@Override public int positionInMenu() { return 300; }
 
 		});
+	}
+
+
+	private void initFrame() {
+		my(GuiThread.class).invokeLater(new Closure() { @Override public void run() {
+			JFrame chatFrame = new JFrame();
+			chatFrame.add(my(ChatPanels.class).newPanel(my(Wind.class).shoutsHeard(), my(Wind.class).megaphone()));
+			chatFrame.setBounds(100, 100, 300, 500);
+			chatFrame.setVisible(true);
+		}});		
 	}
 
 	

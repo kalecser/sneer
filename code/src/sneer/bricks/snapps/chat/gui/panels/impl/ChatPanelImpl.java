@@ -120,10 +120,8 @@ class ChatPanelImpl extends JPanel {
 	
 	private void shoutAlert(Collection<ChatMessage> shouts) {
 		Window window = SwingUtilities.windowForComponent(this);
-		boolean windowActive = window.isActive();
-		if(windowActive) return;
-		
-		alertUser(shouts);
+		if(window == null || !window.isActive())
+			alertUser(shouts);
 	}
 
 	private synchronized void alertUser(Collection<ChatMessage> shouts) {

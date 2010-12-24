@@ -10,12 +10,11 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.attributes.Attributes;
-import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.snapps.chat.ChatMessage;
 
-abstract class ShoutUtils {
+class ShoutUtils {
 
-	private static final SimpleDateFormat FORMAT = new SimpleDateFormat((String) my(Synth.class).getDefaultProperty("ShoutUtils.dateFormat"));
+	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 	
 	private static String ownName() {
 		return my(Attributes.class).myAttributeValue(OwnName.class).currentValue();
