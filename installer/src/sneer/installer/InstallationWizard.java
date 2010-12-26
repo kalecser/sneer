@@ -25,7 +25,6 @@ public class InstallationWizard extends JFrame {
 	private void dialogsWorkflow() throws Exception {
 		welcome();
 		license();
-		dogFoodInformation();
 		configInformation();
 		new Installation();
 	}
@@ -47,14 +46,6 @@ public class InstallationWizard extends JFrame {
 		"Do you accept these terms?", 
 		
 		"I Accept >","I Do Not Accept"); 		
-	}
-	
-	private void dogFoodInformation() {
-		showDialog(
-		"This is the Sneer 'Dogfood Release' for ADVANCED Java users.\n\n" +
-		"Please do not install Sneer for regular users yet.", 
-		
-		"Whatever >"); 
 	}
 	
 	private void configInformation() {
