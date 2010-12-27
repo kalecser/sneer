@@ -225,7 +225,7 @@ class TupleSpaceImpl implements TupleSpace {
 	public <T extends Tuple> WeakContract addSubscription(Class<T> tupleType, Consumer<? super T> subscriber, Predicate<? super T> filter) {
 		final Subscription<?> subscription = new Subscription<T>(subscriber, tupleType, filter);
 
-		for (Tuple kept : keptTuples())
+		for (Tuple kept : _keptTuples.output().currentElements())
 			subscription.filterAndNotify(kept);
 
 		_subscriptions.add(subscription);
@@ -239,11 +239,6 @@ class TupleSpaceImpl implements TupleSpace {
 	@Override
 	public synchronized void keep(Class<? extends Tuple> tupleType) {
 		_typesToKeep.add(tupleType);
-	}
-
-	@Override
-	public synchronized List<Tuple> keptTuples() {
-		return _keptTuples.output().currentElements();
 	}
 
 }

@@ -7,6 +7,7 @@ import org.junit.Test;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.expression.tuples.floodcache.FloodedTupleCache;
+import sneer.bricks.expression.tuples.kept.KeptTuples;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Consumer;
@@ -32,7 +33,7 @@ public class TupleKeepingTest extends BrickTestBase {
 		
 		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
 
-		assertEquals(1, subject().keptTuples().size());
+		assertEquals((Integer)1, my(KeptTuples.class).output().size().currentValue());
 		assertEquals(1, _notificationCounter);
 	}
 
