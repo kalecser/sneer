@@ -24,6 +24,14 @@ class TupleDispatcherImpl implements TupleDispatcher {
 
 
 	@Override
+	public void dispatchCounterIncrement() {
+		synchronized (_dispatchCounterMonitor ) {
+			_dispatchCounter++;
+		}
+	}
+	
+	
+	@Override
 	public void dispatchCounterDecrement() {
 		synchronized (_dispatchCounterMonitor ) {
 			_dispatchCounter--;
@@ -33,36 +41,31 @@ class TupleDispatcherImpl implements TupleDispatcher {
 	}
 
 	
-	@Override
-	public void dispatchCounterIncrement() {
-		synchronized (_dispatchCounterMonitor ) {
-			_dispatchCounter++;
-		}
-	}
-
-	
 	@Override	
 	public void waitForAllDispatchingToFinish() {
-		if (_dispatchingThreads.contains(Thread.currentThread()))
-			throw new IllegalStateException("Dispatching thread cannot wait for dispatching to finish.");
+		if (_dispatchingThreads.contains(Thread.currentThread())) throw new IllegalStateException("Dispatching thread cannot wait for dispatching to finish.");
 		
 		synchronized (_dispatchCounterMonitor ) {
 			while (_dispatchCounter != 0)
 				Threads.waitWithoutInterruptions(_dispatchCounterMonitor);
 		}
-		
 	}
 
 
 	@Override
-	public void dispatch(final Tuple tuple, final Consumer<? super Tuple> subscriber, final Environment environment) {
+	public void dispatch(Tuple tuple, Consumer<? super Tuple> subscriber, Environment environment) {
 		_dispatchingThreads.add(Thread.currentThread());
+		doDispatch(tuple, subscriber, environment);
+		_dispatchingThreads.remove(Thread.currentThread());
+	}
+
+
+	private void doDispatch(final Tuple tuple, final Consumer<? super Tuple> subscriber, final Environment environment) {
 		ExceptionHandler.shield(new Closure() { @Override public void run() {
 			Environments.runWith(environment, new Closure() { @Override public void run() {
 				subscriber.consume(tuple);
 			}});
 		}});
-		_dispatchingThreads.remove(Thread.currentThread());
 	}
 	
 }
