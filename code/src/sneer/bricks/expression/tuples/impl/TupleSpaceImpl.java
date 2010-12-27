@@ -22,7 +22,6 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
-import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
@@ -156,7 +155,7 @@ class TupleSpaceImpl implements TupleSpace {
 	private final Set<Thread> _dispatchingThreads = new HashSet<Thread>();
 
 	private final Set<Class<? extends Tuple>> _typesToKeep = new HashSet<Class<? extends Tuple>>();
-	private final ListRegister<Tuple> _keptTuples;
+	private final KeptTuples _keptTuples;
 
 	
 	TupleSpaceImpl() {
