@@ -105,7 +105,7 @@ class TupleSpaceImpl implements TupleSpace {
 
 
 	private void keepIfNecessary(Tuple tuple) {
-		if (shouldKeep(tuple)) keep(tuple);
+		if (shouldKeep(tuple)) _keptTuples.add(tuple);
 	}
 
 	
@@ -122,11 +122,6 @@ class TupleSpaceImpl implements TupleSpace {
 		boolean result = _keptTuples.contains(tuple);
 		if (result) logDuplicateTupleIgnored(tuple);
 		return result;
-	}
-
-
-	private void keep(Tuple tuple) {
-		_keptTuples.add(tuple);
 	}
 
 
