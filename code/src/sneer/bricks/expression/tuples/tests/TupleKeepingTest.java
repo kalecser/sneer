@@ -42,7 +42,7 @@ public class TupleKeepingTest extends BrickTestBase {
 
 
 	private void flushCache() {
-		int cacheSize = my(FloodedTupleCache.class).size();
+		int cacheSize = my(FloodedTupleCache.class).maxSize();
 		publishTestTuples(cacheSize);
 	}
 

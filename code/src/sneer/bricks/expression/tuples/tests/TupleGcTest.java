@@ -22,7 +22,7 @@ public class TupleGcTest extends BrickTestBase {
 		_garbageCollectedCounter = 0;
 
 		_currentGeneration = "tuplesLimitAmount";
-		int cache = my(FloodedTupleCache.class).size();
+		int cache = my(FloodedTupleCache.class).maxSize();
 		publishMyTestTuples(cache + 42);
 		
 		while (_garbageCollectedCounter != 42) {

@@ -8,14 +8,14 @@ import sneer.bricks.expression.tuples.floodcache.FloodedTupleCache;
 
 class FloodedTupleCacheImpl implements FloodedTupleCache {
 
-	private static final int FLOODED_CACHE_SIZE = 1000;
+	private static final int MAX_CACHE_SIZE = 1000;
 	
 	private final LinkedHashSet<Tuple> _cache = new LinkedHashSet<Tuple>();
 
 	
 	@Override
-	public int size() {
-		return FLOODED_CACHE_SIZE;
+	public int maxSize() {
+		return MAX_CACHE_SIZE;
 	}
 
 	
@@ -30,7 +30,7 @@ class FloodedTupleCacheImpl implements FloodedTupleCache {
 
 	
 	private void capSize() {
-		if (_cache.size() <= FLOODED_CACHE_SIZE) return;
+		if (_cache.size() <= MAX_CACHE_SIZE) return;
 		
 		Iterator<Tuple> tuplesIterator = _cache.iterator();
 		tuplesIterator.next();

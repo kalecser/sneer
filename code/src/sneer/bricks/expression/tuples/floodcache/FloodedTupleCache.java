@@ -6,7 +6,7 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface FloodedTupleCache {
 
-	int size();
+	int maxSize();
 
 	boolean add(Tuple tuple);
 
