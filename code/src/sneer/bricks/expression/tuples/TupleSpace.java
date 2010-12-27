@@ -18,8 +18,6 @@ public interface TupleSpace {
 	void keep(Class<? extends Tuple> tupleType);
 	List<Tuple> keptTuples();
 
-	int floodedCacheSize();
-	
 	void waitForAllDispatchingToFinish();
 	
 }

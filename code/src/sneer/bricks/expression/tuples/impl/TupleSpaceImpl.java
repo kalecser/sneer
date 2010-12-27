@@ -5,14 +5,13 @@ import static sneer.foundation.environments.Environments.my;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.floodcache.FloodedTupleCache;
 import sneer.bricks.expression.tuples.kept.KeptTuples;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.lang.contracts.Contracts;
@@ -32,7 +31,6 @@ import sneer.foundation.lang.Predicate;
 
 class TupleSpaceImpl implements TupleSpace {
 
-	//Refactor The synchronization will no longer be necessary when the container guarantees synchronization of model bricks.
 	class Subscription<T extends Tuple> implements Disposable {
 
 		private final Consumer<? super Tuple> _subscriber;
@@ -143,9 +141,11 @@ class TupleSpaceImpl implements TupleSpace {
 	}
 
 	
-	private static final int FLOODED_CACHE_SIZE = 1000;
+	private static final FloodedTupleCache FloodedTupleCache = my(FloodedTupleCache.class);
+	
 	private static final Subscription<?>[] SUBSCRIPTION_ARRAY = new Subscription[0];
 
+	
 	private final Threads _threads = my(Threads.class);
 	private final ExceptionHandler _exceptionHandler = my(ExceptionHandler.class);
 
@@ -155,7 +155,6 @@ class TupleSpaceImpl implements TupleSpace {
 	private int _dispatchCounter = 0;
 	private final Set<Thread> _dispatchingThreads = new HashSet<Thread>();
 
-	private final Set<Tuple> _floodedTupleCache = new LinkedHashSet<Tuple>();
 	private final Set<Class<? extends Tuple>> _typesToKeep = new HashSet<Class<? extends Tuple>>();
 	private final ListRegister<Tuple> _keptTuples;
 
@@ -191,13 +190,10 @@ class TupleSpaceImpl implements TupleSpace {
 	
 
 	private boolean dealWithFloodedTuple(Tuple tuple) {
-		if (_floodedTupleCache.contains(tuple)) {
-			logDuplicateTupleIgnored(tuple);
-			return true;
-		};
-		_floodedTupleCache.add(tuple);
-		capFloodedTuples();
-		return false;
+		boolean isDuplicated = !FloodedTupleCache.add(tuple);
+		
+		if (isDuplicated) logDuplicateTupleIgnored(tuple);
+		return isDuplicated;
 	}
 
 	
@@ -238,16 +234,6 @@ class TupleSpaceImpl implements TupleSpace {
 	}
 
 	
-	private void capFloodedTuples() {
-		if (_floodedTupleCache.size() <= FLOODED_CACHE_SIZE) return;
-
-		Iterator<Tuple> tuplesIterator = _floodedTupleCache.iterator();
-		tuplesIterator.next();
-		tuplesIterator.remove();
-		
-	}
-
-	
 	@Override
 	public <T extends Tuple> WeakContract addSubscription(Class<T> tupleType, Consumer<? super T> subscriber) {
 		return addSubscription(tupleType, subscriber, Predicate.TRUE);
@@ -277,12 +263,6 @@ class TupleSpaceImpl implements TupleSpace {
 	}
 
 
-	@Override
-	public int floodedCacheSize() {
-		return FLOODED_CACHE_SIZE;
-	}
-
-	
 	@Override	
 	public void waitForAllDispatchingToFinish() {
 		if (_dispatchingThreads.contains(Thread.currentThread()))

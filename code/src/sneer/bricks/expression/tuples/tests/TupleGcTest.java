@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.floodcache.FloodedTupleCache;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
@@ -21,7 +22,7 @@ public class TupleGcTest extends BrickTestBase {
 		_garbageCollectedCounter = 0;
 
 		_currentGeneration = "tuplesLimitAmount";
-		int cache = _subject.floodedCacheSize();
+		int cache = my(FloodedTupleCache.class).size();
 		publishMyTestTuples(cache + 42);
 		
 		while (_garbageCollectedCounter != 42) {

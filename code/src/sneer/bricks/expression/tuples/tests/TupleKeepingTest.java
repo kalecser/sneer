@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.floodcache.FloodedTupleCache;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Consumer;
@@ -41,7 +42,7 @@ public class TupleKeepingTest extends BrickTestBase {
 
 
 	private void flushCache() {
-		int cacheSize = subject().floodedCacheSize();
+		int cacheSize = my(FloodedTupleCache.class).size();
 		publishTestTuples(cacheSize);
 	}
 
