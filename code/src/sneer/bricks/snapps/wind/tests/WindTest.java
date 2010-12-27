@@ -5,6 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.snapps.chat.ChatMessage;
 import sneer.bricks.snapps.wind.Wind;
@@ -25,8 +26,8 @@ public class WindTest extends BrickTestBase {
 		ChatMessage choo = new ChatMessage("CHOOO!!!");
 		tupleSpace().add(choo);
 
-		tupleSpace().waitForAllDispatchingToFinish();
-
+		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
+		
 		assertTrue(_subject.shoutsHeard().currentElements().contains(choo));
 		assertEquals(1, _subject.shoutsHeard().currentElements().size());
 	}
@@ -47,7 +48,8 @@ public class WindTest extends BrickTestBase {
 			tupleSpace().add(new ChatMessage(""+i));
 		}
 
-		tupleSpace().waitForAllDispatchingToFinish();
+		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
+		
 		ChatMessage previousShout = null;
 		for (ChatMessage shout : _subject.shoutsHeard()) {
 			

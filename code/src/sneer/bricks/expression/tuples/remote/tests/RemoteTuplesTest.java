@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.expression.tuples.tests.TestTuple;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -35,7 +36,7 @@ public class RemoteTuplesTest extends BrickTestBase {
 		my(TupleSpace.class).add(new TestTuple(1));
 		my(TupleSpace.class).add(new TestTuple(2));
 
-		my(TupleSpace.class).waitForAllDispatchingToFinish();
+		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
 
 		assertEquals(3, counter.get());
 	}

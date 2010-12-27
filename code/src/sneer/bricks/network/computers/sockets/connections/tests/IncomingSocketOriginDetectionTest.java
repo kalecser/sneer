@@ -7,6 +7,7 @@ import org.jmock.Sequence;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
@@ -75,7 +76,7 @@ public class IncomingSocketOriginDetectionTest extends BrickTestBase {
 
 		_subject.manageIncomingSocket(_socket);
 		
-		my(TupleSpace.class).waitForAllDispatchingToFinish();
+		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
 		sightingNotified.waitTillOpen();
 		
 		my(Threads.class).crashAllThreads();

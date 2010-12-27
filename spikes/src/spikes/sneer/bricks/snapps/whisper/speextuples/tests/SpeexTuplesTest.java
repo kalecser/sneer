@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.OwnSeal;
@@ -69,7 +70,7 @@ public class SpeexTuplesTest extends BrickTestBase {
 		for (byte[] frame : frames())
 			_tupleSpace.add(myPacket(frame));
 		
-		_tupleSpace.waitForAllDispatchingToFinish();
+		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
 		
 		assertNotNull(packet.value);
 		assertFrames(packet.value.frames.copy());
@@ -102,7 +103,7 @@ public class SpeexTuplesTest extends BrickTestBase {
 			// tuples with different channel should be ignored
 		_tupleSpace.add(speexPacketFrom(contactKey(), speexPacketPayload, "OtherRoom", (short)2));
 		
-		_tupleSpace.waitForAllDispatchingToFinish();
+		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
 		final PcmSoundPacket pcmPacket = packet.value;
 		assertNotNull(pcmPacket);
 		assertArrayEquals(pcmPacketPayload, pcmPacket.payload.copy());

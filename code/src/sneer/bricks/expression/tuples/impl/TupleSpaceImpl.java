@@ -11,6 +11,7 @@ import java.util.Set;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.expression.tuples.floodcache.FloodedTupleCache;
 import sneer.bricks.expression.tuples.kept.KeptTuples;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
@@ -21,17 +22,17 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Predicate;
 
 class TupleSpaceImpl implements TupleSpace {
 
-	class Subscription<T extends Tuple> implements Disposable {
+	static class Subscription<T extends Tuple> {
 
+		private static final TupleDispatcher TupleDispatcher = my(TupleDispatcher.class);
+		
 		private final Consumer<? super Tuple> _subscriber;
 		private final Class<? extends Tuple> _tupleType;
 		private final Predicate<? super T> _filter;
@@ -48,7 +49,7 @@ class TupleSpaceImpl implements TupleSpace {
 			_filter = filter;
 			_environment = my(Environment.class);
 			
-			_stepperContract = _threads.startStepping("Tuple Subscription: " + tupleType, notifier());
+			_stepperContract = Threads.startStepping("Tuple Subscription: " + tupleType, notifier());
 		}
 
 		
@@ -57,30 +58,24 @@ class TupleSpaceImpl implements TupleSpace {
 				Tuple nextTuple = waitToPopTuple();
 				if (_isDisposed) return;
 				notifySubscriber(nextTuple);
-				dispatchCounterDecrement();
+				TupleDispatcher.dispatchCounterDecrement();
 			}};
 		}
 
 		
 		
-		private void notifySubscriber(final Tuple tuple) {
-			final Consumer<? super Tuple> subscriber = _subscriber;
+		private void notifySubscriber(Tuple tuple) {
+			Consumer<? super Tuple> subscriber = _subscriber;
 			if (subscriber == null) return;
 			
-			_dispatchingThreads.add(Thread.currentThread());
-			_exceptionHandler.shield(new Closure() { @Override public void run() {
-				Environments.runWith(_environment, new Closure() { @Override public void run() {
-					subscriber.consume(tuple);
-				}});
-			}});
-			_dispatchingThreads.remove(Thread.currentThread());
+			TupleDispatcher.dispatch(tuple, subscriber, _environment);
 		}
 
 		
 		void filterAndPushToNotify(final Tuple tuple) {
 			if (!isRelevant(tuple)) return;
 			
-			dispatchCounterIncrement();
+			TupleDispatcher.dispatchCounterIncrement();
 			pushTuple(tuple);
 		}
 
@@ -119,11 +114,9 @@ class TupleSpaceImpl implements TupleSpace {
 		}
 
 		
-		@Override
 		/** Removes this subscription as soon as possible. The subscription might still receive tuple notifications from other threads AFTER this method returns, though. It is impossible to guarantee synchronicity of this method without risking deadlocks, especially with the GUI thread. If you really need to know when the subscription was removed, get in touch with us. We can change the API to provide for a callback.*/
-		public void dispose() {
+		void dispose() {
 			_stepperContract.dispose();
-			_subscriptions.remove(this);
 			synchronized(_tuplesToNotify) {
 				_isDisposed = true;
 				decrementPendingTuplesFromDispatchCounter();
@@ -134,7 +127,7 @@ class TupleSpaceImpl implements TupleSpace {
 		
 		private void decrementPendingTuplesFromDispatchCounter() {
 			for (int i = 0; i < _tuplesToNotify.size(); i++)
-				dispatchCounterDecrement();
+				TupleDispatcher.dispatchCounterDecrement();
 		}
 	
 	}
@@ -145,22 +138,12 @@ class TupleSpaceImpl implements TupleSpace {
 	private static final Subscription<?>[] SUBSCRIPTION_ARRAY = new Subscription[0];
 
 	
-	private final Threads _threads = my(Threads.class);
-	private final ExceptionHandler _exceptionHandler = my(ExceptionHandler.class);
+	private static final Threads Threads = my(Threads.class);
 
 	private final List<Subscription<?>> _subscriptions = Collections.synchronizedList(new ArrayList<Subscription<?>>());
 
-	private final Object _dispatchCounterMonitor = new Object();
-	private int _dispatchCounter = 0;
-	private final Set<Thread> _dispatchingThreads = new HashSet<Thread>();
-
 	private final Set<Class<? extends Tuple>> _typesToKeep = new HashSet<Class<? extends Tuple>>();
-	private final KeptTuples _keptTuples;
-
-	
-	TupleSpaceImpl() {
-		_keptTuples = my(KeptTuples.class);
-	}
+	private final KeptTuples _keptTuples = my(KeptTuples.class);
 	
 	
 	@Override
@@ -185,7 +168,6 @@ class TupleSpaceImpl implements TupleSpace {
 		}
 		return false;
 	}
-
 	
 
 	private boolean dealWithFloodedTuple(Tuple tuple) {
@@ -241,13 +223,16 @@ class TupleSpaceImpl implements TupleSpace {
 	
 	@Override
 	public <T extends Tuple> WeakContract addSubscription(Class<T> tupleType, Consumer<? super T> subscriber, Predicate<? super T> filter) {
-		Subscription<?> subscription = new Subscription<T>(subscriber, tupleType, filter);
+		final Subscription<?> subscription = new Subscription<T>(subscriber, tupleType, filter);
 
 		for (Tuple kept : keptTuples())
 			subscription.filterAndNotify(kept);
 
 		_subscriptions.add(subscription);
-		return my(Contracts.class).weakContractFor(subscription);
+		return my(Contracts.class).weakContractFor(new Disposable() {  @Override public void dispose() {
+			_subscriptions.remove(subscription);
+			subscription.dispose();
+		}});
 	}
 	
 	
@@ -259,35 +244,6 @@ class TupleSpaceImpl implements TupleSpace {
 	@Override
 	public synchronized List<Tuple> keptTuples() {
 		return _keptTuples.output().currentElements();
-	}
-
-
-	@Override	
-	public void waitForAllDispatchingToFinish() {
-		if (_dispatchingThreads.contains(Thread.currentThread()))
-			throw new IllegalStateException("Dispatching thread cannot wait for dispatching to finish.");
-		
-		synchronized (_dispatchCounterMonitor ) {
-			while (_dispatchCounter != 0)
-				_threads.waitWithoutInterruptions(_dispatchCounterMonitor);
-		}
-		
-	}
-
-	
-	private void dispatchCounterIncrement() {
-		synchronized (_dispatchCounterMonitor ) {
-			_dispatchCounter++;
-		}
-	}
-
-	
-	private void dispatchCounterDecrement() {
-		synchronized (_dispatchCounterMonitor ) {
-			_dispatchCounter--;
-			if (_dispatchCounter == 0)
-				_dispatchCounterMonitor.notifyAll();
-		}
 	}
 
 }

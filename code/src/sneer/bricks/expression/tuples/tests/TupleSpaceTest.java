@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
@@ -27,12 +28,12 @@ public class TupleSpaceTest extends BrickTestBase {
 		
 		final TestTuple tuple = new TestTuple(42);
 		_subject.add(tuple);
-		my(TupleSpace.class).waitForAllDispatchingToFinish();
+		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
 
 		contract.dispose();
 		
 		_subject.add(new TestTuple(-1));
-		my(TupleSpace.class).waitForAllDispatchingToFinish();
+		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
 		assertArrayEquals(new Object[] { tuple }, tuples.toArray());
 	}
 

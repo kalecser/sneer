@@ -18,6 +18,4 @@ public interface TupleSpace {
 	void keep(Class<? extends Tuple> tupleType);
 	List<Tuple> keptTuples();
 
-	void waitForAllDispatchingToFinish();
-	
 }

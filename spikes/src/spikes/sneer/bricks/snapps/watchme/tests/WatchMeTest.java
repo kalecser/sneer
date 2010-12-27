@@ -15,6 +15,7 @@ import org.jmock.Sequence;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
 import sneer.bricks.hardware.cpu.threads.Threads;
@@ -94,7 +95,7 @@ public class WatchMeTest extends BrickTestBase {
 	}
 
 	private void waitForImage(BufferedImage expected) {
-		_sharedSpace.waitForAllDispatchingToFinish();
+		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
 
 		int i = 0;
 		while (true) {

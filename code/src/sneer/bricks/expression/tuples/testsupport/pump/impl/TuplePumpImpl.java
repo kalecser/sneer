@@ -7,6 +7,7 @@ import java.util.Set;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.expression.tuples.testsupport.pump.TuplePump;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.foundation.environments.Environment;
@@ -57,7 +58,7 @@ class TuplePumpImpl implements TuplePump {
 
 	private void waitForAllDispatchingToFinishIn(Environment env) {
 		Environments.runWith(env, new Closure() { @Override public void run() {
-			my(TupleSpace.class).waitForAllDispatchingToFinish();
+			my(TupleDispatcher.class).waitForAllDispatchingToFinish();
 		}});
 	}
 

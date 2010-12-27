@@ -1,0 +1,68 @@
+package sneer.bricks.expression.tuples.dispatcher.impl;
+import static sneer.foundation.environments.Environments.my;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import sneer.bricks.expression.tuples.Tuple;
+import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
+import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
+import sneer.foundation.environments.Environment;
+import sneer.foundation.environments.Environments;
+import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.Consumer;
+
+class TupleDispatcherImpl implements TupleDispatcher {
+
+	private static final Threads Threads = my(Threads.class);
+	private static final ExceptionHandler ExceptionHandler = my(ExceptionHandler.class);
+	
+	private final Object _dispatchCounterMonitor = new Object();
+	private int _dispatchCounter = 0;
+	private final Set<Thread> _dispatchingThreads = new HashSet<Thread>();
+
+
+	@Override
+	public void dispatchCounterDecrement() {
+		synchronized (_dispatchCounterMonitor ) {
+			_dispatchCounter--;
+			if (_dispatchCounter == 0)
+				_dispatchCounterMonitor.notifyAll();
+		}
+	}
+
+	
+	@Override
+	public void dispatchCounterIncrement() {
+		synchronized (_dispatchCounterMonitor ) {
+			_dispatchCounter++;
+		}
+	}
+
+	
+	@Override	
+	public void waitForAllDispatchingToFinish() {
+		if (_dispatchingThreads.contains(Thread.currentThread()))
+			throw new IllegalStateException("Dispatching thread cannot wait for dispatching to finish.");
+		
+		synchronized (_dispatchCounterMonitor ) {
+			while (_dispatchCounter != 0)
+				Threads.waitWithoutInterruptions(_dispatchCounterMonitor);
+		}
+		
+	}
+
+
+	@Override
+	public void dispatch(final Tuple tuple, final Consumer<? super Tuple> subscriber, final Environment environment) {
+		_dispatchingThreads.add(Thread.currentThread());
+		ExceptionHandler.shield(new Closure() { @Override public void run() {
+			Environments.runWith(environment, new Closure() { @Override public void run() {
+				subscriber.consume(tuple);
+			}});
+		}});
+		_dispatchingThreads.remove(Thread.currentThread());
+	}
+	
+}

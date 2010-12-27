@@ -19,6 +19,7 @@ import sneer.bricks.expression.files.protocol.FileContentsFirstBlock;
 import sneer.bricks.expression.files.protocol.FileRequest;
 import sneer.bricks.expression.files.protocol.Protocol;
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
 import sneer.bricks.hardware.clock.Clock;
@@ -54,7 +55,7 @@ public class FileClientTest extends BrickTestWithTuples {
 		File tmpFile = newTmpFile();
 		_subject.startFileDownload(tmpFile, tmpFile.lastModified(), hash, null);
 
-		my(TupleSpace.class).waitForAllDispatchingToFinish();
+		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
 		my(IO.class).files().assertSameContents(tmpFile, file);
 	}
 

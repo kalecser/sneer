@@ -8,11 +8,12 @@ import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection;
-import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.ByteConnection.PacketScheduler;
+import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
@@ -73,7 +74,7 @@ public class ProbeManagerTest extends BrickTestBase {
 
 
 	private void assertPacketToSend(int id) throws Exception {
-		_tuples.waitForAllDispatchingToFinish();
+		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
 		byte[] packet = _scheduler.highestPriorityPacketToSend();
 		_scheduler.previousPacketWasSent();
 		
