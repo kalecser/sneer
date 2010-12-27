@@ -33,7 +33,7 @@ public class TupleKeepingTest extends BrickTestBase {
 		
 		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
 
-		assertEquals((Integer)1, my(KeptTuples.class).output().size().currentValue());
+		assertEquals(1, my(KeptTuples.class).all().length);
 		assertEquals(1, _notificationCounter);
 	}
 

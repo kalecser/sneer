@@ -19,6 +19,7 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.Predicate;
 
 class TupleSpaceImpl implements TupleSpace {
@@ -57,7 +58,7 @@ class TupleSpaceImpl implements TupleSpace {
 	public <T extends Tuple> WeakContract addSubscription(Class<T> tupleType, Consumer<? super T> subscriber, Predicate<? super T> filter) {
 		final Subscription<?> subscription = new Subscription<T>(subscriber, tupleType, filter);
 
-		for (Tuple kept : _keptTuples.output().currentElements())
+		for (Tuple kept : _keptTuples.all())
 			subscription.filterAndNotify(kept);
 
 		_subscriptions.add(subscription);
@@ -118,14 +119,20 @@ class TupleSpaceImpl implements TupleSpace {
 
 
 	private boolean isAlreadyKept(Tuple tuple) {
-		boolean result = _keptTuples.output().currentIndexOf(tuple) != -1;   //Optimize
+		boolean result = _keptTuples.contains(tuple);
 		if (result) logDuplicateTupleIgnored(tuple);
 		return result;
 	}
 
 
 	private void keep(Tuple tuple) {
-		_keptTuples.adder().consume(tuple);
+		_keptTuples.add(tuple);
+	}
+
+
+	@Override
+	public <T extends Tuple> void keepNewest(Class<T> tupleType, Functor<? super T, Object> grouping) {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 }

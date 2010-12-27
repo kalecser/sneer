@@ -26,6 +26,7 @@ class AttributesImpl implements Attributes {
 
 	private AttributesImpl() {
 		_myAttributes = my(CollectionSignals.class).newSetRegister();
+//		my(TupleSpace.class).keepNewest(AttributeValue.class, new GroupingByPublisherAndAttribute());
 		my(TupleSpace.class).keep(AttributeValue.class);
 	}
 

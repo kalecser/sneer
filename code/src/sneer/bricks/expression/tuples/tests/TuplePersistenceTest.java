@@ -3,7 +3,6 @@ package sneer.bricks.expression.tuples.tests;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -25,7 +24,7 @@ public class TuplePersistenceTest extends BrickTestBase {
 		runInNewEnvironment(new Closure() { @Override public void run() {
 			TupleSpace subject1 = createSubject();
 	
-			assertEquals((Integer)0, my(KeptTuples.class).output().size().currentValue());
+			assertEquals(0, my(KeptTuples.class).all().length);
 	
 			subject1.keep(TestTuple.class);
 			subject1.add(tuple(0));
@@ -34,11 +33,11 @@ public class TuplePersistenceTest extends BrickTestBase {
 		}});
 
 		runInNewEnvironment(new Closure() { @Override public void run() {
-			List<Tuple> kept = my(KeptTuples.class).output().currentElements();
-			assertEquals(3, kept.size());
-			assertEquals(0, ((TestTuple)kept.get(0)).intValue);
-			assertEquals(1, ((TestTuple)kept.get(1)).intValue);
-			assertEquals(2, ((TestTuple)kept.get(2)).intValue);
+			Tuple[] kept = my(KeptTuples.class).all();
+			assertEquals(3, kept.length);
+			assertEquals(0, ((TestTuple)kept[0]).intValue);
+			assertEquals(1, ((TestTuple)kept[1]).intValue);
+			assertEquals(2, ((TestTuple)kept[2]).intValue);
 		}});
 	}
 
