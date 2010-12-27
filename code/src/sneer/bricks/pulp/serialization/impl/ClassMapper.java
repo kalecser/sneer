@@ -22,9 +22,9 @@ final class ClassMapper extends MapperWrapper {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public String serializedClass(Class type) {
-		return type != null
-			? mapper.serializationHandleFor(type)
-			: super.serializedClass(type);
+		return type == null
+			? super.serializedClass(type)
+			: mapper.serializationHandleFor(type);
 	}
 
 	
