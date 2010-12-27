@@ -18,7 +18,6 @@ import java.awt.event.KeyEvent;
 import java.util.Collection;
 
 import javax.swing.AbstractAction;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -44,7 +43,6 @@ import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
 import sneer.bricks.snapps.chat.ChatMessage;
-import sneer.bricks.snapps.chat.gui.panels.ChatPanels;
 import sneer.bricks.snapps.wind.Wind;
 import sneer.bricks.snapps.wind.gui.WindGui;
 import sneer.foundation.lang.Consumer;
