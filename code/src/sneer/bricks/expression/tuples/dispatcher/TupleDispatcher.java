@@ -9,9 +9,8 @@ import sneer.foundation.lang.Consumer;
 @Brick
 public interface TupleDispatcher {
 
-	void dispatchCounterDecrement();
-
 	void dispatchCounterIncrement();
+	void dispatchCounterDecrement();
 
 	void waitForAllDispatchingToFinish();
 

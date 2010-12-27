@@ -5,140 +5,27 @@ import static sneer.foundation.environments.Environments.my;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.expression.tuples.floodcache.FloodedTupleCache;
 import sneer.bricks.expression.tuples.kept.KeptTuples;
-import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.lang.contracts.Contracts;
 import sneer.bricks.hardware.cpu.lang.contracts.Disposable;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Predicate;
 
 class TupleSpaceImpl implements TupleSpace {
 
-	static class Subscription<T extends Tuple> {
-
-		private static final TupleDispatcher TupleDispatcher = my(TupleDispatcher.class);
-		
-		private final Consumer<? super Tuple> _subscriber;
-		private final Class<? extends Tuple> _tupleType;
-		private final Predicate<? super T> _filter;
-		private final Environment _environment;
-		private final List<Tuple> _tuplesToNotify = new LinkedList<Tuple>(); 
-
-		private final Contract _stepperContract;
-		private boolean _isDisposed = false;
-		
-		
-		Subscription(Consumer<? super T> subscriber, Class<T> tupleType, Predicate<? super T> filter) {
-			_subscriber = (Consumer<? super Tuple>)subscriber;
-			_tupleType = tupleType;
-			_filter = filter;
-			_environment = my(Environment.class);
-			
-			_stepperContract = Threads.startStepping("Tuple Subscription: " + tupleType, notifier());
-		}
-
-		
-		private Closure notifier() {
-			return new Closure() { @Override public void run() {
-				Tuple nextTuple = waitToPopTuple();
-				if (_isDisposed) return;
-				notifySubscriber(nextTuple);
-				TupleDispatcher.dispatchCounterDecrement();
-			}};
-		}
-
-		
-		
-		private void notifySubscriber(Tuple tuple) {
-			Consumer<? super Tuple> subscriber = _subscriber;
-			if (subscriber == null) return;
-			
-			TupleDispatcher.dispatch(tuple, subscriber, _environment);
-		}
-
-		
-		void filterAndPushToNotify(final Tuple tuple) {
-			if (!isRelevant(tuple)) return;
-			
-			TupleDispatcher.dispatchCounterIncrement();
-			pushTuple(tuple);
-		}
-
-
-		void filterAndNotify(final Tuple tuple) {
-			if (!isRelevant(tuple)) return;
-			
-			notifySubscriber(tuple);
-		}
-		
-		
-		private boolean isRelevant(final Tuple tuple) {
-			if (!_tupleType.isInstance(tuple)) return false;
-			if (!_filter.evaluate((T)tuple)) return false;
-			return true;
-		}
-		
-		
-		private Tuple waitToPopTuple() {
-			synchronized (_tuplesToNotify) {
-				while (_tuplesToNotify.isEmpty()) { //This used to be an "if" instead of a "while" and we did get a rare IndexOutOfBoundsException when doing remove(0) below. I don't know how this can happen since only one thread removes elements and it is only notified when an element is added. Can someone explain that? Klaus
-					my(Threads.class).waitWithoutInterruptions(_tuplesToNotify);
-					if (_isDisposed) return null;
-				}
-				
-				return _tuplesToNotify.remove(0);
-			}
-		}
-
-		
-		private void pushTuple(Tuple tuple) {
-			synchronized (_tuplesToNotify) {
-				_tuplesToNotify.add(tuple);
-				_tuplesToNotify.notify();
-			}
-		}
-
-		
-		/** Removes this subscription as soon as possible. The subscription might still receive tuple notifications from other threads AFTER this method returns, though. It is impossible to guarantee synchronicity of this method without risking deadlocks, especially with the GUI thread. If you really need to know when the subscription was removed, get in touch with us. We can change the API to provide for a callback.*/
-		void dispose() {
-			_stepperContract.dispose();
-			synchronized(_tuplesToNotify) {
-				_isDisposed = true;
-				decrementPendingTuplesFromDispatchCounter();
-				_tuplesToNotify.notify();
-			}
-		}
-
-		
-		private void decrementPendingTuplesFromDispatchCounter() {
-			for (int i = 0; i < _tuplesToNotify.size(); i++)
-				TupleDispatcher.dispatchCounterDecrement();
-		}
-	
-	}
-
-	
 	private static final FloodedTupleCache FloodedTupleCache = my(FloodedTupleCache.class);
 	
 	private static final Subscription<?>[] SUBSCRIPTION_ARRAY = new Subscription[0];
-
-	
-	private static final Threads Threads = my(Threads.class);
 
 	private final List<Subscription<?>> _subscriptions = Collections.synchronizedList(new ArrayList<Subscription<?>>());
 
@@ -157,6 +44,33 @@ class TupleSpaceImpl implements TupleSpace {
 		keepIfNecessary(tuple);
 				
 		notifySubscriptions(tuple);
+	}
+
+	
+	@Override
+	public <T extends Tuple> WeakContract addSubscription(Class<T> tupleType, Consumer<? super T> subscriber) {
+		return addSubscription(tupleType, subscriber, Predicate.TRUE);
+	}
+
+	
+	@Override
+	public <T extends Tuple> WeakContract addSubscription(Class<T> tupleType, Consumer<? super T> subscriber, Predicate<? super T> filter) {
+		final Subscription<?> subscription = new Subscription<T>(subscriber, tupleType, filter);
+
+		for (Tuple kept : _keptTuples.output().currentElements())
+			subscription.filterAndNotify(kept);
+
+		_subscriptions.add(subscription);
+		return my(Contracts.class).weakContractFor(new Disposable() {  @Override public void dispose() {
+			_subscriptions.remove(subscription);
+			subscription.dispose();
+		}});
+	}
+	
+	
+	@Override
+	public synchronized void keep(Class<? extends Tuple> tupleType) {
+		_typesToKeep.add(tupleType);
 	}
 
 	
@@ -212,33 +126,6 @@ class TupleSpaceImpl implements TupleSpace {
 
 	private void keep(Tuple tuple) {
 		_keptTuples.adder().consume(tuple);
-	}
-
-	
-	@Override
-	public <T extends Tuple> WeakContract addSubscription(Class<T> tupleType, Consumer<? super T> subscriber) {
-		return addSubscription(tupleType, subscriber, Predicate.TRUE);
-	}
-
-	
-	@Override
-	public <T extends Tuple> WeakContract addSubscription(Class<T> tupleType, Consumer<? super T> subscriber, Predicate<? super T> filter) {
-		final Subscription<?> subscription = new Subscription<T>(subscriber, tupleType, filter);
-
-		for (Tuple kept : _keptTuples.output().currentElements())
-			subscription.filterAndNotify(kept);
-
-		_subscriptions.add(subscription);
-		return my(Contracts.class).weakContractFor(new Disposable() {  @Override public void dispose() {
-			_subscriptions.remove(subscription);
-			subscription.dispose();
-		}});
-	}
-	
-	
-	@Override
-	public synchronized void keep(Class<? extends Tuple> tupleType) {
-		_typesToKeep.add(tupleType);
 	}
 
 }
