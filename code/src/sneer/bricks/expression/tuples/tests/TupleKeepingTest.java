@@ -44,7 +44,7 @@ public class TupleKeepingTest extends BrickTestBase {
 
 
 	@Test (timeout = 2000)
-	public void garbageCollectingOldTuples() {
+	public void garbageCollectingOldTuplesByGroup() {
 		subject().keepNewest(KeptTuple.class, new Functor<KeptTuple, Object>() {  @Override public Object evaluate(KeptTuple keptTuple) {
 			return keptTuple.number % 2; //Group into odds and evens.
 		}});
