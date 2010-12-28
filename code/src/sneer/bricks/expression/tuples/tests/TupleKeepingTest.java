@@ -49,18 +49,21 @@ public class TupleKeepingTest extends BrickTestBase {
 			return keptTuple.number % 2; //Group into odds and evens.
 		}});
 		
-		subject().add(new KeptTuple(1));
+		KeptTuple tuple1 = new KeptTuple(1);
 		my(Clock.class).advanceTime(42);
-		subject().add(new KeptTuple(2));
+		KeptTuple tuple2 = new KeptTuple(2);
 		my(Clock.class).advanceTime(42);
 		KeptTuple tuple3 = new KeptTuple(3);
-		subject().add(tuple3);
 		my(Clock.class).advanceTime(42);
 		KeptTuple tuple4 = new KeptTuple(4);
+
+		subject().add(tuple1);
+		subject().add(tuple2);
+		subject().add(tuple3);
 		subject().add(tuple4);
 
 		my(TupleKeeper.class).garbageCollect();
-		assertContentsInAnyOrder(Arrays.asList(my(KeptTuples.class).all()), tuple3, tuple4);
+		assertContentsInAnyOrder(Arrays.asList(my(KeptTuples.class).all()), tuple3, tuple4); //Newest in odd group and newest in even group.
 	}
 
 
