@@ -23,7 +23,7 @@ public class TupleKeepingTest extends BrickTestBase {
 	
 	
 	@Test (timeout = 5000)
-	public void keptTuplesAreIgnoredWhenAdded() {
+	public void duplicateKeptTuplesAreIgnored() {
 
 		@SuppressWarnings("unused")
 		WeakContract contract = subject().addSubscription(KeptTuple.class, new Consumer<KeptTuple>() { @Override public void consume(KeptTuple ignored) {
