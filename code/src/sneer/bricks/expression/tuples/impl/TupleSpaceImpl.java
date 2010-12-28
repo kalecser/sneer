@@ -4,14 +4,12 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.floodcache.FloodedTupleCache;
-import sneer.bricks.expression.tuples.kept.KeptTuples;
+import sneer.bricks.expression.tuples.keeper.TupleKeeper;
 import sneer.bricks.hardware.cpu.lang.contracts.Contracts;
 import sneer.bricks.hardware.cpu.lang.contracts.Disposable;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -25,14 +23,12 @@ import sneer.foundation.lang.Predicate;
 class TupleSpaceImpl implements TupleSpace {
 
 	private static final FloodedTupleCache FloodedTupleCache = my(FloodedTupleCache.class);
+	private static final TupleKeeper TupleKeeper = my(TupleKeeper.class);
 	
 	private static final Subscription<?>[] SUBSCRIPTION_ARRAY = new Subscription[0];
 
 	private final List<Subscription<?>> _subscriptions = Collections.synchronizedList(new ArrayList<Subscription<?>>());
 
-	private final Set<Class<? extends Tuple>> _typesToKeep = new HashSet<Class<? extends Tuple>>();
-	private final KeptTuples _keptTuples = my(KeptTuples.class);
-	
 	
 	@Override
 	public synchronized void add(Tuple tuple) {
@@ -42,12 +38,12 @@ class TupleSpaceImpl implements TupleSpace {
 			if (dealWithAddressedTuple(tuple)) return;
 		
 		if (isAlreadyKept(tuple)) return;
-		keepIfNecessary(tuple);
+		TupleKeeper.keepIfNecessary(tuple);
 				
 		notifySubscriptions(tuple);
 	}
 
-	
+
 	@Override
 	public <T extends Tuple> WeakContract addSubscription(Class<T> tupleType, Consumer<? super T> subscriber) {
 		return addSubscription(tupleType, subscriber, Predicate.TRUE);
@@ -58,7 +54,7 @@ class TupleSpaceImpl implements TupleSpace {
 	public <T extends Tuple> WeakContract addSubscription(Class<T> tupleType, Consumer<? super T> subscriber, Predicate<? super T> filter) {
 		final Subscription<?> subscription = new Subscription<T>(subscriber, tupleType, filter);
 
-		for (Tuple kept : _keptTuples.all())
+		for (Tuple kept : TupleKeeper.keptTuples())
 			subscription.filterAndNotify(kept);
 
 		_subscriptions.add(subscription);
@@ -71,7 +67,20 @@ class TupleSpaceImpl implements TupleSpace {
 	
 	@Override
 	public synchronized void keep(Class<? extends Tuple> tupleType) {
-		_typesToKeep.add(tupleType);
+		TupleKeeper.keepType(tupleType);
+	}
+
+
+	@Override
+	public <T extends Tuple> void keepNewest(Class<T> tupleType, Functor<? super T, Object> grouping) {
+		TupleKeeper.keepNewest(tupleType, grouping);
+	}
+
+	
+	private boolean isAlreadyKept(Tuple tuple) {
+		boolean result = TupleKeeper.isAlreadyKept(tuple);
+		if (result) logDuplicateTupleIgnored(tuple);
+		return result;
 	}
 
 	
@@ -87,14 +96,8 @@ class TupleSpaceImpl implements TupleSpace {
 
 	private boolean dealWithFloodedTuple(Tuple tuple) {
 		boolean isDuplicated = !FloodedTupleCache.add(tuple);
-		
 		if (isDuplicated) logDuplicateTupleIgnored(tuple);
 		return isDuplicated;
-	}
-
-	
-	private void logDuplicateTupleIgnored(Tuple tuple) {
-		my(Logger.class).log("Duplicate tuple ignored: ", tuple);
 	}
 
 	
@@ -103,31 +106,9 @@ class TupleSpaceImpl implements TupleSpace {
 			subscription.filterAndPushToNotify(tuple);
 	}
 
-
-	private void keepIfNecessary(Tuple tuple) {
-		if (shouldKeep(tuple)) _keptTuples.add(tuple);
-	}
-
 	
-	private boolean shouldKeep(Tuple tuple) {
-		for (Class<? extends Tuple> typeToKeep : _typesToKeep) //Optimize
-			if (typeToKeep.isInstance(tuple))
-				return true;
-
-		return false;
-	}
-
-
-	private boolean isAlreadyKept(Tuple tuple) {
-		boolean result = _keptTuples.contains(tuple);
-		if (result) logDuplicateTupleIgnored(tuple);
-		return result;
-	}
-
-
-	@Override
-	public <T extends Tuple> void keepNewest(Class<T> tupleType, Functor<? super T, Object> grouping) {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	private void logDuplicateTupleIgnored(Tuple tuple) {
+		my(Logger.class).log("Duplicate tuple ignored: ", tuple);
 	}
 
 }
