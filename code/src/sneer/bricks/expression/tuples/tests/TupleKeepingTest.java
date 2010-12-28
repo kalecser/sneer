@@ -2,7 +2,8 @@ package sneer.bricks.expression.tuples.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
-import org.junit.Ignore;
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
@@ -42,21 +43,24 @@ public class TupleKeepingTest extends BrickTestBase {
 	}
 
 
-	@Ignore
 	@Test (timeout = 2000)
 	public void garbageCollectingOldTuples() {
-		final Object singleGroup = new Object();
 		subject().keepNewest(KeptTuple.class, new Functor<KeptTuple, Object>() {  @Override public Object evaluate(KeptTuple keptTuple) {
-			return singleGroup;
+			return keptTuple.number % 2; //Group into odds and evens.
 		}});
-		subject().keep(KeptTuple.class);
 		
 		subject().add(new KeptTuple(1));
 		my(Clock.class).advanceTime(42);
 		subject().add(new KeptTuple(2));
+		my(Clock.class).advanceTime(42);
+		KeptTuple tuple3 = new KeptTuple(3);
+		subject().add(tuple3);
+		my(Clock.class).advanceTime(42);
+		KeptTuple tuple4 = new KeptTuple(4);
+		subject().add(tuple4);
 
 		my(TupleKeeper.class).garbageCollect();
-		assertEquals(1, my(KeptTuples.class).all().length);
+		assertContentsInAnyOrder(Arrays.asList(my(KeptTuples.class).all()), tuple3, tuple4);
 	}
 
 

@@ -34,7 +34,7 @@ class TupleKeeperImpl implements TupleKeeper {
 	
 	@Override
 	public <T extends Tuple> void keepNewest(Class<T> tupleType, Functor<? super T, Object> grouping) {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		keepChosen(tupleType, new NewestTupleByGroup<T>(grouping));
 	}
 
 	
@@ -65,7 +65,10 @@ class TupleKeeperImpl implements TupleKeeper {
 	
 	@Override
 	public void garbageCollect() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		Tuple[] candidates = KeptTuples.all();
+		for (int i = candidates.length - 1; i >= 0; i--) //From newest to oldest (favors gc of older tuples in the first pass).
+			if (!shouldKeep(candidates[i]))
+				KeptTuples.remove(candidates[i]);
 	}
 
 	

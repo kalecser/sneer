@@ -27,6 +27,12 @@ public class KeptTuplesImpl implements KeptTuples {
 	public void add(Tuple tuple) {
 		_tuples.add(tuple);
 	}
+	
+	
+	@Override
+	public void remove(Tuple tuple) {
+		_tuples.remove(tuple); //Optimize
+	}
 
 
 	@Override

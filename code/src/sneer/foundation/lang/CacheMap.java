@@ -17,7 +17,7 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 	
 	
 	public <X extends Throwable> V get(K key, final ProducerX<V, X> producerToUseIfAbsent) throws X {
-		return get(key, new FunctorX<K, V, X>() { @Override public V evaluate(K ignored) throws X {
+		return get(key, new FunctorX<K, V, X>() { @Override public V evaluate(K ignored) throws X { //Optimize Use the same functor instead of creating a new one every time.
 			return producerToUseIfAbsent.produce();
 		}});
 	}
@@ -27,6 +27,13 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 		return get(key, functorToUseIfAbsent, true);
 	}
 
+	
+	public V get(K key, final V valueToUseIfAbsent) {
+		return get(key, new Functor<K, V>() { @Override public V evaluate(K ignored) { //Optimize Use the same functor instead of creating a new one every time.
+			return valueToUseIfAbsent;
+		}});
+	}
+	
 	
 	/** Returns null instead of blocking if another thread is running the functor to resolve this same key. */
 	public <X extends Throwable> V getWithoutBlocking(K key, FunctorX<K, V, X> functorToUseIfAbsent) throws X {

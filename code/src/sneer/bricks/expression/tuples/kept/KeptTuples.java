@@ -9,6 +9,7 @@ import sneer.foundation.lang.Consumer;
 public interface KeptTuples {
 	
 	void add(Tuple tuple);
+	void remove(Tuple tuple);
 	
 	boolean contains(Tuple tuple);
 	Tuple[] all();
