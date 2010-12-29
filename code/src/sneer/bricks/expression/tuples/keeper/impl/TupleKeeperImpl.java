@@ -8,7 +8,9 @@ import java.util.List;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.keeper.TupleKeeper;
 import sneer.bricks.expression.tuples.kept.KeptTuples;
+import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.Predicate;
 import sneer.foundation.lang.Producer;
@@ -65,10 +67,9 @@ class TupleKeeperImpl implements TupleKeeper {
 	
 	@Override
 	public void garbageCollect() {
-		Tuple[] candidates = KeptTuples.all();
-		for (int i = candidates.length - 1; i >= 0; i--) //From newest to oldest (favors gc of older tuples in the first pass).
-			if (!shouldKeep(candidates[i]))
-				KeptTuples.remove(candidates[i]);
+		my(CpuThrottle.class).limitMaxCpuUsage(20, new Closure() {  @Override public void run() {
+			doGarbageCollect();
+		}});
 	}
 
 	
@@ -80,6 +81,21 @@ class TupleKeeperImpl implements TupleKeeper {
 			if (((Predicate<? super Tuple>)filter).evaluate(tuple)) return true;
 
 		return false;
+	}
+
+
+	private void doGarbageCollect() {
+		Tuple[] candidates = KeptTuples.all();
+		for (int i = candidates.length - 1; i >= 0; i--)
+			deleteIfNecessary(candidates[i]);
+	}
+
+
+	private void deleteIfNecessary(Tuple candidate) {
+		if (!shouldKeep(candidate))
+			KeptTuples.remove(candidate);
+		
+		my(CpuThrottle.class).yield();
 	}
 
 }
