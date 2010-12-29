@@ -15,6 +15,7 @@ public interface TupleSpace {
 	<T extends Tuple> WeakContract addSubscription(Class<T> tupleType, Consumer<? super T> subscriber, Predicate<? super T> filter);
 
 	void keep(Class<? extends Tuple> tupleType);
+	<T extends Tuple> void keepChosen(Class<T> tupleType, Predicate<? super T> filter);
 	<T extends Tuple> void keepNewest(Class<T> tupleType, Functor<? super T, Object> grouping);
 	
 }

@@ -69,6 +69,12 @@ class TupleSpaceImpl implements TupleSpace {
 	public synchronized void keep(Class<? extends Tuple> tupleType) {
 		TupleKeeper.keepType(tupleType);
 	}
+	
+	
+	@Override
+	public <T extends Tuple> void keepChosen(Class<T> tupleType, Predicate<? super T> filter) {
+		TupleKeeper.keepChosen(tupleType, filter);
+	}
 
 
 	@Override
