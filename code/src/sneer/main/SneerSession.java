@@ -18,7 +18,7 @@ import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.identity.keys.gui.PublicKeyDialog;
 import sneer.bricks.snapps.system.log.file.LogToFile;
 import sneer.bricks.snapps.system.log.sysout.LogToSysout;
-import sneer.bricks.software.bricks.snappstarter.SnappStarter;
+import sneer.bricks.software.bricks.snapploader.SnappLoader;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environment;
@@ -40,7 +40,7 @@ public class SneerSession {
 		my(ClockTicker.class);
 		startLogging();
 		my(PublicKeyDialog.class).initPublicKeyIfNecessary();
-		my(SnappStarter.class).startSnapps();
+		my(SnappLoader.class);
 		
 		my(Threads.class).waitUntilCrash();
 	}

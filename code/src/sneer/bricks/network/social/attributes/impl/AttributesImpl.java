@@ -15,6 +15,8 @@ import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.bricks.pulp.serialization.Serializer;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Functor;
+import sneer.foundation.lang.Pair;
 import sneer.foundation.lang.PickyConsumer;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
 import sneer.foundation.lang.exceptions.Refusal;
@@ -27,7 +29,9 @@ class AttributesImpl implements Attributes {
 	private AttributesImpl() {
 		_myAttributes = my(CollectionSignals.class).newSetRegister();
 
-		my(TupleSpace.class).keepNewest(AttributeValue.class, new GroupingByPublisherAndAttribute());
+		my(TupleSpace.class).keepNewest(AttributeValue.class, new Functor<AttributeValue, Object>() {  @Override public Object evaluate(AttributeValue attributeValue) {
+			return Pair.of(attributeValue.publisher, attributeValue.attributeName);
+		}});
 	}
 
 

@@ -1,6 +1,6 @@
 package myfirst.snapp;
 
-import sneer.bricks.software.bricks.snappstarter.Snapp;
+import sneer.bricks.software.bricks.snapploader.Snapp;
 import sneer.foundation.brickness.Brick;
 
 @Brick

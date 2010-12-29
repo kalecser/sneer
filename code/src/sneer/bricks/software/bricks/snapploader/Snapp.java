@@ -1,4 +1,4 @@
-package sneer.bricks.software.bricks.snappstarter;
+package sneer.bricks.software.bricks.snapploader;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
