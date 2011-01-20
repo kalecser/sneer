@@ -12,8 +12,7 @@ class StackTraceLoggerImpl implements StackTraceLogger{
 
 	@Override
 	public String stackTrace() {
-		class StackTrace extends RuntimeException{};
-		return stackTrace(new StackTrace());
+		return stackTrace(Thread.currentThread());
 	}
 
 	
@@ -30,4 +29,24 @@ class StackTraceLoggerImpl implements StackTraceLogger{
 		throwable.printStackTrace(_log);
 		return new String(out.toByteArray());
 	}
+
+
+	@Override
+	public void logStackTrace(Thread thread, String message, Object... insets) {
+		my(Logger.class).log(message + "\n" + report(thread), insets);
+	}
+
+
+	private String report(Thread thread) {
+		return "Thread state: " + thread.getState() + stackTrace(thread); 
+	}
+
+
+	private String stackTrace(Thread thread) {
+		String result = "";
+		for (StackTraceElement element : thread.getStackTrace())
+			result += "\n\t" + element;
+		return result;
+	}
+	
 }

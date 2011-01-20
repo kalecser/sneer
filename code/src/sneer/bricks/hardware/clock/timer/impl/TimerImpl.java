@@ -13,7 +13,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.latches.Latch;
 import sneer.bricks.hardware.cpu.threads.latches.Latches;
-import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.io.log.stacktrace.StackTraceLogger;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
@@ -97,7 +97,7 @@ class TimerImpl implements Timer {
 		private final long _sequence = _nextSequence++;
 
 		volatile
-		private boolean _isRunning;
+		private Thread _thread;
 
 		volatile
 		private boolean _isDisposed = false;
@@ -125,17 +125,17 @@ class TimerImpl implements Timer {
 
 		
 		private void step(final Runnable stepper) {
-			if (_isRunning) {
-				my(Logger.class).log("Timer Alarm Skipped (was still running from previous time): ", stepper);
+			if (_thread != null) {
+				my(StackTraceLogger.class).logStackTrace(_thread, "Timer Alarm Skipped (was still running from previous time): {}", stepper);
 				return;
 			}
-			_isRunning = true;
 			
 			my(Threads.class).startDaemon("Timer for " + stepper, new Closure() { @Override public void run() {
 				try {
+					_thread = Thread.currentThread();
 					my(ExceptionHandler.class).shield(stepper);
 				} finally { //shield actually throws ThreadDeath.
-					_isRunning = false;
+					_thread = null;
 				}
 			}});
 		}
