@@ -17,7 +17,7 @@ class RandomPlaylist extends AbstractPlaylist {
 
 	@Override
 	public void sortTracks(List<File> tracks) {
-		super.sortTracks(tracks); // It sort alphabetically first to make it deterministic and therefore testable 
+		super.sortTracks(tracks); // Sort alphabetically first to make it deterministic and therefore testable 
 		Collections.shuffle(tracks, new Random(my(Clock.class).time().currentValue()));
 	}
 
