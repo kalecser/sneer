@@ -17,15 +17,17 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 @SuppressWarnings("rawtypes")
 public class BeingsFrame extends JFrame {
 	
+	private static final int CELL_SIZE = 3;
+
 	private static final long serialVersionUID = 1L;
 	
 	static final int WORLD_WIDTH = 181;  //Prime number to avoid "wind" effects of scanning adjacent cells in a specific direction.
 	static final int WORLD_HEIGHT = 167; //Prime number to avoid "wind" effects of scanning adjacent cells in a specific direction.
 	private static final long WORLD_CELL_COUNT = WORLD_WIDTH * WORLD_HEIGHT;
 
-	private static final int MARGIN = 30;
+	private static final int MARGIN = 45;
 	
-	private static Being FOOD = new Food(); 
+	private static Being FOOD = new Food();
 	
 	private final Being[][] _world = new Being[WORLD_WIDTH][WORLD_HEIGHT];
 	private final Random _random = new Random();
@@ -36,7 +38,7 @@ public class BeingsFrame extends JFrame {
 	public BeingsFrame() {
 		setTitle("Beings");	  
 	    setResizable(true);
-	    setBounds(50, 50, 500, 575);
+	    setBounds(50, 50, WORLD_WIDTH * CELL_SIZE + (2 * MARGIN), WORLD_HEIGHT * CELL_SIZE + (2 * MARGIN));
 	    setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -78,7 +80,7 @@ public class BeingsFrame extends JFrame {
 			for (int y = WORLD_HEIGHT - 1; y >= 0; y--) {
 				Being occupant = _world[x][y];
 				graphics.setColor(occupant == null ? Color.GRAY : occupant.color());
-				graphics.fillRect(x * 3 + MARGIN, y * 3 + MARGIN, 3, 3);
+				graphics.fillRect(x * CELL_SIZE + MARGIN, y * CELL_SIZE + MARGIN, CELL_SIZE, CELL_SIZE);
 			}
 		}
 	}
