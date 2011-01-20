@@ -23,7 +23,7 @@ public class LogNotifierImpl implements LogNotifier {
 	}
 	
 	private void notifyEntry(String msg){
-		if(_filter.acceptLogEntry(msg))
+		if(_filter.isLogEntryAccepted(msg))
 			_loggedMessages.notifyReceivers(msg);
 	}
 

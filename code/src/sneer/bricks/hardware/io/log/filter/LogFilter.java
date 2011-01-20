@@ -6,7 +6,7 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface LogFilter{
 
-	boolean acceptLogEntry(String message);
+	boolean isLogEntryAccepted(String message);
 	ListRegister<String> whiteListEntries();
 
 }

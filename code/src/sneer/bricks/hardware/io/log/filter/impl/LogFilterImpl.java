@@ -42,7 +42,7 @@ class LogFilterImpl implements LogFilter {
 	}
 
 	@Override
-	public boolean acceptLogEntry(String message) {
+	public boolean isLogEntryAccepted(String message) {
 		List<String> whiteList = _phrases.output().currentElements();
 		for (String entry : whiteList) 
 			if(message.contains(entry)) return true;
