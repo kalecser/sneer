@@ -8,6 +8,8 @@ import java.io.IOException;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import sneer.bricks.expression.tuples.Tuple;
+import sneer.bricks.software.code.compilers.CompilerException;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.foundation.brickness.Brick;
@@ -39,13 +41,31 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 		b().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
 	}
 
-	
 	@Test
+	public void testPublishBrickWithDependencies() throws Exception {
+		System.clearProperty("freedom7.w.W.installed");
+		copyToSourceFolderAndStageForInstallation(new File[] { generateY(), generateW() }, "freedom7.y.Y", "freedom7.w.W");
+		assertEquals("true", System.getProperty("freedom7.w.W.installed"));
+	}
+	
 	@Ignore
+	@Test
 	public void testPublishBrickWithTupleType() throws Exception {
-//		System.clearProperty("freedom7.v.V.installed");
-//		publisher().installBricks(generateV());
-//		assertEquals("true", System.getProperty("freedom7.v.V.installed"));
+		String brickName = "freedom7.v.V";
+		
+		System.clearProperty("freedom7.v.V.installed");
+		copyToSourceFolderAndStageForInstallation(new File[] { generateV() }, brickName);
+		assertEquals("true", System.getProperty("freedom7.v.V.installed"));
+	}
+
+
+	private void copyToSourceFolderAndStageForInstallation(File[] folders, String... brickNames) throws IOException, CompilerException {
+		for (File f : folders) a().copyToSourceFolder(f);		
+		a().enableCodeSharing();
+		for (String brickName : brickNames) a().waitForAvailableBrick(brickName, "CURRENT");
+		a().stageBricksForInstallation(brickNames);
+		newSession(a());
+		for (String brickName : brickNames) a().loadBrick(brickName);
 	}
 	
 	@Test
@@ -70,14 +90,6 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 		fail("indirect cycles, what's the doubt?");
 	}
 
-	@Test
-	@Ignore
-	public void testPublishBrickWithDependencies() throws Exception {
-//		System.clearProperty("freedom7.w.W.installed");
-//		publisher().installBricks(generateY());
-//		publisher().installBricks(generateW());
-//		assertEquals("true", System.getProperty("freedom7.w.W.installed"));
-	}
 	
 	@Test
 	@Ignore
@@ -139,15 +151,15 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 		return new File(tmpFolder(), sourceFolder);
 	}
 
-//
-//	private File generateV() throws IOException {
-//		File src = sourceFolder("src-v");
-//		writeV(new SourceFileWriter(src));
-//		return src;
-//	}
-//
+
+	private File generateV() throws IOException {
+		File src = sourceFolder("src-v");
+		writeV(javaSourceWriterFor(src));
+		return src;
+	}
+
 	private void writeY(File srcFolder) throws IOException {
-		JavaSourceWriter writer = my(JavaSourceWriters.class).newInstance(srcFolder);
+		JavaSourceWriter writer = javaSourceWriterFor(srcFolder);
 		writer.write("freedom7.y.Y",
 				"@" + Brick.class.getName() + " " +
 				"public interface Y {}");
@@ -158,43 +170,47 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 					"}" +
 				"}");
 	}
-//
-//	private void writeV(SourceFileWriter writer) throws IOException {
-//		writer.write("freedom7.v.V", "@sneer.foundation.brickness.Brick public interface V {}");
-//		writer.write("freedom7.v.VTuple", "public class VTuple extends sneer.brickness.Tuple {}");
-//		writer.write("freedom7.v.impl.VImpl",
-//				"class VImpl implements freedom7.v.V {\n" +
-//				"private freedom7.v.VTuple tuple;\n" +
-//					"public VImpl() {\n" +
-//						"System.setProperty(\"freedom7.v.V.installed\", \"true\");\n" +
-//					"}" +
-//				"}");
-//	}
 
-//	private File generateW() throws IOException {
-//		final File src = sourceFolder("src-w");
-//		writeW(new SourceFileWriter(src));
-//		return src;
-//	}
 
-//	private void writeW(final SourceFileWriter writer) throws IOException {
-//		writer.write("freedom7.w.W",
-//				"@sneer.foundation.brickness.Brick\n" +
-//				"public interface W {\n" +
-//					"freedom7.y.Y y();\n" +
-//				"}");
-//		writer.write("freedom7.w.impl.WImpl",
-//				"import sneer.brickness.*;\n" +
-//				"import static sneer.foundation.commons.environments.Environments.my;\n" +
-//				"class WImpl implements freedom7.w.W {\n" +
-//					"private freedom7.y.Y _y = my(freedom7.y.Y.class);\n" +
-//					"public WImpl() {\n" +
-//						"if (_y == null) throw new IllegalStateException();\n" +
-//						"System.setProperty(\"freedom7.w.W.installed\", \"true\");\n" +
-//					"}" +
-//					"public freedom7.y.Y y() {\n" +
-//						"return _y;\n" +
-//					"}\n" +
-//				"}");
-//	}
+	private JavaSourceWriter javaSourceWriterFor(File srcFolder) {
+		return my(JavaSourceWriters.class).newInstance(srcFolder);
+	}
+
+	private void writeV(JavaSourceWriter writer) throws IOException {
+		writer.write("freedom7.v.V", "@sneer.foundation.brickness.Brick public interface V {}");
+		writer.write("freedom7.v.VTuple", "public class VTuple extends " + Tuple.class.getName() + " {}");
+		writer.write("freedom7.v.impl.VImpl",
+				"class VImpl implements freedom7.v.V {\n" +
+				"private freedom7.v.VTuple tuple;\n" +
+					"public VImpl() {\n" +
+						"System.setProperty(\"freedom7.v.V.installed\", \"true\");\n" +
+					"}" +
+				"}");
+	}
+
+	private File generateW() throws IOException {
+		final File src = sourceFolder("src-w");
+		writeW(javaSourceWriterFor(src));
+		return src;
+	}
+
+	private void writeW(final JavaSourceWriter writer) throws IOException {
+		writer.write("freedom7.w.W",
+				"@sneer.foundation.brickness.Brick\n" +
+				"public interface W {\n" +
+					"freedom7.y.Y y();\n" +
+				"}");
+		writer.write("freedom7.w.impl.WImpl",
+				"import static " + sneer.foundation.environments.Environments.class.getName() + ".my;\n" +
+				"class WImpl implements freedom7.w.W {\n" +
+					"private freedom7.y.Y _y = my(freedom7.y.Y.class);\n" +
+					"public WImpl() {\n" +
+						"if (_y == null) throw new IllegalStateException();\n" +
+						"System.setProperty(\"freedom7.w.W.installed\", \"true\");\n" +
+					"}" +
+					"public freedom7.y.Y y() {\n" +
+						"return _y;\n" +
+					"}\n" +
+				"}");
+	}
 }

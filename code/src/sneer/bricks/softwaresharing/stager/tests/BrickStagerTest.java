@@ -57,7 +57,10 @@ public class BrickStagerTest extends BrickTestBase {
 		copyClassesToSrcFolder(
 			sneer.foundation.brickness.Brick.class,
 			sneer.foundation.brickness.Nature.class,
-			sneer.foundation.brickness.ClassDefinition.class);
+			sneer.foundation.brickness.ClassDefinition.class,
+			
+			sneer.foundation.environments.Environment.class,
+			sneer.foundation.environments.Environments.class);
 	}
 	
 	
