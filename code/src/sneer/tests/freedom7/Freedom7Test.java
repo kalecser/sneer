@@ -15,7 +15,6 @@ import sneer.tests.SovereignFunctionalTestBase;
 
 public class Freedom7Test extends SovereignFunctionalTestBase {
 
-	@Ignore
 	@Test (timeout = 1000 * 20)
 	public void meToo() throws Exception {
 		//LoggerMocks.showLog = true;

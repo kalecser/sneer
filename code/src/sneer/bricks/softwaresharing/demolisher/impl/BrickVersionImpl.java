@@ -121,10 +121,7 @@ class BrickVersionImpl implements BrickVersion {
 
 	}
 
-
 	private byte[] fileContentsInCurrentVersion(@SuppressWarnings("unused") String path) {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		return null;
 	}
-
-
 }
