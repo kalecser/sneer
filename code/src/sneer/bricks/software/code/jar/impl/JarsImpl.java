@@ -6,11 +6,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
+import sneer.bricks.hardware.io.IO;
 import sneer.bricks.software.code.jar.JarBuilder;
 import sneer.bricks.software.code.jar.Jars;
+
+import static sneer.foundation.environments.Environments.my;
 
 public class JarsImpl implements Jars {
 
@@ -19,6 +23,18 @@ public class JarsImpl implements Jars {
 		return new JarBuilderImpl(file);
 	}
 
+	@Override
+	public void build(File jarFile, File binFolder) throws IOException {
+		JarBuilder builder = builder(jarFile);
+		int prefixLength = binFolder.getAbsolutePath().length() + 1;
+		for (File file : listFiles(binFolder))
+			builder.add(file.getAbsolutePath().substring(prefixLength), file);
+		builder.close();
+	}
+
+	private Collection<File> listFiles(File binFolder) {
+		return my(IO.class).files().listFiles(binFolder, null, true);
+	}
 }
 
 class JarBuilderImpl implements JarBuilder{

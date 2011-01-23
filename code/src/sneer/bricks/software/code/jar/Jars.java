@@ -8,5 +8,7 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface Jars {
 
-	JarBuilder builder(File file) throws IOException;
+	JarBuilder builder(File jarFile) throws IOException;
+
+	void build(File jarFile, File binFolder) throws IOException;
 }

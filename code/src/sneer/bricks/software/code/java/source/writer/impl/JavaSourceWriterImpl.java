@@ -17,9 +17,11 @@ class JavaSourceWriterImpl implements JavaSourceWriter {
 	}
 
 	@Override
-	public void write(String className, String sourceWithoutPackage) throws IOException {
+	public File write(String className, String sourceWithoutPackage) throws IOException {
 		String source = "package " + packageName(className) + ";\n\n" + sourceWithoutPackage;
-		my(IO.class).files().writeString(javaFile(className), source);
+		File javaFile = javaFile(className);
+		my(IO.class).files().writeString(javaFile, source);
+		return javaFile;
 	}
 
 	private String packageName(String className) {

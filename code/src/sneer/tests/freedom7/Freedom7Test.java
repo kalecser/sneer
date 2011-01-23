@@ -4,12 +4,14 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.software.code.compilers.CompilerException;
+import sneer.bricks.software.code.compilers.java.JavaCompiler;
+import sneer.bricks.software.code.jar.Jars;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.foundation.brickness.Brick;
@@ -41,23 +43,19 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 		b().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
 	}
 
-	@Test
+	@Test (timeout = 1000 * 20)
 	public void testPublishBrickWithDependencies() throws Exception {
 		System.clearProperty("freedom7.w.W.installed");
 		copyToSourceFolderAndStageForInstallation(new File[] { generateY(), generateW() }, "freedom7.y.Y", "freedom7.w.W");
 		assertEquals("true", System.getProperty("freedom7.w.W.installed"));
 	}
 	
-	@Ignore
-	@Test
-	public void testPublishBrickWithTupleType() throws Exception {
-		String brickName = "freedom7.v.V";
-		
-		System.clearProperty("freedom7.v.V.installed");
-		copyToSourceFolderAndStageForInstallation(new File[] { generateV() }, brickName);
-		assertEquals("true", System.getProperty("freedom7.v.V.installed"));
+	@Test (timeout = 1000 * 20)
+	public void testPublishBrickWithLib() throws Exception {
+		System.clearProperty("freedom7.lib.Lib.executed");
+		copyToSourceFolderAndStageForInstallation(new File[] { generateX() }, "freedom7.x.X");
+		assertEquals("true", System.getProperty("freedom7.lib.Lib.executed"));
 	}
-
 
 	private void copyToSourceFolderAndStageForInstallation(File[] folders, String... brickNames) throws IOException, CompilerException {
 		for (File f : folders) a().copyToSourceFolder(f);		
@@ -66,16 +64,6 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 		a().stageBricksForInstallation(brickNames);
 		newSession(a());
 		for (String brickName : brickNames) a().loadBrick(brickName);
-	}
-	
-	@Test
-	@Ignore
-	public void testPublishTwoBricks() throws Exception {
-//		System.clearProperty("freedom7.y.Y.installed");
-//		System.clearProperty("freedom7.w.W.installed");
-//		publisher().installBricks(generateWandY());
-//		assertEquals("true", System.getProperty("freedom7.y.Y.installed"));
-//		assertEquals("true", System.getProperty("freedom7.w.W.installed"));
 	}
 	
 	@Test
@@ -91,55 +79,39 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 	}
 
 	
-	@Test
-	@Ignore
-	public void testPublishBrickWithLib() throws Exception {
-//		System.clearProperty("freedom7.lib.Lib.executed");
-//		publisher().installBricks(generateX());
-//		assertEquals("true", System.getProperty("freedom7.lib.Lib.executed"));
-	}
+	private File generateX() throws Exception {
 		
-	@Ignore
-	@Test
-	public void testMeTooSingleBrick() throws Exception {
+		final File src = sourceFolder("x");
+		
+		generateLib(new File(src, "freedom7/x/impl/lib/lib.jar"));
+		
+		final JavaSourceWriter writer = javaSourceWriterFor(src);
+		writer.write("freedom7.x.X",
+				"@sneer.foundation.brickness.Brick public interface X {}");
+		writer.write("freedom7.x.impl.XImpl",
+				"class XImpl implements freedom7.x.X {\n" +
+					"public XImpl() {\n" +
+						"freedom7.lib.Lib.execute();\n" +
+					"}" +
+				"}");	
+		return src;
 	}
-	
-//	private File generateX() throws IOException {
-//		generateLib(sourceFolder("x/freedom7/x/impl/lib/lib.jar"));
-//		
-//		final File src = sourceFolder("x");
-//		final SourceFileWriter writer = new SourceFileWriter(src);
-//		writer.write("freedom7.x.X",
-//				"public interface X extends sneer.brickness.Brick {" +
-//				"}");
-//		writer.write("freedom7.x.impl.XImpl",
-//				"class XImpl implements freedom7.x.X {\n" +
-//					"public XImpl() {\n" +
-//						"freedom7.lib.Lib.execute();\n" +
-//					"}" +
-//				"}");	
-//		return src;
-//	}
 
-//	private void generateLib(final File libJar) throws IOException {
-//		final File lib = sourceFolder("lib");
-//		new SourceFileWriter(lib).write("freedom7.lib.Lib",
-//			"public class Lib {" +
-//				"public static void execute() {" +
-//					"System.setProperty(\"freedom7.lib.Lib.executed\", \"true\");" +
-//				"}" +
-//			"}");
-//		
-//		new LibBuilder(_compiler, lib, sourceFolder("bin")).build(libJar);
-//	}
-
-//	private File generateWandY() throws IOException {
-//		final File src = sourceFolder("src-wy");
-//		final SourceFileWriter writer = new SourceFileWriter(src);
-//		writeY(writer);
-//		writeW(writer);
-//		return src;
-//	}
+	private void generateLib(final File libJar) throws Exception {
+		final File lib = sourceFolder("lib");
+		final File sourceFile = javaSourceWriterFor(lib).write("freedom7.lib.Lib",
+			"public class Lib {" +
+				"public static void execute() {" +
+					"System.setProperty(\"freedom7.lib.Lib.executed\", \"true\");" +
+				"}" +
+			"}");
+		
+		File outputFolder = sourceFolder("bin");
+		outputFolder.mkdirs();
+		
+		my(JavaCompiler.class).compile(Arrays.asList(sourceFile), outputFolder);
+		my(Jars.class).build(libJar, outputFolder);
+	}
 
 	private File generateY() throws IOException {
 		File src = sourceFolder("src-y");
@@ -149,13 +121,6 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 	
 	private File sourceFolder(String sourceFolder) {
 		return new File(tmpFolder(), sourceFolder);
-	}
-
-
-	private File generateV() throws IOException {
-		File src = sourceFolder("src-v");
-		writeV(javaSourceWriterFor(src));
-		return src;
 	}
 
 	private void writeY(File srcFolder) throws IOException {
@@ -174,19 +139,7 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 
 	private JavaSourceWriter javaSourceWriterFor(File srcFolder) {
 		return my(JavaSourceWriters.class).newInstance(srcFolder);
-	}
-
-	private void writeV(JavaSourceWriter writer) throws IOException {
-		writer.write("freedom7.v.V", "@sneer.foundation.brickness.Brick public interface V {}");
-		writer.write("freedom7.v.VTuple", "public class VTuple extends " + Tuple.class.getName() + " {}");
-		writer.write("freedom7.v.impl.VImpl",
-				"class VImpl implements freedom7.v.V {\n" +
-				"private freedom7.v.VTuple tuple;\n" +
-					"public VImpl() {\n" +
-						"System.setProperty(\"freedom7.v.V.installed\", \"true\");\n" +
-					"}" +
-				"}");
-	}
+	}	
 
 	private File generateW() throws IOException {
 		final File src = sourceFolder("src-w");

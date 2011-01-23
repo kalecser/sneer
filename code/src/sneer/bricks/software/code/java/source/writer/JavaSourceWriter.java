@@ -1,10 +1,11 @@
 package sneer.bricks.software.code.java.source.writer;
 
+import java.io.File;
 import java.io.IOException;
 
 
 public interface JavaSourceWriter {
 
-	void write(String className, String sourceWithoutPackageDeclaration) throws IOException;
+	File write(String className, String sourceWithoutPackageDeclaration) throws IOException;
 
 }
