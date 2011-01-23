@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
-
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.reactive.Register;
@@ -56,7 +54,6 @@ class BrickHistoryImpl implements BrickHistory {
 		for (BrickVersion version : versions()) {
 			if (version.status().currentValue() == BrickVersion.Status.DIFFERENT) hasDifferent = true;
 			if (version.status().currentValue() == BrickVersion.Status.CURRENT  ) hasCurrent   = true;
-			Assert.assertTrue("" + version.status().currentValue(), hasCurrent || hasDifferent);
 		}
 
 		if ( hasDifferent &&  hasCurrent) return Status.DIFFERENT;
