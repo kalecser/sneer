@@ -111,13 +111,14 @@ class BrickHistoryImpl implements BrickHistory {
 
 	void addVersionIfNecessary(Hash packageHash, boolean isCurrent) throws IOException {
 		final BrickVersionImpl newVersion = new BrickVersionImpl(packageHash, isCurrent);
+		
 		BrickVersionImpl versionKept = _versionsByHash.get(newVersion.hash(), new Producer<BrickVersionImpl>() { @Override public BrickVersionImpl produce() {
 			my(Logger.class).log("Brick version found: " + newVersion.hash() + " version: " + (_versionsByHash.size() + 1));
-			_refsToAvoidGc.add(newVersion.status().addReceiver(_statusRefresher));
 			return newVersion;
 		}});
 		
 		if (isCurrent) versionKept.setCurrent(); //Previous kept version might not have been current.
+		if (versionKept == newVersion) _refsToAvoidGc.add(newVersion.status().addReceiver(_statusRefresher));
 	}
 
 }
