@@ -26,7 +26,7 @@ public interface BrickHistory {
 	String name();
 	
 	List<BrickVersion> versions();
-	void setChosenForExecution(BrickVersion version, boolean staged);
+	void setChosenForExecution(BrickVersion version, boolean chosen);
 	BrickVersion getVersionChosenForInstallation();
 
 	Signal<Status> status();

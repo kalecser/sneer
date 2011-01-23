@@ -104,7 +104,7 @@ class FakeModel {
 			@Override public boolean isSnapp() { return false; }
 			@Override public String name() {return name; }
 			@Override public List<BrickVersion> versions() { return versions;}
-			@Override public void setChosenForExecution(BrickVersion version, boolean staged) {}
+			@Override public void setChosenForExecution(BrickVersion version, boolean chosen) {}
 			@Override public Signal<BrickHistory.Status> status() { return my(Signals.class).constant(status); }
 			@Override public BrickVersion getVersionChosenForInstallation() { return null; }
 		};
