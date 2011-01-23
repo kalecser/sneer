@@ -55,7 +55,7 @@ class BrickHistoryImpl implements BrickHistory {
 		
 		for (BrickVersion version : versions()) {
 			if (version.status().currentValue() == BrickVersion.Status.DIFFERENT) hasDifferent = true;
-			if (version.status().currentValue() == BrickVersion.Status.CURRENT   ) hasCurrent   = true;
+			if (version.status().currentValue() == BrickVersion.Status.CURRENT  ) hasCurrent   = true;
 			Assert.assertTrue("" + version.status().currentValue(), hasCurrent || hasDifferent);
 		}
 
