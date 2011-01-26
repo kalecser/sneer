@@ -3,6 +3,7 @@ package sneer.bricks.softwaresharing;
 import java.util.List;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
+import sneer.bricks.pulp.reactive.Signal;
 
 public interface BrickVersion {
 
@@ -22,7 +23,7 @@ public interface BrickVersion {
 	
 	Hash hash();
 	
-	Status status();
+	Signal<Status> status();
 	boolean isChosenForExecution();
 	void setRejected(boolean rejected);
 	

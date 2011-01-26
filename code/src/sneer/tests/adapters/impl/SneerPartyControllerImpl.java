@@ -317,9 +317,9 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	private boolean isBrickAvailable(final String brickName, final String brickStatus) {
 		for (BrickHistory brickInfo : my(BrickSpace.class).availableBricks()) {
-			my(Logger.class).log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Brick found: " + brickInfo.name() + " status: " + brickInfo.status().name());
+			my(Logger.class).log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Brick found: " + brickInfo.name() + " status: " + brickInfo.status());
 			if (brickInfo.name().equals(brickName)
-				&& brickInfo.status().name().equals(brickStatus))
+				&& brickInfo.status().currentValue().name().equals(brickStatus))
 				return true;
 		};
 		return false;

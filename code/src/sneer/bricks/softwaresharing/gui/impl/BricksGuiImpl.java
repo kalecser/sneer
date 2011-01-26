@@ -112,8 +112,8 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		
 		_rejectButton.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
 			BrickVersion version = selectedBrickVersion();
-			version.setRejected(version.status()!=Status.REJECTED);
-			_rejectButton.setSelected(version.status()==Status.REJECTED);
+			version.setRejected(version.status().currentValue() != Status.REJECTED);
+			_rejectButton.setSelected(version.status().currentValue() == Status.REJECTED);
 			_tree.repaint();
 		}});
 	}
@@ -129,14 +129,14 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		
 		BrickVersion version = selectedBrickVersion();
 		
-		if(version.status()==Status.CURRENT)
+		if(version.status().currentValue() == Status.CURRENT)
 			return;
 		
 		_selectButton.setEnabled(true);
 		_selectButton.setSelected(version.isChosenForExecution());
 
 		_rejectButton.setEnabled(true);
-		_rejectButton.setSelected(version.status()==Status.REJECTED);
+		_rejectButton.setSelected(version.status().currentValue() == Status.REJECTED);
 	}
 
 	private BrickVersion selectedBrickVersion() {

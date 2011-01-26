@@ -2,6 +2,8 @@ package sneer.bricks.softwaresharing;
 
 import java.util.List;
 
+import sneer.bricks.pulp.reactive.Signal;
+
 public interface BrickHistory {
 	
 	public enum Status {
@@ -27,7 +29,7 @@ public interface BrickHistory {
 	void setChosenForExecution(BrickVersion version, boolean staged);
 	BrickVersion getVersionChosenForInstallation();
 
-	Status status();
+	Signal<Status> status();
 	boolean isSnapp();
 
 }

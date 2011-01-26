@@ -1,14 +1,19 @@
 package sneer.bricks.softwaresharing.gui.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
+import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickVersion;
-import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.BrickVersion.Status;
+import sneer.bricks.softwaresharing.FileVersion;
 
 class FakeModel {
 
@@ -68,12 +73,12 @@ class FakeModel {
 		return new BrickVersion(){ 
 
 			private boolean _staged;
-			private Status _status = status;
+			private Register<Status> _status = my(Signals.class).newRegister(status);
 			private final List<String> _users = Arrays.asList(new String[]{"User 4", "User 1", "User 3", "User 2"});
 			
 			@Override public List<FileVersion> files() {return _fileVersions;}
 			@Override public boolean isChosenForExecution() {return _staged;}
-			@Override public Status status() {return _status; }
+			@Override public Signal<Status> status() { return _status.output(); }
 			@Override public List<String> users() {  return  _users;}			
 			
 			@Override public long publicationDate() { 
@@ -83,10 +88,10 @@ class FakeModel {
 			
 			@Override public void setRejected(boolean rejected) { 
 				if(rejected) {
-					_status = Status.REJECTED;
+					_status.setter().consume(Status.REJECTED);
 					return;
 				}
-				_status = Status.DIFFERENT;
+				_status.setter().consume(Status.DIFFERENT);
 			}
 			@Override public Hash hash() {
 				return null;
@@ -100,7 +105,7 @@ class FakeModel {
 			@Override public String name() {return name; }
 			@Override public List<BrickVersion> versions() { return versions;}
 			@Override public void setChosenForExecution(BrickVersion version, boolean staged) {}
-			@Override public BrickHistory.Status status() { return status; }
+			@Override public Signal<BrickHistory.Status> status() { return my(Signals.class).constant(status); }
 			@Override public BrickVersion getVersionChosenForInstallation() { return null; }
 		};
 	}

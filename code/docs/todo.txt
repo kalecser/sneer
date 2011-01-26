@@ -60,6 +60,8 @@ Igor ====================================================
 
 Klaus =================================================
 
+	- Unignore BrickStagerTest and LocalBrickDiscoveryTest
+
 	- InternetAddresses - Make OwnHost into an attribute. Remove list of internet addresses from Contact Gui window. Use a single "Attempted Host" and "Attempted Port" attribute pair.
 	
 	- Prevalence loading impls in API classloader during tests - Fix

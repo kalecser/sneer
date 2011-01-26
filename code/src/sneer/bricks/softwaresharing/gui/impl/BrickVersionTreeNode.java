@@ -47,21 +47,17 @@ class BrickVersionTreeNode extends AbstractTreeNodeWrapper<String> {
 	}
 
 	@Override public ImageIcon getIcon() {
-		if(_brickVersion.status()==Status.DIFFERENT){
-			if(_brickVersion.isChosenForExecution())
-				return _addDifferentVersion;
-			
-			return _differentVersion;
-		}
+		if (_brickVersion.status().currentValue() == Status.DIFFERENT)
+			return _brickVersion.isChosenForExecution()
+				? _addDifferentVersion
+				: _differentVersion;
 
-		if(_brickVersion.status()==Status.DIVERGING){
-			if(_brickVersion.isChosenForExecution())
-				return _addDivergingVersion;
-			
-			return _divergingVersion;
-		}
+		if (_brickVersion.status().currentValue() == Status.DIVERGING)
+			return _brickVersion.isChosenForExecution()
+				? _addDivergingVersion
+				: _divergingVersion;
 
-		if(_brickVersion.status()==Status.REJECTED)
+		if (_brickVersion.status().currentValue() == Status.REJECTED)
 			return _rejectedVersion;
 
 		return _currentVersion;

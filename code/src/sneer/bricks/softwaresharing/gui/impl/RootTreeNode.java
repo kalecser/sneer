@@ -37,10 +37,10 @@ class RootTreeNode extends AbstractTreeNodeWrapper<BrickHistory> {
 
 	private void sortBricks() {
 		Comparator<BrickHistory> comparator = new Comparator<BrickHistory>(){ @Override public int compare(BrickHistory brick1, BrickHistory brick2) {
-			if(brick1.status().ordinal()==brick2.status().ordinal())
+			if(brick1.status().currentValue().ordinal() == brick2.status().currentValue().ordinal())
 				return brick1.name().compareTo(brick2.name());
 		
-			return brick1.status().ordinal()-brick2.status().ordinal();
+			return brick1.status().currentValue().ordinal() - brick2.status().currentValue().ordinal();
 		}};
 		Collections.sort(_infos, comparator );
 	}

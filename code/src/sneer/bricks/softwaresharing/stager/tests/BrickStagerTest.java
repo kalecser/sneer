@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -33,6 +34,7 @@ import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Predicate;
 
+@Ignore
 public class BrickStagerTest extends BrickTestBase {
 
 	{

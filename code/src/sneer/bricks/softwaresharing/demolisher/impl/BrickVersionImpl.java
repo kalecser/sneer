@@ -14,6 +14,9 @@ import sneer.bricks.expression.files.map.visitors.FolderStructureVisitor;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.Lang;
+import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
 
@@ -22,11 +25,11 @@ class BrickVersionImpl implements BrickVersion {
 	private final FolderContents _contents;
 	private final List<FileVersion> _files;
 	
-	private Status _status;
+	private final Register<Status> _status;
 	private boolean _stagedForExecution;
 	
 	BrickVersionImpl(Hash hashOfPackage, boolean isCurrent) throws IOException {
-		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
+		_status = my(Signals.class).newRegister(isCurrent ? Status.CURRENT : Status.DIFFERENT);
 		_contents = BrickFilter.retrieveOnlyFilesFromThisBrick(hashOfPackage);
 		_files = findFiles();
 	}
@@ -35,7 +38,7 @@ class BrickVersionImpl implements BrickVersion {
 	@Override public List<FileVersion> files() { return _files; }
 	@Override public Hash hash() { return my(FolderContentsHasher.class).hash(_contents); }
 	@Override public boolean isChosenForExecution() { return _stagedForExecution; }
-	@Override public Status status() { return _status; }
+	@Override public Signal<Status> status() { return _status.output(); }
 
 	
 	@Override
@@ -71,12 +74,12 @@ class BrickVersionImpl implements BrickVersion {
 
 	
 	void setCurrent() {
-		_status = Status.CURRENT;
+		_status.setter().consume(Status.CURRENT);
 	}
 	
 	
 	private boolean isCurrent() {
-		return _status == Status.CURRENT;
+		return _status.output().currentValue() == Status.CURRENT;
 	}
 
 

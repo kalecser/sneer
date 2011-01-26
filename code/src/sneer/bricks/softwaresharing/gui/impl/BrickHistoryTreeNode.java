@@ -11,8 +11,8 @@ import javax.swing.tree.TreeNode;
 
 import sneer.bricks.skin.image.ImageFactory;
 import sneer.bricks.softwaresharing.BrickHistory;
-import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.BrickHistory.Status;
+import sneer.bricks.softwaresharing.BrickVersion;
 
 class BrickHistoryTreeNode extends AbstractTreeNodeWrapper<BrickVersion> {
 
@@ -45,28 +45,28 @@ class BrickHistoryTreeNode extends AbstractTreeNodeWrapper<BrickVersion> {
 	}
 
 	@Override public ImageIcon getIcon() {
-		if(_brickHistory.status() == Status.DIFFERENT ) {
+		if(_brickHistory.status().currentValue() == Status.DIFFERENT ) {
 			if(Util.isBrickStagedForExecution(_brickHistory))
 				return _addDifferentBrick;
 			
 			return _differentBrick;
 		}
 		
-		if(_brickHistory.status() == Status.DIVERGING ){
+		if(_brickHistory.status().currentValue() == Status.DIVERGING ){
 			if(Util.isBrickStagedForExecution(_brickHistory))
 				return _addDivergingBrick;
 
 			return _divergingBrick;
 		}
 		
-		if(_brickHistory.status() == Status.NEW ) {
+		if(_brickHistory.status().currentValue() == Status.NEW ) {
 			if(Util.isBrickStagedForExecution(_brickHistory))
 				return _addNewBrick;
 
 			return  _newBrick;
 		}
 		
-		if(_brickHistory.status() == Status.REJECTED ) 
+		if(_brickHistory.status().currentValue() == Status.REJECTED ) 
 			return _rejectedBrick;
 		
 		return _currentBrick;
