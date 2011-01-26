@@ -24,7 +24,7 @@ class LogFilterImpl implements LogFilter {
 		_phrases.add("Mapping");
 		_phrases.add("key");
 		_phrases.add("peak");
-		_phrases.add("Thread");
+		_phrases.add("Thread count");
 		_phrases.add("block: 0");
 		_phrases.add("Endorsement");
 		_phrases.add("Brick");
