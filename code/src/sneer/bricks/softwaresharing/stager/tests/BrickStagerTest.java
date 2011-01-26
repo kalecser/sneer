@@ -34,7 +34,6 @@ import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Predicate;
 
-@Ignore
 public class BrickStagerTest extends BrickTestBase {
 
 	{
