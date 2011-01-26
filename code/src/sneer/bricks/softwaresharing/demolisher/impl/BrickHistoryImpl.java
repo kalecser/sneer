@@ -49,8 +49,8 @@ class BrickHistoryImpl implements BrickHistory {
 	private Status calculateStatus() {
 		boolean hasCurrent = false, hasDifferent = false;
 		for (BrickVersion version : versions()) {
-			if (version.status().equals(BrickVersion.Status.DIFFERENT)) hasDifferent = true;
-			if (version.status().equals(BrickVersion.Status.CURRENT  )) hasCurrent   = true;
+			if (version.status().currentValue() == BrickVersion.Status.DIFFERENT) hasDifferent = true;
+			if (version.status().currentValue() == BrickVersion.Status.CURRENT   ) hasCurrent   = true;
 		}
 
 		if ( hasDifferent &&  hasCurrent) return Status.DIFFERENT;
