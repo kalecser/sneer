@@ -84,10 +84,6 @@ Klaus =================================================
 		- Remove all calls to Thread.sleep() including indirect.
 
 	- Freedom7 - "Me Too" for Bricks 
-		- BrickSpaceImpl:
-			- Uncomment line  //if (!isMyOwn(srcFolderHash))
-			- remove synchronized from fetchIfNecessary
-			
 			
 		- Brick States - All
 			- Hierarchical View - Consider groups of bricks (brick package at any level, examples: bricks.hardware, bricks.software, bricks.hardware.io, etc) as an optional grouping for versioning and downloading from friends, not only individual bricks.

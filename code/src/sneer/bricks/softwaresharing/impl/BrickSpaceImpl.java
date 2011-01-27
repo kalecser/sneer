@@ -80,7 +80,6 @@ class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 	}
 	
 	
-	synchronized
 	private void fetchIfNecessary(final BuildingHash buildingHash) {
 		shield("writing", new ClosureX<Exception>() { @Override public void run() throws Exception {
 			if (!isAlreadyMapped(buildingHash))
