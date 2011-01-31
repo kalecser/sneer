@@ -48,7 +48,7 @@ public class TrackEndorserTest extends BrickTestWithTuples {
 		}});
 
 		checking(new Expectations(){{
-			oneOf(_fileMap).getFile(hash); will(returnValue(track.getAbsolutePath()));
+			oneOf(_fileMap).getHash(track.getAbsolutePath()); will(returnValue(hash));
 		}});
 
 		Environments.runWith(remote(), new Closure() { @Override public void run() {

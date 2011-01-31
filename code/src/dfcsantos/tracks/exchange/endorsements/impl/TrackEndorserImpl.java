@@ -3,7 +3,6 @@ package dfcsantos.tracks.exchange.endorsements.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Random;
 
 import sneer.bricks.expression.files.map.FileMap;
@@ -11,7 +10,6 @@ import sneer.bricks.expression.files.server.FileServer;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
-import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -72,16 +70,9 @@ class TrackEndorserImpl implements TrackEndorser {
 	}
 
 	private void endorseTrack(final File track) {
-		Hash hash;
-
-		try {
-			hash = my(Crypto.class).digest(track);
-		} catch (IOException e) {
-			my(Logger.class).log("Error computing hash for ", track);
-			return;
-		}
-
-		if (my(FileMap.class).getFile(hash) == null) {
+		
+		Hash hash = my(FileMap.class).getHash(track.getAbsolutePath());
+		if (hash == null) {
 			my(Logger.class).log("Track not mapped: ", track);
 			return;
 		}
