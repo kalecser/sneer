@@ -17,8 +17,6 @@ class BuildingPublisherImpl implements BuildingPublisher {
 
 	@Override
 	public BuildingHash publishMyOwnBuilding() throws IOException {
-		GitWorkaround.standardizeLastModifiedDatesWhileWeStillUseGitBecauseGitDoesNotPreserveThem(srcFolder());
-
 		Hash hash;
 		try {
 			hash = my(FileMapper.class).mapFileOrFolder(srcFolder());

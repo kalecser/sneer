@@ -77,7 +77,6 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 	public void testIndirectCycles() {
 		fail("indirect cycles, what's the doubt?");
 	}
-
 	
 	private File generateX() throws Exception {
 		

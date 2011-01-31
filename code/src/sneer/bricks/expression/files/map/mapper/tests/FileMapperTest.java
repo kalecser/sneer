@@ -55,10 +55,10 @@ public class FileMapperTest extends BrickTestBase {
 
 		File foo = createTmpFileWithFileNameAsContent("newFolder/foo.txt", 42);
 		File bar = createTmpFileWithFileNameAsContent("newFolder/bar.txt", 42);
-		mapAndAssert(newFolder, new byte[]{108, 99, 68, 62, 9, -113, -119, 118, -93, 7}); //Obtained by regression
+		mapAndAssert(newFolder, new byte[]{-3, -35, 23, -71, -35, 69, -82, 114, 86, 0}); //Obtained by regression
 		
 		foo.delete();
-		mapAndAssert(newFolder, new byte[]{74, -23, -27, -19, 110, -25, 38, 35, 69, 6}); //Obtained by regression
+		mapAndAssert(newFolder, new byte[]{-106, -126, 47, -77, -128, 77, -105, -128, 14, -24}); //Obtained by regression
 		assertFalse(isMapped(foo));
 		assertTrue(isMapped(bar));
 
@@ -69,15 +69,16 @@ public class FileMapperTest extends BrickTestBase {
 
 	
 	@Test (timeout = 3000)
-	public void fat32LastModifiedPrecisionCompatibility() throws IOException, MappingStopped {
+	public void lastModifiedDoesNotAffectHash() throws IOException, MappingStopped {
 		File newFolder = newFolder("newFolder");
 
 		File foo = createTmpFileWithFileNameAsContent("newFolder/foo.txt", 0);
-		mapAndAssert(newFolder, new byte[]{-22, 105, -64, -49, -44, 45, 64, 0, -57, 103}); //Obtained by regression
-		foo.setLastModified(1999);
-		mapAndAssert(newFolder, new byte[]{-22, 105, -64, -49, -44, 45, 64, 0, -57, 103}); //Obtained by regression
+		byte[] expectedHash = new byte[]{111, 25, 124, -31, -37, -28, 67, -105, 93, -2}; //Obtained by regression
+		mapAndAssert(newFolder, expectedHash); 
 		foo.setLastModified(2000);
-		mapAndAssert(newFolder, new byte[]{55, -29, 35, 100, -40, -33, -104, -27, -73, 24}); //Obtained by regression
+		mapAndAssert(newFolder, expectedHash);
+		foo.setLastModified(2050);
+		mapAndAssert(newFolder, expectedHash);
 	}
 
 

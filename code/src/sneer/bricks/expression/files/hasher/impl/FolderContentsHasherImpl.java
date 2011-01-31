@@ -3,7 +3,6 @@ package sneer.bricks.expression.files.hasher.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 
 import sneer.bricks.expression.files.hasher.FolderContentsHasher;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
@@ -25,16 +24,10 @@ class FolderContentsHasherImpl implements FolderContentsHasher {
 	private static Hash hash(FileOrFolder entry) {
 		Digester digester = my(Crypto.class).newDigester();
 		digester.update(bytesUtf8(entry.name));
-		digester.update(BigInteger.valueOf(adjustToFat32Precision(entry.lastModified)).toByteArray());
 		digester.update(entry.hashOfContents.bytes.copy());
 		return digester.digest();
 	}
-
 	
-	private static long adjustToFat32Precision(long lastModified) {
-		return lastModified / 2000;
-	}
-
 	private static byte[] bytesUtf8(String string) {
 		try {
 			return string.getBytes("UTF-8");
