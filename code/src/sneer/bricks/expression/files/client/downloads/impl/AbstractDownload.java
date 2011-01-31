@@ -211,7 +211,7 @@ abstract class AbstractDownload implements Download {
 		try {
 			finishWithLocalContents(mappedContents);
 		} catch (Exception e) {
-			finishWith(e);
+			finishWith(new IllegalStateException(mappedPath, e));
 		}
 	}
 
