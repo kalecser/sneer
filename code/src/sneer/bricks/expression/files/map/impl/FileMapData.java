@@ -16,7 +16,9 @@ class FileMapData {
 	static class Entry {
 		final Hash hash;
 		final long lastModified;
-		Entry(Hash hash_, long lastModified_) { hash = hash_; lastModified = lastModified_; }
+		final boolean isFolder;
+		Entry(Hash hash_, long lastModified_, boolean isFolder_)
+		{ hash = hash_; lastModified = lastModified_; isFolder = isFolder_; }
 	}
 
 
@@ -25,10 +27,10 @@ class FileMapData {
 
 
 	synchronized
-	void put(String path, long lastModified, Hash hash) {
+	void put(String path, long lastModified, Hash hash, boolean isFolder) {
 		Object wrapping = _pathsByHash.get(hash);
 		_pathsByHash.put(hash, addToWrapping(wrapping, path));
-		_entriesByPath.put(path, new Entry(hash, lastModified));
+		_entriesByPath.put(path, new Entry(hash, lastModified, isFolder));
 	}
 
 

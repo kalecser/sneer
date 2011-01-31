@@ -7,7 +7,6 @@ import java.io.IOException;
 
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
-import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.Clock;
@@ -200,10 +199,11 @@ abstract class AbstractDownload implements Download {
 			publishRequestIfNecessary();
 		}});
 	}
-
+	
+	protected abstract String getMappedPath(Hash hash);
 
 	private void finishIfLocallyAvailable() {
-		String mappedPath = my(FileMap.class).getPath(_hash);
+		String mappedPath = getMappedPath(_hash);
 		if (mappedPath == null) return;
 		if (mappedPath.contains(DOT_PART)) return; //Optimize Downloads that include identical files in different folders will download all of them redundantly. The problem is .part files can be renamed to their actual name at any moment. 
 

@@ -187,4 +187,9 @@ class FileDownload extends AbstractDownload {
 		return !isFinished();
 	}
 
+	@Override
+	protected String getMappedPath(Hash hash) {
+		return my(FileMap.class).getFile(hash);
+	}
+
 }

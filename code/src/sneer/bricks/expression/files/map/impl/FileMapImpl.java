@@ -41,11 +41,6 @@ class FileMapImpl implements FileMap {
 	}
 
 	@Override
-	public String getPath(Hash hash) {
-		return _delegate.getPath(hash);
-	}
-
-	@Override
 	public void putFile(String path, long lastModified, Hash hash) {
 		_delegate.putFile(normalize(path), lastModified, hash);
 	}

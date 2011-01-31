@@ -93,7 +93,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 
 
 	private boolean isAlreadyMapped(final BuildingHash buildingHash) {
-		return my(FileMap.class).getPath(buildingHash.value) != null;
+		return my(FileMap.class).getFolder(buildingHash.value) != null;
 	}
 
 	

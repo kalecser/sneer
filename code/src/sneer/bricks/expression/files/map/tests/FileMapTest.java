@@ -95,7 +95,7 @@ public class FileMapTest extends BrickTestBase {
 		_subject.putFolder("1a", hash(1));
 		_subject.putFolder("1b", hash(1));
 		_subject.remove("1b");
-		assertEquals("1a", _subject.getPath(hash(1)));
+		assertEquals("1a", _subject.getFolder(hash(1)));
 	}
 
 

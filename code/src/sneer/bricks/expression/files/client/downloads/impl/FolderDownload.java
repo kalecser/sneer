@@ -117,4 +117,10 @@ class FolderDownload extends AbstractDownload {
 	}
 
 
+	@Override
+	protected String getMappedPath(Hash hash) {
+		return my(FileMap.class).getFolder(hash);
+	}
+
+
 }

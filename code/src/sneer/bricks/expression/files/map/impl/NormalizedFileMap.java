@@ -24,13 +24,13 @@ class NormalizedFileMap implements FileMap {
 	@Override
 	public void putFile(String file, long lastModified, Hash hash) {
 		if (lastModified < 0) throw new IllegalArgumentException("File '" + file + "' cannot be mapped with lastModified date smaller than zero: " + lastModified);
-		putPath(file, lastModified, hash);
+		putPath(file, lastModified, hash, false);
 	}
 
 
 	@Override
 	public void putFolder(String path, Hash hash) {
-		putPath(path, -1, hash);
+		putPath(path, -1, hash, true);
 //		checkHash(path, hash);
 	}
 
@@ -47,9 +47,9 @@ class NormalizedFileMap implements FileMap {
 //	}
 
 	
-	private void putPath(String path, long lastModified, Hash hash) {
+	private void putPath(String path, long lastModified, Hash hash, boolean isFolder) {
 		my(Logger.class).log("Mapping ", path);
-		_data.put(path, lastModified, hash);
+		_data.put(path, lastModified, hash, isFolder);
 	}
 	
 	
@@ -63,13 +63,8 @@ class NormalizedFileMap implements FileMap {
 		return getFileOrFolder(hash, true);
 	}
 
-	@Override
-	public String getPath(Hash hash) {
-		return _data.getPath(hash);
-	}
-	
 	private String getFileOrFolder(Hash hash, boolean isFolder) {
-		String path = getPath(hash);
+		String path = _data.getPath(hash);
 		if (path == null) return null;
 		return isFolder == isFolder(path)
 			? path
@@ -93,9 +88,9 @@ class NormalizedFileMap implements FileMap {
 	
 	@Override
 	public FolderContents getFolderContents(Hash hash) {
-		String path = getPath(hash);
+		String path = getFolder(hash);
 		if (path == null) return null;
-		if (!isFolder(path)) return null;
+		if (!isFolder(path)) throw new IllegalStateException("Expecting a folder: " + path);
 		return new FolderContentsGetter(_data, path).result();
 	}
 
@@ -129,7 +124,7 @@ class NormalizedFileMap implements FileMap {
 		Entry entry = _data.remove(from);
 		
 		if (to != null)
-			putPath(to, entry.lastModified, entry.hash);
+			putPath(to, entry.lastModified, entry.hash, entry.isFolder);
 		
 		return entry.hash;
 	}

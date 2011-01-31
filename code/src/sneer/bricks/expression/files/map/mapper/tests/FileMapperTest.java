@@ -73,8 +73,7 @@ public class FileMapperTest extends BrickTestBase {
 		File newFolder = newFolder("newFolder");
 
 		File foo = createTmpFileWithFileNameAsContent("newFolder/foo.txt", 0);
-		byte[] expectedHash = new byte[]{111, 25, 124, -31, -37, -28, 67, -105, 93, -2}; //Obtained by regression
-		mapAndAssert(newFolder, expectedHash); 
+		byte[] expectedHash = map(newFolder).bytes.copy(); 
 		foo.setLastModified(2000);
 		mapAndAssert(newFolder, expectedHash);
 		foo.setLastModified(2050);
@@ -95,8 +94,13 @@ public class FileMapperTest extends BrickTestBase {
 
 
 	private void mapAndAssert(File fileOrFolder, byte[] expectedHashStart) throws MappingStopped, IOException {
-		Hash hash = _subject.mapFileOrFolder(fileOrFolder);
+		Hash hash = map(fileOrFolder);
 		assertStartsWith(expectedHashStart, hash.bytes.copy());
+	}
+
+
+	private Hash map(File fileOrFolder) throws MappingStopped, IOException {
+		return _subject.mapFileOrFolder(fileOrFolder);
 	}
 
 
