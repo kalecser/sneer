@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.software.code.compilers.CompilerException;
@@ -64,18 +63,6 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 		a().stageBricksForInstallation(brickNames);
 		newSession(a());
 		for (String brickName : brickNames) a().loadBrick(brickName);
-	}
-	
-	@Test
-	@Ignore
-	public void testIndirectDependencies() {
-		fail("indirect dependencies break compareTo");
-	}
-	
-	@Test
-	@Ignore
-	public void testIndirectCycles() {
-		fail("indirect cycles, what's the doubt?");
 	}
 	
 	private File generateX() throws Exception {
