@@ -18,6 +18,8 @@ class FolderContentsWriterImpl implements FolderContentsWriter {
 
 	@Override
 	public void mergeOver(File existingFolder, FolderContents contents) throws IOException {
+		if (existingFolder == null || contents == null)
+			throw new IllegalArgumentException();
 		check(existingFolder);
 		writeToFolder(existingFolder, contents);
 	}

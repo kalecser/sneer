@@ -32,6 +32,7 @@ import sneer.bricks.softwaresharing.stager.BrickStager;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Predicate;
+import sneer.foundation.testsupport.AssertUtils;
 
 public class BrickStagerTest extends BrickTestBase {
 
@@ -110,10 +111,36 @@ public class BrickStagerTest extends BrickTestBase {
 		File staged = stagedFile("src/bricks/y");
 		assertSameContents(original, staged);
 	}
+	
+	@Test (timeout = 6000)
+	public void stageBrickWithJUnitTests() throws Exception  {
+		
+		copyJUnitJarToSrcFolder();
+		
+		generateBrickY().write("bricks.y.tests.YTest", "import org.junit.Test; class YTest {}");
+		chooseYForExecution();
+		
+		_subject.stageBricksForInstallation();
+
+		if (errorLights().size() > 0)
+			fail(errorLights().toString());
+		assertStagedFilesExist("bin/bricks/y/tests/YTest.class");
+	}
+
+
+	private void copyJUnitJarToSrcFolder() throws IOException {
+		File junitJar = new File(repositorySrcFileFor(AssertUtils.class).getParentFile(), "lib/junit-4.4.jar");
+		copyFile(junitJar, new File(srcFileFor(AssertUtils.class).getParentFile(), "lib/junit-4.4.jar"));
+	}
 
 	
 	private void prepareBrickY() throws IOException {
 		generateBrickY();
+		chooseYForExecution();
+	}
+
+
+	private void chooseYForExecution() {
 		BrickHistory Y = waitForAvailableBrickY();
 		Y.setChosenForExecution(single(Y.versions()), true);
 	}
@@ -129,10 +156,16 @@ public class BrickStagerTest extends BrickTestBase {
 	}
 
 
-	private void generateBrickY() throws IOException {
-		JavaSourceWriter writer = srcWriterFor(srcFolder());
+	private JavaSourceWriter generateBrickY() throws IOException {
+		JavaSourceWriter writer = newJavaSourceWriter();
 		writer.write("bricks.y.Y", "@" + Brick.class.getName() + " public interface Y {}");
 		writer.write("bricks.y.impl.YImpl", "class YImpl implements bricks.y.Y {}");
+		return writer;
+	}
+
+
+	private JavaSourceWriter newJavaSourceWriter() {
+		return srcWriterFor(srcFolder());
 	}
 
 	
@@ -167,9 +200,12 @@ public class BrickStagerTest extends BrickTestBase {
 
 
 	private static void copyClassToSrcFolder(final Class<?> clazz) throws IOException {
-		my(IO.class).files().copyFile(
-			repositorySrcFileFor(clazz),
-			srcFileFor(clazz));
+		copyFile(repositorySrcFileFor(clazz), srcFileFor(clazz));
+	}
+
+
+	private static void copyFile(File from, File to) throws IOException {
+		my(IO.class).files().copyFile(from, to);
 	}
 
 	

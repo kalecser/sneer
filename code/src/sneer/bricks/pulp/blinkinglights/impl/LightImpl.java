@@ -2,6 +2,7 @@ package sneer.bricks.pulp.blinkinglights.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.gui.actions.Action;
+import sneer.bricks.hardware.io.log.stacktrace.StackTraceLogger;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Register;
@@ -52,5 +53,10 @@ class LightImpl implements Light {
 	@Override
 	public void addAction(Action action) {
 		_actions.add(action);
+	}
+	
+	@Override
+	public String toString() {
+		return "" + _type + ": " + _caption + (_error != null ? " - " + my(StackTraceLogger.class).stackTrace(_error) : "");
 	}
 }
