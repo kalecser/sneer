@@ -8,4 +8,5 @@ data
 tmp
 logs
 dummy*
+/code/stage
 
