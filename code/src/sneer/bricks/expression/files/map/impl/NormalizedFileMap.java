@@ -64,11 +64,7 @@ class NormalizedFileMap implements FileMap {
 	}
 
 	private String getFileOrFolder(Hash hash, boolean isFolder) {
-		String path = _data.getPath(hash);
-		if (path == null) return null;
-		return isFolder == isFolder(path)
-			? path
-			: null;
+		return _data.getPath(hash, isFolder);
 	}
 	
 	@Override

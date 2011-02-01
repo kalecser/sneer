@@ -35,8 +35,21 @@ class FileMapData {
 
 
 	synchronized
-	String getPath(Hash hash) {
-		return unwrap(_pathsByHash.get(hash));
+	String getPath(Hash hash, boolean isFolder) {
+		Object paths = _pathsByHash.get(hash);
+		if (paths instanceof String)
+			if (entry(paths).isFolder == isFolder)
+				return (String)paths;
+		if (paths instanceof List)
+			for (String path : (List<String>)paths)
+				if (entry(path).isFolder == isFolder)
+					return path;
+		return null;
+	}
+
+
+	private Entry entry(Object paths) {
+		return _entriesByPath.get(paths);
 	}
 
 
@@ -73,16 +86,7 @@ class FileMapData {
 	synchronized
 	String[] allPaths() {
 		return _entriesByPath.keySet().toArray(EMPTY_STRING_ARRAY);
-	}
-
-	
-	private String unwrap(Object object) {
-		if (object == null) return null;
-		return object instanceof String
-			? (String)object
-			: ((List<String>)object).get(0);
-	}
-
+	}	
 	
 	private Object addToWrapping(Object previous, String path) {
 		if (previous == null) return path;

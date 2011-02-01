@@ -33,8 +33,6 @@ Patrick =================================================
 
 Bamboo =================================================
 
-	- FileMapTest - test for empty file and empty folder with same hash
-	
 	- GUI Nature
 		- "Finish Him"
 

@@ -14,7 +14,6 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 public class FileMapTest extends BrickTestBase {
 
 	private final FileMap _subject = my(FileMap.class);
-
 	
 	@Test
 	public void fileMapping() {
@@ -96,6 +95,14 @@ public class FileMapTest extends BrickTestBase {
 		_subject.putFolder("1b", hash(1));
 		_subject.remove("1b");
 		assertEquals("1a", _subject.getFolder(hash(1)));
+	}
+	
+	@Test
+	public void fileAndFolderWithSameHash() {
+		_subject.putFolder("emptyFolder", hash(1));
+		_subject.putFile("emptyFile", 42, hash(1));
+		assertEquals("emptyFile", _subject.getFile(hash(1)));
+		assertEquals("emptyFolder", _subject.getFolder(hash(1)));
 	}
 
 
