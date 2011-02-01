@@ -16,7 +16,7 @@ public interface FileVersion {
 		MISSING
 	}
 
-	String name();
+	String relativePath();
 	Status status();
 	
 	byte[] contents();

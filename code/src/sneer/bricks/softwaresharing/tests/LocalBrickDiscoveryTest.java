@@ -47,7 +47,7 @@ public class LocalBrickDiscoveryTest extends BrickTestBase {
 		assertEquals(1, brick.versions().size());
 		BrickVersion singleVersion = brick.versions().get(0);
 		Collection<String> names = my(CollectionUtils.class).map(singleVersion.files(), new Functor<FileVersion, String>() { @Override public String evaluate(FileVersion file) {
-			return file.name();
+			return file.relativePath();
 		}});
 		AssertUtils.assertContents(names, expectedFileNames);
 	}

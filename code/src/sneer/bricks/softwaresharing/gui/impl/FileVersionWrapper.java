@@ -48,7 +48,7 @@ public class FileVersionWrapper {
 	}
 	
 	@Override public String toString() {
-		return _fileVersion.name();
+		return _fileVersion.relativePath();
 	}
 
 	public FileVersion fileVersion(){
