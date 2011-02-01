@@ -19,6 +19,7 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
+import sneer.foundation.lang.Functor;
 
 class BrickVersionImpl implements BrickVersion {
 
@@ -27,8 +28,10 @@ class BrickVersionImpl implements BrickVersion {
 	
 	private final Register<Status> _status;
 	private boolean _stagedForExecution;
+	private final Functor<String, byte[]> _currentContentsFinder;
 	
-	BrickVersionImpl(Hash hashOfPackage, boolean isCurrent) throws IOException {
+	BrickVersionImpl(Hash hashOfPackage, boolean isCurrent, Functor<String, byte[]> currentContentsFinder) throws IOException {
+		_currentContentsFinder = currentContentsFinder;
 		_status = my(Signals.class).newRegister(isCurrent ? Status.CURRENT : Status.DIFFERENT);
 		_contents = BrickFilter.retrieveOnlyFilesFromThisBrick(hashOfPackage);
 		_files = findFiles();
@@ -81,8 +84,7 @@ class BrickVersionImpl implements BrickVersion {
 	private boolean isCurrent() {
 		return _status.output().currentValue() == Status.CURRENT;
 	}
-
-
+	
 	private class Visitor implements FolderStructureVisitor {
 
 		List<FileVersion> _visitedFiles = new ArrayList<FileVersion>();
@@ -110,8 +112,7 @@ class BrickVersionImpl implements BrickVersion {
 		@Override
 		public void visitFileContents(byte[] fileContents) {
 			String path = pathToString();
-			byte[] fileContentsInCurrentVersion = isCurrent() ? fileContents : fileContentsInCurrentVersion(path);
-			_visitedFiles.add(new FileVersionImpl(path, fileContents, fileContentsInCurrentVersion, _lastModified, isCurrent()));
+			_visitedFiles.add(new FileVersionImpl(path, fileContents, _currentContentsFinder, _lastModified, isCurrent()));
 			_path.removeLast();
 		}
 
@@ -119,9 +120,5 @@ class BrickVersionImpl implements BrickVersion {
 			return my(Lang.class).strings().join(_path, "/");
 		}
 
-	}
-
-	private byte[] fileContentsInCurrentVersion(@SuppressWarnings("unused") String path) {
-		return null;
 	}
 }

@@ -13,8 +13,10 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickVersion;
+import sneer.bricks.softwaresharing.FileVersion;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.Producer;
 
 class BrickHistoryImpl implements BrickHistory {
@@ -105,9 +107,11 @@ class BrickHistoryImpl implements BrickHistory {
 		return null;
 	}
 
-
 	void addVersionIfNecessary(Hash packageHash, boolean isCurrent) throws IOException {
-		final BrickVersionImpl newVersion = new BrickVersionImpl(packageHash, isCurrent);
+		Functor<String, byte[]> currentContentsFinder = new Functor<String, byte[]>() {  @Override public byte[] evaluate(String relativePath) {
+			return currentContentsFor(relativePath);
+		}};
+		final BrickVersionImpl newVersion = new BrickVersionImpl(packageHash, isCurrent, currentContentsFinder);
 		
 		BrickVersionImpl versionKept = _versionsByHash.get(newVersion.hash(), new Producer<BrickVersionImpl>() { @Override public BrickVersionImpl produce() {
 			my(Logger.class).log("Brick version found: " + newVersion.hash() + " version: " + (_versionsByHash.size() + 1));
@@ -118,4 +122,20 @@ class BrickHistoryImpl implements BrickHistory {
 		if (versionKept == newVersion) _refsToAvoidGc.add(newVersion.status().addReceiver(_statusRefresher));
 	}
 
+	private BrickVersion currentVersion() {
+		for (BrickVersion version : versions())
+			if (version.status().currentValue() == BrickVersion.Status.CURRENT)
+				return version;
+		return null;
+	}
+
+
+	private byte[] currentContentsFor(String relativePath) {
+		BrickVersion current = currentVersion();
+		if (current != null)
+			for (FileVersion file : current.files())
+				if (file.status() == FileVersion.Status.CURRENT && file.relativePath().equals(relativePath))
+					return file.contents();
+		return new byte[0];
+	}
 }

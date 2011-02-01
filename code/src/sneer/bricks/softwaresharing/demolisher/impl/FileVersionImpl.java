@@ -1,19 +1,20 @@
 package sneer.bricks.softwaresharing.demolisher.impl;
 
 import sneer.bricks.softwaresharing.FileVersion;
+import sneer.foundation.lang.Functor;
 
 class FileVersionImpl implements FileVersion {
 
 	private final String _relativePath;
 	private final byte[] _contents;
-	private final byte[] _contentsInCurrentVersion;
 	private final long _lastModified;
 	private final Status _status;
+	private final Functor<String, byte[]> _currentContentsFinder;
 
-	FileVersionImpl(String path, byte[] contents, byte[] contentsInCurrentVersion, long lastModified, boolean isCurrent) {
+	FileVersionImpl(String path, byte[] contents, Functor<String, byte[]> currentContentsFinder, long lastModified, boolean isCurrent) {
 		_relativePath = path;
 		_contents = contents;
-		_contentsInCurrentVersion = contentsInCurrentVersion;
+		_currentContentsFinder = currentContentsFinder;
 		_lastModified = lastModified;
 		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
 	}
@@ -25,7 +26,7 @@ class FileVersionImpl implements FileVersion {
 
 	@Override
 	public byte[] contentsInCurrentVersion() {
-		return _contentsInCurrentVersion;
+		return _currentContentsFinder.evaluate(_relativePath);
 	}
 
 	@Override
