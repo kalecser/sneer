@@ -75,6 +75,14 @@ public class BrickStagerTest extends BrickTestBase {
 		_subject.stageBricksForInstallation();
 		assertTrue(errorLights().size() > 0);
 	}
+	
+	@Test (timeout = 6000)
+	public void stagingFailureRollsBackStage() throws Throwable {
+		prepareBrickY();
+		assertTrue(srcFileFor(Brick.class).delete());
+		_subject.stageBricksForInstallation();
+		assertFalse(stageFolder().exists());
+	}
 
 	
 	private Collection<Light> errorLights() {

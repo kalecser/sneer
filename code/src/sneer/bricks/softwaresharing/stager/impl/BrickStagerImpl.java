@@ -37,11 +37,24 @@ public class BrickStagerImpl implements BrickStager {
 			prepareStagedSrc();
 			prepareStagedBin();
 		} catch (Exception e) {
-			my(BlinkingLights.class).turnOn(LightType.ERROR, "Brick Installation Error", "Call your sneer buddy", e);
+			deleteStage();
+			turnOnBlinkingLightError(e);
 		}
 	}
 
+
+	private void turnOnBlinkingLightError(Exception e) {
+		my(BlinkingLights.class).turnOn(LightType.ERROR, "Brick Installation Error", "Call your sneer buddy", e);
+	}
 	
+	private void deleteStage() {
+		try {
+			delete(stage());
+		} catch (Exception e) {
+			turnOnBlinkingLightError(e);
+		}
+	}
+
 	private File staged(String folder) {
 		return new File(stage(), folder);
 	}
