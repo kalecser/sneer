@@ -28,6 +28,10 @@ class FileMapData {
 
 	synchronized
 	void put(String path, long lastModified, Hash hash, boolean isFolder) {
+		// TODO: don't allow duplicate paths
+//		if (_entriesByPath.containsKey(path))
+//			throw new IllegalArgumentException("Entry '" + path + "' already exists in FileMap!");
+		
 		Object wrapping = _pathsByHash.get(hash);
 		_pathsByHash.put(hash, addToWrapping(wrapping, path));
 		_entriesByPath.put(path, new Entry(hash, lastModified, isFolder));
@@ -38,7 +42,7 @@ class FileMapData {
 	String getPath(Hash hash, boolean isFolder) {
 		Object paths = _pathsByHash.get(hash);
 		if (paths instanceof String)
-			if (entry(paths).isFolder == isFolder)
+			if (entry((String) paths).isFolder == isFolder)
 				return (String)paths;
 		if (paths instanceof List)
 			for (String path : (List<String>)paths)
@@ -48,7 +52,7 @@ class FileMapData {
 	}
 
 
-	private Entry entry(Object paths) {
+	private Entry entry(String paths) {
 		return _entriesByPath.get(paths);
 	}
 
@@ -93,7 +97,7 @@ class FileMapData {
 		
 		List<String> result;
 		if (previous instanceof List<?>)
-			result = (ArrayList<String>)previous;
+			result = (List<String>)previous;
 		else {
 			result = new ArrayList<String>();
 			result.add((String)previous);
