@@ -1,10 +1,11 @@
-package sneer.bricks.identity.seals.contacts;
+package sneer.bricks.identity.seals.contacts.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
 import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
