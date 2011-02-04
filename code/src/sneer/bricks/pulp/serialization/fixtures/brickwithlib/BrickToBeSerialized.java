@@ -1,4 +1,4 @@
-package sneer.bricks.pulp.serialization.tests.fixtures.brickwithlib;
+package sneer.bricks.pulp.serialization.fixtures.brickwithlib;
 
 import sneer.foundation.brickness.Brick;
 

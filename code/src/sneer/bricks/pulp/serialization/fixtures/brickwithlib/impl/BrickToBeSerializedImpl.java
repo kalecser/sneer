@@ -1,6 +1,6 @@
-package sneer.bricks.pulp.serialization.tests.fixtures.brickwithlib.impl;
+package sneer.bricks.pulp.serialization.fixtures.brickwithlib.impl;
 
-import sneer.bricks.pulp.serialization.tests.fixtures.brickwithlib.BrickToBeSerialized;
+import sneer.bricks.pulp.serialization.fixtures.brickwithlib.BrickToBeSerialized;
 import foo.LibForSerializer;
 
 class BrickToBeSerializedImpl implements BrickToBeSerialized {

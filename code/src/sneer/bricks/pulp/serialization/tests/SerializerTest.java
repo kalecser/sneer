@@ -5,7 +5,7 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.pulp.serialization.Serializer;
-import sneer.bricks.pulp.serialization.tests.fixtures.brickwithlib.BrickToBeSerialized;
+import sneer.bricks.pulp.serialization.fixtures.brickwithlib.BrickToBeSerialized;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
 public class SerializerTest extends BrickTestBase {
