@@ -28,9 +28,8 @@ class FileMapData {
 
 	synchronized
 	void put(String path, long lastModified, Hash hash, boolean isFolder) {
-		// TODO: don't allow duplicate paths
-//		if (_entriesByPath.containsKey(path))
-//			throw new IllegalArgumentException("Entry '" + path + "' already exists in FileMap!");
+		if (_entriesByPath.containsKey(path))
+			remove(path);
 		
 		Object wrapping = _pathsByHash.get(hash);
 		_pathsByHash.put(hash, addToWrapping(wrapping, path));
