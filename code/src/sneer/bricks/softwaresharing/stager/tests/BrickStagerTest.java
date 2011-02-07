@@ -135,7 +135,6 @@ public class BrickStagerTest extends BrickTestBase {
 		assertStagedFilesExist("bin/bricks/y/tests/YTest.class");
 	}
 
-
 	private void copyJUnitJarToSrcFolder() throws IOException {
 		File junitJar = new File(repositorySrcFileFor(AssertUtils.class).getParentFile(), "lib/junit-4.4.jar");
 		copyFile(junitJar, new File(srcFileFor(AssertUtils.class).getParentFile(), "lib/junit-4.4.jar"));
