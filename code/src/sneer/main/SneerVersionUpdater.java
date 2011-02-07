@@ -36,19 +36,20 @@ public class SneerVersionUpdater {
 		deleteAtomically(stageFolder);
 	}
 
+	static final String[] SUB_FOLDERS = { "src", "bin" };
 
 	private static void installStagedCode(File stageFolder, String backupLabel, File codeFolder) throws IOException {
 		backup(backupLabel, codeFolder);
-		ExclusionFilter filesToPreserve = exclusionFilter(codeFolder, stageFolder);
-		deleteFolder(codeFolder, filesToPreserve);
+		ExclusionFilter filesToPreserve = exclusionFilter(codeFolder);
+		for (String subFolder : SUB_FOLDERS)
+			deleteFolder(new File(codeFolder, subFolder), filesToPreserve);
 		copyFolder(stageFolder, codeFolder, filesToPreserve);
 	}
-
 	
 	private static void backup(String backupLabel, File codeFolder) throws IOException {
 		File backupFolder = backupFolder(backupLabel, codeFolder);
-		copySubFolder("src", codeFolder, backupFolder);
-		copySubFolder("bin", codeFolder, backupFolder);
+		for (String subFolder : SUB_FOLDERS)
+			copySubFolder(subFolder, codeFolder, backupFolder);
 	}
 
 	
@@ -59,10 +60,8 @@ public class SneerVersionUpdater {
 	}
 
 
-	private static ExclusionFilter exclusionFilter(File codeFolder, File stageFolder) {
+	private static ExclusionFilter exclusionFilter(File codeFolder) {
 		return new ExclusionFilter(
-			stageFolder,
-			existingFile(codeFolder, BACKUP),
 			existingFile(codeFolder, "src/sneer/main/Sneer.java"),
 			existingFile(codeFolder, "bin/sneer/main/Sneer.class"),
 			
@@ -73,9 +72,7 @@ public class SneerVersionUpdater {
 			existingFile(codeFolder, "src/sneer/main/SneerCodeFolders.java"),
 			existingFile(codeFolder, "bin/sneer/main/SneerCodeFolders.class")
 		);
-	}
-
-	
+	}	
 	
 //////////////////////////////////////////////////////////// File Utils:	
 	
