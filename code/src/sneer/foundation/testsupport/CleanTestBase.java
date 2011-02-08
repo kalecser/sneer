@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.util.Set;
 
@@ -271,6 +272,11 @@ public abstract class CleanTestBase extends AssertUtils {
 			createTmpFile(fileName);
 	}
 
+	protected File createTmpFile(String fileName, String contents) throws IOException {
+		File file = createTmpFile(fileName);
+		write(file, contents);
+		return file;
+	}
 	
 	protected File createTmpFile(String fileName) throws IOException {
 		File file = newTmpFile(fileName);
@@ -298,14 +304,19 @@ public abstract class CleanTestBase extends AssertUtils {
 
 	
 	protected File createTmpFileWithFileNameAsContent(String fileName) throws IOException {
-		File file = createTmpFile(fileName);
+		return createTmpFile(fileName, fileName);
+	}
+
+
+	private void write(File file, String contents)
+			throws FileNotFoundException, IOException,
+			UnsupportedEncodingException {
 		FileOutputStream fileOutputStream = new FileOutputStream(file);
 		try {
-			fileOutputStream.write(fileName.getBytes("UTF-8"));
+			fileOutputStream.write(contents.getBytes("UTF-8"));
 		} finally {
 			fileOutputStream.close();
 		}
-		return file;
 	}
 
 }

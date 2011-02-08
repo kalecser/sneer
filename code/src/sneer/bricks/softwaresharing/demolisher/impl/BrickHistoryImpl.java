@@ -117,7 +117,8 @@ class BrickHistoryImpl implements BrickHistory {
 		Functor<String, byte[]> currentContentsFinder = new Functor<String, byte[]>() {  @Override public byte[] evaluate(String relativePath) {
 			return currentContentsFor(relativePath);
 		}};
-		final BrickVersionImpl newVersion = new BrickVersionImpl(packageHash, isCurrent, currentContentsFinder);
+		final BrickVersion current = currentVersion();
+		final BrickVersionImpl newVersion = new BrickVersionImpl(packageHash, isCurrent, currentContentsFinder, current);
 		
 		BrickVersionImpl versionKept = _versionsByHash.get(newVersion.hash(), new Producer<BrickVersionImpl>() { @Override public BrickVersionImpl produce() {
 			my(Logger.class).log("Brick version found: " + newVersion.hash() + " version: " + (_versionsByHash.size() + 1));
@@ -142,6 +143,6 @@ class BrickHistoryImpl implements BrickHistory {
 			for (FileVersion file : current.files())
 				if (file.status() == FileVersion.Status.CURRENT && file.relativePath().equals(relativePath))
 					return file.contents();
-		return new byte[0];
+		return null;
 	}
 }

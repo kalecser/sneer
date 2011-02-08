@@ -77,6 +77,10 @@ class FakeModel {
 			private final List<String> _users = Arrays.asList(new String[]{"User 4", "User 1", "User 3", "User 2"});
 			
 			@Override public List<FileVersion> files() {return _fileVersions;}
+			@Override
+			public FileVersion file(String relativePath) {
+				throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+			}
 			@Override public boolean isChosenForExecution() {return _staged;}
 			@Override public Signal<Status> status() { return _status.output(); }
 			@Override public List<String> users() {  return  _users;}			

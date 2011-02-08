@@ -1,8 +1,9 @@
 package sneer.bricks.softwaresharing.demolisher.impl;
 
+import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.softwaresharing.FileVersion;
+import sneer.bricks.softwaresharing.demolisher.filestatus.FileStatusCalculator;
 import sneer.foundation.lang.Functor;
-
 class FileVersionImpl implements FileVersion {
 
 	private final String _relativePath;
@@ -16,7 +17,13 @@ class FileVersionImpl implements FileVersion {
 		_contents = contents;
 		_currentContentsFinder = currentContentsFinder;
 		_lastModified = lastModified;
-		_status = isCurrent ? Status.CURRENT : Status.DIFFERENT;
+		_status = initStatus(isCurrent);
+	}
+
+	private Status initStatus(boolean isCurrent) {
+		if (isCurrent)
+			return Status.CURRENT;
+		return my(FileStatusCalculator.class).calculate(_contents, contentsInCurrentVersion());
 	}
 
 	@Override

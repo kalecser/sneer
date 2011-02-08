@@ -174,7 +174,14 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		}
 		
 		FileVersion selected = selectedWrapper.fileVersion();
-		_diffPanel.compare(new String(selected.contentsInCurrentVersion()), new String(selected.contents()));
+		byte[] contents = selected.contents();
+		_diffPanel.compare(stringFor(selected.contentsInCurrentVersion()), stringFor(contents));
+	}
+
+	private String stringFor(byte[] contents) {
+		if (contents == null)
+			return "";
+		return new String(contents);
 	}
 	
 	private void initGui() {

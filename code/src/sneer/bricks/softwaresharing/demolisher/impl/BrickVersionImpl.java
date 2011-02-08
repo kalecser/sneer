@@ -30,11 +30,27 @@ class BrickVersionImpl implements BrickVersion {
 	private boolean _stagedForExecution;
 	private final Functor<String, byte[]> _currentContentsFinder;
 	
-	BrickVersionImpl(Hash hashOfPackage, boolean isCurrent, Functor<String, byte[]> currentContentsFinder) throws IOException {
+	BrickVersionImpl(Hash hashOfPackage, boolean isCurrent, Functor<String, byte[]> currentContentsFinder, BrickVersion current) throws IOException {
 		_currentContentsFinder = currentContentsFinder;
 		_status = my(Signals.class).newRegister(isCurrent ? Status.CURRENT : Status.DIFFERENT);
 		_contents = BrickFilter.retrieveOnlyFilesFromThisBrick(hashOfPackage);
 		_files = findFiles();
+		addMissingFiles(current);
+	}
+
+
+	private void addMissingFiles(BrickVersion current) {
+		if (current == null)
+			return;
+		
+		for (FileVersion currentFile : current.files())
+			if (file(currentFile.relativePath()) == null)
+				addMissingFile(currentFile);
+	}
+
+
+	private void addMissingFile(FileVersion currentFile) {
+		_files.add(new FileVersionImpl(currentFile.relativePath(), null, _currentContentsFinder, currentFile.lastModified(), false));
 	}
 
 
@@ -120,5 +136,13 @@ class BrickVersionImpl implements BrickVersion {
 			return my(Lang.class).strings().join(_path, "/");
 		}
 
+	}
+
+	@Override
+	public FileVersion file(String relativePath) {
+		for (FileVersion version : files())
+			if (version.relativePath().equals(relativePath))
+				return version;
+		return null;
 	}
 }
