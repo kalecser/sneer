@@ -4,6 +4,8 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
@@ -80,7 +82,11 @@ class BrickHistoryImpl implements BrickHistory {
 
 	@Override
 	public List<BrickVersion> versions() {
-		return new ArrayList<BrickVersion>(_versionsByHash.values());
+		ArrayList<BrickVersion> result = new ArrayList<BrickVersion>(_versionsByHash.values());
+		Collections.sort(result, new Comparator<BrickVersion>() { @Override public int compare(BrickVersion a, BrickVersion b) {
+			return a.status().currentValue().ordinal() - b.status().currentValue().ordinal();
+		}});
+		return result;
 	}
 
 	
