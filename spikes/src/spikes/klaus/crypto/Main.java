@@ -6,20 +6,19 @@ import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.Provider;
+import java.security.Provider.Service;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.Signature;
-import java.security.Provider.Service;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import junit.framework.Assert;
 
-import sneer.foundation.brickness.Brickness;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.Arrays;
 
 public class Main {
 
@@ -31,26 +30,14 @@ public class Main {
 		
 		printProvidersAndServices();
 		
-		byte[] message = new SecureRandom().generateSeed(10);
+		byte[] message = "Any silly thing...".getBytes();
 		
 		testHash(message);
 		testPK(message);
 		
-		testKeySerialization();
 	}
 
 	
-	private static void testKeySerialization() throws Exception {
-		final KeyPair keys = generateKeyPair();
-		
-		Environments.runWith(Brickness.newBrickContainer(), new Closure() { @Override public void run() {
-//			byte[] serialized = my(Serializer.class).serialize(keys.getPublic());
-			byte[] encoded = keys.getPublic().getEncoded();
-			System.out.println("Public key length: " + encoded.length);
-		}});
-		
-	}
-
 	
 	private static void printProvidersAndServices() {
 		HashSet<String> serviceTypes = new HashSet<String>();
@@ -84,12 +71,22 @@ public class Main {
 		System.out.println("Digest length: " + digest.length * 8 + " bits");
 	}
 
+	
 	private static void testPK(byte[] bytecodeDummy) throws Exception {
 		KeyPair keys = generateKeyPair();
 				
-		byte[] signature = generateSignature(keys.getPrivate(), bytecodeDummy);
-		boolean ok = verifySignature(keys.getPublic(), bytecodeDummy, signature);
+		byte[] signature1 = generateSignature(keys.getPrivate(), bytecodeDummy);
+		byte[] signature2 = generateSignature(keys.getPrivate(), bytecodeDummy);
+		avoidSonyPS3EpicFail(signature1,signature2);
+		
+		boolean ok = verifySignature(keys.getPublic(), bytecodeDummy, signature1);
 		System.out.println("PK Signature ok: " + ok);
+	}
+
+
+	//They were using the same random number for all ECDSA signatures, thus producing the same signature given the same message.
+	private static void avoidSonyPS3EpicFail(byte[] signature1, byte[] signature2) { 
+		Assert.assertFalse(Arrays.areEqual(signature1, signature2));
 	}
 
 		
@@ -122,8 +119,11 @@ public class Main {
 //		Signature signer = Signature.getInstance("SHA512WITHRSA", "BC");
 //		Signature signer = Signature.getInstance("SHA512WITHECDSA", "BC");
 		Signature signer = Signature.getInstance("ECDSA", "BC");
+
 		signer.initSign(privatekey);
-	
+		signer.update("The same signer instance can be used over again.".getBytes());
+
+		signer.initSign(privatekey);
 		signer.update(message);
 	
 		return signer.sign();
@@ -140,7 +140,9 @@ public class Main {
 		PublicKey publicKeyDecoded = keyFactory.generatePublic(publicKeySpec);
 
 		verifier.initVerify(publicKeyDecoded);
-	
+		verifier.update("The same verifier instance can be used over again.".getBytes());
+
+		verifier.initVerify(publicKeyDecoded);
 		verifier.update(message);
 	
 		return verifier.verify(signature);
