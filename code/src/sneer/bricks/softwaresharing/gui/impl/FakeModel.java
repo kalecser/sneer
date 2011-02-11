@@ -3,13 +3,15 @@ package sneer.bricks.softwaresharing.gui.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.pulp.reactive.collections.CollectionSignals;
+import sneer.bricks.pulp.reactive.collections.ListRegister;
+import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.BrickVersion.Status;
@@ -74,7 +76,7 @@ class FakeModel {
 
 			private boolean _staged;
 			private Register<Status> _status = my(Signals.class).newRegister(status);
-			private final List<String> _users = Arrays.asList(new String[]{"User 4", "User 1", "User 3", "User 2"});
+			private final ListSignal<String> _users = newListSignal("User 4", "User 1", "User 3", "User 2");
 			
 			@Override public List<FileVersion> files() {return _fileVersions;}
 			@Override
@@ -83,7 +85,7 @@ class FakeModel {
 			}
 			@Override public boolean isChosenForExecution() {return _staged;}
 			@Override public Signal<Status> status() { return _status.output(); }
-			@Override public List<String> users() {  return  _users;}			
+			@Override public ListSignal<String> users() {  return _users;}			
 			
 			@Override public long publicationDate() { 
 				_initialTimeStamp += 1000;
@@ -101,6 +103,12 @@ class FakeModel {
 				return null;
 			}
 		};
+	}
+
+	protected static ListSignal<String> newListSignal(String... values) {
+		ListRegister<String> register = my(CollectionSignals.class).newListRegister();
+		for (String value : values) register.add(value);
+		return register.output();
 	}
 
 	private static BrickHistory newBrickInfo(final String name, final List<BrickVersion> versions, final BrickHistory.Status status) {

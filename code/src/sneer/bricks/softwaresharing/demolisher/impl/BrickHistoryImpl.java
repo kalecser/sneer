@@ -10,6 +10,7 @@ import java.util.List;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -29,12 +30,10 @@ class BrickHistoryImpl implements BrickHistory {
 	private final CacheMap<Hash, BrickVersionImpl> _versionsByHash = CacheMap.newInstance();
 	private final Consumer<BrickVersion.Status> _statusRefresher = initStatusRefresher();
 	private final List<Object> _refsToAvoidGc = new ArrayList<Object>();
-
 	
-	public BrickHistoryImpl(String brickName, Hash packageHash, boolean isCurrent) throws IOException {
+	BrickHistoryImpl(String brickName) {
 		my(Logger.class).log("BrickInfo created: " + brickName);
 		_brickName = brickName;
-		addVersionIfNecessary(packageHash, isCurrent);
 	}
 
 
@@ -113,20 +112,21 @@ class BrickHistoryImpl implements BrickHistory {
 		return null;
 	}
 
-	void addVersionIfNecessary(Hash packageHash, boolean isCurrent) throws IOException {
+	void addVersionIfNecessary(Hash packageHash, Contact owner) throws IOException {
 		Functor<String, byte[]> currentContentsFinder = new Functor<String, byte[]>() {  @Override public byte[] evaluate(String relativePath) {
 			return currentContentsFor(relativePath);
 		}};
 		final BrickVersion current = currentVersion();
-		final BrickVersionImpl newVersion = new BrickVersionImpl(packageHash, isCurrent, currentContentsFinder, current);
+		final BrickVersionImpl newVersion = new BrickVersionImpl(packageHash, owner == null, currentContentsFinder, current);
 		
 		BrickVersionImpl versionKept = _versionsByHash.get(newVersion.hash(), new Producer<BrickVersionImpl>() { @Override public BrickVersionImpl produce() {
 			my(Logger.class).log("Brick version found: " + newVersion.hash() + " version: " + (_versionsByHash.size() + 1));
 			return newVersion;
 		}});
-		
-		if (isCurrent) versionKept.setCurrent(); //Previous kept version might not have been current.
 		if (versionKept == newVersion) _refsToAvoidGc.add(newVersion.status().addReceiver(_statusRefresher));
+		
+		if (owner == null) versionKept.setCurrent(); //Previous kept version might not have been current.
+		else versionKept.addUser(owner);
 	}
 
 	private BrickVersion currentVersion() {

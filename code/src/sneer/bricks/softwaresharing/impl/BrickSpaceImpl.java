@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
@@ -16,6 +17,8 @@ import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.events.EventNotifier;
@@ -35,7 +38,7 @@ import sneer.foundation.lang.Consumer;
 
 class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 
-	private final CacheMap<String, BrickHistory> _availableBricksByName = CacheMap.newInstance();
+	private CacheMap<String, BrickHistory> _availableBricksByName;
 
 	private final EventNotifier<Seal> _newBuildingFound = my(EventNotifiers.class).newInstance();
 	
@@ -62,14 +65,19 @@ class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 	
 	@Override
 	public Collection<BrickHistory> availableBricks() {
+		if (_availableBricksByName == null)
+			return Collections.emptyList();
 		return new ArrayList<BrickHistory>(_availableBricksByName.values());
 	}
 
 	
 	@Override
 	public void consume(final BuildingHash srcFolderHash) {
+		final Contact publisher = my(ContactSeals.class).contactGiven(srcFolderHash.publisher);
+		if (publisher == null)
+			return;
 		my(Threads.class).startDaemon("BrickSpace Fetcher", new Closure() { @Override public void run() {
-			fetchIfNecessary(srcFolderHash);
+			fetchIfNecessary(srcFolderHash, publisher);
 		}});
 	}
 
@@ -80,13 +88,13 @@ class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 	}
 	
 	
-	private void fetchIfNecessary(final BuildingHash buildingHash) {
+	private void fetchIfNecessary(final BuildingHash buildingHash, final Contact publisher) {
 		shield("writing", new ClosureX<Exception>() { @Override public void run() throws Exception {
 			if (!isAlreadyMapped(buildingHash))
 				download(buildingHash);
 			
 			shield("reading", new ClosureX<Exception>() { @Override public void run() throws Exception {
-				accumulateBricks(buildingHash, false);
+				accumulateBricks(buildingHash, publisher);
 			}});
 		}});
 	}
@@ -110,11 +118,12 @@ class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 	}
 
 
-	private void accumulateBricks(final BuildingHash buildingHash, boolean isMyOwn) throws IOException {
+	private void accumulateBricks(final BuildingHash buildingHash, Contact publisher) throws IOException {
+		
 		my(Demolisher.class).demolishBuildingInto(
 			_availableBricksByName,
 			buildingHash.value,
-			isMyOwn
+			publisher
 		);
 
 		_newBuildingFound.notifyReceivers(buildingHash.publisher);
@@ -124,12 +133,12 @@ class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 	private boolean tryToPublishMyOwnBuilding() {
 		try {
 			_myOwnBuilding = my(BuildingPublisher.class).publishMyOwnBuilding();
-			accumulateBricks(_myOwnBuilding, true);
+			_availableBricksByName = my(Demolisher.class).demolishOwnBuilding(_myOwnBuilding.value);
+			_newBuildingFound.notifyReceivers(_myOwnBuilding.publisher);
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error while reading bricks' code.", "", e);
 			return false;
 		}
-		
 		return true;
 	}
 

@@ -94,7 +94,7 @@ class BrickHistoryTreeNode extends AbstractTreeNodeWrapper<BrickVersion> {
 		}
 
 		private int usersCount(BrickVersion v1) {
-			return v1.users().size();
+			return v1.users().size().currentValue();
 		}});
 		return _brickHistory.versions(); 
 	}

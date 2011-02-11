@@ -4,6 +4,7 @@ import java.util.List;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.collections.ListSignal;
 
 public interface BrickVersion {
 
@@ -29,7 +30,7 @@ public interface BrickVersion {
 	
 	long publicationDate();
 	
-	List<String> users();
+	ListSignal<String> users();
 	
 	List<FileVersion> files();
 

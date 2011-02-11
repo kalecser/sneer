@@ -11,6 +11,8 @@ import org.junit.Test;
 import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.hardware.cpu.crypto.Hash;
+import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
@@ -24,25 +26,68 @@ import sneer.foundation.lang.CacheMap;
 public class DemolisherTest extends BrickTestBase {
 
 	private Demolisher _subject = my(Demolisher.class);
-
+	
 	@Test
-	public void test() throws Exception {
+	public void testUsers() throws Exception {
 		
 		File buildingA = newTmpFile("buildinga");
-		writeBrick(buildingA);
+		writeBrick("Brick1", buildingA);
+		writeBrick("Brick2", buildingA);
+		writeBrick("Brick4", buildingA);
+		
+		File buildingB = newTmpFile("buildingb");
+		writeBrick("Brick2", buildingB);
+		writeBrick("Brick4", buildingB);
+		
+		File buildingC = newTmpFile("buildingc");
+		writeBrick("Brick3", buildingC);
+		writeBrick("Brick4", buildingC);
+		
+		File buildingD = newTmpFile("buildingd");
+		writeBrick("Brick3", buildingD);
+		writeBrick("Brick4", buildingD);
+		
+		Contact userB = my(Contacts.class).produceContact("Bruno");
+		Contact userC = my(Contacts.class).produceContact("Carlos");
+		Contact userD = my(Contacts.class).produceContact("Daniel");
+		
+		CacheMap<String, BrickHistory> result =  demolishOwnBuilding(buildingA);
+		demolishBuildingInto(result, buildingB, userB);
+		demolishBuildingInto(result, buildingC, userC);
+		demolishBuildingInto(result, buildingD, userD);
+		
+		assertBrickUsers(result, "Brick1");
+		assertBrickUsers(result, "Brick2", "Bruno");
+		assertBrickUsers(result, "Brick3", "Carlos", "Daniel");
+		assertBrickUsers(result, "Brick4", "Bruno", "Carlos", "Daniel");
+	}
+
+	private void assertBrickUsers(CacheMap<String, BrickHistory> result, String brickName, String...users) {
+		BrickHistory brickHistory = result.get(qualifiedBrickName(brickName));
+		assertNotNull(brickHistory);
+		
+		assertContents(brickHistory.versions().get(0).users(), users);
+	}
+
+	@Test
+	public void testStatus() throws Exception {
+		
+		File buildingA = newTmpFile("buildinga");
+		writeBrick("Brick1", buildingA);
 		createTmpFile("buildinga/brick1/MISSING.txt");
 		createTmpFile("buildinga/brick1/CURRENT.txt", "current");
 		createTmpFile("buildinga/brick1/DIFFERENT.txt", "current");
 		
 		File buildingB = newTmpFile("buildingb");
-		writeBrick(buildingB);
+		writeBrick("Brick1", buildingB);
 		createTmpFile("buildingb/brick1/EXTRA.txt");
 		createTmpFile("buildingb/brick1/CURRENT.txt", "current");
 		createTmpFile("buildingb/brick1/DIFFERENT.txt", "different");
 		
-		CacheMap<String, BrickHistory> result = CacheMap.newInstance();
-		demolishBuildingInto(result, buildingA, true);
-		demolishBuildingInto(result, buildingB, false);
+		Contact userB = my(Contacts.class).produceContact("Bruno");
+		
+		CacheMap<String, BrickHistory> result =  demolishOwnBuilding(buildingA);
+		demolishBuildingInto(result, buildingB, userB);
 		
 		assertEquals(1, result.size());
 		
@@ -65,14 +110,23 @@ public class DemolisherTest extends BrickTestBase {
 		assertSame(FileVersion.Status.DIFFERENT, versionB.file("DIFFERENT.txt").status());
 	}
 	
-	private void writeBrick(File buildingA) throws IOException {
-		JavaSourceWriter aWriter = my(JavaSourceWriters.class).newInstance(buildingA);
-		aWriter.write("brick1.Brick1", "@" + Brick.class.getName() + " public interface Brick1 {}");
+	private void writeBrick(String brickName, File srcFolder)
+			throws IOException {
+		JavaSourceWriter aWriter = my(JavaSourceWriters.class).newInstance(srcFolder);
+		aWriter.write(qualifiedBrickName(brickName), "@" + Brick.class.getName() + " public interface " + brickName + " {}");
 	}
 
-	private void demolishBuildingInto(CacheMap<String, BrickHistory> result,
-			File building, boolean isMyOwn) throws MappingStopped, IOException {
+	private String qualifiedBrickName(String brickName) {
+		return brickName.toLowerCase() + "." + brickName;
+	}
+
+	private void demolishBuildingInto(CacheMap<String, BrickHistory> result, File building, Contact owner) throws MappingStopped, IOException {
 		Hash buildingAHash = my(FileMapper.class).mapFileOrFolder(building);
-		_subject.demolishBuildingInto(result, buildingAHash, isMyOwn);
+		_subject.demolishBuildingInto(result, buildingAHash, owner);
+	}
+	
+	private CacheMap<String, BrickHistory> demolishOwnBuilding(File building) throws MappingStopped, IOException {
+		Hash buildingAHash = my(FileMapper.class).mapFileOrFolder(building);
+		return _subject.demolishOwnBuilding(buildingAHash);
 	}
 }

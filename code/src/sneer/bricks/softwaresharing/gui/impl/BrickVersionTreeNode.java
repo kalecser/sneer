@@ -64,16 +64,17 @@ class BrickVersionTreeNode extends AbstractTreeNodeWrapper<String> {
 	}
 	
 	private int usersCount() {
-		return _brickVersion.users().size();
+		return _brickVersion.users().size().currentValue();
 	}
 
 	@Override public String toString() { return  _toString;	}
 	
 	@Override protected List<String> listChildren() { 
-		Collections.sort(_brickVersion.users(), new Comparator<String>(){ @Override public int compare(String nick1, String nick2) {
+		List<String> users = _brickVersion.users().currentElements();
+		Collections.sort(users, new Comparator<String>(){ @Override public int compare(String nick1, String nick2) {
 			return nick1.compareTo(nick2);
 		}});
-		return _brickVersion.users(); 
+		return users; 
 	}
 	
 	@SuppressWarnings("rawtypes")

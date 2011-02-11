@@ -14,9 +14,13 @@ import sneer.bricks.expression.files.map.visitors.FolderStructureVisitor;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.Lang;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.pulp.reactive.collections.CollectionSignals;
+import sneer.bricks.pulp.reactive.collections.ListRegister;
+import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
 import sneer.foundation.lang.Functor;
@@ -29,10 +33,12 @@ class BrickVersionImpl implements BrickVersion {
 	private final Register<Status> _status;
 	private boolean _stagedForExecution;
 	private final Functor<String, byte[]> _currentContentsFinder;
+	private final ListRegister<String> _users;
 	
 	BrickVersionImpl(Hash hashOfPackage, boolean isCurrent, Functor<String, byte[]> currentContentsFinder, BrickVersion current) throws IOException {
 		_currentContentsFinder = currentContentsFinder;
 		_status = my(Signals.class).newRegister(isCurrent ? Status.CURRENT : Status.DIFFERENT);
+		_users = my(CollectionSignals.class).newListRegister();
 		_contents = BrickFilter.retrieveOnlyFilesFromThisBrick(hashOfPackage);
 		_files = findFiles();
 		addMissingFiles(current);
@@ -61,8 +67,8 @@ class BrickVersionImpl implements BrickVersion {
 
 	
 	@Override
-	public List<String> users() {
-		return new ArrayList<String>();
+	public ListSignal<String> users() {
+		return _users.output();
 	}
 
 	@Override
@@ -144,5 +150,12 @@ class BrickVersionImpl implements BrickVersion {
 			if (version.relativePath().equals(relativePath))
 				return version;
 		return null;
+	}
+
+	public void addUser(Contact user) {
+		String nickname = user.nickname().currentValue();
+		if (_users.output().currentIndexOf(nickname) != -1)
+			throw new IllegalArgumentException(nickname);
+		_users.add(nickname);
 	}
 }

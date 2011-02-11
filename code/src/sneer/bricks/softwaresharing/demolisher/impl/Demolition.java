@@ -15,9 +15,10 @@ import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.Lang.Strings;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.ProducerX;
+import sneer.foundation.lang.Producer;
 
 class Demolition implements FolderStructureVisitor {
 
@@ -28,14 +29,13 @@ class Demolition implements FolderStructureVisitor {
 	private final Deque<String> _namePath = new LinkedList<String>();
 	private final Deque<Hash> _hashPath = new LinkedList<Hash>();
 
-	private final boolean _isCurrent;
+	private final Contact _owner;
 
 	private IOException _firstExceptionFound;
 	
-
-	Demolition(CacheMap<String,BrickHistory> bricksByName, Hash srcFolderHash, boolean isCurrent) throws IOException {
+	Demolition(CacheMap<String,BrickHistory> bricksByName, Hash srcFolderHash, Contact owner) throws IOException {
 		_bricksByName = bricksByName;
-		_isCurrent = isCurrent;
+		_owner = owner;
 		my(FileMapGuide.class).guide(this, folderContents(srcFolderHash));
 		
 		if (_firstExceptionFound != null) throw _firstExceptionFound;
@@ -92,13 +92,13 @@ class Demolition implements FolderStructureVisitor {
 		final String brickName = _strings.chomp(packageName + "." + fileName, ".java");
 		final Hash packageHash = _hashPath.peekLast();
 
-		BrickHistoryImpl existingBrick = (BrickHistoryImpl) _bricksByName.get(brickName, new ProducerX<BrickHistory, IOException>() { @Override public BrickHistory produce() throws IOException {
-			return new BrickHistoryImpl(brickName, packageHash, _isCurrent);
+		BrickHistoryImpl existingBrick = (BrickHistoryImpl) _bricksByName.get(brickName, new Producer<BrickHistory>() { @Override public BrickHistory produce() {
+			return new BrickHistoryImpl(brickName);
 		}});
 		
-		existingBrick.addVersionIfNecessary(packageHash, _isCurrent);
+		existingBrick.addVersionIfNecessary(packageHash, _owner);
 
-		my(Logger.class).log("+++++++++++++++++++++++++++++++++++++++++++++++ Brick accumulated: " + brickName + " isCurrent: " + _isCurrent);
+		my(Logger.class).log("+++++++++++++++++++++++++++++++++++++++++++++++ Brick accumulated: " + brickName + " owner: " + _owner);
 	}
 	
 
