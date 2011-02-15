@@ -209,6 +209,7 @@ abstract class AbstractDownload implements Download {
 		String mappedPath = getMappedPath(_hash);
 		if (mappedPath == null) return;
 		if (!_copyLocalFiles) {
+			updateFileMap();
 			finish();
 			return;
 		}
