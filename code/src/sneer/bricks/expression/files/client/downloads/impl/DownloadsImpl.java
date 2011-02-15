@@ -11,12 +11,12 @@ class DownloadsImpl implements Downloads {
 
 	@Override
 	public Download newFileDownload(File file, long lastModified, Hash hashOfFile, Seal source, Runnable toCallWhenFinished) {
-		return new FileDownload(file, lastModified, hashOfFile, source, toCallWhenFinished);
+		return new FileDownload(file, lastModified, hashOfFile, source, toCallWhenFinished, true);
 	}
 
 	@Override
-	public Download newFolderDownload(File folder, Hash hashOfFolder, Runnable toCallWhenFinished) {
-		return new FolderDownload(folder, hashOfFolder, toCallWhenFinished);
+	public Download newFolderDownload(File folder, Hash hashOfFolder, Runnable toCallWhenFinished, boolean copyLocalFiles) {
+		return new FolderDownload(folder, hashOfFolder, toCallWhenFinished, copyLocalFiles);
 	}
 
 }

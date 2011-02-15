@@ -99,10 +99,9 @@ class MapperWorker {
 		FolderContents actual = FileMap.getFolderContents(hash);
 		if (actual != null && actual.contents.size() == expected.contents.size()) return;
 
-		my(BlinkingLights.class).turnOn(LightType.ERROR, "" + folder + " not mapped correctly.", "Expected: " + entries(expected) + " Actual: " + entries(actual));
+		my(BlinkingLights.class).turnOn(LightType.ERROR, "" + folder + " not mapped correctly. Expected: " + entries(expected) + " Actual: " + entries(actual), "Contact a sneer expert!");
 		my(StackTraceLogger.class).logStackTrace();
 	}
-
 
 	private String entries(FolderContents contents) {
 		if (contents == null) return "null";

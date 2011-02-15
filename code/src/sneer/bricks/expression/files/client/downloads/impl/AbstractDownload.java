@@ -56,11 +56,12 @@ abstract class AbstractDownload implements Download {
 	private final Runnable _toCallWhenFinished;
 
 	private WeakContract _timerContract;
+	protected final boolean _copyLocalFiles;
 
 
-	AbstractDownload(File path, long lastModified, Hash hashOfFile, Seal source, Runnable toCallWhenFinished) {
+	AbstractDownload(File path, long lastModified, Hash hashOfFile, Seal source, Runnable toCallWhenFinished, boolean copyLocalFiles) {
 		_actualPath = path;
-
+		
 		_path = dotPartFor(path);
 		_lastModified = lastModified;
 		_hash = hashOfFile;
@@ -68,6 +69,8 @@ abstract class AbstractDownload implements Download {
 		_source = source; 
 
 		_toCallWhenFinished = toCallWhenFinished;
+		
+		_copyLocalFiles = copyLocalFiles;
 
 		my(Logger.class).log("Downloading: {} Hash:", _actualPath, _hash);
 
@@ -205,8 +208,12 @@ abstract class AbstractDownload implements Download {
 	private void finishIfLocallyAvailable() {
 		String mappedPath = getMappedPath(_hash);
 		if (mappedPath == null) return;
-		if (mappedPath.contains(DOT_PART)) return; //Optimize Downloads that include identical files in different folders will download all of them redundantly. The problem is .part files can be renamed to their actual name at any moment. 
-
+		if (!_copyLocalFiles) {
+			finish();
+			return;
+		}
+		if (mappedPath.contains(DOT_PART)) return; // .part files might be renamed at any moment; Optimize Downloads that include identical files in different folders will download all of them redundantly. The problem is .part files can be renamed to their actual name at any moment. 
+		
 		Object mappedContents = mappedContentsBy(_hash);
 		try {
 			finishWithLocalContents(mappedContents);

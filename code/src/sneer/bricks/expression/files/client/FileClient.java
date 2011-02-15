@@ -14,4 +14,6 @@ public interface FileClient {
 
 	Download startFolderDownload(File folder, Hash hashOfFolder);
 
+	Download startFolderNoveltiesDownload(File folder, Hash hashOfFolder);
+
 }

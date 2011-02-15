@@ -28,8 +28,17 @@ class FileClientImpl implements FileClient {
 
 	@Override
 	public Download startFolderDownload(final File folder, final Hash hashOfFolder) {
+		return startFolderDownload(folder, hashOfFolder, true);
+	}
+
+	@Override
+	public Download startFolderNoveltiesDownload(final File folder, final Hash hashOfFolder) {
+		return startFolderDownload(folder, hashOfFolder, false);
+	}
+	
+	private Download startFolderDownload(final File folder, final Hash hashOfFolder, final boolean copyLocalFiles) {
 		return startDownload(hashOfFolder, new Producer<Download>() { @Override public Download produce() {
-			return my(Downloads.class).newFolderDownload(folder, hashOfFolder, downloadCleaner(hashOfFolder));
+			return my(Downloads.class).newFolderDownload(folder, hashOfFolder, downloadCleaner(hashOfFolder), copyLocalFiles);
 		}});
 	}
 
@@ -59,5 +68,4 @@ class FileClientImpl implements FileClient {
 			}
 		}};
 	}
-
 }

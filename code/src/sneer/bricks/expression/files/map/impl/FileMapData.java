@@ -114,5 +114,23 @@ class FileMapData {
 			? list.get(0)
 			: list;
 	}
+
+
+	synchronized
+	List<String> getFolders(Hash hash) {
+		List<String> result = new ArrayList<String>();
+		
+		Object paths = _pathsByHash.get(hash);
+		if (paths instanceof String) {
+			String singlePath = (String) paths;
+			if (entry(singlePath).isFolder)
+				result.add(singlePath);
+		} else if (paths instanceof List)
+			for (String path : (List<String>)paths)
+				if (entry(path).isFolder)
+					result.add(path);
+			
+		return result;
+	}	
 }
 

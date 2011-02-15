@@ -24,15 +24,13 @@ class FolderDownload extends AbstractDownload {
 
 	@SuppressWarnings("unused") private WeakContract _folderContentConsumerContract;
 
-
-	FolderDownload(File folder, Hash hashOfFolder) {
-		this(folder, hashOfFolder, null);
+	FolderDownload(File folder, Hash hashOfFolder, boolean copyLocalFiles) {
+		this(folder, hashOfFolder, null, copyLocalFiles);
 	}
 
 
-	FolderDownload(File folder, Hash hashOfFolder, Runnable toCallWhenFinished) {
-		super(folder, -1, hashOfFolder, null, toCallWhenFinished);
-
+	FolderDownload(File folder, Hash hashOfFolder, Runnable toCallWhenFinished, boolean copyLocalFiles) {
+		super(folder, -1, hashOfFolder, null, toCallWhenFinished, copyLocalFiles);
 		start();
 	}
 
@@ -79,8 +77,8 @@ class FolderDownload extends AbstractDownload {
 
 	private Download startSpinOffDownload(FileOrFolder entry) {
 		return entry.isFolder
-		? new FolderDownload(new File(_path, entry.name), entry.hashOfContents)
-		: new FileDownload(new File(_path, entry.name), entry.lastModified, entry.hashOfContents);	
+		? new FolderDownload(new File(_path, entry.name), entry.hashOfContents, _copyLocalFiles)
+		: new FileDownload(new File(_path, entry.name), entry.lastModified, entry.hashOfContents, _copyLocalFiles);	
 	}
 
 

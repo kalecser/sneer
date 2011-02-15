@@ -39,13 +39,13 @@ class FileDownload extends AbstractDownload {
 	@SuppressWarnings("unused") private WeakContract _fileContentConsumerContract;
 
 
-	FileDownload(File file, long lastModified, Hash hashOfFile) {
-		this(file, lastModified, hashOfFile, null, null);
+	FileDownload(File file, long lastModified, Hash hashOfFile, boolean copyLocalFiles) {
+		this(file, lastModified, hashOfFile, null, null, copyLocalFiles);
 	}
 
 
-	FileDownload(File file, long lastModified, Hash hashOfFile, Seal source, Runnable toCallWhenFinished) {
-		super(file, lastModified, hashOfFile, source, toCallWhenFinished);
+	FileDownload(File file, long lastModified, Hash hashOfFile, Seal source, Runnable toCallWhenFinished, boolean copyLocalFiles) {
+		super(file, lastModified, hashOfFile, source, toCallWhenFinished, copyLocalFiles);
 
 		start();
 	}
@@ -177,8 +177,8 @@ class FileDownload extends AbstractDownload {
 
 
 	@Override
-	protected void finishWithLocalContents(Object contents) throws IOException {
-		my(IO.class).files().copyFile(new File((String)contents), _path);
+	protected void finishWithLocalContents(Object pathToContents) throws IOException {
+		my(IO.class).files().copyFile(new File((String)pathToContents), _path);
 		finishWithSuccess();
 	}
 

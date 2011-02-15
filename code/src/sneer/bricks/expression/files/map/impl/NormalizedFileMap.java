@@ -84,10 +84,7 @@ class NormalizedFileMap implements FileMap {
 	
 	@Override
 	public FolderContents getFolderContents(Hash hash) {
-		String path = getFolder(hash);
-		if (path == null) return null;
-		if (!isFolder(path)) throw new IllegalStateException("Expecting a folder: " + path);
-		return new FolderContentsGetter(_data, path).result();
+		return new FolderContentsGetter(_data, hash).result();
 	}
 
 

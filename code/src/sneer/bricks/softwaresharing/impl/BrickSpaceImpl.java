@@ -152,7 +152,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 		File tmpFolderRoot = my(FolderConfig.class).tmpFolderFor(BrickSpace.class);
 		File tmpFolder = new File(tmpFolderRoot, String.valueOf(System.nanoTime()));
 		
-		Download download = my(FileClient.class).startFolderDownload(tmpFolder, srcFolderHash.value);
+		Download download = my(FileClient.class).startFolderNoveltiesDownload(tmpFolder, srcFolderHash.value);
 		download.waitTillFinished();
 	}
 

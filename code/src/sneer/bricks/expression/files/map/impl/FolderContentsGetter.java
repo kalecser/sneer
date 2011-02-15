@@ -2,10 +2,11 @@ package sneer.bricks.expression.files.map.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
@@ -20,29 +21,40 @@ class FolderContentsGetter {
 	private static final Strings Strings = my(Lang.class).strings();
 
 	private final FileMapData _data;
-	private final String _folder;
+	private final Hash _hash;
 
 
-	FolderContentsGetter(FileMapData data, String path) {
+	FolderContentsGetter(FileMapData data, Hash hash) {
 		_data = data;
-		_folder = path + "/";
+		_hash = hash;
 	}
 
 
 	FolderContents result() {
-		List<FileOrFolder> contents = new ArrayList<FileOrFolder>();
-		for (String candidate : _data.allPaths())
-			accumulateDirectChildren(candidate, _folder, contents);
 		
-		Collections.sort(contents, new Comparator<FileOrFolder>() { @Override public int compare(FileOrFolder f1, FileOrFolder f2) {
-			return f1.name.compareTo(f2.name);
-		}});
+		List<String> folders = _data.getFolders(_hash);
+		if (folders.isEmpty())
+			return null;
 		
+		SortedSet<FileOrFolder> contents = new TreeSet<FileOrFolder>(fileOrFolderNameComparator());
+		String[] allPaths = _data.allPaths();
+		for (String path : folders) {
+			String folder = path + "/";			
+			for (String candidate : allPaths)
+				accumulateDirectChildren(candidate, folder, contents);
+		}
 		return new FolderContents(new ImmutableArray<FileOrFolder>(contents));
 	}
 
+
+	private Comparator<FileOrFolder> fileOrFolderNameComparator() {
+		return new Comparator<FileOrFolder>() { @Override public int compare(FileOrFolder f1, FileOrFolder f2) {
+			return f1.name.compareTo(f2.name);
+		}};
+	}
+
 	
-	private void accumulateDirectChildren(String candidate, String folder, List<FileOrFolder> result) {
+	private void accumulateDirectChildren(String candidate, String folder, Set<FileOrFolder> result) {
 		if (!candidate.startsWith(folder)) return;
 		
 		String name = Strings.removeStart(candidate, folder);
