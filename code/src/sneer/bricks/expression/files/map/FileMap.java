@@ -1,5 +1,7 @@
 package sneer.bricks.expression.files.map;
 
+import java.util.List;
+
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
@@ -15,6 +17,7 @@ public interface FileMap {
 	Hash getHash(String path);
 
 	String getFile(Hash hash);
+	List<String> getFiles(Hash hash);
 	String getFolder(Hash hash);
 	long getLastModified(String file);
 	

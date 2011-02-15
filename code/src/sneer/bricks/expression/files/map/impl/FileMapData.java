@@ -115,19 +115,27 @@ class FileMapData {
 			: list;
 	}
 
-
 	synchronized
 	List<String> getFolders(Hash hash) {
+		return getPaths(hash, true);
+	}
+	
+	synchronized
+	List<String> getFiles(Hash hash) {
+		return getPaths(hash, false);
+	}
+	
+	private List<String> getPaths(Hash hash, boolean isFolder) {
 		List<String> result = new ArrayList<String>();
 		
 		Object paths = _pathsByHash.get(hash);
 		if (paths instanceof String) {
 			String singlePath = (String) paths;
-			if (entry(singlePath).isFolder)
+			if (entry(singlePath).isFolder == isFolder)
 				result.add(singlePath);
 		} else if (paths instanceof List)
 			for (String path : (List<String>)paths)
-				if (entry(path).isFolder)
+				if (entry(path).isFolder == isFolder)
 					result.add(path);
 			
 		return result;

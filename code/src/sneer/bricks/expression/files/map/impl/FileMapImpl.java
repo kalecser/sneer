@@ -1,6 +1,9 @@
 package sneer.bricks.expression.files.map.impl;
 
 import static sneer.foundation.environments.Environments.my;
+
+import java.util.List;
+
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
@@ -64,6 +67,11 @@ class FileMapImpl implements FileMap {
 		String result = Filenames.separatorsToUnix(path);
 		if (result.endsWith("/")) throw new IllegalArgumentException("Path should not have trailing slash: " + path);
 		return result;
+	}
+
+	@Override
+	public List<String> getFiles(Hash hash) {
+		return _delegate.getFiles(hash);
 	}
 
 }

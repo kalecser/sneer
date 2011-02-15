@@ -23,7 +23,7 @@ class GuidedTour {
 
 
 	private void showContents(Hash hashOfContents) throws IOException {
-		String file = my(FileMap.class).getFile(hashOfContents);
+		String file = getExistingFile(hashOfContents);
 		if (file != null) {
 			showFile(new File(file));
 			return;
@@ -37,8 +37,14 @@ class GuidedTour {
 		
 		throw new IllegalStateException("Contents not found in " + FileMap.class.getSimpleName() + " for hash: " + hashOfContents);
 	}
-
 	
+	private String getExistingFile(Hash hashOfContents) {
+		for (String file : my(FileMap.class).getFiles(hashOfContents))
+			if (new File(file).exists())
+				return file;
+		return null;
+	}
+
 	private void showFile(File file) throws IOException {
 		showFile(my(IO.class).files().readBytes(file));
 	}
