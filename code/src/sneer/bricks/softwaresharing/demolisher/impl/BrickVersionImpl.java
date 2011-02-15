@@ -33,7 +33,7 @@ class BrickVersionImpl implements BrickVersion {
 	private final Register<Status> _status;
 	private boolean _stagedForExecution;
 	private final Functor<String, byte[]> _currentContentsFinder;
-	private final ListRegister<String> _users;
+	private final ListRegister<Contact> _users;
 	
 	BrickVersionImpl(Hash hashOfPackage, boolean isCurrent, Functor<String, byte[]> currentContentsFinder, BrickVersion current) throws IOException {
 		_currentContentsFinder = currentContentsFinder;
@@ -67,7 +67,7 @@ class BrickVersionImpl implements BrickVersion {
 
 	
 	@Override
-	public ListSignal<String> users() {
+	public ListSignal<Contact> users() {
 		return _users.output();
 	}
 
@@ -153,9 +153,8 @@ class BrickVersionImpl implements BrickVersion {
 	}
 
 	public void addUser(Contact user) {
-		String nickname = user.nickname().currentValue();
-		if (_users.output().currentIndexOf(nickname) != -1)
-			throw new IllegalArgumentException(nickname);
-		_users.add(nickname);
+		if (_users.output().currentIndexOf(user) != -1)
+			throw new IllegalArgumentException(user.nickname().currentValue());
+		_users.add(user);
 	}
 }

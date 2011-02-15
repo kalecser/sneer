@@ -3,6 +3,7 @@ package sneer.bricks.softwaresharing.gui.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.tree.TreeNode;
 
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.skin.image.ImageFactory;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.BrickVersion.Status;
@@ -70,11 +72,18 @@ class BrickVersionTreeNode extends AbstractTreeNodeWrapper<String> {
 	@Override public String toString() { return  _toString;	}
 	
 	@Override protected List<String> listChildren() { 
-		List<String> users = _brickVersion.users().currentElements();
+		List<String> users = nicknames();
 		Collections.sort(users, new Comparator<String>(){ @Override public int compare(String nick1, String nick2) {
 			return nick1.compareTo(nick2);
 		}});
 		return users; 
+	}
+
+	private List<String> nicknames() {
+		List<String> users = new ArrayList<String>();
+		for (Contact c : _brickVersion.users())
+			users.add(c.nickname().currentValue());
+		return users;
 	}
 	
 	@SuppressWarnings("rawtypes")

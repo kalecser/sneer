@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
+import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -76,7 +78,7 @@ class FakeModel {
 
 			private boolean _staged;
 			private Register<Status> _status = my(Signals.class).newRegister(status);
-			private final ListSignal<String> _users = newListSignal("User 4", "User 1", "User 3", "User 2");
+			private final ListSignal<Contact> _users = newListSignalWithContacts("User 4", "User 1", "User 3", "User 2");
 			
 			@Override public List<FileVersion> files() {return _fileVersions;}
 			@Override
@@ -85,7 +87,7 @@ class FakeModel {
 			}
 			@Override public boolean isChosenForExecution() {return _staged;}
 			@Override public Signal<Status> status() { return _status.output(); }
-			@Override public ListSignal<String> users() {  return _users;}			
+			@Override public ListSignal<Contact> users() {  return _users;}			
 			
 			@Override public long publicationDate() { 
 				_initialTimeStamp += 1000;
@@ -105,9 +107,9 @@ class FakeModel {
 		};
 	}
 
-	protected static ListSignal<String> newListSignal(String... values) {
-		ListRegister<String> register = my(CollectionSignals.class).newListRegister();
-		for (String value : values) register.add(value);
+	protected static ListSignal<Contact> newListSignalWithContacts(String... values) {
+		ListRegister<Contact> register = my(CollectionSignals.class).newListRegister();
+		for (String value : values) register.add(my(Contacts.class).produceContact(value));
 		return register.output();
 	}
 

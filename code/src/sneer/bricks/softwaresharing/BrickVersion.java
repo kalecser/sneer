@@ -3,6 +3,7 @@ package sneer.bricks.softwaresharing;
 import java.util.List;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 
@@ -30,7 +31,7 @@ public interface BrickVersion {
 	
 	long publicationDate();
 	
-	ListSignal<String> users();
+	ListSignal<Contact> users();
 	
 	List<FileVersion> files();
 

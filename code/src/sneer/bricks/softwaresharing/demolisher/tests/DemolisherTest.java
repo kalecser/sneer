@@ -57,12 +57,12 @@ public class DemolisherTest extends BrickTestBase {
 		demolishBuildingInto(result, buildingD, userD);
 		
 		assertBrickUsers(result, "Brick1");
-		assertBrickUsers(result, "Brick2", "Bruno");
-		assertBrickUsers(result, "Brick3", "Carlos", "Daniel");
-		assertBrickUsers(result, "Brick4", "Bruno", "Carlos", "Daniel");
+		assertBrickUsers(result, "Brick2", userB);
+		assertBrickUsers(result, "Brick3", userC, userD);
+		assertBrickUsers(result, "Brick4", userB, userC, userD);
 	}
 
-	private void assertBrickUsers(CacheMap<String, BrickHistory> result, String brickName, String...users) {
+	private void assertBrickUsers(CacheMap<String, BrickHistory> result, String brickName, Contact...users) {
 		BrickHistory brickHistory = result.get(qualifiedBrickName(brickName));
 		assertNotNull(brickHistory);
 		
