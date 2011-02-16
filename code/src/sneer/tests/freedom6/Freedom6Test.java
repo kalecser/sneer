@@ -15,8 +15,8 @@ import sneer.tests.SovereignFunctionalTestBase;
 
 public class Freedom6Test extends SovereignFunctionalTestBase {
 
-	@Ignore
 	@Test (timeout = 6000)
+	@Ignore
 	public void syncAFile() throws IOException {
 		File folder = createFolder("important_folder");
 		a().setFolderToSync(folder);
@@ -30,12 +30,11 @@ public class Freedom6Test extends SovereignFunctionalTestBase {
 		a().waitForSync();
 		
 		File recoveredFile = new File(newFolder, "important_file.txt");
-		assertEquals("new_folder/important_file.txt", contents(recoveredFile));
+		assertEquals("important_folder/important_file.txt", contents(recoveredFile));
 	}
 
 	private String contents(File recoveredFile) throws IOException {
-		String contents = my(IO.class).files().readString(recoveredFile);
-		return contents;
+		return my(IO.class).files().readString(recoveredFile);
 	}
 
 	private File createFolder(String fileName) {

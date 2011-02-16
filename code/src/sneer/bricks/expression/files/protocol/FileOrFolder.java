@@ -1,9 +1,9 @@
 package sneer.bricks.expression.files.protocol;
 
-import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.hardware.cpu.crypto.Hash;
+import sneer.foundation.lang.Immutable;
 
-public class FileOrFolder extends Tuple {
+public class FileOrFolder extends Immutable {
 
 	public final String name;
 	public final long lastModified;

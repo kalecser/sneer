@@ -46,6 +46,7 @@ class IOImpl implements IO {
 			FileUtils.forceDeleteOnExit(fileOrFolder);
 		}
 
+		@Override public void forceMkdir(File directory) throws IOException { FileUtils.forceMkdir(directory); }
 		@Override public Iterator<File> iterate(File folder, String[] extensions, boolean recursive){ return FileUtils.iterateFiles(folder, extensions, recursive); }
 		
 		@Override public String readString(File file) throws IOException {return new String(readBytes(file)); }

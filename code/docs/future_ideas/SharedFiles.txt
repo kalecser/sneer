@@ -4,9 +4,8 @@
 - Set same modified date
 - Atomic transfers always (file rename)
 - Chunked transfers.
-- File deletion detected (recover from remote)
+- File deletion detected (deletes all remote versions)
 - Changed file (based on date)
-- File deletion requested by user (delete on both sides)
 - subdirectories
 - Bandwidth consumption maximum - hardcoded
 - Smaller files first
@@ -14,3 +13,30 @@
 - access control
 - File hashes to detect changes and renames
 - diff
+
+
+- Add a file
+a => FileToSync(hash, fileSize)
+b(consumer(FileToSync)) => FileClient.startDownload(File("/tmp/a"), hash)
+b => FileSynced(hash)
+
+- Change a file
+a(consumer(FileSystemChange)) => Snackup.initiateFileChange => FileToSync(hash, fileSize)
+b(consumer(FileToSync)) => FileClient.startDownload()
+b => FileSynced(hash)
+a(consumer(FileSynced)) => Snackup.completeFileChange => FileDeleted(oldHash)
+
+- events
+new file - 
+edit file - 
+delete file - 
+rename file -
+lose all data - once every 3 months
+toggle online/offline - 1 second to several days
+change lent space - once a week
+
+- invariants
+
+tmpSpace(contact) <= lentSpace(contact)
+when "lose all data":
+	contents(dropBox) == contents(oldDropBox)
