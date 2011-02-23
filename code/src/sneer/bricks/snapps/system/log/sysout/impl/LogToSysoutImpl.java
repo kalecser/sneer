@@ -9,7 +9,7 @@ class LogToSysoutImpl implements LogToSysout {
 
 	@SuppressWarnings("unused")	private final Object _referenceToAvoidGc;
 
-	private LogToSysoutImpl(){
+	{
 		_referenceToAvoidGc = my(LogNotifier.class).loggedMessages().addReceiver(new Consumer<String>(){ @Override public void consume(String msg) {
 			log(msg);
 		}});
