@@ -40,7 +40,10 @@ class Invocation implements ProducerX<Object, Exception> {
 			method.setAccessible(true);
 			return method.invoke(receiver, args);
 		} catch (InvocationTargetException e) {
-			throw (Exception)e.getTargetException();
+			Throwable throwable = e.getTargetException();
+			if (throwable instanceof Error) throw (Error)throwable;
+			if (throwable instanceof Exception) throw (Exception)throwable;
+			throw new IllegalStateException("Throwable thrown by " + receiver.getClass() + "." + methodName, throwable);
 		} catch (Exception e) {
 			throw new IllegalStateException("Exception trying to invoke " + receiver.getClass() + "." + methodName, e);
 		}
