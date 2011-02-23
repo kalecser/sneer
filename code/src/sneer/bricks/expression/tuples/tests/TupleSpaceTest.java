@@ -61,7 +61,7 @@ public class TupleSpaceTest extends BrickTestBase {
 	}
 
 
-	@Test (timeout = 1000)
+	@Test (timeout = 2000)
 	public void subscriptionIsNotifiedSynchronously() {
 		_subject.keep(TestTuple.class);
 		_subject.add(new TestTuple(1));
