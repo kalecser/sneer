@@ -22,7 +22,7 @@ class FileClientImpl implements FileClient {
 	@Override
 	public Download startFileDownload(final File file, final long lastModified, final Hash hashOfFile, final Seal source) {
 		return startDownload(hashOfFile, new Producer<Download>() { @Override public Download produce() {
-			return my(Downloads.class).newFileDownload(file, lastModified, hashOfFile, source, downloadCleaner(hashOfFile));
+			return cleaningOnFinished(my(Downloads.class).newFileDownload(file, lastModified, hashOfFile, source), hashOfFile);
 		}});
 	}
 
@@ -38,7 +38,7 @@ class FileClientImpl implements FileClient {
 	
 	private Download startFolderDownload(final File folder, final Hash hashOfFolder, final boolean copyLocalFiles) {
 		return startDownload(hashOfFolder, new Producer<Download>() { @Override public Download produce() {
-			return my(Downloads.class).newFolderDownload(folder, hashOfFolder, downloadCleaner(hashOfFolder), copyLocalFiles);
+			return cleaningOnFinished(my(Downloads.class).newFolderDownload(folder, hashOfFolder, copyLocalFiles), hashOfFolder);
 		}});
 	}
 
@@ -67,5 +67,10 @@ class FileClientImpl implements FileClient {
 				_downloadsByHash.remove(hash);				
 			}
 		}};
+	}
+
+	private Download cleaningOnFinished(Download download, final Hash hashOfFile) {
+		download.onFinished(downloadCleaner(hashOfFile));
+		return download;
 	}
 }

@@ -527,7 +527,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	@Override
 	public void waitForSync() {
-		my(Snackup.class).sync();
+		my(SignalUtils.class).waitForValue(my(Snackup.class).isSynced(), true);
 	}
 
 

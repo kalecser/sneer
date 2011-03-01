@@ -4,6 +4,8 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
@@ -20,6 +22,7 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -53,13 +56,13 @@ abstract class AbstractDownload implements Download {
 
 	private Exception _exception;
 
-	private final Runnable _toCallWhenFinished;
+	private final Collection<Runnable> _toCallWhenFinished = new ArrayList<Runnable>(1);
 
 	private WeakContract _timerContract;
 	protected final boolean _copyLocalFiles;
 
 
-	AbstractDownload(File path, long lastModified, Hash hashOfFile, Seal source, Runnable toCallWhenFinished, boolean copyLocalFiles) {
+	AbstractDownload(File path, long lastModified, Hash hashOfFile, Seal source, boolean copyLocalFiles) {
 		_actualPath = path;
 		
 		_path = dotPartFor(path);
@@ -68,8 +71,6 @@ abstract class AbstractDownload implements Download {
 
 		_source = source; 
 
-		_toCallWhenFinished = toCallWhenFinished;
-		
 		_copyLocalFiles = copyLocalFiles;
 
 		my(Logger.class).log("Downloading: {} Hash:", _actualPath, _hash);
@@ -136,7 +137,17 @@ abstract class AbstractDownload implements Download {
 		if (!isFinished()) return false;
 		return _exception == null;
 	}
-
+	
+	@Override
+	synchronized
+	public void onFinished(Runnable action) {
+		if (hasFinishedSuccessfully()) {
+			action.run();
+			return;
+		}
+		_toCallWhenFinished.add(action);
+		
+	}
 
 	private File dotPartFor(File path) {
 		try {
@@ -185,7 +196,8 @@ abstract class AbstractDownload implements Download {
 		stopSendingRequests();
 		_isFinished.open();
 		_finished.setter().consume(true);
-		if (_toCallWhenFinished != null) _toCallWhenFinished.run();
+		for (Runnable action : _toCallWhenFinished)
+			my(ExceptionHandler.class).shield(action);
 	}
 
 

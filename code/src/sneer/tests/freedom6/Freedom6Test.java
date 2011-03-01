@@ -5,7 +5,6 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
@@ -15,13 +14,13 @@ import sneer.tests.SovereignFunctionalTestBase;
 
 public class Freedom6Test extends SovereignFunctionalTestBase {
 
-	@Test (timeout = 6000)
-	@Ignore
+	@Test (timeout = 20000)
 	public void syncAFile() throws IOException {
+		
 		File folder = createFolder("important_folder");
-		a().setFolderToSync(folder);
 		createTmpFileWithFileNameAsContent("important_folder/important_file.txt");
 		
+		a().setFolderToSync(folder);
 		b().lendSpaceTo(a().ownName(), 10);
 		a().waitForSync();
 
