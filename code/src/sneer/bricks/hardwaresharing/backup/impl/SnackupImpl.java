@@ -69,7 +69,7 @@ class SnackupImpl implements Snackup {
 		}});
 		
 		_refToAvoidGc3 = my(RemoteTuples.class).addSubscription(FileToSync.class, new Consumer<FileToSync>() {  @Override public void consume(final FileToSync value) {
-			handleFileDownload(value, lentFolderFor(value.publisher));
+			handleFileToSync(value);
 		}});
 		
 		_refToAvoidGc4 = my(RemoteTuples.class).addSubscription(RestoreRequest.class, new Consumer<RestoreRequest>() {  @Override public void consume(RestoreRequest value) {
@@ -91,7 +91,7 @@ class SnackupImpl implements Snackup {
 	}
 	
 	protected void handleFileToRestore(final FileToRestore value) {
-		handleFileDownload(value, new File(importantFolder()));
+		tryToDownload(value, new File(importantFolder()));
 	}
 	
 	protected void handleFolderToSyncChange() {
@@ -111,8 +111,8 @@ class SnackupImpl implements Snackup {
 			my(TupleSpace.class).add(new FileToRestore(entry.hashOfContents, entry.lastModified, entry.name));
 	}
 
-	protected void handleFileDownload(final FileEvent value, File folder) {
-		File file;
+	protected void tryToDownload(final FileEvent value, File folder) {
+		final File file;
 		try {
 			file = fileFor(value, folder);
 		} catch (IOException e) {
@@ -124,8 +124,8 @@ class SnackupImpl implements Snackup {
 		download.onFinished(new Closure() {  @Override public void run() {
 			if (!download.hasFinishedSuccessfully())
 				return;
-			my(TupleSpace.class).add(new InSync(value.publisher));
-			setIsSync(true);
+			
+			onFileDownload(value);
 		}});
 	}
 
@@ -187,16 +187,23 @@ class SnackupImpl implements Snackup {
 		return my(Attributes.class).myAttributeValue(ImportantFolder.class).currentValue();
 	}
 
-
 	@Override
 	public void lendSpaceTo(Contact contact, int megaBytes) throws Refusal {
 		my(Attributes.class).attributeSetterFor(contact, HardDriveMegabytesLent.class).consume(megaBytes);
 	}
 
-
 	@Override
 	public Consumer<String> folderToSyncSetter() {
 		return my(Attributes.class).myAttributeSetter(ImportantFolder.class);
+	}
+
+	private void onFileDownload(FileEvent value) {
+		my(TupleSpace.class).add(new InSync(value.publisher));
+		setIsSync(true);
+	}
+
+	private void handleFileToSync(final FileToSync value) {
+		tryToDownload(value, lentFolderFor(value.publisher));
 	}
 
 }
