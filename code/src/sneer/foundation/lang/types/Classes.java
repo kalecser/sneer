@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class Classes {
 
+	private static final int DOT_CLASS = ".class".length();
 	private static final Class<?>[] CLASS_ARRAY_TYPE = new Class[]{};
 
 
@@ -48,6 +49,14 @@ public class Classes {
 		} catch (URISyntaxException e) {
 			throw new IllegalStateException();
 		}
+	}
+
+
+	public static String className(String classpathRoot, String classFilePath) {
+		if (!classFilePath.startsWith(classpathRoot)) throw new IllegalStateException("Class file: " + classFilePath + " should be inside subfolder of: " + classpathRoot);
+		int afterRoot = classpathRoot.length() + 1;
+		int beforeDotClass = classFilePath.length() - DOT_CLASS;
+		return classFilePath.substring(afterRoot, beforeDotClass).replace('/', '.').replace('\\', '.');
 	}
 
 }

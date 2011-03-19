@@ -19,10 +19,9 @@ public final class AllTestsRunner {
 	private static File _classpathRoot;
 
 	public static void main(String[] args) {
-		Class<?>[] classes = findTestClasses();
 		JUnitCore junit = new JUnitCore();
 		junit.addListener(new TextListener());
-		junit.run(classes);
+		junit.run(findTestClasses());
 	}
 
 	private static Class<?>[] findTestClasses() {
@@ -57,20 +56,20 @@ public final class AllTestsRunner {
 		String rootPath = _classpathRoot.getAbsolutePath();
 
 		for (String filePath : classFilePaths) {
-			if (!filePath.startsWith(rootPath)) throw new IllegalStateException("Path: " + filePath + " is not in root path: " + rootPath);
-			String className = filePath.substring(rootPath.length() + 1, filePath.length() - 6).replace('/', '.').replace('\\', '.');
-			Class<?> c;
-			try {
-				c = Class.forName(className);
-				System.out.println(c);
-			} catch (ClassNotFoundException e) {
-				throw new IllegalStateException(e);
-			}
-			if (!Modifier.isAbstract(c.getModifiers())) {
+			String className = Classes.className(rootPath, filePath);
+			Class<?> c = classForName(className);
+			if (!Modifier.isAbstract(c.getModifiers()))
 				result.add(c);
-			}
 		}
 		return result;
+	}
+
+	private static Class<?> classForName(String className) {
+		try {
+			return Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 }
