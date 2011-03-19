@@ -12,6 +12,10 @@ import sneer.foundation.lang.types.Classes;
 
 public final class AllTestsRunner {
 	
+//	Usage in agitos_server:
+//	cd /agitos_server/git_repos/sneer/installer/build/bin/sneer/foundation/testsupport/lib
+//	java -cp /agitos_server/git_repos/sneer/installer/build/bin:junit-4.4.jar:jmock-2.5.1.jar:jmock-junit4-2.5.1.jar:hamcrest-core-1.1.jar:hamcrest-library-1.1.jar sneer.foundation.testsupport.AllTestsRunner
+	
 	private static File _classpathRoot;
 
 	public static void main(String[] args) {
