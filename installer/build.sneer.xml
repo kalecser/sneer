@@ -6,6 +6,7 @@
 	<property name="dist.dir" location="build/dist" />
 	<property name="bin.dir" location="build/bin" />
 	
+	<property name="ant-junit.jar" location="lib/ant-junit.jar" />
 	<property name="clover.jar" location="lib/clover.jar" />
 
 	<property name="sneer.home" location="../code" />
@@ -103,6 +104,7 @@
 			<sysproperty key="java.awt.headless" value="${java.awt.headless}" />
 			<classpath>
 				<path refid="test-classpath" />
+				<pathelement location="${ant-junit.jar}" />
 				<pathelement location="${clover.jar}" />
 			</classpath>
 			<batchtest todir="${bin.dir}">
