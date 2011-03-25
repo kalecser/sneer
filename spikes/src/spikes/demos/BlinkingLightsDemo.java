@@ -1,21 +1,16 @@
 package spikes.demos;
 
 import static sneer.foundation.environments.Environments.my;
-
-import org.junit.Test;
-
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.skin.main.dashboard.Dashboard;
 import sneer.bricks.snapps.system.blinkinglights.gui.BlinkingLightsGui;
-import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
-public class BlinkingLightsDemo extends BrickTestBase {
+public class BlinkingLightsDemo {
 
-	@Test
-	public void testBL() throws Exception {
+	public static void main(String[] args) throws Exception {
 		my(Dashboard.class);
 		my(BlinkingLightsGui.class);
 		BlinkingLights bl = my(BlinkingLights.class);
@@ -30,7 +25,7 @@ public class BlinkingLightsDemo extends BrickTestBase {
 		Thread.sleep(60000); // holds threads for manual UI testing
 	}
 
-	private void createInviteFrom(String name) {
+	private static void createInviteFrom(String name) {
 		final BlinkingLights bl = my(BlinkingLights.class);
 		final Light light = bl.prepare(LightType.GOOD_NEWS);
 		light.addAction(new Action() {

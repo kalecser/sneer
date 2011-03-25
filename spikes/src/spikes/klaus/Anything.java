@@ -1,6 +1,8 @@
 package spikes.klaus;
 
 import java.io.File;
+import java.io.InputStream;
+import java.lang.management.ManagementFactory;
 import java.lang.ref.WeakReference;
 
 import net.sbbi.upnp.impls.InternetGatewayDevice;
@@ -10,7 +12,21 @@ import net.sbbi.upnp.impls.InternetGatewayDevice;
 public class Anything {
 
 	public static void main(String[] args) throws Exception {
-
+		Process process = Runtime.getRuntime().exec("git pull");
+		InputStream in = process.getInputStream();
+		while ("".isEmpty()) {
+			int read = in.read();
+			if (read == -1) break;
+			System.out.write(read);
+		}
+		System.out.println("Process: " + process.waitFor());
+		
+		
+		while ("".isEmpty()) {
+			System.out.println(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage());
+			Thread.sleep(1000);
+		}
+		
 		
 		int discoveryTimeout = 5000; // 5 secs to receive a response from
 										// devices
