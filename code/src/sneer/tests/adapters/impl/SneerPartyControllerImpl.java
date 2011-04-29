@@ -20,6 +20,7 @@ import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.hardware.ram.iterables.Iterables;
 import sneer.bricks.hardwaresharing.backup.Snackup;
 import sneer.bricks.identity.keys.own.OwnKeys;
@@ -56,6 +57,7 @@ import sneer.bricks.softwaresharing.stager.BrickStager;
 import sneer.bricks.softwaresharing.stager.tests.BrickStagerTest;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Functor;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 import sneer.foundation.lang.exceptions.Refusal;
@@ -68,16 +70,17 @@ import sneer.tests.adapters.SneerPartyController;
 class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	static private final String MOCK_ADDRESS = "localhost";
-
 	
 	private Collection<Object> _refToAvoidGc = new ArrayList<Object>();
-
 	private File _codeFolder;	
-
-
 	private String _nameOfExpectedCaller;
-
 	
+	private void createDefaultImportantFolder() {
+		File folder = new File(my(FolderConfig.class).tmpFolder().get(), "ImportantFolder");
+		folder.mkdirs();
+		setFolderToSync(folder);
+	}
+		
 	@Override
 	public void setSneerPort(int port) {
 		my(Attributes.class).myAttributeSetter(OwnPort.class).consume(port);
@@ -162,6 +165,14 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		
 		waitUntilOnline(contact);
     }
+
+	@Override
+	public Collection<String> contactNicknames() {
+		return my(CollectionUtils.class).map(my(Contacts.class).contacts().currentElements(), new Functor<Contact, String>() {  @Override public String evaluate(Contact value) {
+			return value.nickname().currentValue();
+		}});
+	}
+
     
 	private Signal<Boolean> isAlive(Contact contact) {
 		return my(Stethoscope.class).isAlive(contact);
@@ -282,8 +293,17 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	@Override
 	public boolean isOnline(String nickname) {
-		Contact contact = my(Contacts.class).contactGiven(nickname);
-		return isAlive(contact).currentValue();
+		return isAlive(contactGiven(nickname)).currentValue();
+	}
+	
+	@Override
+	public boolean isContact(String nickname) {
+		return contactGiven(nickname) != null;
+	}
+
+
+	private Contact contactGiven(String nickname) {
+		return my(Contacts.class).contactGiven(nickname);
 	}
 
 	
@@ -428,6 +448,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		setOwnName(name);
 		setSneerPort(port);
 
+		createDefaultImportantFolder();
 		startSnapps();
 		startApprovingConnectionRequests();
 		accelerateHeartbeat();
@@ -522,6 +543,8 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	@Override
 	public void setFolderToSync(File folder) {
 		my(Snackup.class).folderToSyncSetter().consume(folder.getAbsolutePath());
+		if (folderToSync() == null)
+			throw new IllegalStateException();
 	}
 
 
@@ -539,7 +562,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	@Override
 	public void lendSpaceTo(String contactNick, int megaBytes) {
-		Contact contact = my(Contacts.class).contactGiven(contactNick);
+		Contact contact = contactGiven(contactNick);
 		try {
 			my(Snackup.class).lendSpaceTo(contact, megaBytes);
 		} catch (Refusal e) {
@@ -547,4 +570,9 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		}
 	}
 
+	@Override
+	public File folderToSync() {
+		String currentValue = my(Snackup.class).folderToSync().currentValue();
+		return currentValue == null ? null : new File(currentValue);
+	}
 }

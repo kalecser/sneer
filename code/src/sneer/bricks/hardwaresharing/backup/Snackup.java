@@ -9,6 +9,7 @@ import sneer.foundation.lang.exceptions.Refusal;
 @Brick
 public interface Snackup {
 
+	Signal<String> folderToSync();
 	Consumer<String> folderToSyncSetter();
 	void lendSpaceTo(Contact contact, int megaBytes) throws Refusal;
 	Signal<Boolean> isSynced();

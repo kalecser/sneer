@@ -30,6 +30,7 @@ import sneer.bricks.hardwaresharing.backup.RestoreRequest;
 import sneer.bricks.hardwaresharing.backup.Snackup;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.attributes.Attribute;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -184,7 +185,7 @@ class SnackupImpl implements Snackup {
 	}
 
 	private String importantFolder() {
-		return my(Attributes.class).myAttributeValue(ImportantFolder.class).currentValue();
+		return folderToSync().currentValue();
 	}
 
 	@Override
@@ -204,6 +205,15 @@ class SnackupImpl implements Snackup {
 
 	private void handleFileToSync(final FileToSync value) {
 		tryToDownload(value, lentFolderFor(value.publisher));
+	}
+
+	@Override
+	public Signal<String> folderToSync() {
+		return myAttributeValue(ImportantFolder.class);
+	}
+
+	private <T> Signal<T> myAttributeValue(Class<? extends Attribute<T>> attribute) {
+		return my(Attributes.class).myAttributeValue(attribute);
 	}
 
 }

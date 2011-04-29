@@ -2,6 +2,7 @@ package sneer.tests;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 import sneer.bricks.software.code.compilers.CompilerException;
 
@@ -14,6 +15,8 @@ public interface SovereignParty {
 
 	//Freedom2
 	void giveNicknameTo(SovereignParty peer, String nickname);
+	Collection<String> contactNicknames();
+	boolean isContact(String nickname);
 	boolean isOnline(String nickname);
 	void waitUntilOnline(String nickname);
 	void navigateAndWaitForName(String nicknamePath, String expectedName);
@@ -24,6 +27,7 @@ public interface SovereignParty {
 
 	//Freedom6
 	void setFolderToSync(File folder);
+	File folderToSync();
 	void lendSpaceTo(String contactNick, int megaBytes);
 	void waitForSync();
 	void recoverFileFromBackup(String fileName);
