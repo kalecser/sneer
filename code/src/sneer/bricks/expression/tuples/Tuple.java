@@ -19,9 +19,16 @@ public abstract class Tuple extends Immutable {
 	}
 
 	
-	public final Seal publisher = my(OwnSeal.class).get().currentValue();
+	public final Seal publisher = ownSeal();
+
 	public final long publicationTime = my(Clock.class).time().currentValue();
 	
 	public final Seal addressee;
 	
+	private static Seal ownSeal() {
+		Seal result = my(OwnSeal.class).get().currentValue();
+		if (result == null)
+			throw new IllegalStateException();
+		return result;
+	}
 }
