@@ -3,18 +3,15 @@ package sneer.bricks.hardware.cpu.threads.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.events.pulsers.PulseSource;
 import sneer.bricks.pulp.events.pulsers.Pulser;
 import sneer.bricks.pulp.events.pulsers.Pulsers;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.util.concurrent.Latch;
 
 class ThreadsImpl implements Threads {
 
-	private static final Latches Latches = my(Latches.class);
-
-	private final Latch _crash = Latches.produce();
+	private final Latch _crash = new Latch();
 	private final Pulser _crashedPulser = my(Pulsers.class).newInstance();
 	static private boolean _isCrashing = false;
 

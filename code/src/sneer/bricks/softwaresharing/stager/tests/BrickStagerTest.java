@@ -11,8 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
@@ -33,6 +31,7 @@ import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Predicate;
 import sneer.foundation.testsupport.AssertUtils;
+import sneer.foundation.util.concurrent.Latch;
 
 public class BrickStagerTest extends BrickTestBase {
 
@@ -248,7 +247,7 @@ public class BrickStagerTest extends BrickTestBase {
 
 
 	private void waitForAvailableBrick(final String brickName) {
-		final Latch latch = my(Latches.class).produce();
+		final Latch latch = new Latch();
 		
 		WeakContract contract = my(BrickSpace.class).newBuildingFound().addReceiver(new Consumer<Seal>() { @Override public void consume(Seal publisher) {
 			if (isBrickAvailable(brickName)) latch.open();

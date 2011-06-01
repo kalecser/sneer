@@ -11,12 +11,11 @@ import sneer.bricks.hardware.cpu.lang.contracts.Contracts;
 import sneer.bricks.hardware.cpu.lang.contracts.Disposable;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.log.stacktrace.StackTraceLogger;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.util.concurrent.Latch;
 
 class TimerImpl implements Timer {
 	
@@ -71,7 +70,7 @@ class TimerImpl implements Timer {
 
 	@Override
 	public void sleepAtLeast(long millis) {
-		Latch latch = my(Latches.class).produce();
+		Latch latch = new Latch();
 		wakeUpInAtLeast(millis, latch);
 		latch.waitTillOpen();
 	}

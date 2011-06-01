@@ -7,21 +7,20 @@ import java.util.Collections;
 import java.util.HashSet;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.software.bricks.finder.BrickFinder;
 import sneer.bricks.software.bricks.snapploader.Snapp;
 import sneer.bricks.software.bricks.snapploader.SnappLoader;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.util.concurrent.Latch;
 
 class SnappLoaderImpl implements SnappLoader {
 
 	private final ClassLoader _apiClassLoader = SnappLoader.class.getClassLoader();
 	private final Collection<Object> _refToAvoidGC = Collections.synchronizedSet(new HashSet<Object>());
 
-	private final Latch _loadingFinished = my(Latches.class).produce();
+	private final Latch _loadingFinished = new Latch();
 	private boolean _wereThrowablesCaughtWhenLoadingSnapps;
 
 	

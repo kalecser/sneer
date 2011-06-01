@@ -10,20 +10,19 @@ import org.prevayler.PrevaylerFactory;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.util.concurrent.Latch;
 
 class PrevaylerHolder {
 
 	static Prevayler _prevayler;
-	static private final Latch _transactionLogReplayed = my(Latches.class).produce();
+	static private final Latch _transactionLogReplayed = new Latch();
 
 	static private PrevalentBuilding _building;
-	static private final Latch _buildingAvailable = my(Latches.class).produce();
+	static private final Latch _buildingAvailable = new Latch();
 
 
 	

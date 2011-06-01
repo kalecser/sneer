@@ -10,8 +10,6 @@ import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -27,6 +25,7 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
+import sneer.foundation.util.concurrent.Latch;
 
 public class IncomingSocketOriginDetectionTest extends BrickTestBase {
 
@@ -66,7 +65,7 @@ public class IncomingSocketOriginDetectionTest extends BrickTestBase {
 			
 		}});
 
-		final Latch sightingNotified = my(Latches.class).produce();
+		final Latch sightingNotified = new Latch();
 		@SuppressWarnings("unused")
 		WeakContract refToAvoidGc = my(TupleSpace.class).addSubscription(Sighting.class, new Consumer<Sighting>() { @Override public void consume(Sighting sighting) {
 			assertEquals(_otherSeal, sighting.peersSeal);

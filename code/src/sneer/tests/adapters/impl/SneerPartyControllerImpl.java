@@ -15,8 +15,6 @@ import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
@@ -59,6 +57,7 @@ import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
 import sneer.foundation.lang.exceptions.NotImplementedYet;
 import sneer.foundation.lang.exceptions.Refusal;
+import sneer.foundation.util.concurrent.Latch;
 import sneer.main.SneerVersionUpdater;
 import sneer.tests.SovereignParty;
 import sneer.tests.adapters.SneerParty;
@@ -206,7 +205,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	@Override
 	public void waitForShouts(final String shoutsExpected) {
-		final Latch latch = my(Latches.class).produce();
+		final Latch latch = new Latch();
 
 		WeakContract contract = my(Wind.class).shoutsHeard().addPulseReceiver(new Closure() { @Override public void run() {
 			openLatchIfShoutsHeard(shoutsExpected, latch);
@@ -299,7 +298,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	public void waitForAvailableBrick(final String brickName, final String brickStatus) {
 		my(Logger.class).log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Waiting for brick: " + brickName + " status: " + brickStatus);
 
-		final Latch latch = my(Latches.class).produce();
+		final Latch latch = new Latch();
 		
 		WeakContract contract = my(BrickSpace.class).newBuildingFound().addReceiver(new Consumer<Seal>() { @Override public void consume(Seal publisher) {
 			my(Logger.class).log(">>>>>New brick configuration found for: " + print(publisher));

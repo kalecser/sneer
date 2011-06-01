@@ -6,10 +6,9 @@ import org.junit.Test;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.util.concurrent.Latch;
 
 public class TupleSpaceResponsivenessTest extends BrickTestBase {
 
@@ -17,7 +16,7 @@ public class TupleSpaceResponsivenessTest extends BrickTestBase {
 	
 	@Test (timeout = 1000)
 	public void test() {
-		final Latch latch = my(Latches.class).produce();
+		final Latch latch = new Latch();
 		
 		@SuppressWarnings("unused")	WeakContract contract = _subject.addSubscription(TestTuple.class, new Consumer<TestTuple>() { @Override public void consume(TestTuple value) {
 			latch.open();
