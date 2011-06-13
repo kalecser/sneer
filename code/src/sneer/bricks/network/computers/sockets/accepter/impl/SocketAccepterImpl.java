@@ -3,7 +3,11 @@ package sneer.bricks.network.computers.sockets.accepter.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
+import net.sbbi.upnp.devices.UPNPRootDevice;
+import net.sbbi.upnp.impls.InternetGatewayDevice;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
@@ -25,7 +29,8 @@ import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class SocketAccepterImpl implements SocketAccepter {
-	
+	private static final String TCP_PROTOCOL = "TCP";
+
 	private final Signal<Integer> _ownPort = my(Attributes.class).myAttributeValue(OwnPort.class);
 	private final Network _network = my(Network.class);
 	private final BlinkingLights _lights = my(BlinkingLights.class);
@@ -35,7 +40,6 @@ class SocketAccepterImpl implements SocketAccepter {
 		crashServerSocketIfNecessary();
 	}});
 	
-
 	private final EventNotifier<ByteArraySocket> _notifier = my(EventNotifiers.class).newInstance();
 
 	private final transient Object _portToListenMonitor = new Object();
@@ -51,6 +55,8 @@ class SocketAccepterImpl implements SocketAccepter {
 	@SuppressWarnings("unused") private final Object _receptionRefToAvoidGc;
 	private Contract _stepperContract;
 
+	private InternetGatewayDevice[] _devices;
+	
 	SocketAccepterImpl() {
 		_receptionRefToAvoidGc = _ownPort.addReceiver(new Consumer<Integer>() { @Override public void consume(Integer port) {
 			setPort(port);
@@ -111,12 +117,15 @@ class SocketAccepterImpl implements SocketAccepter {
 		if (port == 0) return;
 		try {
 			_serverSocket = _network.openServerSocket(port);
+			if (existPlugAndPlayDevicesOnLAN()) mappingOwnPort();
 			_lights.turnOffIfNecessary(_cantOpenServerSocket);
 			_lights.turnOn(LightType.GOOD_NEWS, "TCP port opened: " + port, "Sneer has successfully opened TCP port " + port + " to receive incoming connections from others.", 7000);
+		} catch (UnknownHostException uhe) {
+			my(Logger.class).log("Unknown local host ip.", uhe);
 		} catch (IOException e) {
 			if (_stepperContract != null)
 				_lights.turnOnIfNecessary(_cantOpenServerSocket, "Unable to listen on TCP port " + port, helpMessage(), e);
-		}
+		}	
 	}
 
 	private String helpMessage() {
@@ -135,5 +144,30 @@ class SocketAccepterImpl implements SocketAccepter {
 		if (_stepperContract != null) _stepperContract.dispose();
 		_stepperContract = null;
 		_serverSocket.crash();
+	}
+
+	private boolean existPlugAndPlayDevicesOnLAN() throws IOException {
+		_devices = InternetGatewayDevice.getDevices(3000);
+		if (_devices == null)
+			_lights.turnOn(LightType.INFO, "Plug and Play devices not found.", "Unable to find plug and play devices on your network.");
+		return (_devices != null) ? true : false;
+	}
+
+	private void mappingOwnPort() throws UnknownHostException {
+		String localHostIP = InetAddress.getLocalHost().getHostAddress();
+		int ownPort = _ownPort.currentValue();
+		
+		for (InternetGatewayDevice igd : _devices) {
+			try {
+				if (igd.getSpecificPortMappingEntry(localHostIP, ownPort, TCP_PROTOCOL) != null) continue;
+				igd.addPortMapping("Sneer port mapping", null, ownPort, ownPort, localHostIP, 0, TCP_PROTOCOL);
+			} catch (Exception e) {
+				UPNPRootDevice device = igd.getIGDRootDevice();
+				String message = "Unable discovery or port mapping on " + device.getFriendlyName();
+				_lights.turnOn(LightType.ERROR, "Plug and Play port mapping.", message, e);
+				my(Logger.class).log(message, e);
+			}
+		}
+		_devices = null;
 	}
 }
