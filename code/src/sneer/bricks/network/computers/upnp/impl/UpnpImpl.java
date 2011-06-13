@@ -24,7 +24,7 @@ import sneer.foundation.lang.Consumer;
 @Brick
 public class UpnpImpl implements Upnp {
 	private static final String TCP_PROTOCOL = "TCP";
-	private static final String LIGHT_CAPTION = "UPnP ";
+	private static final String CAPTION = "UPnP ";
 
 	private final Signal<Integer> _ownPort = my(Attributes.class).myAttributeValue(OwnPort.class);
 	private final Threads _threads = my(Threads.class);
@@ -34,39 +34,44 @@ public class UpnpImpl implements Upnp {
 	
 	@SuppressWarnings("unused") private Object _receptionRefToAvoidGc;
 	private InternetGatewayDevice[] _devices;
-	private transient Integer _mappedPort = _ownPort.currentValue();
+	private transient Integer _mappedPort;
 	
 	private UpnpImpl() {
 		_receptionRefToAvoidGc = _ownPort.addReceiver(new Consumer<Integer>() { @Override public void consume(Integer port) {
 			remapOwnPort(port);
 		}});
 		
-		_threads.startDaemon("UPnP devices discovery", new Closure() { @Override public void run() {
+		_threads.startDaemon(CAPTION, new Closure() { @Override public void run() {
 			mapOwnPort();
 		}});
 	}
 
 	private void remapOwnPort(Integer port) {
-		if (exitDevicesOnLAN())
+		if (_mappedPort == 0) return;
+		if (existDevicesOnLAN()) {
 			deleteAndAddOwnPortMap(toLocalHostIp());
+			_lights.turnOn(LightType.INFO, "Remapped own port on " + CAPTION + "devices.", "Sneer cold remapped own port on UPnP devices of your network.", 20000);
+		}	
 	}
 	
 	private void mapOwnPort() {
-		if (exitDevicesOnLAN())
+		if (existDevicesOnLAN()) {
 			addOwnPortMap(toLocalHostIp());
+			_lights.turnOn(LightType.INFO, "Mapped own port on " + CAPTION + "devices.", "Sneer cold mapped own port on UPnP devices of your network.", 10000);
+		}	
 	}
 	
-	private boolean exitDevicesOnLAN() {
+	private boolean existDevicesOnLAN() {
 		try {
 			_devices = InternetGatewayDevice.getDevices(5000);
 		} catch (IOException ioe) {
-			_lights.turnOnIfNecessary(_cantDiscovery, LIGHT_CAPTION, "Sneer wasn't able to find UPnP devices on your network.", ioe);
+			_lights.turnOnIfNecessary(_cantDiscovery, CAPTION, "Sneer wasn't able to find UPnP devices on your network.", ioe);
 		}
 
 		if (_devices == null) {
-			String captionOrMessage = LIGHT_CAPTION + "devices not found.";
+			String captionOrMessage = CAPTION + "devices not found.";
 			_lights.turnOn(LightType.INFO, captionOrMessage, "Sneer couldn't able to find UPnP devices on your network.", 10000);
-			my(Logger.class).log(LIGHT_CAPTION + "devices not found.");
+			my(Logger.class).log(CAPTION + "devices not found.");
 			return false;
 		}
 		return true;
@@ -76,7 +81,7 @@ public class UpnpImpl implements Upnp {
 		try {
 			return InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException uhe) {
-			_lights.turnOnIfNecessary(_cantMap, LIGHT_CAPTION + "unknown local host.", "Sneer wasn't able to recovery local ip address.", uhe);
+			_lights.turnOnIfNecessary(_cantMap, CAPTION + "unknown local host.", "Sneer wasn't able to recovery local ip address.", uhe);
 		}
 		return null;
 	}
@@ -90,7 +95,7 @@ public class UpnpImpl implements Upnp {
 				if (igd.getSpecificPortMappingEntry(ip, _mappedPort, TCP_PROTOCOL) != null) continue;
 				igd.addPortMapping("Sneer port mapping", null, _mappedPort, _mappedPort, ip, 0, TCP_PROTOCOL);
 			} catch (Exception e) {
-				_lights.turnOnIfNecessary(_cantMap, LIGHT_CAPTION + device.getFriendlyName() , "Sneer couldn't add the port map from " + device.getFriendlyName(), e);
+				_lights.turnOnIfNecessary(_cantMap, CAPTION + device.getFriendlyName() , "Sneer couldn't add the port map from " + device.getFriendlyName(), e);
 			}
 		}
 		_devices = null;
@@ -102,7 +107,7 @@ public class UpnpImpl implements Upnp {
 			try {
 				igd.deletePortMapping(ip, _mappedPort, TCP_PROTOCOL);
 			} catch (Exception e) {
-				_lights.turnOnIfNecessary(_cantMap, LIGHT_CAPTION + device.getFriendlyName() , "Sneer couldn't remove the old port map from " + device.getFriendlyName(), e);
+				_lights.turnOnIfNecessary(_cantMap, CAPTION + device.getFriendlyName() , "Sneer couldn't remove the old port map from " + device.getFriendlyName(), e);
 			}
 		}
 		addOwnPortMap(ip);
