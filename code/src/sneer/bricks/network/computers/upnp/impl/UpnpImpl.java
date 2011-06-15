@@ -2,11 +2,9 @@ package sneer.bricks.network.computers.upnp.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import net.sbbi.upnp.devices.UPNPRootDevice;
 import net.sbbi.upnp.impls.InternetGatewayDevice;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
@@ -14,7 +12,6 @@ import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.upnp.Upnp;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.brickness.Brick;
@@ -23,93 +20,110 @@ import sneer.foundation.lang.Consumer;
 
 @Brick
 public class UpnpImpl implements Upnp {
-	private static final String TCP_PROTOCOL = "TCP";
-	private static final String CAPTION = "UPnP ";
-
-	private final Signal<Integer> _ownPort = my(Attributes.class).myAttributeValue(OwnPort.class);
-	private final Threads _threads = my(Threads.class);
-	private final BlinkingLights _lights = my(BlinkingLights.class);
-	private final Light _cantDiscovery = _lights.prepare(LightType.ERROR);
-	private final Light _cantMap = _lights.prepare(LightType.ERROR);
 	
-	@SuppressWarnings("unused") private Object _receptionRefToAvoidGc;
-	private InternetGatewayDevice[] _devices;
-	private transient Integer _mappedPort;
+	private static final String TCP_PROTOCOL = "TCP";
+	private static final String UPnP = "UPnP ";
+
+	
+	@SuppressWarnings("unused") private final Object _refToAvoidGc;
+	private int _previousMappedPort = 0;
+
 	
 	private UpnpImpl() {
-		_receptionRefToAvoidGc = _ownPort.addReceiver(new Consumer<Integer>() { @Override public void consume(Integer port) {
-			remapOwnPort(port);
+		_refToAvoidGc = ownPort().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer port) {
+			startMapping(port);
 		}});
+	}
+
+	
+	private void startMapping(final int port) {
+		my(Threads.class).startDaemon(UPnP, new Closure() { @Override public void run() {
+			map(port);
+		}});
+	}
+
+	
+	synchronized
+	private void map(int port) {
+		try {
+			tryToUpdateMap(port);
+		} catch (Exception e) {
+			blink(e, "port " + port);
+		} finally {
+			_previousMappedPort = port;
+		}
+	}
+
+
+	private void tryToUpdateMap(int port) throws Exception {  //sbbi lib throws RuntimeExceptions :(
+		InternetGatewayDevice[] devices = InternetGatewayDevice.getDevices(5000);
+		if (devices == null || devices.length == 0) {
+			my(BlinkingLights.class).turnOn(LightType.INFO, "No " + UPnP + " devices found.", "There are apparently no UPnP devices on your network. That's OK.", 15000);
+			return;
+		}
 		
-		_threads.startDaemon(CAPTION, new Closure() { @Override public void run() {
-			mapOwnPort();
-		}});
-	}
-
-	private void remapOwnPort(Integer port) {
-		if (_mappedPort == 0) return;
-		if (existDevicesOnLAN()) {
-			deleteAndAddOwnPortMap(toLocalHostIp());
-			_lights.turnOn(LightType.INFO, "Remapped own port on " + CAPTION + "devices.", "Sneer cold remapped own port on UPnP devices of your network.", 20000);
-		}	
+		for (InternetGatewayDevice device : devices)
+			updateMap(device, port);
 	}
 	
-	private void mapOwnPort() {
-		if (existDevicesOnLAN()) {
-			addOwnPortMap(toLocalHostIp());
-			_lights.turnOn(LightType.INFO, "Mapped own port on " + CAPTION + "devices.", "Sneer cold mapped own port on UPnP devices of your network.", 10000);
-		}	
-	}
 	
-	private boolean existDevicesOnLAN() {
+	private void updateMap(InternetGatewayDevice device, int port) {
 		try {
-			_devices = InternetGatewayDevice.getDevices(5000);
-		} catch (IOException ioe) {
-			_lights.turnOnIfNecessary(_cantDiscovery, CAPTION, "Sneer wasn't able to find UPnP devices on your network.", ioe);
+			tryToUpdateMapping(device, port);
+		} catch (Exception e) {
+			blink(e, "port " + port + " on device " + pretty(device));
 		}
-
-		if (_devices == null) {
-			String captionOrMessage = CAPTION + "devices not found.";
-			_lights.turnOn(LightType.INFO, captionOrMessage, "Sneer couldn't able to find UPnP devices on your network.", 10000);
-			my(Logger.class).log(CAPTION + "devices not found.");
-			return false;
-		}
-		return true;
 	}
 
-	private String toLocalHostIp() {
+
+	private void tryToUpdateMapping(InternetGatewayDevice device, int port) throws Exception { //sbbi lib throws RuntimeExceptions :(
+		String ip = localHostIp();
+		addMappingIfNecessary(device, ip, port);
+		deleteMappingIfNecessary(device, ip, _previousMappedPort);
+	}
+
+
+	private void addMappingIfNecessary(InternetGatewayDevice device, String ip, int port) throws Exception {
+		if (port == 0) return;
+		if (mappingAlreadyExists(device, ip, port)) return;
+		device.addPortMapping("Sneer", null, port, port, ip, 0, TCP_PROTOCOL);
+		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, UPnP + " port " + port + " opened.", "Sneer port opened on UPnP network device " + pretty(device), 10000);
+	}
+
+
+	private boolean mappingAlreadyExists(InternetGatewayDevice device, String ip, int port) throws Exception {
+		return device.getSpecificPortMappingEntry(ip, port, TCP_PROTOCOL) != null;
+	}
+
+	
+	private void deleteMappingIfNecessary(InternetGatewayDevice igd, String ip, int previousPort) {
+		if (previousPort == 0) return;
 		try {
-			return InetAddress.getLocalHost().getHostAddress();
-		} catch (UnknownHostException uhe) {
-			_lights.turnOnIfNecessary(_cantMap, CAPTION + "unknown local host.", "Sneer wasn't able to recovery local ip address.", uhe);
+			igd.deletePortMapping(ip, previousPort, TCP_PROTOCOL);
+		} catch (Exception e) {
+			my(Logger.class).log(UPnP + " failed to delete old port " + previousPort + ". " + e.getClass() + ": " + e.getMessage());
 		}
-		return null;
+	}
+
+	
+	private String pretty(InternetGatewayDevice device) {
+		return device.getIGDRootDevice().getFriendlyName();
+	}
+
+	
+	private String localHostIp() throws UnknownHostException {
+		return InetAddress.getLocalHost().getHostAddress();
 	}
 	
-	private void addOwnPortMap(final String ip) {
-		_mappedPort = _ownPort.currentValue();
-
-		for (InternetGatewayDevice igd : _devices) {
-			UPNPRootDevice device = igd.getIGDRootDevice();
-			try {
-				if (igd.getSpecificPortMappingEntry(ip, _mappedPort, TCP_PROTOCOL) != null) continue;
-				igd.addPortMapping("Sneer port mapping", null, _mappedPort, _mappedPort, ip, 0, TCP_PROTOCOL);
-			} catch (Exception e) {
-				_lights.turnOnIfNecessary(_cantMap, CAPTION + device.getFriendlyName() , "Sneer couldn't add the port map from " + device.getFriendlyName(), e);
-			}
-		}
-		_devices = null;
+	
+	private Signal<Integer> ownPort() {
+		return my(Attributes.class).myAttributeValue(OwnPort.class);
 	}
 
-	private void deleteAndAddOwnPortMap(final String ip) {
-		for (InternetGatewayDevice igd : _devices) {
-			UPNPRootDevice device = igd.getIGDRootDevice();
-			try {
-				igd.deletePortMapping(ip, _mappedPort, TCP_PROTOCOL);
-			} catch (Exception e) {
-				_lights.turnOnIfNecessary(_cantMap, CAPTION + device.getFriendlyName() , "Sneer couldn't remove the old port map from " + device.getFriendlyName(), e);
-			}
-		}
-		addOwnPortMap(ip);
+	
+	private void blink(Exception e, String situation) {
+		String caption = UPnP + " error tying to map " + situation;
+		my(BlinkingLights.class).turnOn(LightType.ERROR, caption, "This makes it harder for your contacts to reach you.", e, 60000);
 	}
+	
 }

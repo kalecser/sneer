@@ -12,6 +12,7 @@ class LogFilterImpl implements LogFilter {
 
 	private final ListRegister<String> _phrases = my(CollectionSignals.class).newListRegister();
 	{
+		_phrases.add("UPnP");
 //		_phrases.add("Exception");
 		_phrases.add("thrown");
 		_phrases.add("online");
