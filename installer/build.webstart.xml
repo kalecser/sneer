@@ -7,7 +7,7 @@
 	<property name="jnlp.file" location="${build.dir}/dist/sneer.jnlp" />
 	<property name="jnlp.mainClass" value="sneer.installer.Main" />
 
-	<target name="main" depends="init, compile, copy, log, makeJars, makeJnlp, signJars" />
+	<target name="main" depends="init, compile, log, makeJars, makeJnlp, signJars" />
 
 	<target name="init">
 		<tstamp />
@@ -28,13 +28,6 @@
 		</javac>
 	</target>
 
-	<target name="copy">
-		<copy todir="${build.dir}/dist">
-			<fileset dir="web">
-				<include name='**/*.*' />
-			</fileset>
-		</copy>
-	</target>
 
 	<target name="log">
 		<property environment="env" />
@@ -97,40 +90,43 @@
 			<equals arg1="${env.JOB_NAME}" arg2="Sneer"/>
 		</condition>
 		<echo message="${jnlp.codebase}"/>
-		<replace file="${build.dir}/dist/sneer.html" token="${jnlp.url}" value="${jnlp.codebase}/sneer.jnlp"/>
 
 		<echoxml file="${jnlp.file}">
-			<jnlp spec="1.0+" codebase="${jnlp.codebase}" href="sneer.jnlp">
+			<jnlp spec="1.0+" codebase="http://dynamic.sneer.me" href="sneer.jnlp">
 				<information>
 					<title>Sneer</title>
+					<vendor>Sneer Team</vendor>
+					<description>Free platform for sovereign applications.</description>
+					<description kind="tooltip">Sneer</description>
+					<homepage href="http://sneer.me" />
+
+					<offline-allowed/>				
 					
-			        <shortcut online="true">
-			            <menu submenu="Sovereign Computing"/>
+			        <shortcut online="false">
 			            <desktop/>
+						<menu submenu="Sneer"/>
 			        </shortcut>
 					
-					<vendor>Sneer</vendor>
-					<description>Sovereign computing is the freedom to share information and hardware resources with your friends, any way you like.</description>
-					<description kind="short">Sneer is a java-based, free software platform for sovereign applications.</description>
-					<homepage href="http://sovereigncomputing.net/" />
 				</information>
-				<offline-allowed/>				
+				
 				<update check="timeout" policy="always" />
 				
 				<resources>
 					<jar href="sneer-bootstrap.jar" />
 					<j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se" />
 				</resources>
+
 				<security>
 					<all-permissions />
 				</security>
+
 				<application-desc main-class="${jnlp.mainClass}" />
 			</jnlp>
 		</echoxml>
 	</target>
 
 	<target name="signJars" depends="makeJars">
-		<signjar keystore="sneerKeystore" jar="./build/dist/sneer-bootstrap.jar" alias="bihaiko" storepass="amanda" />
+		<signjar keystore="keystore" jar="./build/dist/sneer-bootstrap.jar" alias="mykey" storepass="amanda" />
 	</target>
 
 </project>
