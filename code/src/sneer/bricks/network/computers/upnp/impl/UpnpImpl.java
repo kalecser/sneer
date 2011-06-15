@@ -58,7 +58,7 @@ public class UpnpImpl implements Upnp {
 	private void tryToUpdateMap(int port) throws Exception {  //sbbi lib throws RuntimeExceptions :(
 		InternetGatewayDevice[] devices = InternetGatewayDevice.getDevices(5000);
 		if (devices == null || devices.length == 0) {
-			my(BlinkingLights.class).turnOn(LightType.INFO, "No " + UPnP + " devices found.", "There are apparently no UPnP devices on your network. That's OK.", 15000);
+			my(BlinkingLights.class).turnOn(LightType.INFO, "No " + UPnP + "devices found.", "There are apparently no UPnP devices on your network. That's OK.", 6000);
 			return;
 		}
 		
@@ -87,7 +87,7 @@ public class UpnpImpl implements Upnp {
 		if (port == 0) return;
 		if (mappingAlreadyExists(device, ip, port)) return;
 		device.addPortMapping("Sneer", null, port, port, ip, 0, TCP_PROTOCOL);
-		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, UPnP + " port " + port + " opened.", "Sneer port opened on UPnP network device " + pretty(device), 10000);
+		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, UPnP + "port " + port + " opened.", "Sneer port opened on UPnP network device " + pretty(device), 15000);
 	}
 
 
@@ -101,7 +101,7 @@ public class UpnpImpl implements Upnp {
 		try {
 			igd.deletePortMapping(ip, previousPort, TCP_PROTOCOL);
 		} catch (Exception e) {
-			my(Logger.class).log(UPnP + " failed to delete old port " + previousPort + ". " + e.getClass() + ": " + e.getMessage());
+			my(Logger.class).log(UPnP + "failed to delete old port " + previousPort + ". " + e.getClass() + ": " + e.getMessage());
 		}
 	}
 
@@ -122,8 +122,8 @@ public class UpnpImpl implements Upnp {
 
 	
 	private void blink(Exception e, String situation) {
-		String caption = UPnP + " error tying to map " + situation;
-		my(BlinkingLights.class).turnOn(LightType.ERROR, caption, "This makes it harder for your contacts to reach you.", e, 60000);
+		String caption = UPnP + "error tying to map " + situation;
+		my(BlinkingLights.class).turnOn(LightType.ERROR, caption, "This makes it harder for your contacts to reach you.", e, 15000);
 	}
 	
 }
