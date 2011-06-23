@@ -14,13 +14,12 @@ import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.util.concurrent.Latch;
 import dfcsantos.tracks.exchange.endorsements.TrackEndorsement;
 import dfcsantos.tracks.exchange.endorsements.TrackEndorser;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
@@ -38,7 +37,7 @@ public class TrackEndorserTest extends BrickTestWithTuples {
 		assertTrue(track.createNewFile());
 
 		final Hash hash = my(Crypto.class).digest(track);
-		final Latch latch = my(Latches.class).produce();
+		final Latch latch = new Latch();
 
 		@SuppressWarnings("unused")
 		WeakContract refToAvoidGC = my(RemoteTuples.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement trackEndorsement) {

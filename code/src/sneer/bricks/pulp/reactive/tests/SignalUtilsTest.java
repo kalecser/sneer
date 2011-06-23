@@ -5,14 +5,13 @@ import static sneer.foundation.environments.Environments.my;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Predicate;
+import sneer.foundation.util.concurrent.Latch;
 
 
 public class SignalUtilsTest extends BrickTestBase {
@@ -29,8 +28,8 @@ public class SignalUtilsTest extends BrickTestBase {
 
 	@Test (timeout = 2000)
 	public void waitForNewElementWithPredicate() {
-		final Latch latch1 = my(Latches.class).produce();
-		final Latch latch2 = my(Latches.class).produce();
+		final Latch latch1 = new Latch();
+		final Latch latch2 = new Latch();
 
 		final SetRegister<String> setRegister = my(CollectionSignals.class).newSetRegister();
 		setRegister.add("one");

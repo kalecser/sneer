@@ -7,8 +7,6 @@ import java.util.Set;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
@@ -19,6 +17,7 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.exceptions.FriendlyException;
+import sneer.foundation.util.concurrent.Latch;
 
 class BlinkingLightsImpl implements BlinkingLights {
 	
@@ -64,7 +63,7 @@ class BlinkingLightsImpl implements BlinkingLights {
 	}
 	
 	private void turnOffIn(final Light light, int millisFromNow) {
-		final Latch added = my(Latches.class).produce();
+		final Latch added = new Latch();
 		final ByRef<WeakContract> weakContract = ByRef.newInstance();
 		weakContract.value = my(Timer.class).wakeUpInAtLeast(millisFromNow, new Closure() { @Override public void run() {
 			

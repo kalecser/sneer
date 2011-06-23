@@ -7,8 +7,6 @@ import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
@@ -24,6 +22,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
+import sneer.foundation.util.concurrent.Latch;
 
 public class SocketOriginatorTest extends BrickTestBase {
 
@@ -40,7 +39,7 @@ public class SocketOriginatorTest extends BrickTestBase {
 
 	@Test (timeout = 2000)
 	public void openConnection() throws Exception {
-		final Latch ready = my(Latches.class).produce();
+		final Latch ready = new Latch();
 		final Contact neide = my(Contacts.class).addContact("Neide");
 		my(ContactSeals.class).put("Neide", newSeal(new byte[]{42}));
 

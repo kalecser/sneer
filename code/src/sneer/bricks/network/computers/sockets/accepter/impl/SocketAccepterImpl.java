@@ -25,7 +25,6 @@ import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class SocketAccepterImpl implements SocketAccepter {
-	
 	private final Signal<Integer> _ownPort = my(Attributes.class).myAttributeValue(OwnPort.class);
 	private final Network _network = my(Network.class);
 	private final BlinkingLights _lights = my(BlinkingLights.class);
@@ -35,7 +34,6 @@ class SocketAccepterImpl implements SocketAccepter {
 		crashServerSocketIfNecessary();
 	}});
 	
-
 	private final EventNotifier<ByteArraySocket> _notifier = my(EventNotifiers.class).newInstance();
 
 	private final transient Object _portToListenMonitor = new Object();
@@ -116,7 +114,7 @@ class SocketAccepterImpl implements SocketAccepter {
 		} catch (IOException e) {
 			if (_stepperContract != null)
 				_lights.turnOnIfNecessary(_cantOpenServerSocket, "Unable to listen on TCP port " + port, helpMessage(), e);
-		}
+		}	
 	}
 
 	private String helpMessage() {

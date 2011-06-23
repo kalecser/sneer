@@ -10,14 +10,13 @@ import java.util.Collections;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.testsupport.AssertUtils;
+import sneer.foundation.util.concurrent.Latch;
 
 public class SetRegisterTest extends BrickTestBase {
 
@@ -25,7 +24,7 @@ public class SetRegisterTest extends BrickTestBase {
 
 	@Test (timeout = 2000)
 	public void addAll() {
-		final Latch latch = my(Latches.class).produce();
+		final Latch latch = new Latch();
 
 		final ArrayList<Integer> _sizes = new ArrayList<Integer>();
 		@SuppressWarnings("unused") final Object sizeContract = _subject.output().size().addReceiver(new Consumer<Integer>() {@Override public void consume(Integer value) {

@@ -3,13 +3,12 @@ package sneer.bricks.hardwaresharing.dataspace.buckets.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardwaresharing.dataspace.buckets.BlockRead;
 import sneer.bricks.hardwaresharing.dataspace.buckets.BlockReadResponse;
 import sneer.bricks.hardwaresharing.dataspace.buckets.Bucket;
 import sneer.bricks.identity.seals.Seal;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.util.concurrent.Latch;
 
 class RemoteBucket implements Bucket {
 
@@ -26,7 +25,7 @@ class RemoteBucket implements Bucket {
 		final byte[] result = null;
 		my(TupleSpace.class).add(new BlockRead(_seal, blockNumber));
 
-		final Latch latch = my(Latches.class).produce();
+		final Latch latch = new Latch();
 		
 		WeakContract refToAvoidGC = my(TupleSpace.class).addSubscription(BlockReadResponse.class, new Consumer<BlockReadResponse>() { @Override public void consume(BlockReadResponse response) {
 			if (!_seal.equals(response.publisher)) return;

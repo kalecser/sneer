@@ -187,9 +187,8 @@ public abstract class CleanTestBase extends AssertUtils {
 				deleteFolder(tmp);
 				return;
 			} catch (IOException e) {
-				if (System.currentTimeMillis() - t0 > 1000) {
+				if (System.currentTimeMillis() - t0 > 5000)
 					throw new IllegalStateException(e);
-				}
 				System.gc();
 			}
 		}

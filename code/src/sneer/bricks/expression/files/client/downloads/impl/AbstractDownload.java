@@ -13,8 +13,6 @@ import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
@@ -24,6 +22,7 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.util.concurrent.Latch;
 
 abstract class AbstractDownload implements Download {
 
@@ -48,7 +47,7 @@ abstract class AbstractDownload implements Download {
 
 	private final Register<Integer> _progress = my(Signals.class).newRegister(0);
 
-	private final Latch _isFinished = my(Latches.class).produce();
+	private final Latch _isFinished = new Latch();
 	private Register<Boolean> _finished = my(Signals.class).newRegister(false);
 
 	private Exception _exception;

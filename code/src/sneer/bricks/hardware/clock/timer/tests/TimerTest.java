@@ -11,11 +11,10 @@ import org.junit.Test;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.cpu.threads.latches.Latch;
-import sneer.bricks.hardware.cpu.threads.latches.Latches;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.util.concurrent.Latch;
 
 public class TimerTest extends BrickTestBase {
 
@@ -104,8 +103,8 @@ public class TimerTest extends BrickTestBase {
 	
 	@Test
 	public void testAlarmThatAddsAlarm() throws Exception {
-		final Latch latch1 = my(Latches.class).produce();
-		final Latch latch2 = my(Latches.class).produce();
+		final Latch latch1 = new Latch();
+		final Latch latch2 = new Latch();
 		
 		_c1 = _subject.wakeUpInAtLeast(1, new Closure() { @Override public void run() {
 			_c2 = _subject.wakeUpInAtLeast(1, new Closure() { @Override public void run() {
