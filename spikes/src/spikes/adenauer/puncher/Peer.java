@@ -1,6 +1,8 @@
 package spikes.adenauer.puncher;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -8,9 +10,8 @@ import java.net.InetSocketAddress;
 import java.util.StringTokenizer;
 
 public class Peer implements Runnable {
-	//private static final String RENDEZVOUS_IP = "wuestefeld.name";  
-	private static final String TARGET = "NBAD";
-	private static final String RENDEZVOUS_IP = "192.168.0.2";  
+	//private static final String RENDEZVOUS_IP = "192.168.0.2";  
+	private static final String RENDEZVOUS_IP = "wuestefeld.name";  
 	private static final int RENDEZVOUS_PORT = 9876;
 	private static final int LISTENER_PORT = 5432;
 	
@@ -64,7 +65,7 @@ public class Peer implements Runnable {
 
 
 	private static DatagramPacket request() throws IOException {
-		String data = getId() + ";" + getPrivateIP() +  ";" + LISTENER_PORT +  ";" + TARGET;
+		String data = getId() + ";" + getPrivateIP() +  ";" + LISTENER_PORT +  ";" + targetFromUser();
 		return new DatagramPacket(data.getBytes(), data.length(), new InetSocketAddress(RENDEZVOUS_IP, RENDEZVOUS_PORT));
 	}
 
@@ -81,6 +82,17 @@ public class Peer implements Runnable {
 	
 	private static String getPrivateIP() throws IOException {
 		return InetAddress.getLocalHost().getHostAddress();
+	}
+	
+	
+	private static String targetFromUser() {
+		System.out.print("Target: ");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		try {
+			return reader.readLine();
+		} catch (IOException e1) {
+			return " ";
+		}
 	}
 	
 	
@@ -115,7 +127,7 @@ public class Peer implements Runnable {
 	private void Listener(DatagramSocket socket) throws IOException {
 		DatagramPacket receivePacket = new DatagramPacket(new byte[1024], 1024);
 		socket.receive(receivePacket);
-		display("Heard: " + receivePacket.getData());
+		display("Heard: " + new String(receivePacket.getData()).trim());
 	}
 	
 }
