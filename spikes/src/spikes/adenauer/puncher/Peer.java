@@ -19,9 +19,9 @@ public class Peer implements Runnable {
 	
 	public static void main(String[] ignored) throws IOException {
 		_socket = openSocket(LISTENER_PORT);
-		startListenOtherPeers();
 		try {
 			holepunching();
+			startListenOtherPeers();
 		} catch (Exception e) {
 			display(e.getMessage());
 		}
@@ -64,7 +64,7 @@ public class Peer implements Runnable {
 	private static String targetInfo(DatagramSocket socket) throws IOException {
 		DatagramPacket targetPacket = new DatagramPacket(new byte[1024], 1024);
 		socket.receive(targetPacket);
-		socket.close();
+		//socket.close();
 		return new String(targetPacket.getData());
 	}
 
