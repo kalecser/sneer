@@ -14,9 +14,11 @@ public class Peer implements Runnable {
 	private static final String RENDEZVOUS_IP = "wuestefeld.name";  
 	private static final int RENDEZVOUS_PORT = 9876;
 	private static final int LISTENER_PORT = 5432;
+	private static DatagramSocket _socket;
 	
 	
-	public static void main(String[] ignored) {
+	public static void main(String[] ignored) throws IOException {
+		_socket = openSocket(LISTENER_PORT);
 		startListenOtherPeers();
 		try {
 			holepunching();
@@ -51,7 +53,8 @@ public class Peer implements Runnable {
 
 
 	private static String requestTargetInfo() throws IOException {
-		DatagramSocket socket = openSocket(6789);
+		DatagramSocket socket = _socket;
+		//DatagramSocket socket = openSocket(6789);
 		DatagramPacket request = request();
 		socket.send(request);
 		return targetInfo(socket);
@@ -119,7 +122,8 @@ public class Peer implements Runnable {
 
 
 	private void listenerPeers() throws IOException {
-		DatagramSocket socket = openSocket(LISTENER_PORT);
+		DatagramSocket socket = _socket;
+		//DatagramSocket socket = openSocket(LISTENER_PORT);
 		while (true) {
 			Listener(socket);
 		}
