@@ -40,8 +40,10 @@ public class Peer implements Runnable {
 
 	
 	private static DatagramPacket punchPacket(String targetInfo) throws IOException {
-		StringTokenizer fields = new StringTokenizer(targetInfo, ";");
+		StringTokenizer fields = new StringTokenizer(targetInfo.trim(), ";");
 		String punchData = getId(); 
+		fields.nextToken();
+		fields.nextToken();
 		String targetIP = fields.nextToken();
 		int targetPort = Integer.valueOf(fields.nextToken());
 		return new DatagramPacket(punchData.getBytes(), punchData.length(), new InetSocketAddress(targetIP, targetPort));
