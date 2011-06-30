@@ -16,18 +16,6 @@ public class Peer implements Runnable {
 	private static final int LISTENER_PORT = 5432;
 	private static DatagramSocket _socket;
 	
-	
-	public static void main(String[] ignored) throws IOException {
-		_socket = openSocket(LISTENER_PORT);
-		try {
-			holepunching();
-			startListenOtherPeers();
-		} catch (Exception e) {
-			display(e.getMessage());
-		}
-	}
-
-	
 	private static void holepunching() throws IOException {
 		punch(requestTargetInfo());
 	}
@@ -136,4 +124,14 @@ public class Peer implements Runnable {
 		display("Heard: " + new String(receivePacket.getData()).trim());
 	}
 	
+
+	public static void main(String[] ignored) throws IOException {
+		_socket = openSocket(LISTENER_PORT);
+		try {
+			holepunching();
+			startListenOtherPeers();
+		} catch (Exception e) {
+			display(e.getMessage());
+		}
+	}
 }
