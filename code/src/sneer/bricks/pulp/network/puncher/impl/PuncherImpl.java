@@ -1,4 +1,4 @@
-package sneer.bricks.pulp.network.udp.puncher.impl;
+package sneer.bricks.pulp.network.puncher.impl;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -7,7 +7,7 @@ import java.net.InetSocketAddress;
 import java.util.StringTokenizer;
 
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.pulp.network.udp.puncher.Puncher;
+import sneer.bricks.pulp.network.puncher.Puncher;
 
 public class PuncherImpl implements Puncher {
 	

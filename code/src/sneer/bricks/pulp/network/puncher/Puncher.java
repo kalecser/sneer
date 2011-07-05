@@ -1,4 +1,4 @@
-package sneer.bricks.pulp.network.udp.puncher;
+package sneer.bricks.pulp.network.puncher;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

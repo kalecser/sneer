@@ -7,7 +7,7 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface Network {
 
-	ByteArraySocket openSocket(String hostAddress, int port) throws IOException;
+	ByteArraySocket openSocket(String remoteAddress, int remotePort) throws IOException;
 
 	ByteArrayServerSocket openServerSocket(int port) throws IOException;
 
