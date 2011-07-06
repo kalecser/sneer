@@ -12,6 +12,10 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.swing.JOptionPane;
 
 public class Peer {
 
@@ -25,31 +29,33 @@ public class Peer {
 
 	
 	public static void main(String[] ignored) throws IOException {
-		String ownId = readConsole("Own id:");
-		String targetId = readConsole("Target id:");
-
-		String message = ownId + ";" + ownIp() +  ";" + OWN_PORT +  ";" + targetId;
+		final String ownId = readConsole("Own id:");
 		
-		InetSocketAddress targetAddress = null;
-		do {
-			send(message, RENDEZVOUS_SERVER);
-
+		new Thread() {  @Override public void run() {
+			while (true) {
+				String targetId = JOptionPane.showInputDialog("Enter Target");
+				String message = ownId + ";" + OWN_IP +  ";" + OWN_PORT +  ";" + targetId;
+				try {
+					send(message, RENDEZVOUS_SERVER);
+				} catch (IOException e) {
+					throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+				}
+			}
+		}}.start();
+		
+		Set<InetSocketAddress> targets = new HashSet<InetSocketAddress>();
+		while (true) {
 			String received;
 			try {
 				received = receive();
-			} catch (SocketTimeoutException e) {
-				continue;
-			}
-			targetAddress = parseTargetAddress(received);
-
-		} while (targetAddress == null);
-		
-		
-		while (true) {
-			send("Hello from " + ownId, targetAddress);
-			try {
-				System.out.println(receive());
+				System.out.println("Received: " + received);
+				InetSocketAddress target = parseTargetAddress(received);
+				if (target != null) targets.add(target);
 			} catch (SocketTimeoutException e) {}
+			
+			for (InetSocketAddress t : targets)
+				send("Hello from " + ownId, t);
+
 			sleep(1000);
 		}
 		
@@ -66,7 +72,6 @@ public class Peer {
 
 
 	private static InetSocketAddress parseTargetAddress(String message) {
-		System.out.println("Trying to parse: " + message);
 		String[] parts = message.split(";");
 		if (parts.length != 4)
 			return null;
@@ -75,7 +80,8 @@ public class Peer {
 		return new InetSocketAddress(ip, port);
 	}
 
-
+	
+	synchronized
 	private static void send(String message, SocketAddress destination)	throws IOException {
 		byte[] bytes = message.getBytes(UTF_8);
 		_socket.send(new DatagramPacket(bytes, bytes.length, destination));
