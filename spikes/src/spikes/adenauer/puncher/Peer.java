@@ -65,15 +65,6 @@ public class Peer {
 	}
 
 
-	private static void sleep(int millis) {
-		try {
-			Thread.sleep(millis);
-		} catch (InterruptedException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-
-
 	private static InetSocketAddress parseTargetAddress(String message) {
 		String[] parts = message.split(";");
 		if (parts.length != 4)
