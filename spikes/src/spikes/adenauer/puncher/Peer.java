@@ -7,79 +7,109 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.StringTokenizer;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 
-public class Peer implements Runnable {
-	//private static final String RENDEZVOUS_IP = "192.168.0.2";  
-	private static final String RENDEZVOUS_IP = "wuestefeld.name";  
-	private static final int RENDEZVOUS_PORT = 9876;
-	private static final int LISTENER_PORT = 5432;
-	private static DatagramSocket _socket;
-	
-	private static void holepunching() throws IOException {
-		punch(requestTargetInfo());
-	}
+public class Peer {
 
-	
-	private static void punch(String targetInfo) throws IOException {
-		DatagramSocket socket = openSocket(4321);
-		DatagramPacket punchPacket = punchPacket(targetInfo);
-		socket.send(punchPacket);
-		socket.close();
-	}
+	private static final Charset UTF_8 = Charset.forName("UTF-8");
+
+	private static final SocketAddress RENDEZVOUS_SERVER = new InetSocketAddress("wuestefeld.name", 7070);
+
+	private static final int OWN_PORT = 5050;
+	private static final String OWN_IP = ownIp();
+	private static final DatagramSocket _socket = newSocket(OWN_IP, OWN_PORT);
 
 	
-	private static DatagramPacket punchPacket(String targetInfo) throws IOException {
-		StringTokenizer fields = new StringTokenizer(targetInfo.trim(), ";");
-		String punchData = getId(); 
-		fields.nextToken();
-		fields.nextToken();
-		String targetIP = fields.nextToken();
-		int targetPort = Integer.valueOf(fields.nextToken());
-		return new DatagramPacket(punchData.getBytes(), punchData.length(), new InetSocketAddress(targetIP, targetPort));
+	public static void main(String[] ignored) throws IOException {
+		String ownId = readConsole("Own id:");
+		String targetId = readConsole("Target id:");
+
+		String message = ownId + ";" + ownIp() +  ";" + OWN_PORT +  ";" + targetId;
+		
+		InetSocketAddress targetAddress = null;
+		do {
+			send(message, RENDEZVOUS_SERVER);
+
+			String received;
+			try {
+				received = receive();
+			} catch (SocketTimeoutException e) {
+				continue;
+			}
+			targetAddress = parseTargetAddress(received);
+
+		} while (targetAddress == null);
+		
+		
+		while (true) {
+			send("Hello from " + ownId, targetAddress);
+			try {
+				System.out.println(receive());
+			} catch (SocketTimeoutException e) {}
+			sleep(1000);
+		}
+		
 	}
 
 
-	private static String requestTargetInfo() throws IOException {
-		DatagramSocket socket = _socket;
-		//DatagramSocket socket = openSocket(6789);
-		DatagramPacket request = request();
-		socket.send(request);
-		return targetInfo(socket);
-	}	
-	
-	
-	private static String targetInfo(DatagramSocket socket) throws IOException {
-		DatagramPacket targetPacket = new DatagramPacket(new byte[1024], 1024);
-		socket.receive(targetPacket);
-		//socket.close();
-		return new String(targetPacket.getData());
+	private static void sleep(int millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 
-	private static DatagramPacket request() throws IOException {
-		String data = getId() + ";" + getPrivateIP() +  ";" + LISTENER_PORT +  ";" + targetFromUser();
-		return new DatagramPacket(data.getBytes(), data.length(), new InetSocketAddress(RENDEZVOUS_IP, RENDEZVOUS_PORT));
+	private static InetSocketAddress parseTargetAddress(String message) {
+		System.out.println("Trying to parse: " + message);
+		String[] parts = message.split(";");
+		if (parts.length != 4)
+			return null;
+		String ip = parts[2];
+		int port = Integer.parseInt(parts[3]);
+		return new InetSocketAddress(ip, port);
 	}
 
-	
-	private static DatagramSocket openSocket(int port) throws IOException {
-		return new DatagramSocket(port);
+
+	private static void send(String message, SocketAddress destination)	throws IOException {
+		byte[] bytes = message.getBytes(UTF_8);
+		_socket.send(new DatagramPacket(bytes, bytes.length, destination));
+	}
+
+
+	private static String ownIp() {
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e);
+		}
+	}
+
+
+	private static DatagramSocket newSocket(String localIp, int port) {
+		try {
+			return new DatagramSocket(new InetSocketAddress(localIp, port));
+		} catch (SocketException e) {
+			throw new IllegalStateException(e); // Fix Handle this exception.
+		}
+	}
+
+
+	private static String receive() throws IOException {
+		DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
+		_socket.setSoTimeout(3000);
+		_socket.receive(packet);
+		return new String(packet.getData(), packet.getOffset(), packet.getLength(), UTF_8);
 	}
 	
 	
-	private static String getId() throws IOException {
-		return InetAddress.getLocalHost().getHostName();
-	}
-	
-	
-	private static String getPrivateIP() throws IOException {
-		return InetAddress.getLocalHost().getHostAddress();
-	}
-	
-	
-	private static String targetFromUser() {
-		System.out.print("Target: ");
+	private static String readConsole(String prompt) {
+		System.out.print(prompt);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		try {
 			return reader.readLine();
@@ -89,49 +119,34 @@ public class Peer implements Runnable {
 	}
 	
 	
-	private static void display(String out) {
-		System.out.println(out);
-	}
-
-
-	private static void startListenOtherPeers() {
-		new Thread(new Peer()).start();
-	}
 
 	
-	@Override
-	public void run() {
-		try {
-			listenerPeers();
-		} catch (Exception e) {
-			display("Listener failure: " + e.getMessage());
-		}
-	}
-
-
-	private void listenerPeers() throws IOException {
-		DatagramSocket socket = _socket;
-		//DatagramSocket socket = openSocket(LISTENER_PORT);
-		while (true) {
-			Listener(socket);
-		}
-	}
-
-
-	private void Listener(DatagramSocket socket) throws IOException {
-		DatagramPacket receivePacket = new DatagramPacket(new byte[1024], 1024);
-		socket.receive(receivePacket);
-		display("Heard: " + new String(receivePacket.getData()).trim());
-	}
 	
+	
+	
+	
+	
+//	private static DatagramPacket punchPacket(String targetInfo) throws IOException {
+//		StringTokenizer fields = new StringTokenizer(targetInfo.trim(), ";");
+//		String punchData = localHostName(); 
+//		fields.nextToken();
+//		fields.nextToken();
+//		String targetIP = fields.nextToken();
+//		int targetPort = Integer.valueOf(fields.nextToken());
+//		return new DatagramPacket(punchData.getBytes(), punchData.length(), new InetSocketAddress(targetIP, targetPort));
+//	}
 
-	public static void main(String[] ignored) throws IOException {
-		_socket = openSocket(LISTENER_PORT);
-		try {
-			holepunching();
-			startListenOtherPeers();
-		} catch (Exception e) {
-			display(e.getMessage());
-		}
-	}
+
+//	private static String localHostName() throws IOException {
+//		String result = InetAddress.getLocalHost().getHostName();
+//		System.out.println(result);
+//		return result;
+//	}
+	
+	
+//	private static void display(String out) {
+//		System.out.println(out);
+//	}
+
+
 }
