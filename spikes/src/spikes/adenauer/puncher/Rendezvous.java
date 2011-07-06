@@ -79,9 +79,9 @@ public class Rendezvous implements Runnable {
 			return;
 		}
 		
-		display("Forward info to: " + from);
-		forward(encode(fromInfo), socket, targetInfo.get(PUBLIC_IP), Integer.valueOf(targetInfo.get(PUBLIC_PORT)));
 		display("Forward info to: " + target);
+		forward(encode(fromInfo), socket, targetInfo.get(PUBLIC_IP), Integer.valueOf(targetInfo.get(PUBLIC_PORT)));
+		display("Forward info to: " + from);
 		forward(encode(targetInfo), socket, fromInfo.get(PUBLIC_IP), Integer.valueOf(fromInfo.get(PUBLIC_PORT)));
 		display("=====================================");
 	}
