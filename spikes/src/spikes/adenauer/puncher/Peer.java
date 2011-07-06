@@ -44,6 +44,7 @@ public class Peer {
 		}}.start();
 		
 		Set<InetSocketAddress> targets = new HashSet<InetSocketAddress>();
+		long lastTime = System.currentTimeMillis();
 		while (true) {
 			String received;
 			try {
@@ -53,10 +54,12 @@ public class Peer {
 				if (target != null) targets.add(target);
 			} catch (SocketTimeoutException e) {}
 			
-			for (InetSocketAddress t : targets)
-				send("Hello from " + ownId, t);
-
-			sleep(1000);
+			long now = System.currentTimeMillis();
+			if (now - lastTime > 1000) {
+				lastTime = now;
+				for (InetSocketAddress t : targets)
+					send("Hello from " + ownId, t);
+			}
 		}
 		
 	}
