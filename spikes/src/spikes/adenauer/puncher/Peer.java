@@ -22,7 +22,7 @@ public class Peer {
 	private static final Charset UTF_8 = Charset.forName("UTF-8");
 
 	private static final SocketAddress RENDEZVOUS_SERVER = new InetSocketAddress("wuestefeld.name", 7070);
-
+	
 	private static final int OWN_PORT = 5050;
 	private static final String OWN_IP = ownIp();
 	private static final DatagramSocket _socket = newSocket(OWN_IP, OWN_PORT);
@@ -67,10 +67,10 @@ public class Peer {
 
 	private static InetSocketAddress parseTargetAddress(String message) {
 		String[] parts = message.split(";");
-		if (parts.length != 4)
+		if (parts.length != 2)
 			return null;
-		String ip = parts[2];
-		int port = Integer.parseInt(parts[3]);
+		String ip = parts[0];
+		int port = Integer.parseInt(parts[1]);
 		return new InetSocketAddress(ip, port);
 	}
 

@@ -13,11 +13,11 @@ import java.util.StringTokenizer;
 public class Rendezvous implements Runnable {
 	private static final Charset UTF_8 = Charset.forName("UTF-8");
 
+	private static final Map<String, Map<String, InetSocketAddress>> _endPoints = new HashMap<String, Map<String, InetSocketAddress>>();
 
 	private static final String PRIVATE_ADDRESS = "privateAddress";
 	private static final String PUBLIC_ADDRESS = "publicAddress";
-	private static final Map<String, Map<String, InetSocketAddress>> _endPoints = new HashMap<String, Map<String, InetSocketAddress>>();
-
+	
 
 	public static void main(String[] ignored ) {
 		new Thread(new Rendezvous()).start();
@@ -59,19 +59,11 @@ public class Rendezvous implements Runnable {
 	}
 
 	
-	private byte[] encode(Map<String, InetSocketAddress> info) {
-		InetSocketAddress privateAddress = info.get(PRIVATE_ADDRESS);
-		InetSocketAddress publicAddress = info.get(PUBLIC_ADDRESS);
-		
+	private byte[] encode(InetSocketAddress address) {
 		StringBuilder result = new StringBuilder();
-		result.append(privateAddress.getAddress().getHostAddress());
+		result.append(address.getAddress().getHostAddress());
 		result.append(";");
-		result.append(privateAddress.getPort());
-		result.append(";");
-		result.append(publicAddress.getAddress().getHostAddress());
-		result.append(";");
-		result.append(publicAddress.getPort());
-		result.append(";");
+		result.append(address.getPort());
 		return result.toString().getBytes();
 	}
 
@@ -84,11 +76,25 @@ public class Rendezvous implements Runnable {
 			display("Info of target: " + target + " not found.");
 			return;
 		}
-	
+
+		InetSocketAddress fromPublicAddress = fromEndPoint.get(PUBLIC_ADDRESS);
+		InetSocketAddress fromPrivateAddress = fromEndPoint.get(PRIVATE_ADDRESS);
+		InetSocketAddress targetPublicAddress = targetEndPoint.get(PUBLIC_ADDRESS);
+		InetSocketAddress targetPrivateAddress = targetEndPoint.get(PRIVATE_ADDRESS);
+		
+		InetSocketAddress fromInfo = fromPublicAddress;
+		InetSocketAddress targetInfo = targetPublicAddress;
+		
+		
+		if (sameWAN(fromPublicAddress, targetPublicAddress) && sameLAN(fromPrivateAddress, targetPrivateAddress)) {
+			fromInfo = fromPrivateAddress;
+			targetInfo = targetPrivateAddress;
+		}
+		
 		display("Forward info to: " + target);
-		forward(encode(fromEndPoint), socket, targetEndPoint.get(PUBLIC_ADDRESS));
+		forward(encode(fromInfo), socket, targetPublicAddress);
 		display("Forward info to: " + from);
-		forward(encode(targetEndPoint), socket, fromEndPoint.get(PUBLIC_ADDRESS));
+		forward(encode(targetInfo), socket, fromPublicAddress);
 		display("=====================================");
 	}
 
@@ -141,6 +147,23 @@ public class Rendezvous implements Runnable {
 		DatagramPacket receivedPacket = new DatagramPacket(receivedData, receivedData.length);
 		socket.receive(receivedPacket);
 		return receivedPacket;
+	}
+
+	private boolean sameLAN(InetSocketAddress fromPrivateAddress, InetSocketAddress targetPrivateAddress) {
+		if (fromPrivateAddress == null) return false;
+		if (targetPrivateAddress == null) return false;
+		String[] address = fromPrivateAddress.getAddress().getHostAddress().split("\\D"); 
+		String[] otherAddress = targetPrivateAddress.getAddress().getHostAddress().split("\\D"); 
+		
+		return (address[0].equals(otherAddress[0]) && 
+				address[1].equals(otherAddress[1]) && 
+				address[2].equals(otherAddress[2])) ? true : false;
+	}
+
+	private boolean sameWAN(InetSocketAddress fromPublicAddress, InetSocketAddress targetPublicAddress ) {
+		if (fromPublicAddress == null) return false;
+		if (targetPublicAddress == null) return false;
+		return fromPublicAddress.getAddress().equals(targetPublicAddress.getAddress());
 	}
 
 	
