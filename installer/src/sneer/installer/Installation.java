@@ -27,8 +27,8 @@ import javax.swing.JWindow;
 
 class Installation {
 
-	private final URL _sneerJar		= this.getClass().getResource("/sneer.jar");
-	private final URL _ownJar		= this.getClass().getResource("/own.jar");
+	private final URL _sneerJar = this.getClass().getResource("/sneer.jar");
+	private final URL _ownJar = this.getClass().getResource("/own.jar");
 
 	private JWindow _splashScreen;
 
