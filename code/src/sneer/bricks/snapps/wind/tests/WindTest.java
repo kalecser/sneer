@@ -13,7 +13,7 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
 public class WindTest extends BrickTestBase {
 
-	private static final long YEAR_ONE = 1000l * 60l * 60l * 24l * 356l;
+	private static final long YEAR_ONE = 1000L * 60L * 60L * 24L * 356L;
 	private final Wind _subject = my(Wind.class);
 	
 	@Test(timeout = 4000)
