@@ -69,24 +69,31 @@ class Installation {
 		BIN.mkdirs();
 	}
 
+	
 	private void deleteFolder(File folder) throws IOException {
         if (!folder.exists()) return;
 
-        for (File file : folder.listFiles())
-        	recursiveDelete(file);
+        for (File entry : folder.listFiles())
+			if (entry.isDirectory())
+			    deleteFolder(entry);
+			else
+				delete(entry);
 
-        if (!folder.delete()) throw new IOException(("Unable to delete folder " + folder + "."));
+        delete(folder);
     }
 
-    private void recursiveDelete(File file) throws IOException {
-        if (file.isDirectory()) {
-            deleteFolder(file);
-            return;
-        }
-
-        if (!file.delete())  throw new IOException(("Unable to delete file: " + file));
+	
+    private void delete(File fileOrFolder) throws IOException {
+    	int tries = 7; //On Windows7 with AVG anti-virus apparently this is necessary. Might be necessary on other similar environments. Klaus July 2011 :(
+    	do {
+    		if (fileOrFolder.delete()) return;
+    		sleepForASecond();
+    	} while (tries-- != 0);
+    	
+    	throw new IOException(("Unable to delete after several tries: " + fileOrFolder));
     }
-
+    
+    
 	private void updateCode() throws IOException {
 		extractFiles(extractJar(_sneerJar, "sneer"), CODE);
 	}
@@ -139,8 +146,13 @@ class Installation {
 		_splashScreen.dispose();
 	}
 
-	public static void main(String[] args) throws Exception {
-		new Installation();
+	
+	private void sleepForASecond() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			throw new IllegalStateException(e);
+		}
 	}
-
+	
 }
