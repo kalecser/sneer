@@ -28,7 +28,7 @@ class RendezvousImpl implements Rendezvous {
 
 	private void receiveCallFromUnknownCaller(final Call call) {
 		Signal<String> ownName = my(Attributes.class).myAttributeValue(OwnName.class);
-		if (ownName.currentValue().equals("Klaus Wuestefeld") || ownName.currentValue().equals("Igor Arouca")) {
+		if (ownName.currentValue().equals("Klaus Wuestefeld") || ownName.currentValue().equals("Igor Arouca") || ownName.currentValue().equals("Adenauer")) {
 			acceptCall(call);
 			return;
 		}

@@ -64,7 +64,7 @@ public class HardcodedContactsImpl implements HardcodedContacts {
 //			new ContactInfo("Kalecser", "kalecser.dyndns.org", 7770),
 			new ContactInfo("Klaus", "klausw.dyndns.org", 5923, newSeal("9fa8ae50bde46dc175527015afc3d9005cfccb2dfaaac7c51d8c854419bb5381efb34a15876cef1e25d170babd451d25e3d5e20a96404094a0e62c94524755b8")),
 			new ContactInfo("Patrick Roemer", "judgefang.dontexist.net", 4711, newSeal("7e90b955120b16a98a63371dd0f4eae54218d4245f6afa83d5301f80bc05eadfe89d26dd19620e3c7b4cb29e59d7845c156ab0eb1d0394a14a50416799d4062f")),
-			new ContactInfo("Adenauer", "adenauer.dyndns.info", 9090, newSeal("e89c068a50c77cb0611bcb4e1ccaa4175bc7e6520776bd56a59ddc28d5af399e3f47b60e018433f68fd67c6cbd1826bc4f23af57d85a0310f87594c18c3489c4")),
+			new ContactInfo("Adenauer", "adenauer.dyndns.info", 9091, newSeal("f0717438f9b493225dd4c4a39c844c27c015462c14b334c9fbac7921091c1d966b998c44ad3c7e10c8fa8169d5451c01965262fd33fcfb7a14d234f4ee997ab5")),
 		};
 	}
 
