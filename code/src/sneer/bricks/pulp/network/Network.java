@@ -2,6 +2,7 @@ package sneer.bricks.pulp.network;
 
 import java.io.IOException;
 
+import sneer.bricks.identity.seals.Seal;
 import sneer.foundation.brickness.Brick;
 
 @Brick
@@ -21,22 +22,25 @@ public interface Network {
 //	//   + autenticacao
 //
 //	
-//	public interface Protocol {
-//		boolean canSendTo(Object destinationId);
-//		void send(byte[] data, Object destinationId);
-//	}
-//	
-//	public interface Packet {
-//		Object senderId();
-//		byte[] data();
-//	}
-//
-//	//Aplicacao usando:
-//	void send(byte[] data, Object destinationId);
+	
+//	SetSignal<Seal> peersOnline();
+//	void send(byte[] data, Seal destination);
 //	EventSource<Packet> packetsReceived();
 //	
-//	//Protocolo usando:
-//	void registerToSend(Protocol protocol);
-//	void receive(byte[] data, Object senderId);
-
+	public interface Packet {
+		Seal sender();
+		byte[] data();
+	}
+	
 }
+
+
+interface CompositeNetwork extends Network {
+	
+	void add(Network network);
+	
+}
+
+interface UdpNetwork extends Network {}
+interface TcpNetwork extends Network {}
+interface HttpTunnelNetwork extends Network {}
