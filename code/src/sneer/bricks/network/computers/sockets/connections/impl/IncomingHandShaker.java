@@ -16,7 +16,7 @@ import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.bricks.pulp.network.Network;
+import sneer.bricks.pulp.network.Network2010;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 class IncomingHandShaker {
@@ -50,7 +50,7 @@ class IncomingHandShaker {
 
 
 	private static void notifySighting(final Seal contactsSeal, ByteArraySocket socket) {
-		String ip = my(Network.class).remoteIpFor(socket);
+		String ip = my(Network2010.class).remoteIpFor(socket);
 		my(TupleSpace.class).add(new Sighting(contactsSeal, ip));
 	}
 

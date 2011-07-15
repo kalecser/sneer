@@ -19,14 +19,14 @@ import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.network.ByteArrayServerSocket;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.bricks.pulp.network.Network;
+import sneer.bricks.pulp.network.Network2010;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class SocketAccepterImpl implements SocketAccepter {
 	private final Signal<Integer> _ownPort = my(Attributes.class).myAttributeValue(OwnPort.class);
-	private final Network _network = my(Network.class);
+	private final Network2010 _network = my(Network2010.class);
 	private final BlinkingLights _lights = my(BlinkingLights.class);
 	private final Threads _threads = my(Threads.class);
 	@SuppressWarnings("unused")

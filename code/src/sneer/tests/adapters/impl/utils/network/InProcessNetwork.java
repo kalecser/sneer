@@ -6,9 +6,9 @@ import java.util.Map;
 
 import sneer.bricks.pulp.network.ByteArrayServerSocket;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.bricks.pulp.network.Network;
+import sneer.bricks.pulp.network.Network2010;
 
-public class InProcessNetwork implements Network {
+public class InProcessNetwork implements Network2010 {
 
 	private final Map<Integer, ByteArrayServerSocket> _serverSocketByPort = new HashMap<Integer, ByteArrayServerSocket>();
 

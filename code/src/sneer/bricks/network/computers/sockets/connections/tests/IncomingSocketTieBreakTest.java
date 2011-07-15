@@ -15,7 +15,7 @@ import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.bricks.pulp.network.Network;
+import sneer.bricks.pulp.network.Network2010;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
@@ -26,7 +26,7 @@ public class IncomingSocketTieBreakTest extends BrickTestBase {
 
 	@Bind private final ContactSeals _seals = mock(ContactSeals.class);
 	@Bind private final OwnSeal _ownSealBrick = mock(OwnSeal.class);
-	@Bind private final Network _network = mock(Network.class);
+	@Bind private final Network2010 _network = mock(Network2010.class);
 
 	private ConnectionManager _subject = my(ConnectionManager.class);
 

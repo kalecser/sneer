@@ -15,13 +15,13 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.bricks.pulp.network.Network;
+import sneer.bricks.pulp.network.Network2010;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 
 class OutgoingAttempt {
 
-	private final Network _network = my(Network.class);
+	private final Network2010 _network = my(Network2010.class);
 	private final ConnectionManager _connectionManager = my(ConnectionManager.class);
 	private final InternetAddress _address;
 	private int _port;

@@ -6,7 +6,7 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.foundation.brickness.Brick;
 
 @Brick
-public interface Network {
+public interface Network2010 {
 	
 	ByteArraySocket openSocket(String remoteAddress, int remotePort) throws IOException;
 	
@@ -35,12 +35,12 @@ public interface Network {
 }
 
 
-interface CompositeNetwork extends Network {
+interface CompositeNetwork extends Network2010 {
 	
-	void add(Network network);
+	void add(Network2010 network);
 	
 }
 
-interface UdpNetwork extends Network {}
-interface TcpNetwork extends Network {}
-interface HttpTunnelNetwork extends Network {}
+interface UdpNetwork extends Network2010 {}
+interface TcpNetwork extends Network2010 {}
+interface HttpTunnelNetwork extends Network2010 {}

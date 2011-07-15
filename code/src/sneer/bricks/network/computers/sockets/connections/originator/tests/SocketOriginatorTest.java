@@ -16,7 +16,7 @@ import sneer.bricks.network.computers.sockets.connections.originator.SocketOrigi
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.bricks.pulp.network.Network;
+import sneer.bricks.pulp.network.Network2010;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
@@ -29,7 +29,7 @@ public class SocketOriginatorTest extends BrickTestBase {
 	@SuppressWarnings("unused")
 	private SocketOriginator _subject;
 
-	@Bind private final Network _networkMock = mock(Network.class);
+	@Bind private final Network2010 _networkMock = mock(Network2010.class);
 	@Bind private final ConnectionManager _connectionManagerMock = mock(ConnectionManager.class);
 
 	private final ByteConnection _byteConnection = mock(ByteConnection.class);
