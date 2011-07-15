@@ -6,7 +6,8 @@
 	<property name="own.build.dir" location="${build.dir}/dist/own" />
 	<property name="jnlp.file" location="${build.dir}/dist/sneer.jnlp" />
 	<property name="jnlp.mainClass" value="sneer.installer.Main" />
-
+	<property name="logo" value="logo16x16.png" />
+	
 	<target name="main" depends="init, compile, log, makeJars, makeJnlp, signJars" />
 
 	<target name="init">
@@ -84,6 +85,7 @@
 	</target>
 
 	<target name="makeJnlp">
+	
 		<condition property="jnlp.codebase"
 			value="${env.HUDSON_URL}job/${env.JOB_NAME}/lastStableBuild/artifact/installer/build/dist" 
 			else="file:///${build.dir}/dist">
@@ -91,15 +93,20 @@
 		</condition>
 		<echo message="${jnlp.codebase}"/>
 
+		<echo message="${logo}"/>
+		<copy file="${logo}" 
+			  tofile="${build.dir}/dist/${logo}"/>
+
 		<echoxml file="${jnlp.file}">
-			<jnlp spec="1.0+" codebase="http://dynamic.sneer.me" href="sneer.jnlp">
+			<jnlp spec="1.0+" codebase="http://dynamic.sneer.me/webstart" href="sneer.jnlp">
 				<information>
 					<title>Sneer</title>
 					<vendor>Sneer Team</vendor>
 					<description>Free platform for sovereign applications.</description>
 					<description kind="tooltip">Sneer</description>
 					<homepage href="http://sneer.me" />
-
+					<icon href="logo16x16.png"/>
+					
 					<offline-allowed/>				
 					
 			        <shortcut online="false">

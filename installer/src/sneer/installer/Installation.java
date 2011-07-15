@@ -71,33 +71,33 @@ class Installation {
 
 	
 	private void deleteFolder(File folder) throws IOException {
-        if (!folder.exists()) return;
-
-        for (File entry : folder.listFiles())
-			if (entry.isDirectory())
-			    deleteFolder(entry);
-			else
-				delete(entry);
-
-        delete(folder);
+		int tries = 10; //On Windows7 with AVG anti-virus apparently this is necessary. Might be necessary on other similar environments. Klaus July 2011 :(
+		while (true) {
+			if (tryToDeleteFolder(folder)) return;
+			if (tries-- == 0) throw new IOException("Unable to delete after several attempts: " + folder);
+			sleepForASecond();
+		}
     }
 
 	
-    private void delete(File fileOrFolder) throws IOException {
-    	int tries = 7; //On Windows7 with AVG anti-virus apparently this is necessary. Might be necessary on other similar environments. Klaus July 2011 :(
-    	do {
-    		if (fileOrFolder.delete()) return;
-    		sleepForASecond();
-    	} while (tries-- != 0);
-    	
-    	throw new IOException(("Unable to delete after several tries: " + fileOrFolder));
-    }
-    
+	private boolean tryToDeleteFolder(File folder) throws IOException {
+		if (!folder.exists()) return true;
+
+        for (File entry : folder.listFiles())
+			if (entry.isDirectory())
+			    tryToDeleteFolder(entry);
+			else
+				entry.delete();
+        
+        return folder.delete();
+	}
+
     
 	private void updateCode() throws IOException {
 		extractFiles(extractJar(_sneerJar, "sneer"), CODE);
 	}
 
+	
 	private File extractJar(URL url, String prefix) throws IOException {
 		File file =  File.createTempFile(prefix, "jar");
 		file.deleteOnExit();
