@@ -14,7 +14,7 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Closure;
 
 
-public class NetworkTest extends BrickTestBase {
+public class Network2010Test extends BrickTestBase {
 	
 	private final Threads _threads = my(Threads.class);
 	
