@@ -71,7 +71,6 @@ public class NetworkTest extends BrickTestBase {
 		@Override
 		public void run() {
 			_network.add(my(UdpNetwork.class));
-			
 		}
 
 		private void loopback(Packet packet) {
