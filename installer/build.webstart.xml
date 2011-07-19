@@ -86,14 +86,6 @@
 
 	<target name="makeJnlp">
 	
-		<condition property="jnlp.codebase"
-			value="${env.HUDSON_URL}job/${env.JOB_NAME}/lastStableBuild/artifact/installer/build/dist" 
-			else="file:///${build.dir}/dist">
-			<equals arg1="${env.JOB_NAME}" arg2="Sneer"/>
-		</condition>
-		<echo message="${jnlp.codebase}"/>
-
-		<echo message="${logo}"/>
 		<copy file="${logo}" 
 			  tofile="${build.dir}/dist/${logo}"/>
 
