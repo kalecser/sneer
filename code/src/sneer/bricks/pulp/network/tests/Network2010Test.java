@@ -14,14 +14,14 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Closure;
 
 
-public class NetworkTest extends BrickTestBase {
+public class Network2010Test extends BrickTestBase {
 	
 	private final Threads _threads = my(Threads.class);
 	
 	@Test(timeout = 2000)
 	public void testNetworkMessages() throws Exception {
 		
-		final Network2010 network = my(Network2010.class);
+		Network2010 network = my(Network2010.class);
 		
 		final ByteArrayServerSocket server = network.openServerSocket(9090);
 
