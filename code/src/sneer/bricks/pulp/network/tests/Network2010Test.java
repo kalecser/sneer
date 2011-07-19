@@ -21,7 +21,7 @@ public class Network2010Test extends BrickTestBase {
 	@Test(timeout = 2000)
 	public void testNetworkMessages() throws Exception {
 		
-		final Network2010 network = my(Network2010.class);
+		Network2010 network = my(Network2010.class);
 		
 		final ByteArrayServerSocket server = network.openServerSocket(9090);
 

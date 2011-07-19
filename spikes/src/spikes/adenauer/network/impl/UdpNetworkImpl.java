@@ -7,7 +7,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.ports.OwnPort;
@@ -19,9 +18,9 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Consumer;
-import spikes.adenauer.network.UdpNetwork;
+import spikes.adenauer.network.Network;
 
-public final class UdpNetworkImpl implements UdpNetwork {
+public final class UdpNetworkImpl implements Network {
 	
 	private DatagramSocket _udpSocket;
 
@@ -29,14 +28,14 @@ public final class UdpNetworkImpl implements UdpNetwork {
 	private final DatagramPacket _packetToSend = newPacket();
 
 	private final EventNotifier<Packet> _notifier = my(EventNotifiers.class).newInstance();
-	private final CacheMap<Seal, SocketAddress> _endpoints = CacheMap.newInstance();
+	private final CacheMap<Seal, SocketAddress> endpointsBySeal = CacheMap.newInstance();
 
 	@SuppressWarnings("unused")	private final Object _refToAvoidGc;
 
 	
 	UdpNetworkImpl() {
 		_refToAvoidGc = ownPort().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer port) {
-				start(port);
+			start(port);
 		}});
 	}
 
@@ -64,7 +63,7 @@ public final class UdpNetworkImpl implements UdpNetwork {
 	
 	private synchronized void receivePacketFrom(DatagramSocket udpSocket) throws IOException  {
 		udpSocket.receive(_packetToReceive);
-		if (_endpoints.contains( _packetToReceive.getSocketAddress())) {
+		if (endpointsBySeal.containsValue( _packetToReceive.getSocketAddress())) {
 			Packet packet = newPacket(_packetToReceive); 
 			_notifier.notifyReceivers(packet);
 		}	
@@ -78,7 +77,7 @@ public final class UdpNetworkImpl implements UdpNetwork {
 	@Override
 	public synchronized void send(byte[] data, Seal destination) throws IOException {
 		_packetToSend.setData(data);
-		_packetToSend.setSocketAddress(_endpoints.get(destination));
+		_packetToSend.setSocketAddress(endpointsBySeal.get(destination));
 		_udpSocket.send(_packetToSend);
 	}
 
@@ -90,7 +89,7 @@ public final class UdpNetworkImpl implements UdpNetwork {
 
 	
 	private DatagramPacket newPacket() {
-		byte[] array = new byte[UdpNetwork.MAX_ARRAY_SIZE];
+		byte[] array = new byte[Network.MAX_ARRAY_SIZE];
 		return new DatagramPacket(array, array.length);
 	}
 	
@@ -103,16 +102,12 @@ public final class UdpNetworkImpl implements UdpNetwork {
 
 	
 	private Seal findSenderFromEndPoints(SocketAddress packetEndPoint) {
-		Seal sender = null;
-		Set<Entry<Seal, SocketAddress>> endPoints = _endpoints.entrySet(); 
-		for (Entry<Seal, SocketAddress> entry : endPoints) {
+		for (Entry<Seal, SocketAddress> entry : endpointsBySeal.entrySet()) {
 			SocketAddress entrySocketAddress = entry.getValue();
-			if (entrySocketAddress.equals(packetEndPoint)) {
-				sender = entry.getKey();
-				break;
-			}
+			if (entrySocketAddress.equals(packetEndPoint))
+				return entry.getKey();
 		}
-		return sender;
+		return null;
 	}
 
 	
