@@ -3,7 +3,6 @@ package spikes.adenauer.network.udp.tests;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
-import java.nio.charset.Charset;
 
 import org.jmock.Expectations;
 import org.junit.After;
@@ -11,6 +10,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
@@ -42,38 +42,34 @@ public class UdpSupportTest extends BrickTestBase {
 
 	@Test(timeout = 2000)
 	public void packetSending() {
-		Latch latch = new Latch();
-		@SuppressWarnings("unused") WeakContract refToAvoidGc =
-			subject2.packetsReceived().addPulseReceiver(latch);
-		
-		sendData("anything".getBytes());
-		latch.waitTillOpen();
-	}
-
-	@Test(timeout = 2000)
-	public void receivingPacket() {
 		final Latch latch = new Latch();
-		final String data = "hello"; 
-
-		//@SuppressWarnings("unused") WeakContract peersOnlineRefToAvoidGc = 
-		//	subject2.peersOnline().addReceiver(new Consumer<CollectionChange<Seal>>() { @Override public void consume(CollectionChange<Seal> peerOnline) {
-		//		assertTrue(peerOnline.elementsAdded().contains(seal1));
-		//		latch.open();
-		//	}});
-		
 		@SuppressWarnings("unused") WeakContract packetsRefToAvoidGc = 
 			subject2.packetsReceived().addReceiver(new Consumer<Packet>() { @Override public void consume(Packet packet) {
-				Seal senderExpected = packet.sender();
-				String dataExpected = new String(packet.data(), 0, data.length(), Charset.forName("UTF-8") );
-				assertEquals(senderExpected, seal1);
-				assertEquals(dataExpected, data);
+				String received = new String(packet.data());
+				assertEquals("hello", received);
+				assertEquals(seal1, packet.sender());
 				latch.open();
 			}});
 
-		sendData(data.getBytes());
+		sendData("hello".getBytes());
 		latch.waitTillOpen();
 	}
-
+	
+	
+	@Test(timeout = 2000)
+	public void receivingPacketMakesSenderBecomeOnline() {
+		final Latch latch = new Latch();
+		@SuppressWarnings("unused") WeakContract peersOnlineRefToAvoidGc = 
+			subject2.peersOnline().addReceiver(new Consumer<CollectionChange<Seal>>() { @Override public void consume(CollectionChange<Seal> change) {
+				if (change.elementsAdded().contains(seal1))  
+					latch.open(); 
+			}});
+		
+		sendData("hello".getBytes());
+		latch.waitTillOpen();
+	}
+	
+	
 	private void sendData(byte[] data) {
 		expectToResolve(seal2, address2);
 		expectToResolve(address1, seal1);

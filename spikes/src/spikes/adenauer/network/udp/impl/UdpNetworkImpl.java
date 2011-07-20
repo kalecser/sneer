@@ -74,7 +74,6 @@ public class UdpNetworkImpl implements Network {
 	public synchronized void send(byte[] data, Seal destination) {
 		SocketAddress address = my(UdpAddressResolver.class).addressFor(destination);
 		if (address == null) return;
-		
 		_packetToSend.setData(data);
 		_packetToSend.setSocketAddress(address);
 		try {
@@ -97,9 +96,10 @@ public class UdpNetworkImpl implements Network {
 	}
 	
 	
-	private Packet newPacket(DatagramPacket receivedPacket) {
-		byte[] data = receivedPacket.getData();
-		SocketAddress addressFrom = receivedPacket.getSocketAddress();
+	private Packet newPacket(DatagramPacket pac) {
+		byte[] data = new byte[pac.getLength()];
+		System.arraycopy(pac.getData(), pac.getOffset(), data, 0, data.length);
+		SocketAddress addressFrom = pac.getSocketAddress();
 		Seal sender = my(UdpAddressResolver.class).sealFor(addressFrom);
 		return new UdpPacket(data, sender);
 	}
