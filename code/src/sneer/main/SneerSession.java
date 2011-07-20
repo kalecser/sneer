@@ -15,7 +15,8 @@ import sneer.bricks.hardware.clock.ticker.ClockTicker;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.robust.RobustExceptionLogging;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
-import sneer.bricks.identity.keys.gui.PublicKeyDialog;
+import sneer.bricks.identity.keys.gui.PublicKeyInitDialog;
+import sneer.bricks.identity.name.gui.NameInitDialog;
 import sneer.bricks.snapps.system.log.file.LogToFile;
 import sneer.bricks.snapps.system.log.sysout.LogToSysout;
 import sneer.bricks.software.bricks.snapploader.SnappLoader;
@@ -30,6 +31,7 @@ public class SneerSession {
 	public SneerSession() {
 		Environments.runWith(container(), new Closure() { @Override public void run() {  //Who said Java doesn't have closures? XD
 			start();
+			my(Threads.class).waitUntilCrash();
 		}});
 	}
 
@@ -39,10 +41,11 @@ public class SneerSession {
 		configure(my(FolderConfig.class));
 		my(ClockTicker.class);
 		startLogging();
-		my(PublicKeyDialog.class).initPublicKeyIfNecessary();
-		my(SnappLoader.class);
 		
-		my(Threads.class).waitUntilCrash();
+		my(PublicKeyInitDialog.class);
+		my(NameInitDialog.class);
+		
+		my(SnappLoader.class);
 	}
 
 
