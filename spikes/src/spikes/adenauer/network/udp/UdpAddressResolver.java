@@ -8,5 +8,6 @@ import sneer.bricks.identity.seals.Seal;
 public interface UdpAddressResolver {
 
 	SocketAddress addressFor(Seal seal);
+	Seal sealFor(SocketAddress address);
 
 }

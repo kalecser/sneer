@@ -16,6 +16,8 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.events.EventNotifier;
 import sneer.bricks.pulp.events.EventNotifiers;
 import sneer.bricks.pulp.events.EventSource;
+import sneer.bricks.pulp.reactive.collections.CollectionSignals;
+import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.lang.Closure;
 import spikes.adenauer.network.Network;
@@ -29,6 +31,7 @@ public class UdpNetworkImpl implements Network {
 	private final DatagramPacket _packetToSend = newPacket();
 
 	private final EventNotifier<Packet> _notifier = my(EventNotifiers.class).newInstance();
+	private final SetRegister<Seal> _peersOnline = my(CollectionSignals.class).newSetRegister();
 
 	private final Light errorOnReceive = my(BlinkingLights.class).prepare(LightType.ERROR);
 
@@ -53,16 +56,18 @@ public class UdpNetworkImpl implements Network {
 	
 	private void receivePacket() throws IOException {
 		socket.receive(_packetToReceive);
-		
+
 		//if (endpointsBySeal.containsValue( _packetToReceive.getSocketAddress())) {
 			Packet packet = newPacket(_packetToReceive); 
+			Seal sender = packet.sender();
+			_peersOnline.add(sender);
 			_notifier.notifyReceivers(packet);
 		//}	
 	}
 
 	@Override
 	public SetSignal<Seal> peersOnline() {
-		return null;
+		return _peersOnline.output();
 	}
 
 	@Override
@@ -94,20 +99,10 @@ public class UdpNetworkImpl implements Network {
 	
 	private Packet newPacket(DatagramPacket receivedPacket) {
 		byte[] data = receivedPacket.getData();
-//		Seal sender = findSenderFromEndPoints(receivedPacket.getSocketAddress());
-		Seal sender = null;
+		SocketAddress addressFrom = receivedPacket.getSocketAddress();
+		Seal sender = my(UdpAddressResolver.class).sealFor(addressFrom);
 		return new UdpPacket(data, sender);
 	}
-
-	
-//	private Seal findSenderFromEndPoints(SocketAddress packetEndPoint) {
-//		for (Entry<Seal, SocketAddress> entry : endpointsBySeal.entrySet()) {
-//			SocketAddress entrySocketAddress = entry.getValue();
-//			if (entrySocketAddress.equals(packetEndPoint))
-//				return entry.getKey();
-//		}
-//		return null;
-//	}
 
 	
 //	private Signal<Integer> ownPort() {
