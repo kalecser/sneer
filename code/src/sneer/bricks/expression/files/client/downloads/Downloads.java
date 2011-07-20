@@ -9,8 +9,8 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface Downloads {
 
-	Download newFileDownload(File file, long lastModified, Hash hashOfFile, Seal source, Runnable toCallWhenFinished);
+	Download newFileDownload(File file, long lastModified, Hash hashOfFile, Seal source);
 
-	Download newFolderDownload(File folder, Hash hashOfFile, Runnable toCallWhenFinished, boolean copyLocalFiles);
+	Download newFolderDownload(File folder, Hash hashOfFile, boolean copyLocalFiles);
 
 }

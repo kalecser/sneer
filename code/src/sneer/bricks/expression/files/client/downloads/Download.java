@@ -24,4 +24,6 @@ public interface Download extends WeakContract {
 
 	boolean hasFinishedSuccessfully();
 
+	void onFinished(Runnable action);
+
 }

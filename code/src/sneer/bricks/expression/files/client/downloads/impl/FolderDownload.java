@@ -25,12 +25,7 @@ class FolderDownload extends AbstractDownload {
 	@SuppressWarnings("unused") private WeakContract _folderContentConsumerContract;
 
 	FolderDownload(File folder, Hash hashOfFolder, boolean copyLocalFiles) {
-		this(folder, hashOfFolder, null, copyLocalFiles);
-	}
-
-
-	FolderDownload(File folder, Hash hashOfFolder, Runnable toCallWhenFinished, boolean copyLocalFiles) {
-		super(folder, -1, hashOfFolder, null, toCallWhenFinished, copyLocalFiles);
+		super(folder, -1, hashOfFolder, null, copyLocalFiles);
 		start();
 	}
 

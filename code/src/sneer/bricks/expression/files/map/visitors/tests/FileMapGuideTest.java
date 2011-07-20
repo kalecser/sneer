@@ -47,7 +47,7 @@ public class FileMapGuideTest extends BrickTestBase {
 			
 			@Override
 			public void visitFileContents(byte[] fileContents) {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+				throw new IllegalStateException();
 			}
 			
 			@Override

@@ -40,12 +40,12 @@ class FileDownload extends AbstractDownload {
 
 
 	FileDownload(File file, long lastModified, Hash hashOfFile, boolean copyLocalFiles) {
-		this(file, lastModified, hashOfFile, null, null, copyLocalFiles);
+		this(file, lastModified, hashOfFile, null, copyLocalFiles);
 	}
 
 
-	FileDownload(File file, long lastModified, Hash hashOfFile, Seal source, Runnable toCallWhenFinished, boolean copyLocalFiles) {
-		super(file, lastModified, hashOfFile, source, toCallWhenFinished, copyLocalFiles);
+	FileDownload(File file, long lastModified, Hash hashOfFile, Seal source, boolean copyLocalFiles) {
+		super(file, lastModified, hashOfFile, source, copyLocalFiles);
 
 		start();
 	}

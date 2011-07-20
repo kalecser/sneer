@@ -59,7 +59,7 @@ public class LoggerMocks {
 	}
 
 
-	void printAllKeptMessages() {
+	public void printAllKeptMessages() {
 		for (String message : _keptMessages.toArray(new String[0]))
 			System.out.println(message);
 	}

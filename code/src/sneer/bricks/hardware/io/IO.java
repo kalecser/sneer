@@ -50,6 +50,7 @@ public interface IO {
 		void copyFolder(File srcFolder, File destFolder, Filter fileFilter) throws IOException;
 		void forceDelete(File fileOrFolder) throws IOException;
 		void forceDeleteOnExit(File fileOrFolder) throws IOException;
+		void forceMkdir(File directory) throws IOException;
 		Iterator<File> iterate(File folder, String[] extensions, boolean recursive);
 
 		void writeString(File file, String data) throws IOException;

@@ -209,7 +209,7 @@ public abstract class CleanTestBase extends AssertUtils {
 	}
 
 	
-	void deleteFolder(File folder) throws IOException {
+	public static void deleteFolder(File folder) throws IOException {
 		if (!folder.exists()) return;
 		if (!folder.isDirectory()) 
 			throw new IllegalArgumentException(folder.getAbsolutePath() + " is not a folder");
@@ -221,7 +221,7 @@ public abstract class CleanTestBase extends AssertUtils {
 	}
 
 	
-	private void recursiveDelete(File folder) throws IOException, FileNotFoundException {
+	public static void recursiveDelete(File folder) throws IOException, FileNotFoundException {
 		for (File file : folder.listFiles()) {
 			if (!file.exists()) 
 				throw new FileNotFoundException("File does not exist: " + file.getAbsolutePath());

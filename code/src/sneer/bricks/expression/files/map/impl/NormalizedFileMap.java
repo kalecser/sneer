@@ -2,10 +2,12 @@ package sneer.bricks.expression.files.map.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.impl.FileMapData.Entry;
+import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.Lang;
@@ -159,6 +161,16 @@ class NormalizedFileMap implements FileMap {
 	@Override
 	public List<String> getFiles(Hash hash) {
 		return _data.getFiles(hash);
+	}
+
+
+	@Override
+	public List<FileOrFolder> dir(String path) {
+		ArrayList<FileOrFolder> contents = new ArrayList<FileOrFolder>();
+		String folder = path + "/";			
+		for (String candidate : _data.allPaths())
+			FolderContentsGetter.accumulateChild(_data, candidate, folder, contents, false);
+		return contents;
 	}
 
 }

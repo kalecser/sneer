@@ -2,9 +2,9 @@ package sneer.bricks.expression.files.map.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -41,7 +41,7 @@ class FolderContentsGetter {
 		for (String path : folders) {
 			String folder = path + "/";			
 			for (String candidate : allPaths)
-				accumulateDirectChildren(candidate, folder, contents);
+				accumulateDirectChild(candidate, folder, contents);
 		}
 		return new FolderContents(new ImmutableArray<FileOrFolder>(contents));
 	}
@@ -54,14 +54,21 @@ class FolderContentsGetter {
 	}
 
 	
-	private void accumulateDirectChildren(String candidate, String folder, Set<FileOrFolder> result) {
+	private void accumulateDirectChild(String candidate, String folder, Collection<FileOrFolder> result) {
+		accumulateChild(_data, candidate, folder, result, true);
+	}
+
+
+	public static void accumulateChild(FileMapData data, String candidate, String folder, Collection<FileOrFolder> result, boolean directChildrenOnly) {
+		
 		if (!candidate.startsWith(folder)) return;
 		
 		String name = Strings.removeStart(candidate, folder);
-		if (name.indexOf('/') != -1) return; //Not a direct child.
+		if (directChildrenOnly)
+			if (name.indexOf('/') != -1) return; //Not a direct child.
 		
-		Hash hash = _data.getHash(candidate);
-		long lastModified = _data.getLastModified(candidate);
+		Hash hash = data.getHash(candidate);
+		long lastModified = data.getLastModified(candidate);
 		result.add(lastModified == -1
 			? new FileOrFolder(name, hash)
 			: new FileOrFolder(name, lastModified, hash) 
