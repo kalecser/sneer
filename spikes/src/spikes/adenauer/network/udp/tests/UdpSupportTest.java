@@ -3,6 +3,7 @@ package spikes.adenauer.network.udp.tests;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.nio.charset.Charset;
 
 import org.jmock.Expectations;
 import org.junit.After;
@@ -12,13 +13,18 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.Bind;
+import sneer.foundation.lang.Consumer;
 import sneer.foundation.util.concurrent.Latch;
+import spikes.adenauer.network.Network.Packet;
 import spikes.adenauer.network.udp.UdpAddressResolver;
 import spikes.adenauer.network.udp.impl.UdpNetworkImpl;
 
 
 public class UdpSupportTest extends BrickTestBase {
 
+	private final SocketAddress address1 = new InetSocketAddress("127.0.0.1", 10001);
+	private final SocketAddress address2 = new InetSocketAddress("127.0.0.1", 10002);
+	private final Seal seal1 = new Seal(new byte[] {1, 1, 1});
 	private final Seal seal2 = new Seal(new byte[] {2, 2, 2});
 	private final UdpNetworkImpl subject1 = createUdpNetwork(10001);
 	private final UdpNetworkImpl subject2 = createUdpNetwork(10002);
@@ -40,9 +46,38 @@ public class UdpSupportTest extends BrickTestBase {
 		@SuppressWarnings("unused") WeakContract refToAvoidGc =
 			subject2.packetsReceived().addPulseReceiver(latch);
 		
-		expectToResolve(seal2, new InetSocketAddress("127.0.0.1", 10002));
-		subject1.send("anything".getBytes(), seal2);
+		sendData("anything".getBytes());
 		latch.waitTillOpen();
+	}
+
+	@Test(timeout = 2000)
+	public void receivingPacket() {
+		final Latch latch = new Latch();
+		final String data = "hello"; 
+
+		//@SuppressWarnings("unused") WeakContract peersOnlineRefToAvoidGc = 
+		//	subject2.peersOnline().addReceiver(new Consumer<CollectionChange<Seal>>() { @Override public void consume(CollectionChange<Seal> peerOnline) {
+		//		assertTrue(peerOnline.elementsAdded().contains(seal1));
+		//		latch.open();
+		//	}});
+		
+		@SuppressWarnings("unused") WeakContract packetsRefToAvoidGc = 
+			subject2.packetsReceived().addReceiver(new Consumer<Packet>() { @Override public void consume(Packet packet) {
+				Seal senderExpected = packet.sender();
+				String dataExpected = new String(packet.data(), 0, data.length(), Charset.forName("UTF-8") );
+				assertEquals(senderExpected, seal1);
+				assertEquals(dataExpected, data);
+				latch.open();
+			}});
+
+		sendData(data.getBytes());
+		latch.waitTillOpen();
+	}
+
+	private void sendData(byte[] data) {
+		expectToResolve(seal2, address2);
+		expectToResolve(address1, seal1);
+		subject1.send(data, seal2);
 	}
 
 	
@@ -52,7 +87,13 @@ public class UdpSupportTest extends BrickTestBase {
 		}});
 	}
 
-	
+
+	private void expectToResolve(final SocketAddress address, final Seal seal) {
+		checking(new Expectations(){{
+			exactly(1).of(resolver).sealFor(address);will(returnValue(seal));
+		}});
+	}
+
 	private UdpNetworkImpl createUdpNetwork(int port) {
 		try {
 			return new UdpNetworkImpl(port);
