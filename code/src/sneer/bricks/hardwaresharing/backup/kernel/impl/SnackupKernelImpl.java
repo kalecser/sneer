@@ -72,4 +72,9 @@ class SnackupKernelImpl implements SnackupKernel {
 		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
+	@Override
+	public void lendSpaceTo(Contact contact, int megaBytes) {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	}
+
 }
