@@ -6,17 +6,19 @@ import sneer.bricks.pulp.reactive.collections.CollectionSignal;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.Pair;
+import sneer.foundation.lang.exceptions.Refusal;
 
 @Brick
 public interface SnackupKernel {
-	
-	// estou emprestando tantos mega para fulano (int)
-	// HardDriveMegabytesLent
 
 	public interface ImportantFile {
 
 	}
 
+	// estou emprestando tantos mega para fulano (int)
+	// HardDriveMegabytesLent
+	void lendSpaceTo(Contact contact, int megaBytes) throws Refusal;
+	
 	// fulano acha tal arquivo importante (relativePath, hash, size)
 	void peerFileConsideredImportant(Contact contact, String relativePath, Hash hashOfFile, long sizeOfFile);
 	

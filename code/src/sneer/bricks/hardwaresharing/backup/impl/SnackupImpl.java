@@ -23,11 +23,11 @@ import sneer.bricks.hardware.io.IO.Files;
 import sneer.bricks.hardwaresharing.backup.FileEvent;
 import sneer.bricks.hardwaresharing.backup.FileToRestore;
 import sneer.bricks.hardwaresharing.backup.FileToSync;
-import sneer.bricks.hardwaresharing.backup.HardDriveMegabytesLent;
 import sneer.bricks.hardwaresharing.backup.ImportantFolder;
 import sneer.bricks.hardwaresharing.backup.InSync;
 import sneer.bricks.hardwaresharing.backup.RestoreRequest;
 import sneer.bricks.hardwaresharing.backup.Snackup;
+import sneer.bricks.hardwaresharing.backup.kernel.SnackupKernel;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.attributes.Attribute;
@@ -58,7 +58,6 @@ class SnackupImpl implements Snackup {
 	private final Register<Boolean> _isSynced = my(Signals.class).newRegister(false);
 
 	{
-		my(Attributes.class).registerAttribute(HardDriveMegabytesLent.class);
 		my(Attributes.class).registerAttribute(ImportantFolder.class);
 		
 		_refToAvoidGc = my(Attributes.class).myAttributeValue(ImportantFolder.class).addReceiver(new Consumer<String>() {  @Override public void consume(String value) {
@@ -190,7 +189,7 @@ class SnackupImpl implements Snackup {
 
 	@Override
 	public void lendSpaceTo(Contact contact, int megaBytes) throws Refusal {
-		my(Attributes.class).attributeSetterFor(contact, HardDriveMegabytesLent.class).consume(megaBytes);
+		my(SnackupKernel.class).lendSpaceTo(contact, megaBytes);
 	}
 
 	@Override
