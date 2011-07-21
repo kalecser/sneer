@@ -137,6 +137,7 @@ public abstract class CleanTestBase extends AssertUtils {
 		if (waitForTermination(thread)) return;
 		if (thread.getName().indexOf("AWT") != -1) return; //Fix: Check for leaking Gui resources too.
 		if (thread.getName().indexOf("Java2D") != -1) return; //Fix: Check for leaking Gui resources too.
+		if (thread.getName().indexOf("Poller SunPKCS11-Darwin") != -1) return; //Fix: Check if this still necessary on the Mac
 
 		final LeakingThreadStopped plug = new LeakingThreadStopped(thread, "" + thread + " was leaked by test: " + this.getClass() + " and is now being stopped!");
 		thread.stop(plug);
