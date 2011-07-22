@@ -66,12 +66,6 @@ class TrackExchangeImpl implements TrackExchange {
 	}
 
 
-	@Override
-	public void setDownloadAllowance(Signal<Integer> downloadAllowance) {
-		my(TrackDownloader.class).setDownloadAllowance(downloadAllowance);
-	}
-
-
 	synchronized
 	private void updateMapping() {
 		if (shouldStop()) stopCurrentMapping();

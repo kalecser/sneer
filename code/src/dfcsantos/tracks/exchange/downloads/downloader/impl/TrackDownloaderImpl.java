@@ -12,7 +12,6 @@ import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
@@ -39,8 +38,6 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 	private final ImmutableReference<Signal<Boolean>> _onOffSwitch = my(ImmutableReferences.class).newInstance();
 
-	private final ImmutableReference<Signal<Integer>> _downloadAllowance = my(ImmutableReferences.class).newInstance();
-
 	private final MapRegister<Download, Float> _downloadsAndMatchRatings = my(CollectionSignals.class).newMapRegister();
 
 	@SuppressWarnings("unused") private final WeakContract _toAvoidGC;
@@ -57,19 +54,13 @@ class TrackDownloaderImpl implements TrackDownloader {
 		_onOffSwitch.set(onOffSwitch);
 	}
 
-
-	@Override
-	public void setDownloadAllowance(Signal<Integer> downloadAllowance) {
-		_downloadAllowance.set(downloadAllowance);
-	}
-
-
+	
 	@Override
 	public SetSignal<Download> runningDownloads() {
 		return _downloadsAndMatchRatings.output().keys();
 	}
 
-
+	
 	private void consumeTrackEndorsement(final TrackEndorsement endorsement) {
 		if (!prepareForDownload(endorsement)) return;
 
@@ -152,17 +143,8 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 
 	private boolean hasSpentDownloadAllowance() {
-		return peerTracksFolderSize() >= downloadAllowanceInBytes();
-	}
-
-
-	private static long peerTracksFolderSize() {
-		return my(IO.class).files().sizeOfFolder(peerTracksFolder());
-	}
-
-
-	private long downloadAllowanceInBytes() {
-		return 1024l * 1024l * _downloadAllowance.get().currentValue();
+		File[] files = peerTracksFolder().listFiles();
+		return files != null && files.length >= 10;
 	}
 
 

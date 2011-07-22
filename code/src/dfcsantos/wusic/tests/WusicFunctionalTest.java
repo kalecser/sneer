@@ -63,8 +63,6 @@ public class WusicFunctionalTest extends BrickTestWithTuples {
 
 		_subject1.trackExchangeActivator().consume(true);
 		waitForSignalValue(_subject1.isTrackExchangeActive(), true);		
-
-		assertTrue(_subject1.downloadAllowance().currentValue().equals(Wusic.DEFAULT_DOWNLOAD_ALLOWANCE));
 	}
 
 	

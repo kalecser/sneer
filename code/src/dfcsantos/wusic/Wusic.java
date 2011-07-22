@@ -7,7 +7,6 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.PickyConsumer;
 import dfcsantos.tracks.Track;
 
 @Brick
@@ -44,9 +43,6 @@ public interface Wusic {
 	Signal<Boolean> isTrackExchangeActive();
 	Consumer<Boolean> trackExchangeActivator();
 
-	int DEFAULT_DOWNLOAD_ALLOWANCE = 100; // MBs
-	Signal<Integer> downloadAllowance();
-	PickyConsumer<Integer> downloadAllowanceSetter();
 	SetSignal<Download> activeDownloads();
 
 	void volumePercent(int level);

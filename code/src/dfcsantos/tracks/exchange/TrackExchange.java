@@ -7,7 +7,4 @@ import sneer.foundation.brickness.Brick;
 public interface TrackExchange {
 
 	void setOnOffSwitch(Signal<Boolean> onOffSwitch);
-
-	void setDownloadAllowance(Signal<Integer> downloadAllowance);
-
 }
