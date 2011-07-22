@@ -12,34 +12,25 @@ import sneer.bricks.hardware.io.IO;
 import sneer.tests.SovereignFunctionalTestBase;
 
 
-@Ignore
 public class Freedom6Test extends SovereignFunctionalTestBase {
 
 	@Test (timeout = 20000)
-	public void syncAFile() throws IOException {
-		
-		File folder = createFolder("important_folder");
-		createTmpFileWithFileNameAsContent("important_folder/important_file.txt");
-		
-		a().setFolderToSync(folder);
-		b().lendSpaceTo(a().ownName(), 10);
-		a().waitForSync();
-
-		File newFolder = createFolder("new_folder");
-		a().setFolderToSync(newFolder);
-		a().waitForSync();
-		
-		File recoveredFile = new File(newFolder, "important_file.txt");
-		assertEquals("important_folder/important_file.txt", contents(recoveredFile));
+	public void syncOneFile() throws IOException {
+		syncFiles("important_file.txt");
 	}
 
+	
+	@Ignore
 	@Test (timeout = 20000)
 	public void syncSeveralFiles() throws IOException {
-		
+		syncFiles("file1.txt", "file2.mp3");
+	}
+	
+	
+	private void syncFiles(String... files) throws IOException {
 		File folder = createFolder("important_folder");
-		createTmpFileWithFileNameAsContent("important_folder/important_file_one.txt");
-		createTmpFileWithFileNameAsContent("important_folder/important_file_two.txt");
-		//createTmpFileWithFileNameAsContent("important_folder/important_file_three.txt");
+		for (String file : files)
+			createTmpFileWithFileNameAsContent("important_folder\\" + file);
 		
 		a().setFolderToSync(folder);
 		b().lendSpaceTo(a().ownName(), 10);
@@ -49,19 +40,18 @@ public class Freedom6Test extends SovereignFunctionalTestBase {
 		a().setFolderToSync(newFolder);
 		a().waitForSync();
 		
-		File recoveredFileOne = new File(newFolder, "important_file_one.txt");
-		File recoveredFileTwo = new File(newFolder, "important_file_two.txt");
-		//File recoveredFileThree = new File(newFolder, "important_file_three.txt");
-		assertEquals("important_folder/important_file_one.txt", contents(recoveredFileOne));
-		assertEquals("important_folder/important_file_two.txt", contents(recoveredFileTwo));
-		//assertEquals("important_folder/important_file_three.txt", contents(recoveredFileThree));
-		
+		for (String file : files) {
+			File recoveredFile = new File(newFolder, file);
+			assertEquals("important_folder\\" + file, contents(recoveredFile));
+		}
 	}
+
 	
 	private String contents(File recoveredFile) throws IOException {
 		return my(IO.class).files().readString(recoveredFile);
 	}
 
+	
 	private File createFolder(String fileName) {
 		File importantFolderA = newTmpFile(fileName);
 		importantFolderA.mkdir();
