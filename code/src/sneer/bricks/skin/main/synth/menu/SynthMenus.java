@@ -1,5 +1,6 @@
 package sneer.bricks.skin.main.synth.menu;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -14,6 +15,7 @@ public interface SynthMenus {
 	JMenuBar createMenuBar();
 	JMenu createMenuGroup();
 	JMenuItem createMenuItem();
+	JCheckBoxMenuItem createCheckboxMenuItem();
 	JPopupMenu createMenuPopup();
 
 }

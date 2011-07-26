@@ -128,7 +128,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 //	}
 	
 	private void addMenuAction() {
-		_mainMenu.addAction(40, "Open Log Console", new Closure() { @Override public void run() {
+		_mainMenu.menu().addAction(40, "Open Log Console", new Closure() { @Override public void run() {
 			open();
 		}});
 	}

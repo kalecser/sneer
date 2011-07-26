@@ -2,6 +2,7 @@ package sneer.bricks.skin.main.synth.menu.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -22,6 +23,7 @@ class SynthMenusImpl implements SynthMenus {
 	@Override public JMenuBar createMenuBar(){ return attach(new JMenuBar()); }
 	@Override public JMenu createMenuGroup() { return attach(new JMenu()); }
 	@Override public JMenuItem createMenuItem() { return attach(new JMenuItem()); }
+	@Override public JCheckBoxMenuItem createCheckboxMenuItem() { return attach(new JCheckBoxMenuItem()); }
 	@Override public JPopupMenu createMenuPopup() { return attach(new JPopupMenu()); }
 
 	private <T extends JComponent> T attach(final T component) {

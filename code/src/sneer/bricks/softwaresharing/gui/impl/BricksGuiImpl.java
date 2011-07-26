@@ -86,7 +86,7 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 	private void registerMainMenuItem() {
 		final WindowBoundsSetter wbSetter = my(WindowBoundsSetter.class);
 		wbSetter.runWhenBaseContainerIsReady(new Closure() { @Override public void run() {
-			my(MainMenu.class).addAction(20, "Bricks", new Closure() { @Override public void run() {
+			my(MainMenu.class).menu().addAction(20, "Bricks", new Closure() { @Override public void run() {
 				show(wbSetter);
 			}});
 		}});

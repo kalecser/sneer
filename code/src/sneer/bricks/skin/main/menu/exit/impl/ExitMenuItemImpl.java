@@ -7,7 +7,7 @@ import sneer.foundation.lang.Closure;
 
 class ExitMenuItemImpl implements ExitMenuItem{
 	{
-		my(MainMenu.class).addAction(100, "Exit", new Closure() { @Override public void run() {
+		my(MainMenu.class).menu().addAction(100, "Exit", new Closure() { @Override public void run() {
 			System.exit(0);
 		}});
 	}

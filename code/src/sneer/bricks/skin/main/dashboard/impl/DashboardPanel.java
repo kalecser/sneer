@@ -51,7 +51,6 @@ import sneer.bricks.skin.main.instrumentregistry.Instrument;
 import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.menu.MenuFactory;
 import sneer.bricks.skin.menu.MenuGroup;
-import sneer.bricks.software.bricks.introspection.Introspector;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
@@ -318,18 +317,14 @@ class DashboardPanel extends JPanel {
 						}
 
 						@Override public void run() {
-							StringSelection stringSelection = new StringSelection(instrumentInterface().getName());
+							StringSelection stringSelection = new StringSelection(_instrument.getClass().getName());
 							Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 							clipboard.setContents(stringSelection, new ClipboardOwner(){ @Override public void lostOwnership(Clipboard clipboard_, Transferable contents) {}});
 						}});
 			}
 			
 			private String instrumentName() {
-				return instrumentInterface().getSimpleName();
-			}
-
-			private Class<?> instrumentInterface() {
-				return my(Introspector.class).brickInterfaceFor(_instrument);
+				return _instrument.getClass().getSimpleName();
 			}
 
 			private void initSynth() {

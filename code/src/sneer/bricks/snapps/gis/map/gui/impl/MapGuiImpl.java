@@ -42,7 +42,7 @@ class MapGuiImpl implements MapGui{
 	private int _zoom = 10;
 
 	MapGuiImpl() {
-		my(MainMenu.class).addAction(90, menuAction());
+		my(MainMenu.class).menu().addAction(90, menuAction());
 	}
 
 	private void updateAddress(final String address, final int zoom) {

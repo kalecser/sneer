@@ -8,8 +8,9 @@ import sneer.bricks.skin.menu.MenuGroup;
 import sneer.foundation.brickness.Brick;
 
 @Brick(GUI.class)
-public interface MainMenu extends MenuGroup<JMenu> {
+public interface MainMenu {
 
 	JMenuBar getMenuBarWidget();
+	MenuGroup<JMenu> menu();
 
 }

@@ -9,13 +9,16 @@ import java.beans.PropertyChangeListener;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import sneer.bricks.hardware.gui.actions.Action;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.main.synth.menu.SynthMenus;
 import sneer.bricks.skin.menu.MenuGroup;
+import sneer.foundation.lang.Consumer;
 
 public abstract class AbstractMenuGroup<T extends JComponent> implements MenuGroup<T> {
 
@@ -36,6 +39,24 @@ public abstract class AbstractMenuGroup<T extends JComponent> implements MenuGro
 		});
 	}
 
+	
+	@Override
+	public void addActionWithCheckBox(int positionInMenu, String caption, Signal<Boolean> isChecked, final Runnable action) {
+		//final JCheckBoxMenuItem menuItem = my(SynthMenus.class).createCheckboxMenuItem();
+		final JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem();
+			
+		menuItem.setText(caption);
+		menuItem.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent ignored) {
+			action.run();
+		}});
+		isChecked.addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean bool) {
+			//menuItem.setSelected(bool);
+		}});
+		menuItem.setSelected(true);
+		addMenuItem(positionInMenu, menuItem);
+	}
+	
+	
 	@Override
 	public void addAction(int positionInMenu, final Action action) {
 		final JMenuItem menuItem = my(SynthMenus.class).createMenuItem();
