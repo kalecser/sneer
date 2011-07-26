@@ -4,7 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.music.Wusic;
+import dfcsantos.music.Music;
 import dfcsantos.music.notification.playingtrack.PlayingTrack;
 import dfcsantos.music.notification.playingtrack.server.PlayingTrackPublisher;
 import dfcsantos.tracks.Track;
@@ -14,7 +14,7 @@ class PlayingTrackPublisherImpl implements PlayingTrackPublisher {
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC;
 
 	{
-		_refToAvoidGC = my(Wusic.class).playingTrack().addReceiver(new Consumer<Track>() { @Override public void consume(Track playingTrack) {
+		_refToAvoidGC = my(Music.class).playingTrack().addReceiver(new Consumer<Track>() { @Override public void consume(Track playingTrack) {
 			publishPlayingTrack(playingTrack);
 		}});
 	}

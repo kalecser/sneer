@@ -8,12 +8,12 @@ import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import dfcsantos.music.Wusic;
-import dfcsantos.music.Wusic.OperatingMode;
+import dfcsantos.music.Music;
+import dfcsantos.music.Music.OperatingMode;
 
 abstract class AbstractTabPane extends JPanel {
 
-	static final Wusic _controller = my(Wusic.class);
+	static final Music _controller = my(Music.class);
 
 	private final JPanel _customPanel	= new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 5));
 	private final JPanel _trackDisplay	= new TrackDisplay();

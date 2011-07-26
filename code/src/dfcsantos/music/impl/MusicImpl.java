@@ -12,14 +12,14 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.music.Wusic;
+import dfcsantos.music.Music;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.exchange.TrackExchange;
 import dfcsantos.tracks.exchange.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.exchange.downloads.downloader.TrackDownloader;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
-public class WusicImpl implements Wusic {
+public class MusicImpl implements Music {
 
 	private final Register<OperatingMode> _currentOperatingMode = my(Signals.class).newRegister(OperatingMode.OWN);
 
@@ -35,7 +35,7 @@ public class WusicImpl implements Wusic {
 
 	@SuppressWarnings("unused") private final WeakContract _operatingModeConsumerCtr;
 
-	WusicImpl() {
+	MusicImpl() {
 		restore();
 
 		my(TrackExchange.class).setOnOffSwitch(isTrackExchangeActive());
@@ -106,10 +106,6 @@ public class WusicImpl implements Wusic {
 		((OwnTracks)_trackSource).setShuffle(shuffle);
 	}
 
-	@Override
-	public void start() {
-		skip();
-	}
 
 	@Override
 	public void pauseResume() {

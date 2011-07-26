@@ -12,7 +12,7 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.Bind;
-import dfcsantos.music.Wusic;
+import dfcsantos.music.Music;
 import dfcsantos.music.notification.playingtrack.PlayingTrack;
 import dfcsantos.music.notification.playingtrack.server.PlayingTrackPublisher;
 import dfcsantos.tracks.Track;
@@ -20,7 +20,7 @@ import dfcsantos.tracks.Tracks;
 
 public class PlayingTrackTest extends BrickTestBase {
 
-	@Bind private final Wusic _wusic = mock(Wusic.class);
+	@Bind private final Music _wusic = mock(Music.class);
 	@Bind private final Attributes _attributes = mock(Attributes.class);
 
 	private final Register<Track> _playingTrack = my(Signals.class).newRegister(null);

@@ -14,7 +14,7 @@ import sneer.bricks.snapps.contacts.gui.ContactTextProvider;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Functor;
-import dfcsantos.music.Wusic;
+import dfcsantos.music.Music;
 import dfcsantos.music.notification.playingtrack.PlayingTrack;
 import dfcsantos.music.ui.view.old.WusicGuiOld;
 import dfcsantos.tracks.Track;
@@ -25,16 +25,14 @@ class WusicGuiOldImpl implements WusicGuiOld {
 
 	private static final String MUSICAL_NOTE_ICON = "\u266A"; 
 
-    private static final Wusic Wusic = my(Wusic.class);
+    private static final Music Wusic = my(Music.class);
 
     private JFrame _frame;
 
     {
 		my(MainMenu.class).addAction(30, "Wusic", new Closure() { @Override synchronized public void run() {
-			if (_frame == null){
+			if (_frame == null)
 				_frame = initFrame();
-				Wusic.start();
-			}
 			_frame.setVisible(true);
 		}});
 

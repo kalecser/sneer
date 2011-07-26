@@ -18,7 +18,7 @@ import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
-import dfcsantos.music.Wusic.OperatingMode;
+import dfcsantos.music.Music.OperatingMode;
 
 class OwnTracksPanel extends AbstractTabPane {
 

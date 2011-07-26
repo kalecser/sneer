@@ -16,14 +16,14 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.lang.Functor;
-import dfcsantos.music.Wusic;
+import dfcsantos.music.Music;
 import dfcsantos.tracks.Track;
 
 class TrackDisplay extends JPanel {
 
 	private static final Format TIME_FORMATTER = new SimpleDateFormat("mm:ss");
 
-	private static final Wusic _controller = my(Wusic.class);
+	private static final Music _controller = my(Music.class);
 
 	private final JLabel _trackLabel = my(ReactiveWidgetFactory.class).newLabel(playingTrackName()).getMainWidget();
 	private final JLabel _trackTime	 = my(ReactiveWidgetFactory.class).newLabel(playingTrackTime()).getMainWidget();

@@ -25,16 +25,16 @@ import sneer.foundation.environments.Environment;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.ClosureX;
 import sneer.foundation.lang.Functor;
-import dfcsantos.music.Wusic;
-import dfcsantos.music.Wusic.OperatingMode;
+import dfcsantos.music.Music;
+import dfcsantos.music.Music.OperatingMode;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.execution.player.TrackPlayer;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
 public class MusicFunctionalTest extends BrickTestWithTuples {
 	
-	private Wusic _subject1;
-	private Wusic _subject2;
+	private Music _subject1;
+	private Music _subject2;
 
 	@Bind private TrackPlayer _trackPlayer = mock(TrackPlayer.class);
 	
@@ -43,7 +43,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 
 	@Test (timeout = 2000)
 	public void basicStuff() {
-		_subject1 = my(Wusic.class);
+		_subject1 = my(Music.class);
 
 		File defaultFolder = new File(tmpFolder(), "data/media/tracks");
 		assertEquals(_subject1.playingFolder(), defaultFolder);
@@ -53,7 +53,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 		_subject1.setOperatingMode(OperatingMode.PEERS);
 		waitForSignalValue(_subject1.operatingMode(), OperatingMode.PEERS);
 
-		_subject1.start();
+		_subject1.skip();
 		assertEquals(_subject1.playingTrack().currentValue(), null);
 		assertEquals(_subject1.isPlaying().currentValue(), false);
 
@@ -68,14 +68,14 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 	
 	@Test (timeout = 3000)
 	public void ownModeWithOneTrack() throws IOException {
-		_subject1 = my(Wusic.class);
+		_subject1 = my(Music.class);
 		createSampleTracks(_subject1.playingFolder(), "track1.mp3");
 
 		checking(new Expectations() {{
 			exactly(4).of(_trackPlayer).startPlaying(with(any(Track.class)), with(any(Signal.class)), with(any(Signal.class)), with(any(Runnable.class)));
 		}});
 
-		_subject1.start(); // Starts 1st TrackContract
+		_subject1.skip(); // Starts 1st TrackContract
 		waitForSignalValue(_subject1.isPlaying(), true);
 		assertEquals("track1", playingTrack());
 
@@ -134,7 +134,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 		 * 				|_ track6.mp3
 		 */
 
-		_subject1 = my(Wusic.class);
+		_subject1 = my(Music.class);
 
 		File rootFolder = _subject1.playingFolder();
 		createSampleTracks(rootFolder, "track5.mp3", "track6.mp3");
@@ -150,7 +150,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 		}});
 
 		// Play all songs sequentially
-		_subject1.start();
+		_subject1.skip();
 		assertEquals("track1", playingTrack());
 		_subject1.skip();
 		assertEquals("track2", playingTrack());
@@ -201,7 +201,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 	public void peersMode() throws IOException {
 		activateTrackEndorsementsFrom(remote());
 
-		_subject1 = my(Wusic.class);
+		_subject1 = my(Music.class);
 		_subject1.trackExchangeActivator().consume(true);
 
 		my(CustomClockTicker.class).start(10, 100);
@@ -215,7 +215,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 		_subject1.setOperatingMode(OperatingMode.PEERS);
 
 		// Deletes first played track
-		_subject1.start();
+		_subject1.skip();
 		_subject1.deleteTrack(); // Skip is called automatically after a track is deleted
 
 		File[] keptTracks = new File[2];
@@ -258,7 +258,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 			createSampleTracks(sharedTracksFolder(), new String[] { "track1.mp3", "track2.mp3", "track3.mp3" });
 			assertEquals(3, sharedTracksFolder().listFiles().length);
 
-			_subject2 = my(Wusic.class);
+			_subject2 = my(Music.class);
 			_subject2.trackExchangeActivator().consume(true);
 
 			my(CustomClockTicker.class).start(10, 2000);
@@ -277,7 +277,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 
 
 	private File sharedTracksFolder() {
-		return my(Wusic.class).sharedTracksFolder().currentValue();
+		return my(Music.class).sharedTracksFolder().currentValue();
 	}
 
 }

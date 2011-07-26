@@ -15,14 +15,14 @@ import javax.swing.event.ChangeListener;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.foundation.lang.Consumer;
-import dfcsantos.music.Wusic;
-import dfcsantos.music.Wusic.OperatingMode;
+import dfcsantos.music.Music;
+import dfcsantos.music.Music.OperatingMode;
 
 abstract class ControlPanel extends JPanel {
 
 	private static final int MAX_VOLUME = 10;
 
-	private static final Wusic _controller	= my(Wusic.class);
+	private static final Music _controller	= my(Music.class);
 
 	private static final String RESUME_ICON	= "\u25BA";
 	private static final String PAUSE_ICON	= "\u2161";
