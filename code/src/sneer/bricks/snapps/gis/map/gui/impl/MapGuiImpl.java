@@ -20,6 +20,7 @@ import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
+import sneer.bricks.skin.main.menu.MainMenu;
 import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
 import sneer.bricks.snapps.gis.location.Location;
 import sneer.bricks.snapps.gis.location.Locations;
@@ -41,9 +42,9 @@ class MapGuiImpl implements MapGui{
 	private int _zoom = 10;
 
 	MapGuiImpl() {
-		my(InstrumentRegistry.class).registerInstrument(this);
+		my(MainMenu.class).addAction(90, menuAction());
 	}
-	
+
 	private void updateAddress(final String address, final int zoom) {
 		_address.setEnabled(false);
 		_address.update(_address.getGraphics());
@@ -126,6 +127,22 @@ class MapGuiImpl implements MapGui{
 
 	@Override
 	public String title() {
-		return "Location";
+		return "Google Maps";
 	}
+
+	private Action menuAction() {
+		return new Action() {
+
+			@Override
+			public String caption() {
+				return title();
+			}
+
+			@Override
+			public void run() {
+				my(InstrumentRegistry.class).registerInstrument(MapGuiImpl.this);
+			}};
+	}
+	
+
 }

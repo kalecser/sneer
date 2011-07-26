@@ -44,14 +44,6 @@ Igor ====================================================
 	- Add list of friends to ContactInfoWindow
 		- Add "Me Too" button to add selected contact's contact as my contact
 
-	- Wusic - MusicalTasteMatcher Buttons
-			- First Group: (I want this track. (Today's "Me Too"))
-				:D
-			- Second Group: (I dont want this particular track...)
-				:)    (...but I like it. Bring me similar ones.)
-				:|    (...and that's it.)
-				:(    (...or any similar tracks. (Today's "No Way"))
-
 	- New Contact Stati (Test Driven, of course)
 		- Away
 			- Presence detection spike based on TimeboxedEventQueue that already intercepts all gui activity. 
