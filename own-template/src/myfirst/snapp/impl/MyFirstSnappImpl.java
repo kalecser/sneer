@@ -8,7 +8,7 @@ import sneer.bricks.skin.main.menu.MainMenu;
 public class MyFirstSnappImpl implements MyFirstSnapp {
 
 	{
-		my(MainMenu.class).addAction(0, "My First Snapp", new Runnable() { @Override public void run() { //Who said Java doesn't have "Closures"? :)
+		my(MainMenu.class).menu().addAction(0, "My First Snapp", new Runnable() { @Override public void run() { //Who said Java doesn't have "Closures"? :)
 			my(MyFirstBrick.class).helloWorld();
 		}});
 	}
