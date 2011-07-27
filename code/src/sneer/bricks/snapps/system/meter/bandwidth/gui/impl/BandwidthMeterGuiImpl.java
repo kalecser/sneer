@@ -3,7 +3,6 @@ package sneer.bricks.snapps.system.meter.bandwidth.gui.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Container;
-import java.awt.Dimension;
 
 import javax.swing.JLabel;
 
@@ -58,12 +57,6 @@ class BandwidthMeterGuiImpl implements BandwidthMeterGui {
 		container.add(_uploadText.getComponent());
 		container.add(_downloadIcon);
 		container.add(_downloadText.getComponent());
-		
-		Dimension size = (Dimension) _synth.getDefaultProperty("BandwidthText.preferedSize");
-		if(size!=null) return;	
-		
-		_uploadText.getComponent().setPreferredSize(size);
-		_downloadText.getComponent().setPreferredSize(size);
 	}
 	
 	private TextWidget<JLabel> newLabel(final Signal<Integer> source, String synthName){

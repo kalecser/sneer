@@ -33,8 +33,7 @@ class MemoryMeterGuiImpl implements MemoryMeterGui {
 	
 	private final JLabel _maxMemory = new JLabel();
 	private final TextWidget<JLabel> _usedMemoryPeak = newLabel(_meter.usedMBsPeak(), "Peak: ", "MaxUsedMemoryLabel");
-	private final TextWidget<JLabel> _usedMemoryCurrent
-	= newLabel(_meter.usedMBs(), "MB Used: ", "CurrentMemoryLabel");
+	private final TextWidget<JLabel> _usedMemoryCurrent	= newLabel(_meter.usedMBs(), "MB Used: ", "CurrentMemoryLabel");
 
 	public MemoryMeterGuiImpl() {
 		_instruments.registerInstrument(this);

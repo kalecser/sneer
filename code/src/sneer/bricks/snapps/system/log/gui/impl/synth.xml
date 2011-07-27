@@ -1,10 +1,5 @@
 <synth>
 
-	<defaultsProperty key="LogConsoleImpl.offsetX" type="Integer" value="20"/>
-	<defaultsProperty key="LogConsoleImpl.offsetY" type="Integer" value="0"/>
-	<defaultsProperty key="LogConsoleImpl.height" type="Integer" value="160"/>
-	<defaultsProperty key="LogConsoleImpl.x" type="Integer" value="10"/>
-	
 	<imageIcon id="add" path="add.png" />
 	<imageIcon id="del" path="del.png" />
 	<imageIcon id="addClick" path="addClick.png" />

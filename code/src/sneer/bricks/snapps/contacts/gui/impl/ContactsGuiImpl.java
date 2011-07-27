@@ -36,9 +36,6 @@ import sneer.foundation.lang.Consumer;
 
 class ContactsGuiImpl implements ContactsGui {
 
-	private final Synth _synth = my(Synth.class);
-	{ _synth.load(this.getClass()); }
-
 	private final ListWidget<Contact> _contactList;
 
 	private Container _container;
@@ -47,7 +44,6 @@ class ContactsGuiImpl implements ContactsGui {
 
 	
 	ContactsGuiImpl() {
-
 		registerContactTextProvider(new ContactTextProvider() {
 				@Override public Position position() { return ContactTextProvider.Position.CENTER; }
 				@Override public Signal<String> textFor(Contact contact) { return contact.nickname(); }
@@ -69,7 +65,8 @@ class ContactsGuiImpl implements ContactsGui {
 		my(ContactActionManager.class).setBaseComponent(_container);
 
 		_contactList.getComponent().setName("ContactList");
-//		_synth.attach(_contactList.getComponent());
+		my(Synth.class).attach(_contactList.getComponent());
+		
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.getViewport().add(_contactList.getComponent());

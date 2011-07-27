@@ -1,14 +1,4 @@
 <synth>
-	<defaultsProperty key="Dashboard.WIDTH" type="integer" value="280"/>
-	<defaultsProperty key="Dashboard.OFFSET" type="integer" value="30"/>
-	<defaultsProperty key="Dashboard.VERTICAL_MARGIN" type="integer" value="5"/>
-	<defaultsProperty key="Dashboard.HORIZONTAL_MARGIN" type="integer" value="5"/>
-	<defaultsProperty key="Dashboard.INSTRUMENT_BORDER" type="integer" value="3"/>
-	<defaultsProperty key="Dashboard.INTRUMENTS_GAP" type="integer" value="3"/>
-	<defaultsProperty key="Dashboard.TOOLBAR_HEIGHT" type="integer" value="14"/>
-	<defaultsProperty key="Dashboard.SHADOW_HEIGHT"  type="integer" value="20"/>
-	<defaultsProperty key="Dashboard.TIMEOUT_FOR_GUI_EVENTS" type="integer" value="10000"/>
-
 	<style id="title">
 		<opaque value="true"/>
 		<font name="Verdana" size="8" />

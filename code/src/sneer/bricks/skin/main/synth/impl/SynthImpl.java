@@ -28,11 +28,7 @@ class SynthImpl implements Synth {
 		}
 	}
 	
-	@Override
-	public Object getDefaultProperty(String key){
-		return  _synth.getDefaults().get(key);
-	}
-	
+
 	@Override
 	public void load(final Class<?> resourceBase){
 		my(GuiThread.class).assertInGuiThread();
@@ -47,6 +43,7 @@ class SynthImpl implements Synth {
 		}	
 	}
 	
+	
 	@Override
 	public void attach(final JComponent component) {
 		my(GuiThread.class).assertInGuiThread();
@@ -59,6 +56,7 @@ class SynthImpl implements Synth {
 		}			
 	}
 
+	
 	@Override
 	public void attach(JComponent component, String synthName) {
 		attach(component);

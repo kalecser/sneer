@@ -60,10 +60,10 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 	private final Synth _synth = my(Synth.class);
 	{_synth.load(this.getClass());}
 	
-	private final Integer _OFFSET_X = (Integer) _synth.getDefaultProperty("LogConsoleImpl.offsetX");
-	private final Integer _OFFSET_Y = (Integer) _synth.getDefaultProperty("LogConsoleImpl.offsetY");
-	private final Integer _HEIGHT = (Integer) _synth.getDefaultProperty("LogConsoleImpl.height");
-	private final Integer _X = (Integer) _synth.getDefaultProperty("LogConsoleImpl.x");
+	private final Integer _OFFSET_X = 20;
+	private final Integer _OFFSET_Y = 0;
+	private final Integer _HEIGHT = 160;
+	private final Integer _X = 10;
 		
 	private final MenuGroup<JPopupMenu> _popupMenu = my(MenuFactory.class).createPopupMenu();
 	private final MainMenu _mainMenu = my(MainMenu.class);

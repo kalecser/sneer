@@ -57,8 +57,6 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 	private final Integer _HEIGHT = 160; //(Integer) _synth.getDefaultProperty("LogConsoleImpl.height");
 	private final Integer _X = 10;  //(Integer) _synth.getDefaultProperty("LogConsoleImpl.x");
 
-	
-	
 	protected Object _lastSelectedNode;
 	
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc;

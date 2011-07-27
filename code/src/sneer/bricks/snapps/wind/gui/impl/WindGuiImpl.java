@@ -36,7 +36,6 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
-import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
@@ -52,10 +51,7 @@ class WindGuiImpl implements WindGui {
 	private final Wind _wind = my(Wind.class);
 	private final JTextPane _shoutsList = new JTextPane();
 	
-	{
-		my(Synth.class).load(this.getClass());
-	}
-	
+
 	private final TextWidget<JTextPane> _myShout = my(ReactiveWidgetFactory.class).newTextPane(
 		my(Signals.class).constant(""), _wind.megaphone(), NotificationPolicy.OnEnterPressed
 	);

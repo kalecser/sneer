@@ -1,8 +1,0 @@
-<synth>
-
-	<defaultsProperty key="ContactsGuiImpl.onlineIconName"	type="string" value="online.png" />
-	<defaultsProperty key="ContactsGuiImpl.offlineIconName"	type="string" value="offline.png" />
-	<defaultsProperty key="ContactsGuiImpl.awayIconName"	type="string" value="away.png" />
-	<defaultsProperty key="ContactsGuiImpl.busyIconName"	type="string" value="busy.png" />
-
-</synth>
