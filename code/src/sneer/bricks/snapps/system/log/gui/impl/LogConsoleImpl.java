@@ -40,7 +40,6 @@ import sneer.bricks.pulp.reactive.gates.buffers.assync.AssynchronousBuffers;
 import sneer.bricks.skin.main.dashboard.Dashboard;
 import sneer.bricks.skin.main.menu.MainMenu;
 import sneer.bricks.skin.main.synth.Synth;
-import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
 import sneer.bricks.skin.main.title.ProcessTitle;
 import sneer.bricks.skin.menu.MenuFactory;
 import sneer.bricks.skin.menu.MenuGroup;
@@ -176,7 +175,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		
 		final ListRegister<String> whiteListEntries = my(LogFilter.class).whiteListEntries();
 		final ListWidget<String> includes = my(ReactiveWidgetFactory.class).newList(whiteListEntries.output());
-		JScrollPane scroll2 = my(SynthScrolls.class).create();
+		JScrollPane scroll2 = new JScrollPane();
 		scroll2.getViewport().add(includes.getComponent());
 		scroll2.setBorder(new TitledBorder("Log Events That Contain:"));
 		filter.add(scroll2, new GridBagConstraints(0,0,1,2,1.0,1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0,2,0,0), 0,0));

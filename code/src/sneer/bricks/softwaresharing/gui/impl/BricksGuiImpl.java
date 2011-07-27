@@ -31,8 +31,6 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.skin.image.ImageFactory;
 import sneer.bricks.skin.main.menu.MainMenu;
-import sneer.bricks.skin.main.synth.Synth;
-import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
 import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.diff.text.gui.TextDiffPanel;
 import sneer.bricks.snapps.diff.text.gui.TextDiffPanels;
@@ -54,10 +52,13 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 	private final JList _files = new JList();
 	private final TextDiffPanel _diffPanel = my(TextDiffPanels.class).newPanel();
 	
-	private final int _OFFSET_X;
-	private final int _OFFSET_Y;
-	private final int _HEIGHT;
-	private final int _X;
+	private final Integer _OFFSET_X = 20; //(Integer) _synth.getDefaultProperty("LogConsoleImpl.offsetX");
+	private final Integer _OFFSET_Y = 0; //(Integer) _synth.getDefaultProperty("LogConsoleImpl.offsetY");
+	private final Integer _HEIGHT = 160; //(Integer) _synth.getDefaultProperty("LogConsoleImpl.height");
+	private final Integer _X = 10;  //(Integer) _synth.getDefaultProperty("LogConsoleImpl.x");
+
+	
+	
 	protected Object _lastSelectedNode;
 	
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc;
@@ -72,11 +73,6 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		super("Bricks");
 		
 		my(LogConsole.class);
-		Synth _synth = my(Synth.class);
-		_OFFSET_X = (Integer) _synth.getDefaultProperty("LogConsoleImpl.offsetX");
-		_OFFSET_Y = (Integer) _synth.getDefaultProperty("LogConsoleImpl.offsetY");
-		_HEIGHT = (Integer) _synth.getDefaultProperty("LogConsoleImpl.height");
-		_X = (Integer) _synth.getDefaultProperty("LogConsoleImpl.x");		
 		
 		initGui(); 
 		initListeners();
@@ -208,11 +204,11 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		
 		addMeTooButton(toolbar);
 		
-		_scrollTree = my(SynthScrolls.class).create();
-		JScrollPane scrollFiles = my(SynthScrolls.class).create();
+		_scrollTree = new JScrollPane();
+		JScrollPane scrollFiles = new JScrollPane();
 		JSplitPane verticalSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, _scrollTree, scrollFiles);
 		
-		JScrollPane scrollDiff = my(SynthScrolls.class).create();
+		JScrollPane scrollDiff = new JScrollPane();
 		JSplitPane horizontalSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, verticalSplit, scrollDiff);
 		
 		contentPane.add(horizontalSplit, BorderLayout.CENTER);

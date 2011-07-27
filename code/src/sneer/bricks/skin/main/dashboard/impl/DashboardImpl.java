@@ -4,7 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Adjustable;
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Insets;
@@ -29,8 +28,6 @@ import sneer.bricks.skin.main.dashboard.Dashboard;
 import sneer.bricks.skin.main.instrumentregistry.Instrument;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.bricks.skin.main.menu.MainMenu;
-import sneer.bricks.skin.main.synth.Synth;
-import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
 import sneer.bricks.skin.main.title.ProcessTitle;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.Widget;
@@ -40,17 +37,13 @@ import sneer.foundation.lang.Consumer;
 
 class DashboardImpl implements Dashboard {
 
-	private final Synth _synth = my(Synth.class);
-	{ _synth.load(this.getClass()); }
-	
-	private final int WIDTH = (Integer) synthValue("Dashboard.WIDTH");
-	private final int OFFSET = (Integer) synthValue("Dashboard.OFFSET");
-	private final int HORIZONTAL_MARGIN = (Integer) synthValue("Dashboard.HORIZONTAL_MARGIN");  
-	private final int TIMEOUT_FOR_GUI_EVENTS = (Integer) synthValue("Dashboard.TIMEOUT_FOR_GUI_EVENTS");
+	private final int WIDTH = 280;
+	private final int OFFSET = 30;
+	private final int HORIZONTAL_MARGIN = 5;  
+	private final int TIMEOUT_FOR_GUI_EVENTS = 10000;
 	
 	private final  MainMenu _mainMenu = my(MainMenu.class);
 	private final JScrollBar _scrollBar;{ 
-		my(SynthScrolls.class);
 		_scrollBar = new JScrollBar(Adjustable.VERTICAL){
 			@Override public void setBounds(int x, int y, int width, int height) {
 				super.setBounds(x, y, 10, height);
@@ -73,7 +66,6 @@ class DashboardImpl implements Dashboard {
 				return size;
 			}
 		};
-		my(Synth.class).attach(_scrollBar, "DashboardScrollBar");
 	}
 	
 	private final DashboardPanel _dashboardPanel = new DashboardPanel(_scrollBar);
@@ -104,11 +96,7 @@ class DashboardImpl implements Dashboard {
 	}
 	
 	
-	private <T>  T synthValue(String key){
-		return (T)_synth.getDefaultProperty(key);
-	}
-	
-	
+
 	private void initGuiTimebox() {
 		my(TimeboxedEventQueue.class).startQueueing(TIMEOUT_FOR_GUI_EVENTS);
 	}
@@ -129,19 +117,10 @@ class DashboardImpl implements Dashboard {
 
 		WindowSupport() {
 			initWindow();
-			initSynth();
 			initRootPanel();	
 			resizeWindow();
 		}
 		
-		private void initSynth() {
-			Container contentPane = _frame.getContentPane();
-			_synth.attach((JPanel)contentPane, "DashboarContentPane");
-			
-//			JComponent menu = _mainMenu.getWidget(); Fix: Add Layout to Menu.
-//			menu.setName("DashboarMenuBar");
-//			_synth.attach(menu);
-		}
 
 		private void initWindow() {
 			_rwindow = my(ReactiveWidgetFactory.class).newFrame(reactiveTitle());

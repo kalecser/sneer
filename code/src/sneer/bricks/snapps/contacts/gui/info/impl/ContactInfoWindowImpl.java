@@ -38,7 +38,6 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
 import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.skin.widgets.reactive.ListWidget;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
@@ -143,7 +142,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 		);
 
 		 _inetAddressesPanel = new JPanel();
-		_inetAddressesScroll = my(SynthScrolls.class).create();
+		_inetAddressesScroll = new JScrollPane();
 		_inetAddressesScroll.getViewport().add(addresses());
 
 		_hostLb = new JLabel("Host:");

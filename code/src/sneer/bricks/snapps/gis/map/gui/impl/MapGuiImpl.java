@@ -21,7 +21,6 @@ import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.bricks.skin.main.menu.MainMenu;
-import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
 import sneer.bricks.snapps.gis.location.Location;
 import sneer.bricks.snapps.gis.location.Locations;
 import sneer.bricks.snapps.gis.map.MapRenderer;
@@ -37,7 +36,7 @@ class MapGuiImpl implements MapGui{
 
 	private final JLabel _mapHolder = new JLabel();
 	private final JTextField _address = new JTextField(DEFAULT_ADDRESS);
-	private final JScrollPane _scroll = my(SynthScrolls.class).create();
+	private final JScrollPane _scroll = new JScrollPane();
 	
 	private int _zoom = 10;
 

@@ -37,7 +37,6 @@ import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.bricks.skin.main.synth.Synth;
-import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
@@ -100,7 +99,7 @@ class WindGuiImpl implements WindGui {
 
 	private void initGui() {
 		_scrollPane.getViewport().add(_shoutsList);
-		JScrollPane scrollShout = my(SynthScrolls.class).create();
+		JScrollPane scrollShout = new JScrollPane();
 		JPanel horizontalLimit = new JPanel(){
 			@Override
 			public Dimension getPreferredSize() {

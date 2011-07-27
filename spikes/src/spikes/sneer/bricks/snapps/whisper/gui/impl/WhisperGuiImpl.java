@@ -8,14 +8,12 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
-import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.rooms.ActiveRoomKeeper;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
@@ -27,7 +25,6 @@ import spikes.sneer.bricks.snapps.whisper.gui.WhisperGui;
 
 class WhisperGuiImpl implements WhisperGui {
 
-	private final Synth _synth = my(Synth.class);
 	private final LoopbackTester _loopback = my(LoopbackTester.class);
 	private final InstrumentRegistry _instrumentManager = my(InstrumentRegistry.class);
 	private final Mic _mic = my(Mic.class);
@@ -40,16 +37,9 @@ class WhisperGuiImpl implements WhisperGui {
 	@SuppressWarnings("unused") private Object _referenceToAvoidGc;
 
 	WhisperGuiImpl(){
-		_synth.load(this.getClass());
-		initSynth();
 		_instrumentManager.registerInstrument(this);
 	}
 
-	private void initSynth() {
-		_synth.attach(_whisperButton, "WhisperButton");
-		_synth.attach(_loopBackButton, "LoopbackButton");
-	}
-	
 	private Signal<Boolean> isRunning() {
 		return _mic.isOpen();
 	}
@@ -57,7 +47,6 @@ class WhisperGuiImpl implements WhisperGui {
 	@Override
 	public void init(InstrumentPanel window) {
 		Container container = window.contentPane();
-		_synth.attach((JComponent)container);
 		container.setLayout(new FlowLayout(FlowLayout.CENTER));
 		
 		ActiveRoomKeeper room = Environments.my(ActiveRoomKeeper.class);

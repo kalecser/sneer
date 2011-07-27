@@ -18,15 +18,14 @@ import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.gates.strings.StringGates;
-import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.snapps.contacts.gui.ContactTextProvider;
 import sneer.foundation.lang.Functor;
 
 final class ContactLabelProvider implements LabelProvider<Contact> {
 
-		static private final Image ONLINE = getImage("ContactsGuiImpl.onlineIconName");
-		static private final Image OFFLINE = getImage("ContactsGuiImpl.offlineIconName");
+		static private final Image ONLINE = getImage("online.png");
+		static private final Image OFFLINE = getImage("offline.png");
 
 		private List<ContactTextProvider> _contactTextProviders = new ArrayList<ContactTextProvider>();
 
@@ -49,7 +48,7 @@ final class ContactLabelProvider implements LabelProvider<Contact> {
 		
 		
 		static private Image getImage(String key) {
-			return my(Images.class).getImage(ContactsGuiImpl.class.getResource((String) my(Synth.class).getDefaultProperty(key)));
+			return my(Images.class).getImage(ContactsGuiImpl.class.getResource(key));
 		}
 
 

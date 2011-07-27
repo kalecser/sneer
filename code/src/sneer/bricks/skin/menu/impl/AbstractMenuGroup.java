@@ -1,7 +1,5 @@
 package sneer.bricks.skin.menu.impl;
 
-import static sneer.foundation.environments.Environments.my;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -14,7 +12,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import sneer.bricks.hardware.gui.actions.Action;
-import sneer.bricks.skin.main.synth.menu.SynthMenus;
 import sneer.bricks.skin.menu.MenuGroup;
 
 public abstract class AbstractMenuGroup<T extends JComponent> implements MenuGroup<T> {
@@ -38,7 +35,7 @@ public abstract class AbstractMenuGroup<T extends JComponent> implements MenuGro
 
 	@Override
 	public void addAction(int positionInMenu, final Action action) {
-		final JMenuItem menuItem = my(SynthMenus.class).createMenuItem();
+		final JMenuItem menuItem = new JMenuItem();
 		menuItem.setText(action.caption());
 		menuItem.addPropertyChangeListener(new PropertyChangeListener(){ @Override public void propertyChange(PropertyChangeEvent ignored) {
 			menuItem.setText(action.caption());

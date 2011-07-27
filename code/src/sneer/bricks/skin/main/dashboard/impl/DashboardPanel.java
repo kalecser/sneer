@@ -48,7 +48,6 @@ import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.Instrument;
-import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.menu.MenuFactory;
 import sneer.bricks.skin.menu.MenuGroup;
 import sneer.bricks.software.bricks.introspection.Introspector;
@@ -58,13 +57,11 @@ import sneer.foundation.lang.Consumer;
 
 class DashboardPanel extends JPanel {
 
-	private final Synth _synth = my(Synth.class);
-	
-	private final int INTRUMENTS_GAP = synthValue("Dashboard.INTRUMENTS_GAP");  
-	private final int TOOLBAR_HEIGHT = synthValue("Dashboard.TOOLBAR_HEIGHT");  
-	private final int SHADOW_HEIGHT = synthValue("Dashboard.SHADOW_HEIGHT");  
-	private final int VERTICAL_MARGIN = synthValue("Dashboard.VERTICAL_MARGIN");  
-	private final int INSTRUMENT_BORDER = synthValue("Dashboard.INSTRUMENT_BORDER");  
+	private final int INTRUMENTS_GAP =  3;  
+	private final int TOOLBAR_HEIGHT = 14;  
+	private final int SHADOW_HEIGHT = 20;  
+	private final int VERTICAL_MARGIN = 5;  
+	private final int INSTRUMENT_BORDER = 3;  
 	
 	private final JLayeredPane _dashboardLayeredPane = new JLayeredPane();
 	private final JPanel _instrumentsContainer = new JPanel();
@@ -76,7 +73,6 @@ class DashboardPanel extends JPanel {
 	DashboardPanel(JScrollBar scrollBar) {
 		_scrollBar = scrollBar;
 		
-		initSynth();
 		setLayout(new BorderLayout());
     	addInstrumentPanelResizer();
 
@@ -99,14 +95,6 @@ class DashboardPanel extends JPanel {
 		}});
     }
 
-	private int synthValue(String key) {
-		return (Integer)_synth.getDefaultProperty(key);
-	}
-
-	private void initSynth() {
-		_synth.attach(this, "DashboardPanel");
-		_synth.attach(_instrumentsContainer, "InstrumentsContainer");
-	}
 	
 	void hideAllToolbars() {
 		instrumentsPanelsDo(new Consumer<InstrumentPanelImpl>() { @Override public void consume(InstrumentPanelImpl panel) {
@@ -172,7 +160,6 @@ class DashboardPanel extends JPanel {
 			setLayout(new BorderLayout());
 			add(_contentPane, BorderLayout.CENTER);
 			
-			_synth.attach(this, "InstrumentPanel");
 			_instrument = instrument;
 			_toolbar = new Toolbar(_instrument.title());
 			
@@ -304,7 +291,6 @@ class DashboardPanel extends JPanel {
 				initCopyClassNameToClipboardAction();
 				
 				initGui(title);
-				initSynth();
 				
 				DashboardPanel.this._dashboardLayeredPane.add(_toolbarShadow, new Integer(1));
 				DashboardPanel.this._dashboardLayeredPane.add(_mouseBlockButton, new Integer(2));
@@ -332,13 +318,6 @@ class DashboardPanel extends JPanel {
 				return my(Introspector.class).brickInterfaceFor(_instrument);
 			}
 
-			private void initSynth() {
-				_synth.attach(_toolbarPanel, "InstrumentToolbar");
-				_synth.attach(_title, "InstrumentTitle");
-				_synth.attach(_menu, "InstrumentMenuButton");
-				_synth.attach(_mouseBlockButton);
-			}
-			
 			private void initGui(String title) {
 				_title.setOpaque(false);
 				if (title != null)

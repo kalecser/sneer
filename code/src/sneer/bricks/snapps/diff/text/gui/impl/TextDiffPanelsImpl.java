@@ -24,7 +24,6 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.skin.image.ImageFactory;
-import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
 import sneer.bricks.snapps.diff.text.gui.TextDiffPanel;
 import sneer.bricks.snapps.diff.text.gui.TextDiffPanels;
 import sneer.bricks.snapps.diff.text.gui.impl.TextBlockPainter.LinkedTextBlock;
@@ -47,7 +46,7 @@ class TextDiffPanelsImpl implements TextDiffPanels{
 
 		private final JPanel _buttonsPanel = new JPanel();
 		private final JTextPane _htmlDif = new JTextPane();
-		private final  JScrollPane _scroll = my(SynthScrolls.class).create();
+		private final  JScrollPane _scroll = new JScrollPane();
 		private final JCheckBox _textOnlyDiff = new JCheckBox("Manual Merge");
 		private final  TextBlockPainter _painter = new TextBlockPainter((DefaultStyledDocument) _htmlDif.getStyledDocument(), _textOnlyDiff);
 		private String _text1;

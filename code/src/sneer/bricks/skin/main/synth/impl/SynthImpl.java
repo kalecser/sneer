@@ -21,7 +21,6 @@ class SynthImpl implements Synth {
 	
 	SynthImpl(){
 		try {
-			UIManager.setLookAndFeel(_synth);
 			load(SynthImpl.class);
 			UIManager.setLookAndFeel(_default);
 		} catch (Exception e) {

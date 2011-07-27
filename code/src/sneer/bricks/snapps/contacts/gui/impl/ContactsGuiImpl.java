@@ -22,7 +22,6 @@ import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.bricks.skin.main.synth.Synth;
-import sneer.bricks.skin.main.synth.scroll.SynthScrolls;
 import sneer.bricks.skin.menu.MenuFactory;
 import sneer.bricks.skin.menu.MenuGroup;
 import sneer.bricks.skin.popuptrigger.PopupTrigger;
@@ -70,9 +69,9 @@ class ContactsGuiImpl implements ContactsGui {
 		my(ContactActionManager.class).setBaseComponent(_container);
 
 		_contactList.getComponent().setName("ContactList");
-		_synth.attach(_contactList.getComponent());
+//		_synth.attach(_contactList.getComponent());
 		
-		JScrollPane scrollPane = my(SynthScrolls.class).create();
+		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.getViewport().add(_contactList.getComponent());
 		
 		_container.setLayout(new BorderLayout());
