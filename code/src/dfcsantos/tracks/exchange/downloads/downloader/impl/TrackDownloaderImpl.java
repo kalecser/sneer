@@ -35,6 +35,7 @@ import dfcsantos.tracks.tastematching.MusicalTasteMatcher;
 class TrackDownloaderImpl implements TrackDownloader {
 
 	private static final int CONCURRENT_DOWNLOADS_LIMIT = 3;
+	private static final int TRACK_DOWNLOADED_LIMIT = 10;
 
 	private final ImmutableReference<Signal<Boolean>> _onOffSwitch = my(ImmutableReferences.class).newInstance();
 
@@ -144,7 +145,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 	private boolean hasSpentDownloadAllowance() {
 		File[] files = peerTracksFolder().listFiles();
-		return files != null && files.length >= 10;
+		return files != null && files.length >= TRACK_DOWNLOADED_LIMIT;
 	}
 
 
