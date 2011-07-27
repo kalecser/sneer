@@ -94,7 +94,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		if(isVisible()) return;
 		
 //		my(WindowBoundsSetter.class).setBestBounds(this);
-		setLocationRelativeTo(_mainMenu.getWidget());
+		setLocationRelativeTo(_mainMenu.menu().getWidget());
 		setVisible(true);
 		_yourOwnName.getMainWidget().requestFocus();
 	}
@@ -220,7 +220,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 	}
 	
 	private void addOpenWindowAction() {
-		_mainMenu.addAction(10, "Own Info...", new Closure() { @Override public void run() {
+		_mainMenu.menu().addAction(10, "Own Info...", new Closure() { @Override public void run() {
 			open();
 		}});
 	}

@@ -10,7 +10,7 @@ import sneer.bricks.snapps.help.Help;
 class HelpImpl implements Help {
 
 	{
-		my(MainMenu.class).addAction(10, "Help!", new Runnable() { @Override public void run() {
+		my(MainMenu.class).menu().addAction(10, "Help!", new Runnable() { @Override public void run() {
 			String message =
 				" If you want help to USE Sneer, the best thing\n" +
 				" is to get a Sovereign friend to help you.\n" +

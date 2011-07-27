@@ -30,7 +30,7 @@ class WusicGuiOldImpl implements WusicGuiOld {
     private JFrame _frame;
 
     {
-		my(MainMenu.class).addAction(30, "Wusic", new Closure() { @Override synchronized public void run() {
+		my(MainMenu.class).menu().addAction(30, "Wusic", new Closure() { @Override synchronized public void run() {
 			if (_frame == null)
 				_frame = initFrame();
 			_frame.setVisible(true);

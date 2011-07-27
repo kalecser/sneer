@@ -28,7 +28,7 @@ class AttributesWindowImpl implements AttributesWindow {
 	private JFrame _frame;
 
     public AttributesWindowImpl() {
-		my(MainMenu.class).addAction(50, "Settings", new Closure() { @Override synchronized public void run() {
+		my(MainMenu.class).menu().addAction(50, "Settings", new Closure() { @Override synchronized public void run() {
 			if (_frame == null) _frame = initFrame();
 			_frame.setVisible(true);
 		}});
