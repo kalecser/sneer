@@ -13,11 +13,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import sneer.bricks.hardware.gui.actions.Action;
-<<<<<<< HEAD
-=======
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.skin.main.synth.menu.SynthMenus;
->>>>>>> dbd786f9791e9fb3fe9a8abfc3ea9a1aab0f93e6
 import sneer.bricks.skin.menu.MenuGroup;
 import sneer.foundation.lang.Consumer;
 
