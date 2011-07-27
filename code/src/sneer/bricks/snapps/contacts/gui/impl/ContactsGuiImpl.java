@@ -7,6 +7,7 @@ import java.awt.Container;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -102,7 +103,7 @@ class ContactsGuiImpl implements ContactsGui {
 		return _contactList.selectedElement();
 	}
 	
-	private void addContactActions(MenuGroup<JPopupMenu> menuGroup) {
+	private void addContactActions(MenuGroup<? extends JComponent> menuGroup) {
 		menuGroup.addAction(-100, new Action() {
 				@Override public String caption() { return "New Contact..."; }
 				@Override public void run() {

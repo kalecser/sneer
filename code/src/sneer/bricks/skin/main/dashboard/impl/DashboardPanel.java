@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -411,7 +412,7 @@ class DashboardPanel extends JPanel {
 			super.setSize(size);
 		}
 		
-		@Override public MenuGroup<JPopupMenu> actions() { return _toolbar._menuActions; }
+		@Override public MenuGroup<? extends JComponent> actions() { return _toolbar._menuActions; }
 		@Override public Container contentPane() {	return _contentPane ; }
 
 	}

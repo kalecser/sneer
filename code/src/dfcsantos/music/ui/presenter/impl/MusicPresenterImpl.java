@@ -31,5 +31,5 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	public void toggleTrackExchange() {
 		isExchangingTracks.setter().consume(!isExchangingTracks().currentValue());
 	}
-	
+
 }

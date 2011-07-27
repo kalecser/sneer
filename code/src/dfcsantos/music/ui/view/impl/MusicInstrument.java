@@ -8,10 +8,9 @@ import java.awt.GridLayout;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 
@@ -19,6 +18,7 @@ import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.Instrument;
 import sneer.bricks.skin.menu.MenuGroup;
 import dfcsantos.music.ui.view.MusicViewListener;
+
 
 
 
@@ -31,20 +31,6 @@ class MusicInstrument implements Instrument {
 	
 	MusicInstrument(MusicViewListener listener) {
 		this.listener = listener;
-	}
-
-
-	public static void main(String[] args) {
-			final JFrame jFrame = new JFrame();
-			jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			MusicInstrument instrument = new MusicInstrument(null);
-			instrument.init(new InstrumentPanel() {
-				@Override public Container contentPane() { return jFrame.getContentPane(); }
-				@Override public MenuGroup<JPopupMenu> actions() { return null; }
-			});
-			jFrame.setBounds(100, 100, 200, instrument.defaultHeight());
-			jFrame.pack();
-			jFrame.setVisible(true);
 	}
 
 	
@@ -61,18 +47,17 @@ class MusicInstrument implements Instrument {
 	}
 
 
-	private void initMenu(MenuGroup<JPopupMenu> actions) {
-		//actions.addAction(30, "Downloads...", action);
+	private void initMenu(MenuGroup<? extends JComponent> actions) {
 		actions.addAction(10, "Choose Tracks Folder...", new Runnable() { @Override public void run() {
 			listener.chooseTracksFolder();
 		}});
 		actions.addActionWithCheckBox(20, "Exchange Tracks", listener.isExchangingTracks(), new Runnable() { @Override public void run() {
 			listener.toggleTrackExchange();
 		}});
-		
-//		Set tracks folder. - Abre no início um FileChooser - Opcao de menu
-//		Exchange Tracks on/off - Default on - Opcao de menu
-//		See downloads in progress - Opcao de menu
+		actions.addAction(30, "Downloads...", new Runnable() { @Override public void run() {
+			DownloadsView.showInstance();
+		}});
+	
 	}
 
 
