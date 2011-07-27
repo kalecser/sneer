@@ -47,9 +47,8 @@ public abstract class AbstractMenuGroup<T extends JComponent> implements MenuGro
 			action.run();
 		}});
 		isChecked.addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean bool) {
-			//menuItem.setSelected(bool);
+			menuItem.setSelected(bool);
 		}});
-		menuItem.setSelected(true);
 		addMenuItem(positionInMenu, menuItem);
 	}
 	
