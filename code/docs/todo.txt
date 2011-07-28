@@ -6,20 +6,23 @@ Swarm ===================================================
 
 	Music
 		MusicalTasteMatcherTest
-			- Test BAD track cases also, not just GOOD and UNKNOWN.
 			- Opinions must propagate up to parent folders and contact.
 				- If the rating for a folder is zero, it must return the rating of its parent, up to the contact.
-	
+				    +1		klaus/rock 				true  	(Ja tinha musica, não rola download)
+				    -1		klaus/eletro 			false	(Lista negra não rola download)
+					+1		klaus/samba/raiz		true	(Ja tinha musica, não rola download)
+				    +0.5 	klaus/samba/pagode		null  	(Inicia download)
+					+0.2	klaus/Jazz				null	(Inicia download)
+					+0.33	klaus/samba/morro		null	(Inicia download)
+					+0.25	klaus/samba/carioca		null	(Cancela download de klaus/Jazz e inicia este download)
+
 	Backup
 	
 	Connectivity
 		Udp
 
-
 Adenauer ================================================
 
-	Splash Screen - Remove. DONE.
-	
 	Synth - Remove
 	
 
