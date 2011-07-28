@@ -33,14 +33,16 @@ class Installation {
 	private JWindow _splashScreen;
 
 	Installation() throws Exception {
-		showSplashScreen();
+		showSplashScreenIfNecessary();
 		resetDirectories();
 		updateCode();
 		createOwnProjectIfNecessary();
-		closeSplashScreen();
+		closeSplashScreenIfNecessary();
 	}
 
-	private void showSplashScreen() {
+	private void showSplashScreenIfNecessary() {
+		if (!showSplashScreen()) return; 
+		
 		_splashScreen = new JWindow();
 		Image image = Toolkit.getDefaultToolkit().createImage(Installation.class.getResource("dogfood.png"));
 		ImageIcon icon = new ImageIcon(image);
@@ -141,7 +143,8 @@ class Installation {
 		extractFiles(file, OWN_CODE.getParentFile());		
 	}
 
-	private void closeSplashScreen() {
+	private void closeSplashScreenIfNecessary() {
+		if (!showSplashScreen()) return; 
 		_splashScreen.setVisible(false);
 		_splashScreen.dispose();
 	}
@@ -153,6 +156,12 @@ class Installation {
 		} catch (InterruptedException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+	
+	
+	private boolean showSplashScreen() {
+		String parameter = System.getProperty("sneer.splash", "no");
+		return parameter.toLowerCase().equals("yes");
 	}
 	
 }
