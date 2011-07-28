@@ -63,10 +63,11 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 	
 	private void consumeTrackEndorsement(final TrackEndorsement endorsement) {
-		if (!prepareForDownload(endorsement)) return;
+		Float rating = prepareForDownload(endorsement);
+		if (rating == null) return;
 
 		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash, endorsement.publisher);
-		_downloadsAndMatchRatings.put(download, matchRatingFor(endorsement));
+		_downloadsAndMatchRatings.put(download, rating);
 
 		WeakContract weakContract = download.finished().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean finished) {
 			if (finished)
@@ -77,22 +78,22 @@ class TrackDownloaderImpl implements TrackDownloader {
 	}
 
 
-	private boolean prepareForDownload(final TrackEndorsement endorsement) {
-		if (!isOn()) { log("TrackDownloader Off"); return false; }
+	private Float prepareForDownload(final TrackEndorsement endorsement) {
+		if (!isOn()) { log("TrackDownloader Off"); return null; }
 
-		if (isFromUnknownPublisher(endorsement)) { log("Unkown Publisher"); return false; }
+		if (isFromUnknownPublisher(endorsement)) { log("Unkown Publisher"); return null; }
 
 		boolean isKnown = isKnown(endorsement);
-		updateMusicalTasteMatcher(endorsement, isKnown);
-		if (isKnown) { log("Duplicated Track"); return false; }
+		float rating = rate(endorsement, opinionOn(isKnown));
+		if (isKnown) { log("Duplicated Track"); return null; }
 
-		if (isRejected(endorsement)) { log("Rejected Track"); return false; }
-		if (hasSpentDownloadAllowance()) { log("Download Space Allowance Reached"); return false; }
+		if (isRejected(endorsement)) { log("Rejected Track"); return null; }
+		if (hasSpentDownloadAllowance()) { log("Download Space Allowance Reached"); return null; }
 
-		killDownloadWithTheLowestRatingWorseThan(matchRatingFor(endorsement));
-		if (hasReachedDownloadLimit()) { log("Concurrent Download Limit Reached"); return false; }
+		killDownloadWithTheLowestRatingWorseThan(rating);
+		if (hasReachedDownloadLimit()) { log("Concurrent Download Limit Reached"); return null; }
 
-		return true;
+		return rating;
 	}
 
 
@@ -131,10 +132,20 @@ class TrackDownloaderImpl implements TrackDownloader {
 	}
 
 
-	private void updateMusicalTasteMatcher(TrackEndorsement endorsement, boolean isKnownTrack) {
-		String nickname = senderOf(endorsement).nickname().currentValue();
+	private float rate(TrackEndorsement e, Boolean opinion) {
+		return my(MusicalTasteMatcher.class).rateEndorsement(senderOf(e), folderFor(e), opinion);
+	}
+
+
+	private Boolean opinionOn(boolean isKnownTrack) {
+		return isKnownTrack ? true : null;
+	}
+
+
+	private String folderFor(TrackEndorsement endorsement) {
 		String folder = new File(endorsement.path).getParent();
-		my(MusicalTasteMatcher.class).processEndorsement(nickname, (folder == null) ? "" : folder, isKnownTrack);
+		String folder2 = (folder == null) ? "" : folder;
+		return folder2;
 	}
 
 
@@ -146,13 +157,6 @@ class TrackDownloaderImpl implements TrackDownloader {
 	private boolean hasSpentDownloadAllowance() {
 		File[] files = peerTracksFolder().listFiles();
 		return files != null && files.length >= TRACK_DOWNLOADED_LIMIT;
-	}
-
-
-	private float matchRatingFor(final TrackEndorsement endorsement) {
-		String nickname = senderOf(endorsement).nickname().currentValue();
-		String folder = new File(endorsement.path).getParent();
-		return my(MusicalTasteMatcher.class).ratingFor(nickname, (folder == null) ? "" : folder);
 	}
 
 

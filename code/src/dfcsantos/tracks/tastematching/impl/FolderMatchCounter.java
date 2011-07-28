@@ -1,20 +1,24 @@
 package dfcsantos.tracks.tastematching.impl;
 
+
 class FolderMatchCounter {
 
-	private int _endorsementCount;
-	private int _matchCount;
+	private int endorsementCount;
+	private int matchCount;
 
-	void incrementEndorsementCount() {
-		_endorsementCount++;
-	}
 	
-	void incrementMatchCount() {
-		_matchCount++;
+	float matchRating() {
+		return matchCount / endorsementCount;
 	}
 
-	float matchRating() {
-		return _matchCount / _endorsementCount;
+
+	void countOpinion(Boolean opinion) {
+		endorsementCount++;
+		if (opinion == null) return;
+		if (opinion)
+			matchCount++;
+		else
+			matchCount--;
 	}
 
 }

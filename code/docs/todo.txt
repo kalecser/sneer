@@ -5,6 +5,10 @@
 Swarm ===================================================
 
 	Music
+		MusicalTasteMatcherTest
+			- Test BAD track cases also, not just GOOD and UNKNOWN.
+			- Opinions must propagate up to parent folders and contact.
+				- If the rating for a folder is zero, it must return the rating of its parent, up to the contact.
 	
 	Backup
 	
