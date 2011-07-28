@@ -8,7 +8,7 @@ class FolderMatchCounter {
 
 	
 	float matchRating() {
-		return matchCount / endorsementCount;
+		return ((float) matchCount) / endorsementCount;
 	}
 
 

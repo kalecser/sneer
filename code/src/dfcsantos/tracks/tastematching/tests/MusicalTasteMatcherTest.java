@@ -13,11 +13,12 @@ import dfcsantos.tracks.tastematching.MusicalTasteMatcher;
 public class MusicalTasteMatcherTest extends BrickTestBase {
 
 	private static final Boolean GOOD = true;
+	private static final Boolean BAD = false;
 	private static final Boolean UNKNOWN = null;
 
 	private MusicalTasteMatcher _subject = my(MusicalTasteMatcher.class);
 
-	@Test (timeout = 4000)
+	@Test
 	public void endorsementProcessing() throws Refusal {
 		Contact neide = my(Contacts.class).addContact("Neide");
 
@@ -25,17 +26,18 @@ public class MusicalTasteMatcherTest extends BrickTestBase {
 
 		String folderOfVivaLaVidaAlbum = "My Favourites Songs/Pop/Coldplay/Viva La Vida";
 		assertRating(0  , neide, folderOfVivaLaVidaAlbum, UNKNOWN);
-		assertRating(1/2, neide, folderOfVivaLaVidaAlbum, GOOD);
-		assertRating(2/3, neide, folderOfVivaLaVidaAlbum, GOOD);
-		assertRating(3/4, neide, folderOfVivaLaVidaAlbum, GOOD);
-		assertRating(4/5, neide, folderOfVivaLaVidaAlbum, GOOD);
+		assertRating(1f/2, neide, folderOfVivaLaVidaAlbum, GOOD);
+		assertRating(2f/3, neide, folderOfVivaLaVidaAlbum, GOOD);
+		assertRating(3f/4, neide, folderOfVivaLaVidaAlbum, GOOD);
+		assertRating(4f/5, neide, folderOfVivaLaVidaAlbum, GOOD);
+		assertRating(3f/6, neide, folderOfVivaLaVidaAlbum, BAD);
 
 		Contact mister = my(Contacts.class).addContact("Mr. Mister");
 
 		String folderOfFrankSinatra = "My Music/Jazz/Frank Sinatra/The Best Of The Columbia Years";
-		assertRating(1  , mister, folderOfFrankSinatra, GOOD);
-		assertRating(1/2, mister, folderOfFrankSinatra, UNKNOWN);
-		assertRating(1/3, mister, folderOfFrankSinatra, UNKNOWN);
+		assertRating(1f  , mister, folderOfFrankSinatra, GOOD);
+		assertRating(1f/2, mister, folderOfFrankSinatra, UNKNOWN);
+		assertRating(1f/3, mister, folderOfFrankSinatra, UNKNOWN);
 	}
 
 	private void assertRating(float expectedRating, Contact contact, String folder, Boolean opinion) {
