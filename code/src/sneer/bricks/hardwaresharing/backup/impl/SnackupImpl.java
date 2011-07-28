@@ -42,8 +42,6 @@ import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.exceptions.Refusal;
 
-import com.sun.xml.internal.txw2.IllegalSignatureException;
-
 class SnackupImpl implements Snackup {
 	
 	private static final int FIVE_MINUTES = 1000 * 60 * 5;
@@ -170,8 +168,8 @@ class SnackupImpl implements Snackup {
 		Hash hash;
 		try {
 			hash = my(FileMapper.class).mapFileOrFolder(file);
-		} catch (MappingStopped e) {
-			throw new IllegalSignatureException(e);
+		} catch (MappingStopped e) {  
+			throw new IllegalStateException(e); //IllegalSignatureException broke the build.
 		} catch (IOException e) {
 			turnOnBlinkingLightFor(e, "Error reading file");
 			return;
@@ -179,7 +177,7 @@ class SnackupImpl implements Snackup {
 		my(TupleSpace.class).add(new FileToSync(hash, file.lastModified(), relativeName));
 	}
 
-	private void turnOnBlinkingLightFor(IOException e, String caption) {
+	private void turnOnBlinkingLightFor(Exception e, String caption) {
 		my(BlinkingLights.class).turnOn(LightType.ERROR, "Snackup - " + caption, e.getMessage(), e);
 	}
 
