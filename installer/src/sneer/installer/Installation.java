@@ -7,11 +7,6 @@ import static sneer.main.SneerCodeFolders.SRC;
 import static sneer.main.SneerFolders.LOG_FILE;
 import static sneer.main.SneerFolders.OWN_CODE;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,45 +16,18 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JWindow;
-
 class Installation {
 
 	private final URL _sneerJar = this.getClass().getResource("/sneer.jar");
 	private final URL _ownJar = this.getClass().getResource("/own.jar");
 
-	private JWindow _splashScreen;
 
 	Installation() throws Exception {
-		showSplashScreenIfNecessary();
 		resetDirectories();
 		updateCode();
 		createOwnProjectIfNecessary();
-		closeSplashScreenIfNecessary();
 	}
 
-	private void showSplashScreenIfNecessary() {
-		if (!showSplashScreen()) return; 
-		
-		_splashScreen = new JWindow();
-		Image image = Toolkit.getDefaultToolkit().createImage(Installation.class.getResource("dogfood.png"));
-		ImageIcon icon = new ImageIcon(image);
-		_splashScreen.setLayout(new BorderLayout());
-		_splashScreen.add(new JLabel(icon), BorderLayout.CENTER);
-
-		int imgWidth = 600;
-		int imgHeight = 300;
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize(); 
-		Point basePoint = new Point(
-			(int) ((screenSize.getWidth() - imgWidth) / 2), 
-			(int) ((screenSize.getHeight() - imgHeight) / 2)
-		);
-
-		_splashScreen.setBounds(basePoint.x, basePoint.y, imgWidth, imgHeight);
-		_splashScreen.setVisible(true);
-	}
 
 	private void resetDirectories() throws IOException {
 		if(!SNEER_HOME.exists())
@@ -110,6 +78,7 @@ class Installation {
 		return file;
 	}
 
+	
 	private void extractFiles(File src, File toDir) throws IOException {
 		if(!(src.exists()))
 			throw new IOException("File '" + src.getAbsolutePath() + "' not found!");	
@@ -119,6 +88,7 @@ class Installation {
 		inputStream.close();
 	}
 
+	
 	private void extractFiles(File src, File toDir, FileInputStream inputStream) throws IOException {
 		JarInputStream jis = new JarInputStream(inputStream);
 		JarFile jar = new JarFile(src);
@@ -135,6 +105,7 @@ class Installation {
         }
 	}
 
+	
 	private void createOwnProjectIfNecessary() throws IOException {
 		if(OWN_CODE.exists()) return;
 
@@ -143,13 +114,7 @@ class Installation {
 		extractFiles(file, OWN_CODE.getParentFile());		
 	}
 
-	private void closeSplashScreenIfNecessary() {
-		if (!showSplashScreen()) return; 
-		_splashScreen.setVisible(false);
-		_splashScreen.dispose();
-	}
 
-	
 	private void sleepForASecond() {
 		try {
 			Thread.sleep(1000);
@@ -157,11 +122,5 @@ class Installation {
 			throw new IllegalStateException(e);
 		}
 	}
-	
-	
-	private boolean showSplashScreen() {
-		String parameter = System.getProperty("sneer.splash", "no");
-		return parameter.toLowerCase().equals("yes");
-	}
-	
+
 }

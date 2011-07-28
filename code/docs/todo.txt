@@ -18,7 +18,7 @@ Swarm ===================================================
 
 Adenauer ================================================
 
-	Splash Screen - Remove
+	Splash Screen - Remove. DONE.
 	
 	Synth - Remove
 	
