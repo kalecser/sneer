@@ -4,6 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Container;
 
+import javax.swing.Icon;
 import javax.swing.JLabel;
 
 import sneer.bricks.pulp.bandwidth.BandwidthCounter;
@@ -19,23 +20,14 @@ import sneer.foundation.lang.Functor;
 
 class BandwidthMeterGuiImpl implements BandwidthMeterGui {
 
-	private final Synth _synth = my(Synth.class);
-	
-	private final JLabel _bpsPeakLabel = new JLabel("kB/s(Peak)");
-	private final JLabel _uploadIcon = new JLabel();
-	private final JLabel _downloadIcon = new JLabel();
+	//private final JLabel _bpsPeakLabel = new JLabel("kB/s(Peak)");
+	//private final JLabel _uploadIcon = new JLabel();
+	//private final JLabel _downloadIcon = new JLabel();
 
 	BandwidthMeterGuiImpl() {
 		my(InstrumentRegistry.class).registerInstrument(this);
-		initSynth();
 	} 
 	
-	private void initSynth() {
-		_synth.load(this.getClass());
-		_synth.attach(_bpsPeakLabel, "KbsPeakLabel");
-		_synth.attach(_uploadIcon,"UploadIcon");
-		_synth.attach(_downloadIcon,"DownloadIcon");
-	}
 	
 	private class MaxHolderFunctor implements Functor<Integer, String>{
 		int _maxValue = 0;
@@ -45,12 +37,16 @@ class BandwidthMeterGuiImpl implements BandwidthMeterGui {
 		}
 	}
 	
+	
 	@Override
 	public void init(InstrumentPanel window) {
 		Container container = window.contentPane();
 		
-		TextWidget<JLabel> _uploadText = newLabel(my(BandwidthCounter.class).uploadSpeedInKBperSecond(), "UploadText");
-		TextWidget<JLabel> _downloadText = newLabel(my(BandwidthCounter.class).downloadSpeedInKBperSecond(), "DownloadText");
+		JLabel _bpsPeakLabel = new JLabel("kB/s(Peak)");
+		TextWidget<JLabel> _uploadText = newLabel(my(BandwidthCounter.class).uploadSpeedInKBperSecond());
+		TextWidget<JLabel> _downloadText = newLabel(my(BandwidthCounter.class).downloadSpeedInKBperSecond());
+		JLabel _uploadIcon = newIcon("upload.png"); 
+		JLabel _downloadIcon = newIcon("download.png");
 		
 		container.add(_bpsPeakLabel);
 		container.add(_uploadIcon);
@@ -59,21 +55,31 @@ class BandwidthMeterGuiImpl implements BandwidthMeterGui {
 		container.add(_downloadText.getComponent());
 	}
 	
-	private TextWidget<JLabel> newLabel(final Signal<Integer> source, String synthName){
-		return my(ReactiveWidgetFactory.class).newLabel(maxHolder(source), synthName);
+	
+	private TextWidget<JLabel> newLabel(final Signal<Integer> source){
+		return my(ReactiveWidgetFactory.class).newLabel(maxHolder(source));
 	}
 
+	
 	private Signal<String> maxHolder(Signal<Integer> input) {
 		return my(Signals.class).adapt(input, new MaxHolderFunctor());
 	}
+	
+	private JLabel newIcon(final String imageName){
+		Icon icon = my(Synth.class).load(this.getClass(), imageName);
+		return new JLabel(icon);
+	}
+	
 
 	@Override
 	public int defaultHeight() {
 		return DEFAULT_HEIGHT;
 	}
 
+	
 	@Override
 	public String title() {
 		return "Bandwith Meter";
 	}
+
 }

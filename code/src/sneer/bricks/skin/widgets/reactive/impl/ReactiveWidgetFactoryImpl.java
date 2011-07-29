@@ -37,12 +37,6 @@ class ReactiveWidgetFactoryImpl implements ReactiveWidgetFactory {
 	}
 	
 	@Override
-	public TextWidget<JLabel> newLabel(Signal<String> source, String synthName) {
-		my(GuiThread.class).assertInGuiThread();
-		return new RLabelImpl(source, synthName);
-	}
-
-	@Override
 	public ToggleButtonWidget<JCheckBox> newCheckBox(Signal<Boolean> source, Consumer<Boolean> setter) {
 		my(GuiThread.class).assertInGuiThread();
 		return new RCheckBoxImpl(source, setter, null);

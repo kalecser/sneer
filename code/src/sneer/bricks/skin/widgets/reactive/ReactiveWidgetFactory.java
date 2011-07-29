@@ -25,7 +25,6 @@ public interface ReactiveWidgetFactory {
 	Widget<JFrame> newFrame(Signal<?> title);
 	
 	TextWidget<JLabel> newLabel(Signal<?> source);
-	TextWidget<JLabel> newLabel(Signal<String> source, String synthName);
 
 	ToggleButtonWidget<JCheckBox> newCheckBox(Signal<Boolean> source, Consumer<Boolean> setter);
 	ToggleButtonWidget<JCheckBox> newCheckBox(Signal<Boolean> source, Consumer<Boolean> setter, Runnable cascadeRefreshOperations);

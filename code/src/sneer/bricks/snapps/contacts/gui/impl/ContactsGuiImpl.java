@@ -66,8 +66,6 @@ class ContactsGuiImpl implements ContactsGui {
 		my(ContactActionManager.class).setBaseComponent(_container);
 
 		_contactList.getComponent().setName("ContactList");
-		my(Synth.class).attach(_contactList.getComponent());
-		
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.getViewport().add(_contactList.getComponent());

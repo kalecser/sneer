@@ -11,7 +11,6 @@ import javax.swing.JLabel;
 
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.PickyConsumer;
@@ -39,12 +38,6 @@ class RLabelImpl extends RPanel<JLabel> implements TextWidget<JLabel>{
 		initComponents();
 	}
 	
-	public RLabelImpl(Signal<String> source, String synthName) {
-		this(source);
-		my(Synth.class).attach(_textComponent);
-		_textComponent.setName(synthName);
-	}
-
 	private String valueToString(final Object value) {
 		return (value==null)?"":value.toString();
 	}
