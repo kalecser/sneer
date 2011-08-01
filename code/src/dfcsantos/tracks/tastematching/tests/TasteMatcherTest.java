@@ -53,13 +53,9 @@ public class TasteMatcherTest extends BrickTestBase {
 	}
 
 	
-	private void assertRating(float rating, String folder, Boolean opinion) {
-		assertRating(rating, ana, folder, opinion);
-	}
-
-	private void assertRating(float expectedRating, Contact contact, String folder, Boolean opinion) {
-		float rating = _subject.rateEndorsement(contact, folder, opinion);
-		assertFloat(expectedRating, rating);
+	private void assertRating(float expected, String folder, Boolean opinion) {
+		float rating = _subject.rateEndorsement(ana, folder, opinion);
+		assertFloat(expected, rating);
 	}
 
 }

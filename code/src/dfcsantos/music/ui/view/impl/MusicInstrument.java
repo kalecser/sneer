@@ -72,9 +72,9 @@ class MusicInstrument implements Instrument {
 
 	private JComboBox folderDropDown() {
 		JComboBox result = new JComboBox();
-		result.addItem("<7 Downloaded Tracks>");
+		result.addItem("<Inbox - 7 Tracks>");
 		result.addItem("rock/nacional/Ira");
-		result.addItem("rock/Queen");
+		result.addItem("rock/Queen/werwerwerwerwer/wergregvdvvxcvxcv/xcvfdsgfsdfsdfsdxc vxcv/xcvxcvxcvsdfsadcsdc/xcvxcvxcvxcvxcvvc");
 		result.addItem("samba/raiz");
 		return result;
 	}
