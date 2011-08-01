@@ -2,6 +2,7 @@ package dfcsantos.tracks.tastematching.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.network.social.Contact;
@@ -31,6 +32,8 @@ public class TasteMatcherTest extends BrickTestBase {
 		assertRating(-2f/3, "rock", BAD);
 	}
 
+	
+	@Ignore
 	@Test
 	public void opinionsTrickleToParentFolders() {
 		assertRating(1f/1, "rock", GOOD);
