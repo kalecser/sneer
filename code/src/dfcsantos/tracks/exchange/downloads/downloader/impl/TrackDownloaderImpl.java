@@ -30,7 +30,7 @@ import dfcsantos.tracks.exchange.downloads.downloader.TrackDownloader;
 import dfcsantos.tracks.exchange.endorsements.TrackEndorsement;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 import dfcsantos.tracks.storage.rejected.RejectedTracksKeeper;
-import dfcsantos.tracks.tastematching.MusicalTasteMatcher;
+import dfcsantos.tracks.tastematching.TasteMatcher;
 
 class TrackDownloaderImpl implements TrackDownloader {
 
@@ -133,7 +133,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 
 	private float rate(TrackEndorsement e, Boolean opinion) {
-		return my(MusicalTasteMatcher.class).rateEndorsement(senderOf(e), folderFor(e), opinion);
+		return my(TasteMatcher.class).rateEndorsement(senderOf(e), folderFor(e), opinion);
 	}
 
 

@@ -4,9 +4,9 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.social.Contact;
 import sneer.foundation.lang.CacheMap;
 import sneer.foundation.lang.Producer;
-import dfcsantos.tracks.tastematching.MusicalTasteMatcher;
+import dfcsantos.tracks.tastematching.TasteMatcher;
 
-class MusicalTasteMatcherImpl implements MusicalTasteMatcher {
+class TasteMatcherImpl implements TasteMatcher {
 
 	private final CacheMap<Contact, PeerMatchCounter> countersByPeer = CacheMap.newInstance();
 
