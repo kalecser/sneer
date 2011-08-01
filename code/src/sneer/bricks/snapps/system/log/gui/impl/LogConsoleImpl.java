@@ -3,6 +3,7 @@ package sneer.bricks.snapps.system.log.gui.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -14,7 +15,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.BoundedRangeModel;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -58,7 +59,6 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 	private static final int CONSOLE_LINE_LIMIT = 1000;
 
 	private final Synth _synth = my(Synth.class);
-	{_synth.load(this.getClass());}
 	
 	private final Integer _OFFSET_X = 20;
 	private final Integer _OFFSET_Y = 0;
@@ -75,6 +75,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 	
 	@SuppressWarnings("unused")
 	private WeakContract refToAvoidGc;
+
 	
 	LogConsoleImpl(){
 		super();
@@ -82,7 +83,6 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		addMenuAction();
 		my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
 			initGui();
-//			initTranslucentWindow();
 			initWindowListener();
 		}});
 		
@@ -92,6 +92,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		}});
 		
 	}
+	
 	
 	protected void initWindowListener() {
 		this.addWindowListener(new WindowAdapter(){
@@ -111,20 +112,6 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		}});
 	}
 
-//	private void initTranslucentWindow() {
-//		TimingFramework timing = my(TimingFramework.class);
-//		final Animator fade = timing.windowOpacity().animator(this, 1f, 0.2f, 1000, 200);
-//		fade.playForward();
-//		
-//		this.addWindowFocusListener(new WindowFocusListener(){
-//			@Override public void windowLostFocus(WindowEvent e) { 
-//				fade.playForward(); 
-//			}
-//			@Override public void windowGainedFocus(WindowEvent e) { 
-//				fade.playBackward();
-//			}
-//		});
-//	}
 	
 	private void addMenuAction() {
 		_mainMenu.menu().addAction(40, "Open Log Console", new Closure() { @Override public void run() {
@@ -132,18 +119,23 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		}});
 	}
 
+	
 	private void open() {
 		setVisible(true);
 	}
 
+	
 	private void initGui() {
 		_txtLog.setEditable(false);
 		getContentPane().setLayout(new BorderLayout());
+
+		//_synth.attach(_tab, "FilterPanel");
+
+		Icon logIcon = _synth.load(this.getClass(), "log.png");
+		Icon filterIcon = _synth.load(this.getClass(), "filter.png");
 		
-		my(Synth.class).attach(_tab, "LogConsoleTab");
-		
-		_tab.addTab("", loadIcon("log.png"), _autoScroll, "Log");
-		_tab.addTab("", loadIcon("filter.png"), initFilterGui(), "Filter");
+		_tab.addTab("", logIcon, _autoScroll, "Log");
+		_tab.addTab("", filterIcon, initFilterGui(), "Filter");
 		
 		_tab.setTabPlacement(SwingConstants.RIGHT);
 		_tab.addChangeListener(new ChangeListener(){ @Override public void stateChanged(ChangeEvent e) {
@@ -158,19 +150,14 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		wbSetter.runWhenBaseContainerIsReady(new Closure() { @Override public void run() {
 			Rectangle unused = wbSetter.unusedArea();
 			setBounds(_X , unused.height-_HEIGHT-_OFFSET_Y, unused.width-_OFFSET_X, _HEIGHT-_OFFSET_Y);
-//			setFocusableWindowState(false);
-//			setVisible(true);
-//			setFocusableWindowState(true);
 		}});
 	}
 
-	private ImageIcon loadIcon(String fileName) {
-		return new ImageIcon(this.getClass().getResource(fileName));
-	}
 
 	private JPanel initFilterGui() {
 		JPanel filter = new JPanel();
-		_synth.attach(filter, "FilterPanel");
+		filter.setBackground(Color.WHITE);
+		filter.setForeground(Color.BLACK);
 		filter.setLayout(new GridBagLayout());
 		
 		final ListRegister<String> whiteListEntries = my(LogFilter.class).whiteListEntries();
@@ -184,11 +171,17 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		newInclude.setBorder(new TitledBorder(""));
 		filter.add(newInclude, new GridBagConstraints(0,2,1,1,1.0,0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0,4,2,2), 0,0));
 		
-		JButton addButton = new JButton();
-		JButton delButton = new JButton();
+		Icon addButtonIcon = _synth.load(this.getClass(), "add.png");
+		Icon delButtonIcon = _synth.load(this.getClass(), "del.png");
+		
+		JButton addButton = new JButton(addButtonIcon);
+		JButton delButton = new JButton(delButtonIcon);
+		
+		addButton.setMargin(new Insets(0, 2, 2, 0));
+		addButton.setBorderPainted(false);
 
-		_synth.attach(addButton,"AddButton");
-		_synth.attach(delButton,"DelButton");
+		delButton.setMargin(new Insets(8, 2, 2, 0));
+		delButton.setBorderPainted(false);
 		
 		filter.add(delButton, new GridBagConstraints(1,0,1,1,0.0,0.0, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0,0));
 		filter.add(addButton, new GridBagConstraints(1,2,1,1,0.0,0.0, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0,0));
