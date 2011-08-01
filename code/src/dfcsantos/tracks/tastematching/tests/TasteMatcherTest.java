@@ -2,7 +2,6 @@ package dfcsantos.tracks.tastematching.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.network.social.Contact;
@@ -33,9 +32,8 @@ public class TasteMatcherTest extends BrickTestBase {
 	}
 
 	
-	@Ignore
 	@Test
-	public void opinionsTrickleToParentFolders() {
+	public void parentFolderRatingOverridesZeroFolderRating() {
 		assertRating(1f/1, "rock", GOOD);
 		assertRating(-1f/1, "electro", BAD);
 		assertRating(1f/1, "samba/raiz", GOOD);
@@ -44,6 +42,17 @@ public class TasteMatcherTest extends BrickTestBase {
 		assertRating(1f/6, "jazz/modern", UNKNOWN); //Is unknown and parent folder also has zero rating so it uses all 6 opinions starting at root (all folders). GOOD + BAD + GOOD + 3 UNKNOWN = 1.
 	}
 
+	
+	@Test
+	public void foldersWithCommonPrefixAreNotSiblings() {
+		assertRating(1f/1, "rock", GOOD);
+		assertRating(-1f/1, "samba", BAD);
+		assertRating(-2f/2, "samba", BAD);
+		assertRating(-1/4f, "rockabilly", UNKNOWN); //Brother to rock (+1) and samba (-2).
+		assertRating(1f/2, "rock/80s", UNKNOWN); //Child of rock.
+	}
+
+	
 	private void assertRating(float rating, String folder, Boolean opinion) {
 		assertRating(rating, ana, folder, opinion);
 	}
