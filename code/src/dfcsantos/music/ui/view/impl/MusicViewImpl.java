@@ -9,7 +9,6 @@ import dfcsantos.music.ui.view.MusicViewListener;
 class MusicViewImpl implements MusicView {
 
 	private boolean alreadyInitialized;
-
 	
 	@Override
 	public Instrument initInstrument(MusicViewListener listener) {
