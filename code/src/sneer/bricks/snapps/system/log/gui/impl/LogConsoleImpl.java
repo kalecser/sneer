@@ -1,9 +1,10 @@
 package sneer.bricks.snapps.system.log.gui.impl;
 
+import static java.awt.Color.LIGHT_GRAY;
+import static java.awt.Color.WHITE;
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -25,6 +26,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -149,8 +151,8 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 
 	private JPanel initFilterGui() {
 		JPanel filter = new JPanel();
-		filter.setBackground(Color.WHITE);
-		filter.setForeground(Color.GRAY);
+		filter.setBackground(WHITE);
+		filter.setForeground(LIGHT_GRAY);
 		filter.setLayout(new GridBagLayout());
 		
 		final ListRegister<String> whiteListEntries = my(LogFilter.class).whiteListEntries();
@@ -237,7 +239,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		JButton button = new JButton(icon);
 		
 		button.setMargin(mangin);
-		button.setBorderPainted(false);
+		button.setBorder(new EmptyBorder(0, 0, 0, 0));
 		
 		return button;
 	}

@@ -11,6 +11,7 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.border.EmptyBorder;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.ram.meter.MemoryMeter;
@@ -60,7 +61,7 @@ class MemoryMeterGuiImpl implements MemoryMeterGui {
 		Icon icon = my(Synth.class).load(this.getClass(), "recycleOn.png");
 		JButton gcButton = new JButton(icon);
 		gcButton.setMargin(new Insets(0, 0, 0, 0));
-		gcButton.setBorderPainted(false);
+		gcButton.setBorder(new EmptyBorder(0, 0, 0, 0));
 		gcButton.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
 			System.gc();
 		}});
