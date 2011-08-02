@@ -53,7 +53,6 @@ import sneer.bricks.skin.main.instrumentregistry.Instrument;
 import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.menu.MenuFactory;
 import sneer.bricks.skin.menu.MenuGroup;
-import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.ByRef;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
@@ -325,7 +324,7 @@ class DashboardPanel extends JPanel {
 				_title.setFont(_title.getFont().deriveFont(10f));
 				_title.setBorder(new EmptyBorder(0, 10, 0, 0));
 				
-				_menu.setIcon(Environments.my(Synth.class).load(getClass(), "menu.png"));
+				_menu.setIcon(my(Synth.class).load(getClass(), "menu.png"));
 				_menu.setMargin(new Insets(10, 10, 5, 5));
 				_menu.setBorder(new EmptyBorder(0, 0, 0, 0));
 				_menu.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
