@@ -5,6 +5,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -28,7 +30,6 @@ class MusicInstrument implements Instrument {
 
 	private final MusicViewListener listener;
 
-	
 	MusicInstrument(MusicViewListener listener) {
 		this.listener = listener;
 	}
@@ -87,21 +88,65 @@ class MusicInstrument implements Instrument {
 
 	private JPanel playerControls() {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 0));
-		panel.add(new JButton(">"));
-		panel.add(new JButton(">>"));
-		panel.add(new JButton("stop"));
-		panel.add(new JButton("shuf"));
-		JSlider vol = new JSlider(SwingConstants.HORIZONTAL, 0, MAX_VOLUME, 0);
-		vol.setPreferredSize(new Dimension(60, vol.getPreferredSize().height));
-		panel.add(vol);
+
+		panel.add(playButton());
+		panel.add(skipButton());
+		panel.add(stopButton());
+		panel.add(shuffleButton());
+		panel.add(volumeSlider());
 		return panel;
 	}
 
+
+	private JSlider volumeSlider() {
+		JSlider vol = new JSlider(SwingConstants.HORIZONTAL, 0, MAX_VOLUME, 0);
+		vol.setPreferredSize(new Dimension(60, vol.getPreferredSize().height));
+		return vol;
+	}
+
+
+	private JButton shuffleButton() {
+		JButton shuffle = new JButton("}{");
+		shuffle.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
+			listener.shuffle();
+		}});
+		return shuffle;
+	}
+
+
+	private JButton stopButton() {
+		JButton stop = new JButton("[]");
+		stop.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
+			listener.stop();
+		}});
+		return stop;
+	}
+
+
+	private JButton skipButton() {
+		JButton skip = new JButton(">>");
+		skip.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
+			listener.skip();
+		}});
+		return skip;
+	}
+
+
+	private JButton playButton() {
+		JButton play = new JButton(">");
+		play.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
+			listener.pauseResume();
+		}});
+		return play;
+	}
+
+	
 	@Override
 	public int defaultHeight() {
 		return 120;
 	}
 
+	
 	@Override
 	public String title() {
 		return "Music";

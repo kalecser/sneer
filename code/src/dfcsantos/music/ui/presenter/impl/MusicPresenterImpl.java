@@ -49,4 +49,23 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 		my(Music.class).trackExchangeActivator().consume(!isExchangingTracks().currentValue());
 	}
 
+	@Override
+	public void pauseResume() {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	}
+
+	@Override
+	public void skip() {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	}
+
+	@Override
+	public void shuffle() {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	}
+
+	@Override
+	public void stop() {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	}
 }

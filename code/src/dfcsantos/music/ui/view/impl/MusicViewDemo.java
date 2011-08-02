@@ -24,7 +24,6 @@ import dfcsantos.music.ui.view.MusicView;
 import dfcsantos.music.ui.view.MusicViewListener;
 
 
-
 class MusicViewDemo {
 
 	public static void main(String[] args) {
@@ -60,10 +59,11 @@ class MusicViewDemo {
 				return isExchangingTracks.output();
 			}
 			
-			@Override
-			public void chooseTracksFolder() {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
-			}
+			@Override public void chooseTracksFolder() {}
+			@Override public void pauseResume() { }
+			@Override public void skip() { }
+			@Override public void shuffle() { }
+			@Override public void stop() { }
 		});
 		instrument.init(new InstrumentPanel() {
 			@Override public Container contentPane() { return instrumentPanel; }

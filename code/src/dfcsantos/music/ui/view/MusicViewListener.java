@@ -6,4 +6,8 @@ public interface MusicViewListener {
 	void chooseTracksFolder();
 	void toggleTrackExchange();
 	Signal<Boolean> isExchangingTracks();
+	void pauseResume();
+	void skip();
+	void shuffle();
+	void stop();
 }
