@@ -58,8 +58,6 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 	private static final String TITLE = "Log";
 	private static final int CONSOLE_LINE_LIMIT = 1000;
 
-	private final Synth _synth = my(Synth.class);
-	
 	private final Integer _OFFSET_X = 20;
 	private final Integer _OFFSET_Y = 0;
 	private final Integer _HEIGHT = 160;
@@ -129,13 +127,8 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		_txtLog.setEditable(false);
 		getContentPane().setLayout(new BorderLayout());
 
-		//_synth.attach(_tab, "FilterPanel");
-
-		Icon logIcon = _synth.load(this.getClass(), "log.png");
-		Icon filterIcon = _synth.load(this.getClass(), "filter.png");
-		
-		_tab.addTab("", logIcon, _autoScroll, "Log");
-		_tab.addTab("", filterIcon, initFilterGui(), "Filter");
+		_tab.addTab("Log", _autoScroll);
+		_tab.addTab("Filter", initFilterGui());
 		
 		_tab.setTabPlacement(SwingConstants.RIGHT);
 		_tab.addChangeListener(new ChangeListener(){ @Override public void stateChanged(ChangeEvent e) {
@@ -157,7 +150,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 	private JPanel initFilterGui() {
 		JPanel filter = new JPanel();
 		filter.setBackground(Color.WHITE);
-		filter.setForeground(Color.BLACK);
+		filter.setForeground(Color.GRAY);
 		filter.setLayout(new GridBagLayout());
 		
 		final ListRegister<String> whiteListEntries = my(LogFilter.class).whiteListEntries();
@@ -171,18 +164,9 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		newInclude.setBorder(new TitledBorder(""));
 		filter.add(newInclude, new GridBagConstraints(0,2,1,1,1.0,0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0,4,2,2), 0,0));
 		
-		Icon addButtonIcon = _synth.load(this.getClass(), "add.png");
-		Icon delButtonIcon = _synth.load(this.getClass(), "del.png");
-		
-		JButton addButton = new JButton(addButtonIcon);
-		JButton delButton = new JButton(delButtonIcon);
-		
-		addButton.setMargin(new Insets(0, 2, 2, 0));
-		addButton.setBorderPainted(false);
+		JButton addButton = newButton("add.png", new Insets(0, 2, 2, 0));
+		JButton delButton = newButton("del.png", new Insets(8, 2, 2, 0));
 
-		delButton.setMargin(new Insets(8, 2, 2, 0));
-		delButton.setBorderPainted(false);
-		
 		filter.add(delButton, new GridBagConstraints(1,0,1,1,0.0,0.0, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0,0));
 		filter.add(addButton, new GridBagConstraints(1,2,1,1,0.0,0.0, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0,0));
 		
@@ -247,4 +231,15 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 			: " (Filter)";
 	}
 
+	
+	private JButton newButton(final String iconName, final Insets mangin) {
+		Icon icon = my(Synth.class).load(this.getClass(), iconName);
+		JButton button = new JButton(icon);
+		
+		button.setMargin(mangin);
+		button.setBorderPainted(false);
+		
+		return button;
+	}
+	
 }
