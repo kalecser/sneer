@@ -52,10 +52,10 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 	private final JList _files = new JList();
 	private final TextDiffPanel _diffPanel = my(TextDiffPanels.class).newPanel();
 	
-	private final Integer _OFFSET_X = 20; //(Integer) _synth.getDefaultProperty("LogConsoleImpl.offsetX");
-	private final Integer _OFFSET_Y = 0; //(Integer) _synth.getDefaultProperty("LogConsoleImpl.offsetY");
-	private final Integer _HEIGHT = 160; //(Integer) _synth.getDefaultProperty("LogConsoleImpl.height");
-	private final Integer _X = 10;  //(Integer) _synth.getDefaultProperty("LogConsoleImpl.x");
+	private final Integer _OFFSET_X = 20;
+	private final Integer _OFFSET_Y = 0;
+	private final Integer _HEIGHT = 160;
+	private final Integer _X = 10;
 
 	protected Object _lastSelectedNode;
 	
