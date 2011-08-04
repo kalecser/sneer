@@ -3,6 +3,8 @@ package sneer.bricks.skin.notmodal.filechooser.impl;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -25,10 +27,18 @@ class FileChoosersImpl implements FileChoosers {
 		return new NotModalFileChooser(selectionReceiver);
 	}
 
+	
 	@Override
 	public JFileChooser newFileChooser(Consumer<File> selectionReceiver, int fileSelectionMode) {
 		return new NotModalFileChooser(selectionReceiver, fileSelectionMode);
 	}
+
+	
+	@Override
+	public void newNativeFileChooser(Consumer<File> selectedFile) {
+		new NativeFileChooser(null, selectedFile);
+	}
+
 
 	private static class NotModalFileChooser extends JFileChooser {
 
@@ -131,13 +141,42 @@ class FileChoosersImpl implements FileChoosers {
 		}
 	}
 	
+	
+	private static class NativeFileChooser extends FileDialog {
+		private final Consumer<File> _selectionReceiver;
+		
+		public NativeFileChooser(Frame parent, Consumer<File> selectionReceiver) {
+			super(parent);
+			_selectionReceiver = selectionReceiver;
+			setResizable(true);
+			setVisible(true);
+		}
+
+		@Override
+		public void setDirectory(String dir) {
+			super.setDirectory(dir);
+			if (dir != null)
+				_selectionReceiver.consume(new File(withSelectedPath()));
+		}
+
+		private String withSelectedPath() {
+			return getDirectory() + getFile();
+		}
+	}
+
 	public static void main(String[] args) throws Exception{
+//		Consumer<File> selectionReceiver = new Consumer<File>(){ @Override public void consume(File file) {
+//			System.out.println(file);
+//		}};
+//
+//		JFileChooser chooser = new FileChoosersImpl().newFileChooser(selectionReceiver);
+//		chooser.showOpenDialog(null);
+
 		Consumer<File> selectionReceiver = new Consumer<File>(){ @Override public void consume(File file) {
 			System.out.println(file);
 		}};
-
-		JFileChooser chooser = new FileChoosersImpl().newFileChooser(selectionReceiver);
-		chooser.showOpenDialog(null);
+		
+		new FileChoosersImpl().newNativeFileChooser(selectionReceiver);
 	}
 
 }
