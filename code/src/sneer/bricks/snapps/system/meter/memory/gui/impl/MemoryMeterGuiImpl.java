@@ -18,8 +18,8 @@ import sneer.bricks.hardware.ram.meter.MemoryMeter;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
+import sneer.bricks.skin.main.icons.Icons;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
-import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.bricks.snapps.system.meter.memory.gui.MemoryMeterGui;
@@ -58,7 +58,7 @@ class MemoryMeterGuiImpl implements MemoryMeterGui {
 
 
 	private JButton newGcButton() {
-		Icon icon = my(Synth.class).load(this.getClass(), "recycleOn.png");
+		Icon icon = my(Icons.class).load(this.getClass(), "recycleOn.png");
 		JButton gcButton = new JButton(icon);
 		gcButton.setMargin(new Insets(0, 0, 0, 0));
 		gcButton.setBorder(new EmptyBorder(0, 0, 0, 0));

@@ -15,6 +15,7 @@ public class Main {
 		new Sneer();
 	}
 
+	
 	private static void overcomeWebstartSecurityRestrictions() {
 		System.setSecurityManager(new PermissiveSecurityManager());
 	}

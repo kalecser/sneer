@@ -2,14 +2,9 @@ package sneer.installer;
 
 import static sneer.main.SneerCodeFolders.SNEER_HOME;
 
-import java.io.IOException;
-import java.text.ParseException;
-
 import javax.swing.JFrame;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.plaf.metal.MetalLookAndFeel;
-import javax.swing.plaf.synth.SynthLookAndFeel;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 
 public class InstallationWizard extends JFrame {
@@ -17,18 +12,14 @@ public class InstallationWizard extends JFrame {
 	private final String WIZARD_TITLE = "Sneer Installation Wizard";
 
 	InstallationWizard() throws Exception {
-		loadSynthLookAndFeel();
-		dialogsWorkflow();
-		loadMetalLookAndFeel();
-	}
-
-	private void dialogsWorkflow() throws Exception {
+		setLookAndFeel();
+		
 		welcome();
 		license();
 		configInformation();
 		new Installation();
 	}
-	
+
 	private void welcome() {
 		showDialog(
 		"Welcome to Sneer, the first sovereign computing peer.  :)\n\n" +
@@ -74,15 +65,15 @@ public class InstallationWizard extends JFrame {
 		}};
 	}
 
-	private static void loadSynthLookAndFeel() throws UnsupportedLookAndFeelException, ParseException, IOException {
-		SynthLookAndFeel _synth = new SynthLookAndFeel();
-		UIManager.setLookAndFeel(_synth);
-		_synth.load(InstallationWizard.class.getResource("synth.xml"));
+	private static void setLookAndFeel() {
+		try {
+		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
+		        if ("Nimbus".equals(info.getName()))
+		            UIManager.setLookAndFeel(info.getClassName());
+		} catch (Exception e) {
+			// Default look and feel will be used.
+		}
 	}
 
-	private static void loadMetalLookAndFeel() throws UnsupportedLookAndFeelException, ParseException, IOException {
-		UIManager.setLookAndFeel(new MetalLookAndFeel());
-	}
-	
 	private static final long serialVersionUID = 1L;
 }

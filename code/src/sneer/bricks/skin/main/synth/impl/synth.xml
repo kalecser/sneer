@@ -1,8 +1,0 @@
-<synth>
-
-	<style id="default">
-		<font name="Verdana" size="13" />
-	</style>
-	<bind style="default" type="region" key=".*" />
-
-</synth>

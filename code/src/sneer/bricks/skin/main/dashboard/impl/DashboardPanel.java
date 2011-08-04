@@ -49,8 +49,8 @@ import org.jdesktop.jxlayer.plaf.AbstractLayerUI;
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
+import sneer.bricks.skin.main.icons.Icons;
 import sneer.bricks.skin.main.instrumentregistry.Instrument;
-import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.menu.MenuFactory;
 import sneer.bricks.skin.menu.MenuGroup;
 import sneer.foundation.lang.ByRef;
@@ -324,7 +324,7 @@ class DashboardPanel extends JPanel {
 				_title.setFont(_title.getFont().deriveFont(10f));
 				_title.setBorder(new EmptyBorder(0, 10, 0, 0));
 				
-				_menu.setIcon(my(Synth.class).load(getClass(), "menu.png"));
+				_menu.setIcon(my(Icons.class).load(getClass(), "menu.png"));
 				_menu.setMargin(new Insets(10, 10, 5, 5));
 				_menu.setBorder(new EmptyBorder(0, 0, 0, 0));
 				_menu.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {

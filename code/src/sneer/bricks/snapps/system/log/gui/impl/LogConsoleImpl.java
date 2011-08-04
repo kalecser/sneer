@@ -41,8 +41,8 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.gates.buffers.assync.AssynchronousBuffers;
 import sneer.bricks.skin.main.dashboard.Dashboard;
+import sneer.bricks.skin.main.icons.Icons;
 import sneer.bricks.skin.main.menu.MainMenu;
-import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.main.title.ProcessTitle;
 import sneer.bricks.skin.menu.MenuFactory;
 import sneer.bricks.skin.menu.MenuGroup;
@@ -235,7 +235,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 
 	
 	private JButton newButton(final String iconName, final Insets mangin) {
-		Icon icon = my(Synth.class).load(this.getClass(), iconName);
+		Icon icon = my(Icons.class).load(this.getClass(), iconName);
 		JButton button = new JButton(icon);
 		
 		button.setMargin(mangin);

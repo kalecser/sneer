@@ -11,8 +11,8 @@ import sneer.bricks.pulp.bandwidth.BandwidthCounter;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
+import sneer.bricks.skin.main.icons.Icons;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
-import sneer.bricks.skin.main.synth.Synth;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.bricks.snapps.system.meter.bandwidth.gui.BandwidthMeterGui;
@@ -66,7 +66,7 @@ class BandwidthMeterGuiImpl implements BandwidthMeterGui {
 	}
 	
 	private JLabel newIcon(final String imageName){
-		Icon icon = my(Synth.class).load(this.getClass(), imageName);
+		Icon icon = my(Icons.class).load(this.getClass(), imageName);
 		return new JLabel(icon);
 	}
 	

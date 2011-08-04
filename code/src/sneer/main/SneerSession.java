@@ -11,6 +11,9 @@ import static sneer.main.SneerFolders.TMP;
 
 import java.io.File;
 
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+
 import sneer.bricks.hardware.clock.ticker.ClockTicker;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.robust.RobustExceptionLogging;
@@ -40,8 +43,9 @@ public class SneerSession {
 		setContextClassLoader();
 		configure(my(FolderConfig.class));
 		my(ClockTicker.class);
+
 		startLogging();
-		
+		setLookAndFeel();
 		my(PublicKeyInitDialog.class);
 		my(NameInitDialog.class);
 		
@@ -82,4 +86,13 @@ public class SneerSession {
 		property.set(folder);
 	}
 
+	private static void setLookAndFeel() {
+		try {
+		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
+		        if ("Nimbus".equals(info.getName()))
+		            UIManager.setLookAndFeel(info.getClassName());
+		} catch (Exception e) {
+			// Default look and feel will be used.
+		}
+	}
 }
