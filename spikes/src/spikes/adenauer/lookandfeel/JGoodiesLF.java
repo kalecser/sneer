@@ -76,34 +76,23 @@ public class JGoodiesLF {
 	private static JPanel fileChoose() {
 		JButton callFileChooser = new JButton("File");
 		callFileChooser.addActionListener( new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
-			NativeFileChooser fileChooser = new NativeFileChooser(null);
-			fileChooser.setResizable(true);
-			fileChooser.setVisible(true);
-			
-			System.out.println("file selected: " + fileChooser.getDirectory() + fileChooser.getFile());
+			openFileDialog();
+			System.out.println("Finish...");
 		}});
 		JPanel fileChoosePanel = new JPanel();
 		fileChoosePanel.add(callFileChooser, BorderLayout.WEST);
 		return fileChoosePanel;
 	}
 
-	private static class NativeFileChooser extends FileDialog {
 
-		public NativeFileChooser(Frame parent) {
-			super(parent, "Open");
-			setMode(FileDialog.LOAD);
-		}
-
-		@Override
-		public void setDirectory(String dir) {
-			System.out.println("directory : " + dir);
-			super.setDirectory(dir);
-		}
-
-		@Override
-		public void setFile(String file) {
-			System.out.println("file: " + file);
-			super.setFile(file);
-		}
+	private static void openFileDialog() {
+		new Thread() {  @Override public void run() {
+			FileDialog fileDialog = new FileDialog((Frame) null);
+			fileDialog.setMode(FileDialog.LOAD);
+			fileDialog.setResizable(true);
+			fileDialog.setVisible(true);	
+			
+			System.out.println("file selected: " + fileDialog.getDirectory() + fileDialog.getFile());
+		}}.start();
 	}
 }
