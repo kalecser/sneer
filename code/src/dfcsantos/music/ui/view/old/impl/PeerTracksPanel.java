@@ -26,9 +26,7 @@ import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 class PeerTracksPanel extends AbstractTabPane {
 
     private final JLabel _peerTracksCountTabLabel			= newReactiveLabel();
-	private final JFileChooser _sharedTracksFolderChooser;
     private final JButton _chooseSharedTracksFolder			= new JButton();
-
     private final JCheckBox _trackExchange					= newReactiveCheckBox();
 
     private final JButton _downloadsDetails					= new JButton();
@@ -37,13 +35,6 @@ class PeerTracksPanel extends AbstractTabPane {
     @SuppressWarnings("unused")	private final WeakContract _toAvoidGC;
 
 	PeerTracksPanel() {
-        _sharedTracksFolderChooser = my(FileChoosers.class).newFileChooser(new Consumer<File>() { @Override public void consume(File chosenFolder) {
-        	if (chosenFolder != null) {
-        		_controller.setSharedTracksFolder(chosenFolder);
-        	}
-    	}}, JFileChooser.DIRECTORIES_ONLY);
-    	_sharedTracksFolderChooser.setCurrentDirectory(my(TracksFolderKeeper.class).sharedTracksFolder().currentValue());
-
         _chooseSharedTracksFolder.setText("Shared Folder");
         _chooseSharedTracksFolder.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
         	chooseSharedTracksFolderActionPerformed();
@@ -103,7 +94,9 @@ class PeerTracksPanel extends AbstractTabPane {
 	}
 
     private void chooseSharedTracksFolderActionPerformed() {
-    	_sharedTracksFolderChooser.showOpenDialog(null);
+    	my(FileChoosers.class).choose(new Consumer<File>() {  @Override public void consume(File chosenFolder) {
+        	_controller.setSharedTracksFolder(chosenFolder);
+		}}, JFileChooser.DIRECTORIES_ONLY, my(TracksFolderKeeper.class).sharedTracksFolder().currentValue());
     }
 
 	private void downloadsDetailsActionPerformed() {

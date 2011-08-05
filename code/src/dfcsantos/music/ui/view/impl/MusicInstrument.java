@@ -21,9 +21,6 @@ import sneer.bricks.skin.main.instrumentregistry.Instrument;
 import sneer.bricks.skin.menu.MenuGroup;
 import dfcsantos.music.ui.view.MusicViewListener;
 
-
-
-
 class MusicInstrument implements Instrument {
 
 	private static final int MAX_VOLUME = 10;
@@ -58,7 +55,6 @@ class MusicInstrument implements Instrument {
 		actions.addAction(30, "Downloads...", new Runnable() { @Override public void run() {
 			DownloadsView.showInstance();
 		}});
-	
 	}
 
 

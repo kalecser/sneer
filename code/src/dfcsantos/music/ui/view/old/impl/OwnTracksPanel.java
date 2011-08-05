@@ -23,18 +23,12 @@ import dfcsantos.music.Music.OperatingMode;
 class OwnTracksPanel extends AbstractTabPane {
 
 	private final JLabel _ownTracksTabLabel				= newReactiveLabel();
-	private final JFileChooser _playingFolderChooser;
     private final JButton _choosePlayingFolder			= new JButton();
     private final JCheckBox _shuffle					= new JCheckBox();
 
 	@SuppressWarnings("unused") private final WeakContract _toAvoidGC;
 
 	OwnTracksPanel() {
-		_playingFolderChooser = my(FileChoosers.class).newFileChooser(new Consumer<File>() { @Override public void consume(File chosenFolder) {
-	    	if (chosenFolder != null)
-	    		_controller.setPlayingFolder(chosenFolder);
-		}}, JFileChooser.DIRECTORIES_ONLY);
-		_playingFolderChooser.setCurrentDirectory(_controller.playingFolder());
 
 	    _choosePlayingFolder.setText("Playing Folder");
 	    _choosePlayingFolder.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent notUsed) {
@@ -79,7 +73,9 @@ class OwnTracksPanel extends AbstractTabPane {
 	}
 
 	private void choosePlayingFolderActionPerformed() {
-    	_playingFolderChooser.showOpenDialog(null);
+		my(FileChoosers.class).choose(new Consumer<File>() {  @Override public void consume(File selectedFolder) {
+			_controller.setPlayingFolder(selectedFolder);
+		}}, JFileChooser.DIRECTORIES_ONLY, _controller.playingFolder());
     }
 
     private void shuffleActionPerformed() {

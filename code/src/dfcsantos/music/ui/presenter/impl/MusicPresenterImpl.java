@@ -17,26 +17,18 @@ import dfcsantos.music.ui.view.MusicViewListener;
 
 class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
-	private final JFileChooser tracksFolderChooser;
-
 	{
-        tracksFolderChooser = initTracksFolderChooser();
     	my(InstrumentRegistry.class).registerInstrument(my(MusicView.class).initInstrument(this));
 	}
 
 	
-	private JFileChooser initTracksFolderChooser() {
-		JFileChooser chooser = my(FileChoosers.class).newFileChooser(new Consumer<File>() { @Override public void consume(File chosenFolder) {
-        	if (chosenFolder != null)
-        		my(Music.class).setSharedTracksFolder(chosenFolder);
-    	}}, JFileChooser.DIRECTORIES_ONLY);
-		chooser.setCurrentDirectory(my(Music.class).sharedTracksFolder().currentValue());
-		return chooser;
-	}
-
 	@Override
 	public void chooseTracksFolder() {
-    	tracksFolderChooser.showOpenDialog(null);
+		File currentSharedTracksFolder = my(Music.class).sharedTracksFolder().currentValue();
+		my(FileChoosers.class).choose(new Consumer<File>() {  @Override public void consume(File chosenFolder) {
+			if (chosenFolder != null)
+				my(Music.class).setSharedTracksFolder(chosenFolder);
+		}}, JFileChooser.DIRECTORIES_ONLY, currentSharedTracksFolder);
 	}
 
 	@Override
