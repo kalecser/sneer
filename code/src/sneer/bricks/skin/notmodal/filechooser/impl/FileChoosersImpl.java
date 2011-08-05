@@ -18,7 +18,7 @@ class FileChoosersImpl implements FileChoosers {
 		my(Threads.class).startDaemon("Multiple File Chooser", new Closure() {  @Override public void run() {
 			JFileChooser fileChooser = newfileChooser(fileSelectionMode);
 			fileChooser.setMultiSelectionEnabled(true);
-			if (isSelectedFile(fileChooser))
+			if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
 				consumer.consume(fileChooser.getSelectedFiles());
 		}});
 	}
@@ -28,15 +28,9 @@ class FileChoosersImpl implements FileChoosers {
 	public void choose(final Consumer<File> consumer, final int fileSelectionMode, final File defaultFileOrDir) {
 		my(Threads.class).startDaemon("File Chooser", new Closure() {  @Override public void run() {
 			JFileChooser fileChooser = newfileChooser(fileSelectionMode, defaultFileOrDir);
-			if (isSelectedFile(fileChooser))
+			if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
 				consumer.consume(fileChooser.getSelectedFile());
 		}});
-	}
-	
-	
-	synchronized
-	private boolean isSelectedFile(JFileChooser fileChooser) {
-		return fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION;
 	}
 	
 	
