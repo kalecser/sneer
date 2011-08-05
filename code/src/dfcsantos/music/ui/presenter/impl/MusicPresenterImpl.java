@@ -19,45 +19,62 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
 	{
     	my(InstrumentRegistry.class).registerInstrument(my(MusicView.class).initInstrument(this));
+		checkSharedTrackersFolder();
 	}
 
 	
 	@Override
 	public void chooseTracksFolder() {
-		File currentSharedTracksFolder = my(Music.class).sharedTracksFolder().currentValue();
 		my(FileChoosers.class).choose(new Consumer<File>() {  @Override public void consume(File chosenFolder) {
-			if (chosenFolder != null)
-				my(Music.class).setSharedTracksFolder(chosenFolder);
-		}}, JFileChooser.DIRECTORIES_ONLY, currentSharedTracksFolder);
+			my(Music.class).setSharedTracksFolder(chosenFolder);
+		}}, JFileChooser.DIRECTORIES_ONLY, currentSharedTracksFolder());
 	}
 
+	
 	@Override
 	public Signal<Boolean> isExchangingTracks() {
 		return my(Music.class).isTrackExchangeActive();
 	}
 
+	
 	@Override
 	public void toggleTrackExchange() {
 		my(Music.class).trackExchangeActivator().consume(!isExchangingTracks().currentValue());
 	}
 
+	
 	@Override
 	public void pauseResume() {
 		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
+	
 	@Override
 	public void skip() {
 		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
+	
 	@Override
 	public void shuffle() {
 		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
+
 	@Override
 	public void stop() {
 		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
 	}
+	
+
+	private void checkSharedTrackersFolder() {
+		if (currentSharedTracksFolder() == null)
+			chooseTracksFolder();
+	}
+	
+	
+	private File currentSharedTracksFolder() {
+		return my(Music.class).sharedTracksFolder().currentValue();
+	}
+	
 }
