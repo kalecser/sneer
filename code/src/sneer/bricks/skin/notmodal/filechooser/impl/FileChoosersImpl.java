@@ -14,19 +14,45 @@ import sneer.foundation.lang.Consumer;
 class FileChoosersImpl implements FileChoosers {
 
 	@Override
-	public JFileChooser newFileChooser(Consumer<File> selectionReceiver) {
-		return new JFileChooser();
+	public void choose(final Consumer<File[]> consumer, final int fileSelectionMode) {
+		my(Threads.class).startDaemon("Multiple File Chooser", new Closure() {  @Override public void run() {
+			JFileChooser fileChooser = newfileChooser(fileSelectionMode);
+			fileChooser.setMultiSelectionEnabled(true);
+			if (isSelectedFile(fileChooser))
+				consumer.consume(fileChooser.getSelectedFiles());
+		}});
 	}
-
+	
 	
 	@Override
 	public void choose(final Consumer<File> consumer, final int fileSelectionMode, final File defaultFileOrDir) {
 		my(Threads.class).startDaemon("File Chooser", new Closure() {  @Override public void run() {
-			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setFileSelectionMode(fileSelectionMode);
-			fileChooser.setCurrentDirectory(defaultFileOrDir);
-			if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) ;
+			JFileChooser fileChooser = newfileChooser(fileSelectionMode, defaultFileOrDir);
+			if (isSelectedFile(fileChooser))
 				consumer.consume(fileChooser.getSelectedFile());
 		}});
 	}
+	
+	
+	synchronized
+	private boolean isSelectedFile(JFileChooser fileChooser) {
+		return fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION;
+	}
+	
+	
+	synchronized
+	private JFileChooser newfileChooser(int fileSelectionMode, final File defaultFileOrDir) {
+		JFileChooser fileChooser = newfileChooser(fileSelectionMode);
+		fileChooser.setCurrentDirectory(defaultFileOrDir);
+		return fileChooser;
+	}
+
+	
+	synchronized
+	private JFileChooser newfileChooser(int fileSelectionMode) {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileSelectionMode(fileSelectionMode);
+		return fileChooser;
+	}
+	
 }
