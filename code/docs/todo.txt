@@ -13,9 +13,6 @@ Swarm ===================================================
 
 Adenauer ================================================
 
-	Synth - Remove
-	FileChoosers brick - Try to use native FileChooser instead of Swing.
-	
 
 Volunteers ==============================================
 	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and ` can both use the same Gui.
