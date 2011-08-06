@@ -1,4 +1,4 @@
-package sneer.bricks.skin.notmodal.filechooser;
+package sneer.bricks.skin.filechooser;
 
 import java.io.File;
 

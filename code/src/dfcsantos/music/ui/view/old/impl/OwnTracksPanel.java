@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
+import sneer.bricks.skin.filechooser.FileChoosers;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;

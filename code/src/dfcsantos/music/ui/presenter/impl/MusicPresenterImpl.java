@@ -7,8 +7,8 @@ import java.io.File;
 import javax.swing.JFileChooser;
 
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.skin.filechooser.FileChoosers;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
-import sneer.bricks.skin.notmodal.filechooser.FileChoosers;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.music.Music;
 import dfcsantos.music.ui.presenter.MusicPresenter;
