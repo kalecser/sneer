@@ -8,6 +8,7 @@ public interface MusicViewListener {
 	Signal<Boolean> isExchangingTracks();
 	void pauseResume();
 	void skip();
-	void shuffle();
+	void shuffle(boolean onOff);
 	void stop();
+	void volume(int percent);
 }

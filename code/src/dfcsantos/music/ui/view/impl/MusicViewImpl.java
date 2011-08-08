@@ -8,13 +8,18 @@ import dfcsantos.music.ui.view.MusicViewListener;
 
 class MusicViewImpl implements MusicView {
 
-	private boolean alreadyInitialized;
+	private MusicInstrument instrument;
 	
 	@Override
 	public Instrument initInstrument(MusicViewListener listener) {
-		if (alreadyInitialized) throw new IllegalStateException();
-		alreadyInitialized = true;
-		return new MusicInstrument(listener);
+		if (instrument != null) throw new IllegalStateException();
+		instrument = new MusicInstrument(listener);
+		return instrument;
+	}
+
+	@Override
+	public void setVolume(int percent) {
+		instrument.setVolume(percent);
 	}
 
 }
