@@ -7,7 +7,9 @@ import sneer.foundation.brickness.Brick;
 @Snapp
 @Brick
 public interface OwnPort extends Attribute<Integer> {
-
-	Integer DEFAULT = 0; 
+	
+	Integer NOT_YET_SET = -1;
+	
+	Integer DEFAULT = NOT_YET_SET; 
 
 }

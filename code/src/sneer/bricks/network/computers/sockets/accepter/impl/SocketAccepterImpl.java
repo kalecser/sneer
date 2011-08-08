@@ -51,7 +51,7 @@ class SocketAccepterImpl implements SocketAccepter {
 
 	SocketAccepterImpl() {
 		_receptionRefToAvoidGc = _ownPort.addReceiver(new Consumer<Integer>() { @Override public void consume(Integer port) {
-			setPort(port);
+			setPort(port == null ? 0 : port);
 		}});
 
 		_threads.startStepping(new Closure() { @Override public void run() {
@@ -106,7 +106,7 @@ class SocketAccepterImpl implements SocketAccepter {
 	}
 
 	private void openServerSocket(int port) {
-		if (port == 0) return;
+		if (port <= 0) return;
 		try {
 			_serverSocket = _network.openServerSocket(port);
 			_lights.turnOffIfNecessary(_cantOpenServerSocket);

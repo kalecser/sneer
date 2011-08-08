@@ -12,7 +12,8 @@ class OwnPortImpl implements OwnPort {
 	{
 		my(Attributes.class).registerAttribute(OwnPort.class);
 		
-		if (my(Attributes.class).myAttributeValue(OwnPort.class).currentValue() == 0) {
+		Integer currentValue = my(Attributes.class).myAttributeValue(OwnPort.class).currentValue();
+		if (currentValue == NOT_YET_SET) {
 			int port = randomPort();
 			my(Attributes.class).myAttributeSetter(OwnPort.class).consume(port);
 		}
