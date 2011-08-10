@@ -13,6 +13,7 @@ import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.music.Music;
+import dfcsantos.music.store.MusicStore;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.exchange.TrackExchange;
 import dfcsantos.tracks.exchange.downloads.counter.TrackDownloadCounter;
@@ -29,40 +30,20 @@ public class MusicImpl implements Music {
 
 	private final DJ _dj = new DJ(_trackToPlay.output(), new Closure() { @Override public void run() { skip(); } });
 
-	private Register<Boolean> _isDownloadActive = my(Signals.class).newRegister(false);  
+	@SuppressWarnings("unused") private final WeakContract refToAvoidGc;
+	@SuppressWarnings("unused") private final WeakContract refToAvoidGc2;
 
-	@SuppressWarnings("unused") private final WeakContract _isDownloadActiveConsumerCtr;
-
-	@SuppressWarnings("unused") private final WeakContract _operatingModeConsumerCtr;
-
-	MusicImpl() {
-		restore();
-
+	{
 		my(TrackExchange.class).setOnOffSwitch(isTrackExchangeActive());
 
-		_isDownloadActiveConsumerCtr = isTrackExchangeActive().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean notUsed) {
-			save();
+		refToAvoidGc = my(MusicStore.class).volumePercent().output().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer percent) {
+			_dj.volumePercent(percent);
 		}});
-
-		_operatingModeConsumerCtr = operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode mode) {
+		
+		refToAvoidGc2 = operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode mode) {
 			reset();
 			_trackSource = (mode.equals(OperatingMode.OWN)) ? OwnTracks.INSTANCE : PeerTracks.INSTANCE;
 		}});
-	}
-
-	private void restore() {
-		Object[] restoredState = Store.restore();
-		if (restoredState == null) return;
-
-		_isDownloadActive.setter().consume((Boolean) restoredState[0]);
-
-		if(restoredState.length > 2) {
-			volumePercent((Integer)restoredState[2]);
-		}
-	}
-
-	private void save() {
-		Store.save(isTrackExchangeActive().currentValue(), null, volumePercent().currentValue()); // "null" was used by downloadAllowance that is no longer necessary
 	}
 
 	private void reset() {
@@ -87,7 +68,7 @@ public class MusicImpl implements Music {
 
 	@Override
 	public void setPlayingFolder(File playingFolder) {
-		my(TracksFolderKeeper.class).setPlayingFolder(playingFolder);
+		my(TracksFolderKeeper.class).setPlayingFolder(playingFolder.getAbsolutePath());
 		skip();
 	}
 
@@ -98,7 +79,7 @@ public class MusicImpl implements Music {
 
 	@Override
 	public void setTracksFolder(File tracksFolder) {
-		my(TracksFolderKeeper.class).setTracksFolder(tracksFolder);
+		my(TracksFolderKeeper.class).setTracksFolder(tracksFolder.getAbsolutePath());
 	}
 
 	@Override
@@ -182,12 +163,12 @@ public class MusicImpl implements Music {
 
 	@Override
 	public Signal<Boolean> isTrackExchangeActive() {
-		return _isDownloadActive.output();
+		return my(MusicStore.class).isExchangeTracksOn().output();
 	}
 
 	@Override
 	public Consumer<Boolean> trackExchangeActivator() {
-		return _isDownloadActive.setter();
+		return my(MusicStore.class).isExchangeTracksOn().setter();
 	}
 
 	@Override
@@ -196,14 +177,13 @@ public class MusicImpl implements Music {
 	}
 
 	@Override
-	public void volumePercent(int level) {
-		_dj.volumePercent(level);
-		save();
+	public void setVolume(int percent) {
+		my(MusicStore.class).volumePercent().setter().consume(percent);
 	}
 
 	@Override
 	public Signal<Integer> volumePercent() {
-		return _dj.volumePercent();
+		return my(MusicStore.class).volumePercent().output();
 	}
 }
 

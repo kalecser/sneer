@@ -10,10 +10,10 @@ import sneer.foundation.brickness.Brick;
 public interface TracksFolderKeeper {
 
 	Signal<File> playingFolder();
-	void setPlayingFolder(File playingFolder);
+	void setPlayingFolder(String playingFolder);
 
 	Signal<File> tracksFolder();
-	void setTracksFolder(File sharedTracksFolder);
+	void setTracksFolder(String sharedTracksFolder);
 
 	File inboxFolder();
 	File noveltiesFolder();

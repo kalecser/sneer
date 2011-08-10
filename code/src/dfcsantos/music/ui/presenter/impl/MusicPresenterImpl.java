@@ -74,7 +74,7 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
 	@Override
 	public void volume(int percent) {
-		my(Music.class).volumePercent(percent);
+		my(Music.class).setVolume(percent);
 	}
 
 

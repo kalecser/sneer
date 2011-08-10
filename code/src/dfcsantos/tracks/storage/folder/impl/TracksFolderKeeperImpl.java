@@ -20,12 +20,16 @@ class TracksFolderKeeperImpl implements TracksFolderKeeper {
 
 	
 	@Override public Signal<File> tracksFolder() { return tracksFolder.output(); }
-	@Override public void setTracksFolder(File sharedTracksFolder) { tracksFolder.setter().consume(sharedTracksFolder); }
+	@Override public void setTracksFolder(String sharedTracksFolder) { tracksFolder.setter().consume(toFile(sharedTracksFolder)); }
 	
 	
 	@Override public Signal<File> playingFolder() { return playingFolder.output(); }
-	@Override public void setPlayingFolder(File playingFolder) { this.playingFolder.setter().consume(playingFolder); }
+	@Override public void setPlayingFolder(String playingFolder) { this.playingFolder.setter().consume(toFile(playingFolder)); }
 
+
+	private File toFile(String path) {
+		return path == null ? null : new File(path);
+	}
 
 	@Override
 	public File noveltiesFolder() {

@@ -70,7 +70,7 @@ public interface Music {
 
 	SetSignal<Download> activeDownloads();
 
-	void volumePercent(int level);
+	void setVolume(int level);
 	Signal<Integer> volumePercent();
 }
 

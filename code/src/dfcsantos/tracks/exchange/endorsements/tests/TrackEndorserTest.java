@@ -51,7 +51,7 @@ public class TrackEndorserTest extends BrickTestWithTuples {
 		}});
 
 		Environments.runWith(remote(), new Closure() { @Override public void run() {
-			my(TracksFolderKeeper.class).setTracksFolder(tmpFolder());
+			my(TracksFolderKeeper.class).setTracksFolder(tmpFolderName());
 			activateTrackEndorser();
 		}});
 

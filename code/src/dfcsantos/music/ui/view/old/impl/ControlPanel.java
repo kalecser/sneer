@@ -129,7 +129,7 @@ abstract class ControlPanel extends JPanel {
 	}
 	
 	private void volumeChanged(int level) {
-		_controller.volumePercent(volumePercentage(level));
+		_controller.setVolume(volumePercentage(level));
 	}
 
 	private static int volumePercentage(int level) {

@@ -88,7 +88,7 @@ public class DJ implements Consumer<Track> {
 		_volumeInPercent.setter().consume(level);
 	}
 
-	public Signal<Integer> volumePercent() {
+	private Signal<Integer> volumePercent() {
 		return _volumeInPercent.output();
 	}
 

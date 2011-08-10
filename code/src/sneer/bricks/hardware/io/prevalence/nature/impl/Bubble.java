@@ -2,6 +2,7 @@ package sneer.bricks.hardware.io.prevalence.nature.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.File;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -66,6 +67,7 @@ class Bubble implements InvocationHandler {
 		if (Immutable.isImmutable(type)) return object;
 		
 		if (ReadOnly.class.isAssignableFrom(type)) return object;
+		if (File.class.isAssignableFrom(type)) return object;
 		
 		return wrapped(object, path);
 	}
