@@ -62,8 +62,10 @@ class MusicViewDemo {
 			@Override public void chooseTracksFolder() {}
 			@Override public void pauseResume() { }
 			@Override public void skip() { }
-			@Override public void shuffle() { }
+			@Override public void shuffle(boolean onOff) { }
 			@Override public void stop() { }
+			@Override public void volume(int percent) {}
+			
 		});
 		instrument.init(new InstrumentPanel() {
 			@Override public Container contentPane() { return instrumentPanel; }

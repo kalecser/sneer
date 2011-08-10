@@ -17,9 +17,14 @@ import dfcsantos.music.ui.view.MusicViewListener;
 
 class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
+	@SuppressWarnings("unused") private final Object refToAvoidGc;
+
 	{
     	my(InstrumentRegistry.class).registerInstrument(my(MusicView.class).initInstrument(this));
 		checkSharedTrackersFolder();
+	    refToAvoidGc = my(Music.class).volumePercent().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer volume) {
+			my(MusicView.class).setVolume(volume);
+		}});
 	}
 
 	
@@ -45,27 +50,33 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 	@Override
 	public void pauseResume() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		my(Music.class).pauseResume();
 	}
 
 	
 	@Override
 	public void skip() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		my(Music.class).skip();
 	}
 
 	
 	@Override
-	public void shuffle() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	public void shuffle(boolean onOff) {
+		my(Music.class).setShuffle(onOff);
 	}
 
 
 	@Override
 	public void stop() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		my(Music.class).stop();
 	}
 	
+
+	@Override
+	public void volume(int percent) {
+		my(Music.class).volumePercent(percent);
+	}
+
 
 	private void checkSharedTrackersFolder() {
 		if (currentSharedTracksFolder() == null)
@@ -76,5 +87,6 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	private File currentSharedTracksFolder() {
 		return my(Music.class).sharedTracksFolder().currentValue();
 	}
+	
 	
 }

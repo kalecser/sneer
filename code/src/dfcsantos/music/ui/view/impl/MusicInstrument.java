@@ -15,6 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.Instrument;
@@ -23,9 +25,11 @@ import dfcsantos.music.ui.view.MusicViewListener;
 
 class MusicInstrument implements Instrument {
 
-	private static final int MAX_VOLUME = 10;
+	private static final int MAX_VOLUME = 100;
 
 	private final MusicViewListener listener;
+
+	private final JSlider volumeSlider = newVolumeSlider();
 
 	MusicInstrument(MusicViewListener listener) {
 		this.listener = listener;
@@ -45,6 +49,11 @@ class MusicInstrument implements Instrument {
 	}
 
 
+	void setVolume(int percent) {
+		volumeSlider.setValue(percent);
+	}
+
+	
 	private void initMenu(MenuGroup<? extends JComponent> actions) {
 		actions.addAction(10, "Choose Tracks Folder...", new Runnable() { @Override public void run() {
 			listener.chooseTracksFolder();
@@ -89,14 +98,17 @@ class MusicInstrument implements Instrument {
 		panel.add(skipButton());
 		panel.add(stopButton());
 		panel.add(shuffleButton());
-		panel.add(volumeSlider());
+		panel.add(volumeSlider);
 		return panel;
 	}
 
 
-	private JSlider volumeSlider() {
-		JSlider vol = new JSlider(SwingConstants.HORIZONTAL, 0, MAX_VOLUME, 0);
+	private JSlider newVolumeSlider() {
+		final JSlider vol = new JSlider(SwingConstants.HORIZONTAL, 0, MAX_VOLUME, 0);
 		vol.setPreferredSize(new Dimension(60, vol.getPreferredSize().height));
+		vol.addChangeListener(new ChangeListener() { @Override public void stateChanged(ChangeEvent e) {
+			listener.volume(vol.getValue());
+		}});
 		return vol;
 	}
 
@@ -104,7 +116,7 @@ class MusicInstrument implements Instrument {
 	private JButton shuffleButton() {
 		JButton shuffle = new JButton("}{");
 		shuffle.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
-			listener.shuffle();
+			listener.shuffle(true);
 		}});
 		return shuffle;
 	}
@@ -147,5 +159,7 @@ class MusicInstrument implements Instrument {
 	public String title() {
 		return "Music";
 	}
+
+
 
 }
