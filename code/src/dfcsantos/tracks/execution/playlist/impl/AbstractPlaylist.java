@@ -32,10 +32,11 @@ abstract class AbstractPlaylist implements Playlist {
 	}
 
 	private List<File> trackFilesFrom(File folder) {
+		if (folder == null)
+			return Collections.EMPTY_LIST;
+			
 		List<File> tracks = my(Tracks.class).listMp3FilesFromFolder(folder);
-
 		sortTracks(tracks);
-
 		return tracks;
 	}
 

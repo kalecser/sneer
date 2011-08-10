@@ -30,7 +30,7 @@ class PeerTracks extends TrackSourceStrategy {
 
 	@Override
 	File tracksFolder() {
-		return my(TracksFolderKeeper.class).peerTracksFolder();
+		return my(TracksFolderKeeper.class).inboxFolder();
 	}
 
 	void meToo(Track trackToKeep) {

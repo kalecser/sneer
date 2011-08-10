@@ -197,7 +197,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 
 	private static File peerTracksFolder() {
-		return my(TracksFolderKeeper.class).peerTracksFolder();
+		return my(TracksFolderKeeper.class).inboxFolder();
 	}
 
 }

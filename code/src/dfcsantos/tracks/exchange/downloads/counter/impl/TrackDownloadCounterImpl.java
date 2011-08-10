@@ -35,7 +35,7 @@ class TrackDownloadCounterImpl implements TrackDownloadCounter {
 	}
 
 	private static File downloadsFolder() {
-		return my(TracksFolderKeeper.class).peerTracksFolder();
+		return my(TracksFolderKeeper.class).inboxFolder();
 	}
 
 }

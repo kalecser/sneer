@@ -92,13 +92,13 @@ public class MusicImpl implements Music {
 	}
 
 	@Override
-	public Signal<File> sharedTracksFolder() {
-		return my(TracksFolderKeeper.class).sharedTracksFolder();
+	public Signal<File> tracksFolder() {
+		return my(TracksFolderKeeper.class).tracksFolder();
 	}
 
 	@Override
-	public void setSharedTracksFolder(File sharedTracksFolder) {
-		my(TracksFolderKeeper.class).setSharedTracksFolder(sharedTracksFolder);
+	public void setTracksFolder(File tracksFolder) {
+		my(TracksFolderKeeper.class).setTracksFolder(tracksFolder);
 	}
 
 	@Override

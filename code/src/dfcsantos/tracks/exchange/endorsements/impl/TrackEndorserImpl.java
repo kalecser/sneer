@@ -89,7 +89,7 @@ class TrackEndorserImpl implements TrackEndorser {
 	}
 
 	private File sharedTracksFolder() {
-		return my(TracksFolderKeeper.class).sharedTracksFolder().currentValue();
+		return my(TracksFolderKeeper.class).tracksFolder().currentValue();
 	}
 
 	private String relativePath(File track) {
@@ -99,7 +99,7 @@ class TrackEndorserImpl implements TrackEndorser {
 	}
 
 	private String sharedTracksPath() {
-		return my(TracksFolderKeeper.class).sharedTracksFolder().currentValue().getAbsolutePath();
+		return my(TracksFolderKeeper.class).tracksFolder().currentValue().getAbsolutePath();
 	}
 
 }

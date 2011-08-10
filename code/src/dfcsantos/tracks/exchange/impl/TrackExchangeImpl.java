@@ -37,7 +37,7 @@ class TrackExchangeImpl implements TrackExchange {
 
 
 	{
-		_toAvoidGC = my(TracksFolderKeeper.class).sharedTracksFolder().addReceiver(new Consumer<File>() { @Override public void consume(File newSharedTracksFolder) {
+		_toAvoidGC = my(TracksFolderKeeper.class).tracksFolder().addReceiver(new Consumer<File>() { @Override public void consume(File newSharedTracksFolder) {
 			_newTracksFolder = newSharedTracksFolder;
 			updateMapping();
 		}});

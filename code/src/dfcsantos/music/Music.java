@@ -46,8 +46,8 @@ public interface Music {
 	File playingFolder();
 	void setPlayingFolder(File selectedFolder);
 
-	Signal<File> sharedTracksFolder();
-	void setSharedTracksFolder(File selectedFolder);
+	Signal<File> tracksFolder();
+	void setTracksFolder(File selectedFolder);
 
 	void setShuffle(boolean shuffle);
 

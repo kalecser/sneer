@@ -20,8 +20,6 @@ import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
 import sneer.bricks.pulp.probe.ProbeManager;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.serialization.Serializer;
-import sneer.bricks.software.bricks.statestore.BrickStateStore;
-import sneer.bricks.software.bricks.statestore.tests.BrickStateStoreMock;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
@@ -30,8 +28,6 @@ import sneer.foundation.lang.arrays.ImmutableByteArray;
 public class ProbeManagerTest extends BrickTestBase {
 
 	@Bind private final ConnectionManager _connectionManager = mock(ConnectionManager.class);
-	@SuppressWarnings("unused")
-	@Bind private final BrickStateStore _store = new BrickStateStoreMock();
 
 	@SuppressWarnings("unused")
 	private final ProbeManager _subject = my(ProbeManager.class);

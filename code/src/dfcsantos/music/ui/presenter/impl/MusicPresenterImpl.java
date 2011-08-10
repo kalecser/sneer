@@ -21,7 +21,7 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
 	{
     	my(InstrumentRegistry.class).registerInstrument(my(MusicView.class).initInstrument(this));
-		checkSharedTrackersFolder();
+		checkSharedTracksFolder();
 	    refToAvoidGc = my(Music.class).volumePercent().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer volume) {
 			my(MusicView.class).setVolume(volume);
 		}});
@@ -31,7 +31,7 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	@Override
 	public void chooseTracksFolder() {
 		my(FileChoosers.class).choose(new Consumer<File>() {  @Override public void consume(File chosenFolder) {
-			my(Music.class).setSharedTracksFolder(chosenFolder);
+			my(Music.class).setTracksFolder(chosenFolder);
 		}}, JFileChooser.DIRECTORIES_ONLY, currentSharedTracksFolder());
 	}
 
@@ -78,14 +78,14 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	}
 
 
-	private void checkSharedTrackersFolder() {
+	private void checkSharedTracksFolder() {
 		if (currentSharedTracksFolder() == null)
 			chooseTracksFolder();
 	}
 	
 	
 	private File currentSharedTracksFolder() {
-		return my(Music.class).sharedTracksFolder().currentValue();
+		return my(Music.class).tracksFolder().currentValue();
 	}
 	
 	

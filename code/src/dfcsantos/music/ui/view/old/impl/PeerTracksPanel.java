@@ -95,8 +95,8 @@ class PeerTracksPanel extends AbstractTabPane {
 
     private void chooseSharedTracksFolderActionPerformed() {
     	my(FileChoosers.class).choose(new Consumer<File>() {  @Override public void consume(File chosenFolder) {
-        	_controller.setSharedTracksFolder(chosenFolder);
-		}}, JFileChooser.DIRECTORIES_ONLY, my(TracksFolderKeeper.class).sharedTracksFolder().currentValue());
+        	_controller.setTracksFolder(chosenFolder);
+		}}, JFileChooser.DIRECTORIES_ONLY, my(TracksFolderKeeper.class).tracksFolder().currentValue());
     }
 
 	private void downloadsDetailsActionPerformed() {

@@ -47,7 +47,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 
 		File defaultFolder = new File(tmpFolder(), "data/media/tracks");
 		assertEquals(_subject1.playingFolder(), defaultFolder);
-		assertEquals(_subject1.sharedTracksFolder().currentValue(), defaultFolder);
+		assertEquals(_subject1.tracksFolder().currentValue(), defaultFolder);
 
 		assertEquals(_subject1.operatingMode().currentValue(), OperatingMode.OWN);
 		_subject1.setOperatingMode(OperatingMode.PEERS);
@@ -277,7 +277,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 
 
 	private File sharedTracksFolder() {
-		return my(Music.class).sharedTracksFolder().currentValue();
+		return my(Music.class).tracksFolder().currentValue();
 	}
 
 }
