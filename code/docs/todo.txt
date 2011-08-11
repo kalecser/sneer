@@ -18,9 +18,12 @@ Swarm ===================================================
 
 Adenauer ================================================
 
+	Wind
+		Remove from dashboard (Comment @Snapp line) - Comment @Snapp line of brick that opens that blank Wind screen too. It will return later as the new Chat.
 	Main Menu
 		Status - Delete all Status related code.
-		Music (Under Development) - Add this item to main menu and make the 
+		Music - Add a "Music (Under Development)" item to main menu and make the Music instrument appear only when it is clicked.
+	Memory Meter and Bandwidth Meter -> same background as bashboard. 	 
 	Check border bug in JButton with nimbus look and feel.    
 	Launch new version on the server.	
 
