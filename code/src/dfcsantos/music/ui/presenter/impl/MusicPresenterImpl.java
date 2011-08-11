@@ -20,7 +20,8 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	@SuppressWarnings("unused") private final Object refToAvoidGc;
 
 	{
-    	my(InstrumentRegistry.class).registerInstrument(my(MusicView.class).initInstrument(this));
+		my(MusicView.class).setListener(this);
+    	my(InstrumentRegistry.class).registerInstrument(my(MusicView.class));
 		checkSharedTracksFolder();
 	    refToAvoidGc = my(Music.class).volumePercent().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer volume) {
 			my(MusicView.class).setVolume(volume);

@@ -5,9 +5,9 @@ import sneer.bricks.skin.main.instrumentregistry.Instrument;
 import sneer.foundation.brickness.Brick;
 
 @Brick(GUI.class)
-public interface MusicView {
+public interface MusicView extends Instrument {
 	
-	Instrument initInstrument(MusicViewListener listener);
+	void setListener(MusicViewListener listener);
 	void setVolume(int volume);
 	
 }
