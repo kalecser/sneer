@@ -13,7 +13,6 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
 import sneer.bricks.pulp.reactive.Register;
-import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.menu.MainMenu;
@@ -56,24 +55,18 @@ class MusicViewDemo {
 		
 		my(MusicView.class).setListener(new MusicViewListener() {
 			
-			private Register<Boolean> isExchangingTracks = my(Signals.class).newRegister(false);
+			private Register<Boolean> isExchangingTracks = my(Signals.class).newRegister(true);
+			private Register<Integer> volumePercent = my(Signals.class).newRegister(50);
+			private Register<Boolean> shuffle = my(Signals.class).newRegister(true);
 
-			@Override
-			public void toggleTrackExchange() {
-				isExchangingTracks.setter().consume(!isExchangingTracks.output().currentValue());
-			}
-			
-			@Override
-			public Signal<Boolean> isExchangingTracks() {
-				return isExchangingTracks.output();
-			}
-			
 			@Override public void chooseTracksFolder() {}
 			@Override public void pauseResume() { }
 			@Override public void skip() { }
-			@Override public void shuffle(boolean onOff) { }
 			@Override public void stop() { }
-			@Override public void volume(int percent) {}
+
+			@Override public Register<Integer> volumePercent() { return volumePercent; }
+			@Override public Register<Boolean> isTrackExchangeActive() { return isExchangingTracks; }
+			@Override public Register<Boolean> shuffle() { return shuffle; }
 			
 		});
 		my(MusicView.class).init(new InstrumentPanel() {

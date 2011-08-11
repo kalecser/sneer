@@ -1,14 +1,15 @@
 package dfcsantos.music.ui.view;
 
-import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Register;
 
 public interface MusicViewListener {
+	
+	Register<Boolean> isTrackExchangeActive();
+	Register<Integer> volumePercent();
+	Register<Boolean> shuffle();
+
 	void chooseTracksFolder();
-	void toggleTrackExchange();
-	Signal<Boolean> isExchangingTracks();
 	void pauseResume();
 	void skip();
-	void shuffle(boolean onOff);
 	void stop();
-	void volume(int percent);
 }

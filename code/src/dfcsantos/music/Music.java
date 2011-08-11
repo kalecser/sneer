@@ -30,10 +30,10 @@ package dfcsantos.music;
 import java.io.File;
 
 import sneer.bricks.expression.files.client.downloads.Download;
+import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.Track;
 
 @Brick
@@ -49,28 +49,24 @@ public interface Music {
 	Signal<File> tracksFolder();
 	void setTracksFolder(File selectedFolder);
 
-	void setShuffle(boolean shuffle);
-
 	void pauseResume();
 	void skip();
 	void stop();
+	Register<Integer> volumePercent();
+	Register<Boolean> shuffle();
 
 	void meToo();
 	void deleteTrack();
 
 	Signal<Boolean> isPlaying();
-	Signal<Track>	playingTrack();
+	Signal<Track> playingTrack();
 	Signal<Integer> playingTrackTime();
 
 	Signal<Integer> numberOfOwnTracks();
 	Signal<Integer> numberOfPeerTracks();
 
-	Signal<Boolean> isTrackExchangeActive();
-	Consumer<Boolean> trackExchangeActivator();
-
+	Register<Boolean> isTrackExchangeActive();
 	SetSignal<Download> activeDownloads();
 
-	void setVolume(int level);
-	Signal<Integer> volumePercent();
 }
 

@@ -11,4 +11,6 @@ public interface MusicStore {
 
 	Register<Integer> volumePercent();
 
+	Register<Boolean> shuffle();
+
 }

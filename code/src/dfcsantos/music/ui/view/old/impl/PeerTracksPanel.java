@@ -80,8 +80,8 @@ class PeerTracksPanel extends AbstractTabPane {
 
 	private JCheckBox newReactiveCheckBox() {
 		return my(ReactiveWidgetFactory.class).newCheckBox(
-			_controller.isTrackExchangeActive(),
-			_controller.trackExchangeActivator()
+			_controller.isTrackExchangeActive().output(),
+			_controller.isTrackExchangeActive().setter()
 		).getMainWidget();
 	}
 

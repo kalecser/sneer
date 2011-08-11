@@ -14,12 +14,14 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.menu.MenuGroup;
+import sneer.foundation.lang.Consumer;
 import dfcsantos.music.ui.view.MusicView;
 import dfcsantos.music.ui.view.MusicViewListener;
 
@@ -30,6 +32,8 @@ class MusicViewImpl implements MusicView {
 	private MusicViewListener listener;
 
 	private final JSlider volumeSlider = newVolumeSlider();
+
+	@SuppressWarnings("unused") private Object refToAvoidGc;
 
 	
 	@Override
@@ -45,18 +49,12 @@ class MusicViewImpl implements MusicView {
 	}
 
 
-	@Override
-	public void setVolume(int percent) {
-		volumeSlider.setValue(percent);
-	}
-
-	
 	private void initMenu(MenuGroup<? extends JComponent> actions) {
 		actions.addAction(10, "Choose Tracks Folder...", new Runnable() { @Override public void run() {
 			listener.chooseTracksFolder();
 		}});
-		actions.addActionWithCheckBox(20, "Exchange Tracks", listener.isExchangingTracks(), new Runnable() { @Override public void run() {
-			listener.toggleTrackExchange();
+		actions.addActionWithCheckBox(20, "Exchange Tracks", listener.isTrackExchangeActive().output(), new Runnable() { @Override public void run() {
+			listener.isTrackExchangeActive().setter().consume(!listener.isTrackExchangeActive().output().currentValue());
 		}});
 		actions.addAction(30, "Downloads...", new Runnable() { @Override public void run() {
 			DownloadsView.showInstance();
@@ -104,18 +102,22 @@ class MusicViewImpl implements MusicView {
 		final JSlider vol = new JSlider(SwingConstants.HORIZONTAL, 0, MAX_VOLUME, 0);
 		vol.setPreferredSize(new Dimension(60, vol.getPreferredSize().height));
 		vol.addChangeListener(new ChangeListener() { @Override public void stateChanged(ChangeEvent e) {
-			listener.volume(vol.getValue());
+			listener.volumePercent().setter().consume(vol.getValue());
 		}});
 		return vol;
 	}
 
 
-	private JButton shuffleButton() {
-		JButton shuffle = new JButton("}{");
-		shuffle.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
-			listener.shuffle(true);
+	private JToggleButton shuffleButton() {
+		final JToggleButton button = new JToggleButton("}{");
+		button.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
+			listener.shuffle().setter().consume(button.isSelected());
 		}});
-		return shuffle;
+		refToAvoidGc = listener.shuffle().output().addReceiver(new Consumer<Boolean>() {  @Override public void consume(Boolean onOff) {
+			button.setSelected(onOff);
+			button.setToolTipText("Shuffle is " + (onOff ? "on" : "off"));
+		}});
+		return button;
 	}
 
 
@@ -162,8 +164,10 @@ class MusicViewImpl implements MusicView {
 	public void setListener(MusicViewListener listener) {
 		if (this.listener != null) throw new IllegalStateException();
 		this.listener = listener;
+		
+		listener.volumePercent().output().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer percent) {
+			volumeSlider.setValue(percent);
+		}});
 	}
-
-
 
 }

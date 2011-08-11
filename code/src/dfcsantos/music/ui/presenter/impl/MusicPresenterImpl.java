@@ -6,7 +6,7 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 
-import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.skin.filechooser.FileChoosers;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.foundation.lang.Consumer;
@@ -17,15 +17,10 @@ import dfcsantos.music.ui.view.MusicViewListener;
 
 class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
-	@SuppressWarnings("unused") private final Object refToAvoidGc;
-
 	{
 		my(MusicView.class).setListener(this);
     	my(InstrumentRegistry.class).registerInstrument(my(MusicView.class));
 		checkSharedTracksFolder();
-	    refToAvoidGc = my(Music.class).volumePercent().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer volume) {
-			my(MusicView.class).setVolume(volume);
-		}});
 	}
 
 	
@@ -38,14 +33,8 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
 	
 	@Override
-	public Signal<Boolean> isExchangingTracks() {
+	public Register<Boolean> isTrackExchangeActive() {
 		return my(Music.class).isTrackExchangeActive();
-	}
-
-	
-	@Override
-	public void toggleTrackExchange() {
-		my(Music.class).trackExchangeActivator().consume(!isExchangingTracks().currentValue());
 	}
 
 	
@@ -62,22 +51,10 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
 	
 	@Override
-	public void shuffle(boolean onOff) {
-		my(Music.class).setShuffle(onOff);
-	}
-
-
-	@Override
 	public void stop() {
 		my(Music.class).stop();
 	}
 	
-
-	@Override
-	public void volume(int percent) {
-		my(Music.class).setVolume(percent);
-	}
-
 
 	private void checkSharedTracksFolder() {
 		if (currentSharedTracksFolder() == null)
@@ -87,6 +64,18 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 	private File currentSharedTracksFolder() {
 		return my(Music.class).tracksFolder().currentValue();
+	}
+
+
+	@Override
+	public Register<Integer> volumePercent() {
+		return my(Music.class).volumePercent();
+	}
+
+
+	@Override
+	public Register<Boolean> shuffle() {
+		return my(Music.class).shuffle();
 	}
 	
 	

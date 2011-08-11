@@ -59,10 +59,10 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 
 		assertTrue(_subject1.numberOfOwnTracks().currentValue() == 0);
 		assertTrue(_subject1.numberOfPeerTracks().currentValue() == 0);
-		assertEquals(_subject1.isTrackExchangeActive().currentValue(), false);
+		assertEquals(_subject1.isTrackExchangeActive().output().currentValue(), false);
 
-		_subject1.trackExchangeActivator().consume(true);
-		waitForSignalValue(_subject1.isTrackExchangeActive(), true);		
+		_subject1.isTrackExchangeActive().setter().consume(true);
+		waitForSignalValue(_subject1.isTrackExchangeActive().output(), true);		
 	}
 
 	
@@ -176,7 +176,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 
 		// Play all songs randomly
 		_subject1.setPlayingFolder(rootFolder);
-		_subject1.setShuffle(true);
+		_subject1.shuffle().setter().consume(true);
 
 		// Pseudo-random sequence (done by regression)
 		_subject1.skip();
@@ -202,7 +202,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 		activateTrackEndorsementsFrom(remote());
 
 		_subject1 = my(Music.class);
-		_subject1.trackExchangeActivator().consume(true);
+		_subject1.isTrackExchangeActive().setter().consume(true);
 
 		my(CustomClockTicker.class).start(10, 100);
 
@@ -259,7 +259,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 			assertEquals(3, sharedTracksFolder().listFiles().length);
 
 			_subject2 = my(Music.class);
-			_subject2.trackExchangeActivator().consume(true);
+			_subject2.isTrackExchangeActive().setter().consume(true);
 
 			my(CustomClockTicker.class).start(10, 2000);
 		}});

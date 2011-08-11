@@ -32,15 +32,18 @@ public class MusicImpl implements Music {
 
 	@SuppressWarnings("unused") private final WeakContract refToAvoidGc;
 	@SuppressWarnings("unused") private final WeakContract refToAvoidGc2;
+	@SuppressWarnings("unused") private final WeakContract refToAvoidGc3;
 
 	{
-		my(TrackExchange.class).setOnOffSwitch(isTrackExchangeActive());
+		my(TrackExchange.class).setOnOffSwitch(isTrackExchangeActive().output());
 
 		refToAvoidGc = my(MusicStore.class).volumePercent().output().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer percent) {
 			_dj.volumePercent(percent);
 		}});
-		
-		refToAvoidGc2 = operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode mode) {
+		refToAvoidGc2 = my(MusicStore.class).shuffle().output().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean onOff) {
+			((OwnTracks)_trackSource).setShuffle(onOff);
+		}});
+		refToAvoidGc3 = operatingMode().addReceiver(new Consumer<OperatingMode>() { @Override public void consume(OperatingMode mode) {
 			reset();
 			_trackSource = (mode.equals(OperatingMode.OWN)) ? OwnTracks.INSTANCE : PeerTracks.INSTANCE;
 		}});
@@ -80,11 +83,6 @@ public class MusicImpl implements Music {
 	@Override
 	public void setTracksFolder(File tracksFolder) {
 		my(TracksFolderKeeper.class).setTracksFolder(tracksFolder.getAbsolutePath());
-	}
-
-	@Override
-	public void setShuffle(boolean shuffle) {
-		((OwnTracks)_trackSource).setShuffle(shuffle);
 	}
 
 
@@ -162,13 +160,8 @@ public class MusicImpl implements Music {
 	}
 
 	@Override
-	public Signal<Boolean> isTrackExchangeActive() {
-		return my(MusicStore.class).isExchangeTracksOn().output();
-	}
-
-	@Override
-	public Consumer<Boolean> trackExchangeActivator() {
-		return my(MusicStore.class).isExchangeTracksOn().setter();
+	public Register<Boolean> isTrackExchangeActive() {
+		return my(MusicStore.class).isExchangeTracksOn();
 	}
 
 	@Override
@@ -177,14 +170,15 @@ public class MusicImpl implements Music {
 	}
 
 	@Override
-	public void setVolume(int percent) {
-		my(MusicStore.class).volumePercent().setter().consume(percent);
+	public Register<Integer> volumePercent() {
+		return my(MusicStore.class).volumePercent();
 	}
 
 	@Override
-	public Signal<Integer> volumePercent() {
-		return my(MusicStore.class).volumePercent().output();
+	public Register<Boolean> shuffle() {
+		return my(MusicStore.class).shuffle();
 	}
+
 }
 
 

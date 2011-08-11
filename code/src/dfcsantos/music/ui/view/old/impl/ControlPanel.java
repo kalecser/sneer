@@ -1,5 +1,4 @@
 package dfcsantos.music.ui.view.old.impl;
-
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.FlowLayout;
@@ -22,8 +21,6 @@ abstract class ControlPanel extends JPanel {
 
 	private static final int MAX_VOLUME = 10;
 
-	private static final Music _controller	= my(Music.class);
-
 	private static final String RESUME_ICON	= "\u25BA";
 	private static final String PAUSE_ICON	= "\u2161";
 //	private static final String BACK_ICON	= "<<";
@@ -42,13 +39,13 @@ abstract class ControlPanel extends JPanel {
 	ControlPanel() {
 		super(new FlowLayout(FlowLayout.LEFT, 6, 5));
 
-	    toAvoidGC = _controller.isPlaying().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isPlaying) {
+	    toAvoidGC = my(Music.class).isPlaying().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean isPlaying) {
 	    	if (isMyOperatingMode())
 	    		_pauseResume.setText(isPlaying ? PAUSE_ICON : RESUME_ICON);
 	    	else
 	    		_pauseResume.setText(RESUME_ICON);
 		}});
-	    _volumeListenerContract = _controller.volumePercent().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer volume) {
+	    _volumeListenerContract = my(Music.class).volumePercent().output().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer volume) {
 				_volume.setValue(volumeLevel(volume));
 			}
 		});
@@ -107,7 +104,7 @@ abstract class ControlPanel extends JPanel {
 
 	private void pauseResumeActionPerformed() {
 		switchOperatingModeIfNecessary();
-		_controller.pauseResume();
+		my(Music.class).pauseResume();
 	}
 
 	private void switchOperatingModeIfNecessary() {
@@ -121,15 +118,15 @@ abstract class ControlPanel extends JPanel {
 //	}
 
 	private void skipActionPerformed() {
-	    _controller.skip();
+	    my(Music.class).skip();
 	}
 
 	private void stopActionPerformed() {
-	    _controller.stop();
+	    my(Music.class).stop();
 	}
 	
 	private void volumeChanged(int level) {
-		_controller.setVolume(volumePercentage(level));
+		my(Music.class).volumePercent().setter().consume(volumePercentage(level));
 	}
 
 	private static int volumePercentage(int level) {
@@ -141,7 +138,7 @@ abstract class ControlPanel extends JPanel {
 	}
 	
 	private boolean isMyOperatingMode() {
-		return isMyOperatingMode(_controller.operatingMode().currentValue());
+		return isMyOperatingMode(my(Music.class).operatingMode().currentValue());
 	}
 
 	abstract boolean isMyOperatingMode(OperatingMode operatingMode);

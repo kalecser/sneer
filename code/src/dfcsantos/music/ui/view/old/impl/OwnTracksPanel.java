@@ -79,7 +79,7 @@ class OwnTracksPanel extends AbstractTabPane {
     }
 
     private void shuffleActionPerformed() {
-    	_controller.setShuffle(_shuffle.isSelected());
+    	_controller.shuffle().setter().consume(_shuffle.isSelected());
 	}
 
 	@Override

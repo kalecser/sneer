@@ -8,6 +8,5 @@ import sneer.foundation.brickness.Brick;
 public interface MusicView extends Instrument {
 	
 	void setListener(MusicViewListener listener);
-	void setVolume(int volume);
 	
 }

@@ -9,6 +9,7 @@ public class MusicStoreImpl implements MusicStore {
 
 	private final Register<Boolean> isExchangeOn = my(Signals.class).newRegister(true);
 	private final Register<Integer> volumePercent = my(Signals.class).newRegister(50);
+	private final Register<Boolean> shuffle = my(Signals.class).newRegister(true);
 
 	@Override
 	public Register<Boolean> isExchangeTracksOn() {
@@ -18,6 +19,11 @@ public class MusicStoreImpl implements MusicStore {
 	@Override
 	public Register<Integer> volumePercent() {
 		return volumePercent;
+	}
+
+	@Override
+	public Register<Boolean> shuffle() {
+		return shuffle;
 	}
 
 }
