@@ -12,13 +12,17 @@ Swarm ===================================================
 	Backup
 	
 	Udp
+		Study Probe and TupleSpace to do new transport implementation.
 
 	Brick Sharing
 
 Adenauer ================================================
-	-Analyse Probe and TupleSpace to do new transport implementation.
-	-Check border bug in JButtom with nimbus look and feel.    
-	
+
+	Main Menu
+		Status - Delete all Status related code.
+		Music (Under Development) - Add this item to main menu and make the 
+	Check border bug in JButton with nimbus look and feel.    
+	Launch new version on the server.	
 
 Volunteers ==============================================
 	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and ` can both use the same Gui.
