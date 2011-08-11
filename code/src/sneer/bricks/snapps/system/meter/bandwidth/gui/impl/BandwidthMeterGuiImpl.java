@@ -20,11 +20,8 @@ import sneer.foundation.lang.Functor;
 
 class BandwidthMeterGuiImpl implements BandwidthMeterGui {
 
-	//private final JLabel _bpsPeakLabel = new JLabel("kB/s(Peak)");
-	//private final JLabel _uploadIcon = new JLabel();
-	//private final JLabel _downloadIcon = new JLabel();
 
-	BandwidthMeterGuiImpl() {
+	{
 		my(InstrumentRegistry.class).registerInstrument(this);
 	} 
 	
