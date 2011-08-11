@@ -2,8 +2,8 @@ package sneer.bricks.snapps.system.meter.memory.gui.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,7 +11,6 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.border.EmptyBorder;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.ram.meter.MemoryMeter;
@@ -60,8 +59,10 @@ class MemoryMeterGuiImpl implements MemoryMeterGui {
 	private JButton newGcButton() {
 		Icon icon = my(Icons.class).load(this.getClass(), "recycleOn.png");
 		JButton gcButton = new JButton(icon);
-		gcButton.setMargin(new Insets(0, 0, 0, 0));
-		gcButton.setBorder(new EmptyBorder(0, 0, 0, 0));
+		gcButton.setPreferredSize(new Dimension(23, 21));
+		gcButton.setBorderPainted(false);
+		//gcButton.setMargin(new Insets(0, 0, 0, 0));
+		//gcButton.setBorder(new EmptyBorder(0, 0, 0, 0));
 		gcButton.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
 			System.gc();
 		}});

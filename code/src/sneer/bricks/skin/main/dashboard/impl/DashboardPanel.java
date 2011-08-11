@@ -11,7 +11,6 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.IllegalComponentStateException;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -324,12 +323,11 @@ class DashboardPanel extends JPanel {
 				_title.setFont(_title.getFont().deriveFont(10f));
 				_title.setBorder(new EmptyBorder(0, 10, 0, 0));
 				
-				_menu.setIcon(my(Icons.class).load(getClass(), "menu.png"));
-				_menu.setMargin(new Insets(10, 10, 5, 5));
-				_menu.setBorder(new EmptyBorder(0, 0, 0, 0));
 				_menu.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
 					showActionsPopUp();
 				}});
+				_menu.setIcon(my(Icons.class).load(getClass(), "menu.png"));
+				_menu.setPreferredSize(new Dimension(16, 13));
 				
 				_toolbarPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 				_toolbarPanel.add(_title);
