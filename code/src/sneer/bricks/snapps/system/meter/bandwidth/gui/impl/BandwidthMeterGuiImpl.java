@@ -1,5 +1,6 @@
 package sneer.bricks.snapps.system.meter.bandwidth.gui.impl;
 
+import static java.awt.Color.WHITE;
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Container;
@@ -38,6 +39,7 @@ class BandwidthMeterGuiImpl implements BandwidthMeterGui {
 	@Override
 	public void init(InstrumentPanel window) {
 		Container container = window.contentPane();
+		container.setBackground(WHITE);
 		
 		JLabel _bpsPeakLabel = new JLabel("kB/s(Peak)");
 		TextWidget<JLabel> _uploadText = newLabel(my(BandwidthCounter.class).uploadSpeedInKBperSecond());

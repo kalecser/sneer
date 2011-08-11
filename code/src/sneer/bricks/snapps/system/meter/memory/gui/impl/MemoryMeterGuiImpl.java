@@ -1,5 +1,6 @@
 package sneer.bricks.snapps.system.meter.memory.gui.impl;
 
+import static java.awt.Color.WHITE;
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Dimension;
@@ -45,13 +46,13 @@ class MemoryMeterGuiImpl implements MemoryMeterGui {
 	@Override
 	public void init(InstrumentPanel window) {
 		JComponent container = (JComponent) window.contentPane();
-		
-		_maxMemory.setText("(Max " + _meter.maxMBs() + ")");
 		container.setLayout(new FlowLayout(FlowLayout.CENTER));
-
+		container.setBackground(WHITE);
 		container.add(_usedMemoryCurrent.getComponent());
 		container.add(_gc);
 		container.add(_usedMemoryPeak.getComponent());
+
+		_maxMemory.setText("(Max " + _meter.maxMBs() + ")");
 		container.add(_maxMemory);
 	}
 
@@ -61,8 +62,6 @@ class MemoryMeterGuiImpl implements MemoryMeterGui {
 		JButton gcButton = new JButton(icon);
 		gcButton.setPreferredSize(new Dimension(23, 21));
 		gcButton.setBorderPainted(false);
-		//gcButton.setMargin(new Insets(0, 0, 0, 0));
-		//gcButton.setBorder(new EmptyBorder(0, 0, 0, 0));
 		gcButton.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
 			System.gc();
 		}});
