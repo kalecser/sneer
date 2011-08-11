@@ -16,8 +16,9 @@ Swarm ===================================================
 	Brick Sharing
 
 Adenauer ================================================
-
-
+	-Analyse Probe and TupleSpace to do new transport implementation.
+	-Check border bug in JButtom with nimbus look and feel.    
+	
 
 Volunteers ==============================================
 	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and ` can both use the same Gui.
