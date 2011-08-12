@@ -11,6 +11,7 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.IllegalComponentStateException;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -316,27 +317,39 @@ class DashboardPanel extends JPanel {
 			}
 
 			private void initGui(String title) {
+				configureTitle(title);
+				configureMenu();
+				configureToolbar();
+			}
+
+			private void configureTitle(String title) {
 				_title.setOpaque(false);
 				if (title != null)
 					_title.setText(title);
 				
 				_title.setFont(_title.getFont().deriveFont(10f));
 				_title.setBorder(new EmptyBorder(0, 10, 0, 0));
-				
+			}
+
+			private void configureMenu() {
+				_menu.setIcon(my(Icons.class).load(getClass(), "menu.png"));
+				_menu.setMargin(new Insets(2, 0, 0, 0));
+				_menu.setBorder(new EmptyBorder(0,0,0,0));
+				_menu.setPreferredSize(new Dimension(9, 7));
 				_menu.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
 					showActionsPopUp();
 				}});
-				_menu.setIcon(my(Icons.class).load(getClass(), "menu.png"));
-				_menu.setPreferredSize(new Dimension(16, 13));
-				
+			}
+
+			private void configureToolbar() {
 				_toolbarPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 				_toolbarPanel.add(_title);
 				_toolbarPanel.add(_menu);
-				
+
 				_toolbarShadow.setBorder(new LineBorder(Color.BLACK));
 				_toolbarShadow.setOpaque(false);
 			}
-			
+
 			private void setVisible(boolean isVisible) {
 				if(isVisible) resizeToolbar();
 				_toolbarPanel.setVisible(isVisible); 	
