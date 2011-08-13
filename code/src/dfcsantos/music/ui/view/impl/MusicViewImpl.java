@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
@@ -26,7 +25,6 @@ import dfcsantos.music.ui.view.MusicView;
 import dfcsantos.music.ui.view.MusicViewListener;
 
 class MusicViewImpl implements MusicView {
-
 	private static final int MAX_VOLUME = 100;
 
 	private MusicViewListener listener;
@@ -35,17 +33,31 @@ class MusicViewImpl implements MusicView {
 
 	@SuppressWarnings("unused") private Object refToAvoidGc;
 
-	
 	@Override
 	public void init(InstrumentPanel container) {
 		Container pane = container.contentPane();
 		pane.setLayout(new GridLayout(4, 1));
 		pane.add(folderDropDown());
-		pane.add(new JLabel("We Built this City - bla bla... 11:23"));
+		pane.add(new TrackDisplay());
 		pane.add(playerControls());
 		pane.add(emotiControls());
 		
 		initMenu(container.actions());
+	}
+
+	
+	private JComboBox folderDropDown() {
+		JComboBox result = new JComboBox();
+		result.addItem("<Inbox - 7 Tracks>");
+		result.addItem("classico");
+		result.addItem("rock");
+		result.addItem("rock/nacional");
+		result.addItem("rock/nacional/Ira");
+		result.addItem("rock/nacional/legiao");
+		result.addItem("rock/Queen");
+		result.addItem("samba/raiz");
+		result.addItem("sertanejo/raiz");
+		return result;
 	}
 
 
@@ -68,21 +80,6 @@ class MusicViewImpl implements MusicView {
 		panel.add(new JButton(":P"));
 		panel.add(new JButton(":("));
 		return panel;
-	}
-
-
-	private JComboBox folderDropDown() {
-		JComboBox result = new JComboBox();
-		result.addItem("<Inbox - 7 Tracks>");
-		result.addItem("classico");
-		result.addItem("rock");
-		result.addItem("rock/nacional");
-		result.addItem("rock/nacional/Ira");
-		result.addItem("rock/nacional/legiao");
-		result.addItem("rock/Queen/werwerwerwerwer/wergregvdvvxcvxcv/xcvfdsgfsdfsdfsdxc vxcv/xcvxcvxcvsdfsadcsdc/xcvxcvxcvxcvxcvvc");
-		result.addItem("samba/raiz");
-		result.addItem("sertanejo/raiz");
-		return result;
 	}
 
 

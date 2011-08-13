@@ -3,7 +3,6 @@ package dfcsantos.music.ui.view.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,34 +19,27 @@ import dfcsantos.music.Music;
 import dfcsantos.tracks.Track;
 
 class TrackDisplay extends JPanel {
-
-	private static final Format TIME_FORMATTER = new SimpleDateFormat("mm:ss");
-
+	private static final Format _timeFormater = new SimpleDateFormat("mm:ss");
 	private static final Music _controller = my(Music.class);
 
 	private final JLabel _trackLabel = my(ReactiveWidgetFactory.class).newLabel(playingTrackName()).getMainWidget();
 	private final JLabel _trackTime	 = my(ReactiveWidgetFactory.class).newLabel(playingTrackTime()).getMainWidget();
 
 	TrackDisplay() {
-		super(new FlowLayout(FlowLayout.LEFT, 9, 5));
-
-		_trackLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		super(new FlowLayout(FlowLayout.CENTER, 9, 5));
 		add(_trackLabel);
-
-		_trackTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
 	    add(_trackTime);
-
 	}
 
 	private Signal<String> playingTrackName() {
 		return my(Signals.class).adapt(_controller.playingTrack(), new Functor<Track, String>() { @Override public String evaluate(Track track) {
-			return (track == null) ? "<No track to play>" : my(Lang.class).strings().abbreviate(track.name(), 54);
+			return (track == null) ? "<No track to play>" : my(Lang.class).strings().abbreviate(track.name(), 50);
 		}});
 	}
 
 	private Signal<String> playingTrackTime() {
 		return my(Signals.class).adapt(_controller.playingTrackTime(), new Functor<Integer, String>() { @Override public String evaluate(Integer timeElapsed) {
-			return TIME_FORMATTER.format(new Date(timeElapsed));
+			return _timeFormater.format(new Date(timeElapsed));
 		}});
 	}
 

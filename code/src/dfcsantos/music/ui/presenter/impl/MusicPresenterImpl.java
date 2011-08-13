@@ -55,7 +55,6 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 		my(Music.class).stop();
 	}
 	
-
 	private void checkSharedTracksFolder() {
 		if (currentSharedTracksFolder() == null)
 			chooseTracksFolder();
