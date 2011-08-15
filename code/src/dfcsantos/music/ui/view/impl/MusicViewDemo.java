@@ -63,7 +63,9 @@ class MusicViewDemo {
 			@Override public void pauseResume() { }
 			@Override public void skip() { }
 			@Override public void stop() { }
-
+			@Override public void deleteTrack() { }
+			@Override public void meToo() { }
+			@Override public void noWay() { }
 			@Override public Register<Integer> volumePercent() { return volumePercent; }
 			@Override public Register<Boolean> isTrackExchangeActive() { return isExchangingTracks; }
 			@Override public Register<Boolean> shuffle() { return shuffle; }

@@ -12,4 +12,7 @@ public interface MusicViewListener {
 	void pauseResume();
 	void skip();
 	void stop();
+	void deleteTrack();
+	void meToo();
+	void noWay();
 }

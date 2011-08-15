@@ -55,6 +55,25 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 		my(Music.class).stop();
 	}
 	
+	
+	@Override
+	public void deleteTrack() {
+		my(Music.class).deleteTrack();
+	}
+
+	
+	@Override
+	public void meToo() {
+		my(Music.class).meToo(); //Reimplement this method to increase taste musical.
+	}
+
+
+	@Override
+	public void noWay() {
+		deleteTrack(); //Reimplement this method to decrease taste musical. 
+	}
+
+
 	private void checkSharedTracksFolder() {
 		if (currentSharedTracksFolder() == null)
 			chooseTracksFolder();
