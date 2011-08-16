@@ -5,10 +5,9 @@
 Swarm ===================================================
 
 	Music
-		Shuffle - Store state.
 	
 	Connectivity - Continue OutgoingAttempts if no direct connections exist (dont stop just because contact is online (due to indirect heartbeat routing))
-		
+
 	Backup
 	
 	Udp
