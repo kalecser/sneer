@@ -18,7 +18,6 @@ Swarm ===================================================
 
 Adenauer ================================================
 
-	Memory Meter and Bandwidth Meter -> same background as bashboard. 	 
 	Launch new version on the server.	
 
 Volunteers ==============================================

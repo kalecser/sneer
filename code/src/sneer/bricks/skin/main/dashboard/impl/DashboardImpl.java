@@ -2,7 +2,6 @@ package sneer.bricks.skin.main.dashboard.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
-import java.awt.Adjustable;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -15,7 +14,6 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
@@ -43,32 +41,8 @@ class DashboardImpl implements Dashboard {
 	private final int TIMEOUT_FOR_GUI_EVENTS = 10000;
 	
 	private final  MainMenu _mainMenu = my(MainMenu.class);
-	private final JScrollBar _scrollBar;{ 
-		_scrollBar = new JScrollBar(Adjustable.VERTICAL){
-			@Override public void setBounds(int x, int y, int width, int height) {
-				super.setBounds(x, y, 10, height);
-			}
-			@Override
-			public Dimension getPreferredSize() {
-				Dimension size =  super.getPreferredSize().getSize();
-				size.setSize(10, size.height);
-				return size;			}
-			
-			@Override public Dimension getMaximumSize() {
-				Dimension size =  super.getMaximumSize().getSize();
-				size.setSize(10, size.height);
-				return size;
-			}
-			
-			@Override public Dimension getSize() {
-				Dimension size =  super.getSize();
-				size.setSize(10, size.height);
-				return size;
-			}
-		};
-	}
 	
-	private final DashboardPanel _dashboardPanel = new DashboardPanel(_scrollBar);
+	private final DashboardPanel _dashboardPanel = new DashboardPanel();
 	private final JPanel _rootPanel = new JPanel();
 
 	private Dimension _screenSize;
@@ -137,7 +111,6 @@ class DashboardImpl implements Dashboard {
 			_rootPanel.setLayout(new BorderLayout());
 			_rootPanel.add(_mainMenu.getMenuBarWidget(), BorderLayout.NORTH);
 			_rootPanel.add(_dashboardPanel, BorderLayout.CENTER);
-			_rootPanel.add(_scrollBar, BorderLayout.EAST);
 			
 			addListenerToHideToolbarsWhenMouseExited();
 			

@@ -36,12 +36,9 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import org.jdesktop.jxlayer.JXLayer;
 import org.jdesktop.jxlayer.plaf.AbstractLayerUI;
@@ -68,25 +65,14 @@ class DashboardPanel extends JPanel {
 	private final JLayeredPane _dashboardLayeredPane = new JLayeredPane();
 	private final JPanel _instrumentsContainer = new JPanel();
 	private final List<InstrumentPanelImpl> _instrumentPanels = new ArrayList<InstrumentPanelImpl>();
-	private final JScrollBar _scrollBar;
 
 	private final InstrumentInstaller _instrumentInstaller = new InstrumentInstaller();
 
-	DashboardPanel(JScrollBar scrollBar) {
-		_scrollBar = scrollBar;
-		
+	DashboardPanel() {
 		setLayout(new BorderLayout());
     	addInstrumentPanelResizer();
 
-    	_scrollBar.setBlockIncrement(80);
-    	_scrollBar.setUnitIncrement(40);
-    	_scrollBar.setSize(10, _scrollBar.getSize().height);
-    	
 		add(_dashboardLayeredPane, BorderLayout.CENTER);
-		_scrollBar.getModel().addChangeListener(new ChangeListener(){ @Override public void stateChanged(ChangeEvent event) {
-			hideAllToolbars();
-			resizeInstruments();
-		}});
 		
 		_dashboardLayeredPane.add(_instrumentsContainer);
         _instrumentsContainer.setLayout(new FlowLayout(FlowLayout.CENTER, 0, INTRUMENTS_GAP));
@@ -128,18 +114,14 @@ class DashboardPanel extends JPanel {
 		}});
 		int max = sum.value < height ? height : sum.value;
 
-		_scrollBar.getModel().setMinimum(0);
-		_scrollBar.getModel().setMaximum(getSize().height);
-
 		int hidden = sum.value - height;
 		hidden = (hidden<0)?0:hidden;
 
-		_scrollBar.getModel().setExtent(TOOLBAR_HEIGHT+getSize().height-hidden);
-		_instrumentsContainer.setBounds(x, TOOLBAR_HEIGHT -offset(), width, max);
+		_instrumentsContainer.setBounds(x, TOOLBAR_HEIGHT -scrollingOffset(), width, max);
 	}
 
-	private int offset() {
-		return _scrollBar.getModel().getValue();
+	private int scrollingOffset() {
+		return 0; //CAN BE USED TO DO SCROLLING!
 	}
 	
 	void install(Instrument instrument) {
@@ -272,7 +254,8 @@ class DashboardPanel extends JPanel {
 
 			private void addInstrumentFog(Graphics2D g2, JXLayer<? extends JPanel> layer) {
 				if(_toolbar.isVisible()) return;
-				g2.setColor(new Color(1f, 1f, 1f, 0.5f));
+				Color back = layer.getBackground();
+				g2.setColor(new Color(back.getRed(), back.getGreen(), back.getBlue(), 128));
 				g2.fillRect(0, 0, layer.getWidth(), layer.getHeight());
 			}
 		}
@@ -374,7 +357,7 @@ class DashboardPanel extends JPanel {
 				int x = 0-INSTRUMENT_BORDER;
 				int y = pointInstrument.y - pointInstrumentContainer.y;
 				int width = getSize().width+2*INSTRUMENT_BORDER;
-				_toolbarPanel.setBounds(x + VERTICAL_MARGIN, y-offset(), width, TOOLBAR_HEIGHT);
+				_toolbarPanel.setBounds(x + VERTICAL_MARGIN, y-scrollingOffset(), width, TOOLBAR_HEIGHT);
 				_mouseBlockButton.setBounds(x, y, width, TOOLBAR_HEIGHT);
 				resizeShadow(0, y);
 			}
@@ -383,7 +366,7 @@ class DashboardPanel extends JPanel {
 				int width  = _instrumentsContainer.getWidth();
 				int height = 2*SHADOW_HEIGHT + TOOLBAR_HEIGHT + getSize().height;
 				
-				_toolbarShadow.setBounds(x, y-SHADOW_HEIGHT-offset(),  width, height);
+				_toolbarShadow.setBounds(x, y-SHADOW_HEIGHT-scrollingOffset(),  width, height);
 			}	
 			
 			protected void paintShadows(Graphics graph) {
