@@ -5,6 +5,8 @@ import static sneer.foundation.environments.Environments.my;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +15,7 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
@@ -29,10 +32,10 @@ import dfcsantos.music.ui.view.MusicViewListener;
 
 class MusicViewImpl implements MusicView {
 	private static final int MAX_VOLUME = 100;
-	private static final Dimension BUTTON_SIZE = new Dimension(18, 18);
+	private static final Dimension BUTTON_SIZE = new Dimension(32, 24);
 	
-	private final Icon playIcon = load("play.png"); 
-	private final Icon pauseIcon = load("pause.png");
+	private final Icon playIcon = load("playGrey.png"); 
+	private final Icon pauseIcon = load("pauseGrey.png");
 
 	private final JSlider volumeSlider = newVolumeSlider();
 
@@ -43,18 +46,61 @@ class MusicViewImpl implements MusicView {
 	@Override
 	public void init(InstrumentPanel container) {
 		Container pane = container.contentPane();
-		pane.setLayout(new GridLayout(4, 1));
+		pane.setLayout(new GridLayout(3, 1));
 		pane.add(folderDropDown());
 		pane.add(new TrackDisplay());
-		pane.add(playerControls());
-		pane.add(volumeControl());
-		
+		pane.add(controls());
+
 		initMenu(container.actions());
 	}
 
+	private JPanel controls() {
+		JPanel controls = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+
+		c.gridy = 0;
+		c.gridx = 0;
+		controls.add(new JLabel("02:23"), c);
+		
+		c.gridy = 0;
+		c.gridx = 1;
+		c.gridheight = 2;
+		controls.add(playButton(), c);
+
+		c.gridy = 0;
+		c.gridx = 2;
+		c.gridheight = 1;
+		controls.add(volumeControl(), c);
+
+		
+		
+		JPanel emotion = new JPanel(new FlowLayout(FlowLayout.LEADING, 2, 0));
+		emotion.add(meTooButton());
+		emotion.add(deleteButton());
+		emotion.add(noWayButton());
+
+		c.gridy = 1;
+		c.gridx = 0;
+		controls.add(emotion, c); 
+
+		JPanel maintenance = new JPanel(new FlowLayout(FlowLayout.LEADING, 2, 0));
+		maintenance.add(skipButton());
+		maintenance.add(stopButton());
+		maintenance.add(shuffleButton());
+		c.gridy = 1;
+		c.gridx = 2;
+		controls.add(maintenance, c);
+
+		return controls; 
+	}
+	
+	
+	
+	
 	
 	private JComboBox folderDropDown() {
 		JComboBox result = new JComboBox();
+		result.setPreferredSize(new Dimension(100, 15));
 		result.addItem("<Inbox - 7 Tracks>");
 		result.addItem("classico");
 		result.addItem("rock");
@@ -81,23 +127,9 @@ class MusicViewImpl implements MusicView {
 	}
 
 
-	private JPanel playerControls() {
-		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
-
-		panel.add(playButton());
-		panel.add(skipButton());
-		panel.add(stopButton());
-		panel.add(shuffleButton());
-		panel.add(meTooButton());
-		panel.add(deleteButton());
-		panel.add(noWayButton());
-		return panel;
-	}
-
-
 	private JButton playButton() {
 		JButton play = new JButton(playIcon);
-		play.setPreferredSize(BUTTON_SIZE);
+		play.setPreferredSize(new Dimension(50, 50));
 		play.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
 			play((JButton) e.getSource());
 		}});
@@ -198,7 +230,7 @@ class MusicViewImpl implements MusicView {
 	
 	private JSlider newVolumeSlider() {
 		final JSlider vol = new JSlider(SwingConstants.HORIZONTAL, 0, MAX_VOLUME, 0);
-		//vol.setPreferredSize(new Dimension(60, vol.getPreferredSize().height));
+		vol.setPreferredSize(new Dimension(100, 12));
 		vol.addChangeListener(new ChangeListener() { @Override public void stateChanged(ChangeEvent e) {
 			listener.volumePercent().setter().consume(vol.getValue());
 		}});
