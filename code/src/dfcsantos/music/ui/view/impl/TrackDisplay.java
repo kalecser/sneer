@@ -3,8 +3,6 @@ package dfcsantos.music.ui.view.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.FlowLayout;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,7 +12,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 
 class TrackDisplay extends JPanel {
-	private static final Format _timeFormater = new SimpleDateFormat("mm:ss");
+	//private static final Format _timeFormater = new SimpleDateFormat("mm:ss");
 
 	private final JLabel _trackLabel = my(ReactiveWidgetFactory.class).newLabel(playingTrackName()).getMainWidget();
 	private final JLabel _trackTime	 = my(ReactiveWidgetFactory.class).newLabel(playingTrackTime()).getMainWidget();
