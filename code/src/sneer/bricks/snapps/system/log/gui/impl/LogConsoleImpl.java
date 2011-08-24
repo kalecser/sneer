@@ -1,7 +1,6 @@
 package sneer.bricks.snapps.system.log.gui.impl;
 
 import static java.awt.Color.LIGHT_GRAY;
-import static java.awt.Color.WHITE;
 import static sneer.foundation.environments.Environments.my;
 
 import java.awt.BorderLayout;
@@ -26,7 +25,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -151,19 +152,19 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 
 	private JPanel initFilterGui() {
 		JPanel filter = new JPanel();
-		filter.setBackground(WHITE);
-		filter.setForeground(LIGHT_GRAY);
 		filter.setLayout(new GridBagLayout());
 		
 		final ListRegister<String> whiteListEntries = my(LogFilter.class).whiteListEntries();
 		final ListWidget<String> includes = my(ReactiveWidgetFactory.class).newList(whiteListEntries.output());
+
+		Border titledBorder = new LineBorder(LIGHT_GRAY, 1);
 		JScrollPane scroll2 = new JScrollPane();
 		scroll2.getViewport().add(includes.getComponent());
-		scroll2.setBorder(new TitledBorder("Log Events That Contain:"));
+		scroll2.setBorder(new TitledBorder(titledBorder, "Log Events That Contain:"));
 		filter.add(scroll2, new GridBagConstraints(0,0,1,2,1.0,1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0,2,0,0), 0,0));
-		
+
 		final JTextField newInclude = new JTextField();
-		newInclude.setBorder(new TitledBorder(""));
+		newInclude.setBorder(new TitledBorder(titledBorder, ""));
 		filter.add(newInclude, new GridBagConstraints(0,2,1,1,1.0,0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0,4,2,2), 0,0));
 		
 		JButton addButton = newButton("add.png", new Insets(0, 2, 2, 0));
