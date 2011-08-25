@@ -18,6 +18,8 @@ Swarm ===================================================
 Adenauer ================================================
 
 	Fix Instrument Menu Button (Make it a clean triangle, not so close to the text) Maybe use an image/icon instead of a button.
+	
+	Webstart - Fix .jnlp so that it will download new versions. Currently it is not detecting new versions.
 
 Volunteers ==============================================
 	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and ` can both use the same Gui.
