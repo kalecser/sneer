@@ -4,13 +4,13 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.Icon;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.ram.meter.MemoryMeter;
@@ -31,7 +31,7 @@ class MemoryMeterGuiImpl implements MemoryMeterGui {
 	private final ReactiveWidgetFactory _factory = my(ReactiveWidgetFactory.class);
 	private final MemoryMeter _meter = my(MemoryMeter.class);
 	
-	private final JButton _gc = newGcButton();
+	private final JLabel _gc = newGcButton(); //Fix the nimbus border button bug.
 	private final JLabel _maxMemory = new JLabel();
 	private final TextWidget<JLabel> _usedMemoryPeak = newLabel(_meter.usedMBsPeak(), "Peak: ");
 	private final TextWidget<JLabel> _usedMemoryCurrent	= newLabel(_meter.usedMBs(), "MB Used: ");
@@ -55,11 +55,12 @@ class MemoryMeterGuiImpl implements MemoryMeterGui {
 	}
 
 
-	private JButton newGcButton() {
+	private JLabel newGcButton() {
 		Icon icon = my(Icons.class).load(this.getClass(), "recycle.png");
-		JButton gcButton = new JButton(icon);
-		gcButton.setPreferredSize(new Dimension(14, 16));
-		gcButton.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
+		JLabel gcButton = new JLabel(icon);
+		gcButton.setHorizontalAlignment(SwingConstants.CENTER);
+		gcButton.setPreferredSize(new Dimension(20, 20));
+		gcButton.addMouseListener(new MouseListener() { @Override public void mouseReleased(MouseEvent e) { }  @Override public void mousePressed(MouseEvent e) { }  @Override public void mouseExited(MouseEvent e) { }  @Override public void mouseEntered(MouseEvent e) { }  @Override public void mouseClicked(MouseEvent e) {
 			System.gc();
 		}});
 		return gcButton;
