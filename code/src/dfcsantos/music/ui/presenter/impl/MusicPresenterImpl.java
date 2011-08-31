@@ -7,13 +7,17 @@ import java.io.File;
 import javax.swing.JFileChooser;
 
 import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.filechooser.FileChoosers;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.foundation.lang.Consumer;
+import sneer.foundation.lang.Functor;
 import dfcsantos.music.Music;
 import dfcsantos.music.ui.presenter.MusicPresenter;
 import dfcsantos.music.ui.view.MusicView;
 import dfcsantos.music.ui.view.MusicViewListener;
+import dfcsantos.tracks.Track;
 
 class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
@@ -73,7 +77,21 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 		deleteTrack(); //Reimplement this method to decrease taste musical. 
 	}
 
+	
+	@Override
+	public Signal<String> playingTrackName() {
+		return my(Signals.class).adapt(my(Music.class).playingTrack(), new Functor<Track, String>() { @Override public String evaluate(Track track) {
+			return (track == null) ? "<No track to play>" : track.name();
+		}});
+	}
 
+	
+	@Override
+	public Signal<Integer> playingTrackTime() {
+		return my(Music.class).playingTrackTime();
+	}
+
+	
 	private void checkSharedTracksFolder() {
 		if (currentSharedTracksFolder() == null)
 			chooseTracksFolder();
@@ -95,6 +113,5 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	public Register<Boolean> shuffle() {
 		return my(Music.class).shuffle();
 	}
-	
 	
 }

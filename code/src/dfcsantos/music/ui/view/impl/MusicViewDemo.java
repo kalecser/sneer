@@ -13,6 +13,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
 import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.menu.MainMenu;
@@ -58,7 +59,10 @@ class MusicViewDemo {
 			private Register<Boolean> isExchangingTracks = my(Signals.class).newRegister(true);
 			private Register<Integer> volumePercent = my(Signals.class).newRegister(50);
 			private Register<Boolean> shuffle = my(Signals.class).newRegister(true);
-
+			
+			private Signal<String> trackName = my(Signals.class).constant("Here Comes The Sun");
+			private Signal<Integer> trackTime = my(Signals.class).constant(111620);
+			
 			@Override public void chooseTracksFolder() {}
 			@Override public void pauseResume() { }
 			@Override public void skip() { }
@@ -69,7 +73,8 @@ class MusicViewDemo {
 			@Override public Register<Integer> volumePercent() { return volumePercent; }
 			@Override public Register<Boolean> isTrackExchangeActive() { return isExchangingTracks; }
 			@Override public Register<Boolean> shuffle() { return shuffle; }
-			
+			@Override public Signal<String> playingTrackName() { return trackName; }
+			@Override public Signal<Integer> playingTrackTime() { return trackTime; }
 		});
 		my(MusicView.class).init(new InstrumentPanel() {
 			@Override public Container contentPane() { return instrumentPanel; }

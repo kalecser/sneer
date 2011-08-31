@@ -1,15 +1,21 @@
 package dfcsantos.music.ui.view.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
@@ -17,6 +23,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.menu.MenuGroup;
 import sneer.foundation.lang.Consumer;
@@ -25,19 +32,20 @@ import dfcsantos.music.ui.view.MusicViewListener;
 
 class MusicViewImpl implements MusicView {
 	private static final int MAX_VOLUME = 100;
+	private static final Format _timeFormater = new SimpleDateFormat("mm:ss");
 
 	private final JSlider volumeSlider = newVolumeSlider();
 
 	private MusicViewListener listener;
 
-	@SuppressWarnings("unused") private Object refToAvoidGc;
+	@SuppressWarnings("unused") private Object refToAvoidGc, trackNameRefToAvoidGc, trackTimeRefToAvoidGc ;
 
 	@Override
 	public void init(InstrumentPanel container) {
 		Container pane = container.contentPane();
 		pane.setLayout(new GridLayout(4, 1));
 		pane.add(folderDropDown());
-		pane.add(new TrackDisplay());
+		pane.add(trackDisplay());
 		pane.add(playerControls());
 		pane.add(emotions());
 		
@@ -72,6 +80,34 @@ class MusicViewImpl implements MusicView {
 		}});
 	}
 
+	
+	private JPanel trackDisplay() {
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		panel.add(trackName());
+		panel.add(trackTime());
+		return panel;
+	}
+
+	
+	private JLabel trackName() {
+		final JLabel trackName = new JLabel();
+		trackNameRefToAvoidGc = listener.playingTrackName().addReceiver(new Consumer<String>() {  @Override public void consume(String name) {
+			trackName.setText(my(Lang.class).strings().abbreviate(name, 40));
+			trackName.setToolTipText(name);
+		}});
+		return trackName;
+	}
+
+	
+	private JLabel trackTime() {
+		final JLabel trackTime = new JLabel();
+		trackTimeRefToAvoidGc = listener.playingTrackTime().addReceiver(new Consumer<Integer>() {  @Override public void consume(Integer timeElapsed) {
+			String time = _timeFormater.format(new Date(timeElapsed));
+			trackTime.setText(time);
+		}});
+		return trackTime;
+	}
+
 
 	private JPanel playerControls() {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 0));
@@ -84,15 +120,6 @@ class MusicViewImpl implements MusicView {
 		return panel;
 	}
 
-	
-	private JPanel emotions() {
-		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-		panel.add(meTooButton());
-		panel.add(deleteButton());
-		panel.add(noWayButton());
-		return panel;
-	}
-	
 	
 	private JButton playButton() {
 		JButton play = new JButton(">");
@@ -133,6 +160,15 @@ class MusicViewImpl implements MusicView {
 		return shuffle;
 	}
 	
+	
+	private JPanel emotions() {
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+		panel.add(meTooButton());
+		panel.add(deleteButton());
+		panel.add(noWayButton());
+		return panel;
+	}
+
 
 	private JButton meTooButton() {
 		JButton meToo = new JButton(":D");

@@ -11,7 +11,6 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.IllegalComponentStateException;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -19,11 +18,10 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -36,6 +34,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -270,7 +269,7 @@ class DashboardPanel extends JPanel {
 			private final JButton _mouseBlockButton = new JButton(); //Fix: Remove this hack used to block mouse 
 																									//event dispatch to the instrument behind toolbar.
 			private final JLabel _title = new JLabel();
-			private final JButton _menu = new JButton();
+			private final JLabel _menu = new JLabel();
 			
 			private Toolbar(String title){
 				initCopyClassNameToClipboardAction();
@@ -315,11 +314,10 @@ class DashboardPanel extends JPanel {
 			}
 
 			private void configureMenu() {
+				_menu.setHorizontalAlignment(SwingConstants.CENTER);
 				_menu.setIcon(my(Icons.class).load(getClass(), "menu.png"));
-				_menu.setMargin(new Insets(2, 0, 0, 0));
-				_menu.setBorder(new EmptyBorder(0,0,0,0));
-				_menu.setPreferredSize(new Dimension(9, 7));
-				_menu.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
+				_menu.setPreferredSize(new Dimension(18,10));
+				_menu.addMouseListener(new MouseListener() { @Override public void mouseReleased(MouseEvent e) { }  @Override public void mousePressed(MouseEvent e) { }  @Override public void mouseExited(MouseEvent e) { }  @Override public void mouseEntered(MouseEvent e) { }  @Override public void mouseClicked(MouseEvent e) {
 					showActionsPopUp();
 				}});
 			}
