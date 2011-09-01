@@ -10,16 +10,20 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 public class Anything extends JFrame {
+	private final static String ROOT = "E:\\Musicas";  
+	
 	public static void main(String [] ignored) {
 		setLookAndFeel();
 		new Anything();
@@ -30,19 +34,54 @@ public class Anything extends JFrame {
 		Container panel = getContentPane();
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 2;
-		c.gridy = 2;
-		panel.add(label(), c);
+	
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 2;
+		panel.add(musicFolders(), c);
 		
 		c.gridx = 1;
 		c.gridy = 1;
+		c.gridwidth = 1;
 		panel.add(imageButton(), c);
+
+		c.gridx = 2;
+		c.gridy = 2;
+		panel.add(label(), c);
+
 		
 		setTitle("Imagen button");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(100, 100, 200, 200);
 		setVisible(true);
 	}
+
+	
+	private JComboBox musicFolders() {
+		JComboBox folders = new JComboBox();
+		File root = new File(ROOT);
+		loadFolders(root, folders);
+		return folders;
+	}
+
+	private void loadFolders(File root, JComboBox loadedFolders) {
+		if (root == null) return;
+		if (root.isFile()) return;
+		
+		String completePath = root.getAbsolutePath();
+		if (!(completePath == null) && !completePath.equals(ROOT))
+			loadedFolders.addItem(removeRootRef(completePath));
+			
+		for (File entry : root.listFiles()) { 
+			loadFolders(entry, loadedFolders);
+		}
+	}
+
+	
+	private String removeRootRef(String completePath) {
+		return 	(completePath == null) ? "Sem nome" : completePath.replace(ROOT + File.separator, "");
+	}
+	
 	
 	private JButton imageButton() {
 		URL path = getClass().getResource("menu.png");

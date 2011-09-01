@@ -3,6 +3,8 @@ package dfcsantos.music.ui.presenter.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.JFileChooser;
 
@@ -21,6 +23,9 @@ import dfcsantos.tracks.Track;
 
 class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
+	private Register<Set<String>> _subSharedTrackFolder = my(Signals.class).newRegister(null);
+
+	
 	{
 		my(MusicView.class).setListener(this);
     	my(InstrumentRegistry.class).registerInstrument(my(MusicView.class));
@@ -32,13 +37,20 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	public void chooseTracksFolder() {
 		my(FileChoosers.class).choose(new Consumer<File>() {  @Override public void consume(File chosenFolder) {
 			my(Music.class).setTracksFolder(chosenFolder);
+			loadSubSharedTracksFolder(chosenFolder);
 		}}, JFileChooser.DIRECTORIES_ONLY, currentSharedTracksFolder());
 	}
 
-	
+
 	@Override
 	public Register<Boolean> isTrackExchangeActive() {
 		return my(Music.class).isTrackExchangeActive();
+	}
+
+
+	@Override
+	public Signal<Set<String>> subSharedTracksFolders() {
+		return _subSharedTrackFolder.output();
 	}
 
 	
@@ -95,6 +107,8 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	private void checkSharedTracksFolder() {
 		if (currentSharedTracksFolder() == null)
 			chooseTracksFolder();
+		else
+			loadSubSharedTracksFolder(currentSharedTracksFolder());
 	}
 	
 	
@@ -114,4 +128,27 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 		return my(Music.class).shuffle();
 	}
 	
+	
+	private void loadSubSharedTracksFolder(File sharedTracksFolder) {
+		Set<String> subFordersPaths = new HashSet<String>();  
+		loadSubFolders(sharedTracksFolder.getAbsolutePath(), sharedTracksFolder, subFordersPaths);
+		_subSharedTrackFolder.setter().consume(subFordersPaths);
+	}
+
+	private void loadSubFolders(final String sharedTracksFolderPath, File folder, Set<String> subFordersPaths) {
+		if (folder == null) return;
+		if (folder.isFile()) return;
+		
+		loadSubFolderPath(sharedTracksFolderPath, folder.getAbsolutePath(), subFordersPaths);
+			
+		for (File subFolder : folder.listFiles())
+			loadSubFolders(sharedTracksFolderPath, subFolder, subFordersPaths);
+	}
+
+	private void loadSubFolderPath(String sharedTracksFolderPath, String subFolderPath, Set<String> subFordersPaths) {
+		 if (subFolderPath == null) return;
+		 if (subFolderPath.equals(sharedTracksFolderPath)) return;
+		 String result = subFolderPath.replace(sharedTracksFolderPath + File.separator, "");
+		 subFordersPaths.add(result);
+	}
 }

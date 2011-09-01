@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -38,13 +39,13 @@ class MusicViewImpl implements MusicView {
 
 	private MusicViewListener listener;
 
-	@SuppressWarnings("unused") private Object refToAvoidGc, trackNameRefToAvoidGc, trackTimeRefToAvoidGc ;
+	@SuppressWarnings("unused") private Object refToAvoidGc, trackNameRefToAvoidGc, trackTimeRefToAvoidGc, subFordersRefToAvoidGc ;
 
 	@Override
 	public void init(InstrumentPanel container) {
 		Container pane = container.contentPane();
 		pane.setLayout(new GridLayout(4, 1));
-		pane.add(folderDropDown());
+		pane.add(subFolders());
 		pane.add(trackDisplay());
 		pane.add(playerControls());
 		pane.add(emotions());
@@ -53,18 +54,19 @@ class MusicViewImpl implements MusicView {
 	}
 
 
-	private JComboBox folderDropDown() {
-		JComboBox result = new JComboBox();
-		result.addItem("<Inbox - 7 Tracks>");
-		result.addItem("classico");
-		result.addItem("rock");
-		result.addItem("rock/nacional");
-		result.addItem("rock/nacional/Ira");
-		result.addItem("rock/nacional/legiao");
-		result.addItem("rock/Queen");
-		result.addItem("samba/raiz");
-		result.addItem("sertanejo/raiz");
-		return result;
+	private JComboBox subFolders() {
+		final JComboBox subSharedTracksFolders = new JComboBox();
+		subSharedTracksFolders.setMaximumRowCount(4);
+		
+		subFordersRefToAvoidGc = listener.subSharedTracksFolders().addReceiver(new Consumer<Set<String>>() {  @Override public void consume(Set<String> subTracksFoldersPath) {
+			if (subTracksFoldersPath != null) {
+				subSharedTracksFolders.removeAllItems();
+				subSharedTracksFolders.addItem("<Inbox - 7 Tracks>");
+				for (String path : subTracksFoldersPath)
+					subSharedTracksFolders.addItem(path);
+			}
+		}});
+		return subSharedTracksFolders;
 	}
 
 
@@ -92,7 +94,7 @@ class MusicViewImpl implements MusicView {
 	private JLabel trackName() {
 		final JLabel trackName = new JLabel();
 		trackNameRefToAvoidGc = listener.playingTrackName().addReceiver(new Consumer<String>() {  @Override public void consume(String name) {
-			trackName.setText(my(Lang.class).strings().abbreviate(name, 40));
+			trackName.setText(my(Lang.class).strings().abbreviate(name, 36));
 			trackName.setToolTipText(name);
 		}});
 		return trackName;
