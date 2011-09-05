@@ -4,8 +4,8 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -60,7 +60,7 @@ class MemoryMeterGuiImpl implements MemoryMeterGui {
 		JLabel gcButton = new JLabel(icon);
 		gcButton.setHorizontalAlignment(SwingConstants.CENTER);
 		gcButton.setPreferredSize(new Dimension(20, 20));
-		gcButton.addMouseListener(new MouseListener() { @Override public void mouseReleased(MouseEvent e) { }  @Override public void mousePressed(MouseEvent e) { }  @Override public void mouseExited(MouseEvent e) { }  @Override public void mouseEntered(MouseEvent e) { }  @Override public void mouseClicked(MouseEvent e) {
+		gcButton.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) {
 			System.gc();
 		}});
 		return gcButton;

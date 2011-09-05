@@ -20,8 +20,8 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -317,7 +317,7 @@ class DashboardPanel extends JPanel {
 				_menu.setHorizontalAlignment(SwingConstants.CENTER);
 				_menu.setIcon(my(Icons.class).load(getClass(), "menu.png"));
 				_menu.setPreferredSize(new Dimension(18,10));
-				_menu.addMouseListener(new MouseListener() { @Override public void mouseReleased(MouseEvent e) { }  @Override public void mousePressed(MouseEvent e) { }  @Override public void mouseExited(MouseEvent e) { }  @Override public void mouseEntered(MouseEvent e) { }  @Override public void mouseClicked(MouseEvent e) {
+				_menu.addMouseListener(new MouseAdapter() {@Override public void mouseClicked(MouseEvent e) {
 					showActionsPopUp();
 				}});
 			}
