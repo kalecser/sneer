@@ -64,6 +64,7 @@ class MusicViewDemo {
 			private Signal<String> trackName = my(Signals.class).constant("Here Comes The Sun");
 			private Signal<Integer> trackTime = my(Signals.class).constant(111620);
 			private Signal<Set<String>> _subSharedTrakdsFolders = my(Signals.class).constant(null);
+			private Signal<Integer> qtyOfPeerTracks = my(Signals.class).constant(5);
 			
 			@Override public void chooseTracksFolder() {}
 			@Override public void pauseResume() { }
@@ -78,6 +79,10 @@ class MusicViewDemo {
 			@Override public Signal<String> playingTrackName() { return trackName; }
 			@Override public Signal<Integer> playingTrackTime() { return trackTime; }
 			@Override public Signal<Set<String>> subSharedTracksFolders() { return _subSharedTrakdsFolders; }
+			@Override public void setOwnOperatingMode() { }
+			@Override public void setPeersOperatingMode() { }
+			@Override public void setPlayingFolder(String subSharedFolder) { }
+			@Override public Signal<Integer> numberOfPeerTracks() { return qtyOfPeerTracks; }
 		});
 		my(MusicView.class).init(new InstrumentPanel() {
 			@Override public Container contentPane() { return instrumentPanel; }

@@ -55,6 +55,12 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
 	
 	@Override
+	public Signal<Integer> numberOfPeerTracks() {
+		return my(Music.class).numberOfPeerTracks();
+	}
+
+
+	@Override
 	public void pauseResume() {
 		my(Music.class).pauseResume();
 	}
@@ -129,6 +135,26 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	}
 	
 	
+	@Override
+	public void setOwnOperatingMode() {
+		my(Music.class).setOperatingMode(Music.OperatingMode.OWN);
+	}
+
+	@Override
+	public void setPeersOperatingMode() {
+		my(Music.class).setOperatingMode(Music.OperatingMode.PEERS);
+	}
+	
+
+	@Override
+	public void setPlayingFolder(String subSharedFolder) {
+		String newFolderPath = currentSharedTracksFolder().getAbsolutePath() + File.separator + subSharedFolder;
+		System.out.println("newFolderPath: " + newFolderPath);
+		File newFolder = new File(newFolderPath);
+		my(Music.class).setPlayingFolder(newFolder);
+	}
+
+
 	private void loadSubSharedTracksFolder(File sharedTracksFolder) {
 		Set<String> subFordersPaths = new HashSet<String>();  
 		loadSubFolders(sharedTracksFolder.getAbsolutePath(), sharedTracksFolder, subFordersPaths);

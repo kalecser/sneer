@@ -14,6 +14,7 @@ public interface MusicViewListener {
 	Signal<String> playingTrackName();
 	Signal<Integer> playingTrackTime();
 	Signal<Set<String>> subSharedTracksFolders();
+	Signal<Integer> numberOfPeerTracks();
 	
 	void chooseTracksFolder();
 	void pauseResume();
@@ -22,4 +23,7 @@ public interface MusicViewListener {
 	void deleteTrack();
 	void meToo();
 	void noWay();
+	void setOwnOperatingMode();
+	void setPeersOperatingMode();
+	void setPlayingFolder(String subSharedFolder);
 }
