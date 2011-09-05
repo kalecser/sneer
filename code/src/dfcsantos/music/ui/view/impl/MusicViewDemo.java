@@ -63,7 +63,7 @@ class MusicViewDemo {
 			
 			private Signal<String> trackName = my(Signals.class).constant("Here Comes The Sun");
 			private Signal<Integer> trackTime = my(Signals.class).constant(111620);
-			private Signal<Set<String>> _subSharedTrakdsFolders = my(Signals.class).constant(null);
+			private Signal<Set<String>> _subFolders = my(Signals.class).constant(null);
 			private Signal<Integer> qtyOfPeerTracks = my(Signals.class).constant(5);
 			
 			@Override public void chooseTracksFolder() {}
@@ -78,7 +78,7 @@ class MusicViewDemo {
 			@Override public Register<Boolean> shuffle() { return shuffle; }
 			@Override public Signal<String> playingTrackName() { return trackName; }
 			@Override public Signal<Integer> playingTrackTime() { return trackTime; }
-			@Override public Signal<Set<String>> subSharedTracksFolders() { return _subSharedTrakdsFolders; }
+			@Override public Signal<Set<String>> subSharedTracksFolders() { return _subFolders; }
 			@Override public void setOwnOperatingMode() { }
 			@Override public void setPeersOperatingMode() { }
 			@Override public void setPlayingFolder(String subSharedFolder) { }
