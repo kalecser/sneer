@@ -12,7 +12,7 @@ import sneer.foundation.lang.Consumer;
 import dfcsantos.music.ui.view.MusicViewListener;
 
 
-public class SelectorModePanel extends JPanel {
+final class FolderSelectionPanel extends JPanel {
 	private final MusicViewListener _listener;
 	private final JComboBox _selector = newComboBox();
 
@@ -20,7 +20,7 @@ public class SelectorModePanel extends JPanel {
 	@SuppressWarnings("unused") private Object refToAvoidGc;
 
 	
-	public SelectorModePanel(MusicViewListener listener) {
+	FolderSelectionPanel(MusicViewListener listener) {
 		_listener = listener; 
 		
 		setLayout(new FlowLayout(FlowLayout.LEADING));
