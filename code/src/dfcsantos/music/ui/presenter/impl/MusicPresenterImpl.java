@@ -149,7 +149,6 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	@Override
 	public void setPlayingFolder(String subSharedFolder) {
 		String newFolderPath = currentSharedTracksFolder().getAbsolutePath() + File.separator + subSharedFolder;
-		System.out.println("newFolderPath: " + newFolderPath);
 		File newFolder = new File(newFolderPath);
 		my(Music.class).setPlayingFolder(newFolder);
 	}
