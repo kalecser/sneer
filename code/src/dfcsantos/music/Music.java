@@ -69,4 +69,3 @@ public interface Music {
 	SetSignal<Download> activeDownloads();
 
 }
-

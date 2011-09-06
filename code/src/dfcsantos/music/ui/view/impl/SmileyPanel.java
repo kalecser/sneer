@@ -17,7 +17,7 @@ final class SmileyPanel extends JPanel {
 	SmileyPanel(MusicViewListener listener) {
 		_listener = listener;
 
-		setLayout(new FlowLayout(FlowLayout.LEFT));
+		setLayout(new FlowLayout(FlowLayout.LEADING));
 		add(meTooButton());
 		add(deleteButton());
 		add(noWayButton());

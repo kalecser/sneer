@@ -3,14 +3,18 @@ package dfcsantos.music.ui.presenter.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 
+import sneer.bricks.hardware.clock.timer.Timer;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.pulp.reactive.collections.CollectionSignals;
+import sneer.bricks.pulp.reactive.collections.ListRegister;
+import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.skin.filechooser.FileChoosers;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.foundation.lang.Consumer;
@@ -23,21 +27,30 @@ import dfcsantos.tracks.Track;
 
 class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
-	private Register<Set<String>> _subSharedTrackFolder = my(Signals.class).newRegister(null);
+	private static final int FIVE_MINUTES = 1000 * 60 * 5;
+
+	private static final String INBOX = "<Inbox>";
+	
+	private ListRegister<String> playingFolderChoices = my(CollectionSignals.class).newListRegister();
+
+	@SuppressWarnings("unused")	private WeakContract refToAvoidGc1, refToAvoidGc2, refToAvoidGc3;
 
 	
 	{
 		my(MusicView.class).setListener(this);
     	my(InstrumentRegistry.class).registerInstrument(my(MusicView.class));
-		checkSharedTracksFolder();
+    	
+    	initChoicesRefresh();
+    	
+		if (currentSharedTracksFolder() == null)
+			chooseTracksFolder();
 	}
 
-	
+
 	@Override
 	public void chooseTracksFolder() {
 		my(FileChoosers.class).choose(new Consumer<File>() {  @Override public void consume(File chosenFolder) {
 			my(Music.class).setTracksFolder(chosenFolder);
-			loadSubSharedTracksFolder(chosenFolder);
 		}}, JFileChooser.DIRECTORIES_ONLY, currentSharedTracksFolder());
 	}
 
@@ -45,18 +58,6 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	@Override
 	public Register<Boolean> isTrackExchangeActive() {
 		return my(Music.class).isTrackExchangeActive();
-	}
-
-
-	@Override
-	public Signal<Set<String>> subSharedTracksFolders() {
-		return _subSharedTrackFolder.output();
-	}
-
-	
-	@Override
-	public Signal<Integer> numberOfPeerTracks() {
-		return my(Music.class).numberOfPeerTracks();
 	}
 
 
@@ -110,14 +111,6 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	}
 
 	
-	private void checkSharedTracksFolder() {
-		if (currentSharedTracksFolder() == null)
-			chooseTracksFolder();
-		else
-			loadSubSharedTracksFolder(currentSharedTracksFolder());
-	}
-	
-	
 	private File currentSharedTracksFolder() {
 		return my(Music.class).tracksFolder().currentValue();
 	}
@@ -136,44 +129,51 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 	
 	@Override
-	public void setOwnOperatingMode() {
+	public void playingFolderChosen(String subSharedFolder) {
+		if (subSharedFolder.startsWith(INBOX)) {
+			my(Music.class).setOperatingMode(Music.OperatingMode.PEERS);
+			return;
+		}
 		my(Music.class).setOperatingMode(Music.OperatingMode.OWN);
-	}
-
-	@Override
-	public void setPeersOperatingMode() {
-		my(Music.class).setOperatingMode(Music.OperatingMode.PEERS);
-	}
-	
-
-	@Override
-	public void setPlayingFolder(String subSharedFolder) {
-		String newFolderPath = currentSharedTracksFolder().getAbsolutePath() + File.separator + subSharedFolder;
-		File newFolder = new File(newFolderPath);
+		
+		File newFolder = new File(currentSharedTracksFolder(), subSharedFolder);
 		my(Music.class).setPlayingFolder(newFolder);
 	}
 
-
-	private void loadSubSharedTracksFolder(File sharedTracksFolder) {
-		Set<String> subFordersPaths = new HashSet<String>();  
-		loadSubFolders(sharedTracksFolder.getAbsolutePath(), sharedTracksFolder, subFordersPaths);
-		_subSharedTrackFolder.setter().consume(subFordersPaths);
+	
+	@Override
+	public ListSignal<String> playingFolderChoices() {
+		return playingFolderChoices.output();
+	}
+	
+	private void refreshChoices() {
+		playingFolderChoices.clear();
+		resfreshInbox();
+		refreshFolders();
 	}
 
-	private void loadSubFolders(final String sharedTracksFolderPath, File folder, Set<String> subFordersPaths) {
-		if (folder == null) return;
-		if (folder.isFile()) return;
-		
-		loadSubFolderPath(sharedTracksFolderPath, folder.getAbsolutePath(), subFordersPaths);
-			
-		for (File subFolder : folder.listFiles())
-			loadSubFolders(sharedTracksFolderPath, subFolder, subFordersPaths);
+
+	private void resfreshInbox() {
+		playingFolderChoices.add(INBOX + " " + my(Music.class).numberOfPeerTracks().currentValue() + " Tracks");
 	}
 
-	private void loadSubFolderPath(String sharedTracksFolderPath, String subFolderPath, Set<String> subFordersPaths) {
-		 if (subFolderPath == null) return;
-		 if (subFolderPath.equals(sharedTracksFolderPath)) return;
-		 String result = subFolderPath.replace(sharedTracksFolderPath + File.separator, "");
-		 subFordersPaths.add(result);
+	
+	private void refreshFolders() {
+		FolderChoicesPoll poller = new FolderChoicesPoll(currentSharedTracksFolder());
+		List<String> folderChoices = poller.result();
+		if (folderChoices != null) 
+			for (String folder : folderChoices)
+				playingFolderChoices.add(folder);
 	}
+
+
+	private void initChoicesRefresh() {
+		Runnable choicesRefresh = new Runnable(){ @Override public void run() {
+			refreshChoices();
+		}};
+		refToAvoidGc1 = my(Timer.class).wakeUpNowAndEvery(FIVE_MINUTES, choicesRefresh);
+		//refToAvoidGc2 = my(Music.class).tracksFolder().addPulseReceiver(choicesRefresh);
+		//refToAvoidGc3 = my(Music.class).numberOfPeerTracks().addPulseReceiver(choicesRefresh);
+	}
+	
 }

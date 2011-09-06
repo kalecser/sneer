@@ -18,11 +18,12 @@ import dfcsantos.music.ui.view.MusicViewListener;
 
 final class PlayingTrackPanel extends JPanel {
 	private static final Format _timeFormater = new SimpleDateFormat("mm:ss");
+	
 	private final MusicViewListener _listener;
 	private final JLabel _trackName = new JLabel();
 	private final JLabel _trackTime = new JLabel();
 	
-	@SuppressWarnings("unused") private Object refToAvoidGc1, refToAvoidGc2; 
+	@SuppressWarnings("unused") private final Object refToAvoidGc1, refToAvoidGc2; 
 	
 	
 	PlayingTrackPanel(MusicViewListener listener) {

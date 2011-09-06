@@ -20,9 +20,9 @@ import dfcsantos.music.ui.view.MusicViewListener;
 final class PlayerControlsPanel extends JPanel {
 	private static final int MAX_VOLUME = 100;
 
-	private final MusicViewListener _listener;
-
 	private final JSlider volumeSlider = newVolumeSlider();
+
+	private final MusicViewListener _listener;
 
 	@SuppressWarnings("unused") private Object refToAvoidGc;
 

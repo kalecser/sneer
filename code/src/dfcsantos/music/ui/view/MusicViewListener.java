@@ -1,9 +1,8 @@
 package dfcsantos.music.ui.view;
 
-import java.util.Set;
-
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.collections.ListSignal;
 
 public interface MusicViewListener {
 	
@@ -13,8 +12,7 @@ public interface MusicViewListener {
 	
 	Signal<String> playingTrackName();
 	Signal<Integer> playingTrackTime();
-	Signal<Set<String>> subSharedTracksFolders();
-	Signal<Integer> numberOfPeerTracks();
+	ListSignal<String> playingFolderChoices();
 	
 	void chooseTracksFolder();
 	void pauseResume();
@@ -23,7 +21,5 @@ public interface MusicViewListener {
 	void deleteTrack();
 	void meToo();
 	void noWay();
-	void setOwnOperatingMode();
-	void setPeersOperatingMode();
-	void setPlayingFolder(String subSharedFolder);
+	void playingFolderChosen(String folder);
 }

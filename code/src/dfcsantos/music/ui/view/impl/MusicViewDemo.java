@@ -4,7 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -16,6 +15,9 @@ import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.pulp.reactive.collections.CollectionSignals;
+import sneer.bricks.pulp.reactive.collections.ListRegister;
+import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.menu.MainMenu;
 import sneer.bricks.skin.menu.MenuGroup;
@@ -63,8 +65,7 @@ class MusicViewDemo {
 			
 			private Signal<String> trackName = my(Signals.class).constant("Here Comes The Sun");
 			private Signal<Integer> trackTime = my(Signals.class).constant(111620);
-			private Signal<Set<String>> _subFolders = my(Signals.class).constant(null);
-			private Signal<Integer> qtyOfPeerTracks = my(Signals.class).constant(5);
+			private ListRegister<String> playingFolderChoices = my(CollectionSignals.class).newListRegister();			
 			
 			@Override public void chooseTracksFolder() {}
 			@Override public void pauseResume() { }
@@ -78,11 +79,8 @@ class MusicViewDemo {
 			@Override public Register<Boolean> shuffle() { return shuffle; }
 			@Override public Signal<String> playingTrackName() { return trackName; }
 			@Override public Signal<Integer> playingTrackTime() { return trackTime; }
-			@Override public Signal<Set<String>> subSharedTracksFolders() { return _subFolders; }
-			@Override public void setOwnOperatingMode() { }
-			@Override public void setPeersOperatingMode() { }
-			@Override public void setPlayingFolder(String subSharedFolder) { }
-			@Override public Signal<Integer> numberOfPeerTracks() { return qtyOfPeerTracks; }
+			@Override public void playingFolderChosen(String subSharedFolder) { }
+			@Override public ListSignal<String> playingFolderChoices() { return playingFolderChoices.output(); }
 		});
 		my(MusicView.class).init(new InstrumentPanel() {
 			@Override public Container contentPane() { return instrumentPanel; }

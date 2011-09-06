@@ -3,68 +3,54 @@ package dfcsantos.music.ui.view.impl;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Set;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.foundation.lang.Consumer;
 import dfcsantos.music.ui.view.MusicViewListener;
 
 
 final class FolderSelectionPanel extends JPanel {
-	private final MusicViewListener _listener;
-	private final JComboBox _selector = newComboBox();
-
+	private final MusicViewListener listener;
+	private final DefaultComboBoxModel folderChoices;
 	
-	@SuppressWarnings("unused") private Object refToAvoidGc;
+	
+	@SuppressWarnings("unused") private Object refToAvoidGc1;
 
 	
 	FolderSelectionPanel(MusicViewListener listener) {
-		_listener = listener; 
-		
-		setLayout(new FlowLayout(FlowLayout.LEADING));
-		add(_selector);
+		this.listener = listener; 
 
-		refToAvoidGc = _listener.subSharedTracksFolders().addReceiver(new Consumer<Set<String>>() {  @Override public void consume(Set<String> subFoldersPath) {
-			loadPathOfSubForders(subFoldersPath);
+		JComboBox selector = newFolderChoices();
+		folderChoices = (DefaultComboBoxModel) selector.getModel();
+		
+		setLayout(new FlowLayout(FlowLayout.LEFT));
+		add(selector);
+		
+		refToAvoidGc1 = listener.playingFolderChoices().addReceiver(new Consumer<CollectionChange<String>>() {  @Override public void consume(CollectionChange<String> value) {
+				refresh(value);
 		}});
 	}
 	
 
-	private JComboBox newComboBox() {
-		final JComboBox subFolders = new JComboBox();
-		subFolders.setMaximumRowCount(4);
-		subFolders.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
-			selectMode();
+	private JComboBox newFolderChoices() {
+		final JComboBox comboBox = new JComboBox();
+		comboBox.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
+			listener.playingFolderChosen((String) folderChoices.getSelectedItem());
 		}});
-		
-		//downloadedPeersTrackersRefToAvoidGC = listener.numberOfPeerTracks().addReceiver(new Consumer<Integer>() {  @Override public void consume(Integer qty) {
-		//	DefaultComboBoxModel model = (DefaultComboBoxModel) subSharedTracksFolders.getModel();
-		//	model.insertElementAt("<Inbox - " + qty + " Tracks>", 0);
-		//	subSharedTracksFolders.setModel(model);
-		//}});
-		
-		return subFolders;
+		return comboBox;
 	}
 
 	
-	private void selectMode(){
-		if (_selector.getSelectedIndex() == 0)
-			_listener.setPeersOperatingMode();
-		else {
-			_listener.setOwnOperatingMode();
-			_listener.setPlayingFolder((String) _selector.getSelectedItem());
-		}
-	}
-
-	
-	private void loadPathOfSubForders(final Set<String> subTracksFoldersPath) {
-		if (subTracksFoldersPath == null) return; 
-		_selector.removeAllItems();
-		_selector.addItem("<Inbox - 7 Tracks>");
-		for (String path : subTracksFoldersPath)
-			_selector.addItem(path);
+	private void refresh(CollectionChange<String> value) {
+		for (String newFolder : value.elementsAdded())
+			folderChoices.addElement(newFolder);
+		
+		for (String oldFolder : value.elementsRemoved())
+			folderChoices.removeElement(oldFolder);
 	}
 
 }
