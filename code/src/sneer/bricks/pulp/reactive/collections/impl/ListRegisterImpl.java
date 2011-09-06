@@ -134,6 +134,14 @@ class ListRegisterImpl<VO> implements ListRegister<VO> {
 	}
 	
 	@Override
+	public void clear() {
+		synchronized (_list) {
+			_list.clear();
+			_size.setter().consume(_list.size());
+		}
+	}
+
+	@Override
 	public void move(int oldIndex, int newIndex) {
 		if(oldIndex==newIndex) return;
 		int tmpIndex = newIndex>oldIndex ? newIndex-1 : newIndex;
