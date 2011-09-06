@@ -4,6 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import sneer.bricks.hardware.io.IO;
@@ -14,6 +15,7 @@ class TracksImpl implements Tracks {
 
 	@Override
 	public List<File> listMp3FilesFromFolder(File folder) {
+		if (!folder.exists()) return Collections.EMPTY_LIST;
 		return new ArrayList<File>(my(IO.class).files().listFiles(folder, new String[] { "mp3","MP3" }, true));
 	}
 
