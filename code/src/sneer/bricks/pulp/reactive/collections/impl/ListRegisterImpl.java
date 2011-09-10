@@ -133,13 +133,6 @@ class ListRegisterImpl<VO> implements ListRegister<VO> {
 		_output.notifyReceivers(new ListElementReplaced<VO>(index, old, newElement));
 	}
 	
-	@Override
-	public void clear() {
-		synchronized (_list) {
-			_list.clear();
-			_size.setter().consume(_list.size());
-		}
-	}
 
 	@Override
 	public void move(int oldIndex, int newIndex) {
