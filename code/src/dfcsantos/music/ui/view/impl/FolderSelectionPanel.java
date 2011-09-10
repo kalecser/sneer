@@ -1,56 +1,51 @@
 package dfcsantos.music.ui.view.impl;
 
+import static sneer.foundation.environments.Environments.my;
+
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-import sneer.bricks.pulp.reactive.collections.CollectionChange;
-import sneer.foundation.lang.Consumer;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
+import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import dfcsantos.music.ui.view.MusicViewListener;
 
 
 final class FolderSelectionPanel extends JPanel {
 	private final MusicViewListener listener;
-	private final DefaultComboBoxModel folderChoices;
-	
-	
-	@SuppressWarnings("unused") private Object refToAvoidGc1;
 
-	
 	FolderSelectionPanel(MusicViewListener listener) {
-		this.listener = listener; 
-
-		JComboBox selector = newFolderChoices();
-		folderChoices = (DefaultComboBoxModel) selector.getModel();
-		
+		this.listener = listener;
 		setLayout(new FlowLayout(FlowLayout.LEFT));
-		add(selector);
-		
-		refToAvoidGc1 = listener.playingFolderChoices().addReceiver(new Consumer<CollectionChange<String>>() {  @Override public void consume(CollectionChange<String> value) {
-				refresh(value);
-		}});
+		add(newComboBox());
 	}
-	
 
-	private JComboBox newFolderChoices() {
-		final JComboBox comboBox = new JComboBox();
+	private JComboBox newComboBox() {
+		ComboBoxModel model = my(ReactiveWidgetFactory.class).newComboBoxSignalModel(listener.playingFolderChoices(), chooser());
+		JComboBox comboBox = new JComboBox(model);
 		comboBox.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
-			listener.playingFolderChosen((String) folderChoices.getSelectedItem());
+			playingFolderChosen(e);
 		}});
 		return comboBox;
 	}
 
 	
-	private void refresh(CollectionChange<String> value) {
-		for (String newFolder : value.elementsAdded())
-			folderChoices.addElement(newFolder);
-		
-		for (String oldFolder : value.elementsRemoved())
-			folderChoices.removeElement(oldFolder);
+	private void playingFolderChosen(ActionEvent e) {
+		String folderChosen = (String)((JComboBox) e.getSource()).getModel().getSelectedItem();
+		if (folderChosen != null)
+			listener.playingFolderChosen(folderChosen);
 	}
 
+	
+	private SignalChooser<String> chooser() {
+		return new SignalChooser<String>(){ @Override public Signal<?>[] signalsToReceiveFrom(String element) {
+			return new Signal<?>[]{ my(Signals.class).constant(element) };
+		}};
+	}
 }

@@ -145,35 +145,37 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	public ListSignal<String> playingFolderChoices() {
 		return playingFolderChoices.output();
 	}
-	
-	private void refreshChoices() {
-		playingFolderChoices.clear();
-		resfreshInbox();
-		refreshFolders();
-	}
-
-
-	private void resfreshInbox() {
-		playingFolderChoices.add(INBOX + " " + my(Music.class).numberOfPeerTracks().currentValue() + " Tracks");
-	}
 
 	
-	private void refreshFolders() {
-		FolderChoicesPoll poller = new FolderChoicesPoll(currentSharedTracksFolder());
-		List<String> folderChoices = poller.result();
-		if (folderChoices != null) 
-			for (String folder : folderChoices)
-				playingFolderChoices.add(folder);
-	}
-
-
 	private void initChoicesRefresh() {
 		Runnable choicesRefresh = new Runnable(){ @Override public void run() {
 			refreshChoices();
 		}};
 		refToAvoidGc1 = my(Timer.class).wakeUpNowAndEvery(FIVE_MINUTES, choicesRefresh);
-		//refToAvoidGc2 = my(Music.class).tracksFolder().addPulseReceiver(choicesRefresh);
-		//refToAvoidGc3 = my(Music.class).numberOfPeerTracks().addPulseReceiver(choicesRefresh);
+		refToAvoidGc2 = my(Music.class).tracksFolder().addPulseReceiver(choicesRefresh);
+		refToAvoidGc3 = my(Music.class).numberOfPeerTracks().addPulseReceiver(choicesRefresh);
 	}
-	
+
+	synchronized
+	private void refreshChoices() {
+		addChoice(INBOX + " " + my(Music.class).numberOfPeerTracks().currentValue() + " Tracks");
+		addSubFolders();
+	}
+
+
+	private void addSubFolders() {
+		FolderChoicesPoll poller = new FolderChoicesPoll(currentSharedTracksFolder());
+		List<String> allChoices = poller.result();
+		if (allChoices == null) return;
+		for (String choice : allChoices)
+			addChoice(choice);
+	}
+
+
+	private void addChoice(String choice) {
+		if (choice == null) return;
+		if (playingFolderChoices.output().currentElements().contains(choice)) return; //Avoid duplication
+		playingFolderChoices.add(choice);
+	}
+
 }

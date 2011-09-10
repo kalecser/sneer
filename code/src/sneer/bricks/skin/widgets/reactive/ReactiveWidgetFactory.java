@@ -2,6 +2,7 @@ package sneer.bricks.skin.widgets.reactive;
 
 import java.awt.Image;
 
+import javax.swing.ComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -44,4 +45,5 @@ public interface ReactiveWidgetFactory {
 	<T> ListWidget<T> newList(ListSignal<T> source, LabelProvider<T> labelProvider);
 	
 	<T> ListModel newListSignalModel(ListSignal<T> input, SignalChooser<T> chooser);
+	<T> ComboBoxModel newComboBoxSignalModel(ListSignal<T> input, SignalChooser<T> chooser);
 }

@@ -4,6 +4,7 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.awt.Image;
 
+import javax.swing.ComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -109,5 +110,12 @@ class ReactiveWidgetFactoryImpl implements ReactiveWidgetFactory {
 		my(GuiThread.class).assertInGuiThread();
 		return new RListImpl<T>(source, provider);
 	}
+
+	
+	@Override
+	public <T> ComboBoxModel newComboBoxSignalModel(ListSignal<T> input, SignalChooser<T> chooser) { 
+		return new ComboBoxSignalModel<T>(input, chooser);
+	}
+
 
 }

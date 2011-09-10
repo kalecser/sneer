@@ -4,6 +4,8 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.io.File;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -11,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
+import sneer.bricks.hardware.clock.timer.Timer;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
@@ -24,6 +28,7 @@ import sneer.bricks.skin.menu.MenuGroup;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
+import dfcsantos.music.ui.presenter.impl.FolderChoicesPoll;
 import dfcsantos.music.ui.view.MusicView;
 import dfcsantos.music.ui.view.MusicViewListener;
 
@@ -67,6 +72,8 @@ class MusicViewDemo {
 			private Signal<Integer> trackTime = my(Signals.class).constant(111620);
 			private ListRegister<String> playingFolderChoices = my(CollectionSignals.class).newListRegister();			
 			
+			@SuppressWarnings("unused") private WeakContract refToAvoidGc;;		
+			
 			@Override public void chooseTracksFolder() {}
 			@Override public void pauseResume() { }
 			@Override public void skip() { }
@@ -80,7 +87,22 @@ class MusicViewDemo {
 			@Override public Signal<String> playingTrackName() { return trackName; }
 			@Override public Signal<Integer> playingTrackTime() { return trackTime; }
 			@Override public void playingFolderChosen(String subSharedFolder) { }
-			@Override public ListSignal<String> playingFolderChoices() { return playingFolderChoices.output(); }
+
+			@Override public ListSignal<String> playingFolderChoices() {
+				refToAvoidGc = my(Timer.class).wakeUpNowAndEvery(1000 * 60, new Runnable() {  @Override public void run() { 
+					choices();
+				}});
+				return playingFolderChoices.output();
+			}
+			
+			private void choices() {
+				FolderChoicesPoll poll = new FolderChoicesPoll(new File("E:/Musicas"));
+				List<String> folders = poll.result();
+				for (String choice : folders) {
+					if (playingFolderChoices.output().currentElements().contains(choice)) continue;
+					playingFolderChoices.add(choice);
+				}
+			}
 		});
 		my(MusicView.class).init(new InstrumentPanel() {
 			@Override public Container contentPane() { return instrumentPanel; }
@@ -90,5 +112,4 @@ class MusicViewDemo {
 		jFrame.pack();
 		jFrame.setVisible(true);
 	}
-
 }
