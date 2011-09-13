@@ -99,13 +99,13 @@
 					<homepage href="http://sneer.me" />
 					<icon href="logo16x16.png"/>
 					<offline-allowed />
-			        <shortcut online="false">
+			        <shortcut online="true">
 			            <desktop/>
 						<menu submenu="Sneer"/>
 			        </shortcut>
 				</information>
 				
-				<update check="always" policy="always" />
+				<update check="timeout" policy="always" />
 				
 				<resources>
 					<jar href="sneer-bootstrap.jar" />
