@@ -9,6 +9,7 @@ import javax.swing.JFileChooser;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -28,11 +29,11 @@ import dfcsantos.tracks.Track;
 class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
 	private static final int FIVE_MINUTES = 1000 * 60 * 5;
-
 	private static final String INBOX = "<Inbox>";
 	
-	private ListRegister<String> playingFolderChoices = my(CollectionSignals.class).newListRegister();
-
+	private ListRegister<String> _playingFolderChoices = my(CollectionSignals.class).newListRegister();
+	private FolderChoicesPoll _folderChoicesPoll;
+	
 	@SuppressWarnings("unused")	private WeakContract refToAvoidGc1, refToAvoidGc2, refToAvoidGc3;
 
 	
@@ -51,6 +52,7 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	public void chooseTracksFolder() {
 		my(FileChoosers.class).choose(new Consumer<File>() {  @Override public void consume(File chosenFolder) {
 			my(Music.class).setTracksFolder(chosenFolder);
+			_folderChoicesPoll = new FolderChoicesPoll(chosenFolder);
 		}}, JFileChooser.DIRECTORIES_ONLY, currentSharedTracksFolder());
 	}
 
@@ -143,29 +145,32 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 	@Override
 	public ListSignal<String> playingFolderChoices() {
-		return playingFolderChoices.output();
+		return _playingFolderChoices.output();
 	}
 
 	
 	private void initChoicesRefresh() {
+		_folderChoicesPoll = new FolderChoicesPoll(currentSharedTracksFolder());
+		
 		Runnable choicesRefresh = new Runnable(){ @Override public void run() {
 			refreshChoices();
 		}};
+		
 		refToAvoidGc1 = my(Timer.class).wakeUpNowAndEvery(FIVE_MINUTES, choicesRefresh);
 		refToAvoidGc2 = my(Music.class).tracksFolder().addPulseReceiver(choicesRefresh);
 		refToAvoidGc3 = my(Music.class).numberOfPeerTracks().addPulseReceiver(choicesRefresh);
 	}
 
-	synchronized
+	
 	private void refreshChoices() {
 		addChoice(INBOX + " " + my(Music.class).numberOfPeerTracks().currentValue() + " Tracks");
 		addSubFolders();
+		my(Logger.class).log("Choices refreshed: ", "<inbox> ", "sub folders.");
 	}
 
 
 	private void addSubFolders() {
-		FolderChoicesPoll poller = new FolderChoicesPoll(currentSharedTracksFolder());
-		List<String> allChoices = poller.result();
+		List<String> allChoices = _folderChoicesPoll.result();
 		if (allChoices == null) return;
 		for (String choice : allChoices)
 			addChoice(choice);
@@ -174,8 +179,8 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
 	private void addChoice(String choice) {
 		if (choice == null) return;
-		if (playingFolderChoices.output().currentElements().contains(choice)) return; //Avoid duplication
-		playingFolderChoices.add(choice);
+		if (_playingFolderChoices.output().currentElements().contains(choice)) return; //Avoid duplication
+		_playingFolderChoices.add(choice);
 	}
 
 }
