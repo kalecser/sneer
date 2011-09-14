@@ -1,10 +1,11 @@
 package sneer.bricks.hardware.cpu.profiler.tests;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
-//@Ignore
+@Ignore
 public class ProfilerTest extends BrickTestBase {
 
 	//private final Profiler _subject = my(Profiler.class);

@@ -6,8 +6,10 @@ import sneer.tests.SovereignFunctionalTestBase;
 import sneer.tests.SovereignParty;
 
 
+
 public class Freedom5Test extends SovereignFunctionalTestBase {
 
+	
 	@Test (timeout = 13000)
 	public void shoutToTheWind() {
 		SovereignParty c = createParty("Cid");
@@ -26,7 +28,6 @@ public class Freedom5Test extends SovereignFunctionalTestBase {
 		b().waitForShouts("A!!!, B!!!, C!!!, D!!!");
 		c  .waitForShouts("A!!!, B!!!, C!!!, D!!!");
 		d  .waitForShouts("A!!!, B!!!, C!!!, D!!!");
-		
 	}
 	
 
