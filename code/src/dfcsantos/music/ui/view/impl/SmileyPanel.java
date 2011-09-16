@@ -51,7 +51,7 @@ final class SmileyPanel extends JPanel {
 	
 	
 	private JButton deleteButton() {
-		JButton delete = new JButton(":P");
+		JButton delete = new JButton(load("meh.png"));
 		delete.setPreferredSize(buttonSize);
 		delete.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
 			_listener.deleteTrack();
