@@ -29,6 +29,7 @@ final class SmileyPanel extends JPanel {
 	
 	private JButton meTooButton() {
 		JButton meToo = new JButton(load("metoo.png"));
+		meToo.setToolTipText("Me Too");
 		meToo.setPreferredSize(buttonSize);
 		meToo.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
 			_listener.meToo();
@@ -52,6 +53,7 @@ final class SmileyPanel extends JPanel {
 	
 	private JButton deleteButton() {
 		JButton delete = new JButton(load("meh.png"));
+		delete.setToolTipText("Meh");
 		delete.setPreferredSize(buttonSize);
 		delete.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
 			_listener.deleteTrack();
@@ -62,6 +64,7 @@ final class SmileyPanel extends JPanel {
 
 	private JButton noWayButton() {
 		JButton noWay = new JButton(load("noway.png"));
+		noWay.setToolTipText("No Way");
 		noWay.setPreferredSize(buttonSize);
 		noWay.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
 			_listener.noWay();
