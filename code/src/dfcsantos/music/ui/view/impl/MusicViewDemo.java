@@ -67,12 +67,11 @@ class MusicViewDemo {
 			private Register<Boolean> isExchangingTracks = my(Signals.class).newRegister(true);
 			private Register<Integer> volumePercent = my(Signals.class).newRegister(50);
 			private Register<Boolean> shuffle = my(Signals.class).newRegister(true);
-			
 			private Signal<String> trackName = my(Signals.class).constant("Here Comes The Sun");
 			private Signal<Integer> trackTime = my(Signals.class).constant(111620);
 			private ListRegister<String> playingFolderChoices = my(CollectionSignals.class).newListRegister();			
 			
-			@SuppressWarnings("unused") private WeakContract refToAvoidGc;;		
+			@SuppressWarnings("unused") private WeakContract refToAvoidGc;
 			
 			@Override public void chooseTracksFolder() {}
 			@Override public void pauseResume() { }

@@ -9,7 +9,7 @@ public interface MusicViewListener {
 	Register<Boolean> isTrackExchangeActive();
 	Register<Integer> volumePercent();
 	Register<Boolean> shuffle();
-	
+
 	Signal<String> playingTrackName();
 	Signal<Integer> playingTrackTime();
 	ListSignal<String> playingFolderChoices();

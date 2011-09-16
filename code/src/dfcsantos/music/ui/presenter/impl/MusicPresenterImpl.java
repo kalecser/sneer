@@ -31,7 +31,7 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	private static final int FIVE_MINUTES = 1000 * 60 * 5;
 	private static final String INBOX = "<Inbox>";
 	
-	private ListRegister<String> _playingFolderChoices = my(CollectionSignals.class).newListRegister();
+	private final ListRegister<String> _playingFolderChoices = my(CollectionSignals.class).newListRegister();
 	private FolderChoicesPoll _folderChoicesPoll;
 	
 	@SuppressWarnings("unused")	private WeakContract refToAvoidGc1, refToAvoidGc2, refToAvoidGc3;
@@ -132,14 +132,10 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 	@Override
 	public void playingFolderChosen(String subSharedFolder) {
-		if (subSharedFolder.startsWith(INBOX)) {
-			my(Music.class).setOperatingMode(Music.OperatingMode.PEERS);
-			return;
-		}
-		my(Music.class).setOperatingMode(Music.OperatingMode.OWN);
-		
-		File newFolder = new File(currentSharedTracksFolder(), subSharedFolder);
-		my(Music.class).setPlayingFolder(newFolder);
+		if (subSharedFolder.startsWith(INBOX)) 
+			changeToPeersModeAndPlayTracks();
+		else 
+			changeToOwnModeAndPlayTracksOf(subSharedFolder);
 	}
 
 	
@@ -149,6 +145,18 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	}
 
 	
+	private void changeToPeersModeAndPlayTracks() {
+		my(Music.class).setOperatingMode(Music.OperatingMode.PEERS);
+		my(Music.class).setPlayingFolder(my(Music.class).playingFolder());
+	}
+	
+	private void changeToOwnModeAndPlayTracksOf(String subSharedFolder) {
+		my(Music.class).setOperatingMode(Music.OperatingMode.OWN);
+		File folderChosenToPlay =  new File(currentSharedTracksFolder(), subSharedFolder);
+		my(Music.class).setPlayingFolder(folderChosenToPlay);
+	}
+	
+
 	private void initChoicesRefresh() {
 		_folderChoicesPoll = new FolderChoicesPoll(currentSharedTracksFolder());
 		
