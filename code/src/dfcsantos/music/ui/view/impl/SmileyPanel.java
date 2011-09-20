@@ -45,20 +45,20 @@ final class SmileyPanel extends JPanel {
 	
 	private JPanel deleteAndNowayPanel() {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
-		panel.add(deleteButton());
+		panel.add(mehButton());
 		panel.add(noWayButton());
 		return panel;
 	}
 	
 	
-	private JButton deleteButton() {
-		JButton delete = new JButton(load("meh.png"));
-		delete.setToolTipText("Meh");
-		delete.setPreferredSize(buttonSize);
-		delete.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
-			_listener.deleteTrack();
+	private JButton mehButton() {
+		JButton meh = new JButton(load("meh.png"));
+		meh.setToolTipText("Meh");
+		meh.setPreferredSize(buttonSize);
+		meh.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
+			_listener.meh();
 		}});
-		return delete;
+		return meh;
 	}
 
 

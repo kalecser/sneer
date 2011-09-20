@@ -10,16 +10,18 @@ public interface MusicViewListener {
 	Register<Integer> volumePercent();
 	Register<Boolean> shuffle();
 
+	Signal<Boolean> isPlaying();
 	Signal<String> playingTrackName();
 	Signal<Integer> playingTrackTime();
 	ListSignal<String> playingFolderChoices();
-	
+
+	void playingFolderChosen(String folder);
 	void chooseTracksFolder();
 	void pauseResume();
 	void skip();
 	void stop();
-	void deleteTrack();
+
 	void meToo();
+	void meh();
 	void noWay();
-	void playingFolderChosen(String folder);
 }

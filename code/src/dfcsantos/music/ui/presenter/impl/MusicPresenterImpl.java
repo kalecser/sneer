@@ -62,7 +62,31 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 		return my(Music.class).isTrackExchangeActive();
 	}
 
+	
+	@Override
+	public Signal<Boolean> isPlaying() {
+		return my(Music.class).isPlaying();
+	}
+	
+	@Override
+	public Signal<String> playingTrackName() {
+		return my(Signals.class).adapt(my(Music.class).playingTrack(), new Functor<Track, String>() { @Override public String evaluate(Track track) {
+			return (track == null) ? "<No track to play>" : track.name();
+		}});
+	}
 
+	
+	@Override
+	public Signal<Integer> playingTrackTime() {
+		return my(Music.class).playingTrackTime();
+	}
+
+	
+	private File currentSharedTracksFolder() {
+		return my(Music.class).tracksFolder().currentValue();
+	}
+
+	
 	@Override
 	public void pauseResume() {
 		my(Music.class).pauseResume();
@@ -82,39 +106,20 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 	
 	@Override
-	public void deleteTrack() {
-		my(Music.class).deleteTrack();
+	public void meToo() {
+		my(Music.class).meToo();
 	}
 
 	
 	@Override
-	public void meToo() {
-		my(Music.class).meToo(); //Reimplement this method to increase taste musical.
+	public void meh() {
+		my(Music.class).meh();
 	}
 
 
 	@Override
 	public void noWay() {
-		deleteTrack(); //Reimplement this method to decrease taste musical. 
-	}
-
-	
-	@Override
-	public Signal<String> playingTrackName() {
-		return my(Signals.class).adapt(my(Music.class).playingTrack(), new Functor<Track, String>() { @Override public String evaluate(Track track) {
-			return (track == null) ? "<No track to play>" : track.name();
-		}});
-	}
-
-	
-	@Override
-	public Signal<Integer> playingTrackTime() {
-		return my(Music.class).playingTrackTime();
-	}
-
-	
-	private File currentSharedTracksFolder() {
-		return my(Music.class).tracksFolder().currentValue();
+		my(Music.class).noWay();
 	}
 
 
