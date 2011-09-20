@@ -46,14 +46,14 @@ final class PlayerControlsPanel extends JPanel {
 			volumeSlider.setValue(percent);
 		}});
 
-		refToAvoidGc2 = _listener.playingTrackName().addReceiver(new Consumer<String>() {  @Override public void consume(String currentTrackName) {
-			changeIconOfPlayButton(currentTrackName);
+		refToAvoidGc2 = _listener.isPlaying().addReceiver(new Consumer<Boolean>() {  @Override public void consume(Boolean playing) {
+			changeIconOfPlayButton(playing);
 		}});
 	}
 	
 	
-	private void changeIconOfPlayButton(String currentTrackName) {
-		if (!currentTrackName.equals("<No track to play>"))
+	private void changeIconOfPlayButton(Boolean playing) {
+		if (playing)
 			setPauseIconToPlayButton();
 		else
 			setPlayIconToPlayButton();
