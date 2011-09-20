@@ -71,6 +71,7 @@ class MusicViewDemo {
 			private Signal<String> trackName = my(Signals.class).constant("Here Comes The Sun");
 			private Signal<Integer> trackTime = my(Signals.class).constant(111620);
 			private ListRegister<String> playingFolderChoices = my(CollectionSignals.class).newListRegister();			
+			private Signal<Boolean> meTooEnable = my(Signals.class).constant(false);
 			
 			@SuppressWarnings("unused") private WeakContract refToAvoidGc;
 			
@@ -88,7 +89,7 @@ class MusicViewDemo {
 			@Override public Signal<String> playingTrackName() { return trackName; }
 			@Override public Signal<Integer> playingTrackTime() { return trackTime; }
 			@Override public void playingFolderChosen(String subSharedFolder) { }
-
+			@Override public Signal<Boolean> enableMeToo() { return meTooEnable; }
 			@Override public ListSignal<String> playingFolderChoices() {
 				refToAvoidGc = my(Timer.class).wakeUpNowAndEvery(1000 * 60, new Runnable() {  @Override public void run() { 
 					choices();

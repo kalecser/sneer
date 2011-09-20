@@ -35,6 +35,8 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	private FolderChoicesPoll _folderChoicesPoll;
 	
 	@SuppressWarnings("unused")	private WeakContract refToAvoidGc1, refToAvoidGc2, refToAvoidGc3;
+	
+	private Register<Boolean> _meTooEnable = my(Signals.class).newRegister(true);
 
 	
 	{
@@ -150,15 +152,23 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	}
 
 	
+	@Override
+	public Signal<Boolean> enableMeToo() {
+		return _meTooEnable.output();
+	}
+
+
 	private void changeToPeersModeAndPlayTracks() {
 		my(Music.class).setOperatingMode(Music.OperatingMode.PEERS);
 		my(Music.class).setPlayingFolder(my(Music.class).playingFolder());
+		_meTooEnable.setter().consume(true);
 	}
 	
 	private void changeToOwnModeAndPlayTracksOf(String subSharedFolder) {
 		my(Music.class).setOperatingMode(Music.OperatingMode.OWN);
 		File folderChosenToPlay =  new File(currentSharedTracksFolder(), subSharedFolder);
 		my(Music.class).setPlayingFolder(folderChosenToPlay);
+		_meTooEnable.setter().consume(false);
 	}
 	
 
@@ -174,13 +184,11 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 		refToAvoidGc3 = my(Music.class).numberOfPeerTracks().addPulseReceiver(choicesRefresh);
 	}
 
-	
 	private void refreshChoices() {
 		addChoice(INBOX + " " + my(Music.class).numberOfPeerTracks().currentValue() + " Tracks");
 		addSubFolders();
 		my(Logger.class).log("Choices refreshed: ", "<inbox> ", "sub folders.");
 	}
-
 
 	private void addSubFolders() {
 		List<String> allChoices = _folderChoicesPoll.result();
@@ -188,7 +196,6 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 		for (String choice : allChoices)
 			addChoice(choice);
 	}
-
 
 	private void addChoice(String choice) {
 		if (choice == null) return;

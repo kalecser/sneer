@@ -11,12 +11,15 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.skin.main.icons.Icons;
+import sneer.foundation.lang.Consumer;
 import dfcsantos.music.ui.view.MusicViewListener;
 
 final class SmileyPanel extends JPanel {
 	private static final Dimension buttonSize = new Dimension(35, 30);
 	private final MusicViewListener _listener;
+	private WeakContract _refToAvoidGc;
 
 	SmileyPanel(MusicViewListener listener) {
 		_listener = listener;
@@ -28,12 +31,17 @@ final class SmileyPanel extends JPanel {
 	
 	
 	private JButton meTooButton() {
-		JButton meToo = new JButton(load("metoo.png"));
+		final JButton meToo = new JButton(load("metoo.png"));
 		meToo.setToolTipText("Me Too");
 		meToo.setPreferredSize(buttonSize);
 		meToo.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent e) {
 			_listener.meToo();
 		}});
+		
+		_refToAvoidGc = _listener.enableMeToo().addReceiver(new Consumer<Boolean>() {  @Override public void consume(Boolean state) {
+			meToo.setEnabled(state);
+		}});
+		
 		return meToo;
 	}
 

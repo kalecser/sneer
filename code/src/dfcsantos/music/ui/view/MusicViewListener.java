@@ -24,4 +24,6 @@ public interface MusicViewListener {
 	void meToo();
 	void meh();
 	void noWay();
+
+	Signal<Boolean> enableMeToo();
 }
