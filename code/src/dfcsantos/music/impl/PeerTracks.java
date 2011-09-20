@@ -39,9 +39,16 @@ class PeerTracks extends TrackSourceStrategy {
 	}
 
 	@Override
-	void deleteTrack(Track rejected) {
+	void meh(Track rejected) {
 		my(TrackDownloadCounter.class).decrement();
-		super.deleteTrack(rejected);
+		super.meh(rejected);
+	}
+	
+	
+	@Override
+	void noWay(Track rejected) {
+		my(TrackDownloadCounter.class).decrement();
+		super.noWay(rejected);
 	}
 
 	private void moveTrackToFolder(Track track, File destFolder) { // Move = Copy + Delete
