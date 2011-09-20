@@ -56,7 +56,8 @@ public interface Music {
 	Register<Boolean> shuffle();
 
 	void meToo();
-	void deleteTrack();
+	void meh();
+	void noWay();
 
 	Signal<Boolean> isPlaying();
 	Signal<Track> playingTrack();
@@ -67,5 +68,4 @@ public interface Music {
 
 	Register<Boolean> isTrackExchangeActive();
 	SetSignal<Download> activeDownloads();
-
 }
