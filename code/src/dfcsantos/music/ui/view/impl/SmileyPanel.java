@@ -19,7 +19,7 @@ import dfcsantos.music.ui.view.MusicViewListener;
 final class SmileyPanel extends JPanel {
 	private static final Dimension buttonSize = new Dimension(35, 30);
 	private final MusicViewListener _listener;
-	private WeakContract _refToAvoidGc;
+	@SuppressWarnings("unused") private WeakContract _refToAvoidGc;
 
 	SmileyPanel(MusicViewListener listener) {
 		_listener = listener;
@@ -38,8 +38,8 @@ final class SmileyPanel extends JPanel {
 			_listener.meToo();
 		}});
 		
-		_refToAvoidGc = _listener.enableMeToo().addReceiver(new Consumer<Boolean>() {  @Override public void consume(Boolean state) {
-			meToo.setEnabled(state);
+		_refToAvoidGc = _listener.enableMeToo().addReceiver(new Consumer<Boolean>() {  @Override public void consume(Boolean available) {
+			meToo.setEnabled(available);
 		}});
 		
 		return meToo;
