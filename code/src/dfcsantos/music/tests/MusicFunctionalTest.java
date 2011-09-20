@@ -101,7 +101,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 		waitForSignalValue(_subject1.isPlaying(), true);
 		assertEquals("track1", playingTrack());
 
-		_subject1.deleteTrack();
+		_subject1.noWay();
 		waitForSignalValue(_subject1.isPlaying(), false);
 
 		_subject1.pauseResume();
@@ -216,7 +216,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 
 		// Deletes first played track
 		_subject1.skip();
-		_subject1.deleteTrack(); // Skip is called automatically after a track is deleted
+		_subject1.noWay(); // Skip is called automatically after a track is deleted
 
 		File[] keptTracks = new File[2];
 		keptTracks[0] = _subject1.playingTrack().currentValue().file();

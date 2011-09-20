@@ -136,7 +136,7 @@ class OwnTracksPanel extends AbstractTabPane {
 		}
 
 		private void deleteFileActionPerformed() {
-		    _controller.deleteTrack();
+		    _controller.noWay();
 		}
 
 	}

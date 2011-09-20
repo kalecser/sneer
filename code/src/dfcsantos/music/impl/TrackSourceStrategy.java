@@ -73,17 +73,15 @@ abstract class TrackSourceStrategy {
 	}
 
 
-	void deleteTrack(final Track rejected) {
-		my(Logger.class).log("Rejecting track: ", rejected.file());
-		String path = rejected.file().getAbsolutePath();
-		Hash hash = my(FileMap.class).getHash(path);
-		if (hash != null) {
-			my(FileMap.class).remove(path);
-			my(RejectedTracksKeeper.class).reject(hash);
-		}
-		markForDisposal(rejected);
+	void meh(final Track rejected) {
+		Hash hash = deleteTrack(rejected);
+		my(RejectedTracksKeeper.class).weakReject(hash);
 	}
 
+	void noWay(final Track rejected) {
+		Hash hash = deleteTrack(rejected);
+		my(RejectedTracksKeeper.class).strongReject(hash);
+	}
 
 	boolean isMarkedForDisposal(Track suspect) {
 		return _tracksToDispose.contains(suspect);
@@ -104,4 +102,18 @@ abstract class TrackSourceStrategy {
 		return _playlist.output();
 	}
 
+	
+	private Hash deleteTrack(final Track rejected) {
+		my(Logger.class).log("Rejecting track: ", rejected.file());
+		String path = rejected.file().getAbsolutePath();
+		Hash hash = my(FileMap.class).getHash(path);
+		
+		if (hash != null) {
+			my(FileMap.class).remove(path);
+		}
+		
+		markForDisposal(rejected);
+		
+		return hash;
+	}
 }

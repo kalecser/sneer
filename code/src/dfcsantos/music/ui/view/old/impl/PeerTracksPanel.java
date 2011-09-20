@@ -167,7 +167,7 @@ class PeerTracksPanel extends AbstractTabPane {
 	    }
 
 	    private void noWayActionPerformed() {
-	        _controller.deleteTrack();
+	        _controller.noWay();
 	    }
 
 	}

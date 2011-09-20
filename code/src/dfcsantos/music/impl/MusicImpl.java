@@ -123,14 +123,26 @@ public class MusicImpl implements Music {
 		_lastPlayedTrack = null;
 		((PeerTracks)_trackSource).meToo(playingTrack().currentValue());
 	}
-
+	
+	
 	@Override
-	public void deleteTrack() {
+	public void meh() {
 		final Track currentTrack = playingTrack().currentValue();
 		if (currentTrack == null) return;
 
 		_lastPlayedTrack = null;
-		_trackSource.deleteTrack(currentTrack);
+		_trackSource.meh(currentTrack);
+		skip();
+	}
+	
+	
+	@Override
+	public void noWay() { 
+		final Track currentTrack = playingTrack().currentValue();
+		if (currentTrack == null) return;
+
+		_lastPlayedTrack = null;
+		_trackSource.noWay(currentTrack);
 		skip();
 	}
 
