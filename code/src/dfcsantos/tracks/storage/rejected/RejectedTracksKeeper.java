@@ -7,8 +7,11 @@ import sneer.foundation.brickness.Brick;
 @Brick(Prevalent.class)
 public interface RejectedTracksKeeper {
 
-	void reject(Hash hash);
+	void strongReject(Hash hash);
+	void weakReject(Hash hash);
 
+
+	boolean isWeakRejected(Hash hash);
 	boolean isRejected(Hash hash);
 
 }

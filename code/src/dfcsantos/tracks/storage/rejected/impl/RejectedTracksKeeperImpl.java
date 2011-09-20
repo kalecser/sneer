@@ -9,17 +9,32 @@ import dfcsantos.tracks.storage.rejected.RejectedTracksKeeper;
 
 class RejectedTracksKeeperImpl implements RejectedTracksKeeper {
 
-	private final List<Hash> rejectedTrackHashes = Collections.synchronizedList(new ArrayList<Hash>());
+	private final List<Hash> strongRejectedTrackHashes = Collections.synchronizedList(new ArrayList<Hash>());
+	private final List<Hash> weakRejectedTrackHashes = Collections.synchronizedList(new ArrayList<Hash>());
 
 
 	@Override
-	public void reject(Hash hash) {
-		rejectedTrackHashes.add(hash);
+	public void strongReject(Hash hash) {
+		strongRejectedTrackHashes.add(hash);
+	}
+
+
+	@Override
+	public void weakReject(Hash hash) {
+		weakRejectedTrackHashes.add(hash);
 	}
 
 	@Override
+	public boolean isWeakRejected(Hash hash) {
+		return strongRejectedTrackHashes.contains(hash);
+	}
+
+	
+	@Override
 	public boolean isRejected(Hash hash) {
-		return rejectedTrackHashes.contains(hash);
+		if (strongRejectedTrackHashes.contains(hash)) return true;
+		if (weakRejectedTrackHashes.contains(hash)) return true;
+		return false;
 	}
 
 }

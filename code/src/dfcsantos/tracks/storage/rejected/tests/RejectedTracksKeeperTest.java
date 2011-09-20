@@ -15,7 +15,7 @@ public class RejectedTracksKeeperTest extends BrickTestBase {
 	@Test
 	public void testTrackRejection() throws Exception {
 		assertFalse(_subject.isRejected(hash(1)));
-		_subject.reject(hash(1));
+		_subject.strongReject(hash(1));
 		assertTrue(_subject.isRejected(hash(1)));
 		assertFalse(_subject.isRejected(hash(2)));
 	}
