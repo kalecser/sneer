@@ -4,8 +4,6 @@ import static sneer.foundation.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.io.File;
-import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -28,7 +26,6 @@ import sneer.bricks.skin.menu.MenuGroup;
 import sneer.foundation.brickness.Brickness;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
-import dfcsantos.music.ui.presenter.impl.FolderChoicesPoll;
 import dfcsantos.music.ui.view.MusicView;
 import dfcsantos.music.ui.view.MusicViewListener;
 
@@ -63,17 +60,20 @@ class MusicViewDemo {
 		jFrame.add(instrumentPanel, BorderLayout.CENTER);
 		
 		my(MusicView.class).setListener(new MusicViewListener() {
-			
+
 			private Register<Boolean> isExchangingTracks = my(Signals.class).newRegister(true);
 			private Register<Integer> volumePercent = my(Signals.class).newRegister(50);
 			private Register<Boolean> shuffle = my(Signals.class).newRegister(true);
 			private Signal<Boolean> playing = my(Signals.class).constant(false);
 			private Signal<String> trackName = my(Signals.class).constant("Here Comes The Sun");
 			private Signal<Integer> trackTime = my(Signals.class).constant(111620);
-			private ListRegister<String> playingFolderChoices = my(CollectionSignals.class).newListRegister();			
 			private Signal<Boolean> meTooEnable = my(Signals.class).constant(false);
-			
-			@SuppressWarnings("unused") private WeakContract refToAvoidGc;
+			private ListRegister<String> playingFolderChoices = my(CollectionSignals.class).newListRegister();			
+			@SuppressWarnings("unused")
+			private WeakContract refToAvoidGc = my(Timer.class).wakeUpNowAndEvery(1000 * 5, new Runnable() {  @Override public void run() {
+				System.out.println("added");
+				playingFolderChoices.add("pasta" + System.currentTimeMillis());
+			}});
 			
 			@Override public void chooseTracksFolder() {}
 			@Override public void pauseResume() { }
@@ -91,20 +91,9 @@ class MusicViewDemo {
 			@Override public void playingFolderChosen(String subSharedFolder) { }
 			@Override public Signal<Boolean> enableMeToo() { return meTooEnable; }
 			@Override public ListSignal<String> playingFolderChoices() {
-				refToAvoidGc = my(Timer.class).wakeUpNowAndEvery(1000 * 60, new Runnable() {  @Override public void run() { 
-					choices();
-				}});
 				return playingFolderChoices.output();
 			}
 			
-			private void choices() {
-				FolderChoicesPoll poll = new FolderChoicesPoll(new File("E:/Musicas"));
-				List<String> folders = poll.result();
-				for (String choice : folders) {
-					if (playingFolderChoices.output().currentElements().contains(choice)) continue;
-					playingFolderChoices.add(choice);
-				}
-			}
 		});
 		my(MusicView.class).init(new InstrumentPanel() {
 			@Override public Container contentPane() { return instrumentPanel; }
