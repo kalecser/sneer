@@ -1,4 +1,4 @@
-package dfcsantos.music.menuitem;
+package dfcsantos.music.ui.menuitem;
 
 import sneer.bricks.hardware.gui.nature.GUI;
 import sneer.bricks.software.bricks.snapploader.Snapp;
