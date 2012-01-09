@@ -43,33 +43,6 @@ public class IOUtils {
          write(file, text.getBytes());
 	}	
 	
-	static void deleteFolder(File folder) throws IOException {
-		if (!folder.exists()) return;
-		if (!folder.isDirectory()) 
-			throw new IllegalArgumentException(folder.getAbsolutePath() + " is not a folder");
-
-		deleteContents(folder);
-
-		if (!folder.delete()) 
-			throw new IOException("Unable to delete folder: " + folder.getAbsolutePath());
-	}
-
-	private static void deleteContents(File folder) throws IOException, FileNotFoundException {
-		File[] files = folder.listFiles();
-		if (files == null) return;
-		
-		for (File file : files) deleteFile(file);
-	}
-
-	private static void deleteFile(File file) throws FileNotFoundException, IOException {
-		if (!file.exists()) 
-			throw new FileNotFoundException("File does not exist: " + file.getAbsolutePath());
-		
-		if (file.isFile() && !file.delete()) 
-			throw new IOException(("Unable to delete file: " + file.getAbsolutePath()));
-		
-		deleteFolder(file);
-	}
 
 	static void copyToFile(InputStream input, File file) throws IOException {
 		file.getParentFile().mkdirs();
@@ -78,12 +51,9 @@ public class IOUtils {
 		OutputStream output = new java.io.FileOutputStream(file);
 		try {
 		    byte[] buffer = new byte[1024 * 4];
-			long count1 = 0;
 			int n = 0;
-			while (-1 != (n = input.read(buffer))) {
+			while (-1 != (n = input.read(buffer)))
 			    output.write(buffer, 0, n);
-			    count1 += n;
-			}
         } finally {
             try { output.close(); } catch (Throwable ignore) {}
         }	

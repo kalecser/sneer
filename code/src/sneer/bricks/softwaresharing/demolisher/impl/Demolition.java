@@ -98,7 +98,7 @@ class Demolition implements FolderStructureVisitor {
 		
 		existingBrick.addVersionIfNecessary(packageHash, _owner);
 
-		my(Logger.class).log("+++++++++++++++++++++++++++++++++++++++++++++++ Brick accumulated: " + brickName + " owner: " + _owner);
+		my(Logger.class).log("++++++++++++++++++++ Brick accumulated: " + brickName + " owner: " + _owner);
 	}
 	
 

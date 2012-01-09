@@ -46,8 +46,6 @@ class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 
 	@SuppressWarnings("unused")	private WeakContract _tupleSubscription;
 
-
-
 	
 	{
 		my(Threads.class).startDaemon("BrickSpaceImpl init", new Closure() { @Override public void run() {
