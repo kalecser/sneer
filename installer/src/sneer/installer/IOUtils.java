@@ -1,8 +1,6 @@
 package sneer.installer;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,22 +9,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class IOUtils {
-
-	static byte[] readEntryBytes(JarFile jar, JarEntry entry) throws IOException {
-		final InputStream is = jar.getInputStream(entry);
-		try {
-			ByteArrayOutputStream output = new ByteArrayOutputStream();
-			byte[] buffer = new byte[1024];
-			
-			int n = 0;
-			while (-1 != (n = is.read(buffer)))
-				output.write(buffer, 0, n);
-
-			return output.toByteArray();
-		} finally {
-			try { is.close(); } catch (Throwable ignore) { }
-		}
-	}	
 	
 	static void write(File file, byte[] bytes) throws IOException {
 		file.getParentFile().mkdirs();
