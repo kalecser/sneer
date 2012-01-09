@@ -41,7 +41,7 @@ class Installation {
 
 	
 	private void deleteFolder(File folder) throws IOException {
-		int tries = 10; //On Windows7 with AVG anti-virus apparently this is necessary. Might be necessary on other similar environments. Klaus July 2011 :(
+		int tries = 10; //On Windows7 with AVG anti-virus (anti-virus might be irrelevant) a few random files simply were not deleted on the first try, making it impossible to delete the folder. Might happen on other environments too. Klaus July 2011 :(
 		while (true) {
 			if (tryToDeleteFolder(folder)) return;
 			if (tries-- == 0) throw new IOException("Unable to delete after several attempts: " + folder);
@@ -73,34 +73,34 @@ class Installation {
 		file.deleteOnExit();
 
 		InputStream input = url.openStream();
-		IOUtils.copyToFile(input, file);
+		IOUtils.copyToFile(input, file); //TODO: Is it possible to extract files from a jar stream without having to copy it to a file?
 		input.close();
 		return file;
 	}
 
 	
-	private void extractFiles(File src, File toDir) throws IOException {
-		if(!(src.exists()))
-			throw new IOException("File '" + src.getAbsolutePath() + "' not found!");	
+	private static void extractFiles(File jar, File toDir) throws IOException {
+		if(!(jar.exists()))
+			throw new IOException("File '" + jar.getAbsolutePath() + "' not found!");	
 
-		FileInputStream inputStream = new FileInputStream(src);
-		extractFiles(src, toDir, inputStream);
+		FileInputStream inputStream = new FileInputStream(jar);
+		extractFiles(jar, toDir, inputStream);
 		inputStream.close();
 	}
 
 	
-	private void extractFiles(File src, File toDir, FileInputStream inputStream) throws IOException {
+	private static void extractFiles(File src, File toDir, FileInputStream inputStream) throws IOException {
 		JarInputStream jis = new JarInputStream(inputStream);
 		JarFile jar = new JarFile(src);
 		JarEntry entry = null;
 
         while ((entry = jis.getNextJarEntry()) != null) {
         	File file = new File(toDir, entry.getName());
+        	file.getParentFile().mkdirs();
 
-        	if(entry.isDirectory()) {
-        		file.mkdirs();
+        	if(entry.isDirectory())
 				continue;
-        	}
+        	
         	IOUtils.writeEntry(jar, entry, file);
         }
 	}
