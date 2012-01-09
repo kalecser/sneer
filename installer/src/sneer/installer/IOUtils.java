@@ -50,10 +50,10 @@ public class IOUtils {
 			int n = 0;
 			while (-1 != (n = is.read(buffer)))
 				output.write(buffer, 0, n);
-
+			output.close();
+			file.setLastModified(entry.getTime());
 		} finally {
 			try { is.close(); } catch (Throwable ignore) { }
-			try { output.close(); } catch (Throwable ignore) { }
 		}		
 	}
 }
