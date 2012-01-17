@@ -64,9 +64,8 @@ class FileMapData {
 
 
 	synchronized
-	Long getLastModified(String path) {
-		Entry entry = _entriesByPath.get(path);
-		return entry == null ? null : entry.lastModified;
+	long getLastModified(String path) {
+		return _entriesByPath.get(path).lastModified;
 	}
 
 

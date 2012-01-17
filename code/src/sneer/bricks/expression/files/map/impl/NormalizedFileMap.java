@@ -107,13 +107,15 @@ class NormalizedFileMap implements FileMap {
 	
 	
 	private Hash movePath(String from, String to) {
-		boolean isFolder = isFolder(from);
+		Hash result = getHash(from);
+
+		if (result != null) {
+			replaceSinglePath(from, to);
+			if (!isFolder(from))
+				return result;
+		}
 		
-		Hash result = replaceSinglePath(from, to);
-		
-		if (isFolder)
-			replacePrefixes(from, to);
-		
+		replacePrefixes(from, to);
 		return result;
 	}
 
@@ -152,8 +154,7 @@ class NormalizedFileMap implements FileMap {
 
 	
 	private boolean isFolder(String path) {
-		Long lastModified = _data.getLastModified(path);
-		if (lastModified == null) return false;
+		long lastModified = _data.getLastModified(path);
 		return lastModified == -1;
 	}
 

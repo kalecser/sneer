@@ -45,9 +45,8 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 	public void basicStuff() {
 		_subject1 = my(Music.class);
 
-		File defaultFolder = new File(tmpFolder(), "data/media/tracks");
-		assertEquals(_subject1.playingFolder(), defaultFolder);
-		assertEquals(_subject1.tracksFolder().currentValue(), defaultFolder);
+		assertEquals(null, _subject1.playingFolder());
+		assertEquals(null, _subject1.tracksFolder().currentValue());
 
 		assertEquals(_subject1.operatingMode().currentValue(), OperatingMode.OWN);
 		_subject1.setOperatingMode(OperatingMode.PEERS);
@@ -59,7 +58,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 
 		assertTrue(_subject1.numberOfOwnTracks().currentValue() == 0);
 		assertTrue(_subject1.numberOfPeerTracks().currentValue() == 0);
-		assertEquals(_subject1.isTrackExchangeActive().output().currentValue(), false);
+		assertTrue(_subject1.isTrackExchangeActive().output().currentValue());
 
 		_subject1.isTrackExchangeActive().setter().consume(true);
 		waitForSignalValue(_subject1.isTrackExchangeActive().output(), true);		
@@ -69,6 +68,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 	@Test (timeout = 3000)
 	public void ownModeWithOneTrack() throws IOException {
 		_subject1 = my(Music.class);
+		_subject1.setPlayingFolder(tmpFolder());
 		createSampleTracks(_subject1.playingFolder(), "track1.mp3");
 
 		checking(new Expectations() {{
@@ -135,7 +135,8 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 		 */
 
 		_subject1 = my(Music.class);
-
+		_subject1.setPlayingFolder(tmpFolder());
+		
 		File rootFolder = _subject1.playingFolder();
 		createSampleTracks(rootFolder, "track5.mp3", "track6.mp3");
 
@@ -150,6 +151,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 		}});
 
 		// Play all songs sequentially
+		_subject1.shuffle().setter().consume(false);
 		_subject1.skip();
 		assertEquals("track1", playingTrack());
 		_subject1.skip();
@@ -178,7 +180,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 		_subject1.setPlayingFolder(rootFolder);
 		_subject1.shuffle().setter().consume(true);
 
-		// Pseudo-random sequence (done by regression)
+		// Pseudo-random sequence (found by regression)
 		_subject1.skip();
 		assertEquals("track5", playingTrack());
 		_subject1.skip();
@@ -243,6 +245,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 
 
 	private void createSampleTracks(File tracksFolder, String... tracks) throws IOException {
+		assertNotNull(tracksFolder);
 		for (String track : tracks)
 			my(IO.class).files().writeString(new File(tracksFolder, track), track);
 	}

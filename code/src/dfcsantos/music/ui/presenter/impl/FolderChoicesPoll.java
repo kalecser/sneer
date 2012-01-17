@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FolderChoicesPoll {
-	private File shared; 
+	
+	private final File shared; 
 	
 	
 	public FolderChoicesPoll(File shared) {
@@ -15,7 +16,8 @@ public class FolderChoicesPoll {
 	
 	public List<String> result() {
 		List<String> subFordersPaths = new ArrayList<String>();
-		loadFolder(shared.getAbsolutePath(), shared, subFordersPaths);
+		if (shared != null)
+			loadFolder(shared.getAbsolutePath(), shared, subFordersPaths);
 		return subFordersPaths;
 	}
 	

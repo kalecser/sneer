@@ -63,7 +63,9 @@ class TrackEndorserImpl implements TrackEndorser {
 	}
 
 	private void endorseRandomTrack() {
-		File[] tracks = listMp3Files(sharedTracksFolder());
+		File folder = sharedTracksFolder();
+		if (folder == null) return;
+		File[] tracks = listMp3Files(folder);
 		if (tracks.length == 0) return;
 
 		endorseTrack(pickOneAtRandom(tracks));

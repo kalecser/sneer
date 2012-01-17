@@ -32,7 +32,6 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	private static final String INBOX = "<Inbox>";
 	
 	private final ListRegister<String> _playingFolderChoices = my(CollectionSignals.class).newListRegister();
-	private FolderChoicesPoll _folderChoicesPoll;
 	
 	@SuppressWarnings("unused")	private WeakContract refToAvoidGc1, refToAvoidGc2, refToAvoidGc3;
 	
@@ -54,7 +53,6 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	public void chooseTracksFolder() {
 		my(FileChoosers.class).choose(new Consumer<File>() {  @Override public void consume(File chosenFolder) {
 			my(Music.class).setTracksFolder(chosenFolder);
-			_folderChoicesPoll = new FolderChoicesPoll(chosenFolder);
 		}}, JFileChooser.DIRECTORIES_ONLY, currentSharedTracksFolder());
 	}
 
@@ -173,8 +171,6 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 
 	private void initChoicesRefresh() {
-		_folderChoicesPoll = new FolderChoicesPoll(currentSharedTracksFolder());
-		
 		Runnable choicesRefresh = new Runnable(){ @Override public void run() {
 			refreshChoices();
 		}};
@@ -191,7 +187,8 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	}
 
 	private void addSubFolders() {
-		List<String> allChoices = _folderChoicesPoll.result();
+		FolderChoicesPoll poll = new FolderChoicesPoll(currentSharedTracksFolder());
+		List<String> allChoices = poll.result();
 		if (allChoices == null) return;
 		for (String choice : allChoices)
 			addChoice(choice);
