@@ -12,7 +12,7 @@ class LogFilterImpl implements LogFilter {
 
 	private final ListRegister<String> _phrases = my(CollectionSignals.class).newListRegister();
 	{
-		_phrases.add("socket");
+//		_phrases.add("socket");
 		_phrases.add("Musical taste");
 		_phrases.add("UPnP");
 //		_phrases.add("Exception");
