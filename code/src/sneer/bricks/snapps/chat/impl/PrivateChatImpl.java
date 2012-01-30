@@ -38,7 +38,7 @@ class PrivateChatImpl implements PrivateChat {
 			public void run() {
 				Contact contact = my(ContactsGui.class).selectedContact().currentValue();
 				String message = ChatWindow.showInputDialog("Say something to " + contact.nickname());
-				if (message == null) return;
+				if (message == null || message.trim().isEmpty()) return;
 				Seal to = my(ContactSeals.class).sealGiven(contact).currentValue();
 				sendTo(to, message);
 			}
