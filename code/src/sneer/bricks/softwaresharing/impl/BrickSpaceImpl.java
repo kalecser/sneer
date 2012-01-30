@@ -49,7 +49,8 @@ class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 	
 	{
 		my(Threads.class).startDaemon("BrickSpaceImpl init", new Closure() { @Override public void run() {
-			init();
+			if ("true".equals(System.getProperty("sneer.testmode")))
+				init(); //Not yet ready for production. Maps src files over and over again because every new build comes with all lastModified dates changed because git does not preserve lastModified dates.
 		}});
 	}
 
