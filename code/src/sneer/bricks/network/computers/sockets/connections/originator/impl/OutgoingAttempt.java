@@ -46,7 +46,7 @@ class OutgoingAttempt {
 	private void tryToOpen() {
 		if (hasSocketAlready()) return;
 		if (!contactHasSeal()) return;
-		if (_port == 0) return;
+		if (_port <= 0) return;
 		
 		my(Logger.class).log("Trying to open socket to: {} host: {} port: {}", contact(), _address.host(), _port);
 
