@@ -11,7 +11,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.Contracts;
 import sneer.bricks.hardware.cpu.lang.contracts.Disposable;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.io.log.stacktrace.StackTraceLogger;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
@@ -125,7 +125,7 @@ class TimerImpl implements Timer {
 		
 		private void step(final Runnable stepper) {
 			if (_thread != null) {
-				my(StackTraceLogger.class).logStackTrace(_thread, "Timer Alarm Skipped (was still running from previous time): {}", stepper);
+				my(Logger.class).log("Timer Alarm Skipped (was still running from previous time): {}", stepper);
 				return;
 			}
 			
