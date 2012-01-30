@@ -110,8 +110,9 @@ class NormalizedFileMap implements FileMap {
 		Hash result = getHash(from);
 
 		if (result != null) {
+			boolean isFolder = isFolder(from);
 			replaceSinglePath(from, to);
-			if (!isFolder(from))
+			if (!isFolder)
 				return result;
 		}
 		
