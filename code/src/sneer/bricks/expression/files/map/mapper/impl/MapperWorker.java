@@ -10,7 +10,9 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -76,22 +78,35 @@ class MapperWorker {
 
 
 	private Hash mapFolder(File folder) throws MappingStopped, IOException {
-		List<FileOrFolder> newEntries = mapFolderEntries(folder);
-		FolderContents newContents = new FolderContents(immutable(newEntries));
-		
 		String folderPath = folder.getAbsolutePath();
 		Hash mappedHash = FileMap.getHash(folderPath);
-		FolderContents mappedContents = mappedHash == null
-			? null
-			: FileMap.getFolderContents(mappedHash);
-		
-		if (newContents.equals(mappedContents)) return mappedHash;
+		FolderContents mappedContents = null;
+		if (mappedHash != null)
+			mappedContents = FileMap.getFolderContents(mappedHash);
+
+		List<FileOrFolder> newEntries = mapFolderEntries(folder);
+		FolderContents newContents = new FolderContents(immutable(newEntries));
+
+		if (mappedContents != null)
+			if (areEqualContents(newEntries, mappedContents.contents))
+				return mappedHash;
 		
 		unmapDeletedFiles(folderPath, newEntries, mappedContents);
 		
 		Hash result = putFolderHash(folder, newContents);
 		checkPutHasWorked(folder, newContents, result);
 		return result;
+	}
+
+
+	private boolean areEqualContents(Collection<?> a, Collection<?> b) {
+		if (a.size() != b.size()) return false;
+		Iterator<?> itA = a.iterator();
+		Iterator<?> itB = b.iterator();
+		while (itA.hasNext())
+			if (!itA.next().equals(itB.next()))
+				return false;
+		return true;
 	}
 
 
