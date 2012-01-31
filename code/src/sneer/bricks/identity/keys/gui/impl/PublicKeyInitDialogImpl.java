@@ -29,10 +29,9 @@ class PublicKeyInitDialogImpl implements PublicKeyInitDialog {
 	private String promptForPassphrase() {
 		while (true) {
 			String result = JOptionPane.showInputDialog(
-				" Enter a passphrase to generate your Sneer identity.\n\n" +
-				" It should be something secret and unique to you. If\n" +
-				" you remember it, you can recreate your Sneer identity\n" +
-				" whenever you need it.");
+				" Enter a passphrase to generate your Sovereign Seal (public key).\n\n" +
+				" It should be something secret and unique to you. If you remember it,\n" +
+				" you can recreate your Seal whenever you need it.");
 			if (result == null) continue;
 			if (result.isEmpty()) continue;
 			return result;
