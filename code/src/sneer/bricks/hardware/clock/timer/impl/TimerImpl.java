@@ -45,24 +45,24 @@ class TimerImpl implements Timer {
 	@Override
 	synchronized
 	public WeakContract wakeUpInAtLeast(long millisFromCurrentTime, Runnable runnable) {
-		return wakeUp(millisFromCurrentTime, runnable, false);
+		return wakeUpEvery(millisFromCurrentTime, runnable, false);
 	}
 
 	@Override
 	synchronized
 	public WeakContract wakeUpNowAndEvery(long period, final Runnable stepper) {
-		Alarm alarm = new Alarm(stepper, period, true);
-		alarm.wakeUp();
-		return my(Contracts.class).weakContractFor(alarm);
+		new Alarm(stepper, 0, false); //Now
+		Alarm future = new Alarm(stepper, period, true);
+		return my(Contracts.class).weakContractFor(future);
 	}
 
 	@Override
 	synchronized
 	public WeakContract wakeUpEvery(long period, Runnable stepper) {
-		return wakeUp(period, stepper, true);
+		return wakeUpEvery(period, stepper, true);
 	}
 
-	private WeakContract wakeUp(long period, Runnable stepper, boolean isPeriodic) {
+	private WeakContract wakeUpEvery(long period, Runnable stepper, boolean isPeriodic) {
 		Alarm alarm = new Alarm(stepper, period, isPeriodic);
 		_alarms.add(alarm);
 		return my(Contracts.class).weakContractFor(alarm);

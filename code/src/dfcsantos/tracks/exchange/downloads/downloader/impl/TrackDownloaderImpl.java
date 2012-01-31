@@ -83,7 +83,8 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 		if (isFromUnknownPublisher(endorsement)) { log("Unkown Publisher"); return null; }
 
-		boolean isKnown = my(RejectedTracksKeeper.class).isWeakRejected(endorsement.hash) ? null : isKnown(endorsement);
+		boolean isKnown = my(RejectedTracksKeeper.class)
+			.isWeakRejected(endorsement.hash) ? null : isKnown(endorsement);
 		float rating = rate(endorsement, opinionOn(isKnown));
 		if (isKnown) { log("Duplicated Track"); return null; }
 

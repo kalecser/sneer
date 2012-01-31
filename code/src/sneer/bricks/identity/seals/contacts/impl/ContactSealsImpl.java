@@ -56,7 +56,7 @@ class ContactSealsImpl implements ContactSeals {
 		if (contact == null) throw new Refusal("No contact found with nickname: " + nick);
 
 		Contact oldContact = contactGiven(seal);
-		if (contact.equals(oldContact)) throw new Refusal("Trying to set a Seal for '" + contact + "' that was already set.");
+		if (contact.equals(oldContact)) return;
 		if (oldContact != null) throw new Refusal("Trying to set a Seal for '" + contact + "' that already belonged to '" + oldContact + "'.");
 		
 		sealRegisterGiven(contact).setter().consume(seal);

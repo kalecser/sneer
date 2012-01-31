@@ -42,10 +42,10 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 		my(MusicView.class).setListener(this);
     	my(InstrumentRegistry.class).registerInstrument(my(MusicView.class));
     	
-    	initChoicesRefresh();
-    	
 		if (currentSharedTracksFolder() == null)
 			chooseTracksFolder();
+
+		initChoicesRefresh();
 	}
 
 
@@ -180,12 +180,22 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 		refToAvoidGc3 = my(Music.class).numberOfPeerTracks().addPulseReceiver(choicesRefresh);
 	}
 
+	
+	synchronized
 	private void refreshChoices() {
+		clearChoices();
 		addChoice(INBOX + " " + my(Music.class).numberOfPeerTracks().currentValue() + " Tracks");
 		addSubFolders();
 		my(Logger.class).log("Choices refreshed: ", "<inbox> ", "sub folders.");
 	}
 
+
+	private void clearChoices() {
+		while (_playingFolderChoices.output().size().currentValue() > 0)
+			_playingFolderChoices.removeAt(0);
+	}
+
+	
 	private void addSubFolders() {
 		FolderChoicesPoll poll = new FolderChoicesPoll(currentSharedTracksFolder());
 		List<String> allChoices = poll.result();
@@ -195,8 +205,6 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	}
 
 	private void addChoice(String choice) {
-		if (choice == null) return;
-		if (_playingFolderChoices.output().currentElements().contains(choice)) return; //Avoid duplication
 		_playingFolderChoices.add(choice);
 	}
 

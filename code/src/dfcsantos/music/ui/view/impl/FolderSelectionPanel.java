@@ -53,15 +53,12 @@ final class FolderSelectionPanel extends JPanel implements ActionListener {
 			
 			@Override
 			public void elementMoved(int index, int newIndex, String newElement) {
-				_folderChoices.removeElementAt(index);
-				_folderChoices.insertElementAt(newElement, newIndex);
+				throw new UnsupportedOperationException();
 			}
 			
 			@Override
 			public void elementAdded(int index, String element) {
-				_folderChoices.addElement(element);
-				if ( _folderChoices.getSelectedItem() != null ) return; 
-				if ( _folderChoices.getSize() > 0  ) _folderChoices.setSelectedItem(_folderChoices.getElementAt(0));
+				_folderChoices.insertElementAt(element, index);
 			}
 		});
 	}
