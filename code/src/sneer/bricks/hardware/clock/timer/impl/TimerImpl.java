@@ -42,19 +42,29 @@ class TimerImpl implements Timer {
 		return wakeUpInAtLeast(millisFromNow, runnable);
 	}
 
+	
 	@Override
 	synchronized
 	public WeakContract wakeUpInAtLeast(long millisFromCurrentTime, Runnable runnable) {
 		return wakeUpEvery(millisFromCurrentTime, runnable, false);
 	}
 
+	
 	@Override
-	synchronized
-	public WeakContract wakeUpNowAndEvery(long period, final Runnable stepper) {
-		new Alarm(stepper, 0, false); //Now
-		Alarm future = new Alarm(stepper, period, true);
-		return my(Contracts.class).weakContractFor(future);
+	public WeakContract wakeUpNowAndEvery(final long period, final Runnable stepper) {
+		final Alarm alarm = new Alarm(stepper, period, true);
+		my(Threads.class).startDaemon("First timer wake up call for " + stepper, new Closure() { @Override public void run() {
+			synchronizedWake(alarm);
+		}});
+		return my(Contracts.class).weakContractFor(alarm);
 	}
+
+	
+	synchronized
+	private void synchronizedWake(Alarm alarm) {
+		alarm.wakeUp();
+	}
+
 
 	@Override
 	synchronized
@@ -62,18 +72,21 @@ class TimerImpl implements Timer {
 		return wakeUpEvery(period, stepper, true);
 	}
 
+	
 	private WeakContract wakeUpEvery(long period, Runnable stepper, boolean isPeriodic) {
 		Alarm alarm = new Alarm(stepper, period, isPeriodic);
 		_alarms.add(alarm);
 		return my(Contracts.class).weakContractFor(alarm);
 	}
 
+	
 	@Override
 	public void sleepAtLeast(long millis) {
 		Latch latch = new Latch();
 		wakeUpInAtLeast(millis, latch);
 		latch.waitTillOpen();
 	}
+	
 	
 	synchronized
 	private void wakeUpAlarmsIfNecessary() {
