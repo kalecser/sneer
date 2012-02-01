@@ -9,6 +9,7 @@ import javax.swing.JFileChooser;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
@@ -18,6 +19,7 @@ import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.skin.filechooser.FileChoosers;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
+import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Functor;
 import dfcsantos.music.Music;
@@ -171,13 +173,15 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 
 	private void initChoicesRefresh() {
-		Runnable choicesRefresh = new Runnable(){ @Override public void run() {
+		final Runnable choicesRefresh = new Runnable() { @Override public void run() {
 			refreshChoices();
 		}};
 		
-		refToAvoidGc1 = my(Timer.class).wakeUpNowAndEvery(FIVE_MINUTES, choicesRefresh);
-		refToAvoidGc2 = my(Music.class).tracksFolder().addPulseReceiver(choicesRefresh);
-		refToAvoidGc3 = my(Music.class).numberOfPeerTracks().addPulseReceiver(choicesRefresh);
+		my(Threads.class).startDaemon("MusicPresenter init.", new Closure() { @Override public void run() {
+			refToAvoidGc1 = my(Timer.class).wakeUpNowAndEvery(FIVE_MINUTES, choicesRefresh);
+			refToAvoidGc2 = my(Music.class).tracksFolder().addPulseReceiver(choicesRefresh);
+			refToAvoidGc3 = my(Music.class).numberOfPeerTracks().addPulseReceiver(choicesRefresh);
+		}});
 	}
 
 	
