@@ -91,7 +91,11 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		Contact contact = produceContact(other.ownName());
 
 		putSeal(other, contact);
-		my(InternetAddressKeeper.class).add(contact, MOCK_ADDRESS, other.sneerPort());
+		try {
+			my(InternetAddressKeeper.class).put(contact, MOCK_ADDRESS, other.sneerPort());
+		} catch (Refusal e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 

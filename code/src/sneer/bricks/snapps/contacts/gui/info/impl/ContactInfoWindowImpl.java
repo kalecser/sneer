@@ -6,27 +6,21 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import sneer.bricks.hardware.cpu.codec.DecodeException;
 import sneer.bricks.hardware.cpu.lang.Lang;
-import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.codec.SealCodec;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -38,8 +32,6 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.skin.widgets.reactive.LabelProvider;
-import sneer.bricks.skin.widgets.reactive.ListWidget;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
@@ -62,14 +54,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 	private TextWidget<JTextPane> _sealTP;
 	private JScrollPane _sealScroll;
 
-	private JLabel _friendsLb;
-	private JComboBox _friendsCb;
-	private JButton _acceptFriendBt;
-
-	private ListWidget<InternetAddress> _inetAddressesList;
-	private InternetAddress _selectedAdress;
 	private JPanel _inetAddressesPanel;
-	private JScrollPane _inetAddressesScroll;
 
 	private JLabel _hostLb;
 	private JTextField _hostTF;
@@ -77,9 +62,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 	private JLabel _portLb;
 	private JTextField _portTF;
 
-	private JButton _newBt;
-	private JButton _saveBt;
-	private JButton _deleteBt;
+	private JButton closeButton;
 
 	ContactInfoWindowImpl() {
 		addContactEditAction();
@@ -125,88 +108,58 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
 		);
 
-		_friendsLb = new JLabel("Friends:");
-		_friendsCb = new JComboBox(new String[] { "Whatsit", "Whatsisname", "Whatsername", "Whatchamacallit" });
-		_acceptFriendBt = new JButton("Accept");
-
-		_inetAddressesList = my(ReactiveWidgetFactory.class).newList(new ContactInternetAddressList().addresses(), 
-			new LabelProvider<InternetAddress>() {
-				@Override public Signal<Image> imageFor(InternetAddress element) {
-					return my(Signals.class).constant(null);
-				}
-
-				@Override public Signal<String> textFor(InternetAddress element) {
-					return my(Signals.class).constant(element.host() + " : " + element.port().currentValue());
-				}
-			}
-		);
-
 		 _inetAddressesPanel = new JPanel();
-		_inetAddressesScroll = new JScrollPane();
-		_inetAddressesScroll.getViewport().add(addresses());
 
-		_hostLb = new JLabel("Host:");
+		_hostLb = new JLabel("Host Address (Optional)");
 		_hostTF = new JTextField();
 
-		_portLb = new JLabel("Port:");
+		_portLb = new JLabel("Port (Optional)");
 		_portTF = new JTextField();
 
-		_newBt = new JButton("New");
-		_newBt.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
-			newInternetAddress();
-		}});
-
-		_saveBt = new JButton("Save");
-		_saveBt.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
-			saveInternetAddress();
-		}});
-
-		_deleteBt = new JButton("Delete");
-		_deleteBt.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
-			delInternetAddress();
+		closeButton = new JButton("Close"); closeButton.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
+			close();
 		}});
 
 		setGridBagLayout();
-		addListSelectionListestener();
+		initInternetAddressFields();
 
 		this.setSize(330, 310);
 	}
 
+
 	private PickyConsumer<String> nicknameSetter() {
-		PickyConsumer<String> nicknameSetter = new PickyConsumer<String>(){@Override public void consume(String value) throws Refusal {
-			my(Contacts.class).nicknameSetterFor(selectedContact()).consume(value);
+		return new PickyConsumer<String>(){@Override public void consume(String value) throws Refusal {
+			my(Contacts.class).nicknameSetterFor(contact()).consume(value);
 		}};
-		return nicknameSetter;
 	}
 
+	
 	private Signal<String> nicknameString() {
-		Signal<String> nickname = my(Signals.class).adaptSignal(
+		return my(Signals.class).adaptSignal(
 			my(ContactsGui.class).selectedContact(), new Functor<Contact, Signal<String>>() { @Override public Signal<String> evaluate(Contact contact) {
 				return (contact == null) ? my(Signals.class).constant("") : contact.nickname();
 			}}
 		);
-		return nickname;
 	}
 
+	
 	private Signal<String> contactsFormattedSealString() {
-		return my(Signals.class).adapt(
-			my(Signals.class).adaptSignal(
-				my(ContactsGui.class).selectedContact(),
-				new Functor<Contact, Signal<Seal>>() { @Override public Signal<Seal> evaluate(Contact contact) throws RuntimeException {
-					return my(ContactSeals.class).sealGiven(contact);
-				}}
-			), new Functor<Seal, String>() { @Override public String evaluate(Seal seal) throws RuntimeException {
-				return (seal == null) ? "" : my(SealCodec.class).formattedHexEncode(seal);
-			}});
+		return my(Signals.class).adapt( my(Signals.class).adaptSignal(
+			my(ContactsGui.class).selectedContact(), new Functor<Contact, Signal<Seal>>() { @Override public Signal<Seal> evaluate(Contact contact) throws RuntimeException {
+				return my(ContactSeals.class).sealGiven(contact); }}), new Functor<Seal, String>() { @Override public String evaluate(Seal seal) throws RuntimeException {
+					return (seal == null) ? "" : my(SealCodec.class).formattedHexEncode(seal);
+		}});
 	}
 
+	
 	private PickyConsumer<String> contactsSealSetter() {
 		return new PickyConsumer<String>() { @Override public void consume(String sealString) throws Refusal {
-			String nick = selectedContact().nickname().currentValue();
+			String nick = contact().nickname().currentValue();
 			my(ContactSeals.class).put(nick, decode(sealString));
 		}};
 	}
 
+	
 	private Seal decode(String sealString) throws Refusal {
 		if (sealString == null) return null;
 
@@ -220,6 +173,7 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 		}
 	}
 
+	
 	private void setGridBagLayout() {
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new GridBagLayout());
@@ -239,117 +193,82 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 		contentPane.add(_inetAddressesPanel,  new GridBagConstraints(0, 3, 2, 1, 1.0, 0.2, 
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
 
-		contentPane.add(_friendsLb,  new GridBagConstraints(0, 3, 2, 1, 1.0, 0.2, 
-				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
-
-		contentPane.add(_friendsCb,  new GridBagConstraints(0, 3, 2, 1, 1.0, 0.2, 
-				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
-
-		contentPane.add(_acceptFriendBt,  new GridBagConstraints(0, 3, 2, 1, 1.0, 0.2, 
-				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
-
 		_inetAddressesPanel.setLayout(new GridBagLayout());
-		_inetAddressesPanel.add(_inetAddressesScroll,  new GridBagConstraints(0, 1, 12, 1, 1.0, 1.0, 
-				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
 
-		_inetAddressesPanel.add(_hostLb, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, 
-				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0,5,0,5), 0, 0) );
+		_inetAddressesPanel.add(_hostLb, new GridBagConstraints(0, 2, 6, 1, 0.0, 0.0, 
+				GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5,3,0,0), 0, 0) );
 
-		_inetAddressesPanel.add(_hostTF, new GridBagConstraints(1, 2, 7, 1, 2.0, 0.0, 
-				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0) );
+		_inetAddressesPanel.add(_hostTF, new GridBagConstraints(0, 3, 6, 1, 2.0, 0.0, 
+				GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0) );
 
-		_inetAddressesPanel.add(_portLb, new GridBagConstraints(9, 2, 1, 1, 0.0, 0.0, 
-				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,5,5,5), 0, 0) );
+		_inetAddressesPanel.add(_portLb, new GridBagConstraints(6, 2, 6, 1, 0.0, 0.0, 
+				GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5,3,0,0), 0, 0) );
 		
-		_inetAddressesPanel.add(_portTF, new GridBagConstraints(10, 2, 2, 1, 0.0, 0.0, 
-				GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,5), 0, 0) );
+		_inetAddressesPanel.add(_portTF, new GridBagConstraints(6, 3, 6, 1, 0.0, 0.0, 
+				GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0) );
 		
-		_inetAddressesPanel.add(_newBt, new GridBagConstraints(7, 4, 1, 1, 0.0, 0.0, 
-				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0) );
-
-		_inetAddressesPanel.add(_saveBt, new GridBagConstraints(8, 4, 3, 1, 0.0, 0.0, 
-				GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0) );
-
-		_inetAddressesPanel.add(_deleteBt, new GridBagConstraints(11, 4, 1, 1, 0.0, 0.0, 
-				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,5,5,5), 0, 0) );
+		_inetAddressesPanel.add(closeButton, new GridBagConstraints(8, 4, 3, 1, 0.0, 0.0, 
+				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,0,5,0), 0, 0) );
 	}
 	
-	private void addListSelectionListestener() {
-		addresses().getSelectionModel().addListSelectionListener(
-			new ListSelectionListener() { @Override public void valueChanged(ListSelectionEvent e) {
-				InternetAddress selected = (InternetAddress) addresses().getSelectedValue();
-					if (selected == null) {
-						cleanFields();
-						return;
-					}
-
-					_selectedAdress = selected;
-					_hostTF.setText(_selectedAdress.host());
-					_portTF.setText(""+_selectedAdress.port());
-			}}
-		);
-	}
-
-	private void logPortValueException(Exception e) {
-		my(BlinkingLights.class).turnOn(LightType.ERROR, "Invalid Port Value: " + _portTF.getText(), e.getMessage(), e, 20000);
-		my(Logger.class).log("Invalid Port Value: {}", _portTF.getText());
-		_portTF.requestFocus();
-	}
-
-	private void saveInternetAddress() {
-		try {
-			InternetAddress address = _selectedAdress;
-			if (address == null || _hostTF.getText().trim().length() == 0) return;
-
-			if (_selectedAdress.host().equals(_hostTF.getText()) &&
-				_selectedAdress.port().currentValue() == Integer.parseInt(_portTF.getText()) &&
-				_selectedAdress.contact() == my(ContactsGui.class).selectedContact().currentValue()) {
-
-				_inetAddressesList.clearSelection();
-				return;
-			}
-
-			newInternetAddress();
-			my(InternetAddressKeeper.class).remove(address);
-			_inetAddressesList.clearSelection();
-		} catch (NumberFormatException e) {
-			logPortValueException(e);			
-		}
-	}
-
-	private void delInternetAddress() {
-		InternetAddress address = _selectedAdress;
-		if(address == null || _hostTF.getText().trim().length() == 0) return;
-
-		my(InternetAddressKeeper.class).remove(address);
-		_inetAddressesList.clearSelection();
-	}
-
-	private void newInternetAddress() {
-		try{
-			String host = _hostTF.getText();
-			if (host == null || host.trim().length() == 0) return;
-			
-			int port = Integer.parseInt(_portTF.getText());
-			my(InternetAddressKeeper.class).add(selectedContact(), host, port);
-
-			_inetAddressesList.clearSelection();
+	
+	private void initInternetAddressFields() {
+		InternetAddress address = my(InternetAddressKeeper.class).get(contact());
+		if (address == null) {
 			cleanFields();
-		} catch (NumberFormatException e) {
-			logPortValueException(e);			
+			return;
+		}
+
+		_hostTF.setText(address.host());
+		_portTF.setText(""+address.port());
+	}
+
+	
+	private void display(Refusal r) {
+		my(BlinkingLights.class).turnOn(LightType.ERROR, "Invalid Host or Port Value", r.getMessage(), r, 20000);
+	}
+
+	
+	private void close() {
+		setVisible(false);
+		
+		if (host().isEmpty()) {
+			my(InternetAddressKeeper.class).remove(contact());
+			return;
+		}
+		
+		try {
+			my(InternetAddressKeeper.class).put(contact(), host(), port());
+		} catch (Refusal r) {
+			display(r);
 		}
 	}
 
-	private JList addresses() {
-		return _inetAddressesList.getMainWidget();
+	private String host() {
+		return textIn(_hostTF);
 	}
+	private int port() throws Refusal {
+		String result = textIn(_portTF);
+		try {
+			return Integer.parseInt(result);
+		} catch (NumberFormatException e) {
+			throw new Refusal("Not a valid port number: " + result);
+		}
+	}
+
+	private String textIn(JTextField field) {
+		String text = field.getText();
+		return text == null ? "" : text.trim();
+	}
+
 
 	private void cleanFields() {
 		_hostTF.setText("");
 		_portTF.setText("");
 	}
 
-	private Contact selectedContact() {
+	
+	private Contact contact() {
 		return my(ContactsGui.class).selectedContact().currentValue();
 	}
 

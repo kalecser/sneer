@@ -33,7 +33,7 @@ public class ContactInternetAddressesTest extends BrickTestWithTuples {
 	@Test(timeout=2000)
 	public void keptAddressesAreFound() throws Refusal {
 		Contact neide = my(Contacts.class).addContact("Neide");
-		my(InternetAddressKeeper.class).add(neide, "10.42.10.42", 42);
+		my(InternetAddressKeeper.class).put(neide, "10.42.10.42", 42);
 
 		InternetAddress kept = firstKeptAddress();
 		assertEquals(neide, kept.contact());
