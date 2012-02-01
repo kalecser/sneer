@@ -26,8 +26,8 @@ class TimerImpl implements Timer {
 	@SuppressWarnings("unused") private final WeakContract _timeContract;
 	
 	
-	TimerImpl(){
-		_timeContract = _clock.time().addReceiver(new Consumer<Long>(){ @Override public void consume(Long value) {
+	TimerImpl() {
+		_timeContract = _clock.time().addReceiver(new Consumer<Long>() { @Override public void consume(Long value) {
 			wakeUpAlarmsIfNecessary();
 		}});
 	}
@@ -143,6 +143,7 @@ class TimerImpl implements Timer {
 		boolean isTimeToWakeUp() {
 			return currentTime() >= _wakeUpTime;
 		}
+
 		
 		@Override
 		public int compareTo(Alarm alarm) {
@@ -151,11 +152,13 @@ class TimerImpl implements Timer {
 			return (int) (_wakeUpTime - alarm._wakeUpTime);
 		}
 		
+		
 		@Override
 		public String toString() {
 			return "Alarm for: " + _stepper;
 		}
 
+		
 		@Override
 		public void dispose() {
 			_isDisposed = true;
@@ -167,6 +170,5 @@ class TimerImpl implements Timer {
 	private long currentTime() {
 		return _clock.time().currentValue();
 	}
-
 
 }

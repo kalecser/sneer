@@ -71,9 +71,9 @@ public class FileClientTest extends BrickTestWithTuples {
 		}});
 
 		final File tmpFile = newTmpFile();
-		_subject.startFileDownload(tmpFile, tmpFile.lastModified(), fileHash, remoteSeal()).waitTillFinished();
+		_subject.startFileDownload(tmpFile, tmpFile.lastModified(), fileHash, remoteSeal())
+			.waitTillFinished();
 
-		waitForAllDispatchingToFinish();
 		my(IO.class).files().assertSameContents(tmpFile, smallFile);
 	}
 
