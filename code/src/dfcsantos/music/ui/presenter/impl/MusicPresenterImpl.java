@@ -32,6 +32,7 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
 	private static final int FIVE_MINUTES = 1000 * 60 * 5;
 	private static final String INBOX = "<Inbox>";
+	private static final String ALL_TRACKS = "<All Tracks>";
 	
 	private final ListRegister<String> _playingFolderChoices = my(CollectionSignals.class).newListRegister();
 	
@@ -138,11 +139,11 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 	
 	@Override
-	public void playingFolderChosen(String subSharedFolder) {
-		if (subSharedFolder.startsWith(INBOX)) 
+	public void playingFolderChosen(String folderChosen) {
+		if (folderChosen.startsWith(INBOX)) 
 			changeToPeersModeAndPlayTracks();
 		else 
-			changeToOwnModeAndPlayTracksOf(subSharedFolder);
+			changeToOwnModeAndPlayTracksOf(folderChosen);
 	}
 
 	
@@ -164,11 +165,15 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 		_meTooEnable.setter().consume(true);
 	}
 	
-	private void changeToOwnModeAndPlayTracksOf(String subSharedFolder) {
+	private void changeToOwnModeAndPlayTracksOf(String folderChosen) {
 		my(Music.class).setOperatingMode(Music.OperatingMode.OWN);
-		File folderChosenToPlay =  new File(currentSharedTracksFolder(), subSharedFolder);
+		File folderChosenToPlay = whatFolderChosen(folderChosen); //
 		my(Music.class).setPlayingFolder(folderChosenToPlay);
 		_meTooEnable.setter().consume(false);
+	}
+	
+	private File whatFolderChosen(String folderChosen) {
+		return folderChosen.equals(ALL_TRACKS) ? currentSharedTracksFolder() : new File(currentSharedTracksFolder(), folderChosen);
 	}
 	
 
@@ -189,8 +194,9 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	private void refreshChoices() {
 		clearChoices();
 		addChoice(INBOX + " " + my(Music.class).numberOfPeerTracks().currentValue() + " Tracks");
+		addChoice(ALL_TRACKS);
 		addSubFolders();
-		my(Logger.class).log("Choices refreshed: ", "<inbox> ", "sub folders.");
+		my(Logger.class).log("Choices refreshed: ", INBOX, " ", ALL_TRACKS, " sub folders.");
 	}
 
 
