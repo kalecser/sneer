@@ -35,6 +35,7 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	private static final String ALL_TRACKS = "<All Tracks>";
 	
 	private final ListRegister<String> _playingFolderChoices = my(CollectionSignals.class).newListRegister();
+	private String playingFolder;
 	
 	@SuppressWarnings("unused")	private WeakContract refToAvoidGc1, refToAvoidGc2, refToAvoidGc3;
 	
@@ -140,6 +141,7 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 	@Override
 	public void playingFolderChosen(String folderChosen) {
+		playingFolder = folderChosen;
 		if (folderChosen.startsWith(INBOX)) 
 			changeToPeersModeAndPlayTracks();
 		else 
@@ -193,10 +195,15 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	synchronized
 	private void refreshChoices() {
 		clearChoices();
-		addChoice(INBOX + " " + my(Music.class).numberOfPeerTracks().currentValue() + " Tracks");
+		addChoice(inboxChoice());
 		addChoice(ALL_TRACKS);
 		addSubFolders();
 		my(Logger.class).log("Choices refreshed: ", INBOX, " ", ALL_TRACKS, " sub folders.");
+	}
+
+
+	private String inboxChoice() {
+		return INBOX + " " + my(Music.class).numberOfPeerTracks().currentValue() + " Tracks";
 	}
 
 
@@ -216,6 +223,14 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
 	private void addChoice(String choice) {
 		_playingFolderChoices.add(choice);
+	}
+
+
+	@Override
+	public String playingFolder() {
+		if (playingFolder == null) return null;
+		if (playingFolder.startsWith(INBOX)) return inboxChoice();
+		return playingFolder;
 	}
 
 }

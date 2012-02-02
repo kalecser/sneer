@@ -17,9 +17,9 @@ import dfcsantos.music.ui.view.MusicViewListener;
 final class FolderSelectionPanel extends JPanel implements ActionListener {
 	private final MusicViewListener _listener;
 	private final MutableComboBoxModel _folderChoices;
+	private boolean isEventInternal;
 
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc;
-	private String lastFolderChosen;
 	
 	FolderSelectionPanel(MusicViewListener listener) {
 		_listener = listener;
@@ -41,6 +41,7 @@ final class FolderSelectionPanel extends JPanel implements ActionListener {
 
 	private void initModel() {
 		_refToAvoidGc = _listener.playingFolderChoices().addListReceiverAsVisitor(new ListChange.Visitor<String>() {
+
 			@Override
 			public void elementReplaced(int index, String oldElement, String newElement) {
 				throw new UnsupportedOperationException();
@@ -48,7 +49,9 @@ final class FolderSelectionPanel extends JPanel implements ActionListener {
 
 			@Override
 			public void elementRemoved(int index, String element) {
+				isEventInternal = true;
 				_folderChoices.removeElementAt(index);
+				isEventInternal = false;
 			}
 			
 			@Override
@@ -58,19 +61,20 @@ final class FolderSelectionPanel extends JPanel implements ActionListener {
 			
 			@Override
 			public void elementAdded(int index, String element) {
+				isEventInternal = true;
 				_folderChoices.insertElementAt(element, index);
-				if (element.equals(lastFolderChosen))
+				if (element.equals(_listener.playingFolder()))
 					_folderChoices.setSelectedItem(element);
+				isEventInternal = false;
 			}
 		});
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if (isEventInternal) return;
 		String folderChosen = (String)((JComboBox) e.getSource()).getModel().getSelectedItem();
 		if (folderChosen == null) return;
-		if (folderChosen.equals(lastFolderChosen)) return;
-		lastFolderChosen = folderChosen;
 		_listener.playingFolderChosen(folderChosen);
 	}
 }

@@ -14,6 +14,7 @@ public interface MusicViewListener {
 	Signal<String> playingTrackName();
 	Signal<Integer> playingTrackTime();
 	ListSignal<String> playingFolderChoices();
+	String playingFolder();
 
 	void playingFolderChosen(String folder);
 	void chooseTracksFolder();

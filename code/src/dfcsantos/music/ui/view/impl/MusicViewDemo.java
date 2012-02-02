@@ -68,7 +68,8 @@ class MusicViewDemo {
 			private Signal<String> trackName = my(Signals.class).constant("Here Comes The Sun");
 			private Signal<Integer> trackTime = my(Signals.class).constant(111620);
 			private Signal<Boolean> meTooEnable = my(Signals.class).constant(false);
-			private ListRegister<String> playingFolderChoices = my(CollectionSignals.class).newListRegister();			
+			private ListRegister<String> playingFolderChoices = my(CollectionSignals.class).newListRegister();
+			{ playingFolderChoices.adder().consume("<Inbox> 0 Tracks"); }
 			@SuppressWarnings("unused")
 			private WeakContract refToAvoidGc = my(Timer.class).wakeUpNowAndEvery(1000 * 5, new Runnable() {  @Override public void run() {
 				System.out.println("added");
@@ -92,6 +93,10 @@ class MusicViewDemo {
 			@Override public Signal<Boolean> enableMeToo() { return meTooEnable; }
 			@Override public ListSignal<String> playingFolderChoices() {
 				return playingFolderChoices.output();
+			}
+			@Override
+			public String playingFolder() {
+				return playingFolderChoices.output().currentGet(0);
 			}
 			
 		});
