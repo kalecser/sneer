@@ -19,6 +19,7 @@ final class FolderSelectionPanel extends JPanel implements ActionListener {
 	private final MutableComboBoxModel _folderChoices;
 
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc;
+	private String lastFolderChosen;
 	
 	FolderSelectionPanel(MusicViewListener listener) {
 		_listener = listener;
@@ -42,8 +43,7 @@ final class FolderSelectionPanel extends JPanel implements ActionListener {
 		_refToAvoidGc = _listener.playingFolderChoices().addListReceiverAsVisitor(new ListChange.Visitor<String>() {
 			@Override
 			public void elementReplaced(int index, String oldElement, String newElement) {
-				_folderChoices.removeElementAt(index);
-				_folderChoices.insertElementAt(newElement, index);
+				throw new UnsupportedOperationException();
 			}
 
 			@Override
@@ -59,6 +59,8 @@ final class FolderSelectionPanel extends JPanel implements ActionListener {
 			@Override
 			public void elementAdded(int index, String element) {
 				_folderChoices.insertElementAt(element, index);
+				if (element.equals(lastFolderChosen))
+					_folderChoices.setSelectedItem(element);
 			}
 		});
 	}
@@ -66,7 +68,9 @@ final class FolderSelectionPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String folderChosen = (String)((JComboBox) e.getSource()).getModel().getSelectedItem();
-		if (folderChosen != null)
-			_listener.playingFolderChosen(folderChosen);
+		if (folderChosen == null) return;
+		if (folderChosen.equals(lastFolderChosen)) return;
+		lastFolderChosen = folderChosen;
+		_listener.playingFolderChosen(folderChosen);
 	}
 }
