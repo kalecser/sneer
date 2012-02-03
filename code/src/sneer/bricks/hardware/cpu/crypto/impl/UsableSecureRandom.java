@@ -5,7 +5,7 @@ package sneer.bricks.hardware.cpu.crypto.impl;
 
 import java.security.SecureRandom;
 
-import org.bouncycastle.crypto.digests.SHA256Digest;
+import org.bouncycastle.crypto.digests.SHA512Digest;
 import org.bouncycastle.crypto.prng.DigestRandomGenerator;
 import org.bouncycastle.crypto.prng.RandomGenerator;
 
@@ -18,7 +18,7 @@ class UsableSecureRandom extends SecureRandom {
 	private RandomGenerator _delegate;
 
 	UsableSecureRandom(byte[] seed) {
-		_delegate = new DigestRandomGenerator(new SHA256Digest());
+		_delegate = new DigestRandomGenerator(new SHA512Digest());
 		_delegate.addSeedMaterial(seed);
 	}
 
