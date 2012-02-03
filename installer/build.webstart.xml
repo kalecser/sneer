@@ -109,7 +109,7 @@
 				
 				<resources>
 					<jar href="sneer-bootstrap.jar" />
-					<j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se" />
+					<j2se version="1.6" href="http://java.sun.com/products/autodl/j2se" />
 				</resources>
 
 				<security>
