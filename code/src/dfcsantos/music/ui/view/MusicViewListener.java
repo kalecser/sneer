@@ -27,4 +27,5 @@ public interface MusicViewListener {
 	void noWay();
 
 	Signal<Boolean> enableMeToo();
+	Signal<Boolean> enableTrackDownloaded();
 }

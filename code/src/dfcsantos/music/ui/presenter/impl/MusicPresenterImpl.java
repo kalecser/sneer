@@ -36,10 +36,12 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 	private final ListRegister<String> _playingFolderChoices = my(CollectionSignals.class).newListRegister();
 	private String playingFolder;
+	private int _previousNumberOfPeerTracks;
 	
-	@SuppressWarnings("unused")	private WeakContract refToAvoidGc1, refToAvoidGc2, refToAvoidGc3;
+	@SuppressWarnings("unused")	private WeakContract refToAvoidGc1, refToAvoidGc2, refToAvoidGc3, refToAvoidGc4;
 	
 	private Register<Boolean> _meTooEnable = my(Signals.class).newRegister(true);
+	private Register<Boolean> _trackDownloadedEnable = my(Signals.class).newRegister(false);
 
 	
 	{
@@ -50,6 +52,10 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 			chooseTracksFolder();
 
 		initChoicesRefresh();
+
+		refToAvoidGc4 = my(Music.class).numberOfPeerTracks().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer numberPeerTracks) {
+			newTrackDownloaded(numberPeerTracks);
+		}}); 
 	}
 
 
@@ -161,6 +167,19 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	}
 
 
+	@Override
+	public Signal<Boolean> enableTrackDownloaded() {
+		return _trackDownloadedEnable.output();
+	}
+
+	private void newTrackDownloaded(Integer numberOfPeerTracks) {
+		if (numberOfPeerTracks > _previousNumberOfPeerTracks)
+			_trackDownloadedEnable.setter().consume(true);
+		else
+			_trackDownloadedEnable.setter().consume(false);
+	}
+	
+	
 	private void changeToPeersModeAndPlayTracks() {
 		my(Music.class).setOperatingMode(Music.OperatingMode.PEERS);
 		my(Music.class).setPlayingFolder(my(Music.class).playingFolder());

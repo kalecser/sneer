@@ -68,6 +68,7 @@ class MusicViewDemo {
 			private Signal<String> trackName = my(Signals.class).constant("Here Comes The Sun");
 			private Signal<Integer> trackTime = my(Signals.class).constant(111620);
 			private Signal<Boolean> meTooEnable = my(Signals.class).constant(false);
+			private Signal<Boolean> trackDownloadedEnable = my(Signals.class).constant(false);
 			private ListRegister<String> playingFolderChoices = my(CollectionSignals.class).newListRegister();
 			{ playingFolderChoices.adder().consume("<Inbox> 0 Tracks"); }
 			@SuppressWarnings("unused")
@@ -91,6 +92,7 @@ class MusicViewDemo {
 			@Override public Signal<Integer> playingTrackTime() { return trackTime; }
 			@Override public void playingFolderChosen(String subSharedFolder) { }
 			@Override public Signal<Boolean> enableMeToo() { return meTooEnable; }
+			@Override public Signal<Boolean> enableTrackDownloaded() { return trackDownloadedEnable; }
 			@Override public ListSignal<String> playingFolderChoices() {
 				return playingFolderChoices.output();
 			}
