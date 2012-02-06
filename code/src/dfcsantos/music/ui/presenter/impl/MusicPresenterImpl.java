@@ -36,7 +36,7 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 	private final ListRegister<String> _playingFolderChoices = my(CollectionSignals.class).newListRegister();
 	private String playingFolder;
-	private int _previousNumberOfPeerTracks;
+	private int _previousNumberTracksDownloaded;
 	
 	@SuppressWarnings("unused")	private WeakContract refToAvoidGc1, refToAvoidGc2, refToAvoidGc3, refToAvoidGc4;
 	
@@ -172,11 +172,13 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 		return _trackDownloadedEnable.output();
 	}
 
-	private void newTrackDownloaded(Integer numberOfPeerTracks) {
-		if (numberOfPeerTracks > _previousNumberOfPeerTracks)
+	private void newTrackDownloaded(Integer numberTracksDownloaded) {
+		if (numberTracksDownloaded > _previousNumberTracksDownloaded)
 			_trackDownloadedEnable.setter().consume(true);
 		else
 			_trackDownloadedEnable.setter().consume(false);
+
+		_previousNumberTracksDownloaded = numberTracksDownloaded;
 	}
 	
 	
