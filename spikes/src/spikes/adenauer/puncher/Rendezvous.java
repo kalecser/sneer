@@ -27,29 +27,24 @@ public class Rendezvous implements Runnable {
 	@Override
 	public void run() {
 		try {
-			listener(new DatagramSocket(7070));
+			listenTo(new DatagramSocket(7070));
 		} catch (Exception e) {
 			display("Failure on listener: " + e.getMessage());
 		}
 	}
 	
 
-	private void listener(DatagramSocket socket) {
-		while (true){
-			process(socket);
+	private void listenTo(DatagramSocket socket) {
+		while (true) {
+			try {
+				manager(receivedPacketFrom(socket), socket);
+			} catch (Exception e) {
+				display("Process failure: " + e.getMessage());
+			}
 		}
 	}
 
 	
-	private void process(DatagramSocket socket) {
-		try {
-			manager(receivedPacketsFrom(socket), socket);
-		} catch (Exception e) {
-			display("Process failure: " + e.getMessage());
-		}
-	}
-
-
 	private void manager(DatagramPacket receivedPacket, DatagramSocket socket) throws IOException {
 		if (receivedPacket == null) return;
 		StringTokenizer fields = toFields(receivedPacket);
@@ -137,14 +132,13 @@ public class Rendezvous implements Runnable {
 	
 	private StringTokenizer toFields(DatagramPacket receivedPacket) {
 		String result = new String(receivedPacket.getData(), receivedPacket.getOffset(), receivedPacket.getLength(), UTF_8);
-		StringTokenizer fields = new StringTokenizer(result.trim(), ";");
-		return fields;
+		return new StringTokenizer(result.trim(), ";");
 	}
 
 
-	private DatagramPacket receivedPacketsFrom(DatagramSocket socket) throws IOException {
-		byte[] receivedData = new byte[1024];
-		DatagramPacket receivedPacket = new DatagramPacket(receivedData, receivedData.length);
+	private DatagramPacket receivedPacketFrom(DatagramSocket socket) throws IOException {
+		byte[] result = new byte[1024];
+		DatagramPacket receivedPacket = new DatagramPacket(result, result.length);
 		socket.receive(receivedPacket);
 		return receivedPacket;
 	}

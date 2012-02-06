@@ -5,12 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,11 +19,11 @@ public class Peer {
 
 	private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-	private static final SocketAddress RENDEZVOUS_SERVER = new InetSocketAddress("wuestefeld.name", 7070);
+	private static final SocketAddress RENDEZVOUS_SERVER = new InetSocketAddress("dynamic.sneer.me", 7070);
 	
 	private static final int OWN_PORT = 5050;
+	private static final DatagramSocket _socket = newSocket(OWN_PORT);
 	private static final String OWN_IP = ownIp();
-	private static final DatagramSocket _socket = newSocket(OWN_IP, OWN_PORT);
 
 	
 	public static void main(String[] ignored) throws IOException {
@@ -83,17 +81,18 @@ public class Peer {
 
 
 	private static String ownIp() {
-		try {
-			return InetAddress.getLocalHost().getHostAddress();
-		} catch (UnknownHostException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e);
-		}
+//		try {
+//			return InetAddress.getLocalHost().getHostAddress();
+//		} catch (UnknownHostException e) {
+//			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e);
+//		}
+		return _socket.getLocalAddress().getHostAddress();
 	}
 
 
-	private static DatagramSocket newSocket(String localIp, int port) {
+	private static DatagramSocket newSocket(int port) {
 		try {
-			return new DatagramSocket(new InetSocketAddress(localIp, port));
+			return new DatagramSocket(new InetSocketAddress(port));
 		} catch (SocketException e) {
 			throw new IllegalStateException(e); // Fix Handle this exception.
 		}
