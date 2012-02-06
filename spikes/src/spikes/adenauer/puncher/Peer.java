@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +30,7 @@ public class Peer {
 	
 	public static void main(String[] ignored) throws IOException {
 		final String ownId = readConsole("Own id:");
-		
+
 		new Thread() {  @Override public void run() {
 			while (true) {
 				String targetId = JOptionPane.showInputDialog("Enter Target");
@@ -81,18 +83,19 @@ public class Peer {
 
 
 	private static String ownIp() {
-//		try {
-//			return InetAddress.getLocalHost().getHostAddress();
-//		} catch (UnknownHostException e) {
-//			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e);
-//		}
-		return _socket.getLocalAddress().getHostAddress();
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e);
+		}
 	}
 
 
 	private static DatagramSocket newSocket(int port) {
 		try {
-			return new DatagramSocket(new InetSocketAddress(port));
+			DatagramSocket result = new DatagramSocket(new InetSocketAddress(port));
+			result.setSoTimeout(3000);
+			return result;
 		} catch (SocketException e) {
 			throw new IllegalStateException(e); // Fix Handle this exception.
 		}
@@ -101,7 +104,6 @@ public class Peer {
 
 	private static String receive() throws IOException {
 		DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
-		_socket.setSoTimeout(3000);
 		_socket.receive(packet);
 		return new String(packet.getData(), packet.getOffset(), packet.getLength(), UTF_8);
 	}
@@ -116,36 +118,5 @@ public class Peer {
 			return " ";
 		}
 	}
-	
-	
-
-	
-	
-	
-	
-	
-	
-//	private static DatagramPacket punchPacket(String targetInfo) throws IOException {
-//		StringTokenizer fields = new StringTokenizer(targetInfo.trim(), ";");
-//		String punchData = localHostName(); 
-//		fields.nextToken();
-//		fields.nextToken();
-//		String targetIP = fields.nextToken();
-//		int targetPort = Integer.valueOf(fields.nextToken());
-//		return new DatagramPacket(punchData.getBytes(), punchData.length(), new InetSocketAddress(targetIP, targetPort));
-//	}
-
-
-//	private static String localHostName() throws IOException {
-//		String result = InetAddress.getLocalHost().getHostName();
-//		System.out.println(result);
-//		return result;
-//	}
-	
-	
-//	private static void display(String out) {
-//		System.out.println(out);
-//	}
-
 
 }
