@@ -81,7 +81,7 @@ public class Rendezvous {
 		InetSocketAddress publicAddress = (InetSocketAddress)receivedPacket.getSocketAddress();		
 		
 		display("Caller: " + caller + " - Local address: " + localAddress + ", Public address: " + publicAddress);
-		addressesByClientId.put(caller, new IpAddresses(localAddress, publicAddress));
+		addressesByClientId.put(caller, new IpAddresses(publicAddress, localAddress));
 	}
 
 
