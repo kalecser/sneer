@@ -9,24 +9,43 @@ class SocketAddressUtils {
 
 	static final Charset CHARSET = Charset.forName("UTF-8");
 	
-	static boolean isSameHost(InetSocketAddress a1, InetSocketAddress a2) {
-		return a1.getHostName().equals(a2.getHostName());
+	
+	static byte[] marshal(IpAddresses addresses) {
+		InetSocketAddress pub = addresses.publicInternetAddress;
+		InetSocketAddress local = addresses.localNetworkAddress;
+		return (asString(pub) + "," + asString(local)).getBytes(CHARSET);
 	}
+	
+	
+	static IpAddresses unmarshalAddresses(String string) throws UnableToParseAddress {
+		String[] parts = string.split(",");
+		if (parts.length != 2)
+			throw new UnableToParseAddress("Addresses should have two parts: " + string);
+		String pub = parts[0];
+		String local = parts[1];
+		return new IpAddresses(unmarshal(pub), unmarshal(local));
+	}
+	
 
-	static byte[] marshal(InetSocketAddress addr) {
-		return (addr.getHostName() + ":" + addr.getPort()).getBytes(CHARSET);
+	private static String asString(InetSocketAddress addr) {
+		return ip(addr) + ":" + addr.getPort();
 	}
 
 	
-	static InetSocketAddress unmarshal(String address) throws InvalidAddress {
+	static InetSocketAddress unmarshal(String address) throws UnableToParseAddress {
 		String[] parts = address.split(":");
 		try {
 			String host = parts[0];
 			int port = Integer.parseInt(parts[1]);
 			return new InetSocketAddress(host, port);
 		} catch (RuntimeException e) {
-			throw new InvalidAddress("Unable to parse address: " + address, e);
+			throw new UnableToParseAddress("Unable to parse address: " + address, e);
 		}
+	}
+	
+	
+	private static String ip(InetSocketAddress addr) {
+		return addr.getAddress().getHostAddress();
 	}
 
 }

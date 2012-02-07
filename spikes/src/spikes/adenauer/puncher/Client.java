@@ -27,7 +27,7 @@ public class Client {
 
 	private static final SocketAddress RENDEZVOUS_SERVER = new InetSocketAddress("dynamic.sneer.me", Rendezvous.SERVER_PORT);
 
-	private static final Set<InetSocketAddress> peers = new HashSet<InetSocketAddress>();
+	private static final Set<IpAddresses> peers = new HashSet<IpAddresses>();
 
 	
 	public static void main(String[] ignored) {
@@ -67,18 +67,20 @@ public class Client {
 
 	private static void capturePeerAddress(String received) {
 		try {
-			InetSocketAddress peer = SocketAddressUtils.unmarshal(received);
+			IpAddresses peer = SocketAddressUtils.unmarshalAddresses(received);
 			peers.add(peer);
 			System.out.println("Peer address added.");
-		} catch (InvalidAddress e) {
+		} catch (UnableToParseAddress e) {
 			// Not a peer address.
 		}
 	}
 
 
 	private static void greetPeersAndSleepABit() {
-		for (InetSocketAddress t : peers)
-			send("Hello from " + ownId, t);
+		for (IpAddresses ips : peers) {
+			send("Local hello from " + ownId, ips.localNetworkAddress);
+			send("Public hello from " + ownId, ips.publicInternetAddress);
+		}
 		
 		try { Thread.sleep(3000); } catch (InterruptedException e) { throw new IllegalStateException(e); }
 	}
