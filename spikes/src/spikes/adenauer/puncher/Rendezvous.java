@@ -109,7 +109,7 @@ public class Rendezvous {
 
 	private static StringTokenizer toFields(DatagramPacket receivedPacket) {
 		String result = new String(receivedPacket.getData(), receivedPacket.getOffset(), receivedPacket.getLength(), CHARSET);
-		return new StringTokenizer(result.trim(), ":");
+		return new StringTokenizer(result.trim(), ";");
 	}
 
 
