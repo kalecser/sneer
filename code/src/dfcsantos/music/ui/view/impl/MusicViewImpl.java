@@ -25,7 +25,6 @@ class MusicViewImpl implements MusicView {
 		initMenu(container.actions());
 	}
 
-
 	private void initMenu(MenuGroup<? extends JComponent> actions) {
 		actions.addAction(10, "Choose Tracks Folder...", new Runnable() { @Override public void run() {
 			listener.chooseTracksFolder();
