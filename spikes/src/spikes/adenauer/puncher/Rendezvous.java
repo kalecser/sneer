@@ -17,6 +17,8 @@ public class Rendezvous {
 
 	private static final Map<String, IpAddresses> addressesByClientId = new HashMap<String, IpAddresses>();
 
+	static final String KEEP_ALIVE = "keep alive";
+
 	private static DatagramSocket socket;
 
 	
@@ -44,7 +46,15 @@ public class Rendezvous {
 	
 	private static void handle(DatagramPacket request) throws IOException, UnableToParseAddress {
 		StringTokenizer fields = toFields(request);
-		String callerId = fields.nextToken();
+		
+		String firstToken = fields.nextToken();
+		if (firstToken.equals(KEEP_ALIVE)) {
+			System.out.print(".");
+			return;
+		}
+		System.out.println();
+		
+		String callerId = firstToken;
 		String localAddress = fields.nextToken();
 		String requestedId = fields.nextToken();
 

@@ -32,6 +32,10 @@ public class Client {
 	
 	public static void main(String[] ignored) {
 		new Thread() {  @Override public void run() {
+			while (true) keepServerConnectionAlive();
+		}}.start();
+
+		new Thread() {  @Override public void run() {
 			while (true) askForTargetAddress();
 		}}.start();
 
@@ -42,6 +46,12 @@ public class Client {
 		new Thread() {  @Override public void run() {
 			while (true) greetPeersAndSleepABit();
 		}}.start();
+	}
+
+
+	private static void keepServerConnectionAlive() {
+		send(Rendezvous.KEEP_ALIVE, RENDEZVOUS_SERVER);
+		try { Thread.sleep(1000); } catch (InterruptedException e) { throw new IllegalStateException(e); }
 	}
 
 
