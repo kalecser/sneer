@@ -18,8 +18,6 @@ import sneer.bricks.pulp.network.ByteArraySocket;
 
 class ByteArraySocketImpl implements ByteArraySocket {
 
-	private static final int MAX_ARRAY_SIZE = 1024 * 20;
-	
 	private final Socket _socket;
 	private final DataOutputStream _outputStream;
 	private final DataInputStream _inputStream;
