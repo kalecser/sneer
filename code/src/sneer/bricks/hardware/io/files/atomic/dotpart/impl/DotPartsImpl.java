@@ -15,8 +15,8 @@ import sneer.bricks.hardware.io.log.Logger;
 
 class DotPartsImpl implements DotParts {
 
-	private static final String DOT_PART_EXTENSION = "part-file";
-	private static final String DOT_PART_SUFFIX = "." + DOT_PART_EXTENSION;
+	private static final String DOT_PART_PURE_EXTENSION = "part-file";
+	private static final String DOT_PART_EXTENSION = "." + DOT_PART_PURE_EXTENSION;
 
 	@Override
 	public File openDotPartFor(File actualFile) throws IOException {
@@ -53,7 +53,7 @@ class DotPartsImpl implements DotParts {
 
 
 	private File actualFile(File dotPartFile) {
-		return new File(my(Lang.class).strings().chomp(dotPartFile.getAbsolutePath(), DOT_PART_SUFFIX));
+		return new File(my(Lang.class).strings().chomp(dotPartFile.getAbsolutePath(), DOT_PART_EXTENSION));
 	}
 
 
@@ -66,7 +66,7 @@ class DotPartsImpl implements DotParts {
 
 
 	private Filter dotPartFilter() {
-		return my(IO.class).fileFilters().suffix(DOT_PART_SUFFIX);
+		return my(IO.class).fileFilters().suffix(DOT_PART_EXTENSION);
 	}
 
 
@@ -84,7 +84,7 @@ class DotPartsImpl implements DotParts {
 
 
 	private Collection<File> dotPartFilesRecursivelyIn(File folder) {
-		return my(IO.class).files().listFiles(folder, new String[]{dotPartExtention()}, true);
+		return my(IO.class).files().listFiles(folder, new String[]{DOT_PART_PURE_EXTENSION}, true);
 	}
 
 }
