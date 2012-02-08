@@ -86,9 +86,17 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 
 	
 	protected void openIfNeedConfig() {
-		if(ownName().currentValue().trim().isEmpty()) 
-			open();
+		if (!ownName().currentValue().trim().isEmpty()) return;
+		open();
+		tipForMacUsers();
 	}
+
+	
+	private void tipForMacUsers() {
+		if (System.getProperty("os.name").toLowerCase().contains("mac"))
+			JOptionPane.showMessageDialog(this, "IMPORTANT TIP:\n\nUse Control-C and Control-V instead of\nCommand-C and Command-V for copy\nand paste.", "Tip for Mac Users", JOptionPane.INFORMATION_MESSAGE);
+	}
+
 
 	private void open() {
 		if(isVisible()) return;
