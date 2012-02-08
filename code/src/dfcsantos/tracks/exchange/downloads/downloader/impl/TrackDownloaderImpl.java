@@ -89,7 +89,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 		if (isKnown) { log("Duplicated Track"); return null; }
 
 		if (isRejected(endorsement)) { log("Rejected Track"); return null; }
-		if (hasSpentDownloadAllowance()) { log("Download Space Allowance Reached"); return null; }
+		if (isInboxFull()) { log("Inbox Full"); return null; }
 
 		killDownloadWithTheLowestRatingWorseThan(rating);
 		if (hasReachedDownloadLimit()) { log("Concurrent Download Limit Reached"); return null; }
@@ -155,9 +155,8 @@ class TrackDownloaderImpl implements TrackDownloader {
 	}
 
 
-	private boolean hasSpentDownloadAllowance() {
-		File[] files = peerTracksFolder().listFiles();
-		return files != null && files.length >= TRACK_DOWNLOADED_LIMIT;
+	private boolean isInboxFull() {
+		return my(TrackDownloadCounter.class).count().currentValue() >= TRACK_DOWNLOADED_LIMIT;
 	}
 
 
@@ -187,7 +186,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 
 	private void dealWithFinishedDownload(final Download download) {
-		my(TrackDownloadCounter.class).increment(download.hasFinishedSuccessfully());
+		my(TrackDownloadCounter.class).refresh();
 		_downloadsAndMatchRatings.remove(download);
 	}
 

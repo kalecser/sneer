@@ -23,18 +23,15 @@ import dfcsantos.tracks.storage.rejected.RejectedTracksKeeper;
 
 abstract class TrackSourceStrategy {
 
+	private static final Track[] TRACK_ARRAY = new Track[]{};
+
 	private Register<Playlist> _playlist = my(Signals.class).newRegister(null);
 
-	private final List<Track> _tracksToDispose = Collections.synchronizedList(new ArrayList<Track>());
-
-	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
+	private final List<Track> _tracksToKill = Collections.synchronizedList(new ArrayList<Track>());
+	private WeakContract killTimer;
 
 
 	TrackSourceStrategy() {
-		_refToAvoidGc = my(Timer.class).wakeUpEvery(5000, new Closure() { @Override public void run() {
-			disposePendingTracks();
-		}});
-
 		initPlaylist();
 	}
 
@@ -49,14 +46,20 @@ abstract class TrackSourceStrategy {
 	}
 
 
-	void disposePendingTracks() {
-		List<Track> copy = new ArrayList<Track>(_tracksToDispose);
-		for (Track victim : copy) {
-			if (victim.file().delete()) {
-				my(Logger.class).log("Track disposed: ", victim.file());
-				_tracksToDispose.remove(victim);
-			}
+	void killTracks() {
+		for (Track victim : _tracksToKill.toArray(TRACK_ARRAY)) {
+			if (!victim.file().exists()) throw new IllegalStateException();
+			if (victim.file().delete())
+				onTrackKilled(victim);
 		}
+	}
+
+
+	synchronized
+	protected void onTrackKilled(Track victim) {
+		my(Logger.class).log("Track deleted: ", victim.file());
+		_tracksToKill.remove(victim);
+		controlKillTimer();
 	}
 
 
@@ -68,7 +71,7 @@ abstract class TrackSourceStrategy {
 
 
 	Track nextTrack() {
-		disposePendingTracks();
+		killTracks();
 		return playlist().currentValue().nextTrack();
 	}
 
@@ -83,17 +86,41 @@ abstract class TrackSourceStrategy {
 		my(RejectedTracksKeeper.class).strongReject(hash);
 	}
 
+	
 	boolean isMarkedForDisposal(Track suspect) {
-		return _tracksToDispose.contains(suspect);
+		return _tracksToKill.contains(suspect);
 	}
 
 
-	void markForDisposal(Track trackToDispose) {
-		my(Logger.class).log("Track marked for disposal: ", trackToDispose.file());
-		_tracksToDispose.add(trackToDispose);
+	synchronized
+	void condemn(Track victim) {
+		my(Logger.class).log("Track marked for disposal: ", victim.file());
+		_tracksToKill.add(victim);
+		controlKillTimer();
 	}
 
 
+	private void controlKillTimer() {
+		if (killTimer == null && !_tracksToKill.isEmpty())
+			startKillTimer();
+		if (killTimer != null && _tracksToKill.isEmpty())
+			stopKillTimer();
+	}
+
+
+	private void startKillTimer() {
+		killTimer = my(Timer.class).wakeUpEvery(5000, new Closure() { @Override public void run() {
+			killTracks();
+		}});
+	}
+
+
+	private void stopKillTimer() {
+		killTimer.dispose();
+		killTimer = null;
+	}
+	
+	
 	abstract Playlist createPlaylist(File tracksFolder);
 
 	abstract File tracksFolder();
@@ -112,7 +139,7 @@ abstract class TrackSourceStrategy {
 			my(FileMap.class).remove(path);
 		}
 		
-		markForDisposal(rejected);
+		condemn(rejected);
 		
 		return hash;
 	}

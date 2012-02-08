@@ -38,19 +38,7 @@ class PeerTracks extends TrackSourceStrategy {
 		moveTrackToFolder(trackToKeep, noveltiesFolder());
 	}
 
-	@Override
-	void meh(Track rejected) {
-		my(TrackDownloadCounter.class).decrement();
-		super.meh(rejected);
-	}
 	
-	
-	@Override
-	void noWay(Track rejected) {
-		my(TrackDownloadCounter.class).decrement();
-		super.noWay(rejected);
-	}
-
 	private void moveTrackToFolder(Track track, File destFolder) { // Move = Copy + Delete
 		my(Logger.class).log("Moving track {} to shared folder", track.file());
 		try {
@@ -58,11 +46,18 @@ class PeerTracks extends TrackSourceStrategy {
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.WARNING, "Unable to copy track", "Unable to copy track: " + track.file(), 7000);
 		}
-		my(TrackDownloadCounter.class).decrement();
-		markForDisposal(track);
+		condemn(track);
 		updateFileMap(track.file());
 	}
 
+	
+	@Override
+	protected void onTrackKilled(Track victim) {
+		super.onTrackKilled(victim);
+		my(TrackDownloadCounter.class).refresh();
+	}
+	
+	
 	private void updateFileMap(File tmpTrack) {
 		Hash hash = my(FileMap.class).remove(tmpTrack.getAbsolutePath());
 		File keptTrack = new File(noveltiesFolder(), tmpTrack.getName());
