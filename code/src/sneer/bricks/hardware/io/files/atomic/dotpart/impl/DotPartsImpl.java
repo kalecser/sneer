@@ -5,15 +5,18 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.Collection;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
+import sneer.bricks.hardware.io.IO.Filter;
 import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
 import sneer.bricks.hardware.io.log.Logger;
 
 class DotPartsImpl implements DotParts {
 
-	private static final String DOT_PART_EXTENSION = ".part";
+	private static final String DOT_PART_EXTENSION = "part-file";
+	private static final String DOT_PART_SUFFIX = "." + DOT_PART_EXTENSION;
 
 	@Override
 	public File openDotPartFor(File actualFile) throws IOException {
@@ -41,7 +44,7 @@ class DotPartsImpl implements DotParts {
 
 
 	private String unableToRenameMessage(File dotPartFile, File actualFile) {
-		String result = "Unable to rename .part file/folder to actual file/folder: " + actualFile;
+		String result = "Unable to rename .part-file file/folder to actual file/folder: " + actualFile;
 		if (actualFile.exists()  ) result += " (actual file/folder already exists)";
 		if (!dotPartFile.exists()) result += " (.part file/folder does not exist)";
 		
@@ -50,21 +53,38 @@ class DotPartsImpl implements DotParts {
 
 
 	private File actualFile(File dotPartFile) {
-		return new File(my(Lang.class).strings().chomp(dotPartFile.getAbsolutePath(), DOT_PART_EXTENSION));
+		return new File(my(Lang.class).strings().chomp(dotPartFile.getAbsolutePath(), DOT_PART_SUFFIX));
 	}
 
 
 	@Override
 	public FileFilter dotPartExclusionFilter() {
 		return my(IO.class).fileFilters().not(
-			my(IO.class).fileFilters().suffix(DOT_PART_EXTENSION)
+			dotPartFilter()
 		);
+	}
+
+
+	private Filter dotPartFilter() {
+		return my(IO.class).fileFilters().suffix(DOT_PART_SUFFIX);
 	}
 
 
 	@Override
 	public String dotPartExtention() {
 		return DOT_PART_EXTENSION;
+	}
+
+
+	@Override
+	public void deleteAllDotPartsRecursively(File folder) throws IOException {
+		for (File file : dotPartFilesRecursivelyIn(folder))
+			my(IO.class).files().forceDelete(file);
+	}
+
+
+	private Collection<File> dotPartFilesRecursivelyIn(File folder) {
+		return my(IO.class).files().listFiles(folder, new String[]{dotPartExtention()}, true);
 	}
 
 }

@@ -15,4 +15,5 @@ public interface DotParts {
 	FileFilter dotPartExclusionFilter();
 	String dotPartExtention();
 
+	void deleteAllDotPartsRecursively(File folder) throws IOException;
 }

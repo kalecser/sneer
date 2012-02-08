@@ -34,7 +34,7 @@ abstract class AbstractDownload implements Download {
 
 	static final int REQUEST_INTERVAL = 15 * 1000;
 	
-	private static final String DOT_PART = my(DotParts.class).dotPartExtention();
+	private static final String DOT_PART = "." + my(DotParts.class).dotPartExtention();
 	
 
 	protected File _path;

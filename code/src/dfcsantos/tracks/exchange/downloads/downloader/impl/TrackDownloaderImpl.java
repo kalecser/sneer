@@ -3,6 +3,7 @@ package dfcsantos.tracks.exchange.downloads.downloader.impl;
 import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map.Entry;
 
@@ -12,6 +13,7 @@ import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
@@ -19,6 +21,8 @@ import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.MapRegister;
@@ -44,9 +48,20 @@ class TrackDownloaderImpl implements TrackDownloader {
 	@SuppressWarnings("unused") private final WeakContract _toAvoidGC;
 
 	{
+		clearOldDotPartFiles();
+		
 		_toAvoidGC = my(RemoteTuples.class).addSubscription(TrackEndorsement.class, new Consumer<TrackEndorsement>() { @Override public void consume(TrackEndorsement endorsement) {
 			consumeTrackEndorsement(endorsement);
 		}});
+	}
+
+
+	private void clearOldDotPartFiles() {
+		try {
+			my(DotParts.class).deleteAllDotPartsRecursively(inbox());
+		} catch (IOException e) {
+			my(BlinkingLights.class).turnOn(LightType.WARNING, "Unable to clean old downloads from Music inbox", "This will waste space.", e, 20000);
+		}
 	}
 
 	
@@ -144,9 +159,8 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 
 	private String folderFor(TrackEndorsement endorsement) {
-		String folder = new File(endorsement.path).getParent();
-		String folder2 = (folder == null) ? "" : folder;
-		return folder2;
+		String result = new File(endorsement.path).getParent();
+		return (result == null) ? "" : result;
 	}
 
 
@@ -192,11 +206,11 @@ class TrackDownloaderImpl implements TrackDownloader {
 
 
 	private static File fileToWrite(TrackEndorsement endorsement) {
-		return new File(peerTracksFolder(), new File(endorsement.path).getName());
+		return new File(inbox(), new File(endorsement.path).getName());
 	}
 
 
-	private static File peerTracksFolder() {
+	private static File inbox() {
 		return my(TracksFolderKeeper.class).inboxFolder();
 	}
 
