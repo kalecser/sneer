@@ -12,14 +12,15 @@ import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network2010;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Closure;
+import sneer.foundation.util.concurrent.Latch;
 
 
 public class Network2010Test extends BrickTestBase {
 	
 	private final Threads _threads = my(Threads.class);
 	
-	@Test(timeout = 2000)
-	public void testNetworkMessages() throws Exception {
+	@Test (timeout = 2000)
+	public void sameMachine() throws Exception {
 		
 		Network2010 network = my(Network2010.class);
 		
@@ -34,9 +35,24 @@ public class Network2010Test extends BrickTestBase {
 			}
 		}});
 
-		ByteArraySocket client = network.openSocket("localhost", 9090);
+		final Latch latch = new Latch();
+		final ByteArraySocket client = network.openSocket("localhost", 9090);
+		my(Threads.class).startDaemon("test daemon", new Closure() { @Override public void run() {
+			byte[] reply = read(client);
+			assertEquals("HELLO", new String(reply));
+			latch.open();
+		}});
 		client.write("hello".getBytes());
-		byte[] reply = client.read();
-		assertEquals("HELLO", new String(reply));
+		latch.waitTillOpen();
+		
+		int threadForClientIsUnnecessary;
+	}
+	
+	private byte[] read(final ByteArraySocket client) {
+		try {
+			return client.read();
+		} catch (IOException e) {
+			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+		}
 	}
 }

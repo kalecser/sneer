@@ -7,9 +7,6 @@ import sneer.foundation.brickness.Brick;
 public interface TrackDownloadCounter {
 
 	Signal<Integer> count();
-
-	void increment(boolean condition);
-
-	void decrement();
+	void refresh();
 
 }

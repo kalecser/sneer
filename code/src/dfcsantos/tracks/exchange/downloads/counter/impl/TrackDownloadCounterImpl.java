@@ -5,29 +5,29 @@ import static sneer.foundation.environments.Environments.my;
 import java.io.File;
 
 import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
+import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.pulp.reactive.counters.Counter;
-import sneer.bricks.pulp.reactive.counters.Counters;
+import sneer.bricks.pulp.reactive.Signals;
 import dfcsantos.tracks.exchange.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;
 
 class TrackDownloadCounterImpl implements TrackDownloadCounter {
 
-	private final Counter _delegate = my(Counters.class).newInstance(numberOfTracksInTheDownloadsFolder());
-
+	private final Register<Integer> count = my(Signals.class).newRegister(0);
+	{
+		refresh();
+	}
+	
+	
 	@Override
 	public Signal<Integer> count() {
-		return _delegate.count();
+		return count.output();
 	}
-
+	
+	
 	@Override
-	public void increment(boolean condition) {
-		_delegate.conditionalIncrementer(condition).run();
-	}
-
-	@Override
-	public void decrement() {
-		_delegate.conditionalDecrementer(_delegate.count().currentValue() > 0).run();
+	public void refresh() {
+		count.setter().consume(numberOfTracksInTheDownloadsFolder());
 	}
 
 	private int numberOfTracksInTheDownloadsFolder() {

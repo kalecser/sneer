@@ -1,0 +1,79 @@
+package sneer.bricks.pulp.network.udp.impl;
+
+import static sneer.bricks.pulp.network.ByteArraySocket.MAX_ARRAY_SIZE;
+import static sneer.foundation.environments.Environments.my;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.util.Arrays;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
+import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
+import sneer.bricks.pulp.network.ByteArrayServerSocket;
+import sneer.bricks.pulp.network.ByteArraySocket;
+import sneer.foundation.lang.CacheMap;
+import sneer.foundation.lang.Closure;
+import sneer.foundation.lang.Functor;
+
+
+class UdpServerSocket implements ByteArrayServerSocket {
+
+	private final DatagramSocket delegate;
+	private final DatagramPacket packet = new DatagramPacket(new byte[MAX_ARRAY_SIZE], MAX_ARRAY_SIZE);
+	BlockingQueue<IncomingUdpSocket> incomingConnections = new ArrayBlockingQueue<IncomingUdpSocket>(100);
+	
+	CacheMap<SocketAddress, IncomingUdpSocket> socketsByEndpoint = CacheMap.newInstance();
+	private final Functor<SocketAddress, IncomingUdpSocket> socketGivenEndpoint = new Functor<SocketAddress, IncomingUdpSocket>() { @Override public IncomingUdpSocket evaluate(SocketAddress endpoint) {
+		IncomingUdpSocket socket = new IncomingUdpSocket(delegate, endpoint);
+		incomingConnections.add(socket);
+		return socket;
+	}};
+
+
+	UdpServerSocket(int port) throws SocketException {
+		delegate = new DatagramSocket(port);
+		my(Threads.class).startStepping("UDP Server", new Closure() { @Override public void run() {
+			try {
+				receiveDatagram();
+			} catch (IOException e) {
+				my(ExceptionLogger.class).log(e);
+			}
+		}});
+	}
+
+	
+	private void receiveDatagram() throws IOException {
+		System.out.println("Server receiving...");
+		delegate.receive(packet);
+		System.out.println("Server received.");
+		
+		SocketAddress endpoint = packet.getSocketAddress();
+		IncomingUdpSocket socket = socketsByEndpoint.get(endpoint, socketGivenEndpoint);
+		
+		socket.receive(Arrays.copyOf(packet.getData(), packet.getLength()));
+	}
+
+	
+	@Override
+	public ByteArraySocket accept() {
+		try {
+			System.out.println("Accepting connection");
+			return incomingConnections.take();
+		} catch (InterruptedException e) {
+			throw new IllegalStateException(e);
+		} finally {
+			System.out.println("Connection accepted.");
+		}
+	}
+
+	@Override
+	public void crash() {
+		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	}
+
+}

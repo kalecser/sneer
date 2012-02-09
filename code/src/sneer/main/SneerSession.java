@@ -19,7 +19,6 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.robust.RobustExceptionLogging;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.identity.keys.gui.PublicKeyInitDialog;
-import sneer.bricks.identity.name.gui.NameInitDialog;
 import sneer.bricks.snapps.system.log.file.LogToFile;
 import sneer.bricks.snapps.system.log.sysout.LogToSysout;
 import sneer.bricks.software.bricks.snapploader.SnappLoader;
@@ -47,7 +46,6 @@ public class SneerSession {
 		startLogging();
 		setLookAndFeel();
 		my(PublicKeyInitDialog.class);
-		my(NameInitDialog.class);
 		
 		my(SnappLoader.class);
 	}

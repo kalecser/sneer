@@ -9,9 +9,9 @@ class IpAddresses {
 	final InetSocketAddress localNetworkAddress;
 
 	
-	public IpAddresses(InetSocketAddress localNetworkAddr, InetSocketAddress publicInternetAddr) {
-		this.localNetworkAddress = localNetworkAddr;
+	public IpAddresses(InetSocketAddress publicInternetAddr, InetSocketAddress localNetworkAddr) {
 		this.publicInternetAddress = publicInternetAddr;
+		this.localNetworkAddress = localNetworkAddr;
 	}
 
 }

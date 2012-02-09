@@ -1,7 +1,6 @@
 package spikes.adenauer.puncher;
 
 import static spikes.adenauer.puncher.SocketAddressUtils.CHARSET;
-import static spikes.adenauer.puncher.SocketAddressUtils.isSameHost;
 import static spikes.adenauer.puncher.SocketAddressUtils.marshal;
 
 import java.io.IOException;
@@ -17,6 +16,8 @@ public class Rendezvous {
 	static final int SERVER_PORT = 7070;
 
 	private static final Map<String, IpAddresses> addressesByClientId = new HashMap<String, IpAddresses>();
+
+	static final String KEEP_ALIVE = "keep alive";
 
 	private static DatagramSocket socket;
 
@@ -43,9 +44,17 @@ public class Rendezvous {
 	}
 
 	
-	private static void handle(DatagramPacket request) throws IOException, InvalidAddress {
+	private static void handle(DatagramPacket request) throws IOException, UnableToParseAddress {
 		StringTokenizer fields = toFields(request);
-		String callerId = fields.nextToken();
+		
+		String firstToken = fields.nextToken();
+		if (firstToken.equals(KEEP_ALIVE)) {
+			System.out.print(".");
+			return;
+		}
+		System.out.println();
+		
+		String callerId = firstToken;
 		String localAddress = fields.nextToken();
 		String requestedId = fields.nextToken();
 
@@ -63,34 +72,14 @@ public class Rendezvous {
 			return;
 		}
 
-		InetSocketAddress callerPublicAddress = caller.publicInternetAddress;
-		InetSocketAddress callerLocalAddress = caller.localNetworkAddress;
-		InetSocketAddress requestedPublicAddress = requested.publicInternetAddress;
-		InetSocketAddress requestedLocalAddress = requested.localNetworkAddress;
-		
-		InetSocketAddress callerAddress = callerPublicAddress;
-		InetSocketAddress requestedAddress = requestedPublicAddress;
-
-		//TODO Send public ip as well as local ip when both behind same host so they can attempt hairpin connection in case they cannot connect locally.
-		
-		if (isSameLocalNetwork(callerPublicAddress, requestedPublicAddress)) {
-			callerAddress = callerLocalAddress;
-			requestedAddress = requestedLocalAddress;
-		}
-		
 		display("Forwarding info to: " + requestedId);
-		send(marshal(callerAddress), requestedPublicAddress);
+		send(marshal(caller), requested.publicInternetAddress);
 		display("Forward info to: " + callerId);
-		send(marshal(requestedAddress), callerPublicAddress);
+		send(marshal(requested), caller.publicInternetAddress);
 		display("=====================================");
 	}
 
 
-	private static boolean isSameLocalNetwork(InetSocketAddress a1, InetSocketAddress a2) {
-		return isSameHost(a1, a2);
-	}
-
-	
 	private static void send(byte[] data, InetSocketAddress dest) throws IOException {
 		DatagramPacket packet = new DatagramPacket(data, data.length, dest);
 		socket.send(packet);
@@ -99,17 +88,16 @@ public class Rendezvous {
 
 	
 	private static void keepCallerAddresses(String caller, DatagramPacket receivedPacket, InetSocketAddress localAddress) {
-//		InetSocketAddress publicAddress = new InetSocketAddress(receivedPacket.getAddress(), receivedPacket.getPort());		
 		InetSocketAddress publicAddress = (InetSocketAddress)receivedPacket.getSocketAddress();		
 		
 		display("Caller: " + caller + " - Local address: " + localAddress + ", Public address: " + publicAddress);
-		addressesByClientId.put(caller, new IpAddresses(localAddress, publicAddress));
+		addressesByClientId.put(caller, new IpAddresses(publicAddress, localAddress));
 	}
 
 
 	private static StringTokenizer toFields(DatagramPacket receivedPacket) {
 		String result = new String(receivedPacket.getData(), receivedPacket.getOffset(), receivedPacket.getLength(), CHARSET);
-		return new StringTokenizer(result.trim(), ":");
+		return new StringTokenizer(result.trim(), ";");
 	}
 
 

@@ -27,10 +27,14 @@ public class Client {
 
 	private static final SocketAddress RENDEZVOUS_SERVER = new InetSocketAddress("dynamic.sneer.me", Rendezvous.SERVER_PORT);
 
-	private static final Set<InetSocketAddress> peers = new HashSet<InetSocketAddress>();
+	private static final Set<IpAddresses> peers = new HashSet<IpAddresses>();
 
 	
 	public static void main(String[] ignored) {
+		new Thread() {  @Override public void run() {
+			while (true) keepServerConnectionAlive();
+		}}.start();
+
 		new Thread() {  @Override public void run() {
 			while (true) askForTargetAddress();
 		}}.start();
@@ -42,6 +46,12 @@ public class Client {
 		new Thread() {  @Override public void run() {
 			while (true) greetPeersAndSleepABit();
 		}}.start();
+	}
+
+
+	private static void keepServerConnectionAlive() {
+		send(Rendezvous.KEEP_ALIVE, RENDEZVOUS_SERVER);
+		try { Thread.sleep(1000); } catch (InterruptedException e) { throw new IllegalStateException(e); }
 	}
 
 
@@ -67,18 +77,20 @@ public class Client {
 
 	private static void capturePeerAddress(String received) {
 		try {
-			InetSocketAddress peer = SocketAddressUtils.unmarshal(received);
+			IpAddresses peer = SocketAddressUtils.unmarshalAddresses(received);
 			peers.add(peer);
 			System.out.println("Peer address added.");
-		} catch (InvalidAddress e) {
+		} catch (UnableToParseAddress e) {
 			// Not a peer address.
 		}
 	}
 
 
 	private static void greetPeersAndSleepABit() {
-		for (InetSocketAddress t : peers)
-			send("Hello from " + ownId, t);
+		for (IpAddresses ips : peers) {
+			send("Local hello from " + ownId, ips.localNetworkAddress);
+			send("Public hello from " + ownId, ips.publicInternetAddress);
+		}
 		
 		try { Thread.sleep(3000); } catch (InterruptedException e) { throw new IllegalStateException(e); }
 	}
