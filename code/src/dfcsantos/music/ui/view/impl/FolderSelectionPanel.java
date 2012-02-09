@@ -64,7 +64,7 @@ final class FolderSelectionPanel extends JPanel {
 		newTrackIcon.setPreferredSize(new Dimension(20, 20));
 		newTrackIcon.setVisible(false);
 		newTrackIcon.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) {
-			_selector.setSelectedIndex(0);
+			_selector.setSelectedIndex(0); //Chosen <Inbox>
 		}});
 		
 		return newTrackIcon;
@@ -74,9 +74,9 @@ final class FolderSelectionPanel extends JPanel {
 		return new ComponentAdapter() { @Override public void componentResized(ComponentEvent e) {
 			if (e.getID() != ComponentEvent.COMPONENT_RESIZED) return;
 
-			int width = ((JPanel) e.getSource()).getSize().width - 7;	
+			int width = ((JPanel) e.getSource()).getSize().width - 10;	
 			if (_trackDownloadedIcon.isVisible())
-				width = _trackDownloadedIcon.getSize().width;
+				width = width - _trackDownloadedIcon.getSize().width;
 
 			resizeSelector(width);
 		}};
@@ -117,17 +117,16 @@ final class FolderSelectionPanel extends JPanel {
 
 	private void showTrackDownloadedIcon(Boolean trackDownloaded) {
 		_trackDownloadedIcon.setVisible(trackDownloaded);
-		
-		if (trackDownloaded)
-			resizeSelector(getSize().width - _trackDownloadedIcon.getWidth());
+		if (trackDownloaded) 
+			resizeSelector(getSize().width - _trackDownloadedIcon.getSize().width);
 		else
-			resizeSelector(getSize().width + _trackDownloadedIcon.getWidth());
+			resizeSelector(getSize().width + _trackDownloadedIcon.getSize().width);
 	}
 
 	private void resizeSelector(int width) {
 		_selector.setPreferredSize(new Dimension(width, _selector.getMinimumSize().height));
 	}
-	
+
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc, _refToAvoidGc2;
 
 	private final MusicViewListener _listener;
