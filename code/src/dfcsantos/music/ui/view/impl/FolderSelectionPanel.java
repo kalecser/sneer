@@ -119,7 +119,7 @@ final class FolderSelectionPanel extends JPanel {
 		_trackDownloadedIcon.setVisible(trackDownloaded);
 		int width = getSize().width - BORDER_SIZE;
 		if (trackDownloaded)
-			width = width - (_trackDownloadedIcon.getSize().width - BORDER_SIZE);
+			width = width - (_trackDownloadedIcon.getSize().width + BORDER_SIZE);
 		resizeSelector(width);
 	}
 
