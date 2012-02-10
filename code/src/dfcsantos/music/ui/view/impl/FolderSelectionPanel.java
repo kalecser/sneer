@@ -74,7 +74,7 @@ final class FolderSelectionPanel extends JPanel {
 		return new ComponentAdapter() { @Override public void componentResized(ComponentEvent e) {
 			if (e.getID() != ComponentEvent.COMPONENT_RESIZED) return;
 
-			int width = ((JPanel) e.getSource()).getSize().width - 10;	
+			int width = ((JPanel) e.getSource()).getSize().width - BORDER_SIZE;	
 			if (_trackDownloadedIcon.isVisible())
 				width = width - _trackDownloadedIcon.getSize().width;
 
@@ -117,10 +117,10 @@ final class FolderSelectionPanel extends JPanel {
 
 	private void showTrackDownloadedIcon(Boolean trackDownloaded) {
 		_trackDownloadedIcon.setVisible(trackDownloaded);
-		if (trackDownloaded) 
-			resizeSelector(getSize().width - _trackDownloadedIcon.getSize().width);
-		else
-			resizeSelector(getSize().width + _trackDownloadedIcon.getSize().width);
+		int width = getSize().width - BORDER_SIZE;
+		if (trackDownloaded)
+			width = width - (_trackDownloadedIcon.getSize().width - BORDER_SIZE);
+		resizeSelector(width);
 	}
 
 	private void resizeSelector(int width) {
@@ -135,4 +135,6 @@ final class FolderSelectionPanel extends JPanel {
 	private final JLabel _trackDownloadedIcon;
 	
 	private boolean isEventInternal;
+	
+	private static final int BORDER_SIZE = 10;
 }
