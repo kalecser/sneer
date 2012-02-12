@@ -28,9 +28,7 @@ final class IncomingUdpSocket implements ByteArraySocket {
 
 	@Override
 	public void write(byte[] bytes) throws IOException {
-		synchronized (delegate) {
-			delegate.send(new DatagramPacket(bytes, bytes.length, destination));
-		}
+		delegate.send(new DatagramPacket(bytes, bytes.length, destination));
 	}
 
 	@Override

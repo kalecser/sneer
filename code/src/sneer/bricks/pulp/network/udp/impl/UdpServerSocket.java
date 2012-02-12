@@ -25,7 +25,7 @@ class UdpServerSocket implements ByteArrayServerSocket {
 
 	private final DatagramSocket delegate;
 	private final DatagramPacket packet = new DatagramPacket(new byte[MAX_ARRAY_SIZE], MAX_ARRAY_SIZE);
-	BlockingQueue<IncomingUdpSocket> incomingConnections = new ArrayBlockingQueue<IncomingUdpSocket>(100);
+	private final BlockingQueue<IncomingUdpSocket> incomingConnections = new ArrayBlockingQueue<IncomingUdpSocket>(100);
 	
 	CacheMap<SocketAddress, IncomingUdpSocket> socketsByEndpoint = CacheMap.newInstance();
 	private final Functor<SocketAddress, IncomingUdpSocket> socketGivenEndpoint = new Functor<SocketAddress, IncomingUdpSocket>() { @Override public IncomingUdpSocket evaluate(SocketAddress endpoint) {
@@ -48,9 +48,7 @@ class UdpServerSocket implements ByteArrayServerSocket {
 
 	
 	private void receiveDatagram() throws IOException {
-		System.out.println("Server receiving...");
 		delegate.receive(packet);
-		System.out.println("Server received.");
 		
 		SocketAddress endpoint = packet.getSocketAddress();
 		IncomingUdpSocket socket = socketsByEndpoint.get(endpoint, socketGivenEndpoint);
@@ -62,18 +60,15 @@ class UdpServerSocket implements ByteArrayServerSocket {
 	@Override
 	public ByteArraySocket accept() {
 		try {
-			System.out.println("Accepting connection");
 			return incomingConnections.take();
 		} catch (InterruptedException e) {
 			throw new IllegalStateException(e);
-		} finally {
-			System.out.println("Connection accepted.");
 		}
 	}
 
 	@Override
 	public void crash() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		delegate.close();
 	}
 
 }
