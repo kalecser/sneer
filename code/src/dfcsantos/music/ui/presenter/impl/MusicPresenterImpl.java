@@ -36,6 +36,7 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 	private final ListRegister<String> _playingFolderChoices = my(CollectionSignals.class).newListRegister();
 	private String playingFolder;
+	private int _previousTracksDownloaded;
 	
 	@SuppressWarnings("unused")	private WeakContract refToAvoidGc1, refToAvoidGc2, refToAvoidGc3, refToAvoidGc4;
 	
@@ -147,7 +148,7 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	@Override
 	public void playingFolderChosen(String folderChosen) {
 		playingFolder = folderChosen;
-		if (folderChosen.startsWith(INBOX)) 
+		if (folderChosen.startsWith(INBOX))
 			changeToPeersModeAndPlayTracks();
 		else 
 			changeToOwnModeAndPlayTracksOf(folderChosen);
@@ -172,10 +173,12 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	}
 
 	private void newTrackDownloaded(Integer numberTracksDownloaded) {
-		if (numberTracksDownloaded > 0)
+		if (numberTracksDownloaded > _previousTracksDownloaded)
 			_trackDownloadedEnable.setter().consume(true);
 		else
 			_trackDownloadedEnable.setter().consume(false);
+		
+		_previousTracksDownloaded = numberTracksDownloaded;
 	}
 	
 	
@@ -183,6 +186,8 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 		my(Music.class).setOperatingMode(Music.OperatingMode.PEERS);
 		my(Music.class).setPlayingFolder(my(Music.class).playingFolder());
 		_meTooEnable.setter().consume(true);
+
+		newTrackDownloaded(_previousTracksDownloaded); //When selected the <inbox> hide trackDownloadedIcon.  
 	}
 	
 	private void changeToOwnModeAndPlayTracksOf(String folderChosen) {

@@ -11,6 +11,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.Icon;
 import javax.swing.JComboBox;
@@ -28,7 +29,6 @@ final class FolderSelectionPanel extends JPanel {
 
 	FolderSelectionPanel(MusicViewListener listener) {
 		_listener = listener;
-
 		_selector = newSelector();
 		_folderChoices = (MutableComboBoxModel) _selector.getModel();
 		_trackDownloadedIcon = newTrackDownloadedIcon();
@@ -37,6 +37,7 @@ final class FolderSelectionPanel extends JPanel {
 		add(_selector);
 		add(_trackDownloadedIcon);
 		addComponentListener(newComponentListener());
+
 		initModel();
 
 		_refToAvoidGc2 = _listener.enableTrackDownloaded().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean trackDownloaded) {
@@ -46,38 +47,42 @@ final class FolderSelectionPanel extends JPanel {
 
 	private JComboBox newSelector() {
 		JComboBox selector = new JComboBox();
-		
-		selector.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) {
+		selector.addActionListener(newSelectorActionListener());
+		return selector;
+	}
+
+	private ActionListener newSelectorActionListener() {
+		return new ActionListener() { @Override public void actionPerformed(ActionEvent e) {
 			if (isEventInternal) return;
 			String folderChosen = (String)((JComboBox) e.getSource()).getModel().getSelectedItem();
 			if (folderChosen == null) return;
 			_listener.playingFolderChosen(folderChosen);
-		}});
-		
-		return selector;
+		}};
 	}
-
+	
+	
 	private JLabel newTrackDownloadedIcon() {
 		Icon icon = my(Icons.class).load(this.getClass(), "envelop.png");
 		JLabel newTrackIcon = new JLabel(icon);
-
 		newTrackIcon.setPreferredSize(new Dimension(20, 20));
 		newTrackIcon.setVisible(false);
-		newTrackIcon.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) {
-			_selector.setSelectedIndex(0); //Chosen <Inbox>
-		}});
-		
+		newTrackIcon.addMouseListener(newTrackDonwloadedIconMouseListenter());
 		return newTrackIcon;
 	}
 
+	private MouseListener newTrackDonwloadedIconMouseListenter() {
+		return new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) {
+			_folderChoices.setSelectedItem(_folderChoices.getElementAt(0));
+		}};
+	}
+	
+	
 	private ComponentListener newComponentListener () {
 		return new ComponentAdapter() { @Override public void componentResized(ComponentEvent e) {
 			if (e.getID() != ComponentEvent.COMPONENT_RESIZED) return;
-
-			int width = ((JPanel) e.getSource()).getSize().width - BORDER_SIZE;	
+			int width = selectorWidthSize(((JPanel) e.getSource()).getSize().width);	
 			if (_trackDownloadedIcon.isVisible())
 				width = width - _trackDownloadedIcon.getSize().width;
-
 			resizeSelector(width);
 		}};
 	}
@@ -117,12 +122,16 @@ final class FolderSelectionPanel extends JPanel {
 
 	private void showTrackDownloadedIcon(Boolean trackDownloaded) {
 		_trackDownloadedIcon.setVisible(trackDownloaded);
-		int width = getSize().width - BORDER_SIZE;
+		int width = selectorWidthSize(getSize().width);
 		if (trackDownloaded)
 			width = width - (_trackDownloadedIcon.getSize().width + BORDER_SIZE);
 		resizeSelector(width);
 	}
 
+	private int selectorWidthSize(int panelWidth) {
+		return panelWidth - BORDER_SIZE;
+	}
+	
 	private void resizeSelector(int width) {
 		_selector.setPreferredSize(new Dimension(width, _selector.getMinimumSize().height));
 	}
