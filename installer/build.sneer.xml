@@ -143,12 +143,14 @@
 	</target>
 
 	<target name="copy-bin">
+		<!--
 	    <reset-dir dir="${sneer.bin}"/>
 	    <copy todir="${sneer.bin}">
 	      <fileset dir="${bin.dir}">
 	        <include name='**/*.*'/>
 	      </fileset>
 	    </copy>
+	    -->
 	</target>
 
 	<target name="copy-resources">
