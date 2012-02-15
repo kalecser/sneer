@@ -36,10 +36,10 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 	private final ListRegister<String> _playingFolderChoices = my(CollectionSignals.class).newListRegister();
 	private String playingFolder;
-	private int _previousTracksDownloaded;
 	
 	@SuppressWarnings("unused")	private WeakContract refToAvoidGc1, refToAvoidGc2, refToAvoidGc3, refToAvoidGc4;
 	
+	private Register<String> _choiceSelected = my(Signals.class).newRegister(null); 
 	private Register<Boolean> _meTooEnable = my(Signals.class).newRegister(true);
 	private Register<Boolean> _trackDownloadedEnable = my(Signals.class).newRegister(false);
 
@@ -143,7 +143,15 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	public Register<Boolean> shuffle() {
 		return my(Music.class).shuffle();
 	}
+
 	
+	@Override
+	public void playingInboxFolder() {
+		String inbox = inboxChoice(); 
+		playingFolderChosen(inbox);
+		_choiceSelected.setter().consume(inbox);
+	}
+
 	
 	@Override
 	public void playingFolderChosen(String folderChosen) {
@@ -172,22 +180,26 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 		return _trackDownloadedEnable.output();
 	}
 
+	
+	@Override
+	public Signal<String> choiceSelected() {
+		return _choiceSelected.output();
+	}
+
 	private void newTrackDownloaded(Integer numberTracksDownloaded) {
-		if (numberTracksDownloaded > _previousTracksDownloaded)
+		if (numberTracksDownloaded > 0) 
 			_trackDownloadedEnable.setter().consume(true);
 		else
 			_trackDownloadedEnable.setter().consume(false);
-		
-		_previousTracksDownloaded = numberTracksDownloaded;
 	}
 	
 	
 	private void changeToPeersModeAndPlayTracks() {
 		my(Music.class).setOperatingMode(Music.OperatingMode.PEERS);
 		my(Music.class).setPlayingFolder(my(Music.class).playingFolder());
-		_meTooEnable.setter().consume(true);
 
-		newTrackDownloaded(_previousTracksDownloaded); //When selected the <inbox> hide trackDownloadedIcon.  
+		_meTooEnable.setter().consume(true);
+		_trackDownloadedEnable.setter().consume(false);
 	}
 	
 	private void changeToOwnModeAndPlayTracksOf(String folderChosen) {
