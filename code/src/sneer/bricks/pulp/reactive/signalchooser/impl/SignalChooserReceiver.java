@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.pulp.events.pulsers.Pulsers;
+import sneer.bricks.pulp.notifiers.pulsers.PulseSenders;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.CollectionSignal;
 import sneer.bricks.pulp.reactive.signalchooser.ListOfSignalsReceiver;
@@ -63,7 +63,7 @@ class SignalChooserReceiver<T> {
 		@SuppressWarnings("unused") private final WeakContract _referenceToAvoidGc;
 
 		ElementReceiver(final T element) {
-			_referenceToAvoidGc = my(Pulsers.class).receive(new Closure(){ @Override public void run() {
+			_referenceToAvoidGc = my(PulseSenders.class).receive(new Closure(){ @Override public void run() {
 				if (!_isActive) return;
 				_listOfSignalsReceiver.elementSignalChanged(element);
 			}}, signalChooser().signalsToReceiveFrom(element));

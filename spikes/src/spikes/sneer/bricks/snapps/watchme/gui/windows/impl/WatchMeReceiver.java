@@ -19,7 +19,7 @@ import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.pulp.events.EventSource;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.Widget;
 import sneer.foundation.lang.Closure;
@@ -71,7 +71,7 @@ class WatchMeReceiver{
 	private void startWindowPaint(Seal seal) {
 		if (_screensReception != null) _screensReception.dispose();
 		
-		final EventSource<BufferedImage> screens = _watchMe.screenStreamFor(seal);
+		final Source<BufferedImage> screens = _watchMe.screenStreamFor(seal);
 		_screensReception = screens.addReceiver(new Consumer<Image>() { @Override public void consume(Image img) {
 			if (_windowWidget == null) initGui();
 			

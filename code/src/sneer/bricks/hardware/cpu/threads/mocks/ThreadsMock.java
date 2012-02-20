@@ -10,9 +10,9 @@ import java.util.Map;
 
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.pulp.events.EventNotifier;
-import sneer.bricks.pulp.events.EventNotifiers;
-import sneer.bricks.pulp.events.pulsers.PulseSource;
+import sneer.bricks.pulp.notifiers.Notifier;
+import sneer.bricks.pulp.notifiers.Notifiers;
+import sneer.bricks.pulp.notifiers.pulsers.Pulser;
 import sneer.foundation.brickness.impl.BricknessImpl;
 import sneer.foundation.lang.Closure;
 
@@ -25,7 +25,7 @@ public class ThreadsMock implements Threads {
 	private final String _daemonNameFragmentToHold;
 	private Map<Runnable, String> _daemonNamesByRunnable = new HashMap<Runnable, String>();
 
-	private final EventNotifier<Object> _crashingPulser = my(EventNotifiers.class).newInstance();
+	private final Notifier<Object> _crashingPulser = my(Notifiers.class).newInstance();
 
 
 	public ThreadsMock(String daemonNameFragmentToHold) {
@@ -112,7 +112,7 @@ public class ThreadsMock implements Threads {
 	}
 
 	@Override
-	public PulseSource crashed() {
+	public Pulser crashed() {
 		return _crashingPulser.output();
 	}
 

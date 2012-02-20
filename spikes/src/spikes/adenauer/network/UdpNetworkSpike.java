@@ -15,17 +15,17 @@
 package spikes.adenauer.network;
 
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.pulp.events.EventSource;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 
-public interface Network {
+public interface UdpNetworkSpike {
 	
 	static final int MAX_ARRAY_SIZE = 1024 * 20;
 
 
 	SetSignal<Seal> peersOnline();
 	void send(byte[] data, Seal destination);
-	EventSource<Packet> packetsReceived();
+	Source<Packet> packetsReceived();
 
 
 	public interface Packet {

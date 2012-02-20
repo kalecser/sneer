@@ -3,7 +3,7 @@ package dfcsantos.music.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.pulp.events.EventSource;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -28,7 +28,7 @@ public class DJ implements Consumer<Track> {
 	@SuppressWarnings("unused") private final WeakContract _djContract;
 	@SuppressWarnings("unused") private final WeakContract _timerContract;
 
-	DJ(EventSource<Track> trackToPlay, Runnable toCallWhenDonePlayingATrack) {
+	DJ(Source<Track> trackToPlay, Runnable toCallWhenDonePlayingATrack) {
 		_toCallWhenDonePlayingATrack = toCallWhenDonePlayingATrack;
 		_djContract = trackToPlay.addReceiver(this);
 

@@ -12,8 +12,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.pulp.events.EventNotifier;
-import sneer.bricks.pulp.events.EventNotifiers;
+import sneer.bricks.pulp.notifiers.Notifier;
+import sneer.bricks.pulp.notifiers.Notifiers;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -32,7 +32,7 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 
 	private class MyOutput implements SetSignal<T> {
 
-		private final EventNotifier<CollectionChange<T>> _notifier = my(EventNotifiers.class).newInstance(new Producer<CollectionChange<T>>(){@Override public CollectionChange<T> produce() {
+		private final Notifier<CollectionChange<T>> _notifier = my(Notifiers.class).newInstance(new Producer<CollectionChange<T>>(){@Override public CollectionChange<T> produce() {
 			return new CollectionChangeImpl<T>(contentsCopy(), null);
 		}});
 

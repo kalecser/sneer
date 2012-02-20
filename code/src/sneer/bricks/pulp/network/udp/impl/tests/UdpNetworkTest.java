@@ -1,12 +1,81 @@
 package sneer.bricks.pulp.network.udp.impl.tests;
 
-import sneer.bricks.pulp.network.Network2010;
-import sneer.bricks.pulp.network.tests.Network2010Test;
-import sneer.bricks.pulp.network.udp.impl.UdpNetworkImpl;
-import sneer.foundation.brickness.testsupport.Bind;
+import static sneer.foundation.environments.Environments.my;
 
-public class UdpNetworkTest extends Network2010Test {
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.InetSocketAddress;
+import java.net.SocketException;
+
+import org.junit.Test;
+
+import sneer.bricks.pulp.network.udp.UdpNetwork;
+import sneer.bricks.pulp.network.udp.UdpNetwork.UdpSocket;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
+import sneer.foundation.lang.Consumer;
+import sneer.foundation.util.concurrent.Latch;
+
+
+
+public class UdpNetworkTest extends BrickTestBase {
 	
-	@Bind Network2010 subject = new UdpNetworkImpl();
 
+	@Test
+	public void packetsBackAndForth() throws IOException {
+		UdpNetwork subject = my(UdpNetwork.class);
+		
+		int portNumber1 = 1111;
+		int portNumber2 = 2222;
+		final UdpSocket p1 = subject.openSocket(portNumber1);
+		final UdpSocket p2 = subject.openSocket(portNumber2);
+		
+		startUppercaseEchoOn(p1);
+
+		final Latch latch = new Latch();
+		final StringBuffer replies = new StringBuffer(); 
+		p2.initReceiver(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
+			replies.append(unmarshal(packet));
+			if (replies.toString().equals("HI THERE MY FRIENDS "))
+				latch.open();
+		}});
+		
+		p2.send(marshal("hi ", portNumber1));
+		p2.send(marshal("there ", portNumber1));
+		p2.send(marshal("my ", portNumber1));
+		p2.send(marshal("friends ", portNumber1));
+		latch.waitTillOpen();
+		
+		p1.crash();
+		p2.crash();
+	}
+
+	
+	private String unmarshal(DatagramPacket packet) {
+		return new String(packet.getData(), 0, packet.getLength());
+	}
+	
+	
+	private DatagramPacket marshal(String string, int portNumber) throws SocketException {
+		byte[] bytes = string.getBytes();
+		return new DatagramPacket(bytes, bytes.length, new InetSocketAddress("localhost", portNumber));
+	}
+
+	
+	private void startUppercaseEchoOn(final UdpSocket port) {
+		port.initReceiver(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
+			convertToUppercase(packet);
+			try {
+				port.send(packet);
+			} catch (IOException e) {
+				throw new IllegalStateException(e);
+			}
+		}});
+	}
+	
+	
+	private void convertToUppercase(DatagramPacket packet) {
+		String upper = new String(packet.getData(), 0, packet.getLength()).toUpperCase(); 
+		System.arraycopy(upper.getBytes(), 0, packet.getData(), 0, upper.length());
+	}
+	
 }

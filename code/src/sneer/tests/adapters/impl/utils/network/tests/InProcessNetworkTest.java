@@ -7,8 +7,6 @@ import sneer.tests.adapters.impl.utils.network.InProcessNetwork;
 
 public class InProcessNetworkTest extends Network2010Test {
 
-	// will automatically be made available in the container
-	// by ContainerEnvironment
 	@Bind final Network2010 _subject = new InProcessNetwork();
 
 }

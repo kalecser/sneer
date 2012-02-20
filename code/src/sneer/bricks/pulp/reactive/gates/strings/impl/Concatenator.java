@@ -8,7 +8,7 @@ import java.util.List;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
-import sneer.bricks.pulp.events.pulsers.Pulsers;
+import sneer.bricks.pulp.notifiers.pulsers.PulseSenders;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -31,7 +31,7 @@ class Concatenator {
 		_separator = separator;
 		_chunks = Arrays.asList(chunks);
 
-		_refToAvoidGc = my(Pulsers.class).receive(new Closure() { @Override public void run() {
+		_refToAvoidGc = my(PulseSenders.class).receive(new Closure() { @Override public void run() {
 			refresh();
 		}}, chunks);
 	}

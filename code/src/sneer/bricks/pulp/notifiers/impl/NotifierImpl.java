@@ -1,4 +1,4 @@
-package sneer.bricks.pulp.events.impl;
+package sneer.bricks.pulp.notifiers.impl;
 
 import static sneer.foundation.environments.Environments.my;
 
@@ -7,15 +7,15 @@ import java.util.Collections;
 import java.util.List;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.pulp.events.EventNotifier;
-import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
+import sneer.bricks.pulp.notifiers.Notifier;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.foundation.environments.Environments;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Producer;
 
-class EventNotifierImpl<T> implements EventNotifier<T>, EventSource<T> {
+class NotifierImpl<T> implements Notifier<T>, Source<T> {
 
 	private static final Consumer<?>[] RECEIVER_HOLDER_ARRAY_TYPE = new Consumer[0];
 	
@@ -23,7 +23,7 @@ class EventNotifierImpl<T> implements EventNotifier<T>, EventSource<T> {
 	private final Producer<? extends T> _welcomeEventProducer;
 
 	
-	EventNotifierImpl(Producer<? extends T> welcomeEventProducer) {
+	NotifierImpl(Producer<? extends T> welcomeEventProducer) {
 		_welcomeEventProducer = welcomeEventProducer;
 	}
 
@@ -61,7 +61,7 @@ class EventNotifierImpl<T> implements EventNotifier<T>, EventSource<T> {
 
 	
 	@Override
-	public EventSource<T> output() {
+	public Source<T> output() {
 		return this;
 	}
 	

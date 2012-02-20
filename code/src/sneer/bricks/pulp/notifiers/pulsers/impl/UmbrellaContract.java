@@ -1,10 +1,10 @@
-package sneer.bricks.pulp.events.pulsers.impl;
+package sneer.bricks.pulp.notifiers.pulsers.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.pulp.events.pulsers.PulseSource;
+import sneer.bricks.pulp.notifiers.pulsers.Pulser;
 
 class UmbrellaContract implements WeakContract {
 
@@ -12,10 +12,10 @@ class UmbrellaContract implements WeakContract {
 	private final List<WeakContract> _subContracts;
 
 	
-	UmbrellaContract(Runnable receiver, PulseSource... sources) {
+	UmbrellaContract(Runnable receiver, Pulser... sources) {
 		_subContracts = new ArrayList<WeakContract>(sources.length);
 		
-		for (PulseSource source : sources)
+		for (Pulser source : sources)
 			_subContracts.add(source.addPulseReceiver(receiver));
 	}
 

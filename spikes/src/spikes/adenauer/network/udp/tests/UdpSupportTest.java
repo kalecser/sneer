@@ -15,7 +15,7 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.Bind;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.util.concurrent.Latch;
-import spikes.adenauer.network.Network.Packet;
+import spikes.adenauer.network.UdpNetworkSpike.Packet;
 import spikes.adenauer.network.udp.UdpAddressResolver;
 import spikes.adenauer.network.udp.impl.UdpNetworkImpl;
 

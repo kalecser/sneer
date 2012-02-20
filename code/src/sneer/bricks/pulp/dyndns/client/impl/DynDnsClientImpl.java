@@ -19,8 +19,8 @@ import sneer.bricks.pulp.dyndns.updater.InvalidHostException;
 import sneer.bricks.pulp.dyndns.updater.RedundantUpdateException;
 import sneer.bricks.pulp.dyndns.updater.Updater;
 import sneer.bricks.pulp.dyndns.updater.UpdaterException;
-import sneer.bricks.pulp.events.EventSource;
-import sneer.bricks.pulp.events.pulsers.Pulsers;
+import sneer.bricks.pulp.notifiers.Source;
+import sneer.bricks.pulp.notifiers.pulsers.PulseSenders;
 import sneer.bricks.pulp.propertystore.PropertyStore;
 import sneer.foundation.lang.Closure;
 
@@ -43,7 +43,7 @@ class DynDnsClientImpl implements DynDnsClient {
 	@SuppressWarnings("unused")	private final WeakContract _referenceToAvoidGc;
 
 	DynDnsClientImpl() {
-		_referenceToAvoidGc = my(Pulsers.class).receive(new Closure() { @Override public void run() {
+		_referenceToAvoidGc = my(PulseSenders.class).receive(new Closure() { @Override public void run() {
 			synchronized (_stateMonitor) {
 				_state = _state.react();
 			}
@@ -206,8 +206,8 @@ class DynDnsClientImpl implements DynDnsClient {
 		_propertyStore.set(LAST_HOST_KEY, host);
 	}
 	
-	private EventSource<Object>[] relevantSignals() {
-		return new EventSource[] {
+	private Source<Object>[] relevantSignals() {
+		return new Source[] {
 			_ownAccountKeeper.ownAccount(),
 			_ownIpDiscoverer.ownIp()
 		};

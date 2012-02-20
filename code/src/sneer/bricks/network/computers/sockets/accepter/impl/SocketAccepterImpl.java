@@ -14,12 +14,12 @@ import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.bricks.pulp.events.EventNotifier;
-import sneer.bricks.pulp.events.EventNotifiers;
-import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.network.ByteArrayServerSocket;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network2010;
+import sneer.bricks.pulp.notifiers.Notifier;
+import sneer.bricks.pulp.notifiers.Notifiers;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
@@ -34,7 +34,7 @@ class SocketAccepterImpl implements SocketAccepter {
 		crashServerSocketIfNecessary();
 	}});
 	
-	private final EventNotifier<ByteArraySocket> _notifier = my(EventNotifiers.class).newInstance();
+	private final Notifier<ByteArraySocket> _notifier = my(Notifiers.class).newInstance();
 
 	private final transient Object _portToListenMonitor = new Object();
 
@@ -60,7 +60,7 @@ class SocketAccepterImpl implements SocketAccepter {
 	}
 
 	@Override
-    public EventSource<ByteArraySocket> lastAcceptedSocket() {
+    public Source<ByteArraySocket> lastAcceptedSocket() {
     	return _notifier.output();
     }
 

@@ -3,7 +3,7 @@ package sneer.bricks.pulp.reactive.gates.logic.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
-import sneer.bricks.pulp.events.pulsers.Pulsers;
+import sneer.bricks.pulp.notifiers.pulsers.PulseSenders;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -21,7 +21,7 @@ class And {
 		_a = a;
 		_b = b;
 
-		_referenceToAvoidGc = my(Pulsers.class).receive(new Closure(){@Override public void run() {
+		_referenceToAvoidGc = my(PulseSenders.class).receive(new Closure(){@Override public void run() {
 			refresh();
 		}}, a, b);
 	}

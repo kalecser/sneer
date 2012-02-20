@@ -3,9 +3,9 @@ package spikes.sneer.bricks.skin.audio.mic.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.pulp.events.EventNotifier;
-import sneer.bricks.pulp.events.EventNotifiers;
-import sneer.bricks.pulp.events.EventSource;
+import sneer.bricks.pulp.notifiers.Notifier;
+import sneer.bricks.pulp.notifiers.Notifiers;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -26,7 +26,7 @@ class MicImpl implements Mic {
 	private Contract _stepperContract;
 	
 	private Register<Boolean> _isOpen = my(Signals.class).newRegister(false);
-	private EventNotifier<ImmutableByteArray> _sound = my(EventNotifiers.class).newInstance();
+	private Notifier<ImmutableByteArray> _sound = my(Notifiers.class).newInstance();
 	
 	@Override
 	public Signal<Boolean> isOpen() {
@@ -114,7 +114,7 @@ class MicImpl implements Mic {
 	}
 
 	@Override
-	public EventSource<ImmutableByteArray> sound() {
+	public Source<ImmutableByteArray> sound() {
 		return _sound.output();
 	}
 }

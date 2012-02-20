@@ -3,6 +3,7 @@ package sneer.bricks.pulp.network;
 import java.io.IOException;
 
 public interface ByteArraySocket {
+	
 	static final int MAX_ARRAY_SIZE = 1024 * 20;
 
 	byte[] read() throws IOException;

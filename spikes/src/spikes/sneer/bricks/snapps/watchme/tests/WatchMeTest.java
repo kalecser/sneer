@@ -22,7 +22,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.pulp.events.EventSource;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.skin.image.ImageFactory;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.brickness.testsupport.Bind;
@@ -67,7 +67,7 @@ public class WatchMeTest extends BrickTestBase {
 
 		Seal key = my(OwnSeal.class).get().currentValue();
 		
-		EventSource<BufferedImage> screens = subject2.screenStreamFor(key);
+		Source<BufferedImage> screens = subject2.screenStreamFor(key);
 
 		@SuppressWarnings("unused") Object referenceToAvoidGc = screens.addReceiver(new Consumer<BufferedImage>() {@Override public void consume(BufferedImage screen) {
 			_screenObserved.set(screen);

@@ -1,6 +1,6 @@
 package spikes.sneer.bricks.skin.audio.mic;
 
-import sneer.bricks.pulp.events.EventSource;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.brickness.Brick;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
@@ -14,6 +14,6 @@ public interface Mic {
 	Signal<Boolean> isOpen();
 	
 	/** Produces packets of one hundreth of a second of PCM-encoded sound: 8000Hz, 16 bits, 2 Channels (Stereo), Signed, Little Endian */
-	EventSource<ImmutableByteArray> sound();
+	Source<ImmutableByteArray> sound();
 	
 }

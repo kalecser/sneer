@@ -7,7 +7,7 @@ import java.awt.event.FocusAdapter;
 import javax.swing.JScrollPane;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.pulp.events.EventSource;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.skin.widgets.autoscroll.AutoScroll;
 import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
 import sneer.foundation.lang.Closure;
@@ -16,7 +16,7 @@ import sneer.foundation.lang.Consumer;
 public class ReactiveAutoScrollImpl implements ReactiveAutoScroll {
 
 	@Override
-	public <T> JScrollPane create(EventSource<T> eventSource, final Consumer<T> receiver) {
+	public <T> JScrollPane create(Source<T> eventSource, final Consumer<T> receiver) {
 		
 		final JScrollPane result = new JScrollPane();
 		

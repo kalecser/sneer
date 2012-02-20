@@ -3,16 +3,16 @@ package sneer.bricks.hardware.cpu.threads.impl;
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.pulp.events.pulsers.PulseSource;
-import sneer.bricks.pulp.events.pulsers.Pulser;
-import sneer.bricks.pulp.events.pulsers.Pulsers;
+import sneer.bricks.pulp.notifiers.pulsers.PulseSender;
+import sneer.bricks.pulp.notifiers.pulsers.Pulser;
+import sneer.bricks.pulp.notifiers.pulsers.PulseSenders;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.util.concurrent.Latch;
 
 class ThreadsImpl implements Threads {
 
 	private final Latch _crash = new Latch();
-	private final Pulser _crashedPulser = my(Pulsers.class).newInstance();
+	private final PulseSender _crashedPulser = my(PulseSenders.class).newInstance();
 	static private boolean _isCrashing = false;
 
 	@Override
@@ -99,7 +99,7 @@ class ThreadsImpl implements Threads {
 	}
 
 	@Override
-	public PulseSource crashed() {
+	public Pulser crashed() {
 		return _crashedPulser.output();
 	}
 

@@ -12,11 +12,11 @@ import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.sockets.connections.Call;
 import sneer.bricks.network.computers.sockets.connections.Sighting;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
-import sneer.bricks.pulp.events.EventNotifier;
-import sneer.bricks.pulp.events.EventNotifiers;
-import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network2010;
+import sneer.bricks.pulp.notifiers.Notifier;
+import sneer.bricks.pulp.notifiers.Notifiers;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 class IncomingHandShaker {
@@ -24,7 +24,7 @@ class IncomingHandShaker {
 	
 	private static final ContactSeals Seals = my(ContactSeals.class);
 
-	private static EventNotifier<Call> unknownCallers = my(EventNotifiers.class).newInstance();
+	private static Notifier<Call> unknownCallers = my(Notifiers.class).newInstance();
 
 	static Seal greet(ByteArraySocket socket) throws IOException {
 		Seal contactsSeal = readContactsSeal(socket);
@@ -94,7 +94,7 @@ class IncomingHandShaker {
 	}
 
 
-	static EventSource<Call> unknownCallers() {
+	static Source<Call> unknownCallers() {
 		return unknownCallers.output();
 	}
 

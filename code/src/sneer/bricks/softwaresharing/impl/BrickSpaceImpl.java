@@ -21,9 +21,9 @@ import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.bricks.pulp.events.EventNotifier;
-import sneer.bricks.pulp.events.EventNotifiers;
-import sneer.bricks.pulp.events.EventSource;
+import sneer.bricks.pulp.notifiers.Notifier;
+import sneer.bricks.pulp.notifiers.Notifiers;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
@@ -40,7 +40,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 
 	private CacheMap<String, BrickHistory> _availableBricksByName;
 
-	private final EventNotifier<Seal> _newBuildingFound = my(EventNotifiers.class).newInstance();
+	private final Notifier<Seal> _newBuildingFound = my(Notifiers.class).newInstance();
 	
 	private BuildingHash _myOwnBuilding;
 
@@ -82,7 +82,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 
 	
 	@Override
-	public EventSource<Seal> newBuildingFound() {
+	public Source<Seal> newBuildingFound() {
 		return _newBuildingFound.output();
 	}
 	

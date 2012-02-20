@@ -13,24 +13,24 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.bricks.pulp.events.EventNotifier;
-import sneer.bricks.pulp.events.EventNotifiers;
-import sneer.bricks.pulp.events.EventSource;
+import sneer.bricks.pulp.notifiers.Notifier;
+import sneer.bricks.pulp.notifiers.Notifiers;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.foundation.lang.Closure;
-import spikes.adenauer.network.Network;
+import spikes.adenauer.network.UdpNetworkSpike;
 import spikes.adenauer.network.udp.UdpAddressResolver;
 
-public class UdpNetworkImpl implements Network {
+public class UdpNetworkImpl implements UdpNetworkSpike {
 	
 	private DatagramSocket socket;
 
 	private final DatagramPacket _packetToReceive = newPacket();
 	private final DatagramPacket _packetToSend = newPacket();
 
-	private final EventNotifier<Packet> _notifier = my(EventNotifiers.class).newInstance();
+	private final Notifier<Packet> _notifier = my(Notifiers.class).newInstance();
 	private final SetRegister<Seal> _peersOnline = my(CollectionSignals.class).newSetRegister();
 
 	private final Light errorOnReceive = my(BlinkingLights.class).prepare(LightType.ERROR);
@@ -85,13 +85,13 @@ public class UdpNetworkImpl implements Network {
 
 	
 	@Override
-	public EventSource<Packet> packetsReceived() {
+	public Source<Packet> packetsReceived() {
 		return _notifier.output();
 	}
 
 	
 	private DatagramPacket newPacket() {
-		byte[] array = new byte[Network.MAX_ARRAY_SIZE];
+		byte[] array = new byte[UdpNetworkSpike.MAX_ARRAY_SIZE];
 		return new DatagramPacket(array, array.length);
 	}
 	

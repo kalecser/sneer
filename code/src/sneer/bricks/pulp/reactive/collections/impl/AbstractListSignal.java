@@ -2,8 +2,8 @@ package sneer.bricks.pulp.reactive.collections.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.pulp.events.EventNotifier;
-import sneer.bricks.pulp.events.EventNotifiers;
+import sneer.bricks.pulp.notifiers.Notifier;
+import sneer.bricks.pulp.notifiers.Notifiers;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.ListChange;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
@@ -14,11 +14,11 @@ import sneer.foundation.lang.Producer;
 abstract class AbstractListSignal<T> implements ListSignal<T> {
 
 	
-	EventNotifier<ListChange<T>> _notifierAsList = my(EventNotifiers.class).newInstance(new Producer<ListChange<T>>(){@Override public ListChange<T> produce() {
+	Notifier<ListChange<T>> _notifierAsList = my(Notifiers.class).newInstance(new Producer<ListChange<T>>(){@Override public ListChange<T> produce() {
 		return currentElementsAsListChange();
 	}});
 	
-	EventNotifier<CollectionChange<T>> _notifierAsCollection = my(EventNotifiers.class).newInstance(new Producer<CollectionChange<T>>(){@Override public CollectionChange<T> produce() {
+	Notifier<CollectionChange<T>> _notifierAsCollection = my(Notifiers.class).newInstance(new Producer<CollectionChange<T>>(){@Override public CollectionChange<T> produce() {
 		return currentElementsAsCollectionChange();
 	}});
 

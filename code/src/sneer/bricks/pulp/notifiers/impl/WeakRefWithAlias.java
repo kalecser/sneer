@@ -1,4 +1,4 @@
-package sneer.bricks.pulp.events.impl;
+package sneer.bricks.pulp.notifiers.impl;
 
 
 class WeakRefWithAlias<T> extends java.lang.ref.WeakReference<T> {

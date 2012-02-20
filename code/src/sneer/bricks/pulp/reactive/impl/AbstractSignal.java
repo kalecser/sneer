@@ -6,15 +6,15 @@ package sneer.bricks.pulp.reactive.impl;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.pulp.events.EventNotifier;
-import sneer.bricks.pulp.events.EventNotifiers;
+import sneer.bricks.pulp.notifiers.Notifier;
+import sneer.bricks.pulp.notifiers.Notifiers;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.Producer;
 
 abstract class AbstractSignal<T> implements Signal<T> {
 
-	EventNotifier<T> _notifier = my(EventNotifiers.class).newInstance(new Producer<T>(){@Override public T produce() {
+	Notifier<T> _notifier = my(Notifiers.class).newInstance(new Producer<T>(){@Override public T produce() {
 		return currentValue();
 	}});
 

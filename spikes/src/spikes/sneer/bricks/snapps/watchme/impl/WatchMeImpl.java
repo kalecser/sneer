@@ -18,9 +18,9 @@ import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.datastructures.cache.Cache;
 import sneer.bricks.pulp.datastructures.cache.CacheFactory;
-import sneer.bricks.pulp.events.EventNotifier;
-import sneer.bricks.pulp.events.EventNotifiers;
-import sneer.bricks.pulp.events.EventSource;
+import sneer.bricks.pulp.notifiers.Notifier;
+import sneer.bricks.pulp.notifiers.Notifiers;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.foundation.lang.Closure;
 import sneer.foundation.lang.Consumer;
 import sneer.foundation.lang.arrays.ImmutableByteArray;
@@ -58,11 +58,11 @@ class WatchMeImpl implements WatchMe {
 
 
 	@Override
-	public EventSource<BufferedImage> screenStreamFor(final Seal publisher) {
+	public Source<BufferedImage> screenStreamFor(final Seal publisher) {
 		if (publisher == null)
 			throw new IllegalArgumentException("The publisher argument can't be null.");
 		
-		EventNotifier<BufferedImage> result = my(EventNotifiers.class).newInstance();
+		Notifier<BufferedImage> result = my(Notifiers.class).newInstance();
 		
 		_consumerToAvoidGc = imageDeltaPacketConsumer(publisher, result);
 		_tupleSpaceContract = _tupleSpace.addSubscription(ImageDeltaPacket.class, _consumerToAvoidGc);
@@ -70,7 +70,7 @@ class WatchMeImpl implements WatchMe {
 		return result.output();
 	}
 
-	private Consumer<ImageDeltaPacket> imageDeltaPacketConsumer(final Seal publisher,	final EventNotifier<BufferedImage> notifier) {
+	private Consumer<ImageDeltaPacket> imageDeltaPacketConsumer(final Seal publisher,	final Notifier<BufferedImage> notifier) {
 		final Decoder decoder = _codec.createDecoder();
 		final Cache<ImmutableByteArray> cache = _cacheFactory.createWithCapacity(CACHE_CAPACITY);
 		

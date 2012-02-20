@@ -1,27 +1,15 @@
 package sneer.bricks.pulp.network.udp.impl;
 
-import java.io.IOException;
+import java.net.SocketException;
 
-import sneer.bricks.pulp.network.ByteArrayServerSocket;
-import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.bricks.pulp.network.Network2010;
+import sneer.bricks.pulp.network.udp.UdpNetwork;
 
 
-public class UdpNetworkImpl implements Network2010 {
+class UdpNetworkImpl implements UdpNetwork {
 
 	@Override
-	public ByteArraySocket openSocket(String remoteAddress, int remotePort) throws IOException {
-		return new OutgoingUdpSocket(remoteAddress, remotePort);
-	}
-
-	@Override
-	public ByteArrayServerSocket openServerSocket(int port) throws IOException {
-		return new UdpServerSocket(port);
-	}
-
-	@Override
-	public String remoteIpFor(ByteArraySocket socket) {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+	public UdpSocket openSocket(int port) throws SocketException {
+		return new UdpSocketImpl(port);
 	}
 
 }

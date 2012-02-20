@@ -1,25 +1,25 @@
-package sneer.bricks.pulp.events.pulsers.tests;
+package sneer.bricks.pulp.notifiers.pulsers.tests;
 
 import static sneer.foundation.environments.Environments.my;
 
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.pulp.events.pulsers.Pulser;
-import sneer.bricks.pulp.events.pulsers.Pulsers;
+import sneer.bricks.pulp.notifiers.pulsers.PulseSender;
+import sneer.bricks.pulp.notifiers.pulsers.PulseSenders;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.foundation.lang.Closure;
 
 public class PulsersTest extends BrickTestBase {
 
-	private final Pulsers _subject = my(Pulsers.class);
+	private final PulseSenders _subject = my(PulseSenders.class);
 	private int _counter = 0;
 
 	@Test
 	public void receiveFromSeveralPulseSources() {
-		Pulser p1 = my(Pulsers.class).newInstance();
-		Pulser p2 = my(Pulsers.class).newInstance();
-		Pulser p3 = my(Pulsers.class).newInstance();
+		PulseSender p1 = my(PulseSenders.class).newInstance();
+		PulseSender p2 = my(PulseSenders.class).newInstance();
+		PulseSender p3 = my(PulseSenders.class).newInstance();
 		
 		@SuppressWarnings("unused")
 		WeakContract contract = _subject.receive(new Closure() { @Override public void run() {

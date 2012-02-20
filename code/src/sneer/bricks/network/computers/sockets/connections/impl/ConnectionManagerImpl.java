@@ -10,8 +10,8 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.sockets.connections.Call;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.network.ByteArraySocket;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.foundation.lang.ClosureX;
 
 class ConnectionManagerImpl implements ConnectionManager {
@@ -62,7 +62,7 @@ class ConnectionManagerImpl implements ConnectionManager {
 
 
 	@Override
-	public EventSource<Call> unknownCallers() {
+	public Source<Call> unknownCallers() {
 		return IncomingHandShaker.unknownCallers();
 	}
 

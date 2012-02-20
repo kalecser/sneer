@@ -1,8 +1,8 @@
 package sneer.bricks.network.computers.sockets.connections;
 
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.pulp.events.EventSource;
 import sneer.bricks.pulp.network.ByteArraySocket;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.foundation.brickness.Brick;
 
 @Brick
@@ -15,6 +15,6 @@ public interface ConnectionManager {
 
 	void closeConnectionFor(Contact contact);
 	
-	EventSource<Call> unknownCallers();
+	Source<Call> unknownCallers();
 
 }

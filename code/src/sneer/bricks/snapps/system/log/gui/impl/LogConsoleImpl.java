@@ -37,7 +37,7 @@ import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.io.log.filter.LogFilter;
 import sneer.bricks.hardware.io.log.notifier.LogNotifier;
-import sneer.bricks.pulp.events.EventSource;
+import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.gates.buffers.assync.AssynchronousBuffers;
@@ -211,7 +211,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 
 	
 	private JScrollPane autoScroll() {
-		EventSource<String> loggedMessages = my(AssynchronousBuffers.class).createFor(my(LogNotifier.class).loggedMessages(), "LogConsole buffer");
+		Source<String> loggedMessages = my(AssynchronousBuffers.class).createFor(my(LogNotifier.class).loggedMessages(), "LogConsole buffer");
 		JScrollPane scroll = my(ReactiveAutoScroll.class).create(loggedMessages, new Consumer<String>() { @Override public void consume(String message) {
 			if (_txtLog.getLineCount() > CONSOLE_LINE_LIMIT)
 				_txtLog.setText(message);
