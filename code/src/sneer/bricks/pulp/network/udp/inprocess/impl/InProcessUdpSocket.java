@@ -59,8 +59,8 @@ class InProcessUdpSocket implements UdpSocket {
 
 
 	private void checkLocalhost(DatagramPacket packet) {
-		if (!packet.getAddress().equals(LOCALHOST))
-			throw new IllegalArgumentException("InProcessNetwork supports only localhost addresses. Not " + packet.getAddress());
+		if (!packet.getAddress().getHostAddress().equals(LOCALHOST.getHostAddress()))
+			throw new IllegalArgumentException("InProcessNetwork supports only "+LOCALHOST.getHostAddress()+" addresses. Not " + packet.getAddress().getHostAddress());
 	}
 
 
@@ -98,7 +98,7 @@ class InProcessUdpSocket implements UdpSocket {
 	
 	private static InetAddress localhost() {
 		try {
-			return InetAddress.getLocalHost();
+			return InetAddress.getByName("localhost");
 		} catch (UnknownHostException e) {
 			throw new IllegalStateException(e);
 		}

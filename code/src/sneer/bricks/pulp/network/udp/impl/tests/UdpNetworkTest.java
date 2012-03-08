@@ -26,27 +26,27 @@ public class UdpNetworkTest extends BrickTestBase {
 		
 		int portNumber1 = 1111;
 		int portNumber2 = 2222;
-		final UdpSocket p1 = subject.openSocket(portNumber1);
-		final UdpSocket p2 = subject.openSocket(portNumber2);
+		final UdpSocket s1 = subject.openSocket(portNumber1);
+		final UdpSocket s2 = subject.openSocket(portNumber2);
 		
-		startUppercaseEchoOn(p1);
+		startUppercaseEchoOn(s1);
 
 		final Latch latch = new Latch();
 		final StringBuffer replies = new StringBuffer(); 
-		p2.initReceiver(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
+		s2.initReceiver(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
 			replies.append(unmarshal(packet));
 			if (replies.toString().equals("HI THERE MY FRIENDS "))
 				latch.open();
 		}});
 		
-		p2.send(marshal("hi ", portNumber1));
-		p2.send(marshal("there ", portNumber1));
-		p2.send(marshal("my ", portNumber1));
-		p2.send(marshal("friends ", portNumber1));
+		s2.send(marshal("hi ", portNumber1));
+		s2.send(marshal("there ", portNumber1));
+		s2.send(marshal("my ", portNumber1));
+		s2.send(marshal("friends ", portNumber1));
 		latch.waitTillOpen();
 		
-		p1.crash();
-		p2.crash();
+		s1.crash();
+		s2.crash();
 	}
 
 	
@@ -61,11 +61,11 @@ public class UdpNetworkTest extends BrickTestBase {
 	}
 
 	
-	private void startUppercaseEchoOn(final UdpSocket port) {
-		port.initReceiver(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
+	private void startUppercaseEchoOn(final UdpSocket s) {
+		s.initReceiver(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
 			convertToUppercase(packet);
 			try {
-				port.send(packet);
+				s.send(packet);
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
 			}
