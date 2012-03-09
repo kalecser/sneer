@@ -39,10 +39,7 @@ final class FolderSelectionPanel extends JPanel {
 		addComponentListener(newComponentListener());
 
 		initModel();
-
-		_refToAvoidGc2 = _listener.enableTrackDownloaded().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean trackDownloaded) {
-			showTrackDownloadedIcon(trackDownloaded);
-		}}); 
+		initExternalEvents();
 	}
 
 	private JComboBox newSelector() {
@@ -72,7 +69,7 @@ final class FolderSelectionPanel extends JPanel {
 
 	private MouseListener newTrackDonwloadedIconMouseListenter() {
 		return new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) {
-			_folderChoices.setSelectedItem(_folderChoices.getElementAt(0));
+			_listener.playingInboxFolder();
 		}};
 	}
 	
@@ -80,10 +77,10 @@ final class FolderSelectionPanel extends JPanel {
 	private ComponentListener newComponentListener () {
 		return new ComponentAdapter() { @Override public void componentResized(ComponentEvent e) {
 			if (e.getID() != ComponentEvent.COMPONENT_RESIZED) return;
-			int width = selectorWidthSize(((JPanel) e.getSource()).getSize().width);	
 			if (_trackDownloadedIcon.isVisible())
-				width = width - _trackDownloadedIcon.getSize().width;
-			resizeSelector(width);
+				resizeSelectorToShowTrackDownloadedIcon( ((JPanel) e.getSource()).getSize().width );
+			else
+				resizeSelectorToHideTrackDownloadedIcon( ((JPanel) e.getSource()).getSize().width );
 		}};
 	}
 	
@@ -119,24 +116,50 @@ final class FolderSelectionPanel extends JPanel {
 		});
 	}
 
+	private void initExternalEvents() {
+		_refToAvoidGc2 = _listener.enableTrackDownloaded().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean trackDownloaded) {
+			showTrackDownloadedIcon(trackDownloaded);
+		}}); 
+
+		_refToAvoidGc3 = _listener.choiceSelected().addReceiver(new Consumer<String>() { @Override public void consume(String choice) {
+			selectChoice(choice);
+		}});
+	}
+
 
 	private void showTrackDownloadedIcon(Boolean trackDownloaded) {
 		_trackDownloadedIcon.setVisible(trackDownloaded);
-		int width = selectorWidthSize(getSize().width);
 		if (trackDownloaded)
-			width = width - (_trackDownloadedIcon.getSize().width + BORDER_SIZE);
-		resizeSelector(width);
+			resizeSelectorToShowTrackDownloadedIcon(getSize().width);
+		else 
+			resizeSelectorToHideTrackDownloadedIcon(getSize().width);
 	}
 
-	private int selectorWidthSize(int panelWidth) {
-		return panelWidth - BORDER_SIZE;
+	synchronized
+	private void resizeSelectorToShowTrackDownloadedIcon(int panelWidth) {
+		int widthSelector = panelWidth - (_trackDownloadedIcon.getSize().width + (BORDER_SIZE * 2));  
+		resizeSelector(widthSelector);
+	}
+	
+	synchronized
+	private void resizeSelectorToHideTrackDownloadedIcon(int panelWidth) {
+		int widthSelector = panelWidth - BORDER_SIZE;  
+		resizeSelector(widthSelector);
 	}
 	
 	private void resizeSelector(int width) {
 		_selector.setPreferredSize(new Dimension(width, _selector.getMinimumSize().height));
 	}
 
-	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc, _refToAvoidGc2;
+	
+	private void selectChoice(String choice) {
+		if (choice == null) return;
+		isEventInternal = true;
+		_selector.setSelectedItem(choice);
+		isEventInternal = false;
+	}
+	
+	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc, _refToAvoidGc2, _refToAvoidGc3;
 
 	private final MusicViewListener _listener;
 	private final JComboBox _selector;
