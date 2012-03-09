@@ -1,4 +1,4 @@
-package spikes.klaus.beings.gui;
+package spikes.klaus.thomas.beings.gui;
 
 import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.clock.ticker.ClockTicker;

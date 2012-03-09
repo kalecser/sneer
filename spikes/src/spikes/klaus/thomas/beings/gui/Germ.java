@@ -1,7 +1,8 @@
-package spikes.klaus.beings.gui;
+package spikes.klaus.thomas.beings.gui;
 
 import java.awt.Color;
-import static spikes.klaus.beings.gui.BeingsFrame.*;
+
+import static spikes.klaus.thomas.beings.gui.BeingsFrame.*;
 
 class Germ extends Being {
 
