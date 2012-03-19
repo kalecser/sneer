@@ -1,67 +1,75 @@
 package spikes.klaus.thomas.graph;
 
-import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
 
-public class GraphFrame extends JFrame {
-	
-	private static final int _WIDTH = 255;
-	private static final int _HEIGHT = 255;
-	private static final int MARGIN = 8;
-
-	private static final long serialVersionUID = 1L;
-	
+public class GraphFrame extends JFrame { private static final long serialVersionUID = 1L;
 	
 	public static void main(String[] args) {
 		new GraphFrame();
 	}
-	
-	
+
+
 	public GraphFrame() {
 		setTitle("Graph");	  
 	    setResizable(true);
-	    setBounds(50, 50, _WIDTH, _HEIGHT);
+	    setBounds(10, 10, _WIDTH, _HEIGHT);
 	    setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		repaint();
 	}
 
+	private final int[] buffer = new int[_WIDTH * _HEIGHT];
+
 
 	@Override
 	public void paint(Graphics graphics) {
-		for (int px = 0; px < _WIDTH; px++)
-			for (int py = _HEIGHT - 1; py >= 0; py--)
-				paint(graphics, px, py);
+		long t0 = System.currentTimeMillis();
+		
+		for (int px = _WIDTH - 1; px != 0; px--)
+			for (int py = _HEIGHT - 1; py != 0; py--)
+				colorPixel(px, py);
+
+		BufferedImage image = new BufferedImage(_WIDTH, _HEIGHT, BufferedImage.TYPE_INT_RGB);
+		image.getRaster().setDataElements(0, 0, _WIDTH, _HEIGHT, buffer);
+		graphics.drawImage(image, 0, 0, null);
+		
+		System.out.println("Millis ellapsed: " + (System.currentTimeMillis() - t0));
 	}
 
 
-	private void paint(Graphics graphics, int x, int y) {
-		graphics.setColor(colorFor(x, 255 - y));
-		graphics.drawLine(MARGIN + x, y - MARGIN, MARGIN + x, y - MARGIN);
+	private static final int _WIDTH = 800;
+	private static final int _HEIGHT = 800;
+
+	private void colorPixel(int xPixel, int yPixel) {
+		//Brinque c estes numeros:
+		float xMin = -2f;
+		float yMin = -2f;
+		float scale = 4f;
+		
+		float xReal = xMin + (scale * xPixel / _WIDTH);
+		float yReal = yMin + (scale * yPixel / _HEIGHT);
+
+		buffer[(_HEIGHT - yPixel) * _WIDTH + xPixel] = colorFor(xReal, yReal);
 	}
 
 
-	private Color colorFor(int x, int y) {
-		int r = (x * x) + (y * y) > 100 ? 255 : 0;
-		int g = 0;
-		int b = 0;
-		return color(r, g, b);
-	}
+	private int colorFor(float xReal, float yReal) {
+		float x = 0;
+		float y = 0;
+		
+		int blue = 0;
+		while ( x*x + y*y < 4 && ++blue < 255) { //Remember: 4 == 2*2
+			float temp = x*x - y*y + xReal;
+			y = 2*x*y + yReal;
+			x = temp;
+		}
 
-
-	private Color color(int r, int g, int b) {
-		return new Color(range(r), range(g), range(b));
-	}
-
-
-	private int range(int valor) {
-		if (valor < 0) return 0;
-		if (valor > 255) return 255;
-		return valor;
+		return blue == 255 ? 0 : blue;
 	}
 
 }
