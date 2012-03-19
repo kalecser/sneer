@@ -7,11 +7,12 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-public class Rendezvous {
+public class RendezvousServer {
 	
 	static final int SERVER_PORT = 7070;
 
@@ -19,17 +20,21 @@ public class Rendezvous {
 
 	static final String KEEP_ALIVE = "keep alive";
 
-	private static DatagramSocket socket;
-
+	static private DatagramSocket socket;
 	
 
 	public static void main(String[] ignored ) {
 		try {
-			socket = new DatagramSocket(SERVER_PORT);
+			initSockets();
 			listen();
 		} catch (Exception e) {
-			display("Failure: " + e.getMessage());
+			println("Failure: " + e.getMessage());
 		}
+	}
+
+
+	private static void initSockets() throws SocketException {
+		socket = new DatagramSocket(SERVER_PORT);
 	}
 	
 	
@@ -48,11 +53,7 @@ public class Rendezvous {
 		StringTokenizer fields = toFields(request);
 		
 		String firstToken = fields.nextToken();
-		if (firstToken.equals(KEEP_ALIVE)) {
-			System.out.print(".");
-			return;
-		}
-		System.out.println();
+		if (handleKeepAlive(firstToken)) return;
 		
 		String callerId = firstToken;
 		String localAddress = fields.nextToken();
@@ -62,35 +63,45 @@ public class Rendezvous {
 		rendezvous(callerId, requestedId);
 	}
 
+
+	private static boolean handleKeepAlive(String firstToken) {
+		if (firstToken.equals(KEEP_ALIVE)) {
+			System.out.print(".");
+			return true;
+		}
+		System.out.println();
+		return false;
+	}
+
 	
 	private static void rendezvous(String callerId, String requestedId) throws IOException {
 		IpAddresses caller = addressesByClientId.get(callerId);
 		IpAddresses requested = addressesByClientId.get(requestedId);
 		
 		if (requested == null) {
-			display("Requested client '" + requestedId + "' not found.");
+			println("Requested client '" + requestedId + "' not found.");
 			return;
 		}
 
-		display("Forwarding info to: " + requestedId);
+		println("Forwarding info to: " + requestedId);
 		send(marshal(caller), requested.publicInternetAddress);
-		display("Forward info to: " + callerId);
+		println("Forward info to: " + callerId);
 		send(marshal(requested), caller.publicInternetAddress);
-		display("=====================================");
+		println("=====================================");
 	}
 
 
 	private static void send(byte[] data, InetSocketAddress dest) throws IOException {
 		DatagramPacket packet = new DatagramPacket(data, data.length, dest);
 		socket.send(packet);
-		display("Sent info: " + new String(packet.getData(), packet.getOffset(), packet.getLength(), CHARSET) + " to address: "+ dest.toString());
+		println("Sent info: " + new String(packet.getData(), packet.getOffset(), packet.getLength(), CHARSET) + " to address: "+ dest.toString());
 	}
 
 	
 	private static void keepCallerAddresses(String caller, DatagramPacket receivedPacket, InetSocketAddress localAddress) {
 		InetSocketAddress publicAddress = (InetSocketAddress)receivedPacket.getSocketAddress();		
 		
-		display("Caller: " + caller + " - Local address: " + localAddress + ", Public address: " + publicAddress);
+		println("Caller: " + caller + " - Local address: " + localAddress + ", Public address: " + publicAddress);
 		addressesByClientId.put(caller, new IpAddresses(publicAddress, localAddress));
 	}
 
@@ -109,7 +120,7 @@ public class Rendezvous {
 	}
 
 
-	private static void display(String out) {
+	private static void println(String out) {
 		System.out.println(out);
 	}
 

@@ -25,7 +25,8 @@ public class Client {
 	private static final int OWN_PORT = 5050;
 	private static final DatagramSocket _socket = newSocket(OWN_PORT);
 
-	private static final SocketAddress RENDEZVOUS_SERVER = new InetSocketAddress("dynamic.sneer.me", Rendezvous.SERVER_PORT);
+	private static final SocketAddress RENDEZVOUS_SERVER = new InetSocketAddress("dynamic.sneer.me", RendezvousServer.SERVER_PORT);
+	private static final SocketAddress RENDEZVOUS_CLIENT = new InetSocketAddress("dynamic.sneer.me", OWN_PORT);
 
 	private static final Set<IpAddresses> peers = new HashSet<IpAddresses>();
 
@@ -50,7 +51,8 @@ public class Client {
 
 
 	private static void keepServerConnectionAlive() {
-		send(Rendezvous.KEEP_ALIVE, RENDEZVOUS_SERVER);
+		send(RendezvousServer.KEEP_ALIVE, RENDEZVOUS_SERVER);
+		send(RendezvousServer.KEEP_ALIVE, RENDEZVOUS_CLIENT);
 		try { Thread.sleep(1000); } catch (InterruptedException e) { throw new IllegalStateException(e); }
 	}
 
@@ -65,7 +67,7 @@ public class Client {
 	private static void receiveGreetingOrPeerAddress() {
 		try {
 			String received = receive();
-			System.out.println("Received on " + System.currentTimeMillis() + ": " + received);
+			System.err.println("Received on " + System.currentTimeMillis() + ": " + received);
 			capturePeerAddress(received);
 		} catch (SocketTimeoutException e) {
 			//OK.
@@ -88,11 +90,12 @@ public class Client {
 
 	private static void greetPeersAndSleepABit() {
 		for (IpAddresses ips : peers) {
-			send("Local hello from " + ownId, ips.localNetworkAddress);
-			send("Public hello from " + ownId, ips.publicInternetAddress);
+			send2("Public hello from " + ownId, ips.publicInternetAddress);
+//			if (!ips.localNetworkAddress.getAddress().getHostAddress().startsWith("127.0"))
+//				send("Local hello from " + ownId, ips.localNetworkAddress);
 		}
 		
-		try { Thread.sleep(3000); } catch (InterruptedException e) { throw new IllegalStateException(e); }
+//		try { Thread.sleep(1000); } catch (InterruptedException e) { throw new IllegalStateException(e); }
 	}
 
 
@@ -100,9 +103,23 @@ public class Client {
 	private static void send(String message, SocketAddress destination) {
 		byte[] bytes = message.getBytes(CHARSET);
 		try {
-			_socket.send(new DatagramPacket(bytes, bytes.length, destination));
+			DatagramPacket packet = new DatagramPacket(bytes, bytes.length, destination);
+			System.out.println(destination + ":" + packet.getPort());
+			_socket.send(packet);
 		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new IllegalStateException("Not implemented yet");
+		}
+	}
+	synchronized
+	private static void send2(String message, SocketAddress destination) {
+		byte[] bytes = message.getBytes(CHARSET);
+		try {
+			DatagramPacket packet = new DatagramPacket(bytes, bytes.length, destination);
+//			packet.setPort((packet.getPort() + portScan++) % 65536);
+//			System.out.println(destination + ":" + packet.getPort());
+			_socket.send(packet);
+		} catch (IOException e) {
+			throw new IllegalStateException("Not implemented yet");
 		}
 	}
 
@@ -111,7 +128,7 @@ public class Client {
 		try {
 			return InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e);
+			throw new IllegalStateException("Not implemented yet");
 		}
 	}
 
@@ -130,6 +147,7 @@ public class Client {
 	private static String receive() throws IOException {
 		DatagramPacket result = new DatagramPacket(new byte[1024], 1024);
 		_socket.receive(result);
+		System.out.println("Received packet from: " + result.getAddress() + " port: " + result.getPort());
 		return new String(result.getData(), result.getOffset(), result.getLength(), CHARSET);
 	}
 
@@ -140,7 +158,7 @@ public class Client {
 		try {
 			return reader.readLine();
 		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new IllegalStateException("Not implemented yet");
 		}
 	}
 
