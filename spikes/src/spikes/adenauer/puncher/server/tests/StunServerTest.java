@@ -16,6 +16,8 @@ import spikes.adenauer.puncher.server.StunServer;
 
 public class StunServerTest extends BrickTestBase {
 
+	//TODO Stun, Keepalive, Spread outgoing port.
+	
 	private final StunServer subject = my(StunServer.class);
 	
 	@Test
@@ -26,7 +28,7 @@ public class StunServerTest extends BrickTestBase {
 		assertArrayEquals(asBytes("10.42.10.42"), reply);
 	}
 
-
+	
 	private void handleAndUseForReply(DatagramPacket packet) {
 		InetAddress ip = packet.getAddress();
 		int port = packet.getPort();

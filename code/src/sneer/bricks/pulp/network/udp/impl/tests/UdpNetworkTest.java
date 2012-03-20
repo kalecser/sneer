@@ -20,7 +20,7 @@ import sneer.foundation.util.concurrent.Latch;
 public class UdpNetworkTest extends BrickTestBase {
 	
 
-	@Test
+	@Test(timeout = 2000)
 	public void packetsBackAndForth() throws IOException {
 		UdpNetwork subject = my(UdpNetwork.class);
 		
