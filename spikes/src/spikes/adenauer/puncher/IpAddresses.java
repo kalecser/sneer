@@ -1,17 +1,21 @@
 package spikes.adenauer.puncher;
 
-import java.net.InetSocketAddress;
+import java.net.InetAddress;
 
 
-class IpAddresses {
+public class IpAddresses {
 
-	final InetSocketAddress publicInternetAddress;
-	final InetSocketAddress localNetworkAddress;
+	public final InetAddress publicInternetAddress;
+	public final int publicInternetPort;
+	public final InetAddress localNetworkAddress;
+	public final int localNetworkPort;
 
-	
-	public IpAddresses(InetSocketAddress publicInternetAddr, InetSocketAddress localNetworkAddr) {
+
+	public IpAddresses(InetAddress publicInternetAddr, int publicInternetPort_, InetAddress localNetworkAddr, int localNetworkPort_) {
 		this.publicInternetAddress = publicInternetAddr;
+		this.publicInternetPort = publicInternetPort_;
 		this.localNetworkAddress = localNetworkAddr;
+		this.localNetworkPort = localNetworkPort_;
 	}
 
 }

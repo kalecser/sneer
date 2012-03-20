@@ -7,6 +7,6 @@ import sneer.foundation.brickness.Brick;
 @Brick
 public interface StunServer {
 
-	void handleAndUseForReply(DatagramPacket received);
+	DatagramPacket replyFor(DatagramPacket received);
 
 }
