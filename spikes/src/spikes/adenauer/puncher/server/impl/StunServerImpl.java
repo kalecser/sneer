@@ -1,9 +1,9 @@
 package spikes.adenauer.puncher.server.impl;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import spikes.adenauer.puncher.IpAddresses;
@@ -17,24 +17,31 @@ class StunServerImpl implements StunServer {
 
 	@Override
 	public DatagramPacket replyFor(DatagramPacket packet) {
-		KeepAliveRequest req = KeepAliveRequest.umarshalFrom(packet);
+		StunRequest req;
+		try {
+			req = StunRequest.umarshalFrom(packet.getData(), packet.getLength());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
 		keepCallerAddresses(packet, req);
 
-		List<byte[]> peers = req.peersToFind();
-		if (peers.isEmpty()) return null;
+		byte[] peer = req._peerToFind;
+		if (peer == null) return null;
 
-		byte[] peer = peers.remove(0);
 		IpAddresses addr = addressesBySeal.get(toString(peer));
-		KeepAliveReply reply = new KeepAliveReply(peer, addr.publicInternetAddress, addr.publicInternetPort);
+		StunReply reply = new StunReply(peer, addr.publicInternetAddress, addr.publicInternetPort, addr.localNetworkAddress, addr.localNetworkPort);
 		
-		reply.marshalTo(packet);
+		int length = reply.marshalTo(packet.getData());
+		packet.setLength(length);
 		return packet;
 	}
 
 
-	private void keepCallerAddresses(DatagramPacket packet, KeepAliveRequest req) {
-		String caller = toString(req.seal());
-		IpAddresses addresses = new IpAddresses(packet.getAddress(), packet.getPort(), null, -1);
+	private void keepCallerAddresses(DatagramPacket packet, StunRequest req) {
+		String caller = toString(req._ownSeal);
+		IpAddresses addresses = new IpAddresses(packet.getAddress(), packet.getPort(), req._localIp, req._localPort);
 		addressesBySeal.put(caller, addresses);
 	}
 

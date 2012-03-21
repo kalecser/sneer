@@ -3,45 +3,52 @@ package spikes.adenauer.puncher.server.tests;
 import static sneer.bricks.pulp.network.udp.UdpNetwork.MAX_PACKET_PAYLOAD_SIZE;
 import static sneer.foundation.environments.Environments.my;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 
 import org.junit.Test;
 
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import spikes.adenauer.puncher.server.StunServer;
-import spikes.adenauer.puncher.server.impl.KeepAliveReply;
-import spikes.adenauer.puncher.server.impl.KeepAliveRequest;
+import spikes.adenauer.puncher.server.impl.StunReply;
+import spikes.adenauer.puncher.server.impl.StunRequest;
 
 
 public class StunServerTest extends BrickTestBase {
 
-	//TODO Stun, Spread outgoing port.
+	//TODO Spread outgoing port.
 	
 	private final StunServer subject = my(StunServer.class);
 	
 	
 	@Test
-	public void stun() throws UnknownHostException {
+	public void stun() throws Exception {
 		byte[] seal1 = seal(1);
-		assertNull(replyForKeepAlive(seal1, ip("10.42.10.1"), 4111));
+		assertNull(replyForKeepAlive(seal1, ip("200.243.227.1"), 4111, ip("10.42.10.1"), 1001, null));
 		
 		byte[] seal2 = seal(2);
 		byte[] peerToFind = seal1;
-		DatagramPacket packet2 = replyForKeepAlive(seal2, ip("10.42.10.2"), 4222, peerToFind);
+		DatagramPacket packet2 = replyForKeepAlive(seal2, ip("205.65.114.2"), 4222, ip("10.42.10.2"), 1002, peerToFind);
 		
-		KeepAliveReply reply = KeepAliveReply.unmarshalFrom(packet2);
-		assertArrayEquals(seal1, reply.peerSeal());
-		assertEquals(ip("10.42.10.1"), reply.peerIp());
-		assertEquals(4111, reply.peerPort());
+		StunReply reply = unmarshalReply(packet2);
+		assertArrayEquals(seal1, reply.peerSeal);
+		assertEquals(ip("200.243.227.1"), reply.peerIp);
+		assertEquals(4111, reply.peerPort);
+		assertEquals(ip("10.42.10.1"), reply.peerLocalIp);
+		assertEquals(1001, reply.peerLocalPort);
 	}
 
 
-	private DatagramPacket replyForKeepAlive(byte[] ownSeal, InetAddress ip, int port, byte[]... peersToFind) {
+	private StunReply unmarshalReply(DatagramPacket packet2) throws IOException {
+		return StunReply.unmarshalFrom(packet2.getData(), packet2.getLength());
+	}
+
+
+	private DatagramPacket replyForKeepAlive(byte[] ownSeal, InetAddress ip, int port, InetAddress localIp, int localPort, byte[] peerToFind) {
 		byte[] buf = newBuf();
-		int length = new KeepAliveRequest(ownSeal, Arrays.asList(peersToFind)).marshalTo(buf);
+		int length = new StunRequest(ownSeal, localIp, localPort, peerToFind).marshalTo(buf);
 		return replyFor(new DatagramPacket(buf, length, ip, port));
 	}
 
