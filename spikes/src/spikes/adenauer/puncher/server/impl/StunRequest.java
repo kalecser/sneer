@@ -1,5 +1,6 @@
 package spikes.adenauer.puncher.server.impl;
 
+import static sneer.foundation.environments.Environments.my;
 import static spikes.adenauer.puncher.server.impl.DataUtils.dataInputFrom;
 import static spikes.adenauer.puncher.server.impl.DataUtils.ip;
 import static spikes.adenauer.puncher.server.impl.DataUtils.readNewArray;
@@ -9,11 +10,25 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 
+import sneer.bricks.hardware.io.log.Logger;
+
+
+
 
 
 public class StunRequest {
 
-	public static StunRequest umarshalFrom(byte[] data, int length) throws IOException {
+	public static StunRequest umarshalFrom(byte[] data, int length) {
+		try {
+			return tryToUnmarshalFrom(data, length);
+		} catch (IOException e) {
+			my(Logger.class).log("Exception unmarshalling StunRequest: " + e.getMessage());
+			return null;
+		}
+	}
+
+
+	private static StunRequest tryToUnmarshalFrom(byte[] data, int length) throws IOException {
 		DataInputStream in = dataInputFrom(data, length);
 		
 		byte[] ownSeal = readNewArray(in, 64);

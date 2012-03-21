@@ -3,7 +3,7 @@ package spikes.adenauer.puncher.server.impl;
 import java.io.OutputStream;
 
 
-/** Efficient implementation that does not create a new array but does not grow. */
+/** Efficient implementation that does not create a new array but requires the given target array to be large enough. */
 public class ByteArrayOutputStream extends OutputStream {
 
 	private int pos = 0;

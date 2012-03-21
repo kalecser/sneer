@@ -1,6 +1,5 @@
 package spikes.adenauer.puncher.server.impl;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,13 +16,8 @@ class StunServerImpl implements StunServer {
 
 	@Override
 	public DatagramPacket replyFor(DatagramPacket packet) {
-		StunRequest req;
-		try {
-			req = StunRequest.umarshalFrom(packet.getData(), packet.getLength());
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
+		StunRequest req = StunRequest.umarshalFrom(packet.getData(), packet.getLength());
+		if (req == null) return null;
 		
 		keepCallerAddresses(packet, req);
 
