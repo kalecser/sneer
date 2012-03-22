@@ -1,6 +1,6 @@
 package spikes.demos;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -8,6 +8,12 @@ import java.awt.FlowLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
+
+import basis.brickness.Brickness;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.lang.ClosureX;
+import basis.lang.Consumer;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
@@ -17,11 +23,6 @@ import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.bricks.skin.widgets.reactive.ToggleButtonWidget;
-import sneer.foundation.brickness.Brickness;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.ClosureX;
-import sneer.foundation.lang.Consumer;
 
 public class ReactiveToggleButtonDemo {
 

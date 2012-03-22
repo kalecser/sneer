@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.gis.map.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -11,10 +11,11 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.network.computers.httpgateway.HttpGateway;
 import sneer.bricks.snapps.gis.location.Location;
 import sneer.bricks.snapps.gis.map.MapRenderer;
-import sneer.foundation.lang.Consumer;
 
 class MapRendererImpl implements MapRenderer{
 

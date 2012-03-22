@@ -1,6 +1,6 @@
 package spikes.gandhi.treemodel;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -20,9 +20,10 @@ import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 
+import basis.lang.Closure;
+
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
-import sneer.foundation.lang.Closure;
 
 public class TreeModelExample extends JFrame {
 

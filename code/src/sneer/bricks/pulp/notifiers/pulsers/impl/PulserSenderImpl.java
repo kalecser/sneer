@@ -4,7 +4,7 @@ import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
 import sneer.bricks.pulp.notifiers.pulsers.PulseSender;
 import sneer.bricks.pulp.notifiers.pulsers.Pulser;
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 class PulserSenderImpl implements PulseSender {
 

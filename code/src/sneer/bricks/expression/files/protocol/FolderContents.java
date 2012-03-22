@@ -1,7 +1,7 @@
 package sneer.bricks.expression.files.protocol;
 
+import basis.lang.arrays.ImmutableArray;
 import sneer.bricks.expression.tuples.Tuple;
-import sneer.foundation.lang.arrays.ImmutableArray;
 
 public class FolderContents extends Tuple {
 

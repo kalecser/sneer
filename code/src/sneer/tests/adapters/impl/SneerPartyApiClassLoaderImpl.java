@@ -5,11 +5,12 @@ package sneer.tests.adapters.impl;
 
 import java.net.URL;
 
+import basis.brickness.impl.EagerClassLoader;
+
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.network.ByteArrayServerSocket;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network2010;
-import sneer.foundation.brickness.impl.EagerClassLoader;
 import sneer.tests.adapters.SneerPartyApiClassLoader;
 import sneer.tests.adapters.SneerPartyController;
 
@@ -52,7 +53,9 @@ public final class SneerPartyApiClassLoaderImpl extends EagerClassLoader impleme
 	}
 
 	private boolean isPublishedByUser(String className) {
-		return !className.startsWith("sneer");
+		if (className.startsWith("sneer")) return false;
+		if (className.startsWith("basis")) return false;
+		return true;
 	}
 
 	@Override

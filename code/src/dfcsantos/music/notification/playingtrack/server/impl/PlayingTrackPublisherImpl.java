@@ -1,9 +1,9 @@
 package dfcsantos.music.notification.playingtrack.server.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Consumer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.social.attributes.Attributes;
-import sneer.foundation.lang.Consumer;
 import dfcsantos.music.Music;
 import dfcsantos.music.notification.playingtrack.PlayingTrack;
 import dfcsantos.music.notification.playingtrack.server.PlayingTrackPublisher;

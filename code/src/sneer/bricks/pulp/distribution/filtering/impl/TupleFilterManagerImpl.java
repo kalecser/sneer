@@ -3,9 +3,10 @@ package sneer.bricks.pulp.distribution.filtering.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import basis.lang.Predicate;
+
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
-import sneer.foundation.lang.Predicate;
 
 class TupleFilterManagerImpl implements TupleFilterManager {
 

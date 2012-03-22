@@ -1,6 +1,6 @@
 package sneer.bricks.software.code.compilers.java.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,8 @@ import sneer.bricks.software.code.compilers.CompilerException;
 import sneer.bricks.software.code.compilers.LanguageRegistry;
 import sneer.bricks.software.code.compilers.Result;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
-import sneer.foundation.lang.Functor;
+
+import basis.lang.Functor;
 
 import com.sun.tools.javac.Main;
 

@@ -1,7 +1,7 @@
 package sneer.bricks.hardware.cpu.threads.throttle.impl;
 
+import basis.lang.ClosureX;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
-import sneer.foundation.lang.ClosureX;
 
 public class CpuThrottleImpl implements CpuThrottle {
 

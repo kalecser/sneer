@@ -1,12 +1,13 @@
 package sneer.bricks.network.computers.sockets.connections.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 
+import basis.lang.ClosureX;
+
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.foundation.lang.ClosureX;
 
 class SocketCloser {
 

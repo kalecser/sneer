@@ -1,17 +1,18 @@
 package dfcsantos.music.notification.playingtrack.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 
 import org.jmock.Expectations;
 import org.junit.Test;
 
+import basis.brickness.testsupport.Bind;
+
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
 import dfcsantos.music.Music;
 import dfcsantos.music.notification.playingtrack.PlayingTrack;
 import dfcsantos.music.notification.playingtrack.server.PlayingTrackPublisher;

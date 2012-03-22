@@ -1,6 +1,6 @@
 package sneer.bricks.network.computers.authentication.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 
@@ -8,11 +8,12 @@ import org.jmock.Expectations;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import basis.lang.arrays.ImmutableByteArray;
+
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.authentication.PublicKeyChallenges;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class PublicKeyChallengesTest extends BrickTestBase {
 

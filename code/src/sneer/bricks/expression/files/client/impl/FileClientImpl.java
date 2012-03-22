@@ -1,19 +1,20 @@
 package sneer.bricks.expression.files.client.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import basis.lang.Closure;
+import basis.lang.Producer;
+
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.Downloads;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.identity.seals.Seal;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Producer;
 
 class FileClientImpl implements FileClient {
 

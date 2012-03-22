@@ -1,6 +1,6 @@
 package dfcsantos.music.ui.view.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.FlowLayout;
 import java.text.Format;
@@ -10,8 +10,9 @@ import java.util.Date;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.cpu.lang.Lang;
-import sneer.foundation.lang.Consumer;
 
 import dfcsantos.music.ui.view.MusicViewListener;
 

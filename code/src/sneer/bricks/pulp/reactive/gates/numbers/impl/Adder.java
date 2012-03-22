@@ -1,13 +1,13 @@
 package sneer.bricks.pulp.reactive.gates.numbers.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Closure;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.pulp.notifiers.pulsers.PulseSenders;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.foundation.lang.Closure;
 
 class Adder {
 

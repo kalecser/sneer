@@ -1,9 +1,9 @@
 package sneer.bricks.expression.tuples.dispatcher;
 
+import basis.brickness.Brick;
+import basis.environments.Environment;
+import basis.lang.Consumer;
 import sneer.bricks.expression.tuples.Tuple;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.lang.Consumer;
 
 
 @Brick

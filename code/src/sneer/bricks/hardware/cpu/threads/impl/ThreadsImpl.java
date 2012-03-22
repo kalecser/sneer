@@ -1,13 +1,13 @@
 package sneer.bricks.hardware.cpu.threads.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Closure;
+import basis.util.concurrent.Latch;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.notifiers.pulsers.PulseSender;
 import sneer.bricks.pulp.notifiers.pulsers.Pulser;
 import sneer.bricks.pulp.notifiers.pulsers.PulseSenders;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.util.concurrent.Latch;
 
 class ThreadsImpl implements Threads {
 

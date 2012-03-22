@@ -1,9 +1,9 @@
 package sneer.bricks.expression.tuples.remote;
 
+import basis.brickness.Brick;
+import basis.lang.Consumer;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Consumer;
 
 @Brick
 public interface RemoteTuples {

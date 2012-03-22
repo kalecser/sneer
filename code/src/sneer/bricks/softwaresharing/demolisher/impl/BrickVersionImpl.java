@@ -1,12 +1,14 @@
 package sneer.bricks.softwaresharing.demolisher.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+
+import basis.lang.Functor;
 
 import sneer.bricks.expression.files.hasher.FolderContentsHasher;
 import sneer.bricks.expression.files.map.visitors.FileMapGuide;
@@ -23,7 +25,6 @@ import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
-import sneer.foundation.lang.Functor;
 
 class BrickVersionImpl implements BrickVersion {
 
@@ -78,7 +79,7 @@ class BrickVersionImpl implements BrickVersion {
 
 	@Override
 	public void setRejected(boolean rejected) {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 

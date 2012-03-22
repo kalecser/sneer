@@ -1,16 +1,17 @@
 package sneer.bricks.hardware.io.log.stacktrace.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.jmock.Expectations;
 import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
+import basis.brickness.testsupport.Bind;
+import basis.brickness.testsupport.BrickTestWithMocks;
+
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.io.log.stacktrace.StackTraceLogger;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.brickness.testsupport.BrickTestWithMocks;
 
 
 

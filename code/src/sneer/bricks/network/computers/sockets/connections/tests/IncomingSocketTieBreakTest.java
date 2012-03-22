@@ -1,10 +1,13 @@
 package sneer.bricks.network.computers.sockets.connections.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.jmock.Expectations;
 import org.jmock.Sequence;
 import org.junit.Test;
+
+import basis.brickness.testsupport.Bind;
+import basis.lang.arrays.ImmutableByteArray;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.seals.OwnSeal;
@@ -19,8 +22,6 @@ import sneer.bricks.pulp.network.Network2010;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class IncomingSocketTieBreakTest extends BrickTestBase {
 

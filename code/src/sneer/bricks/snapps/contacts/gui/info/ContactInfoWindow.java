@@ -1,7 +1,7 @@
 package sneer.bricks.snapps.contacts.gui.info;
 
+import basis.brickness.Brick;
 import sneer.bricks.software.bricks.snapploader.Snapp;
-import sneer.foundation.brickness.Brick;
 
 @Snapp
 @Brick

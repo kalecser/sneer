@@ -1,9 +1,12 @@
 package dfcsantos.tracks.exchange.endorsements.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.util.Random;
+
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.server.FileServer;
@@ -17,8 +20,6 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.Tracks;
 import dfcsantos.tracks.exchange.endorsements.TrackEndorsement;
 import dfcsantos.tracks.exchange.endorsements.TrackEndorser;

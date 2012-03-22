@@ -1,6 +1,9 @@
 package spikes.sneer.bricks.skin.audio.mic.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Closure;
+import basis.lang.arrays.ImmutableByteArray;
+import basis.lang.exceptions.FriendlyException;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.notifiers.Notifier;
@@ -12,9 +15,6 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.retrier.Retrier;
 import sneer.bricks.pulp.retrier.RetrierManager;
 import sneer.bricks.pulp.retrier.Task;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
-import sneer.foundation.lang.exceptions.FriendlyException;
 import spikes.sneer.bricks.skin.audio.mic.Mic;
 
 class MicImpl implements Mic {

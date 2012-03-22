@@ -1,11 +1,11 @@
 package sneer.bricks.network.social;
 
+import basis.brickness.Brick;
+import basis.lang.PickyConsumer;
+import basis.lang.exceptions.Refusal;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
 import sneer.bricks.hardware.io.prevalence.nature.Transaction;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.PickyConsumer;
-import sneer.foundation.lang.exceptions.Refusal;
 
 @Brick(Prevalent.class)
 public interface Contacts {

@@ -1,14 +1,15 @@
 package sneer.bricks.skin.widgets.reactive.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import javax.swing.JProgressBar;
+
+import basis.lang.Consumer;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.widgets.reactive.Widget;
-import sneer.foundation.lang.Consumer;
 
 class RProgressBarImpl extends RPanel<JProgressBar> implements Widget<JProgressBar> {
 

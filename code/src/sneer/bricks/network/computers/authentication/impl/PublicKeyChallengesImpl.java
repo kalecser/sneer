@@ -1,6 +1,6 @@
 package sneer.bricks.network.computers.authentication.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.security.KeyFactory;
@@ -39,7 +39,7 @@ class PublicKeyChallengesImpl implements PublicKeyChallenges {
 
 
 	private byte[] ownPublicKey() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 

@@ -1,6 +1,6 @@
 package sneer.tests.adapters;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 /** This brick will have one instance loaded inside each Sneer party's
  *  container to control and observe the other bricks. This interface

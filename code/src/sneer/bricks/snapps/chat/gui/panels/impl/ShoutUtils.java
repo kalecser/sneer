@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.chat.gui.panels.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

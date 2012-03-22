@@ -1,14 +1,15 @@
 package spikes.klaus.security;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFrame;
 
+import basis.lang.Closure;
+
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.foundation.lang.Closure;
 
 public class HelloWorld implements Closure {
 

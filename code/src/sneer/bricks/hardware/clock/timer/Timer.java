@@ -1,7 +1,7 @@
 package sneer.bricks.hardware.clock.timer;
 
+import basis.brickness.Brick;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface Timer {

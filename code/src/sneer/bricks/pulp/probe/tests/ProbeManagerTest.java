@@ -1,11 +1,15 @@
 package sneer.bricks.pulp.probe.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.jmock.Expectations;
 import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
+
+import basis.brickness.testsupport.Bind;
+import basis.lang.Consumer;
+import basis.lang.arrays.ImmutableByteArray;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
@@ -21,9 +25,6 @@ import sneer.bricks.pulp.probe.ProbeManager;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.serialization.Serializer;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class ProbeManagerTest extends BrickTestBase {
 

@@ -1,6 +1,6 @@
 package spikes.rene.cyclesentinel.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +30,7 @@ public class CycleSentinelImpl implements CycleSentinel {
 
 		private String _containerPackage;
 		private final String _innermostDependent;   //Ex: "sneer.bricks.hardware.foo"
-		private final String _innermostProvider;   //Ex: "sneer.foundation.lang.Functor"
+		private final String _innermostProvider;   //Ex: "basis.lang.Functor"
 		
 		private final Dependency _dependency;
 
@@ -70,7 +70,7 @@ public class CycleSentinelImpl implements CycleSentinel {
 		}
 
 		
-		private String details() {  //Ex: "sneer.bricks -> sneer.foundation  (sneer.bricks.hardware.foo -> sneer.foundation.lang.Functor)"
+		private String details() {  //Ex: "sneer.bricks -> basis  (sneer.bricks.hardware.foo -> basis.lang.Functor)"
 			String dependent = _dependency.dependent();
 			String provider = _dependency.provider();
 			

@@ -1,16 +1,17 @@
 package sneer.bricks.expression.files.map.mapper.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+
+import basis.lang.CacheMap;
+import basis.lang.Producer;
 
 import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Producer;
 
 class FileMapperImpl implements FileMapper {
 

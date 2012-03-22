@@ -5,7 +5,8 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
+
 
 @Brick
 public interface Audio {

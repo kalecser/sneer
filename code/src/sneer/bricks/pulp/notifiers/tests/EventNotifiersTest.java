@@ -1,16 +1,17 @@
 package sneer.bricks.pulp.notifiers.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Test;
+
+import basis.lang.Producer;
+import basis.util.concurrent.Latch;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Producer;
-import sneer.foundation.util.concurrent.Latch;
 
 public class EventNotifiersTest extends BrickTestBase {
 	

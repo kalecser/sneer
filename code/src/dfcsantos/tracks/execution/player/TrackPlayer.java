@@ -1,7 +1,7 @@
 package dfcsantos.tracks.execution.player;
 
+import basis.brickness.Brick;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.brickness.Brick;
 import dfcsantos.tracks.Track;
 
 @Brick

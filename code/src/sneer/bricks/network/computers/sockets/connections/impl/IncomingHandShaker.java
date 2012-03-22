@@ -1,9 +1,11 @@
 package sneer.bricks.network.computers.sockets.connections.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.util.Arrays;
+
+import basis.lang.arrays.ImmutableByteArray;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.identity.seals.OwnSeal;
@@ -17,7 +19,6 @@ import sneer.bricks.pulp.network.Network2010;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
 import sneer.bricks.pulp.notifiers.Source;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 class IncomingHandShaker {
 

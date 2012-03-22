@@ -3,9 +3,10 @@ package sneer.bricks.hardware.io.prevalence.nature.impl;
 import java.util.Arrays;
 import java.util.List;
 
+import basis.brickness.ClassDefinition;
+import basis.lang.Producer;
+
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
-import sneer.foundation.brickness.ClassDefinition;
-import sneer.foundation.lang.Producer;
 
 class PrevalentImpl implements Prevalent {
 

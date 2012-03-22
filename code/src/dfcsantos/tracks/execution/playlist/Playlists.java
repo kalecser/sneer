@@ -2,7 +2,8 @@ package dfcsantos.tracks.execution.playlist;
 
 import java.io.File;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
+
 
 @Brick
 public interface Playlists {

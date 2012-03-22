@@ -7,7 +7,8 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.tree.TreeNode;
 
-import sneer.foundation.lang.exceptions.NotImplementedYet;
+import basis.lang.exceptions.NotImplementedYet;
+
 
 abstract class AbstractTreeNodeWrapper<CHILD> implements TreeNode{
 

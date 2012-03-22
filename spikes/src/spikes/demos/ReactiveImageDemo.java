@@ -1,6 +1,6 @@
 package spikes.demos;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.FlowLayout;
 import java.awt.Image;
@@ -9,17 +9,18 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import basis.brickness.Brickness;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.lang.ClosureX;
+import basis.lang.Functor;
+
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.widgets.reactive.ImageWidget;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
-import sneer.foundation.brickness.Brickness;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.ClosureX;
-import sneer.foundation.lang.Functor;
 import spikes.wheel.reactive.impl.mocks.RandomBoolean;
 
 public class ReactiveImageDemo {
@@ -53,7 +54,7 @@ public class ReactiveImageDemo {
 		try {
 			return ImageIO.read(ReactiveImageDemo.class.getResource(fileName));
 		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 	}
 	

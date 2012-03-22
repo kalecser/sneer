@@ -4,7 +4,7 @@
 
 package sneer.bricks.pulp.network.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

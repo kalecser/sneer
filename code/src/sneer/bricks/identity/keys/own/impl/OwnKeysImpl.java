@@ -1,6 +1,6 @@
 package sneer.bricks.identity.keys.own.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;

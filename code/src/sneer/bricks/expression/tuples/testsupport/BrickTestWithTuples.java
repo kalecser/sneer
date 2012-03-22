@@ -1,8 +1,15 @@
 package sneer.bricks.expression.tuples.testsupport;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.After;
+
+import basis.environments.Environment;
+import basis.environments.EnvironmentUtils;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.lang.Producer;
+import basis.lang.exceptions.Refusal;
 
 import sneer.bricks.expression.tuples.testsupport.pump.TuplePump;
 import sneer.bricks.expression.tuples.testsupport.pump.TuplePumps;
@@ -12,12 +19,6 @@ import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.EnvironmentUtils;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Producer;
-import sneer.foundation.lang.exceptions.Refusal;
 
 public abstract class BrickTestWithTuples extends BrickTestBase {
 

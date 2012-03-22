@@ -1,7 +1,7 @@
 package sneer.bricks.hardware.cpu.profiler.impl;
 
+import static basis.environments.Environments.my;
 import static sneer.bricks.pulp.blinkinglights.LightType.ERROR;
-import static sneer.foundation.environments.Environments.my;
 
 import java.io.File;
 import java.io.FileNotFoundException;

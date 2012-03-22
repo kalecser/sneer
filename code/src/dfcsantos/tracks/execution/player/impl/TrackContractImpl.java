@@ -1,9 +1,12 @@
 package dfcsantos.tracks.execution.player.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 import javazoom.jl.player.Player;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -11,8 +14,6 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.execution.player.TrackContract;
 

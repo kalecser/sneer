@@ -1,18 +1,19 @@
 package sneer.bricks.pulp.reactive.gates.logic.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.gates.logic.LogicGates;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Consumer;
 
 public class AndTest extends BrickTestBase {
 

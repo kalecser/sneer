@@ -3,8 +3,9 @@ package sneer.bricks.hardware.ram.iterables;
 import java.util.Iterator;
 import java.util.List;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Functor;
+import basis.brickness.Brick;
+import basis.lang.Functor;
+
 
 @Brick
 public interface Iterables {

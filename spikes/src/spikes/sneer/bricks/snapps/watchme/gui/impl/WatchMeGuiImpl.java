@@ -1,6 +1,6 @@
 package spikes.sneer.bricks.snapps.watchme.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -36,7 +36,7 @@ class WatchMeGuiImpl implements WatchMeGui{ //Optimize need a better snapp windo
 		try {
 			return new ImageIcon(ImageIO.read(this.getClass().getResource(fileName)));
 		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 	}
 

@@ -1,7 +1,7 @@
 package sneer.bricks.network.social.attributes.gui;
 
+import basis.lang.PickyConsumer;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.lang.PickyConsumer;
 
 public interface AttributePanelElement {
 

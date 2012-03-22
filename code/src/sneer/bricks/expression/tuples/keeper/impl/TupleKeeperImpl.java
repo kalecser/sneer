@@ -1,19 +1,20 @@
 package sneer.bricks.expression.tuples.keeper.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import basis.lang.CacheMap;
+import basis.lang.Closure;
+import basis.lang.Functor;
+import basis.lang.Predicate;
+import basis.lang.Producer;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.keeper.TupleKeeper;
 import sneer.bricks.expression.tuples.kept.KeptTuples;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.Predicate;
-import sneer.foundation.lang.Producer;
 
 
 class TupleKeeperImpl implements TupleKeeper {

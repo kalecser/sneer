@@ -1,13 +1,14 @@
 package spikes.sneer.bricks.skin.audio.mic.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
-import sneer.foundation.lang.arrays.ImmutableByteArray;
-import sneer.foundation.lang.exceptions.FriendlyException;
+import basis.lang.arrays.ImmutableByteArray;
+import basis.lang.exceptions.FriendlyException;
+
 import spikes.sneer.bricks.skin.audio.kernel.Audio;
 
 class MicLine {

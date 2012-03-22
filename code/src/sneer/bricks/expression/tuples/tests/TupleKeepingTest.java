@@ -1,10 +1,13 @@
 package sneer.bricks.expression.tuples.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.Arrays;
 
 import org.junit.Test;
+
+import basis.lang.Consumer;
+import basis.lang.Functor;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
@@ -14,8 +17,6 @@ import sneer.bricks.expression.tuples.kept.KeptTuples;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
 
 public class TupleKeepingTest extends BrickTestBase {
 

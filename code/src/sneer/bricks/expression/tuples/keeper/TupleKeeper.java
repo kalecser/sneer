@@ -1,9 +1,9 @@
 package sneer.bricks.expression.tuples.keeper;
 
+import basis.brickness.Brick;
+import basis.lang.Functor;
+import basis.lang.Predicate;
 import sneer.bricks.expression.tuples.Tuple;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.Predicate;
 
 
 @Brick

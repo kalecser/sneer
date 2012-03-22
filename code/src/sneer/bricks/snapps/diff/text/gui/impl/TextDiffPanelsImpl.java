@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.diff.text.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

@@ -1,10 +1,15 @@
 package sneer.bricks.network.computers.sockets.connections.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.jmock.Expectations;
 import org.jmock.Sequence;
 import org.junit.Test;
+
+import basis.brickness.testsupport.Bind;
+import basis.lang.Consumer;
+import basis.lang.arrays.ImmutableByteArray;
+import basis.util.concurrent.Latch;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
@@ -22,10 +27,6 @@ import sneer.bricks.pulp.network.Network2010;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
-import sneer.foundation.util.concurrent.Latch;
 
 public class IncomingSocketOriginDetectionTest extends BrickTestBase {
 

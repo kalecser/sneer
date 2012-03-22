@@ -1,8 +1,11 @@
 package sneer.bricks.network.social.attributes.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Test;
+
+import basis.environments.Environments;
+import basis.lang.Closure;
 
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
 import sneer.bricks.network.social.attributes.Attribute;
@@ -10,8 +13,6 @@ import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.network.social.attributes.tests.fixtures.AnotherAttribute;
 import sneer.bricks.network.social.attributes.tests.fixtures.AttributeWithDefaultValue;
 import sneer.bricks.network.social.attributes.tests.fixtures.SomeAttribute;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
 
 public class AttributesTest extends BrickTestWithTuples {
 

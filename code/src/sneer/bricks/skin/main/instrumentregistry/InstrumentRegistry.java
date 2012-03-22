@@ -1,7 +1,7 @@
 package sneer.bricks.skin.main.instrumentregistry;
 
+import basis.brickness.Brick;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface InstrumentRegistry {

@@ -1,6 +1,6 @@
 package sneer.bricks.expression.files.writer.folder.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +59,7 @@ final class FileWritingVisitor implements FolderStructureVisitor {
 			if (lastModified == -1) return;
 			if (!file.setLastModified(lastModified)) throw new IOException("Unable to set last modified time: " + file);
 		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 	}
 	
@@ -67,7 +67,7 @@ final class FileWritingVisitor implements FolderStructureVisitor {
 		try {
 			my(IO.class).files().writeByteArrayToFile(destination, contents);
 		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 	}
 }

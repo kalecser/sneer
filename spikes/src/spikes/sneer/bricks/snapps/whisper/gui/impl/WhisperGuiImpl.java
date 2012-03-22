@@ -1,6 +1,6 @@
 package spikes.sneer.bricks.snapps.whisper.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -11,14 +11,15 @@ import java.awt.event.MouseEvent;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 
+import basis.environments.Environments;
+import basis.lang.Consumer;
+
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.bricks.skin.rooms.ActiveRoomKeeper;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Consumer;
 import spikes.sneer.bricks.skin.audio.loopback.LoopbackTester;
 import spikes.sneer.bricks.skin.audio.mic.Mic;
 import spikes.sneer.bricks.snapps.whisper.gui.WhisperGui;

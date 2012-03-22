@@ -1,8 +1,8 @@
 package sneer.bricks.pulp.notifiers.impl;
 
+import basis.lang.Producer;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
-import sneer.foundation.lang.Producer;
 
 class NotifiersImpl implements Notifiers {
 

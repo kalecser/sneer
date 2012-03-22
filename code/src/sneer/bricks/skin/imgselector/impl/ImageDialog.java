@@ -1,5 +1,5 @@
 package sneer.bricks.skin.imgselector.impl;
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -16,8 +16,9 @@ import javax.swing.JDialog;
 import javax.swing.JLayeredPane;
 import javax.swing.WindowConstants;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.skin.image.ImageFactory;
-import sneer.foundation.lang.Consumer;
 
 class ImageDialog extends JDialog {
 	

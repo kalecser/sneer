@@ -29,11 +29,12 @@ package dfcsantos.music;
 
 import java.io.File;
 
+import basis.brickness.Brick;
+
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.foundation.brickness.Brick;
 import dfcsantos.tracks.Track;
 
 @Brick

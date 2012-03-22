@@ -1,6 +1,6 @@
 package spikes.rene.cyclesentinel.impl;
 
-import sneer.foundation.lang.Pair;
+import basis.lang.Pair;
 
 
 class Dependency extends Pair<String, String> {

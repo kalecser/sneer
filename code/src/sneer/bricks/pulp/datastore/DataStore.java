@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.datastore;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 @Brick
 public interface DataStore {

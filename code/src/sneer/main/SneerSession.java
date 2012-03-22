@@ -1,6 +1,6 @@
 package sneer.main;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 import static sneer.main.SneerCodeFolders.BIN;
 import static sneer.main.SneerCodeFolders.SRC;
 import static sneer.main.SneerCodeFolders.STAGE;
@@ -14,6 +14,11 @@ import java.io.File;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
+import basis.brickness.Brickness;
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.lang.Closure;
+
 import sneer.bricks.hardware.clock.ticker.ClockTicker;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.robust.RobustExceptionLogging;
@@ -23,10 +28,6 @@ import sneer.bricks.snapps.system.log.file.LogToFile;
 import sneer.bricks.snapps.system.log.sysout.LogToSysout;
 import sneer.bricks.software.bricks.snapploader.SnappLoader;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.foundation.brickness.Brickness;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
 
 public class SneerSession {
 	

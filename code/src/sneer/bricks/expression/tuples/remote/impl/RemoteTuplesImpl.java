@@ -1,13 +1,13 @@
 package sneer.bricks.expression.tuples.remote.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Consumer;
+import basis.lang.Predicate;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.OwnSeal;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Predicate;
 
 class RemoteTuplesImpl implements RemoteTuples {
 

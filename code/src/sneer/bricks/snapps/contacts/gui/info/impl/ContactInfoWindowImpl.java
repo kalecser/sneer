@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.contacts.gui.info.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Container;
 import java.awt.Font;
@@ -18,6 +18,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
+
+import basis.lang.Functor;
+import basis.lang.PickyConsumer;
+import basis.lang.exceptions.Refusal;
 
 import sneer.bricks.hardware.cpu.codec.DecodeException;
 import sneer.bricks.hardware.cpu.lang.Lang;
@@ -39,9 +43,6 @@ import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.bricks.snapps.contacts.gui.info.ContactInfoWindow;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.PickyConsumer;
-import sneer.foundation.lang.exceptions.Refusal;
 
 class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 

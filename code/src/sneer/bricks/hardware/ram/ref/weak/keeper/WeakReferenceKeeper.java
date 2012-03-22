@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.ram.ref.weak.keeper;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 @Brick
 public interface WeakReferenceKeeper {

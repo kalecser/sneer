@@ -1,6 +1,6 @@
 package dfcsantos.music.ui.view.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -16,8 +16,9 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.skin.main.icons.Icons;
-import sneer.foundation.lang.Consumer;
 import dfcsantos.music.ui.view.MusicViewListener;
 
 final class PlayerControlsPanel extends JPanel {

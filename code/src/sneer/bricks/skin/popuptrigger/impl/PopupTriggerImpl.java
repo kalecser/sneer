@@ -4,8 +4,9 @@ import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.skin.popuptrigger.PopupTrigger;
-import sneer.foundation.lang.Consumer;
 
 public class PopupTriggerImpl implements PopupTrigger {
 

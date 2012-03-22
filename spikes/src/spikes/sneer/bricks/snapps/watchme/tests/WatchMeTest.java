@@ -1,6 +1,6 @@
 package spikes.sneer.bricks.snapps.watchme.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
@@ -14,6 +14,11 @@ import org.jmock.Expectations;
 import org.jmock.Sequence;
 import org.junit.Test;
 
+import basis.brickness.testsupport.Bind;
+import basis.environments.Environment;
+import basis.environments.EnvironmentUtils;
+import basis.lang.Consumer;
+
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.hardware.clock.Clock;
@@ -25,10 +30,6 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.skin.image.ImageFactory;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.EnvironmentUtils;
-import sneer.foundation.lang.Consumer;
 import spikes.sneer.bricks.skin.screenshotter.Screenshotter;
 import spikes.sneer.bricks.snapps.watchme.WatchMe;
 

@@ -5,7 +5,8 @@ import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
 import java.net.URL;
 
-import sneer.foundation.brickness.impl.EagerClassLoader;
+import basis.brickness.impl.EagerClassLoader;
+
 
 public class ThreadLocalClassLoaderStressMain {
 

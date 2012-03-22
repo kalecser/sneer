@@ -1,14 +1,15 @@
 package sneer.bricks.skin.widgets.reactive.autoscroll.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Ignore;
+
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.skin.widgets.autoscroll.tests.AutoScrollTest;
 import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 @Ignore
 public class ReactiveAutoScrollTest extends AutoScrollTest {	

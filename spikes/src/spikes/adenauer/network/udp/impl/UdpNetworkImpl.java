@@ -1,12 +1,14 @@
 package spikes.adenauer.network.udp.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+
+import basis.lang.Closure;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.seals.Seal;
@@ -19,7 +21,6 @@ import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.foundation.lang.Closure;
 import spikes.adenauer.network.UdpNetworkSpike;
 import spikes.adenauer.network.udp.UdpAddressResolver;
 
@@ -79,7 +80,7 @@ public class UdpNetworkImpl implements UdpNetworkSpike {
 		try {
 			socket.send(_packetToSend);
 		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 	}
 

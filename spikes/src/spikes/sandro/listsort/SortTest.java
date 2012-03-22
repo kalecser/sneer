@@ -1,6 +1,6 @@
 package spikes.sandro.listsort;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Image;
@@ -12,6 +12,11 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+
+import basis.brickness.Brickness;
+import basis.environments.Environments;
+import basis.lang.ByRef;
+import basis.lang.ClosureX;
 
 import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
 import sneer.bricks.pulp.reactive.Register;
@@ -25,10 +30,6 @@ import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.skin.widgets.reactive.ListWidget;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
-import sneer.foundation.brickness.Brickness;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.ByRef;
-import sneer.foundation.lang.ClosureX;
 import spikes.wheel.reactive.impl.mocks.RandomBoolean;
 
 public class SortTest {

@@ -1,6 +1,6 @@
 package sneer.bricks.identity.keys.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;

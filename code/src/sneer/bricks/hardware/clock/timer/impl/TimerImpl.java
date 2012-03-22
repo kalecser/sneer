@@ -1,9 +1,13 @@
 package sneer.bricks.hardware.clock.timer.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.util.concurrent.Latch;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
@@ -13,9 +17,6 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.util.concurrent.Latch;
 
 class TimerImpl implements Timer {
 	

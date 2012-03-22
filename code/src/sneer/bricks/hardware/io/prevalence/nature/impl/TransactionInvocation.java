@@ -1,15 +1,16 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.lang.reflect.Method;
 import java.util.Date;
 
 import org.prevayler.TransactionWithQuery;
 
+import basis.environments.EnvironmentUtils;
+import basis.lang.ProducerX;
+
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
-import sneer.foundation.environments.EnvironmentUtils;
-import sneer.foundation.lang.ProducerX;
 
 public class TransactionInvocation extends Invocation implements TransactionWithQuery {
 

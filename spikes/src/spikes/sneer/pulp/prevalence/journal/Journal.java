@@ -1,6 +1,6 @@
 package spikes.sneer.pulp.prevalence.journal;
 
-import sneer.foundation.lang.Consumer;
+import basis.lang.Consumer;
 
 public interface Journal {
 

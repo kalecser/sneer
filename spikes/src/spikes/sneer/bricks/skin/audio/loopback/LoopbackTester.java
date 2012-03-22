@@ -1,6 +1,6 @@
 package spikes.sneer.bricks.skin.audio.loopback;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 @Brick
 public interface LoopbackTester {

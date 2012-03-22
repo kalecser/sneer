@@ -1,7 +1,7 @@
 package sneer.bricks.expression.files.protocol;
 
+import basis.lang.Immutable;
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.foundation.lang.Immutable;
 
 public class FileOrFolder extends Immutable {
 

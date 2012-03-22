@@ -1,6 +1,6 @@
 package spikes.sneer.bricks.skin.audio.kernel.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;

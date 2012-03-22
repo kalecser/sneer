@@ -1,8 +1,8 @@
 package spikes.sandro.summit.register.logger.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Consumer;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.lang.Consumer;
 import spikes.sandro.summit.register.SimpleRegister;
 import spikes.sandro.summit.register.logger.SimpleLogger;
 

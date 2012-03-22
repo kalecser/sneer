@@ -1,6 +1,6 @@
 package spikes.sneer.bricks.skin.audio;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 @Brick
 public interface SoundTuples {

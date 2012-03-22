@@ -1,6 +1,12 @@
 package sneer.bricks.identity.seals.contacts.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.CacheMap;
+import basis.lang.Consumer;
+import basis.lang.Functor;
+import basis.lang.Producer;
+import basis.lang.exceptions.Refusal;
+import basis.testsupport.PrettyPrinter;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -10,12 +16,6 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.Producer;
-import sneer.foundation.lang.exceptions.Refusal;
-import sneer.foundation.testsupport.PrettyPrinter;
 
 class ContactSealsImpl implements ContactSeals {
 

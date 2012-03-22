@@ -1,6 +1,6 @@
 package sneer.bricks.software.bricks.finder.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,11 +8,12 @@ import java.util.Collection;
 
 import org.junit.Test;
 
+import basis.testsupport.AssertUtils;
+
 import sneer.bricks.software.bricks.finder.BrickFinder;
 import sneer.bricks.software.code.compilers.java.tests.JarUtils;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.testsupport.AssertUtils;
 
 public class BrickFinderTest extends BrickTestBase {
 

@@ -3,8 +3,9 @@ package sneer.bricks.pulp.network.puncher;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
+import basis.brickness.Brick;
+
 import sneer.bricks.identity.seals.Seal;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface Puncher {

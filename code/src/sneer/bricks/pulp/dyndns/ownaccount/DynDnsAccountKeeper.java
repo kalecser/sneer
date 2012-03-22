@@ -1,8 +1,8 @@
 package sneer.bricks.pulp.dyndns.ownaccount;
 
+import basis.brickness.Brick;
+import basis.lang.Consumer;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Consumer;
 
 @Brick
 public interface DynDnsAccountKeeper {

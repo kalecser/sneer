@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.clock.ticker.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 import sneer.bricks.hardware.clock.ticker.ClockTicker;
 import sneer.bricks.hardware.clock.ticker.custom.CustomClockTicker;
 

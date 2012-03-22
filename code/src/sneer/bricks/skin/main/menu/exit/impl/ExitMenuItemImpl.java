@@ -1,9 +1,9 @@
 package sneer.bricks.skin.main.menu.exit.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Closure;
 import sneer.bricks.skin.main.menu.MainMenu;
 import sneer.bricks.skin.main.menu.exit.ExitMenuItem;
-import sneer.foundation.lang.Closure;
 
 class ExitMenuItemImpl implements ExitMenuItem{
 	{

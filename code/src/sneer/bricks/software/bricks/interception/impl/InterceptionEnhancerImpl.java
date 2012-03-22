@@ -6,9 +6,10 @@ import java.util.List;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
+import basis.brickness.ClassDefinition;
+
 import sneer.bricks.software.bricks.interception.InterceptionEnhancer;
 import sneer.bricks.software.bricks.interception.Interceptor;
-import sneer.foundation.brickness.ClassDefinition;
 
 class InterceptionEnhancerImpl implements InterceptionEnhancer {
 

@@ -1,10 +1,14 @@
 package sneer.bricks.expression.tuples.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 
 import org.junit.Test;
+
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.lang.Closure;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
@@ -13,9 +17,6 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
 
 public class TuplePersistenceTest extends BrickTestBase {
 

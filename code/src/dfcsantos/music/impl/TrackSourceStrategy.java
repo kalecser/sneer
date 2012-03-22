@@ -1,11 +1,14 @@
 package dfcsantos.music.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import basis.lang.Closure;
+import basis.lang.Functor;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.hardware.clock.timer.Timer;
@@ -15,8 +18,6 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.execution.playlist.Playlist;
 import dfcsantos.tracks.storage.rejected.RejectedTracksKeeper;

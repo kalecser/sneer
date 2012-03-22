@@ -1,8 +1,10 @@
 package sneer.bricks.snapps.wind.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.Comparator;
+
+import basis.lang.Consumer;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.Clock;
@@ -14,7 +16,6 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.collections.listsorter.ListSorter;
 import sneer.bricks.snapps.chat.ChatMessage;
 import sneer.bricks.snapps.wind.Wind;
-import sneer.foundation.lang.Consumer;
 
 class WindImpl implements Wind, Consumer<ChatMessage> {
 

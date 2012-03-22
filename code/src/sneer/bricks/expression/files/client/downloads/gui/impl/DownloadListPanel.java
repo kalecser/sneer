@@ -9,10 +9,11 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.foundation.lang.Consumer;
 
 class DownloadListPanel extends Box {
 

@@ -1,6 +1,6 @@
 package sneer.bricks.skin.main.dashboard.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -42,6 +42,10 @@ import javax.swing.border.LineBorder;
 import org.jdesktop.jxlayer.JXLayer;
 import org.jdesktop.jxlayer.plaf.AbstractLayerUI;
 
+import basis.lang.ByRef;
+import basis.lang.Closure;
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
@@ -49,9 +53,6 @@ import sneer.bricks.skin.main.icons.Icons;
 import sneer.bricks.skin.main.instrumentregistry.Instrument;
 import sneer.bricks.skin.menu.MenuFactory;
 import sneer.bricks.skin.menu.MenuGroup;
-import sneer.foundation.lang.ByRef;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 class DashboardPanel extends JPanel {
 

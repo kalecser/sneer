@@ -1,8 +1,8 @@
 package sneer.bricks.network.computers.sockets.accepter;
 
+import basis.brickness.Brick;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.notifiers.Source;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface SocketAccepter {

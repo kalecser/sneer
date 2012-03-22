@@ -2,8 +2,9 @@ package spikes.wheel.io.ui;
 
 import java.io.File;
 
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.exceptions.FriendlyException;
+import basis.lang.Consumer;
+import basis.lang.exceptions.FriendlyException;
+
 import spikes.wheel.lang.exceptions.Catcher;
 
 

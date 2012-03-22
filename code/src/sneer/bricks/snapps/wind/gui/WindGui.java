@@ -1,8 +1,8 @@
 package sneer.bricks.snapps.wind.gui;
 
+import basis.brickness.Brick;
 import sneer.bricks.skin.main.instrumentregistry.Instrument;
 import sneer.bricks.software.bricks.snapploader.Snapp;
-import sneer.foundation.brickness.Brick;
 
 @Snapp  
 @Brick

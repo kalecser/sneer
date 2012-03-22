@@ -1,12 +1,18 @@
 package sneer.bricks.softwaresharing.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
 import org.junit.Test;
+
+import basis.brickness.Brick;
+import basis.lang.Consumer;
+import basis.lang.Functor;
+import basis.testsupport.AssertUtils;
+import basis.util.concurrent.Latch;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
@@ -21,11 +27,6 @@ import sneer.bricks.softwaresharing.BrickHistory.Status;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.testsupport.AssertUtils;
-import sneer.foundation.util.concurrent.Latch;
 
 public class LocalBrickDiscoveryTest extends BrickTestBase {
 

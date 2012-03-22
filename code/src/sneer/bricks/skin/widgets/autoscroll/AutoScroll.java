@@ -2,7 +2,8 @@ package sneer.bricks.skin.widgets.autoscroll;
 
 import javax.swing.JScrollPane;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
+
 
 @Brick
 public interface AutoScroll {

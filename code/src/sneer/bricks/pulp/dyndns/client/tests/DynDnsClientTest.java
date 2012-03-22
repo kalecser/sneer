@@ -1,11 +1,15 @@
 package sneer.bricks.pulp.dyndns.client.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 
 import org.jmock.Expectations;
 import org.junit.Test;
+
+import basis.brickness.testsupport.Bind;
+import basis.environments.EnvironmentUtils;
+import basis.lang.exceptions.FriendlyException;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.threads.mocks.ThreadsMock;
@@ -25,9 +29,6 @@ import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.environments.EnvironmentUtils;
-import sneer.foundation.lang.exceptions.FriendlyException;
 
 public class DynDnsClientTest extends BrickTestBase {
 	

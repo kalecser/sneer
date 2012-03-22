@@ -6,7 +6,7 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.FileVersion.Status;
 import sneer.bricks.softwaresharing.demolisher.filestatus.FileStatusCalculator;
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 public class FileStatusCalculatorTest extends BrickTestBase {
 	

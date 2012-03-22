@@ -1,21 +1,22 @@
 package sneer.bricks.expression.tuples.testsupport.pump.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import basis.environments.Environment;
+import basis.environments.EnvironmentUtils;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.Producer;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.expression.tuples.testsupport.pump.TuplePump;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.EnvironmentUtils;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Producer;
 
 class TuplePumpImpl implements TuplePump {
 

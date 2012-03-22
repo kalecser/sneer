@@ -1,6 +1,6 @@
 package spikes.sneer.bricks.skin.audio.speaker.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;

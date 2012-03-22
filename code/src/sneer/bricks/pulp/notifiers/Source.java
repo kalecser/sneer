@@ -1,8 +1,8 @@
 package sneer.bricks.pulp.notifiers;
 
+import basis.lang.Consumer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.notifiers.pulsers.Pulser;
-import sneer.foundation.lang.Consumer;
 
 public interface Source<T> extends Pulser {
 

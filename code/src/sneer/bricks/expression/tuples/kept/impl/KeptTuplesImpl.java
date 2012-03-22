@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.kept.KeptTuples;
-import sneer.foundation.lang.Consumer;
 
 public class KeptTuplesImpl implements KeptTuples {
 

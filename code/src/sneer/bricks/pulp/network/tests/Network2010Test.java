@@ -1,17 +1,18 @@
 package sneer.bricks.pulp.network.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 
 import org.junit.Test;
+
+import basis.lang.Closure;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.network.ByteArrayServerSocket;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network2010;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Closure;
 
 
 public class Network2010Test extends BrickTestBase {

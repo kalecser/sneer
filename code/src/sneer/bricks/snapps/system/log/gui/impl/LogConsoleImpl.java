@@ -1,7 +1,7 @@
 package sneer.bricks.snapps.system.log.gui.impl;
 
+import static basis.environments.Environments.my;
 import static java.awt.Color.LIGHT_GRAY;
-import static sneer.foundation.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -32,6 +32,9 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import basis.lang.Closure;
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
@@ -53,8 +56,6 @@ import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
 import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.system.log.gui.LogConsole;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 class LogConsoleImpl extends JFrame implements LogConsole {
 

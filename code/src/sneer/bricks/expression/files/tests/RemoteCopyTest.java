@@ -1,9 +1,12 @@
 package sneer.bricks.expression.files.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+
+import basis.environments.Environments;
+import basis.lang.ClosureX;
 
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
@@ -14,8 +17,6 @@ import sneer.bricks.hardware.clock.ticker.custom.CustomClockTicker;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.ClosureX;
 
 public class RemoteCopyTest extends FileCopyTestBase {
 

@@ -1,15 +1,16 @@
 package sneer.bricks.pulp.httpclient.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+import basis.lang.Pair;
+
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.pulp.httpclient.HttpClient;
-import sneer.foundation.lang.Pair;
 
 class HttpClientImpl implements HttpClient {
 

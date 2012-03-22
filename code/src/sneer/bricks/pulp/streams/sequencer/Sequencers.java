@@ -1,7 +1,7 @@
 package sneer.bricks.pulp.streams.sequencer;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Consumer;
+import basis.brickness.Brick;
+import basis.lang.Consumer;
 
 @Brick
 public interface Sequencers {

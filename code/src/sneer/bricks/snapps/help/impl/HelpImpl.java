@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.help.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import javax.swing.JOptionPane;
 

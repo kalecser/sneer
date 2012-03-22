@@ -7,9 +7,10 @@ import org.junit.internal.runners.InitializationError;
 import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.internal.runners.TestMethod;
 
-import sneer.foundation.brickness.Brickness;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.ClosureX;
+import basis.brickness.Brickness;
+import basis.environments.Environments;
+import basis.lang.ClosureX;
+
 
 public class Mocotoh extends JUnit4ClassRunner {
 	
@@ -27,7 +28,7 @@ public class Mocotoh extends JUnit4ClassRunner {
 						superInvoke(test);
 					}});
 				} catch (Exception e) {
-					throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+					throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 				}
 			}
 			

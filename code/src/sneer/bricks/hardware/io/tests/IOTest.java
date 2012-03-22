@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.io.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,10 +10,11 @@ import java.util.List;
 
 import org.junit.Test;
 
+import basis.lang.Functor;
+
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Functor;
 
 public class IOTest extends BrickTestBase {
 	

@@ -1,7 +1,7 @@
 package sneer.bricks.expression.tuples.floodcache;
 
+import basis.brickness.Brick;
 import sneer.bricks.expression.tuples.Tuple;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface FloodedTupleCache {

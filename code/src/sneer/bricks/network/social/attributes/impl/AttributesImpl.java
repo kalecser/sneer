@@ -1,6 +1,12 @@
 package sneer.bricks.network.social.attributes.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Consumer;
+import basis.lang.Functor;
+import basis.lang.Pair;
+import basis.lang.PickyConsumer;
+import basis.lang.arrays.ImmutableByteArray;
+import basis.lang.exceptions.Refusal;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
@@ -14,12 +20,6 @@ import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.bricks.pulp.serialization.Serializer;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.Pair;
-import sneer.foundation.lang.PickyConsumer;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
-import sneer.foundation.lang.exceptions.Refusal;
 
 class AttributesImpl implements Attributes {
 

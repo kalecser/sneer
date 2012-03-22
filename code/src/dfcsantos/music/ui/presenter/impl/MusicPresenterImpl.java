@@ -1,11 +1,15 @@
 package dfcsantos.music.ui.presenter.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.util.List;
 
 import javax.swing.JFileChooser;
+
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.Functor;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -19,9 +23,6 @@ import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.skin.filechooser.FileChoosers;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
 import dfcsantos.music.Music;
 import dfcsantos.music.ui.presenter.MusicPresenter;
 import dfcsantos.music.ui.view.MusicView;

@@ -2,9 +2,10 @@ package sneer.bricks.network.computers.authentication;
 
 import java.io.IOException;
 
+import basis.brickness.Brick;
+
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface PublicKeyChallenges {

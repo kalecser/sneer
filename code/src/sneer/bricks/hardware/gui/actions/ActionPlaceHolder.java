@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.gui.actions;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 /** A place-holder brick for the Action interface. */
 @Brick

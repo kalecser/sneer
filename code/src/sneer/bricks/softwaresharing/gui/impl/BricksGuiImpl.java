@@ -1,6 +1,6 @@
 package sneer.bricks.softwaresharing.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -27,6 +27,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
+import basis.lang.Closure;
+
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.skin.image.ImageFactory;
@@ -42,7 +44,6 @@ import sneer.bricks.softwaresharing.BrickVersion.Status;
 import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.gui.BricksGui;
 import sneer.bricks.softwaresharing.stager.BrickStager;
-import sneer.foundation.lang.Closure;
 
 class BricksGuiImpl extends JFrame implements BricksGui {
 

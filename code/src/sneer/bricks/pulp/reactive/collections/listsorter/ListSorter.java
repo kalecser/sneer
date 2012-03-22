@@ -2,10 +2,11 @@ package sneer.bricks.pulp.reactive.collections.listsorter;
 
 import java.util.Comparator;
 
+import basis.brickness.Brick;
+
 import sneer.bricks.pulp.reactive.collections.CollectionSignal;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface ListSorter {

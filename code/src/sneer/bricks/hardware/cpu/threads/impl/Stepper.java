@@ -1,9 +1,9 @@
 package sneer.bricks.hardware.cpu.threads.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Closure;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
-import sneer.foundation.lang.Closure;
 
 class Stepper implements Closure, Contract {
 

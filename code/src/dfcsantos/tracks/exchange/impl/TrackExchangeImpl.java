@@ -1,9 +1,12 @@
 package dfcsantos.tracks.exchange.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.mapper.FileMapper;
@@ -16,8 +19,6 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.gates.logic.LogicGates;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.exchange.TrackExchange;
 import dfcsantos.tracks.exchange.downloads.downloader.TrackDownloader;
 import dfcsantos.tracks.exchange.endorsements.TrackEndorser;

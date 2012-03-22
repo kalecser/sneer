@@ -3,7 +3,7 @@
  */
 package spikes.sneer.bricks.snapps.watchme.codec.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 import static spikes.sneer.bricks.snapps.watchme.codec.impl.CodecConstants.CELL_SIZE;
 
 import java.awt.image.BufferedImage;
@@ -12,11 +12,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import basis.lang.Pair;
+import basis.lang.arrays.ImmutableByteArray;
+
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
 import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.skin.image.ImageFactory;
-import sneer.foundation.lang.Pair;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageDelta;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageCodec.Encoder;
 

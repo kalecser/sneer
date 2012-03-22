@@ -1,6 +1,6 @@
 package sneer.tests.adapters;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -10,15 +10,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import basis.brickness.Brickness;
+import basis.environments.Environment;
+import basis.environments.EnvironmentUtils;
+import basis.environments.ProxyInEnvironment;
+import basis.languagesupport.JarFinder;
+
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.io.log.tests.LoggerMocks;
 import sneer.bricks.pulp.network.Network2010;
 import sneer.bricks.software.code.classutils.ClassUtils;
-import sneer.foundation.brickness.Brickness;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.EnvironmentUtils;
-import sneer.foundation.environments.ProxyInEnvironment;
-import sneer.foundation.languagesupport.JarFinder;
 import sneer.tests.SovereignCommunity;
 import sneer.tests.SovereignParty;
 import sneer.tests.adapters.impl.SneerPartyApiClassLoaderImpl;

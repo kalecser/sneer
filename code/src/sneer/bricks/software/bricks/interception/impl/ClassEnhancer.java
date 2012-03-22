@@ -16,9 +16,10 @@ import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
+import basis.brickness.ClassDefinition;
+
 import sneer.bricks.software.bricks.interception.Boxing;
 import sneer.bricks.software.bricks.interception.Interceptor;
-import sneer.foundation.brickness.ClassDefinition;
 
 final class ClassEnhancer extends ClassAdapter {
 	

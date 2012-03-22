@@ -1,13 +1,13 @@
 package sneer.bricks.network.computers.sockets.connections.receiver.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Closure;
+import basis.lang.Consumer;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.network.computers.sockets.accepter.SocketAccepter;
 import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.receiver.SocketReceiver;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 class SocketReceiverImpl implements SocketReceiver {
 

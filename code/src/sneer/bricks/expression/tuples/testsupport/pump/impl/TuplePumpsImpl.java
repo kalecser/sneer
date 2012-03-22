@@ -1,9 +1,9 @@
 package sneer.bricks.expression.tuples.testsupport.pump.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.environments.Environment;
 import sneer.bricks.expression.tuples.testsupport.pump.TuplePump;
 import sneer.bricks.expression.tuples.testsupport.pump.TuplePumps;
-import sneer.foundation.environments.Environment;
 
 class TuplePumpsImpl implements TuplePumps {
 

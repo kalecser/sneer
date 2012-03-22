@@ -1,6 +1,8 @@
 package sneer.bricks.network.social.rendezvous.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Consumer;
+import basis.lang.exceptions.Refusal;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.identity.name.OwnName;
@@ -14,8 +16,6 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.exceptions.Refusal;
 
 class RendezvousImpl implements Rendezvous {
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc;

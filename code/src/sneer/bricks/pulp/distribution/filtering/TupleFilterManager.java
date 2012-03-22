@@ -1,8 +1,8 @@
 package sneer.bricks.pulp.distribution.filtering;
 
+import basis.brickness.Brick;
+import basis.lang.Predicate;
 import sneer.bricks.expression.tuples.Tuple;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Predicate;
 
 @Brick
 public interface TupleFilterManager {

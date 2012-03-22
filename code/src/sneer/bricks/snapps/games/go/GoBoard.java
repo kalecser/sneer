@@ -1,8 +1,8 @@
 package sneer.bricks.snapps.games.go;
 
+import static basis.environments.Environments.my;
 import static sneer.bricks.snapps.games.go.GoBoard.StoneColor.BLACK;
 import static sneer.bricks.snapps.games.go.GoBoard.StoneColor.WHITE;
-import static sneer.foundation.environments.Environments.my;
 
 import java.util.Arrays;
 import java.util.HashSet;

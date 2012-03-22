@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.games.go.gui;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -19,6 +19,12 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.environments.ProxyInEnvironment;
+import basis.lang.Closure;
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
@@ -27,11 +33,6 @@ import sneer.bricks.snapps.games.go.GoBoard;
 import sneer.bricks.snapps.games.go.Move;
 import sneer.bricks.snapps.games.go.ToroidalGoBoard;
 import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.environments.ProxyInEnvironment;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 public class GoBoardPanel extends JPanel {
 	

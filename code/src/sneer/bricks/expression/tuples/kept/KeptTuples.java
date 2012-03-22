@@ -1,9 +1,9 @@
 package sneer.bricks.expression.tuples.kept;
 
+import basis.brickness.Brick;
+import basis.lang.Consumer;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Consumer;
 
 @Brick(Prevalent.class)
 public interface KeptTuples {

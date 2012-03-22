@@ -1,7 +1,7 @@
 package sneer.bricks.hardware.io.prevalence.nature;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.brickness.Nature;
+import basis.brickness.Brick;
+import basis.brickness.Nature;
 
 /** Nature that makes bricks transparently prevalent by wrapping them in a prevalent Proxy:
  *		- void methods are run as Transactions.

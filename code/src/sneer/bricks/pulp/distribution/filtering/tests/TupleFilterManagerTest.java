@@ -1,14 +1,15 @@
 package sneer.bricks.pulp.distribution.filtering.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Test;
+
+import basis.lang.ByRef;
+import basis.lang.Predicate;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.ByRef;
-import sneer.foundation.lang.Predicate;
 
 public class TupleFilterManagerTest extends BrickTestBase {
 

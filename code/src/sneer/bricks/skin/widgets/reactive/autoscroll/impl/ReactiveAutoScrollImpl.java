@@ -1,17 +1,18 @@
 package sneer.bricks.skin.widgets.reactive.autoscroll.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.event.FocusAdapter;
 
 import javax.swing.JScrollPane;
 
+import basis.lang.Closure;
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.skin.widgets.autoscroll.AutoScroll;
 import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 public class ReactiveAutoScrollImpl implements ReactiveAutoScroll {
 

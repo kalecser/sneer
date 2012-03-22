@@ -1,7 +1,7 @@
 package sneer.bricks.pulp.notifiers.receivers.impl;
 
+import basis.lang.Consumer;
 import sneer.bricks.pulp.notifiers.Source;
-import sneer.foundation.lang.Consumer;
 
 public class Solder<T> {
 

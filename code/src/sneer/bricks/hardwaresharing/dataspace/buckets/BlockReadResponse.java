@@ -1,7 +1,7 @@
 package sneer.bricks.hardwaresharing.dataspace.buckets;
 
+import basis.lang.arrays.ImmutableByteArray;
 import sneer.bricks.expression.tuples.Tuple;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class BlockReadResponse extends Tuple {
 

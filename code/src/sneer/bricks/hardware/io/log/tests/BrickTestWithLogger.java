@@ -1,7 +1,7 @@
 package sneer.bricks.hardware.io.log.tests;
 
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,10 +14,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import basis.brickness.testsupport.Bind;
+import basis.brickness.testsupport.BrickTestWithMocks;
+import basis.environments.Environment;
+
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.brickness.testsupport.BrickTestWithMocks;
-import sneer.foundation.environments.Environment;
 
 public abstract class BrickTestWithLogger extends BrickTestWithMocks {
 	
@@ -81,9 +82,9 @@ public abstract class BrickTestWithLogger extends BrickTestWithMocks {
 			"org.eclipse.jdt.internal",
 			"org.prevayler",
 			"sneer.bricks.hardware.io.prevalence.nature.impl",
-			"sneer.foundation.testsupport",
-			"sneer.foundation.brickness.testsupport",
-			"sneer.foundation.environments.Environments",
+			"basis.testsupport",
+			"basis.brickness.testsupport",
+			"basis.environments.Environments",
 			"sneer.tests.adapters.ProxyInEnvironment"
 		);
 	}

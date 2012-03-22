@@ -1,9 +1,12 @@
 package sneer.bricks.identity.seals.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.UnsupportedEncodingException;
 import java.security.PublicKey;
+
+import basis.lang.Functor;
+import basis.lang.arrays.ImmutableByteArray;
 
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
@@ -12,8 +15,6 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 class OwnSealImpl implements OwnSeal {
 

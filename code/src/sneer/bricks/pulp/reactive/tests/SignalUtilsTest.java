@@ -1,17 +1,18 @@
 package sneer.bricks.pulp.reactive.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Test;
+
+import basis.lang.Closure;
+import basis.lang.Predicate;
+import basis.util.concurrent.Latch;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Predicate;
-import sneer.foundation.util.concurrent.Latch;
 
 
 public class SignalUtilsTest extends BrickTestBase {

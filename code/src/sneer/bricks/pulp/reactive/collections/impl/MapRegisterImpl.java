@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.reactive.collections.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -8,6 +8,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+
+import basis.lang.Consumer;
+import basis.lang.Producer;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.notifiers.Notifier;
@@ -20,8 +23,6 @@ import sneer.bricks.pulp.reactive.collections.MapRegister;
 import sneer.bricks.pulp.reactive.collections.MapSignal;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Producer;
 
 class MapRegisterImpl<K,V> implements MapRegister<K,V> {
 	
@@ -65,7 +66,7 @@ class MapRegisterImpl<K,V> implements MapRegister<K,V> {
 
 		@Override
 		public WeakContract addPulseReceiver(Runnable pulseReceiver) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+			throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 		}
 
 		@Override
@@ -101,7 +102,7 @@ class MapRegisterImpl<K,V> implements MapRegister<K,V> {
 
 		@Override
 		public WeakContract addReceiver(Consumer<? super CollectionChange<Entry<K, V>>> eventReceiver) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+			throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 		}
 
 

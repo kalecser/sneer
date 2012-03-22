@@ -1,12 +1,12 @@
 package sneer.bricks.hardware.ram.recycler.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Consumer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.meter.MemoryMeter;
 import sneer.bricks.hardware.ram.recycler.MemoryRecycler;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.foundation.lang.Consumer;
 
 class MemoryRecyclerImpl implements MemoryRecycler {
 

@@ -1,7 +1,7 @@
 package sneer.bricks.software.bricks.snapploader;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.util.concurrent.Latch;
+import basis.brickness.Brick;
+import basis.util.concurrent.Latch;
 
 @Brick
 public interface SnappLoader {

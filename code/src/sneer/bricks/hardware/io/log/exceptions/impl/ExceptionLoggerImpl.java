@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.io.log.exceptions.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.hardware.io.log.exceptions.robust.RobustExceptionLogging;

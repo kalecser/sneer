@@ -1,6 +1,9 @@
 package sneer.bricks.network.social.heartbeat.stethoscope.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.CacheMap;
+import basis.lang.Consumer;
+import basis.lang.Producer;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
@@ -15,9 +18,6 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Producer;
 
 class StethoscopeImpl implements Stethoscope, Consumer<Heartbeat>, Runnable {
 

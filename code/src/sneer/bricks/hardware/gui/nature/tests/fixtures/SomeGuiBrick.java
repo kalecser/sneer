@@ -2,9 +2,10 @@ package sneer.bricks.hardware.gui.nature.tests.fixtures;
 
 import java.awt.event.*;
 
+import basis.brickness.Brick;
+import basis.environments.Environment;
+
 import sneer.bricks.hardware.gui.nature.GUI;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.environments.Environment;
 
 @Brick(GUI.class)
 public interface SomeGuiBrick {

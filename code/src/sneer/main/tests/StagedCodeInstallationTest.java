@@ -5,7 +5,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import sneer.foundation.testsupport.CleanTestBase;
+import basis.testsupport.CleanTestBase;
+
 import sneer.main.SneerVersionUpdater;
 
 

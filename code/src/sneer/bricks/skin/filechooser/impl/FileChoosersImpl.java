@@ -1,15 +1,16 @@
 package sneer.bricks.skin.filechooser.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 
 import javax.swing.JFileChooser;
 
+import basis.lang.Closure;
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.skin.filechooser.FileChoosers;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 class FileChoosersImpl implements FileChoosers {
 

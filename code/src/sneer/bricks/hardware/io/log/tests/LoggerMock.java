@@ -1,7 +1,7 @@
 package sneer.bricks.hardware.io.log.tests;
 
+import basis.lang.Consumer;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.foundation.lang.Consumer;
 
 class LoggerMock implements Logger {
 

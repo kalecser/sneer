@@ -2,7 +2,8 @@ package sneer.bricks.software.code.classutils;
 
 import java.io.File;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
+
 
 @Brick
 public interface ClassUtils {

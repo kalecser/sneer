@@ -1,5 +1,6 @@
 package sneer.bricks.pulp.reactive.collections.impl;
 
+import basis.lang.Functor;
 import sneer.bricks.pulp.reactive.collections.CollectionSignal;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
@@ -7,7 +8,6 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.collections.MapRegister;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.foundation.lang.Functor;
 
 class CollectionSignalsImpl implements CollectionSignals {
 
@@ -28,7 +28,7 @@ class CollectionSignalsImpl implements CollectionSignals {
 
 	@Override
 	public <A, B> ListSignal<B> adapt(ListSignal<A> input, Functor<A, B> functor) {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 	@Override

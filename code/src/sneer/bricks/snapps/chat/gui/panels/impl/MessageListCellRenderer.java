@@ -99,7 +99,7 @@ class MessageListCellRenderer implements ListCellRenderer {
 		try {
 			doc.insertString(doc.getLength(), msg, doc.getStyle(style));
 		} catch (BadLocationException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 	}
 

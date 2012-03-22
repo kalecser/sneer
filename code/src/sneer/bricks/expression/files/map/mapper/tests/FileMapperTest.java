@@ -1,12 +1,14 @@
 package sneer.bricks.expression.files.map.mapper.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
 import org.junit.Test;
+
+import basis.lang.Functor;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.mapper.FileMapper;
@@ -18,7 +20,6 @@ import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Functor;
 
 public class FileMapperTest extends BrickTestBase {
 

@@ -3,13 +3,15 @@
  */
 package sneer.bricks.snapps.contacts.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import basis.lang.Functor;
 
 import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
@@ -20,7 +22,6 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.gates.strings.StringGates;
 import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.snapps.contacts.gui.ContactTextProvider;
-import sneer.foundation.lang.Functor;
 
 final class ContactLabelProvider implements LabelProvider<Contact> {
 

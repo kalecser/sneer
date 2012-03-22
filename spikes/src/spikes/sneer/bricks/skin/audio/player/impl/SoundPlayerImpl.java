@@ -1,6 +1,6 @@
 package spikes.sneer.bricks.skin.audio.player.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,12 +15,13 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import basis.lang.Closure;
+import basis.lang.exceptions.NotImplementedYet;
+
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 import spikes.sneer.bricks.skin.audio.kernel.Audio;
 import spikes.sneer.bricks.skin.audio.player.SoundPlayer;
 
@@ -53,7 +54,7 @@ class SoundPlayerImpl implements SoundPlayer, Closure {
 		try {
 			audioInputStream = tryInitAudioInputStream(url);
 		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Use BL
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Use BL
 		}
 		
 		try {

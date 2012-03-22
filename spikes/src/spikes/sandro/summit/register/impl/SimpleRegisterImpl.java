@@ -1,11 +1,11 @@
 package spikes.sandro.summit.register.impl;
 
+import basis.lang.Consumer;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.foundation.lang.Consumer;
 import spikes.sandro.summit.register.SimpleRegister;
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 class SimpleRegisterImpl implements SimpleRegister{
 

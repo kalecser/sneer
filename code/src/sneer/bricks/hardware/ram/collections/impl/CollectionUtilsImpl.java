@@ -4,9 +4,10 @@ import java.util.Collection;
 
 import org.apache.commons.collections.Transformer;
 
+import basis.lang.Functor;
+import basis.lang.Predicate;
+
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.Predicate;
 
 class CollectionUtilsImpl implements CollectionUtils{
 

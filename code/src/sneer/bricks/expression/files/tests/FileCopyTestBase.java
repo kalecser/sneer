@@ -1,6 +1,6 @@
 package sneer.bricks.expression.files.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +8,8 @@ import java.util.Random;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
+import basis.lang.Consumer;
 
 import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
@@ -18,7 +20,6 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.software.code.classutils.ClassUtils;
-import sneer.foundation.lang.Consumer;
 
 /** Abstract test class names must not end in "Test" or else Hudson will try to instantiate them and fail. :P */
 

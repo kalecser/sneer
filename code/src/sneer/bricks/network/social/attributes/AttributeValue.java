@@ -1,8 +1,8 @@
 package sneer.bricks.network.social.attributes;
 
+import basis.lang.arrays.ImmutableByteArray;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.identity.seals.Seal;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class AttributeValue extends Tuple {
 

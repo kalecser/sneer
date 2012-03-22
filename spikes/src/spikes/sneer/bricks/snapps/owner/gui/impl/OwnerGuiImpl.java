@@ -1,6 +1,6 @@
 package spikes.sneer.bricks.snapps.owner.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Container;
 import java.awt.Cursor;
@@ -13,6 +13,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Signal;
@@ -22,7 +24,6 @@ import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.bricks.skin.widgets.reactive.ImageWidget;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
-import sneer.foundation.lang.Consumer;
 import spikes.sneer.bricks.pulp.own.avatar.OwnAvatarKeeper;
 import spikes.sneer.bricks.pulp.own.tagline.OwnTaglineKeeper;
 import spikes.sneer.bricks.snapps.owner.gui.OwnerGui;

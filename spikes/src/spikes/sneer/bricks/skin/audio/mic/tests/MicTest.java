@@ -1,6 +1,6 @@
 package spikes.sneer.bricks.skin.audio.mic.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
@@ -9,9 +9,10 @@ import javax.sound.sampled.TargetDataLine;
 import org.jmock.Expectations;
 import org.junit.Test;
 
+import basis.brickness.testsupport.Bind;
+
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
 import spikes.sneer.bricks.skin.audio.kernel.Audio;
 import spikes.sneer.bricks.skin.audio.mic.Mic;
 

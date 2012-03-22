@@ -1,8 +1,12 @@
 package sneer.bricks.snapps.games.go.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import javax.swing.JOptionPane;
+
+import basis.lang.ByRef;
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -25,9 +29,6 @@ import sneer.bricks.snapps.games.go.GoMessage;
 import sneer.bricks.snapps.games.go.GoMove;
 import sneer.bricks.snapps.games.go.Move;
 import sneer.bricks.snapps.games.go.gui.GoFrame;
-import sneer.foundation.lang.ByRef;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 class GoMainImpl implements GoMain {
 

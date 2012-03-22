@@ -3,8 +3,9 @@ package sneer.bricks.expression.files.map.mapper;
 import java.io.File;
 import java.io.IOException;
 
+import basis.brickness.Brick;
+
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface FileMapper {

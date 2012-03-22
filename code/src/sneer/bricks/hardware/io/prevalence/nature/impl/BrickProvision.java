@@ -3,8 +3,8 @@
  */
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
-import static sneer.foundation.environments.Environments.my;
-import sneer.foundation.lang.Producer;
+import static basis.environments.Environments.my;
+import basis.lang.Producer;
 
 final class BrickProvision implements Producer<Object> {
 	

@@ -1,8 +1,8 @@
 package sneer.bricks.snapps.gis.location.impl;
 
+import basis.lang.Consumer;
 import sneer.bricks.snapps.gis.location.Location;
 import sneer.bricks.snapps.gis.location.Locations;
-import sneer.foundation.lang.Consumer;
 
 class LocationsImpl implements Locations {
 

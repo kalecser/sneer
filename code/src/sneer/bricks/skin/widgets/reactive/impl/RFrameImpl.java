@@ -2,9 +2,10 @@ package sneer.bricks.skin.widgets.reactive.impl;
 
 import javax.swing.JFrame;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.widgets.reactive.Widget;
-import sneer.foundation.lang.Consumer;
 
 class RFrameImpl extends JFrame implements Widget<JFrame> {
 

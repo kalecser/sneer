@@ -1,6 +1,6 @@
 package spikes.bamboo.bricksorter.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,10 +9,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import basis.brickness.BrickConventions;
+
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.ram.graphs.DirectedGraph;
 import sneer.bricks.hardware.ram.graphs.Graphs;
-import sneer.foundation.brickness.BrickConventions;
 import spikes.bamboo.bricksorter.BrickSorter;
 import spikes.sneer.kernel.container.bytecode.dependencies.DependencyFinder;
 

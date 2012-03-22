@@ -1,7 +1,7 @@
 package sneer.bricks.hardwaresharing.dataspace.buckets;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Producer;
+import basis.brickness.Brick;
+import basis.lang.Producer;
 
 @Brick
 public interface Buckets extends Producer<Bucket> {}

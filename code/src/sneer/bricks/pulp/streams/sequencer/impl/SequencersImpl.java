@@ -1,8 +1,8 @@
 package sneer.bricks.pulp.streams.sequencer.impl;
 
+import basis.lang.Consumer;
 import sneer.bricks.pulp.streams.sequencer.Sequencer;
 import sneer.bricks.pulp.streams.sequencer.Sequencers;
-import sneer.foundation.lang.Consumer;
 
 class SequencersImpl implements Sequencers {
 

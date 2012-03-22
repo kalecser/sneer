@@ -1,12 +1,16 @@
 package sneer.bricks.softwaresharing.demolisher.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
+
+import basis.brickness.Brick;
+import basis.lang.CacheMap;
+import basis.lang.ConsumerX;
 
 import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.hardware.cpu.crypto.Hash;
@@ -21,9 +25,6 @@ import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.demolisher.Demolisher;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.ConsumerX;
 
 public class DemolisherTest extends BrickTestBase {
 

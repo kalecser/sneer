@@ -1,7 +1,7 @@
 package sneer.bricks.expression.tuples.testsupport.pump;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.environments.Environment;
+import basis.brickness.Brick;
+import basis.environments.Environment;
 
 @Brick
 public interface TuplePumps {

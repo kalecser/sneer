@@ -1,15 +1,16 @@
 package sneer.bricks.pulp.reactive.collections.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.ArrayList;
 
 import org.junit.Test;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Consumer;
 
 public class ListRegisterTest extends BrickTestBase {
 

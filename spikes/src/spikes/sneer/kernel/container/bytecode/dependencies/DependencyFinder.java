@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
+
 
 @Brick
 public interface DependencyFinder {

@@ -1,7 +1,7 @@
 package dfcsantos.tracks.tastematching.impl;
 
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Producer;
+import basis.lang.CacheMap;
+import basis.lang.Producer;
 
 class FolderMatchCounter {
 

@@ -1,7 +1,7 @@
 package sneer.bricks.network.social.rendezvous;
 
+import basis.brickness.Brick;
 import sneer.bricks.software.bricks.snapploader.Snapp;
-import sneer.foundation.brickness.Brick;
 
 
 @Brick

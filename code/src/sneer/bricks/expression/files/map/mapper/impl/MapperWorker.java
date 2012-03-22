@@ -3,7 +3,7 @@
  */
 package sneer.bricks.expression.files.map.mapper.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -15,6 +15,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import basis.lang.Closure;
+import basis.lang.arrays.ImmutableArray;
 
 import sneer.bricks.expression.files.hasher.FolderContentsHasher;
 import sneer.bricks.expression.files.map.FileMap;
@@ -28,8 +31,6 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.stacktrace.StackTraceLogger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.arrays.ImmutableArray;
 
 class MapperWorker {
 

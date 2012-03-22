@@ -1,14 +1,15 @@
 package sneer.bricks.expression.tuples.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Test;
+
+import basis.lang.Consumer;
+import basis.util.concurrent.Latch;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.util.concurrent.Latch;
 
 public class TupleSpaceResponsivenessTest extends BrickTestBase {
 

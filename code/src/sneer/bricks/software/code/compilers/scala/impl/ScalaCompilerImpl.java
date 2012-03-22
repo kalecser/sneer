@@ -1,6 +1,6 @@
 //package sneer.bricks.software.code.compilers.scala.impl;
 //
-//import static sneer.foundation.environments.Environments.my;
+//import static basis.environments.Environments.my;
 //
 //import java.io.File;
 //import java.util.ArrayList;
@@ -100,22 +100,22 @@
 //			Function1<String, Object> {
 //		@Override
 //		public <A> Function1<String, A> andThen(Function1<Object, A> arg0) {
-//			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+//			throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 //		}
 //
 //		@Override
 //		public Object apply(String arg0) {
-//			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+//			throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 //		}
 //
 //		@Override
 //		public <A> Function1<A, Object> compose(Function1<A, String> arg0) {
-//			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+//			throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 //		}
 //
 //		@Override
 //		public int $tag() {
-//			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+//			throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 //		}
 //	}
 //

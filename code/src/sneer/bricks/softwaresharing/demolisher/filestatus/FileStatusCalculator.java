@@ -1,7 +1,7 @@
 package sneer.bricks.softwaresharing.demolisher.filestatus;
 
+import basis.brickness.Brick;
 import sneer.bricks.softwaresharing.FileVersion;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface FileStatusCalculator {

@@ -1,6 +1,6 @@
 package dfcsantos.music.store.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
 import dfcsantos.music.store.MusicStore;

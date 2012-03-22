@@ -3,8 +3,9 @@
  */
 package sneer.bricks.pulp.serialization.impl;
 
-import static sneer.foundation.environments.Environments.my;
-import sneer.foundation.brickness.BrickSerializationMapper;
+import static basis.environments.Environments.my;
+
+import basis.brickness.BrickSerializationMapper;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.mapper.MapperWrapper;

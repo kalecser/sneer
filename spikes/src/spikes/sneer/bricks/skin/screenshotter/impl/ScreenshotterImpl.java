@@ -1,6 +1,6 @@
 package spikes.sneer.bricks.skin.screenshotter.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.AWTException;
 import java.awt.DisplayMode;
@@ -10,10 +10,11 @@ import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
 
+import basis.lang.exceptions.FriendlyException;
+
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.foundation.lang.exceptions.FriendlyException;
 import spikes.sneer.bricks.skin.screenshotter.Screenshotter;
 
 class ScreenshotterImpl implements Screenshotter {

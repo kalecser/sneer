@@ -2,8 +2,9 @@ package sneer.bricks.software.folderconfig;
 
 import java.io.File;
 
+import basis.brickness.Brick;
+
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface FolderConfig {

@@ -1,13 +1,13 @@
 package dfcsantos.music.ui.presenter.contactstatus.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Functor;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.snapps.contacts.gui.ContactTextProvider;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
-import sneer.foundation.lang.Functor;
 import dfcsantos.music.notification.playingtrack.PlayingTrack;
 import dfcsantos.music.ui.presenter.contactstatus.ContactMusicStatus;
 

@@ -1,8 +1,11 @@
 package dfcsantos.music.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
+
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -10,8 +13,6 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 import dfcsantos.music.Music;
 import dfcsantos.music.store.MusicStore;
 import dfcsantos.tracks.Track;

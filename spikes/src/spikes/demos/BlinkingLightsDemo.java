@@ -1,6 +1,6 @@
 package spikes.demos;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;

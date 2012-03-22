@@ -1,7 +1,7 @@
 package sneer.bricks.network.social;
 
+import basis.lang.ReadOnly;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.lang.ReadOnly;
 
 public interface Contact extends ReadOnly {
 	

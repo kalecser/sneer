@@ -1,8 +1,11 @@
 package sneer.bricks.network.computers.sockets.accepter.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
+
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -21,8 +24,6 @@ import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
 import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 class SocketAccepterImpl implements SocketAccepter {
 	private final Signal<Integer> _ownPort = my(Attributes.class).myAttributeValue(OwnPort.class);

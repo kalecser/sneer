@@ -1,16 +1,17 @@
 package sneer.bricks.pulp.reactive.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Test;
+
+import basis.lang.Consumer;
+import basis.lang.Functor;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
 
 public class SignalsTest extends BrickTestBase {
 

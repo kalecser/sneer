@@ -1,7 +1,7 @@
 package sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.impl;
 
-import sneer.foundation.lang.PickyConsumer;
-import sneer.foundation.lang.exceptions.Refusal;
+import basis.lang.PickyConsumer;
+import basis.lang.exceptions.Refusal;
 
 class IntegerParserImpl implements PickyConsumer<String> {
 

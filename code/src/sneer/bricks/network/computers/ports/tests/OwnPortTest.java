@@ -1,6 +1,6 @@
 package sneer.bricks.network.computers.ports.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Test;
 

@@ -1,9 +1,12 @@
 package sneer.bricks.hardware.io.prevalence.nature.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
+import basis.environments.Environments;
+import basis.lang.Closure;
 
 import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.Item;
@@ -11,8 +14,6 @@ import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.SomePrevalentBr
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.brick2.PrevalentBrick2;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
 
 public class PrevalentNatureTest extends BrickTestBase {
 	

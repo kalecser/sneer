@@ -1,9 +1,9 @@
 package spikes.sneer.bricks.skin.audio.mic;
 
+import basis.brickness.Brick;
+import basis.lang.arrays.ImmutableByteArray;
 import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 @Brick
 public interface Mic {

@@ -1,8 +1,8 @@
 package sneer.bricks.pulp.reactive;
 
+import basis.brickness.Brick;
+import basis.lang.Predicate;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Predicate;
 
 @Brick
 public interface SignalUtils {

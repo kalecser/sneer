@@ -1,16 +1,17 @@
 package sneer.bricks.hardware.gui.nature.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.List;
+
+import basis.brickness.ClassDefinition;
+import basis.lang.ByRef;
+import basis.lang.Closure;
+import basis.lang.Producer;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.gui.nature.GUI;
 import sneer.bricks.software.bricks.interception.InterceptionEnhancer;
-import sneer.foundation.brickness.ClassDefinition;
-import sneer.foundation.lang.ByRef;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Producer;
 
 class GUIImpl implements GUI {
 	

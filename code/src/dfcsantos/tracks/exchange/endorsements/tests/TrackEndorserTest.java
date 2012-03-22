@@ -1,12 +1,18 @@
 package dfcsantos.tracks.exchange.endorsements.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.jmock.Expectations;
 import org.junit.Test;
+
+import basis.brickness.testsupport.Bind;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.util.concurrent.Latch;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
@@ -15,11 +21,6 @@ import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.util.concurrent.Latch;
 import dfcsantos.tracks.exchange.endorsements.TrackEndorsement;
 import dfcsantos.tracks.exchange.endorsements.TrackEndorser;
 import dfcsantos.tracks.storage.folder.TracksFolderKeeper;

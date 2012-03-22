@@ -1,14 +1,15 @@
 package dfcsantos.tracks.execution.player.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.lang.Consumer;
 
 class PausableInputStream extends BufferedInputStream {
 

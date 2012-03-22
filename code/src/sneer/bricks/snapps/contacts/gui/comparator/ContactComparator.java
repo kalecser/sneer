@@ -2,8 +2,9 @@ package sneer.bricks.snapps.contacts.gui.comparator;
 
 import java.util.Comparator;
 
+import basis.brickness.Brick;
+
 import sneer.bricks.network.social.Contact;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface ContactComparator extends Comparator<Contact> {

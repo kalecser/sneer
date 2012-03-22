@@ -1,10 +1,14 @@
 package sneer.bricks.network.social.attributes.gui.window.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
+
+import basis.lang.Closure;
+import basis.lang.Functor;
+import basis.lang.PickyConsumer;
 
 import sneer.bricks.network.social.attributes.Attribute;
 import sneer.bricks.network.social.attributes.Attributes;
@@ -17,9 +21,6 @@ import sneer.bricks.pulp.reactive.collections.CollectionSignal;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.skin.main.menu.MainMenu;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.PickyConsumer;
 
 class AttributesWindowImpl implements AttributesWindow {
 

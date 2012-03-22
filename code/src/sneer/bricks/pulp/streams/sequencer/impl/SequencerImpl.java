@@ -5,8 +5,9 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.pulp.streams.sequencer.Sequencer;
-import sneer.foundation.lang.Consumer;
 
 class SequencerImpl<T> implements Sequencer<T> {
 

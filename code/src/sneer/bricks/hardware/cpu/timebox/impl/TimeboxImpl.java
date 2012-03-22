@@ -1,7 +1,7 @@
 package sneer.bricks.hardware.cpu.timebox.impl;
 
+import basis.lang.Closure;
 import sneer.bricks.hardware.cpu.timebox.Timebox;
-import sneer.foundation.lang.Closure;
 
 class TimeboxImpl implements Timebox {
 

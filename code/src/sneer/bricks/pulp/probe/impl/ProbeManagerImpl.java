@@ -1,9 +1,11 @@
 package sneer.bricks.pulp.probe.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import basis.lang.Consumer;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
@@ -17,7 +19,6 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.probe.ProbeManager;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.serialization.Serializer;
-import sneer.foundation.lang.Consumer;
 
 class ProbeManagerImpl implements ProbeManager {
 	

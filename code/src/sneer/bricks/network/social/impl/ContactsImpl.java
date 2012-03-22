@@ -1,14 +1,14 @@
 package sneer.bricks.network.social.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.PickyConsumer;
+import basis.lang.exceptions.Refusal;
 import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.foundation.lang.PickyConsumer;
-import sneer.foundation.lang.exceptions.Refusal;
 
 class ContactsImpl implements Contacts {
     

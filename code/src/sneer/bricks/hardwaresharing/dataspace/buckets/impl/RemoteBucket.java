@@ -1,14 +1,14 @@
 package sneer.bricks.hardwaresharing.dataspace.buckets.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Consumer;
+import basis.util.concurrent.Latch;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardwaresharing.dataspace.buckets.BlockRead;
 import sneer.bricks.hardwaresharing.dataspace.buckets.BlockReadResponse;
 import sneer.bricks.hardwaresharing.dataspace.buckets.Bucket;
 import sneer.bricks.identity.seals.Seal;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.util.concurrent.Latch;
 
 class RemoteBucket implements Bucket {
 
@@ -49,7 +49,7 @@ class RemoteBucket implements Bucket {
 	
 	@Override
 	public void write(long blockNumber, byte[] block) {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 	

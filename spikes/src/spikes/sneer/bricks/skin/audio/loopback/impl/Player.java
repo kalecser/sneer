@@ -1,15 +1,16 @@
 package spikes.sneer.bricks.skin.audio.loopback.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.ByteArrayOutputStream;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
+import basis.lang.Closure;
+
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.foundation.lang.Closure;
 import spikes.sneer.bricks.skin.audio.kernel.Audio;
 
 class Player {

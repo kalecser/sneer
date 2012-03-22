@@ -1,6 +1,6 @@
 package spikes.klaus.thomas.beings.gui;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Color;
 import java.awt.Graphics;

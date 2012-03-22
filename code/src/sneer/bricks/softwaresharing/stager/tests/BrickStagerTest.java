@@ -1,6 +1,6 @@
 package sneer.bricks.softwaresharing.stager.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +9,12 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import basis.brickness.Brick;
+import basis.lang.Consumer;
+import basis.lang.Predicate;
+import basis.testsupport.AssertUtils;
+import basis.util.concurrent.Latch;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
@@ -27,11 +33,6 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.stager.BrickStager;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Predicate;
-import sneer.foundation.testsupport.AssertUtils;
-import sneer.foundation.util.concurrent.Latch;
 
 public class BrickStagerTest extends BrickTestBase {
 
@@ -55,12 +56,12 @@ public class BrickStagerTest extends BrickTestBase {
 		srcFolder().mkdirs();
 		
 		copyClassesToSrcFolder(
-			sneer.foundation.brickness.Brick.class,
-			sneer.foundation.brickness.Nature.class,
-			sneer.foundation.brickness.ClassDefinition.class,
+			basis.brickness.Brick.class,
+			basis.brickness.Nature.class,
+			basis.brickness.ClassDefinition.class,
 			
-			sneer.foundation.environments.Environment.class,
-			sneer.foundation.environments.Environments.class);
+			basis.environments.Environment.class,
+			basis.environments.Environments.class);
 	}
 	
 	
@@ -105,8 +106,8 @@ public class BrickStagerTest extends BrickTestBase {
 		assertEquals(0, errorLights().size());
 		
 		assertStagedFilesExist(
-			"src/sneer/foundation/brickness/Brick.java",
-			"bin/sneer/foundation/brickness/Brick.class",
+			"src/basis/brickness/Brick.java",
+			"bin/basis/brickness/Brick.class",
 			
 			"src/bricks/y/Y.java",
 			"src/bricks/y/impl/YImpl.java",

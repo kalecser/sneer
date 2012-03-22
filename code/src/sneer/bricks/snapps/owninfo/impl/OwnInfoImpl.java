@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.owninfo.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -24,6 +24,12 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.TitledBorder;
 
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.PickyConsumer;
+
 import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
 import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.identity.seals.OwnSeal;
@@ -39,11 +45,6 @@ import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.owninfo.OwnInfo;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.PickyConsumer;
 
 class OwnInfoImpl extends JFrame implements OwnInfo {
 	

@@ -1,13 +1,13 @@
 package sneer.bricks.pulp.reactive.impl;
 
+import basis.lang.Consumer;
+import basis.lang.Predicate;
+import basis.util.concurrent.Latch;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Predicate;
-import sneer.foundation.util.concurrent.Latch;
 
 class SignalUtilsImpl implements SignalUtils {
 

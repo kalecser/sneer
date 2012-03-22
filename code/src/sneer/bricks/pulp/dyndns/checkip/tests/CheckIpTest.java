@@ -1,16 +1,17 @@
 package sneer.bricks.pulp.dyndns.checkip.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 
 import org.jmock.Expectations;
 import org.junit.Test;
 
+import basis.brickness.testsupport.Bind;
+
 import sneer.bricks.pulp.dyndns.checkip.CheckIp;
 import sneer.bricks.pulp.httpclient.HttpClient;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
 
 public class CheckIpTest extends BrickTestBase {
 	

@@ -1,12 +1,12 @@
 package sneer.bricks.skin.main.title.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Functor;
 import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.main.title.ProcessTitle;
-import sneer.foundation.lang.Functor;
 
 public class ProcessTitleImpl implements ProcessTitle {
 

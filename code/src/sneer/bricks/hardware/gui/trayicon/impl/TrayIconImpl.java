@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.gui.trayicon.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.AWTException;
 import java.awt.Image;
@@ -15,6 +15,9 @@ import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.security.InvalidParameterException;
 
+import basis.lang.Closure;
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.images.Images;
@@ -22,8 +25,6 @@ import sneer.bricks.hardware.gui.trayicon.SystemTrayNotSupported;
 import sneer.bricks.hardware.gui.trayicon.TrayIcon;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 class TrayIconImpl implements TrayIcon {
 

@@ -1,7 +1,7 @@
 package sneer.bricks.pulp.reactive.gates.logic;
 
+import basis.brickness.Brick;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface LogicGates {

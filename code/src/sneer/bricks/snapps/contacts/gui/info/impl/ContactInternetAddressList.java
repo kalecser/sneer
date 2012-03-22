@@ -1,8 +1,10 @@
 package sneer.bricks.snapps.contacts.gui.info.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.Comparator;
+
+import basis.lang.Functor;
 
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
@@ -15,7 +17,6 @@ import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.bricks.pulp.reactive.collections.listsorter.ListSorter;
 import sneer.bricks.pulp.reactive.collections.setfilter.SetFilter;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
-import sneer.foundation.lang.Functor;
 
 class ContactInternetAddressList {
 

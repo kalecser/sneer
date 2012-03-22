@@ -1,16 +1,17 @@
 package sneer.bricks.hardware.gui.guithread.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.lang.Closure;
+
 import sneer.bricks.hardware.gui.guithread.GuiThread;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
 
 class GuiThreadImpl implements GuiThread {
 	

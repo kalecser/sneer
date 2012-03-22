@@ -1,11 +1,13 @@
 package sneer.bricks.snapps.system.meter.bandwidth.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Container;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
+
+import basis.lang.Functor;
 
 import sneer.bricks.pulp.bandwidth.BandwidthCounter;
 import sneer.bricks.pulp.reactive.Signal;
@@ -16,7 +18,6 @@ import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.bricks.snapps.system.meter.bandwidth.gui.BandwidthMeterGui;
-import sneer.foundation.lang.Functor;
 
 class BandwidthMeterGuiImpl implements BandwidthMeterGui {
 

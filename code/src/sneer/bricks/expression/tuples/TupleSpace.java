@@ -1,10 +1,10 @@
 package sneer.bricks.expression.tuples;
 
+import basis.brickness.Brick;
+import basis.lang.Consumer;
+import basis.lang.Functor;
+import basis.lang.Predicate;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.Predicate;
 
 @Brick
 public interface TupleSpace {

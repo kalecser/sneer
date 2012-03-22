@@ -1,6 +1,6 @@
 package sneer.bricks.softwaresharing.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +83,7 @@ class FakeModel {
 			@Override public List<FileVersion> files() {return _fileVersions;}
 			@Override
 			public FileVersion file(String relativePath) {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+				throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 			}
 			@Override public boolean isChosenForExecution() {return _staged;}
 			@Override public Signal<Status> status() { return _status.output(); }
@@ -131,7 +131,7 @@ class FakeContent{
 		return 	"" + 			"package sneer.bricks.hardware.clock;" +
 		
 					"\n\n" + 	"import sneer.bricks.pulp.reactive.Signal;" +
-					"\n" + 		"import sneer.foundation.brickness.Brick;" +
+					"\n" + 		"import basis.brickness.Brick;" +
 
 					"\n" + 		"@Brick" +
 					"\n" + 		"public interface Clock {"+
@@ -147,7 +147,7 @@ class FakeContent{
 		return 	"" + 			"package sneer.bricks.hardware.clock;" +
 		
 					"\n\n" + 	"import sneer.bricks.pulp.reactive.Signal;" +
-					"\n" + 		"import sneer.foundation.brickness.Brick;" +
+					"\n" + 		"import basis.brickness.Brick;" +
 
 					"\n" + 		"@Brick" +
 					"\n" + 		"public interface Clock {"+

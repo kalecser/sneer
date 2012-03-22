@@ -1,9 +1,12 @@
 package sneer.bricks.snapps.contacts.gui.comparator.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
+import basis.brickness.testsupport.Bind;
+import basis.testsupport.AssertUtils;
 
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
@@ -17,8 +20,6 @@ import sneer.bricks.pulp.reactive.collections.listsorter.ListSorter;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.snapps.contacts.gui.comparator.ContactComparator;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.testsupport.AssertUtils;
 
 public class ContactComparatorTest extends BrickTestBase {
 	

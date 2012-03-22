@@ -1,6 +1,8 @@
 package sneer.bricks.pulp.retrier.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Closure;
+import basis.lang.exceptions.FriendlyException;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
@@ -10,8 +12,6 @@ import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.retrier.Retrier;
 import sneer.bricks.pulp.retrier.Task;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.exceptions.FriendlyException;
 
 class RetrierImpl implements Retrier {
 

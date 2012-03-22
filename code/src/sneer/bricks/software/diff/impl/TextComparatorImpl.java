@@ -5,11 +5,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import basis.lang.exceptions.NotImplementedYet;
+
 import name.fraser.neil.plaintext.diff_match_patch;
 import name.fraser.neil.plaintext.diff_match_patch.Diff;
 import name.fraser.neil.plaintext.diff_match_patch.Operation;
 import sneer.bricks.software.diff.TextComparator;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 class TextComparatorImpl implements TextComparator{
 	

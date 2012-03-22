@@ -1,6 +1,6 @@
 package sneer.bricks.skin.main.dashboard.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -17,6 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
+import basis.lang.Closure;
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
@@ -30,8 +33,6 @@ import sneer.bricks.skin.main.title.ProcessTitle;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.Widget;
 import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 class DashboardImpl implements Dashboard {
 
@@ -65,7 +66,7 @@ class DashboardImpl implements Dashboard {
 				_dashboardPanel.install(instrument);
 			
 			if (!change.elementsRemoved().isEmpty())
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet();
+				throw new basis.lang.exceptions.NotImplementedYet();
 		}});
 	}
 	

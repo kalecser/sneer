@@ -8,9 +8,10 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
+import basis.lang.exceptions.NotImplementedYet;
+
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.snapps.chat.ChatMessage;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 class ShoutPainter {
 	

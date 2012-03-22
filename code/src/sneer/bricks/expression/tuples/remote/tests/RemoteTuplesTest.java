@@ -1,10 +1,12 @@
 package sneer.bricks.expression.tuples.remote.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
+
+import basis.lang.Consumer;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
@@ -12,7 +14,6 @@ import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.expression.tuples.tests.TestTuple;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Consumer;
 
 public class RemoteTuplesTest extends BrickTestBase {
 

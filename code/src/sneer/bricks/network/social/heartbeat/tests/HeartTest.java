@@ -1,19 +1,20 @@
 package sneer.bricks.network.social.heartbeat.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.jmock.Expectations;
 import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
+import basis.brickness.testsupport.Bind;
+import basis.lang.ByRef;
+
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.network.social.heartbeat.Heart;
 import sneer.bricks.network.social.heartbeat.Heartbeat;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.lang.ByRef;
 
 public class HeartTest extends BrickTestBase {
 

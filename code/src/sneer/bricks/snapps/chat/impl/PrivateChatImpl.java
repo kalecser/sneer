@@ -1,6 +1,7 @@
 package sneer.bricks.snapps.chat.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Consumer;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.clock.Clock;
@@ -14,7 +15,6 @@ import sneer.bricks.snapps.chat.PrivateChat;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
-import sneer.foundation.lang.Consumer;
 
 class PrivateChatImpl implements PrivateChat {
 

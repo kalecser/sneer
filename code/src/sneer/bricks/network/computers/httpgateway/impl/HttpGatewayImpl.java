@@ -1,17 +1,18 @@
 package sneer.bricks.network.computers.httpgateway.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.net.URL;
+
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.network.computers.httpgateway.HttpGateway;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 public class HttpGatewayImpl implements HttpGateway {
 

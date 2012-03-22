@@ -1,14 +1,15 @@
 package sneer.bricks.pulp.notifiers.pulsers.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Test;
+
+import basis.lang.Closure;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.notifiers.pulsers.PulseSender;
 import sneer.bricks.pulp.notifiers.pulsers.PulseSenders;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Closure;
 
 public class PulsersTest extends BrickTestBase {
 

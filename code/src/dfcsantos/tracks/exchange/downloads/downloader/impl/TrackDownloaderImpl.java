@@ -1,11 +1,14 @@
 package dfcsantos.tracks.exchange.downloads.downloader.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map.Entry;
+
+import basis.lang.Consumer;
+import basis.lang.Functor;
 
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
@@ -27,8 +30,6 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.MapRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
 import dfcsantos.tracks.exchange.downloads.counter.TrackDownloadCounter;
 import dfcsantos.tracks.exchange.downloads.downloader.TrackDownloader;
 import dfcsantos.tracks.exchange.endorsements.TrackEndorsement;

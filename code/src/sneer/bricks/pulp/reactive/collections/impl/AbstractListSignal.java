@@ -1,6 +1,8 @@
 package sneer.bricks.pulp.reactive.collections.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Consumer;
+import basis.lang.Producer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
@@ -8,8 +10,6 @@ import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.ListChange;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.collections.ListChange.Visitor;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Producer;
 
 abstract class AbstractListSignal<T> implements ListSignal<T> {
 

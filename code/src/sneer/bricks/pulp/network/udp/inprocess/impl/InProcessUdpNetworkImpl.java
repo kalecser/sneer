@@ -5,8 +5,9 @@ import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 
+import basis.lang.Functor;
+
 import sneer.bricks.pulp.network.udp.inprocess.InProcessUdpNetwork;
-import sneer.foundation.lang.Functor;
 
 
 public class InProcessUdpNetworkImpl implements InProcessUdpNetwork {

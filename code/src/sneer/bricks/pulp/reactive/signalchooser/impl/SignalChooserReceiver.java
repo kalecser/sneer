@@ -1,9 +1,13 @@
 package sneer.bricks.pulp.reactive.signalchooser.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.exceptions.NotImplementedYet;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.notifiers.pulsers.PulseSenders;
@@ -11,9 +15,6 @@ import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.CollectionSignal;
 import sneer.bricks.pulp.reactive.signalchooser.ListOfSignalsReceiver;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 class SignalChooserReceiver<T> {
 	

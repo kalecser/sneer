@@ -10,9 +10,10 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
+import basis.lang.exceptions.NotImplementedYet;
+
 import sneer.bricks.software.diff.TextComparator.TextBlock;
 import sneer.bricks.software.diff.TextComparator.TextBlockType;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 class TextBlockPainter {
 	

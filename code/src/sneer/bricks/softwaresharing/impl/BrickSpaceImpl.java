@@ -1,12 +1,17 @@
 package sneer.bricks.softwaresharing.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+
+import basis.lang.CacheMap;
+import basis.lang.Closure;
+import basis.lang.ClosureX;
+import basis.lang.Consumer;
 
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
@@ -30,10 +35,6 @@ import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.demolisher.Demolisher;
 import sneer.bricks.softwaresharing.publisher.BuildingHash;
 import sneer.bricks.softwaresharing.publisher.BuildingPublisher;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.ClosureX;
-import sneer.foundation.lang.Consumer;
 
 
 class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {

@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.network.udp.impl.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -9,11 +9,12 @@ import java.net.SocketException;
 
 import org.junit.Test;
 
+import basis.lang.Consumer;
+import basis.util.concurrent.Latch;
+
 import sneer.bricks.pulp.network.udp.UdpNetwork;
 import sneer.bricks.pulp.network.udp.UdpNetwork.UdpSocket;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.util.concurrent.Latch;
 
 
 

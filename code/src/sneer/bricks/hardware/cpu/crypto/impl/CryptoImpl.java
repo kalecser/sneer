@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.cpu.crypto.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,12 +15,13 @@ import java.security.Signature;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import basis.lang.ProducerX;
+import basis.lang.arrays.ImmutableByteArray;
+
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Digester;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
-import sneer.foundation.lang.ProducerX;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 class CryptoImpl implements Crypto {
 

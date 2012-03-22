@@ -1,6 +1,6 @@
 package sneer.bricks.skin.main.translucentsupport.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.GraphicsConfiguration;
 import java.awt.Shape;

@@ -1,6 +1,6 @@
 package sneer.bricks.software.bricks.compiler.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +46,7 @@ class Build {
 
 
 	private File foundationSrcFolder() {
-		return new File(_srcFolder, "sneer/foundation");
+		return new File(_srcFolder, "basis");
 	}
 	
 	
@@ -224,7 +224,7 @@ class Build {
 				fileFilters().name("impl"),
 				fileFilters().name("tests"),
 				fileFilters().name("testsupport"),
-				fileFilters().name("foundation")
+				fileFilters().name("basis")
 			})));
 	}
 

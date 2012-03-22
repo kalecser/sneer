@@ -1,7 +1,7 @@
 package sneer.bricks.pulp.reactive.gates.buffers.assync;
 
+import basis.brickness.Brick;
 import sneer.bricks.pulp.notifiers.Source;
-import sneer.foundation.brickness.Brick;
 
 
 @Brick

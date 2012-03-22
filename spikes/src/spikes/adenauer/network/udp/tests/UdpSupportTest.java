@@ -8,13 +8,14 @@ import org.jmock.Expectations;
 import org.junit.After;
 import org.junit.Test;
 
+import basis.brickness.testsupport.Bind;
+import basis.lang.Consumer;
+import basis.util.concurrent.Latch;
+
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.util.concurrent.Latch;
 import spikes.adenauer.network.UdpNetworkSpike.Packet;
 import spikes.adenauer.network.udp.UdpAddressResolver;
 import spikes.adenauer.network.udp.impl.UdpNetworkImpl;

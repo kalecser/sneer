@@ -1,7 +1,7 @@
 package dfcsantos.music.notification.playingtrack.server;
 
+import basis.brickness.Brick;
 import sneer.bricks.software.bricks.snapploader.Snapp;
-import sneer.foundation.brickness.Brick;
 
 @Snapp
 @Brick

@@ -2,8 +2,9 @@ package sneer.bricks.pulp.httpclient;
 
 import java.io.IOException;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Pair;
+import basis.brickness.Brick;
+import basis.lang.Pair;
+
 
 @Brick
 public interface HttpClient {

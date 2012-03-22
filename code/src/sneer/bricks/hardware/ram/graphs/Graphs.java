@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.ram.graphs;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 @Brick
 public interface Graphs {

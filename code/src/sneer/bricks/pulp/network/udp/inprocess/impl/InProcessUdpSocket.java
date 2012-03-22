@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.network.udp.inprocess.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -10,12 +10,13 @@ import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.Functor;
+
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.network.udp.UdpNetwork.UdpSocket;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
 
 
 class InProcessUdpSocket implements UdpSocket {

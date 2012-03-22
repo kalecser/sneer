@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.serialization.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Test;
 

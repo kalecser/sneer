@@ -1,17 +1,18 @@
 package sneer.bricks.hardware.cpu.threads.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import basis.brickness.Brickness;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.lang.ClosureX;
+
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
-import sneer.foundation.brickness.Brickness;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.ClosureX;
 
 public class CpuThrottleDemo {
 

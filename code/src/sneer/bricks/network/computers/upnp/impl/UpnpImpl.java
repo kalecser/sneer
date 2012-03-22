@@ -1,9 +1,13 @@
 package sneer.bricks.network.computers.upnp.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
+import basis.brickness.Brick;
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 import net.sbbi.upnp.impls.InternetGatewayDevice;
 import sneer.bricks.hardware.cpu.threads.Threads;
@@ -14,9 +18,6 @@ import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 @Brick
 public class UpnpImpl implements Upnp {

@@ -1,6 +1,6 @@
 package spikes.wheel.i18n;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -31,8 +31,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import basis.lang.Closure;
+
 import sneer.bricks.hardware.gui.guithread.GuiThread;
-import sneer.foundation.lang.Closure;
 
 //Refactor: Break this into several classes.
 public class Language {

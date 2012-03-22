@@ -1,7 +1,7 @@
 package sneer.bricks.snapps.gis.location;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Consumer;
+import basis.brickness.Brick;
+import basis.lang.Consumer;
 
 @Brick
 public interface Locations {

@@ -1,10 +1,17 @@
 package spikes.sneer.bricks.snapps.whisper.speextuples.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.jmock.Expectations;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import basis.brickness.testsupport.Bind;
+import basis.lang.ByRef;
+import basis.lang.Consumer;
+import basis.lang.arrays.ImmutableByteArray;
+import basis.lang.arrays.ImmutableByteArray2D;
+import basis.lang.exceptions.NotImplementedYet;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
@@ -15,12 +22,6 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.skin.rooms.ActiveRoomKeeper;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.lang.ByRef;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
-import sneer.foundation.lang.arrays.ImmutableByteArray2D;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 import spikes.sneer.bricks.snapps.whisper.speex.Decoder;
 import spikes.sneer.bricks.snapps.whisper.speex.Encoder;
 import spikes.sneer.bricks.snapps.whisper.speex.Speex;

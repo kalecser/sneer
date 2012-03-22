@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.gis.map.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Image;
@@ -16,6 +16,9 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import basis.lang.Closure;
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
@@ -25,8 +28,6 @@ import sneer.bricks.snapps.gis.location.Location;
 import sneer.bricks.snapps.gis.location.Locations;
 import sneer.bricks.snapps.gis.map.MapRenderer;
 import sneer.bricks.snapps.gis.map.gui.MapGui;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 class MapGuiImpl implements MapGui{
 

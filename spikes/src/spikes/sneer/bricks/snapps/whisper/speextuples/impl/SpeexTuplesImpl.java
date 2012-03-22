@@ -1,10 +1,17 @@
 package spikes.sneer.bricks.snapps.whisper.speextuples.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sound.sampled.LineUnavailableException;
+
+import basis.lang.ByRef;
+import basis.lang.CacheMap;
+import basis.lang.Consumer;
+import basis.lang.Producer;
+import basis.lang.arrays.ImmutableByteArray;
+import basis.lang.arrays.ImmutableByteArray2D;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
@@ -14,12 +21,6 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.streams.sequencer.Sequencer;
 import sneer.bricks.pulp.streams.sequencer.Sequencers;
 import sneer.bricks.skin.rooms.ActiveRoomKeeper;
-import sneer.foundation.lang.ByRef;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Producer;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
-import sneer.foundation.lang.arrays.ImmutableByteArray2D;
 import spikes.sneer.bricks.skin.audio.mic.Mic;
 import spikes.sneer.bricks.skin.audio.speaker.Speaker;
 import spikes.sneer.bricks.skin.audio.speaker.Speaker.Line;

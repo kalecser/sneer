@@ -1,10 +1,13 @@
 package sneer.bricks.software.bricks.snapploader.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+
+import basis.lang.Closure;
+import basis.util.concurrent.Latch;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -12,8 +15,6 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.software.bricks.finder.BrickFinder;
 import sneer.bricks.software.bricks.snapploader.Snapp;
 import sneer.bricks.software.bricks.snapploader.SnappLoader;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.util.concurrent.Latch;
 
 class SnappLoaderImpl implements SnappLoader {
 

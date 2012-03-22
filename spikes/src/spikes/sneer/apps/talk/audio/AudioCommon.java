@@ -1,6 +1,6 @@
 package spikes.sneer.apps.talk.audio;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +14,10 @@ import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 
+import basis.lang.exceptions.NotImplementedYet;
+
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 // This class is a singleton.
 

@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.contacts.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -11,6 +11,8 @@ import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+
+import basis.lang.Consumer;
 
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.network.social.Contact;
@@ -32,7 +34,6 @@ import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactTextProvider;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.bricks.snapps.contacts.gui.comparator.ContactComparator;
-import sneer.foundation.lang.Consumer;
 
 class ContactsGuiImpl implements ContactsGui {
 

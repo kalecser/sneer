@@ -1,14 +1,15 @@
 package sneer.bricks.hardware.ram.ref.weak.keeper.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import basis.lang.Closure;
+
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
-import sneer.foundation.lang.Closure;
 
 public class WeakReferenceKeeperImpl implements WeakReferenceKeeper { 
 

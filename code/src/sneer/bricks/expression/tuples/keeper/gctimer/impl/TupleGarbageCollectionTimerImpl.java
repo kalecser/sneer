@@ -1,6 +1,6 @@
 package sneer.bricks.expression.tuples.keeper.gctimer.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 import sneer.bricks.expression.tuples.keeper.TupleKeeper;
 import sneer.bricks.expression.tuples.keeper.gctimer.TupleGarbageCollectionTimer;
 import sneer.bricks.hardware.clock.timer.Timer;

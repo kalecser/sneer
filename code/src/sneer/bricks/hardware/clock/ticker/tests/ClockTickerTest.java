@@ -1,15 +1,16 @@
 package sneer.bricks.hardware.clock.ticker.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Test;
+
+import basis.lang.Consumer;
+import basis.util.concurrent.Latch;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.ticker.ClockTicker;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.util.concurrent.Latch;
 
 
 public class ClockTickerTest extends BrickTestBase {

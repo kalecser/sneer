@@ -1,14 +1,15 @@
 package dfcsantos.music.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
+
+import basis.lang.Consumer;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.foundation.lang.Consumer;
 import dfcsantos.tracks.Track;
 import dfcsantos.tracks.execution.playlist.Playlist;
 import dfcsantos.tracks.execution.playlist.Playlists;

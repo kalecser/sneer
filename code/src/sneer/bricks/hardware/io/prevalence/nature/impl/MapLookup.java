@@ -1,8 +1,8 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Producer;
 import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
-import sneer.foundation.lang.Producer;
 
 
 class MapLookup implements Producer<Object> {

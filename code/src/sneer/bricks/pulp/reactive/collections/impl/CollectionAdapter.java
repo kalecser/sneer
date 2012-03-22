@@ -1,6 +1,8 @@
 package sneer.bricks.pulp.reactive.collections.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Consumer;
+import basis.lang.Functor;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
@@ -8,8 +10,6 @@ import sneer.bricks.pulp.reactive.collections.CollectionSignal;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
 
 class CollectionAdapter<IN, OUT> {
 

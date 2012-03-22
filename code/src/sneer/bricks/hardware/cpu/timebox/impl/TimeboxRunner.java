@@ -1,14 +1,15 @@
 package sneer.bricks.hardware.cpu.timebox.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import basis.lang.Closure;
+
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
-import sneer.foundation.lang.Closure;
 
 @SuppressWarnings("deprecation")
 class TimeboxRunner {

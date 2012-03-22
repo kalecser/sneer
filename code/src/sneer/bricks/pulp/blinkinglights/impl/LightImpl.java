@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.blinkinglights.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.io.log.stacktrace.StackTraceLogger;
 import sneer.bricks.pulp.blinkinglights.Light;

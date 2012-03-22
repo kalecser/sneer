@@ -1,15 +1,16 @@
 package sneer.bricks.hardware.cpu.threads.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import basis.lang.CacheMap;
+import basis.lang.Producer;
+
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Producer;
 
 
 class Counter {

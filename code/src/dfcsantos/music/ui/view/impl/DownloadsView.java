@@ -1,15 +1,16 @@
 package dfcsantos.music.ui.view.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
 
+import basis.lang.Functor;
+
 import sneer.bricks.expression.files.client.downloads.gui.DownloadListPanels;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
-import sneer.foundation.lang.Functor;
 import dfcsantos.music.Music;
 
 class DownloadsView {

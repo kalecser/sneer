@@ -1,10 +1,10 @@
 package sneer.bricks.pulp.reactive.gates.logic.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Functor;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.gates.logic.LogicGates;
-import sneer.foundation.lang.Functor;
 
 public class LogicGatesImpl implements LogicGates {
 

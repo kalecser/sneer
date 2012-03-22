@@ -1,11 +1,14 @@
 package sneer.bricks.expression.files.client.downloads.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import basis.lang.Closure;
+import basis.util.concurrent.Latch;
 
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
@@ -24,8 +27,6 @@ import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.util.concurrent.Latch;
 
 abstract class AbstractDownload implements Download {
 

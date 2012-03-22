@@ -1,11 +1,11 @@
 package sneer.bricks.network.computers.addresses.keeper.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.exceptions.Refusal;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.foundation.lang.exceptions.Refusal;
 
 class InternetAddressImpl implements InternetAddress {
 

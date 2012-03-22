@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.retrier;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 @Brick
 public interface RetrierManager {

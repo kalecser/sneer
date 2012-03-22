@@ -1,9 +1,12 @@
 package sneer.bricks.expression.files.server.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+
+import basis.lang.Consumer;
+import basis.lang.arrays.ImmutableByteArray;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FileContents;
@@ -21,8 +24,6 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 

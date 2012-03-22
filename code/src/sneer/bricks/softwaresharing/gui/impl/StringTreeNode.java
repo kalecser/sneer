@@ -1,6 +1,6 @@
 package sneer.bricks.softwaresharing.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,9 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.tree.TreeNode;
 
+import basis.lang.exceptions.NotImplementedYet;
+
 import sneer.bricks.skin.image.ImageFactory;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
 
 class StringTreeNode extends AbstractTreeNodeWrapper<Object> {
 

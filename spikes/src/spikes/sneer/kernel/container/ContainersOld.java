@@ -2,7 +2,8 @@ package spikes.sneer.kernel.container;
 
 import java.lang.reflect.Constructor;
 
-import sneer.foundation.environments.Environment;
+import basis.environments.Environment;
+
 
 
 public class ContainersOld {
@@ -17,7 +18,7 @@ public class ContainersOld {
 			final Constructor<?> defaultCtor = Class.forName("sneer.kernel.container.impl.ContainerImpl").getConstructors()[0];
 			return (ContainerOld) defaultCtor.newInstance(new Object[] { environment, implementationBindings });
 		} catch (Exception e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
     }
 	

@@ -1,6 +1,6 @@
 package sneer.bricks.expression.files.protocol;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 /** Place holder brick for the file sharing protocol tuples. */
 @Brick

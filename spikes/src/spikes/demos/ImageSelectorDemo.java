@@ -1,15 +1,16 @@
 package spikes.demos;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Image;
 
+import basis.brickness.Brickness;
+import basis.environments.Environments;
+import basis.lang.ClosureX;
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.skin.imgselector.ImageSelector;
-import sneer.foundation.brickness.Brickness;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.ClosureX;
-import sneer.foundation.lang.Consumer;
 
 public class ImageSelectorDemo  {
 

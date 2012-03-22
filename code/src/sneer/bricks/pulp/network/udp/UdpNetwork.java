@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.SocketException;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Consumer;
+import basis.brickness.Brick;
+import basis.lang.Consumer;
+
 
 
 @Brick

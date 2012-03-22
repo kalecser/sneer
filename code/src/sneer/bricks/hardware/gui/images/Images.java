@@ -4,7 +4,8 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
+
 
 @Brick
 public interface Images {

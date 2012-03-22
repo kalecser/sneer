@@ -9,10 +9,11 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
+import basis.lang.CacheMap;
+import basis.lang.Producer;
+
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.widgets.reactive.LabelProvider;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Producer;
 
 
 class RListCellRenderer<ELEMENT> implements ListCellRenderer {

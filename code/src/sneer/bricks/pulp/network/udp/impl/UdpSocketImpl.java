@@ -1,11 +1,14 @@
 package sneer.bricks.pulp.network.udp.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
@@ -14,8 +17,6 @@ import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.network.udp.UdpNetwork;
 import sneer.bricks.pulp.network.udp.UdpNetwork.UdpSocket;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 
 class UdpSocketImpl implements UdpSocket {

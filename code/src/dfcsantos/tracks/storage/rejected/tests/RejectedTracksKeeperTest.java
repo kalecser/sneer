@@ -1,6 +1,6 @@
 package dfcsantos.tracks.storage.rejected.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Test;
 

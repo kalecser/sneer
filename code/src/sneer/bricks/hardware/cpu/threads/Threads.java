@@ -1,9 +1,9 @@
 package sneer.bricks.hardware.cpu.threads;
 
+import basis.brickness.Brick;
+import basis.lang.Closure;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.pulp.notifiers.pulsers.Pulser;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Closure;
 
 @Brick
 public interface Threads {

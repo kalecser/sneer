@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.security.KeyPair;
 import java.security.Signature;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
+
 
 @Brick
 public interface Crypto {

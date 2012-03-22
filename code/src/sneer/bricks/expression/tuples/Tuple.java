@@ -1,11 +1,11 @@
 package sneer.bricks.expression.tuples;
 
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Immutable;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
-import sneer.foundation.lang.Immutable;
 
 public abstract class Tuple extends Immutable {
 

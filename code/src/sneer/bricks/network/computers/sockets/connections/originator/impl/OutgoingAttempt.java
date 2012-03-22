@@ -1,8 +1,11 @@
 package sneer.bricks.network.computers.sockets.connections.originator.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
+
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -16,8 +19,6 @@ import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network2010;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 class OutgoingAttempt {
 

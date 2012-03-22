@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
+
 
 /**
  * A strategy for writing objects to and reading objects from streams. Implementations <b>must</b> be safe for

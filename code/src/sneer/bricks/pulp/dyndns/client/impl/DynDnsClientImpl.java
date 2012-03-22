@@ -1,8 +1,10 @@
 package sneer.bricks.pulp.dyndns.client.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
+
+import basis.lang.Closure;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -22,7 +24,6 @@ import sneer.bricks.pulp.dyndns.updater.UpdaterException;
 import sneer.bricks.pulp.notifiers.Source;
 import sneer.bricks.pulp.notifiers.pulsers.PulseSenders;
 import sneer.bricks.pulp.propertystore.PropertyStore;
-import sneer.foundation.lang.Closure;
 
 class DynDnsClientImpl implements DynDnsClient {
 
@@ -111,7 +112,7 @@ class DynDnsClientImpl implements DynDnsClient {
 			} catch (IOException e) {
 				return new Waiting(e);
 			} catch (UpdaterException e) {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+				throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 			}
 		}
 		

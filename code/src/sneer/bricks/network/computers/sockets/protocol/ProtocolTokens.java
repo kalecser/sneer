@@ -1,8 +1,8 @@
 package sneer.bricks.network.computers.sockets.protocol;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.brickness.Brick;
 import sneer.bricks.hardware.cpu.lang.Lang;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface ProtocolTokens {

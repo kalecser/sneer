@@ -1,6 +1,6 @@
 package spikes.sandro.cellrenderer;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -169,7 +169,7 @@ class WindListCellRendererSample implements ListCellRenderer {
 		try {
 			doc.insertString(doc.getLength(), msg, doc.getStyle(style));
 		} catch (BadLocationException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 	}
 

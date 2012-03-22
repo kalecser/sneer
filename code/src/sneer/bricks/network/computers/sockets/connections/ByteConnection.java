@@ -1,7 +1,7 @@
 package sneer.bricks.network.computers.sockets.connections;
 
+import basis.lang.Consumer;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.foundation.lang.Consumer;
 
 public interface ByteConnection {
 

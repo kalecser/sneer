@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.io.log.notifier.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 import sneer.bricks.hardware.io.log.filter.LogFilter;
 import sneer.bricks.hardware.io.log.formatter.LogFormatter;
 import sneer.bricks.hardware.io.log.notifier.LogNotifier;

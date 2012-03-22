@@ -9,10 +9,11 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.social.attributes.gui.AttributePanelElement;
 import sneer.bricks.pulp.reactive.collections.CollectionSignal;
-import sneer.foundation.lang.Consumer;
 
 class AttributeListPanel extends Box {
 

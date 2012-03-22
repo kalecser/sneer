@@ -1,11 +1,15 @@
 package sneer.bricks.network.computers.sockets.connections.originator.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.jmock.Expectations;
 import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
+
+import basis.brickness.testsupport.Bind;
+import basis.lang.arrays.ImmutableByteArray;
+import basis.util.concurrent.Latch;
 
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -20,9 +24,6 @@ import sneer.bricks.pulp.network.Network2010;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
-import sneer.foundation.util.concurrent.Latch;
 
 public class SocketOriginatorTest extends BrickTestBase {
 

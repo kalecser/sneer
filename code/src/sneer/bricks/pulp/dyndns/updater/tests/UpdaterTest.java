@@ -1,11 +1,14 @@
 package sneer.bricks.pulp.dyndns.updater.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 
 import org.jmock.Expectations;
 import org.junit.Test;
+
+import basis.brickness.testsupport.Bind;
+import basis.lang.Pair;
 
 import sneer.bricks.hardware.cpu.codec.Codec;
 import sneer.bricks.pulp.dyndns.updater.BadAuthException;
@@ -17,8 +20,6 @@ import sneer.bricks.pulp.dyndns.updater.Updater;
 import sneer.bricks.pulp.dyndns.updater.UpdaterException;
 import sneer.bricks.pulp.httpclient.HttpClient;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.lang.Pair;
 
 public class UpdaterTest extends BrickTestBase {
 

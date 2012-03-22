@@ -1,8 +1,8 @@
 package sneer.bricks.identity.seals.codec;
 
+import basis.brickness.Brick;
 import sneer.bricks.hardware.cpu.codec.DecodeException;
 import sneer.bricks.identity.seals.Seal;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface SealCodec {

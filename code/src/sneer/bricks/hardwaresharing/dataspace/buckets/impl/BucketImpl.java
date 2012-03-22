@@ -1,6 +1,6 @@
 package sneer.bricks.hardwaresharing.dataspace.buckets.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.FileNotFoundException;

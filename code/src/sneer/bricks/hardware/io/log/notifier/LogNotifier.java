@@ -1,7 +1,7 @@
 package sneer.bricks.hardware.io.log.notifier;
 
+import basis.brickness.Brick;
 import sneer.bricks.pulp.notifiers.Source;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface LogNotifier {

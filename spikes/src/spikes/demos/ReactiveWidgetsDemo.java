@@ -1,10 +1,10 @@
 package spikes.demos;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.brickness.Brickness;
+import basis.environments.Environments;
+import basis.lang.ClosureX;
 import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
-import sneer.foundation.brickness.Brickness;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.ClosureX;
 
 public class ReactiveWidgetsDemo {
 

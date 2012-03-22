@@ -7,8 +7,9 @@ import java.io.File;
 
 import javax.swing.ImageIcon;
 
+import basis.brickness.Brick;
+
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface ImageFactory extends DefaultIcons{

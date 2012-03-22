@@ -2,7 +2,8 @@ package spikes.adenauer.puncher.server;
 
 import java.net.DatagramPacket;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
+
 
 @Brick
 public interface StunServer {

@@ -2,9 +2,10 @@ package spikes.sneer.bricks.skin.screenshotter;
 
 import java.awt.image.BufferedImage;
 
+import basis.brickness.Brick;
+import basis.lang.exceptions.FriendlyException;
+
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.exceptions.FriendlyException;
 
 @Brick
 public interface Screenshotter {

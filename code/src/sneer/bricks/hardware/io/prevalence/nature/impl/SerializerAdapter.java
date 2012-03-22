@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.io.InputStream;

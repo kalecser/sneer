@@ -1,12 +1,12 @@
 package sneer.bricks.hardwaresharing.backup.kernel;
 
+import basis.brickness.Brick;
+import basis.lang.Pair;
+import basis.lang.exceptions.Refusal;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.collections.CollectionSignal;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Pair;
-import sneer.foundation.lang.exceptions.Refusal;
 
 @Brick
 public interface SnackupKernel {

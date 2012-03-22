@@ -6,12 +6,13 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import basis.environments.ProxyInEnvironment;
+import basis.lang.Closure;
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
-import sneer.foundation.environments.ProxyInEnvironment;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 public class ActionsPanel extends JPanel {
 	

@@ -1,8 +1,10 @@
 package sneer.bricks.pulp.reactive.collections.setfilter.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Test;
+
+import basis.lang.Functor;
 
 import sneer.bricks.pulp.reactive.ReactivePredicate;
 import sneer.bricks.pulp.reactive.Register;
@@ -13,7 +15,6 @@ import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.bricks.pulp.reactive.collections.setfilter.SetFilter;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Functor;
 
 public class SetFilterTest extends BrickTestBase {
 	

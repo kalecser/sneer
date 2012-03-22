@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.reactive.collections.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,14 +9,15 @@ import java.util.Collections;
 
 import org.junit.Test;
 
+import basis.lang.Consumer;
+import basis.testsupport.AssertUtils;
+import basis.util.concurrent.Latch;
+
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.testsupport.AssertUtils;
-import sneer.foundation.util.concurrent.Latch;
 
 public class SetRegisterTest extends BrickTestBase {
 

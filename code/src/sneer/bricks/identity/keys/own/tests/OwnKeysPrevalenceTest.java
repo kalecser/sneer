@@ -1,13 +1,14 @@
 package sneer.bricks.identity.keys.own.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.junit.Test;
 
+import basis.environments.Environments;
+import basis.lang.Closure;
+
 import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
 
 public class OwnKeysPrevalenceTest extends BrickTestBase {
 

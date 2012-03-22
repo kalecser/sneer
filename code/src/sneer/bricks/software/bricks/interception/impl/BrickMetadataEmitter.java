@@ -6,9 +6,10 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
+import basis.brickness.ClassDefinition;
+import basis.environments.Environments;
+
 import sneer.bricks.software.bricks.interception.Interceptor;
-import sneer.foundation.brickness.ClassDefinition;
-import sneer.foundation.environments.Environments;
 
 class BrickMetadataEmitter {
 	

@@ -1,6 +1,6 @@
 package sneer.bricks.software.bricks.interception.tests;
 
-import static sneer.foundation.environments.Environments.*;
+import static basis.environments.Environments.*;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -11,6 +11,14 @@ import org.jmock.api.Invocation;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
+
+import basis.brickness.Brickness;
+import basis.brickness.ClassDefinition;
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.lang.ClosureX;
+import basis.lang.Producer;
 
 import sneer.bricks.hardware.cpu.threads.tests.BrickTestWithThreads;
 import sneer.bricks.software.bricks.interception.InterceptionEnhancer;
@@ -24,13 +32,6 @@ import sneer.bricks.software.bricks.interception.fixtures.refmethods.noargs.RefM
 import sneer.bricks.software.bricks.interception.fixtures.staticinitializer.StaticInitializer;
 import sneer.bricks.software.bricks.interception.fixtures.voidmethods.noargs.VoidMethodsNoArgs;
 import sneer.bricks.software.bricks.interception.fixtures.voidmethods.onearg.VoidMethodsRefArg;
-import sneer.foundation.brickness.Brickness;
-import sneer.foundation.brickness.ClassDefinition;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.ClosureX;
-import sneer.foundation.lang.Producer;
 
 public class InterceptionTest extends BrickTestWithThreads {
 	

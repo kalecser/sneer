@@ -3,8 +3,9 @@ package spikes.sneer.bricks.snapps.watchme.codec;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
+import basis.brickness.Brick;
+
 import sneer.bricks.hardware.cpu.exceptions.Hiccup;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface ImageCodec {

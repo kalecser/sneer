@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.cpu.threads.throttle.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 import sneer.bricks.hardware.cpu.threads.Threads;
 
 

@@ -4,8 +4,9 @@ import java.io.Closeable;
 
 import javax.sound.sampled.LineUnavailableException;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Consumer;
+import basis.brickness.Brick;
+import basis.lang.Consumer;
+
 
 @Brick
 public interface Speaker {

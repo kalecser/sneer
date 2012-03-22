@@ -1,13 +1,13 @@
 package sneer.bricks.hardware.cpu.threads.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.util.concurrent.Latch;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.hardware.io.log.stacktrace.StackTraceLogger;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.util.concurrent.Latch;
 
 
 class Daemon extends Thread {

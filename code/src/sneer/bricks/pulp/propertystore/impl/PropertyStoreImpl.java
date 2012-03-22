@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.propertystore.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,7 +46,7 @@ class PropertyStoreImpl implements PropertyStore {
 		} catch (FileNotFoundException ignore) {
 //			my(Logger.class).log("File not found: {}", file().getAbsolutePath());
 		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		} finally {
 			if (in != null) my(IO.class).crash(in);
 		}
@@ -62,7 +62,7 @@ class PropertyStoreImpl implements PropertyStore {
 				my(IO.class).crash(out);
 			}
 		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		} 
 	}
 

@@ -1,6 +1,6 @@
 package sneer.tests.adapters.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +8,14 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.Functor;
+import basis.lang.arrays.ImmutableByteArray;
+import basis.lang.exceptions.NotImplementedYet;
+import basis.lang.exceptions.Refusal;
+import basis.util.concurrent.Latch;
 
 import sneer.bricks.expression.files.server.FileServer;
 import sneer.bricks.expression.tuples.logger.TupleLogger;
@@ -53,13 +61,6 @@ import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.stager.BrickStager;
 import sneer.bricks.softwaresharing.stager.tests.BrickStagerTest;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
-import sneer.foundation.lang.exceptions.NotImplementedYet;
-import sneer.foundation.lang.exceptions.Refusal;
-import sneer.foundation.util.concurrent.Latch;
 import sneer.main.SneerVersionUpdater;
 import sneer.tests.SovereignParty;
 import sneer.tests.adapters.SneerParty;
@@ -559,7 +560,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	@Override
 	public void recoverFileFromBackup(String fileName) {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 

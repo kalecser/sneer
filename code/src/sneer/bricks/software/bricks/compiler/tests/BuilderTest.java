@@ -1,12 +1,19 @@
 package sneer.bricks.software.bricks.compiler.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import basis.brickness.Brick;
+import basis.brickness.ClassDefinition;
+import basis.brickness.Nature;
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.lang.Closure;
 
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.software.bricks.compiler.BrickCompilerException;
@@ -17,12 +24,6 @@ import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.jar.JarBuilder;
 import sneer.bricks.software.code.jar.Jars;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.brickness.ClassDefinition;
-import sneer.foundation.brickness.Nature;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
 
 
 public class BuilderTest extends BrickTestBase {

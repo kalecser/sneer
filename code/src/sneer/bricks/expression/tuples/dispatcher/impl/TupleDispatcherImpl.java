@@ -1,17 +1,18 @@
 package sneer.bricks.expression.tuples.dispatcher.impl;
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 class TupleDispatcherImpl implements TupleDispatcher {
 

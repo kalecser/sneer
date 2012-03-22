@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.io.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.Closeable;
 import java.io.EOFException;
@@ -18,12 +18,13 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 
+import basis.lang.Consumer;
+import basis.lang.Functor;
+
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
 
 class IOImpl implements IO {
 	

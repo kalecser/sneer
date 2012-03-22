@@ -1,6 +1,6 @@
 package sneer.tests.prevalence.fixtures.assertion;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 @Brick
 public interface PrevalenceTestAssertion {

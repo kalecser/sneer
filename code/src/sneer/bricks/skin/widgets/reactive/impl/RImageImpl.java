@@ -1,6 +1,6 @@
 package sneer.bricks.skin.widgets.reactive.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -11,13 +11,14 @@ import java.awt.RenderingHints;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import basis.lang.Consumer;
+import basis.lang.PickyConsumer;
+
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.image.ImageFactory;
 import sneer.bricks.skin.widgets.reactive.ImageWidget;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.PickyConsumer;
 
 class RImageImpl extends JPanel implements ImageWidget{
 

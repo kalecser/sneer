@@ -1,6 +1,6 @@
 package dfcsantos.tracks.execution.playlist.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.util.ArrayList;

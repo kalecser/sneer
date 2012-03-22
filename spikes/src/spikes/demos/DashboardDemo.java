@@ -10,13 +10,14 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import basis.brickness.Brickness;
+import basis.environments.Environments;
+import basis.lang.Closure;
+
 import sneer.bricks.skin.main.dashboard.Dashboard;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.Instrument;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
-import sneer.foundation.brickness.Brickness;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
 
 
 public class DashboardDemo  {

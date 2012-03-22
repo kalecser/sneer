@@ -1,6 +1,6 @@
 package dfcsantos.music.ui.view.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -10,6 +10,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+
+import basis.brickness.Brickness;
+import basis.environments.Environments;
+import basis.lang.Closure;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -23,9 +27,6 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.menu.MainMenu;
 import sneer.bricks.skin.menu.MenuGroup;
-import sneer.foundation.brickness.Brickness;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
 import dfcsantos.music.ui.view.MusicView;
 import dfcsantos.music.ui.view.MusicViewListener;
 

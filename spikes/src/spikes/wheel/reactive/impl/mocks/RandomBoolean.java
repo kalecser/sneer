@@ -1,14 +1,15 @@
 package spikes.wheel.reactive.impl.mocks;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.Random;
+
+import basis.lang.Closure;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.foundation.lang.Closure;
 
 public class RandomBoolean {
 

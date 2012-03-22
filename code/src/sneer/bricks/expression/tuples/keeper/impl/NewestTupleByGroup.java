@@ -1,9 +1,9 @@
 package sneer.bricks.expression.tuples.keeper.impl;
 
+import basis.lang.CacheMap;
+import basis.lang.Functor;
+import basis.lang.Predicate;
 import sneer.bricks.expression.tuples.Tuple;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.Predicate;
 
 final class NewestTupleByGroup<T extends Tuple> implements Predicate<T> {
 	

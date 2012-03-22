@@ -1,12 +1,17 @@
 package sneer.bricks.softwaresharing.demolisher.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import basis.lang.CacheMap;
+import basis.lang.Consumer;
+import basis.lang.Functor;
+import basis.lang.Producer;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.io.log.Logger;
@@ -17,10 +22,6 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.Producer;
 
 class BrickHistoryImpl implements BrickHistory {
 

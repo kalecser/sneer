@@ -11,10 +11,11 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
+import basis.lang.Closure;
+
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.Move;
-import sneer.foundation.lang.Closure;
 
 public class GoFrame extends JFrame {
 	

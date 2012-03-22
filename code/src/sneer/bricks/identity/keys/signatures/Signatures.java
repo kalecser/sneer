@@ -2,7 +2,8 @@ package sneer.bricks.identity.keys.signatures;
 
 import java.security.PublicKey;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
+
 
 @Brick
 public interface Signatures {

@@ -1,7 +1,7 @@
 package sneer.bricks.software.bricks.interception.fixtures.combinedmethods;
 
+import basis.brickness.Brick;
 import sneer.bricks.software.bricks.interception.fixtures.nature.SomeInterceptingNature;
-import sneer.foundation.brickness.Brick;
 
 @Brick(SomeInterceptingNature.class)
 public interface BrickOfSomeInterceptingNature {

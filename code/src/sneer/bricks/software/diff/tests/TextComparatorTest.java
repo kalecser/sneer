@@ -1,9 +1,9 @@
 package sneer.bricks.software.diff.tests;
 
+import static basis.environments.Environments.my;
 import static sneer.bricks.software.diff.TextComparator.TextBlockType.DELETE;
 import static sneer.bricks.software.diff.TextComparator.TextBlockType.EQUAL;
 import static sneer.bricks.software.diff.TextComparator.TextBlockType.INSERT;
-import static sneer.foundation.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.Iterator;

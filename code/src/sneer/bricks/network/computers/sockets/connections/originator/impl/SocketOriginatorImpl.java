@@ -1,15 +1,16 @@
 package sneer.bricks.network.computers.sockets.connections.originator.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import basis.lang.Consumer;
 
 import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
-import sneer.foundation.lang.Consumer;
 
 class SocketOriginatorImpl implements SocketOriginator {
 

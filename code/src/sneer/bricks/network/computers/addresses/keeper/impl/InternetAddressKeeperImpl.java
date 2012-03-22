@@ -1,6 +1,7 @@
 package sneer.bricks.network.computers.addresses.keeper.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.exceptions.Refusal;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.social.Contact;
@@ -8,7 +9,6 @@ import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.foundation.lang.exceptions.Refusal;
 
 class InternetAddressKeeperImpl implements InternetAddressKeeper {
 

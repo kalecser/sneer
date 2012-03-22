@@ -1,6 +1,6 @@
 package sneer.bricks.expression.files.writer.atomic.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;

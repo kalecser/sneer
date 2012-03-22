@@ -1,9 +1,9 @@
 package sneer.bricks.softwaresharing.demolisher.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Functor;
 import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.demolisher.filestatus.FileStatusCalculator;
-import sneer.foundation.lang.Functor;
 class FileVersionImpl implements FileVersion {
 
 	private final String _relativePath;

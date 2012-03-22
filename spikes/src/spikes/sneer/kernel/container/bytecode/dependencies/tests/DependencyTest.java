@@ -1,6 +1,6 @@
 package spikes.sneer.kernel.container.bytecode.dependencies.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,8 +11,9 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import basis.testsupport.AssertUtils;
+
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.testsupport.AssertUtils;
 import spikes.sneer.kernel.container.bytecode.dependencies.DependencyFinder;
 
 public class DependencyTest extends BrickTestBase {

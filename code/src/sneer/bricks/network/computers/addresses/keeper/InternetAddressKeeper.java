@@ -1,9 +1,9 @@
 package sneer.bricks.network.computers.addresses.keeper;
 
+import basis.brickness.Brick;
+import basis.lang.exceptions.Refusal;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.exceptions.Refusal;
 
 @Brick
 public interface InternetAddressKeeper {

@@ -1,6 +1,6 @@
 package sneer.bricks.software.code.compilers.java.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.List;

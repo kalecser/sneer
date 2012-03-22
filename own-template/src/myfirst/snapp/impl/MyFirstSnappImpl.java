@@ -1,6 +1,6 @@
 package myfirst.snapp.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 import myfirst.brick.MyFirstBrick;
 import myfirst.snapp.MyFirstSnapp;
 import sneer.bricks.skin.main.menu.MainMenu;

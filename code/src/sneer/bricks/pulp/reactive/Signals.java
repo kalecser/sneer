@@ -1,11 +1,11 @@
 package sneer.bricks.pulp.reactive;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.FunctorX;
-import sneer.foundation.lang.PickyConsumer;
-import sneer.foundation.lang.exceptions.Refusal;
+import basis.brickness.Brick;
+import basis.lang.Consumer;
+import basis.lang.Functor;
+import basis.lang.FunctorX;
+import basis.lang.PickyConsumer;
+import basis.lang.exceptions.Refusal;
 
 @Brick
 public interface Signals {  

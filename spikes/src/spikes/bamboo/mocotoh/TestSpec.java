@@ -15,7 +15,7 @@ public class TestSpec {
 	}
 
 	public void stimuli() throws Exception {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 }

@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.clock.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.bricks.pulp.reactive.Register;

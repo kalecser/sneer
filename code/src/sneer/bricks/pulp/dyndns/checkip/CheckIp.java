@@ -2,7 +2,8 @@ package sneer.bricks.pulp.dyndns.checkip;
 
 import java.io.IOException;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
+
 
 @Brick
 public interface CheckIp {

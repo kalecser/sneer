@@ -1,9 +1,14 @@
 package sneer.bricks.pulp.blinkinglights.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import basis.lang.ByRef;
+import basis.lang.Closure;
+import basis.lang.exceptions.FriendlyException;
+import basis.util.concurrent.Latch;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -14,10 +19,6 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
-import sneer.foundation.lang.ByRef;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.exceptions.FriendlyException;
-import sneer.foundation.util.concurrent.Latch;
 
 class BlinkingLightsImpl implements BlinkingLights {
 	

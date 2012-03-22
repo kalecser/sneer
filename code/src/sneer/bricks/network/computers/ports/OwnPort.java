@@ -1,8 +1,8 @@
 package sneer.bricks.network.computers.ports;
 
+import basis.brickness.Brick;
 import sneer.bricks.network.social.attributes.Attribute;
 import sneer.bricks.software.bricks.snapploader.Snapp;
-import sneer.foundation.brickness.Brick;
 
 @Snapp
 @Brick

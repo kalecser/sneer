@@ -26,8 +26,8 @@
 	<path id="test-classpath">
 		<pathelement path="${bin.dir}"/>
 		<fileset dir="${sneer.src}">
-			<!-- include name='sneer/foundation/languagesupport/**/*.jar' / -->
-			<include name='sneer/foundation/testsupport/**/*.jar' />
+			<!-- include name='basis/languagesupport/**/*.jar' / -->
+			<include name='basis/testsupport/**/*.jar' />
 		</fileset>
 		<fileset dir="lib">
 			<include name='**/*.jar' />
@@ -37,7 +37,7 @@
 	<!-- taskdef resource="scala/tools/ant/antlib.xml">
 		<classpath>
 	        <pathelement location="${sneer.src}/sneer/bricks/software/code/compilers/scala/impl/lib/scala-compiler.jar"   />
-	        <pathelement location="${sneer.src}/sneer/foundation/languagesupport/scala/lib/scala-library.jar"   />
+	        <pathelement location="${sneer.src}/basis/languagesupport/scala/lib/scala-library.jar"   />
 		</classpath>
 	</taskdef -->
 

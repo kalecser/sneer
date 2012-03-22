@@ -1,10 +1,12 @@
 package sneer.bricks.pulp.reactive.collections.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import basis.lang.Consumer;
 
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
@@ -13,7 +15,6 @@ import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.ListChange;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
-import sneer.foundation.lang.Consumer;
 
 class ListRegisterImpl<VO> implements ListRegister<VO> {
 

@@ -1,6 +1,6 @@
 package spikes.sneer.bricks.snapps.watchme.gui.windows;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 @Brick
 public interface RemoteWatchMeWindows {

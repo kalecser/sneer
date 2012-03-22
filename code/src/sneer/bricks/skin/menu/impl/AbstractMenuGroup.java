@@ -12,10 +12,11 @@ import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.menu.MenuGroup;
-import sneer.foundation.lang.Consumer;
 
 public abstract class AbstractMenuGroup<T extends JComponent> implements MenuGroup<T> {
 

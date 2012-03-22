@@ -1,17 +1,18 @@
 package sneer.bricks.snapps.system.log.file.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import basis.lang.Consumer;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.notifier.LogNotifier;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.snapps.system.log.file.LogToFile;
-import sneer.foundation.lang.Consumer;
 
 class LogToFileImpl implements LogToFile {
 

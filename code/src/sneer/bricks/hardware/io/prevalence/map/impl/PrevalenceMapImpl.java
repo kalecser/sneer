@@ -1,14 +1,15 @@
 package sneer.bricks.hardware.io.prevalence.map.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import basis.lang.Immutable;
+
 import sneer.bricks.hardware.io.prevalence.flag.PrevalenceFlag;
 import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
-import sneer.foundation.lang.Immutable;
 
 class PrevalenceMapImpl implements PrevalenceMap {
 	

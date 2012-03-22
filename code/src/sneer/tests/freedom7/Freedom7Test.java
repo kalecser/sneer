@@ -1,6 +1,6 @@
 package sneer.tests.freedom7;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,12 +8,13 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import basis.brickness.Brick;
+
 import sneer.bricks.software.code.compilers.CompilerException;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.jar.Jars;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriter;
 import sneer.bricks.software.code.java.source.writer.JavaSourceWriters;
-import sneer.foundation.brickness.Brick;
 import sneer.tests.SovereignFunctionalTestBase;
 
 public class Freedom7Test extends SovereignFunctionalTestBase {
@@ -42,6 +43,7 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 		b().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
 	}
 
+	
 	@Test (timeout = 1000 * 20)
 	public void testPublishBrickWithDependencies() throws Exception {
 		System.clearProperty("freedom7.w.W.installed");
@@ -49,12 +51,22 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 		assertEquals("true", System.getProperty("freedom7.w.W.installed"));
 	}
 	
+	
 	@Test (timeout = 1000 * 20)
 	public void testPublishBrickWithLib() throws Exception {
+		if (isRunningOnWindows()) return; //Fix: A jar is being held so Windows can't delete it.
+		
 		System.clearProperty("freedom7.lib.Lib.executed");
 		copyToSourceFolderAndStageForInstallation(new File[] { generateX() }, "freedom7.x.X");
 		assertEquals("true", System.getProperty("freedom7.lib.Lib.executed"));
 	}
+
+	
+	private boolean isRunningOnWindows() {
+		String os = System.getProperty("os.name").toLowerCase();
+		return os.contains("win");
+	}
+
 
 	private void copyToSourceFolderAndStageForInstallation(File[] folders, String... brickNames) throws IOException, CompilerException {
 		for (File f : folders) a().copyToSourceFolder(f);		
@@ -73,7 +85,7 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 		
 		final JavaSourceWriter writer = javaSourceWriterFor(src);
 		writer.write("freedom7.x.X",
-				"@sneer.foundation.brickness.Brick public interface X {}");
+				"@basis.brickness.Brick public interface X {}");
 		writer.write("freedom7.x.impl.XImpl",
 				"class XImpl implements freedom7.x.X {\n" +
 					"public XImpl() {\n" +
@@ -135,12 +147,12 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 
 	private void writeW(final JavaSourceWriter writer) throws IOException {
 		writer.write("freedom7.w.W",
-				"@sneer.foundation.brickness.Brick\n" +
+				"@basis.brickness.Brick\n" +
 				"public interface W {\n" +
 					"freedom7.y.Y y();\n" +
 				"}");
 		writer.write("freedom7.w.impl.WImpl",
-				"import static " + sneer.foundation.environments.Environments.class.getName() + ".my;\n" +
+				"import static " + basis.environments.Environments.class.getName() + ".my;\n" +
 				"class WImpl implements freedom7.w.W {\n" +
 					"private freedom7.y.Y _y = my(freedom7.y.Y.class);\n" +
 					"public WImpl() {\n" +

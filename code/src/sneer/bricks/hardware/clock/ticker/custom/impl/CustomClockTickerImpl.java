@@ -1,10 +1,10 @@
 package sneer.bricks.hardware.clock.ticker.custom.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Closure;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.ticker.custom.CustomClockTicker;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.foundation.lang.Closure;
 
 class CustomClockTickerImpl implements CustomClockTicker {
 

@@ -1,14 +1,15 @@
 package spikes.sneer.bricks.snapps.watchme.codec.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
+import basis.lang.Pair;
+
 import sneer.bricks.skin.image.ImageFactory;
-import sneer.foundation.lang.Pair;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageDelta;
 import spikes.sneer.bricks.snapps.watchme.codec.ImageCodec.Decoder;
 

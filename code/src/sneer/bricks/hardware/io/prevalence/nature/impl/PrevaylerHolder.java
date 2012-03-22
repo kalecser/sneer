@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,13 +8,14 @@ import java.io.IOException;
 import org.prevayler.Prevayler;
 import org.prevayler.PrevaylerFactory;
 
+import basis.lang.Closure;
+import basis.util.concurrent.Latch;
+
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.util.concurrent.Latch;
 
 class PrevaylerHolder {
 
@@ -58,9 +59,9 @@ class PrevaylerHolder {
 		try {
 			return factory.create();
 		} catch (IOException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		} catch (ClassNotFoundException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 	}
 

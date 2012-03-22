@@ -1,6 +1,6 @@
 package sneer.bricks.expression.files.client.downloads.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.GridLayout;
 

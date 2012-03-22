@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.reactive;
 
-import sneer.foundation.lang.Consumer;
+import basis.lang.Consumer;
 
 public interface Register<T>{
 

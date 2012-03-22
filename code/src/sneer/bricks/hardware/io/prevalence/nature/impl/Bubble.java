@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.lang.reflect.InvocationHandler;
@@ -8,15 +8,16 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
 
+import basis.lang.CacheMap;
+import basis.lang.Immutable;
+import basis.lang.Producer;
+import basis.lang.ProducerX;
+import basis.lang.ReadOnly;
+import basis.lang.types.Classes;
+
 import sneer.bricks.hardware.io.prevalence.flag.PrevalenceFlag;
 import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
 import sneer.bricks.hardware.io.prevalence.nature.Transaction;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Immutable;
-import sneer.foundation.lang.Producer;
-import sneer.foundation.lang.ProducerX;
-import sneer.foundation.lang.ReadOnly;
-import sneer.foundation.lang.types.Classes;
 
 class Bubble implements InvocationHandler {
 	

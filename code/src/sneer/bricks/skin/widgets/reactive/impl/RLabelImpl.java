@@ -1,6 +1,6 @@
 package sneer.bricks.skin.widgets.reactive.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -9,11 +9,12 @@ import java.awt.Insets;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import basis.lang.Consumer;
+import basis.lang.PickyConsumer;
+
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.PickyConsumer;
 
 class RLabelImpl extends RPanel<JLabel> implements TextWidget<JLabel>{
 
@@ -72,7 +73,7 @@ class RLabelImpl extends RPanel<JLabel> implements TextWidget<JLabel>{
 	@Override
 	public PickyConsumer<? super String> setter() {
 		if(_setter==null)
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+			throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 		
 		return _setter;
 	}

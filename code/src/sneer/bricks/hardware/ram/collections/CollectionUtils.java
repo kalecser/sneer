@@ -2,9 +2,10 @@ package sneer.bricks.hardware.ram.collections;
 
 import java.util.Collection;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.Predicate;
+import basis.brickness.Brick;
+import basis.lang.Functor;
+import basis.lang.Predicate;
+
 
 @Brick
 public interface CollectionUtils {

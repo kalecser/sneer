@@ -1,6 +1,6 @@
 package spikes.demos.reactivewidgets.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.FlowLayout;
 

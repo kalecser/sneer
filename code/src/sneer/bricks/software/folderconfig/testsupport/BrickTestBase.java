@@ -1,14 +1,15 @@
 package sneer.bricks.software.folderconfig.testsupport;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.lang.Closure;
+
 import sneer.bricks.hardware.cpu.threads.tests.BrickTestWithThreads;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
 
 
 public abstract class BrickTestBase extends BrickTestWithThreads {

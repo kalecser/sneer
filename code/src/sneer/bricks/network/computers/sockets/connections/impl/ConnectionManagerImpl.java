@@ -1,8 +1,10 @@
 package sneer.bricks.network.computers.sockets.connections.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
+
+import basis.lang.ClosureX;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
@@ -12,7 +14,6 @@ import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.notifiers.Source;
-import sneer.foundation.lang.ClosureX;
 
 class ConnectionManagerImpl implements ConnectionManager {
 	

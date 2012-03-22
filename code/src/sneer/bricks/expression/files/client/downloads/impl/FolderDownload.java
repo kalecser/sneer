@@ -1,9 +1,11 @@
 package sneer.bricks.expression.files.client.downloads.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+
+import basis.lang.Consumer;
 
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
@@ -16,7 +18,6 @@ import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.foundation.lang.Consumer;
 
 class FolderDownload extends AbstractDownload {
 

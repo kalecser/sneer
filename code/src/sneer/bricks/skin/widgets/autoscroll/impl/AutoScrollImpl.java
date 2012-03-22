@@ -1,13 +1,14 @@
 package sneer.bricks.skin.widgets.autoscroll.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.JScrollPane;
 
+import basis.lang.Closure;
+
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.skin.widgets.autoscroll.AutoScroll;
-import sneer.foundation.lang.Closure;
 
 public class AutoScrollImpl implements AutoScroll {
 

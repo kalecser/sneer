@@ -22,7 +22,7 @@ public class ProfilerTest extends BrickTestBase {
 		try {
 			Thread.sleep(30000);
 		} catch (InterruptedException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 	}
 	

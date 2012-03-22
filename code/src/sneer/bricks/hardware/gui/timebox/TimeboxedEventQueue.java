@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.gui.timebox;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 @Brick
 public interface TimeboxedEventQueue {

@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.cpu.threads.mocks;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,13 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import basis.brickness.impl.BricknessImpl;
+import basis.lang.Closure;
+
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
 import sneer.bricks.pulp.notifiers.pulsers.Pulser;
-import sneer.foundation.brickness.impl.BricknessImpl;
-import sneer.foundation.lang.Closure;
 
 public class ThreadsMock implements Threads {
 
@@ -69,7 +70,7 @@ public class ThreadsMock implements Threads {
 
 	@Override
 	public void joinWithoutInterruptions(Thread thread) {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 
@@ -103,7 +104,7 @@ public class ThreadsMock implements Threads {
 
 	@Override
 	public void waitUntilCrash() {
-		throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
 	@Override

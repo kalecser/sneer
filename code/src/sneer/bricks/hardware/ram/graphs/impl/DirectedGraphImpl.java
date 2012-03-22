@@ -6,9 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import basis.lang.CacheMap;
+import basis.lang.Producer;
+
 import sneer.bricks.hardware.ram.graphs.DirectedGraph;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Producer;
 
 class DirectedGraphImpl<T> implements DirectedGraph<T> {
 

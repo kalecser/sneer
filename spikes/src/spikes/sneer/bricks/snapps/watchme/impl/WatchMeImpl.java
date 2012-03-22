@@ -1,9 +1,14 @@
 package spikes.sneer.bricks.snapps.watchme.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
+
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.arrays.ImmutableByteArray;
+import basis.lang.exceptions.FriendlyException;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.timer.Timer;
@@ -21,10 +26,6 @@ import sneer.bricks.pulp.datastructures.cache.CacheFactory;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
 import sneer.bricks.pulp.notifiers.Source;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
-import sneer.foundation.lang.exceptions.FriendlyException;
 import spikes.sneer.bricks.skin.screenshotter.Screenshotter;
 import spikes.sneer.bricks.snapps.watchme.ImageDeltaPacket;
 import spikes.sneer.bricks.snapps.watchme.WatchMe;

@@ -1,6 +1,6 @@
 package sneer.bricks.pulp.dyndns.ownip.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 
@@ -10,6 +10,9 @@ import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
+import basis.brickness.testsupport.Bind;
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.dyndns.checkip.CheckIp;
@@ -17,8 +20,6 @@ import sneer.bricks.pulp.dyndns.ownip.OwnIpDiscoverer;
 import sneer.bricks.pulp.propertystore.PropertyStore;
 import sneer.bricks.pulp.propertystore.mocks.TransientPropertyStore;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.lang.Consumer;
 
 public class OwnIpDiscovererTest extends BrickTestBase {
 	

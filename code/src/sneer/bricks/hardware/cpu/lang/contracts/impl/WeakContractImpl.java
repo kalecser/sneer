@@ -1,12 +1,12 @@
 package sneer.bricks.hardware.cpu.lang.contracts.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.lang.Closure;
 import sneer.bricks.hardware.cpu.lang.contracts.Disposable;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
 
 class WeakContractImpl implements WeakContract {
 

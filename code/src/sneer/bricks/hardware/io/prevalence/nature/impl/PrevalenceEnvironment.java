@@ -1,14 +1,14 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
+import static basis.environments.Environments.my;
 import static sneer.bricks.hardware.io.prevalence.nature.impl.PrevaylerHolder.building;
-import static sneer.foundation.environments.Environments.my;
+import basis.brickness.Brick;
+import basis.brickness.Nature;
+import basis.environments.Environment;
+import basis.environments.NonBlockingEnvironment;
+import basis.lang.Producer;
 import sneer.bricks.hardware.io.prevalence.flag.PrevalenceFlag;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.brickness.Nature;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.NonBlockingEnvironment;
-import sneer.foundation.lang.Producer;
 
 class PrevalenceEnvironment implements Environment {
 

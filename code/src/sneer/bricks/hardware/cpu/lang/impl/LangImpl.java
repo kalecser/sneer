@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.cpu.lang.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.BufferedReader;
 import java.io.IOException;

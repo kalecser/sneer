@@ -1,13 +1,13 @@
 package sneer.bricks.pulp.reactive.impl;
 
+import basis.lang.Consumer;
+import basis.lang.Functor;
+import basis.lang.FunctorX;
+import basis.lang.PickyConsumer;
+import basis.lang.exceptions.Refusal;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.FunctorX;
-import sneer.foundation.lang.PickyConsumer;
-import sneer.foundation.lang.exceptions.Refusal;
 
 class SignalsImpl implements Signals {
 

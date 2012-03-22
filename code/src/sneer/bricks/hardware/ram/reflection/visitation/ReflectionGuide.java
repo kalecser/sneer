@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.ram.reflection.visitation;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 
 @Brick

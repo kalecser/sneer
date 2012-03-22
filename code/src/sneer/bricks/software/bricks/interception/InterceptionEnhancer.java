@@ -2,8 +2,9 @@ package sneer.bricks.software.bricks.interception;
 
 import java.util.List;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.brickness.ClassDefinition;
+import basis.brickness.Brick;
+import basis.brickness.ClassDefinition;
+
 
 @Brick
 public interface InterceptionEnhancer {

@@ -1,11 +1,11 @@
 package sneer.bricks.hardware.io.prevalence.nature.tests.fixtures;
 
+import basis.brickness.Brick;
+import basis.lang.Closure;
+import basis.lang.Consumer;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
 import sneer.bricks.hardware.io.prevalence.nature.Transaction;
 import sneer.bricks.pulp.reactive.Register;
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 @Brick(Prevalent.class)
 public interface SomePrevalentBrick {

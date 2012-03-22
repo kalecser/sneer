@@ -1,6 +1,6 @@
 package sneer.bricks.expression.files.map.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import basis.lang.arrays.ImmutableArray;
+
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.Lang.Strings;
-import sneer.foundation.lang.arrays.ImmutableArray;
 
 
 class FolderContentsGetter {

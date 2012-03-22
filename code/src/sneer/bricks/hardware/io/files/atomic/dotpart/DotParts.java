@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
+
 
 @Brick
 public interface DotParts {

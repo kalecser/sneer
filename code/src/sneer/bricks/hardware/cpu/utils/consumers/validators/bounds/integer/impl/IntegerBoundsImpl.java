@@ -1,8 +1,8 @@
 package sneer.bricks.hardware.cpu.utils.consumers.validators.bounds.integer.impl;
 
+import basis.lang.PickyConsumer;
+import basis.lang.exceptions.Refusal;
 import sneer.bricks.hardware.cpu.utils.consumers.validators.bounds.integer.IntegerBounds;
-import sneer.foundation.lang.PickyConsumer;
-import sneer.foundation.lang.exceptions.Refusal;
 
 class IntegerBoundsImpl implements IntegerBounds {
 

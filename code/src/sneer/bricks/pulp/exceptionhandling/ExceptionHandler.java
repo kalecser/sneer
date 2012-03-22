@@ -1,7 +1,7 @@
 package sneer.bricks.pulp.exceptionhandling;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.ClosureX;
+import basis.brickness.Brick;
+import basis.lang.ClosureX;
 
 @Brick
 public interface ExceptionHandler {

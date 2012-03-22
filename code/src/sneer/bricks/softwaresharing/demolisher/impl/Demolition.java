@@ -1,11 +1,14 @@
 package sneer.bricks.softwaresharing.demolisher.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Deque;
 import java.util.LinkedList;
+
+import basis.lang.CacheMap;
+import basis.lang.Producer;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.visitors.FileMapGuide;
@@ -17,8 +20,6 @@ import sneer.bricks.hardware.cpu.lang.Lang.Strings;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.softwaresharing.BrickHistory;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Producer;
 
 class Demolition implements FolderStructureVisitor {
 
@@ -105,7 +106,7 @@ class Demolition implements FolderStructureVisitor {
 	private boolean isBrickDefinition(byte[] fileContents) {
 		String contents = asString(fileContents);
 		return contents.contains("@Brick")
-			|| contents.contains("@sneer.foundation.brickness.Brick");
+			|| contents.contains("@basis.brickness.Brick");
 	}
 
 	

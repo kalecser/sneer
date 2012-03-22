@@ -1,6 +1,6 @@
 package sneer.bricks.skin.widgets.reactive.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Image;
 
@@ -11,6 +11,9 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListModel;
+
+import basis.lang.Consumer;
+import basis.lang.PickyConsumer;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.pulp.reactive.Signal;
@@ -25,8 +28,6 @@ import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.bricks.skin.widgets.reactive.ToggleButtonWidget;
 import sneer.bricks.skin.widgets.reactive.Widget;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.PickyConsumer;
 
 class ReactiveWidgetFactoryImpl implements ReactiveWidgetFactory {
 	

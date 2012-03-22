@@ -1,8 +1,8 @@
 package sneer.bricks.network.computers.sockets.connections.impl;
 
+import basis.lang.CacheMap;
+import basis.lang.Producer;
 import sneer.bricks.network.social.Contact;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Producer;
 
 class ConnectionsByContact {
 

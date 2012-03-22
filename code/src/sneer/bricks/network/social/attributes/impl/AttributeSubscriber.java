@@ -1,8 +1,10 @@
 package sneer.bricks.network.social.attributes.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.lang.reflect.Field;
+
+import basis.lang.Consumer;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -20,7 +22,6 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.serialization.Serializer;
-import sneer.foundation.lang.Consumer;
 
 class AttributeSubscriber<T> implements Consumer<AttributeValue> {
 

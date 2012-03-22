@@ -1,10 +1,10 @@
 package dfcsantos.tracks.tastematching.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.CacheMap;
+import basis.lang.Producer;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.social.Contact;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Producer;
 import dfcsantos.tracks.tastematching.TasteMatcher;
 
 

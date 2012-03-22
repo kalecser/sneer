@@ -1,7 +1,7 @@
 package spikes.wheel.lang;
 
-import sneer.foundation.lang.PickyConsumer;
-import sneer.foundation.lang.exceptions.Refusal;
+import basis.lang.PickyConsumer;
+import basis.lang.exceptions.Refusal;
 
 public class StringConsumerNotNullNonBlank implements PickyConsumer<String> {
 

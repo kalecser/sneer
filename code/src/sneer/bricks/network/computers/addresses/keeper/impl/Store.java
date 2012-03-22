@@ -1,6 +1,6 @@
 package sneer.bricks.network.computers.addresses.keeper.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.Collection;

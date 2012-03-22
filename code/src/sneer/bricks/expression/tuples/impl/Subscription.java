@@ -1,18 +1,19 @@
 package sneer.bricks.expression.tuples.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import basis.environments.Environment;
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.Predicate;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Predicate;
 
 class Subscription<T extends Tuple> {
 

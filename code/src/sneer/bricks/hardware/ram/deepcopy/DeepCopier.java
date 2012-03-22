@@ -2,7 +2,8 @@ package sneer.bricks.hardware.ram.deepcopy;
 
 import java.io.IOException;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
+
 
 @Brick
 public interface DeepCopier {

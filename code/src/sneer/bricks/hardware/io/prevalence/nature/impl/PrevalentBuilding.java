@@ -1,9 +1,9 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.CacheMap;
+import basis.lang.Producer;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Producer;
 
 class PrevalentBuilding {
 

@@ -1,6 +1,6 @@
 package dfcsantos.music.ui.view.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -19,10 +19,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.MutableComboBoxModel;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.collections.ListChange;
 import sneer.bricks.skin.main.icons.Icons;
-import sneer.foundation.lang.Consumer;
 import dfcsantos.music.ui.view.MusicViewListener;
 
 final class FolderSelectionPanel extends JPanel {

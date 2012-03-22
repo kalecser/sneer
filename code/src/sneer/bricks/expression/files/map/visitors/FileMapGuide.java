@@ -2,8 +2,9 @@ package sneer.bricks.expression.files.map.visitors;
 
 import java.io.IOException;
 
+import basis.brickness.Brick;
+
 import sneer.bricks.expression.files.protocol.FolderContents;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface FileMapGuide {

@@ -7,11 +7,12 @@ import java.awt.event.ComponentEvent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import basis.lang.Closure;
+
 import sneer.bricks.hardware.gui.guithread.GuiThread;
-import sneer.foundation.lang.Closure;
 import spikes.wheel.io.ui.BoundsPersistence;
 import spikes.wheel.io.ui.JFrameBoundsKeeper;
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 public class JFrameBoundsKeeperImpl implements JFrameBoundsKeeper {
 

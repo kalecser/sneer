@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.system.meter.memory.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -12,6 +12,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import basis.lang.Closure;
+import basis.lang.Functor;
+
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.ram.meter.MemoryMeter;
 import sneer.bricks.pulp.reactive.Signal;
@@ -22,8 +25,6 @@ import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.bricks.snapps.system.meter.memory.gui.MemoryMeterGui;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Functor;
 
 class MemoryMeterGuiImpl implements MemoryMeterGui {
 

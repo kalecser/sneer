@@ -1,9 +1,14 @@
 package sneer.bricks.network.computers.addresses.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import org.jmock.Expectations;
 import org.junit.Test;
+
+import basis.brickness.testsupport.Bind;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.lang.exceptions.Refusal;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
@@ -18,10 +23,6 @@ import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.foundation.brickness.testsupport.Bind;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.exceptions.Refusal;
 
 public class ContactInternetAddressesTest extends BrickTestWithTuples {
 

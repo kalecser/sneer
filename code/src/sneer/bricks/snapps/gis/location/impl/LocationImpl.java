@@ -1,14 +1,15 @@
 package sneer.bricks.snapps.gis.location.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.network.computers.httpgateway.HttpGateway;
 import sneer.bricks.snapps.gis.location.Location;
-import sneer.foundation.lang.Consumer;
 
 class LocationImpl implements Location {
 

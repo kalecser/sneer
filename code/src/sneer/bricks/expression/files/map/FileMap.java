@@ -2,12 +2,13 @@ package sneer.bricks.expression.files.map;
 
 import java.util.List;
 
+import basis.brickness.Brick;
+
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
 import sneer.bricks.hardware.io.prevalence.nature.Transaction;
-import sneer.foundation.brickness.Brick;
 
 @Brick (Prevalent.class)
 public interface FileMap {

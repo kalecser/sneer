@@ -4,12 +4,15 @@
 
 package sneer.bricks.pulp.reactive.collections.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import basis.lang.Consumer;
+import basis.lang.Producer;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.notifiers.Notifier;
@@ -20,8 +23,6 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Producer;
 
 
 
@@ -38,7 +39,7 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 
 		@Override
 		public WeakContract addPulseReceiver(Runnable pulseReceiver) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(); // Implement
+			throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 		}
 
 		@Override

@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.clock.ticker;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 @Brick
 public interface ClockTicker {}

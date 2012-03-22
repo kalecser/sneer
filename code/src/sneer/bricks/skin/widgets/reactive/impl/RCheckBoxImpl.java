@@ -1,6 +1,6 @@
 package sneer.bricks.skin.widgets.reactive.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -10,12 +10,13 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBox;
 
+import basis.lang.Consumer;
+import basis.lang.PickyConsumer;
+
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.widgets.reactive.ToggleButtonWidget;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.PickyConsumer;
 
 class RCheckBoxImpl extends RPanel<JCheckBox> implements ToggleButtonWidget<JCheckBox> {
 

@@ -1,6 +1,6 @@
 package sneer.bricks.skin.main.menu.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;

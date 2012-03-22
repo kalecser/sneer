@@ -1,12 +1,14 @@
 package sneer.bricks.pulp.reactive.collections.listsorter.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.Comparator;
 
 import org.jmock.Expectations;
 import org.jmock.Sequence;
 import org.junit.Test;
+
+import basis.testsupport.AssertUtils;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
@@ -19,7 +21,6 @@ import sneer.bricks.pulp.reactive.collections.ListChange.Visitor;
 import sneer.bricks.pulp.reactive.collections.listsorter.ListSorter;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.testsupport.AssertUtils;
 
 public class ListSorterTest extends BrickTestBase {
 	

@@ -7,11 +7,12 @@ import javax.sound.sampled.TargetDataLine;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import basis.lang.Closure;
+import basis.lang.Consumer;
+
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 import spikes.sneer.bricks.skin.audio.kernel.Audio;
 import spikes.sneer.bricks.skin.audio.mic.Mic;
 

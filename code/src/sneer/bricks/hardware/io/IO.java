@@ -8,8 +8,9 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Iterator;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Consumer;
+import basis.brickness.Brick;
+import basis.lang.Consumer;
+
 
 @Brick
 public interface IO {

@@ -14,7 +14,7 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.software.code.jar.JarBuilder;
 import sneer.bricks.software.code.jar.Jars;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 public class JarsImpl implements Jars {
 

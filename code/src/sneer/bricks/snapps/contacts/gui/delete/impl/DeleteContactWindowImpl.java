@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.contacts.gui.delete.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,13 +11,14 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import basis.lang.ByRef;
+
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.bricks.snapps.contacts.gui.delete.DeleteContactWindow;
-import sneer.foundation.lang.ByRef;
 
 class DeleteContactWindowImpl extends JFrame implements DeleteContactWindow {
 	

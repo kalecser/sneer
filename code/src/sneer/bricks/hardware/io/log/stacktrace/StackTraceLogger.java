@@ -1,6 +1,6 @@
 package sneer.bricks.hardware.io.log.stacktrace;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 @Brick
 public interface StackTraceLogger {

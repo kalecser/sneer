@@ -2,9 +2,10 @@ package spikes.sneer.bricks.snapps.watchme;
 
 import java.awt.image.BufferedImage;
 
+import basis.brickness.Brick;
+
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.notifiers.Source;
-import sneer.foundation.brickness.Brick;
 
 @Brick
 public interface WatchMe {

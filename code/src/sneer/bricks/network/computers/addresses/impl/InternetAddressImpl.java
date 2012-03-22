@@ -3,7 +3,7 @@
  */
 package sneer.bricks.network.computers.addresses.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.sockets.connections.Sighting;

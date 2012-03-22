@@ -1,6 +1,6 @@
 package sneer.bricks.expression.files.client.downloads.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import basis.lang.Consumer;
 
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FileContents;
@@ -23,7 +25,6 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
-import sneer.foundation.lang.Consumer;
 
 class FileDownload extends AbstractDownload {
 

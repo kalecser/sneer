@@ -1,10 +1,14 @@
 package sneer.bricks.expression.tuples.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import basis.lang.Consumer;
+import basis.lang.Functor;
+import basis.lang.Predicate;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
@@ -16,9 +20,6 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.Functor;
-import sneer.foundation.lang.Predicate;
 
 class TupleSpaceImpl implements TupleSpace {
 

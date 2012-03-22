@@ -1,9 +1,9 @@
 package dfcsantos.tracks.tastematching;
 
+import basis.brickness.Brick;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
 import sneer.bricks.hardware.io.prevalence.nature.Transaction;
 import sneer.bricks.network.social.Contact;
-import sneer.foundation.brickness.Brick;
 
 @Brick (Prevalent.class)
 public interface TasteMatcher {

@@ -1,7 +1,7 @@
 package sneer.bricks.pulp.reactive.collections;
 
-import sneer.foundation.brickness.Brick;
-import sneer.foundation.lang.Functor;
+import basis.brickness.Brick;
+import basis.lang.Functor;
 
 @Brick
 public interface CollectionSignals {

@@ -1,6 +1,6 @@
 package sneer.bricks.expression.files.map.mapper.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 
@@ -9,13 +9,14 @@ import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
+import basis.brickness.testsupport.Bind;
+
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
-import sneer.foundation.brickness.testsupport.Bind;
 
 public class FileMappingStopTest extends BrickTestBase {
 

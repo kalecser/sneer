@@ -1,7 +1,7 @@
 package sneer.bricks.hardware.cpu.profiler.impl;
 
+import static basis.environments.Environments.my;
 import static java.lang.Thread.State.RUNNABLE;
-import static sneer.foundation.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import basis.lang.CacheMap;
+import basis.lang.Closure;
+import basis.lang.Producer;
+
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.foundation.lang.CacheMap;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Producer;
 
 
 class Sampler {

@@ -1,14 +1,15 @@
 package sneer.bricks.hardware.io.log.exceptions.uncaught.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.lang.Closure;
+
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.hardware.io.log.exceptions.uncaught.UncaughtExceptionLogger;
-import sneer.foundation.environments.Environment;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.Closure;
 
 class UncaughtExceptionLoggerImpl implements UncaughtExceptionLogger, UncaughtExceptionHandler {
 

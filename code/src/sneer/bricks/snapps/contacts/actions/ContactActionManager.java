@@ -3,7 +3,8 @@ package sneer.bricks.snapps.contacts.actions;
 import java.awt.Component;
 import java.util.Collection;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
+
 
 @Brick
 public interface ContactActionManager {

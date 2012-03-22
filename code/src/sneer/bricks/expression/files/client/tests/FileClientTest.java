@@ -1,6 +1,6 @@
 package sneer.bricks.expression.files.client.tests;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.Random;
 
 import org.junit.Test;
+
+import basis.environments.Environments;
+import basis.lang.ClosureX;
+import basis.lang.Consumer;
+import basis.lang.arrays.ImmutableByteArray;
 
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
@@ -30,10 +35,6 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.software.code.classutils.ClassUtils;
-import sneer.foundation.environments.Environments;
-import sneer.foundation.lang.ClosureX;
-import sneer.foundation.lang.Consumer;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 public class FileClientTest extends BrickTestWithTuples {
 

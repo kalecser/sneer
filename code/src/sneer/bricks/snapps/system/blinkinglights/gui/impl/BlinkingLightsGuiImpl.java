@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.system.blinkinglights.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -31,6 +31,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+import basis.lang.Closure;
+
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.gui.images.Images;
@@ -45,7 +47,6 @@ import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.skin.widgets.reactive.ListWidget;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.snapps.system.blinkinglights.gui.BlinkingLightsGui;
-import sneer.foundation.lang.Closure;
 
 class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 	
@@ -220,7 +221,7 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 			try {
 				doc.insertString(doc.getLength(), msg, doc.getStyle(style));
 			} catch (BadLocationException e) {
-				throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+				throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 			}
 		}
 

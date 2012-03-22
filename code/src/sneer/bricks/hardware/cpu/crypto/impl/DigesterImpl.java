@@ -2,9 +2,10 @@ package sneer.bricks.hardware.cpu.crypto.impl;
 
 import java.security.MessageDigest;
 
+import basis.lang.arrays.ImmutableByteArray;
+
 import sneer.bricks.hardware.cpu.crypto.Digester;
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.foundation.lang.arrays.ImmutableByteArray;
 
 class DigesterImpl implements Digester {
 

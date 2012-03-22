@@ -1,6 +1,6 @@
 package sneer.bricks.snapps.wind.gui.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -27,6 +27,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultStyledDocument;
 
+import basis.lang.Consumer;
+
 import sneer.bricks.hardware.gui.trayicon.TrayIcons;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
@@ -43,7 +45,6 @@ import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
 import sneer.bricks.snapps.chat.ChatMessage;
 import sneer.bricks.snapps.wind.Wind;
 import sneer.bricks.snapps.wind.gui.WindGui;
-import sneer.foundation.lang.Consumer;
 
 class WindGuiImpl implements WindGui {
 

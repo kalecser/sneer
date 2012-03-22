@@ -1,7 +1,7 @@
 package spikes.wheel.testutil;
 
+import static basis.environments.Environments.my;
 import static java.lang.System.gc;
-import static sneer.foundation.environments.Environments.my;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import spikes.klaus.Daemon;

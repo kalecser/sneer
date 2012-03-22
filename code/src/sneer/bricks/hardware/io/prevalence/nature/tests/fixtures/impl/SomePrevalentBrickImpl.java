@@ -1,11 +1,14 @@
 package sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
@@ -13,8 +16,6 @@ import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.Item;
 import sneer.bricks.hardware.io.prevalence.nature.tests.fixtures.SomePrevalentBrick;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signals;
-import sneer.foundation.lang.Closure;
-import sneer.foundation.lang.Consumer;
 
 class SomePrevalentBrickImpl implements SomePrevalentBrick {
 

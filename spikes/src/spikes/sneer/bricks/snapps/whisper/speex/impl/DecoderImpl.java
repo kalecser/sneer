@@ -1,6 +1,6 @@
 package spikes.sneer.bricks.snapps.whisper.speex.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.io.StreamCorruptedException;
 
@@ -42,7 +42,7 @@ class DecoderImpl implements Decoder {
 		try {
 			_decoder.processData(frame, 0, frame.length);
 		} catch (StreamCorruptedException e) {
-			throw new sneer.foundation.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
 	}
 }

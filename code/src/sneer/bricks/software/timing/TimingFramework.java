@@ -1,6 +1,6 @@
 package sneer.bricks.software.timing;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 @Brick
 public interface TimingFramework {

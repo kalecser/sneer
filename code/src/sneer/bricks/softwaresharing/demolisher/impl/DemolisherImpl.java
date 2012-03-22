@@ -3,11 +3,12 @@ package sneer.bricks.softwaresharing.demolisher.impl;
 
 import java.io.IOException;
 
+import basis.lang.CacheMap;
+
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.demolisher.Demolisher;
-import sneer.foundation.lang.CacheMap;
 
 class DemolisherImpl implements Demolisher {
 

@@ -3,7 +3,7 @@ package sneer.bricks.hardware.io.log.impl;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.io.log.worker.LogWorker;
 import sneer.bricks.hardware.io.log.worker.LogWorkerHolder;
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 class LoggerImpl implements Logger {
 

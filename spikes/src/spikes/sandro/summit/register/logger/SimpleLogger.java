@@ -1,6 +1,6 @@
 package spikes.sandro.summit.register.logger;
 
-import sneer.foundation.brickness.Brick;
+import basis.brickness.Brick;
 
 @Brick
 public interface SimpleLogger {

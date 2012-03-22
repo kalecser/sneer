@@ -1,12 +1,13 @@
 package sneer.bricks.hardware.io.prevalence.nature.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import basis.lang.ProducerX;
+
 import sneer.bricks.hardware.io.prevalence.map.PrevalenceMap;
-import sneer.foundation.lang.ProducerX;
 
 class Invocation implements ProducerX<Object, Exception> {
 

@@ -1,8 +1,8 @@
 package dfcsantos.music.ui.presenter.menuitem.impl;
 
-import static sneer.foundation.environments.Environments.my;
+import static basis.environments.Environments.my;
+import basis.lang.Closure;
 import sneer.bricks.skin.main.menu.MainMenu;
-import sneer.foundation.lang.Closure;
 import dfcsantos.music.ui.presenter.MusicPresenter;
 import dfcsantos.music.ui.presenter.menuitem.MusicMenuItem;
 
