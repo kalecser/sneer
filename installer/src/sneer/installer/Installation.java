@@ -2,7 +2,6 @@ package sneer.installer;
 
 import static sneer.main.SneerCodeFolders.BIN;
 import static sneer.main.SneerCodeFolders.CODE;
-import static sneer.main.SneerCodeFolders.SNEER_HOME;
 import static sneer.main.SneerCodeFolders.SRC;
 import static sneer.main.SneerFolders.LOG_FILE;
 import static sneer.main.SneerFolders.OWN_CODE;
@@ -20,19 +19,30 @@ class Installation {
 
 	private final URL _sneerJar = this.getClass().getResource("/sneer.jar");
 	private final URL _ownJar = this.getClass().getResource("/own.jar");
+	private final String timestamp;
 
 
-	Installation() throws Exception {
+	Installation(String timestamp) throws Exception {
+		this.timestamp = timestamp;
+		if (isAlreadyUpToDate()) return;
+		
 		resetDirectories();
 		updateCode();
 		createOwnProjectIfNecessary();
 	}
 
 
-	private void resetDirectories() throws IOException {
-		if(!SNEER_HOME.exists())
-			SNEER_HOME.mkdirs();
+	private boolean isAlreadyUpToDate() {
+		return timestampFile().exists();
+	}
 
+
+	private File timestampFile() {
+		return new File(CODE, timestamp);
+	}
+
+
+	private void resetDirectories() throws IOException {
 		deleteFolder(SRC);
 		deleteFolder(BIN);
 		SRC.mkdirs();
@@ -41,6 +51,8 @@ class Installation {
 
 	
 	private void deleteFolder(File folder) throws IOException {
+		if (!folder.exists()) return;
+
 		int tries = 10; //On Windows7 with AVG anti-virus (anti-virus might be irrelevant) a few random files simply were not deleted on the first try, making it impossible to delete the folder. Might happen on other environments too. Klaus July 2011 :(
 		while (true) {
 			if (tryToDeleteFolder(folder)) return;
@@ -51,8 +63,6 @@ class Installation {
 
 	
 	private boolean tryToDeleteFolder(File folder) throws IOException {
-		if (!folder.exists()) return true;
-
         for (File entry : folder.listFiles())
 			if (entry.isDirectory())
 			    tryToDeleteFolder(entry);
@@ -65,6 +75,7 @@ class Installation {
     
 	private void updateCode() throws IOException {
 		extractFiles(extractJar(_sneerJar, "sneer"), CODE);
+		timestampFile().createNewFile();
 	}
 
 	
@@ -107,7 +118,7 @@ class Installation {
 
 	
 	private void createOwnProjectIfNecessary() throws IOException {
-		if(OWN_CODE.exists()) return;
+		if (OWN_CODE.exists()) return;
 
 		IOUtils.write(LOG_FILE, "jar file url: " + _ownJar.toString());
 		File file = extractJar(_ownJar, "own");

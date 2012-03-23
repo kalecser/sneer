@@ -11,10 +11,10 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		checkJava1_6();
 		
-		if(SNEER_HOME.exists())
-			new Installation();
-		else
+		if(!SNEER_HOME.exists())
 			new InstallationWizard();
+
+		new Installation(args[0]);
 		
 		overcomeWebstartSecurityRestrictions();
 		new Sneer();

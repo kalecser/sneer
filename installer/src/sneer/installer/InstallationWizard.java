@@ -17,7 +17,6 @@ public class InstallationWizard extends JFrame {
 		welcome();
 		license();
 		configInformation();
-		new Installation();
 	}
 
 	private void welcome() {

@@ -89,6 +89,7 @@
 		<copy file="${logo}" 
 			  tofile="${build.dir}/dist/${logo}"/>
 
+		<tstamp/>
 		<echoxml file="${jnlp.file}">
 			<jnlp spec="1.0+" codebase="http://dynamic.sneer.me/webstart" href="sneer.jnlp">
 				<information>
@@ -116,7 +117,9 @@
 					<all-permissions />
 				</security>
 
-				<application-desc main-class="${jnlp.mainClass}" />
+				<application-desc main-class="${jnlp.mainClass}">
+					<argument>${DSTAMP}${TSTAMP}</argument>
+				</application-desc>
 			</jnlp>
 		</echoxml>
 	</target>
