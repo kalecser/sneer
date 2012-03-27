@@ -13,8 +13,6 @@
 	<classpathentry kind="lib" path="src/sneer/bricks/hardware/cpu/lang/impl/lib/commons-lang-2.4.jar" sourcepath="src/sneer/bricks/hardware/cpu/lang/impl/lib/commons-lang-2.4-src.zip"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/hardware/io/impl/lib/commons-io-1.4.jar" sourcepath="src/sneer/bricks/hardware/io/impl/lib/commons-io-1.4-src.zip"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/hardware/ram/collections/impl/lib/commons-collections-3.2.1.jar" sourcepath="src/sneer/bricks/hardware/ram/collections/impl/lib/commons-collections-3.2.1-src.zip"/>
-	<classpathentry kind="lib" path="src/sneer/bricks/pulp/serialization/impl/lib/xpp3_min-1.1.4c.jar"/>
-	<classpathentry kind="lib" path="src/sneer/bricks/pulp/serialization/impl/lib/xstream-1.3.1.jar" sourcepath="src/sneer/bricks/pulp/serialization/impl/lib/xstream-1.3.1-src.zip"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/diff/impl/lib/diff_match_patch.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/timing/impl/lib/TimingFramework-1.0.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/hardware/cpu/codec/impl/lib/commons-codec-1.4.jar"/>
@@ -22,6 +20,8 @@
 	<classpathentry kind="lib" path="src/sneer/bricks/hardware/cpu/crypto/impl/lib/bcprov-jdk16-1.45.jar" sourcepath="src/sneer/bricks/hardware/cpu/crypto/impl/lib/bcprov-jdk16-1.45-sources.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/pulp/serialization/fixtures/brickwithlib/impl/lib/libForSerializer.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/bricks/interception/fixtures/brickwithlib/impl/lib/foo.jar"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/pulp/serialization/impl/lib/xstream-1.4.2.jar" sourcepath="src/sneer/bricks/pulp/serialization/impl/lib/xstream-1.4.2-sources.jar"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/pulp/serialization/impl/lib/xpp3_min-1.1.4c.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/upnp/impl/lib/commons-jxpath-1.1.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/upnp/impl/lib/commons-logging-api.jar"/>
