@@ -14,7 +14,7 @@ public class Main {
 		if(!SNEER_HOME.exists())
 			new InstallationWizard();
 
-		new Installation(args[0]);
+		new Installation(args[0]).run();
 		
 		overcomeWebstartSecurityRestrictions();
 		new Sneer();

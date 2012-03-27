@@ -22,8 +22,12 @@ class Installation {
 	private final String timestamp;
 
 
-	Installation(String timestamp) throws Exception {
+	Installation(String timestamp) {
 		this.timestamp = timestamp;
+	}
+
+
+	void run() throws IOException {
 		if (isAlreadyUpToDate()) return;
 		
 		resetDirectories();

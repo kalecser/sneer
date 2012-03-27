@@ -11,9 +11,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import basis.lang.Consumer;
-import basis.lang.Producer;
-
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
@@ -23,13 +20,13 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
+import basis.lang.Consumer;
+import basis.lang.Producer;
 
 
 
 class SetRegisterImpl<T> implements SetRegister<T> {
 
-
-	private static final long serialVersionUID = 1L;
 
 	private class MyOutput implements SetSignal<T> {
 
