@@ -1,4 +1,4 @@
-package kalecser.sneer.bricks.snapps.contacts.gui.navigation.impl;
+package sneer.bricks.network.social.navigation.gui.impl;
 
 import static basis.environments.Environments.my;
 
@@ -12,13 +12,14 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import kalecser.sneer.bricks.network.social.navigation.ContactNavigator;
-import kalecser.sneer.bricks.network.social.navigation.ContactOfContact;
-import kalecser.sneer.bricks.snapps.contacts.gui.navigation.NavigateContactsOfContactWindow;
+
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
+import sneer.bricks.network.social.navigation.ContactNavigator;
+import sneer.bricks.network.social.navigation.ContactOfContact;
+import sneer.bricks.network.social.navigation.gui.ContactNavigationWindow;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.skin.widgets.reactive.ListWidget;
@@ -29,7 +30,7 @@ import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import basis.lang.Consumer;
 import basis.lang.exceptions.Refusal;
 
-	public class NavigateContactsOfContactWindowImpl extends JFrame implements NavigateContactsOfContactWindow {
+	public class ContactNavigationWindowImpl extends JFrame implements ContactNavigationWindow {
 	private JLabel _title = new JLabel("? Friends");
 	private boolean wasInit;
 	private ListRegister<ContactOfContact> _contactsOfContact;

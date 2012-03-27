@@ -1,9 +1,6 @@
-package kalecser.sneer.bricks.network.social.navigation.impl;
+package sneer.bricks.network.social.navigation.impl;
 
 import static basis.environments.Environments.my;
-import kalecser.sneer.bricks.network.social.navigation.ContactNavigator;
-import kalecser.sneer.bricks.network.social.navigation.ContactOfContact;
-import kalecser.sneer.bricks.network.social.navigation.ContactsRequest;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -11,6 +8,9 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
+import sneer.bricks.network.social.navigation.ContactNavigator;
+import sneer.bricks.network.social.navigation.ContactOfContact;
+import sneer.bricks.network.social.navigation.ContactsRequest;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import basis.lang.Consumer;
 

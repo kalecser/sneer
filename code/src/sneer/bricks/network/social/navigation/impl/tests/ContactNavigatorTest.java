@@ -1,9 +1,6 @@
-package kalecser.sneer.bricks.network.social.navigation.impl.tests;
+package sneer.bricks.network.social.navigation.impl.tests;
 
 import static basis.environments.Environments.my;
-import kalecser.sneer.bricks.network.social.navigation.ContactNavigator;
-import kalecser.sneer.bricks.network.social.navigation.ContactOfContact;
-import kalecser.sneer.bricks.network.social.navigation.ContactsRequest;
 
 import org.junit.Test;
 
@@ -13,6 +10,9 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.social.Contacts;
+import sneer.bricks.network.social.navigation.ContactNavigator;
+import sneer.bricks.network.social.navigation.ContactOfContact;
+import sneer.bricks.network.social.navigation.ContactsRequest;
 import basis.environments.Environments;
 import basis.lang.Closure;
 import basis.lang.Consumer;
