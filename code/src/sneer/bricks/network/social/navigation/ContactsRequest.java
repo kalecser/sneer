@@ -1,4 +1,4 @@
-package kalecser.sneer.bricks.network.social.navigation;
+package sneer.bricks.network.social.navigation;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.identity.seals.Seal;
