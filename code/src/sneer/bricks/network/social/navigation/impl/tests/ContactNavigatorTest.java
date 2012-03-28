@@ -56,9 +56,16 @@ public class ContactNavigatorTest extends BrickTestWithTuples {
 		}});
 		
 		my(Contacts.class).addContact("Neide");
-		my(TupleSpace.class).add(new ContactsRequest(ownSeal()));				
+		receiveContactsRequest();
 				
 		latch.waitTillOpen();
+	}
+
+	private void receiveContactsRequest() {
+		final Seal ownSeal = ownSeal();
+		Environments.runWith(remote(), new Closure(){  @Override public void run() {
+			my(TupleSpace.class).add(new ContactsRequest(ownSeal));				
+		}});
 	}
 
 	private Seal ownSeal() {
