@@ -20,12 +20,11 @@
 	<classpathentry kind="lib" path="src/sneer/bricks/hardware/cpu/crypto/impl/lib/bcprov-jdk16-1.45.jar" sourcepath="src/sneer/bricks/hardware/cpu/crypto/impl/lib/bcprov-jdk16-1.45-sources.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/pulp/serialization/fixtures/brickwithlib/impl/lib/libForSerializer.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/bricks/interception/fixtures/brickwithlib/impl/lib/foo.jar"/>
-	<classpathentry kind="lib" path="src/sneer/bricks/pulp/serialization/impl/lib/xstream-1.4.2.jar" sourcepath="src/sneer/bricks/pulp/serialization/impl/lib/xstream-1.4.2-sources.jar"/>
-	<classpathentry kind="lib" path="src/sneer/bricks/pulp/serialization/impl/lib/xpp3_min-1.1.4c.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/upnp/impl/lib/commons-jxpath-1.1.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/upnp/impl/lib/commons-logging-api.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/upnp/impl/lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/upnp/impl/lib/sbbi-upnplib-1.0.4.jar"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/pulp/serialization/impl/lib/xstream-1.4.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
