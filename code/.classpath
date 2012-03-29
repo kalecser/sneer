@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="src/sneer/bricks/software/code/compilers/java/impl/lib/compiler-7-ea-b17-02_aug_2007.jar"/>
-	<classpathentry kind="lib" path="src/dfcsantos/tracks/execution/player/impl/lib/jl1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/basis/testsupport/lib/hamcrest-core-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/basis/testsupport/lib/hamcrest-library-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/basis/testsupport/lib/jmock-2.5.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/basis/testsupport/lib/jmock-junit4-2.5.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="src/basis/testsupport/lib/junit-4.4.jar" sourcepath="src/basis/testsupport/lib/junit-4.4-src.jar"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/software/code/compilers/java/impl/lib/compiler-7-ea-b17-02_aug_2007.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/hardware/io/prevalence/nature/impl/lib/prevayler-2.3.jar" sourcepath="src/sneer/bricks/hardware/io/prevalence/nature/impl/lib/prevayler-2.3-src.zip"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/skin/main/dashboard/impl/lib/jxlayer.jar" sourcepath="bricks/src/sneer/skin/main/dashboard/impl/lib/jxlayer-src.zip"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/hardware/cpu/lang/impl/lib/commons-lang-2.4.jar" sourcepath="src/sneer/bricks/hardware/cpu/lang/impl/lib/commons-lang-2.4-src.zip"/>
@@ -19,12 +18,14 @@
 	<classpathentry kind="lib" path="src/sneer/bricks/software/code/metaclass/asm/impl/lib/asm-all-3.2.jar" sourcepath="src/sneer/bricks/software/code/metaclass/asm/impl/lib/asm-all-3.2-src.zip"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/hardware/cpu/crypto/impl/lib/bcprov-jdk16-1.45.jar" sourcepath="src/sneer/bricks/hardware/cpu/crypto/impl/lib/bcprov-jdk16-1.45-sources.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/pulp/serialization/fixtures/brickwithlib/impl/lib/libForSerializer.jar"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/pulp/serialization/impl/lib/xstream-1.4.2.jar" sourcepath="src/sneer/bricks/pulp/serialization/impl/lib/xstream-1.4.2-sources.jar"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/pulp/serialization/impl/lib/xpp3_min-1.1.4c.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/software/bricks/interception/fixtures/brickwithlib/impl/lib/foo.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/upnp/impl/lib/commons-jxpath-1.1.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/upnp/impl/lib/commons-logging-api.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/upnp/impl/lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/upnp/impl/lib/sbbi-upnplib-1.0.4.jar"/>
-	<classpathentry kind="lib" path="src/sneer/bricks/pulp/serialization/impl/lib/xstream-1.4.2.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="lib" path="src/dfcsantos/tracks/execution/player/impl/lib/jl1.0.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+<classpathentry kind="output" path="bin"/>
 </classpath>
