@@ -22,14 +22,14 @@ public class ContactNavigatorTest extends BrickTestWithTuples {
 	
 	@Test(timeout=4000)
 	public void requestContacts() {
-		Environments.runWith(remote(), new Closure(){  @Override public void run() {
+		Environments.runWith(remote(), new Closure() { @Override public void run() {
 			remoteSeal = ownSeal();			
 			my(ContactNavigator.class);
 		}});
 		
 		final Latch latch = new Latch();
 				
-		subject.searchContactsOf(remoteSeal, new Consumer<ContactOfContact>(){  @Override public void consume(ContactOfContact value) {
+		subject.searchContactsOf(remoteSeal, new Consumer<ContactOfContact>() { @Override public void consume(ContactOfContact value) {
 			if (!value.nick.equals("Local Friend")) throw new IllegalStateException(value.nick);
 			if (latch.isOpen()) throw new IllegalStateException(value.nick);
 			latch.open();
