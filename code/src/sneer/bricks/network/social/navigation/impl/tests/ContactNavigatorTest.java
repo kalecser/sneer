@@ -7,13 +7,11 @@ import org.junit.Test;
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.navigation.ContactNavigator;
 import sneer.bricks.network.social.navigation.ContactOfContact;
 import basis.environments.Environments;
-import basis.lang.ClosureX;
+import basis.lang.Closure;
 import basis.lang.Consumer;
-import basis.lang.exceptions.Refusal;
 import basis.util.concurrent.Latch;
 
 public class ContactNavigatorTest extends BrickTestWithTuples {
@@ -23,20 +21,19 @@ public class ContactNavigatorTest extends BrickTestWithTuples {
 	
 	
 	@Test(timeout=4000)
-	public void requestContacts() throws Refusal{
-		Environments.runWith(remote(), new ClosureX<Refusal>(){  @Override public void run() throws Refusal {
+	public void requestContacts() {
+		Environments.runWith(remote(), new Closure(){  @Override public void run() {
 			remoteSeal = ownSeal();			
-			my(Contacts.class).addContact("Neide");
 			my(ContactNavigator.class);
 		}});
 		
 		final Latch latch = new Latch();
 				
 		subject.searchContactsOf(remoteSeal, new Consumer<ContactOfContact>(){  @Override public void consume(ContactOfContact value) {
-			if (value.nick.equals("Neide"))
-				latch.open();
+			if (!value.nick.equals("Local Friend")) throw new IllegalStateException(value.nick);
+			if (latch.isOpen()) throw new IllegalStateException(value.nick);
+			latch.open();
 		}});
-					
 		
 		latch.waitTillOpen();
 	}

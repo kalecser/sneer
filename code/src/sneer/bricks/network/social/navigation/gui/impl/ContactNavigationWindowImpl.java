@@ -83,7 +83,7 @@ import basis.lang.exceptions.Refusal;
 	}
 	
 	private void updateTitle() {
-		_title.setText(selectedContact().nickname().currentValue() + " Friends");
+		_title.setText(selectedContact().nickname().currentValue() + "'s Contacts");
 	}
 
 	private void open() {

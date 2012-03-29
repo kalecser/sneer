@@ -4,13 +4,6 @@ import static basis.environments.Environments.my;
 
 import org.junit.After;
 
-import basis.environments.Environment;
-import basis.environments.EnvironmentUtils;
-import basis.environments.Environments;
-import basis.lang.Closure;
-import basis.lang.Producer;
-import basis.lang.exceptions.Refusal;
-
 import sneer.bricks.expression.tuples.testsupport.pump.TuplePump;
 import sneer.bricks.expression.tuples.testsupport.pump.TuplePumps;
 import sneer.bricks.identity.seals.OwnSeal;
@@ -19,8 +12,17 @@ import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
+import basis.environments.Environment;
+import basis.environments.EnvironmentUtils;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.lang.Producer;
+import basis.lang.exceptions.Refusal;
 
 public abstract class BrickTestWithTuples extends BrickTestBase {
+
+	private static final String REMOTE_FRIEND_NICK = "Remote Friend";
+	private static final String LOCAL_FRIEND_NICK = "Local Friend";
 
 	private Environment _remote;
 	private TuplePump _tuplePump;
@@ -35,7 +37,7 @@ public abstract class BrickTestWithTuples extends BrickTestBase {
 	}
 
 	protected Contact remoteContact() {
-		return my(Contacts.class).contactGiven("remote");
+		return my(Contacts.class).contactGiven(REMOTE_FRIEND_NICK);
 	}
 
 	protected Seal remoteSeal() {
@@ -66,10 +68,10 @@ public abstract class BrickTestWithTuples extends BrickTestBase {
 		final Seal localSeal = ownSeal();
 		final Seal remoteSeal = remoteSeal();
 
-		connectToContact(remoteSeal, "remote");
+		connectToContact(remoteSeal, REMOTE_FRIEND_NICK);
 
 		Environments.runWith(_remote, new Closure() { @Override public void run() {
-			connectToContact(localSeal, "local");
+			connectToContact(localSeal, LOCAL_FRIEND_NICK);
 		}});
 	}
 

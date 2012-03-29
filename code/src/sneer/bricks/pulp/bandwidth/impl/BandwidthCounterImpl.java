@@ -23,14 +23,9 @@ class BandwidthCounterImpl implements BandwidthCounter {
 	private final Register<Integer> _upSpeed = my(Signals.class).newRegister(0); 
 	private final Register<Integer> _dnSpeed = my(Signals.class).newRegister(0); 
 
-	@SuppressWarnings("unused")	private final WeakContract _alarmContract;
-
-	
-	BandwidthCounterImpl(){
-		_alarmContract = my(Timer.class).wakeUpEvery(CONSOLIDATION_TIME, new Closure(){ @Override public void run() {
-			consolidate();
-		}});
-	}
+	@SuppressWarnings("unused") private final WeakContract _alarmContract = my(Timer.class).wakeUpEvery(CONSOLIDATION_TIME, new Closure(){ @Override public void run() {
+		consolidate();
+	}});
 	
 	
 	@Override public Signal<Integer> uploadSpeedInKBperSecond()   { return _upSpeed.output(); }
