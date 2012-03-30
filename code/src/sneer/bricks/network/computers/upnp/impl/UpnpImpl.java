@@ -5,11 +5,8 @@ import static basis.environments.Environments.my;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import basis.brickness.Brick;
-import basis.lang.Closure;
-import basis.lang.Consumer;
-
 import net.sbbi.upnp.impls.InternetGatewayDevice;
+import net.sbbi.upnp.messages.ActionResponse;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.computers.ports.OwnPort;
@@ -18,6 +15,9 @@ import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
+import basis.brickness.Brick;
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 @Brick
 public class UpnpImpl implements Upnp {
@@ -92,8 +92,15 @@ public class UpnpImpl implements Upnp {
 	}
 
 
-	private boolean mappingAlreadyExists(InternetGatewayDevice device, String ip, int port) throws Exception {
-		return device.getSpecificPortMappingEntry(ip, port, TCP_PROTOCOL) != null;
+	private boolean mappingAlreadyExists(InternetGatewayDevice device, String ip, int port) {
+		ActionResponse ar = null;
+		try {
+			ar = device.getSpecificPortMappingEntry(ip, port, TCP_PROTOCOL);
+		} catch (Exception e) {
+			my(Logger.class).log(UPnP + "failed to find port mapped " + port + ". " + e.getClass() + ": " + e.getMessage());
+		}
+
+		return ar != null;
 	}
 
 	
