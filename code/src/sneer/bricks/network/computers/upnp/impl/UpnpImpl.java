@@ -93,14 +93,13 @@ public class UpnpImpl implements Upnp {
 
 
 	private boolean mappingAlreadyExists(InternetGatewayDevice device, String ip, int port) {
-		ActionResponse ar = null;
+		ActionResponse alreadyMapped = null;
 		try {
-			ar = device.getSpecificPortMappingEntry(ip, port, TCP_PROTOCOL);
+			alreadyMapped = device.getSpecificPortMappingEntry(ip, port, TCP_PROTOCOL);
 		} catch (Exception e) {
 			my(Logger.class).log(UPnP + "failed to find port mapped " + port + ". " + e.getClass() + ": " + e.getMessage());
 		}
-
-		return ar != null;
+		return alreadyMapped != null;
 	}
 
 	
