@@ -31,7 +31,7 @@ import basis.lang.Consumer;
 import basis.lang.exceptions.Refusal;
 
 	public class ContactNavigationWindowImpl extends JFrame implements ContactNavigationWindow {
-	private JLabel _title = new JLabel("? Friends");
+	private JLabel _title = new JLabel("? Contacts");
 	private boolean wasInit;
 	private ListRegister<ContactOfContact> _contactsOfContact;
 
@@ -64,7 +64,7 @@ import basis.lang.exceptions.Refusal;
 		my(ContactActionManager.class).addContactAction(new ContactAction(){
 			@Override public boolean isEnabled() { return true; }
 			@Override public boolean isVisible() { return true; }
-			@Override public String caption() { return "Navigate Friends...";}
+			@Override public String caption() { return "Navigate Contacts...";}
 			@Override public void run() {
 				open();
 			}
@@ -99,7 +99,6 @@ import basis.lang.exceptions.Refusal;
 	private void requestContactsOfContact() {
 		clearContactsOfContact();
 		Consumer<ContactOfContact> consumer = new Consumer<ContactOfContact>() { @Override public void consume(ContactOfContact value) {
-			//if(!_contactsOfContact.output().currentElements().contains(value))
 				_contactsOfContact.add(value);
 		}};
 		my(ContactNavigator.class).searchContactsOf(selectedSeal(), consumer );		
