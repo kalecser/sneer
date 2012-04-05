@@ -22,12 +22,14 @@ import sneer.bricks.network.social.navigation.ContactOfContact;
 import sneer.bricks.network.social.navigation.gui.ContactNavigationWindow;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
+import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.skin.widgets.reactive.ListWidget;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import basis.lang.Consumer;
+import basis.lang.Functor;
 import basis.lang.exceptions.Refusal;
 
 	public class ContactNavigationWindowImpl extends JFrame implements ContactNavigationWindow {
@@ -43,7 +45,7 @@ import basis.lang.exceptions.Refusal;
 		setLayout(new BorderLayout());
 		add (_title, BorderLayout.NORTH);
 		_contactsOfContact = my(CollectionSignals.class).newListRegister();
-		ListWidget<ContactOfContact> contactsList = my(ReactiveWidgetFactory.class).newList(_contactsOfContact.output());
+		ListWidget<String> contactsList = createContactsListWidget();
 		JComponent listComponent = contactsList.getComponent();
 		listComponent.setPreferredSize(new Dimension(100, 400));
 		add (listComponent, BorderLayout.CENTER);
@@ -52,11 +54,19 @@ import basis.lang.exceptions.Refusal;
 		add (meToo, BorderLayout.SOUTH);
 		pack();
 	}
+
+	private ListWidget<String> createContactsListWidget() {
+		ListSignal<String> names = my(CollectionSignals.class).adapt(_contactsOfContact.output(), new Functor<ContactOfContact, String>(){ @Override public String evaluate(ContactOfContact value) {
+			return value.nick;
+		}});
+		return my(ReactiveWidgetFactory.class).newList(names);
+	}
 	
-	private void addContactUponClick(final ListWidget<ContactOfContact> contactsList,
+	private void addContactUponClick(final ListWidget<String> contactsList,
 			JButton meToo) {
 		meToo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent arg0) {
-			addContact(contactsList.selectedElement().currentValue());
+			int index = contactsList.getMainWidget().getSelectedIndex();
+			addContact(_contactsOfContact.output().currentGet(index));
 		}});
 	}
 	

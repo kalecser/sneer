@@ -14,9 +14,4 @@ public class ContactOfContact extends Tuple {
 		this.nick = nick_;
 		this.contactSeal = contactSeal_;
 	}
-	
-	@Override
-	public String toString() {
-		return nick;
-	}
 }

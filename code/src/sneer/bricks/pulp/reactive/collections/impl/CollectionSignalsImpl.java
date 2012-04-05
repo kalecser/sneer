@@ -28,7 +28,7 @@ class CollectionSignalsImpl implements CollectionSignals {
 
 	@Override
 	public <A, B> ListSignal<B> adapt(ListSignal<A> input, Functor<A, B> functor) {
-		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
+		return new ListAdapter<A,B>(input, functor).output();
 	}
 
 	@Override
