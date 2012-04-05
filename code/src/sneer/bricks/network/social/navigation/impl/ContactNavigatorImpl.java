@@ -16,7 +16,6 @@ import basis.lang.Consumer;
 
 public class ContactNavigatorImpl implements ContactNavigator {
 	
-	@SuppressWarnings("unused")
 	private WeakContract ref;
 	@SuppressWarnings("unused")
 	private WeakContract ref2;
@@ -47,13 +46,11 @@ public class ContactNavigatorImpl implements ContactNavigator {
 		
 		TupleSpace tuplespace = my(TupleSpace.class);
 		tuplespace.add(new ContactsRequest(adressee));
-		ref = tuplespace.addSubscription(ContactOfContact.class, new Consumer<ContactOfContact>(){
-
-			@Override
-			public void consume(ContactOfContact value) {
-				if (value.publisher.equals(adressee)) 
-					consumer.consume(value);
-			}});
+		if (ref != null) ref.dispose();
+		ref = tuplespace.addSubscription(ContactOfContact.class, new Consumer<ContactOfContact>(){  @Override public void consume(ContactOfContact value) {
+			if (value.publisher.equals(adressee)) 
+				consumer.consume(value);
+		}});
 	}
 
 }

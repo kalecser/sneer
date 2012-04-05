@@ -6,12 +6,12 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Comparator;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
 
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -23,6 +23,7 @@ import sneer.bricks.network.social.navigation.gui.ContactNavigationWindow;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
+import sneer.bricks.pulp.reactive.collections.listsorter.ListSorter;
 import sneer.bricks.skin.widgets.reactive.ListWidget;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
@@ -36,6 +37,7 @@ import basis.lang.exceptions.Refusal;
 	private JLabel _title = new JLabel("? Contacts");
 	private boolean wasInit;
 	private ListRegister<ContactOfContact> _contactsOfContact;
+	private ListSignal<ContactOfContact> _sortedList;
 
 	{
 		addNavigateFriendMenu();
@@ -47,7 +49,7 @@ import basis.lang.exceptions.Refusal;
 		_contactsOfContact = my(CollectionSignals.class).newListRegister();
 		ListWidget<String> contactsList = createContactsListWidget();
 		JComponent listComponent = contactsList.getComponent();
-		listComponent.setPreferredSize(new Dimension(100, 400));
+		listComponent.setPreferredSize(new Dimension(300, 400));
 		add (listComponent, BorderLayout.CENTER);
 		JButton meToo = new JButton("Me Too");
 		addContactUponClick(contactsList, meToo);
@@ -56,7 +58,10 @@ import basis.lang.exceptions.Refusal;
 	}
 
 	private ListWidget<String> createContactsListWidget() {
-		ListSignal<String> names = my(CollectionSignals.class).adapt(_contactsOfContact.output(), new Functor<ContactOfContact, String>(){ @Override public String evaluate(ContactOfContact value) {
+		_sortedList = my(ListSorter.class).sort(_contactsOfContact.output(), new Comparator<ContactOfContact>() {  @Override public int compare(ContactOfContact o1, ContactOfContact o2) {
+			return o1.nick.compareTo(o2.nick);
+		}});
+		ListSignal<String> names = my(CollectionSignals.class).adapt(_sortedList, new Functor<ContactOfContact, String>(){ @Override public String evaluate(ContactOfContact value) {
 			return value.nick;
 		}});
 		return my(ReactiveWidgetFactory.class).newList(names);
@@ -66,7 +71,7 @@ import basis.lang.exceptions.Refusal;
 			JButton meToo) {
 		meToo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent arg0) {
 			int index = contactsList.getMainWidget().getSelectedIndex();
-			addContact(_contactsOfContact.output().currentGet(index));
+			addContact(_sortedList.currentGet(index));
 		}});
 	}
 	
@@ -109,7 +114,7 @@ import basis.lang.exceptions.Refusal;
 	private void requestContactsOfContact() {
 		clearContactsOfContact();
 		Consumer<ContactOfContact> consumer = new Consumer<ContactOfContact>() { @Override public void consume(ContactOfContact value) {
-				_contactsOfContact.add(value);
+			_contactsOfContact.add(value);
 		}};
 		my(ContactNavigator.class).searchContactsOf(selectedSeal(), consumer );		
 	}
