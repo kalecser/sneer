@@ -124,8 +124,7 @@ import basis.lang.exceptions.Refusal;
 	}
 
 	private Contact selectedContact() {
-		Contact selectedContact = my(ContactsGui.class).selectedContact().currentValue();
-		return selectedContact;
+		return my(ContactsGui.class).selectedContact().currentValue();
 	}
 	private void clearContactsOfContact() {
 		for (ContactOfContact each : _contactsOfContact.output()){
