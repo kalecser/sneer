@@ -38,7 +38,7 @@ public class FileTransferUiImpl implements FileTransferUi, Consumer<File> {
 		});
 	}
 
-	protected void openFileChooser() {
+	private void openFileChooser() {
 		my(FileChoosers.class).choose(this, JFileChooser.FILES_AND_DIRECTORIES, null);
 	}
 
