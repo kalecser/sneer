@@ -6,10 +6,12 @@ import sneer.bricks.identity.seals.Seal;
 public class FileTransferSugestion extends Tuple {
 
 	public final String fileOrFolderName;
+	public final long fileLastModified;
 
-	public FileTransferSugestion(String fileOrFolderName, Seal addressee) {
+	public FileTransferSugestion(Seal addressee, String fileOrFolderName, long fileLastModified) {
 		super(addressee);
 		this.fileOrFolderName = fileOrFolderName;
+		this.fileLastModified = fileLastModified;
 	}
 
 }

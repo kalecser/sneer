@@ -3,20 +3,17 @@ package sneer.bricks.expression.files.transfer.ui.impl;
 import static basis.environments.Environments.my;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
-import sneer.bricks.expression.files.map.mapper.FileMapper;
-import sneer.bricks.expression.files.map.mapper.MappingStopped;
+import sneer.bricks.expression.files.transfer.FileTransfer;
 import sneer.bricks.expression.files.transfer.FileTransferSugestion;
 import sneer.bricks.expression.files.transfer.ui.FileTransferUi;
-import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.skin.filechooser.FileChoosers;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
@@ -25,7 +22,17 @@ import basis.lang.Consumer;
 
 public class FileTransferUiImpl implements FileTransferUi, Consumer<File> {
 
+	@SuppressWarnings("unused")
+	private WeakContract ref;
+
 	{
+		ref = my(FileTransfer.class).registerHandler(new Consumer<FileTransferSugestion>() {
+			@Override
+			public void consume(FileTransferSugestion sugestion) {
+				if (JOptionPane.showConfirmDialog(null, "Do you want to download " + sugestion.fileOrFolderName + "?", "Download",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) 
+					my(FileTransfer.class).accept(sugestion);
+			}
+		});
 		my(ContactActionManager.class).addContactAction(new ContactAction(){
 			@Override public boolean isEnabled() { return true; }
 			@Override public boolean isVisible() { return true; }
@@ -44,14 +51,7 @@ public class FileTransferUiImpl implements FileTransferUi, Consumer<File> {
 
 	@Override
 	public void consume(File fileOrFolder) {
-		my(TupleSpace.class).add(new FileTransferSugestion(fileOrFolder.getName(), selectedSeal()));
-		try {
-			my(FileMapper.class).mapFileOrFolder(fileOrFolder);
-		} catch (MappingStopped mse) {
-			//ignored
-		} catch (IOException ioe) {
-			my(BlinkingLights.class).turnOn(LightType.ERROR, "Error reading " + fileOrFolder, "This might indicate a problem with your harddrive", ioe);
-		}
+		my(FileTransfer.class).tryToSend(fileOrFolder, selectedSeal());
 	}
 
 	private Seal selectedSeal() {

@@ -51,13 +51,13 @@ public class FileTransferImpl implements FileTransfer {
 	
 	@Override
 	public void tryToSend(File file, Seal peer) {
-		FileTransferSugestion sugestion = new FileTransferSugestion(file.getName(), peer);
+		FileTransferSugestion sugestion = new FileTransferSugestion(peer, file.getName(), file.lastModified());
 		my(TupleSpace.class).add(sugestion);
-		filesBySugestion .put(sugestion, file);
+		filesBySugestion.put(sugestion, file);
 	}
 
 	protected File getFile(FileTransferAccept accept) {
-		return filesBySugestion.get(accept._sugestion);
+		return filesBySugestion.get(accept.sugestion);
 	}
 
 	@Override
@@ -80,9 +80,9 @@ public class FileTransferImpl implements FileTransfer {
 	
 	private void handleDetails(FileTransferDetails details) {
 		File tmp = my(FolderConfig.class).tmpFolder().get();
-		File destination = new File(tmp, details.accept._sugestion.fileOrFolderName);
+		File destination = new File(tmp, details.accept.sugestion.fileOrFolderName);
 		my(FileClient.class).startFileDownload(
-				destination, details.lastModified, details.hash, details.publisher);
+				destination, details.accept.sugestion.fileLastModified, details.hash, details.publisher);
 	}
 
 	private Hash map(File file) {

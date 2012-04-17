@@ -4,10 +4,10 @@ import sneer.bricks.expression.tuples.Tuple;
 
 public class FileTransferAccept extends Tuple {
 
-	public final FileTransferSugestion _sugestion;
+	public final FileTransferSugestion sugestion;
 
 	public FileTransferAccept(FileTransferSugestion sugestion) {
-		_sugestion = sugestion;
+		this.sugestion = sugestion;
 	}
 
 }
