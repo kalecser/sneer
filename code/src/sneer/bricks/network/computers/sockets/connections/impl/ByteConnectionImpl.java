@@ -4,15 +4,14 @@ import static basis.environments.Environments.my;
 
 import java.io.IOException;
 
-import basis.lang.Closure;
-import basis.lang.Consumer;
-
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.network.computers.sockets.connections.ByteConnection;
+import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.pulp.bandwidth.BandwidthCounter;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.reactive.Signal;
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 class ByteConnectionImpl implements ByteConnection {
 

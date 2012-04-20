@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.sockets.connections;
+package sneer.bricks.network.computers.connections;
 
 import basis.lang.Consumer;
 import sneer.bricks.pulp.reactive.Signal;

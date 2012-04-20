@@ -7,7 +7,7 @@ import java.util.List;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.network.computers.sockets.connections.ByteConnection.PacketScheduler;
+import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.serialization.Serializer;

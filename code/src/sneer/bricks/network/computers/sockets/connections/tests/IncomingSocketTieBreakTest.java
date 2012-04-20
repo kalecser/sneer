@@ -13,7 +13,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
+import sneer.bricks.network.computers.sockets.connections.SocketConnectionManager;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
@@ -29,7 +29,7 @@ public class IncomingSocketTieBreakTest extends BrickTestBase {
 	@Bind private final OwnSeal _ownSealBrick = mock(OwnSeal.class);
 	@Bind private final Network2010 _network = mock(Network2010.class);
 
-	private ConnectionManager _subject = my(ConnectionManager.class);
+	private SocketConnectionManager _subject = my(SocketConnectionManager.class);
 
 	private final ByteArraySocket _socketA = mock("socketA", ByteArraySocket.class);
 	private final ByteArraySocket _socketB = mock("socketB", ByteArraySocket.class);

@@ -1,14 +1,12 @@
 package sneer.bricks.network.social.rendezvous.impl;
 
 import static basis.environments.Environments.my;
-import basis.lang.Consumer;
-import basis.lang.exceptions.Refusal;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.network.computers.sockets.connections.Call;
-import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
+import sneer.bricks.network.computers.connections.Call;
+import sneer.bricks.network.computers.sockets.connections.SocketConnectionManager;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.network.social.rendezvous.Rendezvous;
@@ -16,12 +14,14 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
+import basis.lang.Consumer;
+import basis.lang.exceptions.Refusal;
 
 class RendezvousImpl implements Rendezvous {
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc;
 
 	{
-		_refToAvoidGc = my(ConnectionManager.class).unknownCallers().addReceiver(new Consumer<Call>() { @Override public void consume(Call call) {
+		_refToAvoidGc = my(SocketConnectionManager.class).unknownCallers().addReceiver(new Consumer<Call>() { @Override public void consume(Call call) {
 			receiveCallFromUnknownCaller(call);
 		}});
 	}

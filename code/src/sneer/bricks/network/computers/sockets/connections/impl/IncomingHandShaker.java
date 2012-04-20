@@ -5,13 +5,11 @@ import static basis.environments.Environments.my;
 import java.io.IOException;
 import java.util.Arrays;
 
-import basis.lang.arrays.ImmutableByteArray;
-
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.network.computers.sockets.connections.Call;
+import sneer.bricks.network.computers.connections.Call;
 import sneer.bricks.network.computers.sockets.connections.Sighting;
 import sneer.bricks.network.computers.sockets.protocol.ProtocolTokens;
 import sneer.bricks.pulp.network.ByteArraySocket;
@@ -19,6 +17,7 @@ import sneer.bricks.pulp.network.Network2010;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
 import sneer.bricks.pulp.notifiers.Source;
+import basis.lang.arrays.ImmutableByteArray;
 
 class IncomingHandShaker {
 

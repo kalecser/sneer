@@ -7,17 +7,13 @@ import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
-import basis.brickness.testsupport.Bind;
-import basis.lang.Consumer;
-import basis.lang.arrays.ImmutableByteArray;
-
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.network.computers.sockets.connections.ByteConnection;
-import sneer.bricks.network.computers.sockets.connections.ByteConnection.PacketScheduler;
-import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
+import sneer.bricks.network.computers.connections.ByteConnection;
+import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
+import sneer.bricks.network.computers.sockets.connections.SocketConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
@@ -25,10 +21,13 @@ import sneer.bricks.pulp.probe.ProbeManager;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.serialization.Serializer;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
+import basis.brickness.testsupport.Bind;
+import basis.lang.Consumer;
+import basis.lang.arrays.ImmutableByteArray;
 
 public class ProbeManagerTest extends BrickTestBase {
 
-	@Bind private final ConnectionManager _connectionManager = mock(ConnectionManager.class);
+	@Bind private final SocketConnectionManager _connectionManager = mock(SocketConnectionManager.class);
 
 	@SuppressWarnings("unused")
 	private final ProbeManager _subject = my(ProbeManager.class);

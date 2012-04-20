@@ -4,18 +4,17 @@ import static basis.environments.Environments.my;
 
 import java.io.IOException;
 
-import basis.lang.ClosureX;
-
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.network.computers.sockets.connections.Call;
-import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
+import sneer.bricks.network.computers.connections.Call;
+import sneer.bricks.network.computers.sockets.connections.SocketConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.notifiers.Source;
+import basis.lang.ClosureX;
 
-class ConnectionManagerImpl implements ConnectionManager {
+class SocketConnectionManagerImpl implements SocketConnectionManager {
 	
 	static final WeakContract crashingContract = my(Threads.class).crashed().addPulseReceiver(new Runnable() { @Override public void run() {
 		for (ByteConnectionImpl victim : ConnectionsByContact.all())

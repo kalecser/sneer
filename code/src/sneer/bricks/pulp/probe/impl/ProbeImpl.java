@@ -4,7 +4,6 @@
 package sneer.bricks.pulp.probe.impl;
 
 import static basis.environments.Environments.my;
-import basis.lang.Consumer;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -13,6 +12,7 @@ import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
 import sneer.bricks.pulp.reactive.Signal;
+import basis.lang.Consumer;
 
 final class ProbeImpl implements Consumer<Tuple> {
 
@@ -57,7 +57,7 @@ final class ProbeImpl implements Consumer<Tuple> {
 		if (!isClearToSend(tuple)) return;
 		
 		synchronized (_isConnectedMonitor) {
-			if (!_isConnected)	return;
+			if (!_isConnected) return;
 			_scheduler.add(tuple);
 		}
 	}

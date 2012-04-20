@@ -1,7 +1,7 @@
 package sneer.bricks.network.computers.sockets.connections.impl;
 
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.network.computers.sockets.connections.Call;
+import sneer.bricks.network.computers.connections.Call;
 
 class CallImpl implements Call {
 

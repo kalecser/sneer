@@ -12,7 +12,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
-import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
+import sneer.bricks.network.computers.sockets.connections.SocketConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
@@ -23,7 +23,7 @@ import sneer.bricks.pulp.network.Network2010;
 class OutgoingAttempt {
 
 	private final Network2010 _network = my(Network2010.class);
-	private final ConnectionManager _connectionManager = my(ConnectionManager.class);
+	private final SocketConnectionManager _connectionManager = my(SocketConnectionManager.class);
 	private final InternetAddress _address;
 	private int _port;
 	private final WeakContract _steppingContract;

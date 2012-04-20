@@ -5,12 +5,12 @@ import static basis.environments.Environments.my;
 import java.util.HashMap;
 import java.util.Map;
 
-import basis.lang.Consumer;
-
 import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
+import sneer.bricks.pulp.network.udp.UdpNetwork;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
+import basis.lang.Consumer;
 
 class SocketOriginatorImpl implements SocketOriginator {
 
@@ -20,6 +20,7 @@ class SocketOriginatorImpl implements SocketOriginator {
 	
 	
 	SocketOriginatorImpl() {
+		if (UdpNetwork.SHOULD_BE_USED) return;
 		_refToAvoidGC = my(ContactInternetAddresses.class).addresses().addReceiver(new Consumer<CollectionChange<InternetAddress>>(){ @Override public void consume(CollectionChange<InternetAddress> value) {
 			for (InternetAddress address : value.elementsRemoved()) 
 				stopAddressing(address);

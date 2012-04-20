@@ -9,14 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import basis.lang.Closure;
-import basis.lang.Consumer;
-import basis.lang.Functor;
-import basis.lang.arrays.ImmutableByteArray;
-import basis.lang.exceptions.NotImplementedYet;
-import basis.lang.exceptions.Refusal;
-import basis.util.concurrent.Latch;
-
 import sneer.bricks.expression.files.server.FileServer;
 import sneer.bricks.expression.tuples.logger.TupleLogger;
 import sneer.bricks.hardware.clock.Clock;
@@ -66,6 +58,13 @@ import sneer.tests.SovereignParty;
 import sneer.tests.adapters.SneerParty;
 import sneer.tests.adapters.SneerPartyApiClassLoader;
 import sneer.tests.adapters.SneerPartyController;
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.Functor;
+import basis.lang.arrays.ImmutableByteArray;
+import basis.lang.exceptions.NotImplementedYet;
+import basis.lang.exceptions.Refusal;
+import basis.util.concurrent.Latch;
 
 class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 

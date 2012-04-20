@@ -7,15 +7,11 @@ import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
-import basis.brickness.testsupport.Bind;
-import basis.lang.arrays.ImmutableByteArray;
-import basis.util.concurrent.Latch;
-
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
-import sneer.bricks.network.computers.sockets.connections.ByteConnection;
-import sneer.bricks.network.computers.sockets.connections.ConnectionManager;
+import sneer.bricks.network.computers.connections.ByteConnection;
+import sneer.bricks.network.computers.sockets.connections.SocketConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
@@ -24,6 +20,9 @@ import sneer.bricks.pulp.network.Network2010;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
+import basis.brickness.testsupport.Bind;
+import basis.lang.arrays.ImmutableByteArray;
+import basis.util.concurrent.Latch;
 
 public class SocketOriginatorTest extends BrickTestBase {
 
@@ -31,7 +30,7 @@ public class SocketOriginatorTest extends BrickTestBase {
 	private SocketOriginator _subject;
 
 	@Bind private final Network2010 _networkMock = mock(Network2010.class);
-	@Bind private final ConnectionManager _connectionManagerMock = mock(ConnectionManager.class);
+	@Bind private final SocketConnectionManager _connectionManagerMock = mock(SocketConnectionManager.class);
 
 	private final ByteConnection _byteConnection = mock(ByteConnection.class);
 	private final Signal<Boolean> _isConnected = my(Signals.class).constant(false);

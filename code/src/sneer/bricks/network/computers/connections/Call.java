@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.sockets.connections;
+package sneer.bricks.network.computers.connections;
 
 import sneer.bricks.identity.seals.Seal;
 
