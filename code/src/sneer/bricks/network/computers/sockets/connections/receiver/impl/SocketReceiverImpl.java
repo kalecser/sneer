@@ -6,7 +6,6 @@ import sneer.bricks.network.computers.sockets.accepter.SocketAccepter;
 import sneer.bricks.network.computers.sockets.connections.SocketConnectionManager;
 import sneer.bricks.network.computers.sockets.connections.receiver.SocketReceiver;
 import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.bricks.pulp.network.udp.UdpNetwork;
 import basis.lang.Closure;
 import basis.lang.Consumer;
 
@@ -19,7 +18,6 @@ class SocketReceiverImpl implements SocketReceiver {
 	@SuppressWarnings("unused") private final Object _receptionRefToAvoidGc;
 
 	SocketReceiverImpl() {
-		if (UdpNetwork.SHOULD_BE_USED) return;
 		_socketAccepter = my(SocketAccepter.class);
 
 		_receptionRefToAvoidGc = _socketAccepter.lastAcceptedSocket().addReceiver(new Consumer<ByteArraySocket>() { @Override public void consume(final ByteArraySocket socket) {

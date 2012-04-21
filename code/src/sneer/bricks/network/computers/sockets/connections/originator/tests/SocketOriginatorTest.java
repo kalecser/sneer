@@ -30,7 +30,7 @@ public class SocketOriginatorTest extends BrickTestBase {
 	private SocketOriginator _subject;
 
 	@Bind private final Network2010 _networkMock = mock(Network2010.class);
-	@Bind private final SocketConnectionManager _connectionManagerMock = mock(SocketConnectionManager.class);
+	@Bind private final SocketConnectionManager _socketConnectionManagerMock = mock(SocketConnectionManager.class);
 
 	private final ByteConnection _byteConnection = mock(ByteConnection.class);
 	private final Signal<Boolean> _isConnected = my(Signals.class).constant(false);
@@ -44,7 +44,7 @@ public class SocketOriginatorTest extends BrickTestBase {
 		my(ContactSeals.class).put("Neide", newSeal(new byte[]{42}));
 
 		checking(new Expectations() {{
-			oneOf(_connectionManagerMock).connectionFor(neide);
+			oneOf(_socketConnectionManagerMock).socketConnectionFor(neide);
 				will(returnValue(_byteConnection));
 
 			oneOf(_byteConnection).isConnected();
@@ -53,7 +53,7 @@ public class SocketOriginatorTest extends BrickTestBase {
 			oneOf(_networkMock).openSocket("neide.selfip.net", 5000);
 				will(returnValue(_openedSocket));
 
-			oneOf(_connectionManagerMock).manageOutgoingSocket(_openedSocket, neide);
+			oneOf(_socketConnectionManagerMock).manageOutgoingSocket(_openedSocket, neide);
 				will(new CustomAction("manageIncomingSocket") { @Override public Object invoke(Invocation ignored) {
 					ready.open(); return null;
 				}});

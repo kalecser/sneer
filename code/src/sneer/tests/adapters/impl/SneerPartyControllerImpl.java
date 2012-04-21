@@ -28,8 +28,6 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.ports.OwnPort;
-import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
-import sneer.bricks.network.computers.sockets.connections.receiver.SocketReceiver;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
@@ -260,8 +258,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	private void startSnapps() {
 		startAndKeep(JavaCompiler.class);
 		
-		startAndKeep(SocketOriginator.class);
-		startAndKeep(SocketReceiver.class);
 		startAndKeep(ProbeManager.class);
 		startAndKeep(Rendezvous.class);
 

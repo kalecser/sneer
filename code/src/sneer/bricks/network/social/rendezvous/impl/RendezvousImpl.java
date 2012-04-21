@@ -6,7 +6,7 @@ import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.Call;
-import sneer.bricks.network.computers.sockets.connections.SocketConnectionManager;
+import sneer.bricks.network.computers.connections.ConnectionManager;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.network.social.rendezvous.Rendezvous;
@@ -21,7 +21,7 @@ class RendezvousImpl implements Rendezvous {
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc;
 
 	{
-		_refToAvoidGc = my(SocketConnectionManager.class).unknownCallers().addReceiver(new Consumer<Call>() { @Override public void consume(Call call) {
+		_refToAvoidGc = my(ConnectionManager.class).unknownCallers().addReceiver(new Consumer<Call>() { @Override public void consume(Call call) {
 			receiveCallFromUnknownCaller(call);
 		}});
 	}

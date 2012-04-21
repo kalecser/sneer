@@ -23,7 +23,7 @@ class SocketConnectionManagerImpl implements SocketConnectionManager {
 
 	
 	@Override
-	public ByteConnectionImpl connectionFor(final Contact contact) {
+	public ByteConnectionImpl socketConnectionFor(final Contact contact) {
 		return ConnectionsByContact.get(contact);
 	}
 
@@ -55,14 +55,14 @@ class SocketConnectionManagerImpl implements SocketConnectionManager {
 
 	
 	@Override
-	public void closeConnectionFor(Contact contact) {
+	public void closeSocketConnectionFor(Contact contact) {
 		ByteConnectionImpl connection = ConnectionsByContact.remove(contact);
 		if (connection != null) connection.close();
 	}
 
 
 	@Override
-	public Source<Call> unknownCallers() {
+	public Source<Call> unknownSocketCallers() {
 		return IncomingHandShaker.unknownCallers();
 	}
 

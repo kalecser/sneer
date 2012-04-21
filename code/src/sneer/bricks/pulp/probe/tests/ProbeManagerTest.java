@@ -13,7 +13,7 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
-import sneer.bricks.network.computers.sockets.connections.SocketConnectionManager;
+import sneer.bricks.network.computers.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.distribution.filtering.TupleFilterManager;
@@ -27,7 +27,7 @@ import basis.lang.arrays.ImmutableByteArray;
 
 public class ProbeManagerTest extends BrickTestBase {
 
-	@Bind private final SocketConnectionManager _connectionManager = mock(SocketConnectionManager.class);
+	@Bind private final ConnectionManager _connectionManager = mock(ConnectionManager.class);
 
 	@SuppressWarnings("unused")
 	private final ProbeManager _subject = my(ProbeManager.class);

@@ -13,10 +13,10 @@ public interface SocketConnectionManager {
 	void manageIncomingSocket(ByteArraySocket socket);
 	void manageOutgoingSocket(ByteArraySocket socket, Contact contact);
 
-	ByteConnection connectionFor(Contact contact);
+	ByteConnection socketConnectionFor(Contact contact);
 
-	void closeConnectionFor(Contact contact);
+	void closeSocketConnectionFor(Contact contact);
 	
-	Source<Call> unknownCallers();
+	Source<Call> unknownSocketCallers();
 
 }

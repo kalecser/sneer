@@ -4,9 +4,6 @@ import static basis.environments.Environments.my;
 
 import java.io.IOException;
 
-import basis.lang.Closure;
-import basis.lang.Consumer;
-
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
@@ -19,11 +16,13 @@ import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.network.ByteArraySocket;
 import sneer.bricks.pulp.network.Network2010;
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 class OutgoingAttempt {
 
 	private final Network2010 _network = my(Network2010.class);
-	private final SocketConnectionManager _connectionManager = my(SocketConnectionManager.class);
+	private final SocketConnectionManager _socketConnectionManager = my(SocketConnectionManager.class);
 	private final InternetAddress _address;
 	private int _port;
 	private final WeakContract _steppingContract;
@@ -60,7 +59,7 @@ class OutgoingAttempt {
 		}
 
 		my(Logger.class).log("Socket opened to: {} port: {}", _address.host(), _port);
-		_connectionManager.manageOutgoingSocket(socket, contact());
+		_socketConnectionManager.manageOutgoingSocket(socket, contact());
 	}
 
 
@@ -80,7 +79,7 @@ class OutgoingAttempt {
 
 	
 	private boolean hasSocketAlready() {
-		return _connectionManager.connectionFor(contact()).isConnected().currentValue();
+		return _socketConnectionManager.socketConnectionFor(contact()).isConnected().currentValue();
 	}
 
 	
