@@ -52,10 +52,13 @@ public class FileTransferTest extends BrickTestWithTuples {
 		
 		final Latch latch = new Latch();
 		checking(new Expectations(){{
-			oneOf(_fileClient).startFileDownload(new File(my(FolderConfig.class).tmpFolder().get(), "banana"), lastModified, hash, remoteSeal());will(new CustomAction("") {  @Override public Object invoke(Invocation invocation) throws Throwable {
-				latch.open();
-				return null;
-			}});
+			oneOf(_fileClient).startFileDownload(
+				new File(my(FolderConfig.class).tmpFolder().get(), "banana"), lastModified, hash, remoteSeal());
+				will(new CustomAction("") {  @Override public Object invoke(Invocation invocation) throws Throwable {
+					latch.open();
+					return null;
+				}}
+			);
 		}});
 		
 		final Seal ownSeal = my(OwnSeal.class).get().currentValue();
