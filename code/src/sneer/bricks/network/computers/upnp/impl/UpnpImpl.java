@@ -6,7 +6,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import net.sbbi.upnp.impls.InternetGatewayDevice;
-import net.sbbi.upnp.messages.ActionResponse;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.computers.ports.OwnPort;
@@ -23,6 +22,7 @@ import basis.lang.Consumer;
 public class UpnpImpl implements Upnp {
 	
 	private static final String TCP_PROTOCOL = "TCP";
+	private static final String UDP_PROTOCOL = "UDP";
 	private static final String UPnP = "UPnP ";
 
 	
@@ -80,36 +80,45 @@ public class UpnpImpl implements Upnp {
 	private void tryToUpdateMapping(InternetGatewayDevice device, int port) throws Exception { //sbbi lib throws RuntimeExceptions :(
 		String ip = localHostIp();
 		addMappingIfNecessary(device, ip, port);
-		deleteMappingIfNecessary(device, ip, _previousMappedPort);
+		deleteMappingIfNecessary(device, _previousMappedPort);
 	}
 
 
 	private void addMappingIfNecessary(InternetGatewayDevice device, String ip, int port) throws Exception {
 		if (port == 0) return;
-		if (mappingAlreadyExists(device, ip, port)) return;
-		device.addPortMapping("Sneer", null, port, port, ip, 0, TCP_PROTOCOL);
+		addMappingForTcpAndUdp(device, ip, port);
 		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, UPnP + "port " + port + " opened.", "Sneer port opened on UPnP network device " + pretty(device), 15000);
 	}
 
 
-	private boolean mappingAlreadyExists(InternetGatewayDevice device, String ip, int port) {
-		ActionResponse alreadyMapped = null;
-		try {
-			alreadyMapped = device.getSpecificPortMappingEntry(ip, port, TCP_PROTOCOL);
-		} catch (Exception e) {
-			my(Logger.class).log(UPnP + "failed to find port mapped " + port + ". " + e.getClass() + ": " + e.getMessage());
-		}
-		return alreadyMapped != null;
-	}
+	private void addMappingForTcpAndUdp(InternetGatewayDevice device, String ip, int port) throws Exception {
+		String msg = UPnP + "port mapped to <protocol> " + port + ". ";
+		
+		if (device.addPortMapping("Sneer", null, port, port, ip, 0, TCP_PROTOCOL))
+			my(Logger.class).log( msg.replace("<protocol>", TCP_PROTOCOL));
 
+		if (device.addPortMapping("Sneer", null, port, port, ip, 0, UDP_PROTOCOL))
+			my(Logger.class).log( msg.replace("<protocol>", UDP_PROTOCOL));
+	}
 	
-	private void deleteMappingIfNecessary(InternetGatewayDevice igd, String ip, int previousPort) {
+
+	private void deleteMappingIfNecessary(InternetGatewayDevice device, int previousPort) {
 		if (previousPort == 0) return;
 		try {
-			igd.deletePortMapping(ip, previousPort, TCP_PROTOCOL);
+			deleteMappingForTcpAndUdp(device, previousPort);
 		} catch (Exception e) {
 			my(Logger.class).log(UPnP + "failed to delete old port " + previousPort + ". " + e.getClass() + ": " + e.getMessage());
 		}
+	}
+
+	private void deleteMappingForTcpAndUdp(InternetGatewayDevice device, int previousPort) throws Exception {
+		String msg = UPnP + "deleted port mapped to <protocol> " + previousPort + ". ";
+	
+		if (device.deletePortMapping(null, previousPort, TCP_PROTOCOL))
+			my(Logger.class).log( msg.replace("<protocol>", TCP_PROTOCOL));
+
+		if (device.deletePortMapping(null, previousPort, UDP_PROTOCOL))
+			my(Logger.class).log( msg.replace("<protocol>", UDP_PROTOCOL));
 	}
 
 	
