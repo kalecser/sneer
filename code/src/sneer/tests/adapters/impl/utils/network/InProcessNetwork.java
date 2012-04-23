@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import sneer.bricks.pulp.network.ByteArrayServerSocket;
-import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.bricks.pulp.network.Network2010;
+import sneer.bricks.network.computers.tcp.ByteArrayServerSocket;
+import sneer.bricks.network.computers.tcp.ByteArraySocket;
+import sneer.bricks.network.computers.tcp.TcpNetwork;
 
-public class InProcessNetwork implements Network2010 {
+public class InProcessNetwork implements TcpNetwork {
 
 	private final Map<Integer, ByteArrayServerSocket> _serverSocketByPort = new HashMap<Integer, ByteArrayServerSocket>();
 

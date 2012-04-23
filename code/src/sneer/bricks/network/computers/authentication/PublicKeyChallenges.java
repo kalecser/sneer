@@ -5,7 +5,7 @@ import java.io.IOException;
 import basis.brickness.Brick;
 
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.pulp.network.ByteArraySocket;
+import sneer.bricks.network.computers.tcp.ByteArraySocket;
 
 @Brick
 public interface PublicKeyChallenges {

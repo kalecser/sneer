@@ -2,8 +2,8 @@ package sneer.tests.adapters.impl.utils.network;
 
 import java.io.IOException;
 
-import sneer.bricks.pulp.network.ByteArrayServerSocket;
-import sneer.bricks.pulp.network.ByteArraySocket;
+import sneer.bricks.network.computers.tcp.ByteArrayServerSocket;
+import sneer.bricks.network.computers.tcp.ByteArraySocket;
 
 class InProcessByteArrayServerSocket implements ByteArrayServerSocket {
 

@@ -8,9 +8,9 @@ import java.net.URL;
 import basis.brickness.impl.EagerClassLoader;
 
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.pulp.network.ByteArrayServerSocket;
-import sneer.bricks.pulp.network.ByteArraySocket;
-import sneer.bricks.pulp.network.Network2010;
+import sneer.bricks.network.computers.tcp.ByteArrayServerSocket;
+import sneer.bricks.network.computers.tcp.ByteArraySocket;
+import sneer.bricks.network.computers.tcp.TcpNetwork;
 import sneer.tests.adapters.SneerPartyApiClassLoader;
 import sneer.tests.adapters.SneerPartyController;
 
@@ -41,7 +41,7 @@ public final class SneerPartyApiClassLoaderImpl extends EagerClassLoader impleme
 	}
 
 	private boolean isNetworkClass(String className) {
-		if (className.equals(Network2010.class.getName())) return true;
+		if (className.equals(TcpNetwork.class.getName())) return true;
 		if (className.equals(ByteArrayServerSocket.class.getName())) return true;
 		if (className.equals(ByteArraySocket.class.getName())) return true;
 		return false;

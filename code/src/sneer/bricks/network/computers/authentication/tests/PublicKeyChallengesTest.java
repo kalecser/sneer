@@ -12,7 +12,7 @@ import basis.lang.arrays.ImmutableByteArray;
 
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.authentication.PublicKeyChallenges;
-import sneer.bricks.pulp.network.ByteArraySocket;
+import sneer.bricks.network.computers.tcp.ByteArraySocket;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
 public class PublicKeyChallengesTest extends BrickTestBase {

@@ -18,7 +18,7 @@ import basis.languagesupport.JarFinder;
 
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.io.log.tests.LoggerMocks;
-import sneer.bricks.pulp.network.Network2010;
+import sneer.bricks.network.computers.tcp.TcpNetwork;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.tests.SovereignCommunity;
 import sneer.tests.SovereignParty;
@@ -27,7 +27,7 @@ import sneer.tests.adapters.impl.utils.network.InProcessNetwork;
 
 public class SneerCommunity implements SovereignCommunity {
 	
-	private final Network2010 _network = new InProcessNetwork();
+	private final TcpNetwork _network = new InProcessNetwork();
 	private int _nextPort = 10000;
 
 	private final File _tmpFolder;

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package sneer.bricks.pulp.probe.impl;
 
 import static basis.environments.Environments.my;

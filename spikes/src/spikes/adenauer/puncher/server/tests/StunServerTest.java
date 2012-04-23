@@ -1,7 +1,7 @@
 package spikes.adenauer.puncher.server.tests;
 
 import static basis.environments.Environments.my;
-import static sneer.bricks.pulp.network.udp.UdpNetwork.MAX_PACKET_PAYLOAD_SIZE;
+import static sneer.bricks.network.computers.udp.UdpNetwork.MAX_PACKET_PAYLOAD_SIZE;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

@@ -18,7 +18,7 @@ import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.ports.OwnPort;
-import sneer.bricks.network.computers.sockets.connections.Sighting;
+import sneer.bricks.network.computers.tcp.connections.Sighting;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import sneer.bricks.pulp.network.ByteArraySocket;
+import sneer.bricks.network.computers.tcp.ByteArraySocket;
 
 class InProcessByteArraySocket implements ByteArraySocket {
 

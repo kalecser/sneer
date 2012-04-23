@@ -4,9 +4,9 @@ import static basis.environments.Environments.my;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.connections.Call;
 import sneer.bricks.network.computers.connections.ConnectionManager;
-import sneer.bricks.network.computers.sockets.connections.SocketConnectionManager;
-import sneer.bricks.network.computers.sockets.connections.originator.SocketOriginator;
-import sneer.bricks.network.computers.sockets.connections.receiver.SocketReceiver;
+import sneer.bricks.network.computers.tcp.connections.TcpConnectionManager;
+import sneer.bricks.network.computers.tcp.connections.originator.SocketOriginator;
+import sneer.bricks.network.computers.tcp.connections.receiver.SocketReceiver;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.notifiers.Source;
 
@@ -14,7 +14,7 @@ import sneer.bricks.pulp.notifiers.Source;
 class ConnectionManagerImpl implements ConnectionManager {
 
 	private static final boolean USE_UDP = false;
-	private final SocketConnectionManager delegate = my(SocketConnectionManager.class);
+	private final Worker delegate = my(TcpConnectionManager.class);
 	
 	{
 		if (!USE_UDP) {
@@ -26,19 +26,19 @@ class ConnectionManagerImpl implements ConnectionManager {
 	
 	@Override
 	public ByteConnection connectionFor(Contact contact) {
-		return delegate.socketConnectionFor(contact);
+		return delegate.connectionFor(contact);
 	}
 
 	
 	@Override
 	public void closeConnectionFor(Contact contact) {
-		delegate.closeSocketConnectionFor(contact);
+		delegate.closeConnectionFor(contact);
 	}
 
 	
 	@Override
 	public Source<Call> unknownCallers() {
-		return delegate.unknownSocketCallers();
+		return delegate.unknownCallers();
 	}
 
 }

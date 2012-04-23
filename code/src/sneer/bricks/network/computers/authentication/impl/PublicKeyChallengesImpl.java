@@ -15,7 +15,7 @@ import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.identity.keys.signatures.Signatures;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.authentication.PublicKeyChallenges;
-import sneer.bricks.pulp.network.ByteArraySocket;
+import sneer.bricks.network.computers.tcp.ByteArraySocket;
 
 class PublicKeyChallengesImpl implements PublicKeyChallenges {
 
