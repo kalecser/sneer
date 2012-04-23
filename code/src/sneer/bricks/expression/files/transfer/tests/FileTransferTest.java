@@ -39,6 +39,8 @@ public class FileTransferTest extends BrickTestWithTuples {
 	 * - Send directory
 	 * - Choose download directory
 	 * - Ignore invalid accept
+	 * - Check if download hash is verified against downloaded contents.
+	 * - Remove distinction between FileClient's file and folder downloads. Let download decide based on received contents. Check if hash of empty file and empty folder clash.
 	 */
 	@Test (timeout=2000)
 	public void singleFileTransfer() throws IOException, MappingStopped {
