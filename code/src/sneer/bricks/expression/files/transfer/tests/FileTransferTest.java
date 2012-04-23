@@ -12,6 +12,8 @@ import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.client.FileClient;
+import sneer.bricks.expression.files.map.mapper.FileMapper;
+import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.expression.files.transfer.FileTransfer;
 import sneer.bricks.expression.files.transfer.FileTransferSugestion;
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
@@ -40,11 +42,27 @@ public class FileTransferTest extends BrickTestWithTuples {
 	 * - Ignore invalid accept
 	 */
 	@Test (timeout=2000)
-	public void singleFileTransfer() throws IOException {
-		
+	public void singleFileTransfer() throws IOException, MappingStopped {
 		final File file = createTmpFileWithFileNameAsContent("banana");
-		final long lastModified = file.lastModified();
-		final Hash hash = my(Crypto.class).digest(file);
+		transfer(file);
+	}
+
+	
+	@Test (timeout=2000)
+	public void folderTransfer() throws IOException, MappingStopped {
+		final File file = createTmpFileWithFileNameAsContent("folder/banana");
+		final File folder = file.getParentFile();
+		
+		transfer(folder);
+	}
+
+
+	private void transfer(final File fileOrFolder) throws MappingStopped,
+			IOException {
+		final String fileOrFolderName = fileOrFolder.getName();
+		
+		final long lastModified = fileOrFolder.lastModified();
+		final Hash hash = my(FileMapper.class).mapFileOrFolder(fileOrFolder);
 
 		_ref = _subject.registerHandler(new Consumer<FileTransferSugestion>(){  @Override public void consume(FileTransferSugestion sugestion) {
 			_subject.accept(sugestion);
@@ -53,7 +71,7 @@ public class FileTransferTest extends BrickTestWithTuples {
 		final Latch latch = new Latch();
 		checking(new Expectations(){{
 			oneOf(_fileClient).startFileDownload(
-				new File(my(FolderConfig.class).tmpFolder().get(), "banana"), lastModified, hash, remoteSeal());
+				new File(my(FolderConfig.class).tmpFolder().get(), fileOrFolderName), lastModified, hash, remoteSeal());
 				will(new CustomAction("") {  @Override public Object invoke(Invocation invocation) throws Throwable {
 					latch.open();
 					return null;
@@ -63,7 +81,7 @@ public class FileTransferTest extends BrickTestWithTuples {
 		
 		final Seal ownSeal = my(OwnSeal.class).get().currentValue();
 		runWith(remote(), new ClosureX<IOException>() { @Override public void run() {
-			my(FileTransfer.class).tryToSend(file, ownSeal);
+			my(FileTransfer.class).tryToSend(fileOrFolder, ownSeal);
 		}});
 		
 		latch.waitTillOpen();
