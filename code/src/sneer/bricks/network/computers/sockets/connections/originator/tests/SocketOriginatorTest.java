@@ -39,7 +39,7 @@ public class SocketOriginatorTest extends BrickTestBase {
 
 	@Test (timeout = 2000)
 	public void openConnection() throws Exception {
-		final Latch ready = new Latch();
+		final Latch latch = new Latch();
 		final Contact neide = my(Contacts.class).addContact("Neide");
 		my(ContactSeals.class).put("Neide", newSeal(new byte[]{42}));
 
@@ -55,14 +55,14 @@ public class SocketOriginatorTest extends BrickTestBase {
 
 			oneOf(_socketConnectionManagerMock).manageOutgoingSocket(_openedSocket, neide);
 				will(new CustomAction("manageIncomingSocket") { @Override public Object invoke(Invocation ignored) {
-					ready.open(); return null;
+					latch.open(); return null;
 				}});
 		}});
 
 		_subject = my(SocketOriginator.class);
 
 		my(InternetAddressKeeper.class).put(neide, "neide.selfip.net", 5000);
-		ready.waitTillOpen();
+		latch.waitTillOpen();
 	}
 
 	

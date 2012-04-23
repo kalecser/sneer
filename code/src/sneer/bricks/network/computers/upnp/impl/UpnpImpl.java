@@ -2,10 +2,12 @@ package sneer.bricks.network.computers.upnp.impl;
 
 import static basis.environments.Environments.my;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import net.sbbi.upnp.impls.InternetGatewayDevice;
+import net.sbbi.upnp.messages.UPNPResponseException;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.computers.ports.OwnPort;
@@ -23,9 +25,6 @@ public class UpnpImpl implements Upnp {
 	
 	private static final String TCP_PROTOCOL = "TCP";
 	private static final String UDP_PROTOCOL = "UDP";
-	private static final String UPnP = "UPnP ";
-
-	
 	@SuppressWarnings("unused") private final Object _refToAvoidGc;
 	private int _previousMappedPort = 0;
 
@@ -38,7 +37,7 @@ public class UpnpImpl implements Upnp {
 
 	
 	private void startMapping(final int port) {
-		my(Threads.class).startDaemon(UPnP, new Closure() { @Override public void run() {
+		my(Threads.class).startDaemon("UPnP", new Closure() { @Override public void run() {
 			map(port);
 		}});
 	}
@@ -59,7 +58,7 @@ public class UpnpImpl implements Upnp {
 	private void tryToUpdateMap(int port) throws Exception {  //sbbi lib throws RuntimeExceptions :(
 		InternetGatewayDevice[] devices = InternetGatewayDevice.getDevices(5000);
 		if (devices == null || devices.length == 0) {
-			my(BlinkingLights.class).turnOn(LightType.INFO, "No " + UPnP + "devices found.", "There are apparently no UPnP devices on your network. That's OK.", 6000);
+			my(BlinkingLights.class).turnOn(LightType.INFO, "No UPnP devices found.", "There are apparently no UPnP devices on your network. That's OK.", 6000);
 			return;
 		}
 		
@@ -86,39 +85,32 @@ public class UpnpImpl implements Upnp {
 
 	private void addMappingIfNecessary(InternetGatewayDevice device, String ip, int port) throws Exception {
 		if (port == 0) return;
-		addMappingForTcpAndUdp(device, ip, port);
-		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, UPnP + "port " + port + " opened.", "Sneer port opened on UPnP network device " + pretty(device), 15000);
+		addMapping(device, ip, port, UDP_PROTOCOL);
+		addMapping(device, ip, port, TCP_PROTOCOL);
+		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, "UPnP port " + port + " opened.", "Sneer port opened on UPnP network device " + pretty(device), 15000);
 	}
 
 
-	private void addMappingForTcpAndUdp(InternetGatewayDevice device, String ip, int port) throws Exception {
-		String msg = UPnP + "port mapped to <protocol> " + port + ". ";
-		
-		if (device.addPortMapping("Sneer", null, port, port, ip, 0, TCP_PROTOCOL))
-			my(Logger.class).log( msg.replace("<protocol>", TCP_PROTOCOL));
-
-		if (device.addPortMapping("Sneer", null, port, port, ip, 0, UDP_PROTOCOL))
-			my(Logger.class).log( msg.replace("<protocol>", UDP_PROTOCOL));
+	private void addMapping(InternetGatewayDevice device, String ip, int port, String protocol) throws IOException, UPNPResponseException {
+		if (device.addPortMapping("Sneer", null, port, port, ip, 0, protocol))
+			my(Logger.class).log("UPnP port {} mapped for {}.", port, protocol);
 	}
 	
 
 	private void deleteMappingIfNecessary(InternetGatewayDevice device, int previousPort) {
 		if (previousPort == 0) return;
 		try {
-			deleteMappingForTcpAndUdp(device, previousPort);
+			deleteMapping(device, previousPort, UDP_PROTOCOL);
+			deleteMapping(device, previousPort, TCP_PROTOCOL);
 		} catch (Exception e) {
-			my(Logger.class).log(UPnP + "failed to delete old port " + previousPort + ". " + e.getClass() + ": " + e.getMessage());
+			my(Logger.class).log("UPnP failed to delete old port " + previousPort + ". " + e.getClass() + ": " + e.getMessage());
 		}
 	}
 
-	private void deleteMappingForTcpAndUdp(InternetGatewayDevice device, int previousPort) throws Exception {
-		String msg = UPnP + "deleted port mapped to <protocol> " + previousPort + ". ";
 	
-		if (device.deletePortMapping(null, previousPort, TCP_PROTOCOL))
-			my(Logger.class).log( msg.replace("<protocol>", TCP_PROTOCOL));
-
-		if (device.deletePortMapping(null, previousPort, UDP_PROTOCOL))
-			my(Logger.class).log( msg.replace("<protocol>", UDP_PROTOCOL));
+	private void deleteMapping(InternetGatewayDevice device, int previousPort, String protocol) throws IOException, UPNPResponseException {
+		if (device.deletePortMapping(null, previousPort, protocol))
+			my(Logger.class).log("UPnP port {} mapping deleted for {}.", previousPort, protocol);
 	}
 
 	
@@ -138,7 +130,7 @@ public class UpnpImpl implements Upnp {
 
 	
 	private void blink(Exception e, String situation) {
-		String caption = UPnP + "error tying to map " + situation;
+		String caption = "UPnP error tying to map " + situation;
 		my(BlinkingLights.class).turnOn(LightType.ERROR, caption, "This makes it harder for your contacts to reach you.", e, 15000);
 	}
 	

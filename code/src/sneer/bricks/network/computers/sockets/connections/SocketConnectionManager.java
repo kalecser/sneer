@@ -14,9 +14,7 @@ public interface SocketConnectionManager {
 	void manageOutgoingSocket(ByteArraySocket socket, Contact contact);
 
 	ByteConnection socketConnectionFor(Contact contact);
-
 	void closeSocketConnectionFor(Contact contact);
-	
 	Source<Call> unknownSocketCallers();
 
 }
