@@ -1,4 +1,4 @@
-package sneer.bricks.expression.files.transfer.ui.impl;
+package sneer.bricks.expression.files.transfer.gui.impl;
 
 import static basis.environments.Environments.my;
 
@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 
 import sneer.bricks.expression.files.transfer.FileTransfer;
 import sneer.bricks.expression.files.transfer.FileTransferSugestion;
-import sneer.bricks.expression.files.transfer.ui.FileTransferUi;
+import sneer.bricks.expression.files.transfer.gui.FileTransferUi;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
