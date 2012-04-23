@@ -7,10 +7,12 @@ public class FileTransferSugestion extends Tuple {
 
 	public final String fileOrFolderName;
 	public final long fileLastModified;
+	public final boolean isFolder;
 
-	public FileTransferSugestion(Seal addressee, String fileOrFolderName, long fileLastModified) {
+	public FileTransferSugestion(Seal addressee, String fileOrFolderName, boolean isFolder, long fileLastModified) {
 		super(addressee);
 		this.fileOrFolderName = fileOrFolderName;
+		this.isFolder = isFolder;
 		this.fileLastModified = fileLastModified;
 	}
 

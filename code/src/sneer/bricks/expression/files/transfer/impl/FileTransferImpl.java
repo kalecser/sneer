@@ -50,10 +50,10 @@ public class FileTransferImpl implements FileTransfer {
 	}
 	
 	@Override
-	public void tryToSend(File file, Seal peer) {
-		FileTransferSugestion sugestion = new FileTransferSugestion(peer, file.getName(), file.lastModified());
+	public void tryToSend(File fileOrFolder, Seal peer) {
+		FileTransferSugestion sugestion = new FileTransferSugestion(peer, fileOrFolder.getName(), fileOrFolder.isDirectory(), fileOrFolder.lastModified());
 		my(TupleSpace.class).add(sugestion);
-		filesBySugestion.put(sugestion, file);
+		filesBySugestion.put(sugestion, fileOrFolder);
 	}
 
 	protected File getFile(FileTransferAccept accept) {
@@ -80,9 +80,10 @@ public class FileTransferImpl implements FileTransfer {
 	
 	private void handleDetails(FileTransferDetails details) {
 		File tmp = my(FolderConfig.class).tmpFolder().get();
-		File destination = new File(tmp, details.accept.sugestion.fileOrFolderName);
-		my(FileClient.class).startFileDownload(
-				destination, details.accept.sugestion.fileLastModified, details.hash, details.publisher);
+		FileTransferSugestion sugestion = details.accept.sugestion;
+		File destination = new File(tmp, sugestion.fileOrFolderName);
+		my(FileClient.class).startDownload(
+				destination, sugestion.isFolder, sugestion.fileLastModified, details.hash, details.publisher);
 	}
 
 	private Hash map(File file) {

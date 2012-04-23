@@ -36,11 +36,12 @@ public class FileTransferTest extends BrickTestWithTuples {
 	
 
 	/*
-	 * - Send directory
+	 * - Test large transfers.
 	 * - Choose download directory
 	 * - Ignore invalid accept
 	 * - Check if download hash is verified against downloaded contents.
 	 * - Remove distinction between FileClient's file and folder downloads. Let download decide based on received contents. Check if hash of empty file and empty folder clash.
+	 * - Require "source" seal always. Implement torrentness later when anonimity is ready.
 	 */
 	@Test (timeout=2000)
 	public void singleFileTransfer() throws IOException, MappingStopped {
@@ -58,9 +59,9 @@ public class FileTransferTest extends BrickTestWithTuples {
 	}
 
 
-	private void transfer(final File fileOrFolder) throws MappingStopped,
-			IOException {
+	private void transfer(final File fileOrFolder) throws MappingStopped, IOException {
 		final String fileOrFolderName = fileOrFolder.getName();
+		final boolean isFolder = fileOrFolder.isDirectory();
 		
 		final long lastModified = fileOrFolder.lastModified();
 		final Hash hash = my(FileMapper.class).mapFileOrFolder(fileOrFolder);
@@ -71,8 +72,8 @@ public class FileTransferTest extends BrickTestWithTuples {
 		
 		final Latch latch = new Latch();
 		checking(new Expectations(){{
-			oneOf(_fileClient).startFileDownload(
-				new File(my(FolderConfig.class).tmpFolder().get(), fileOrFolderName), lastModified, hash, remoteSeal());
+			oneOf(_fileClient).startDownload(
+				new File(my(FolderConfig.class).tmpFolder().get(), fileOrFolderName), isFolder, lastModified, hash, remoteSeal());
 				will(new CustomAction("") {  @Override public Object invoke(Invocation invocation) throws Throwable {
 					latch.open();
 					return null;

@@ -7,19 +7,27 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
-import basis.lang.Closure;
-import basis.lang.Producer;
-
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.Downloads;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.identity.seals.Seal;
+import basis.lang.Closure;
+import basis.lang.Producer;
 
 class FileClientImpl implements FileClient {
 
 	private final Map<Hash, WeakReference<Download>> _downloadsByHash = new HashMap<Hash, WeakReference<Download>>();
 
+	
+	@Override
+	public Download startDownload(File file, boolean isFolder, long lastModified, Hash hashOfFile, Seal source) {
+		return isFolder
+			? startFolderDownload(file, hashOfFile)
+			: startFileDownload(file, lastModified, hashOfFile, source);
+	}
+
+	
 	@Override
 	public Download startFileDownload(final File file, final long lastModified, final Hash hashOfFile, final Seal source) {
 		return startDownload(hashOfFile, new Producer<Download>() { @Override public Download produce() {
