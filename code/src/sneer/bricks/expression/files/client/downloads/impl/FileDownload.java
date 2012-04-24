@@ -94,11 +94,15 @@ class FileDownload extends AbstractDownload {
 	
 	private void receiveFirstBlock(FileContentsFirstBlock contents) throws IOException {
 		if (firstBlockWasAlreadyReceived()) return;
-		_fileSizeInBlocks = (contents.fileSize == 0) ? 0 : (int) ((contents.fileSize - 1) / Protocol.FILE_BLOCK_SIZE) + 1;
-		if (_fileSizeInBlocks > 0)
-			_output = new FileOutputStream(_path);
-		else
+		
+		if (contents.fileSize == 0) {
+			_fileSizeInBlocks = 0;
+			_path.createNewFile();
 			finishWithSuccess();
+		} else {
+			_fileSizeInBlocks = (int) ((contents.fileSize - 1) / Protocol.FILE_BLOCK_SIZE) + 1;
+			_output = new FileOutputStream(_path);
+		}
 	}
 
 	
