@@ -70,6 +70,7 @@ class FileClientImpl implements FileClient {
 		return result;
 	}
 
+
 	private Runnable downloadCleaner(final Hash hash) { 
 		return new Closure() { @Override public void run() {
 			synchronized (_downloadsByHash) {

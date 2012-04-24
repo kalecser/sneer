@@ -5,6 +5,6 @@ import basis.brickness.Brick;
 
 @Brick
 @Snapp
-public interface FileTransferUi {
+public interface FileTransferGui {
 
 }

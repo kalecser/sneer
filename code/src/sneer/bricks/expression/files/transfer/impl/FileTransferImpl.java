@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import sneer.bricks.expression.files.client.FileClient;
+import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.expression.files.server.FileServer;
@@ -82,8 +83,15 @@ public class FileTransferImpl implements FileTransfer {
 		File tmp = my(FolderConfig.class).tmpFolder().get();
 		FileTransferSugestion sugestion = details.accept.sugestion;
 		File destination = new File(tmp, sugestion.fileOrFolderName);
-		my(FileClient.class).startDownload(
+		Download download = my(FileClient.class).startDownload(
 				destination, sugestion.isFolder, sugestion.fileLastModified, details.hash, details.publisher);
+		blinkWhenFinished(download);
+	}
+
+	private void blinkWhenFinished(final Download download) {
+		download.onFinished(new Runnable() { @Override public void run() {
+			my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, download.file().getName() + " downloaded!", download.file().getAbsolutePath(), 10000);
+		}});
 	}
 
 	private Hash map(File file) {

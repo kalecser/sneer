@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 
 import sneer.bricks.expression.files.transfer.FileTransfer;
 import sneer.bricks.expression.files.transfer.FileTransferSugestion;
-import sneer.bricks.expression.files.transfer.gui.FileTransferUi;
+import sneer.bricks.expression.files.transfer.gui.FileTransferGui;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -20,7 +20,7 @@ import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import basis.lang.Consumer;
 
-public class FileTransferUiImpl implements FileTransferUi, Consumer<File> {
+public class FileTransferGuiImpl implements FileTransferGui, Consumer<File> {
 
 	@SuppressWarnings("unused")
 	private WeakContract ref;

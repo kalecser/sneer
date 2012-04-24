@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import basis.lang.Closure;
-import basis.util.concurrent.Latch;
-
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
 import sneer.bricks.expression.tuples.Tuple;
@@ -21,12 +18,12 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import basis.lang.Closure;
+import basis.util.concurrent.Latch;
 
 abstract class AbstractDownload implements Download {
 
@@ -188,7 +185,6 @@ abstract class AbstractDownload implements Download {
 		my(DotParts.class).closeDotPart(_path, _lastModified);
 		updateFileMap();
 		finish();
-		my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, _actualPath.getName() + " downloaded!", _actualPath.getAbsolutePath(), 10000);
 	}
 
 
