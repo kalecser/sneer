@@ -8,6 +8,6 @@ import basis.lang.Consumer;
 
 @Brick
 public interface FileChoosers {
-	void choose(Consumer<File> consumer, int fileSelectionMode, File defaultFileOrDir);
-	void choose(Consumer<File[]> consumer, int fileSelectionMode);
+	void choose(int fileSelectionMode, File defaultFileOrDir, Consumer<File> consumer);
+	void choose(int fileSelectionMode, Consumer<File[]> consumer);
 }

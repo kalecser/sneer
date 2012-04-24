@@ -36,11 +36,10 @@ public class FileTransferTest extends BrickTestWithTuples {
 	
 
 	/*
-	 * - Test large transfers.
 	 * - Choose download directory
 	 * - Ignore invalid accept
-	 * - Check if download hash is verified against downloaded contents.
-	 * - Remove distinction between FileClient's file and folder downloads. Let download decide based on received contents. Check if hash of empty file and empty folder clash.
+	 * - Check if download hash is verified against downloaded contents. Check if hash of empty file and empty folder clash.
+	 * - Remove distinction between FileClient's file and folder downloads. Let download decide based on received contents.
 	 * - Require "source" seal always. Implement torrentness later when anonimity is ready.
 	 */
 	@Test (timeout=2000)

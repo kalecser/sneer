@@ -62,9 +62,9 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 
 	@Override
 	public void chooseTracksFolder() {
-		my(FileChoosers.class).choose(new Consumer<File>() {  @Override public void consume(File chosenFolder) {
+		my(FileChoosers.class).choose(JFileChooser.DIRECTORIES_ONLY, currentSharedTracksFolder(), new Consumer<File>() {  @Override public void consume(File chosenFolder) {
 			my(Music.class).setTracksFolder(chosenFolder);
-		}}, JFileChooser.DIRECTORIES_ONLY, currentSharedTracksFolder());
+		}});
 	}
 
 

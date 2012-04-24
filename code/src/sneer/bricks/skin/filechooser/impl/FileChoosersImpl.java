@@ -15,7 +15,7 @@ import sneer.bricks.skin.filechooser.FileChoosers;
 class FileChoosersImpl implements FileChoosers {
 
 	@Override
-	public void choose(final Consumer<File[]> consumer, final int fileSelectionMode) {
+	public void choose(final int fileSelectionMode, final Consumer<File[]> consumer) {
 		my(Threads.class).startDaemon("Multiple Files Chooser", new Closure() {  @Override public void run() {
 			JFileChooser fileChooser = newfileChooser(fileSelectionMode);
 			fileChooser.setMultiSelectionEnabled(true);
@@ -26,7 +26,7 @@ class FileChoosersImpl implements FileChoosers {
 	
 	
 	@Override
-	public void choose(final Consumer<File> consumer, final int fileSelectionMode, final File defaultFileOrDir) {
+	public void choose(final int fileSelectionMode, final File defaultFileOrDir, final Consumer<File> consumer) {
 		my(Threads.class).startDaemon("File Chooser", new Closure() {  @Override public void run() {
 			JFileChooser fileChooser = newfileChooser(fileSelectionMode, defaultFileOrDir);
 			if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)

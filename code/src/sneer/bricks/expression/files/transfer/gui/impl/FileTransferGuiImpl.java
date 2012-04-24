@@ -1,10 +1,10 @@
 package sneer.bricks.expression.files.transfer.gui.impl;
 
 import static basis.environments.Environments.my;
+import static javax.swing.JFileChooser.FILES_AND_DIRECTORIES;
 
 import java.io.File;
 
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import sneer.bricks.expression.files.transfer.FileTransfer;
@@ -26,13 +26,11 @@ public class FileTransferGuiImpl implements FileTransferGui, Consumer<File> {
 	private WeakContract ref;
 
 	{
-		ref = my(FileTransfer.class).registerHandler(new Consumer<FileTransferSugestion>() {
-			@Override
-			public void consume(FileTransferSugestion sugestion) {
-				if (JOptionPane.showConfirmDialog(null, "Do you want to download " + sugestion.fileOrFolderName + "?", "Download",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) 
-					my(FileTransfer.class).accept(sugestion);
-			}
-		});
+		ref = my(FileTransfer.class).registerHandler(new Consumer<FileTransferSugestion>() { @Override public void consume(FileTransferSugestion sugestion) {
+			if (JOptionPane.showConfirmDialog(null, "Do you want to download " + sugestion.fileOrFolderName + "?", "Download",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) 
+				my(FileTransfer.class).accept(sugestion);
+		}});
+		
 		my(ContactActionManager.class).addContactAction(new ContactAction(){
 			@Override public boolean isEnabled() { return true; }
 			@Override public boolean isVisible() { return true; }
@@ -46,7 +44,7 @@ public class FileTransferGuiImpl implements FileTransferGui, Consumer<File> {
 	}
 
 	private void openFileChooser() {
-		my(FileChoosers.class).choose(this, JFileChooser.FILES_AND_DIRECTORIES, null);
+		my(FileChoosers.class).choose(FILES_AND_DIRECTORIES, null, this);
 	}
 
 	@Override
