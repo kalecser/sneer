@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.udp.impl.tests;
+package sneer.bricks.network.computers.udp.tests;
 
 import static basis.environments.Environments.my;
 
