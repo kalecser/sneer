@@ -44,14 +44,14 @@ public class FileTransferTest extends BrickTestWithTuples {
 	 * - Remove distinction between FileClient's file and folder downloads. Let download decide based on received contents.
 	 * - Require "source" seal always. Implement torrentness later when anonimity is ready.
 	 */
-	@Test (timeout=8000)
+	@Test (timeout=2000)
 	public void singleFileTransfer() throws IOException, MappingStopped {
 		final File file = createTmpFileWithFileNameAsContent("banana");
 		transfer(file);
 	}
 
 	
-	@Test (timeout=8000)
+	@Test (timeout=2000)
 	public void folderTransfer() throws IOException, MappingStopped {
 		final File file = createTmpFileWithFileNameAsContent("folder/banana");
 		final File folder = file.getParentFile();
