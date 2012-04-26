@@ -5,8 +5,6 @@ import static basis.environments.Environments.my;
 import java.net.DatagramPacket;
 import java.util.Arrays;
 
-import org.apache.commons.lang.ArrayUtils;
-
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.ByteConnection;
@@ -41,7 +39,7 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 
 	@Override
 	public void handle(DatagramPacket packet) {
-		byte[] bytes = Arrays.copyOf(packet.getData(), packet.getLength());
+		byte[] bytes = Arrays.copyOf(packet.getData(), Seal.SIZE_IN_BYTES);
 		Contact contact = my(ContactSeals.class).contactGiven(new Seal(bytes));
 		connectionsByContact.get(contact).becomeConnected();
 	}

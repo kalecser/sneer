@@ -3,7 +3,9 @@ package sneer.bricks.network.computers.udp.connections.tests;
 import static basis.environments.Environments.my;
 
 import java.net.DatagramPacket;
+import java.util.Arrays;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.identity.seals.Seal;
@@ -21,11 +23,41 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	private UdpConnectionManager subject = my(UdpConnectionManager.class);
 
 	@Test(timeout=1000)
-	public void onFirstPacket_ShouldCreateConnection() throws Refusal{
+	public void onFirstPacket_ShouldConnect() throws Refusal{
 		assertFalse(isConnected("Neide"));
 		subject.handle(packetFrom("Neide"));
 		my(SignalUtils.class).waitForValue(connectionFor("Neide").isConnected(), true);
 		assertFalse(isConnected("Maicon"));
+	}
+
+	@Ignore
+	@Test(timeout=1000)
+	public void receiveData() throws Refusal{
+		subject.handle(packetFrom("Neide", "Hello".getBytes()));
+		my(SignalUtils.class).waitForValue(connectionFor("Neide").isConnected(), true);
+		assertFalse(isConnected("Maicon"));
+		
+		fail("Test invalid packet");
+	}
+
+	private DatagramPacket packetFrom(String nick, byte[] data) throws Refusal {
+		my(Contacts.class).produceContact(nick);
+		my(ContactSeals.class).put(nick, new Seal(fill(42)));
+		byte[] bytes = concat(fill(42), data);
+		return new DatagramPacket(bytes, bytes.length);
+	}
+
+	private byte[] fill(int id) {
+		byte[] ret = new byte[Seal.SIZE_IN_BYTES];
+		Arrays.fill(ret, (byte)id);
+		return ret;
+	}
+
+	private byte[] concat(byte[] a, byte[] b) {
+		byte[] ret = new byte[a.length + b.length];
+		System.arraycopy(a, 0, ret, 0, a.length);
+		System.arraycopy(b, 0, ret, a.length, b.length);
+		return ret ;
 	}
 
 	private Boolean isConnected(String nick) {
@@ -40,9 +72,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 
 	private DatagramPacket packetFrom(String nick) throws Refusal {
-		my(Contacts.class).produceContact(nick);
-		my(ContactSeals.class).put(nick, new Seal(new byte[]{42}));
-		byte[] bytes = new byte[]{42};
-		return new DatagramPacket(bytes, bytes.length);
+		return packetFrom(nick, new byte[0]);
 	}
 }
