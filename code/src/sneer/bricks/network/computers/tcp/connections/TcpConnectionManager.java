@@ -9,7 +9,7 @@ import sneer.bricks.pulp.notifiers.Source;
 import basis.brickness.Brick;
 
 @Brick
-public interface TcpConnectionManager extends ConnectionManager.Worker {
+public interface TcpConnectionManager extends ConnectionManager.Delegate {
 
 	void manageIncomingSocket(ByteArraySocket socket);
 	void manageOutgoingSocket(ByteArraySocket socket, Contact contact);

@@ -16,16 +16,17 @@ import sneer.bricks.expression.files.transfer.FileTransfer;
 import sneer.bricks.expression.files.transfer.FileTransferAccept;
 import sneer.bricks.expression.files.transfer.FileTransferDetails;
 import sneer.bricks.expression.files.transfer.FileTransferSugestion;
+import sneer.bricks.expression.files.transfer.downloadfolder.DownloadFolder;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
-import sneer.bricks.software.folderconfig.FolderConfig;
 import basis.lang.Consumer;
 
 public class FileTransferImpl implements FileTransfer {
@@ -80,14 +81,23 @@ public class FileTransferImpl implements FileTransfer {
 	}
 	
 	private void handleDetails(FileTransferDetails details) {
-		File tmp = my(FolderConfig.class).tmpFolder().get();
 		FileTransferSugestion sugestion = details.accept.sugestion;
-		File destination = new File(tmp, sugestion.fileOrFolderName);
+		File destination = new File(downloadFolder(), sugestion.fileOrFolderName);
 		Download download = my(FileClient.class).startDownload(
-				destination, sugestion.isFolder, sugestion.fileLastModified, details.hash, details.publisher);
+			destination, sugestion.isFolder, sugestion.fileLastModified, details.hash, details.publisher);
 		blinkWhenFinished(download);
 	}
 
+	
+	private File downloadFolder() {
+		String path = my(Attributes.class).myAttributeValue(DownloadFolder.class).currentValue();
+		if (path == null) throw new IllegalStateException("DownloadFolder must be set.");
+		File ret = new File(path);
+		if (!ret.isDirectory()) throw new IllegalStateException("DownloadFolder is not a valid directory: " + path);
+		return ret;
+	}
+
+	
 	private void blinkWhenFinished(final Download download) {
 		download.onFinished(new Runnable() { @Override public void run() {
 			my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, download.file().getName() + " downloaded!", download.file().getAbsolutePath(), 10000);

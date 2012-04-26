@@ -7,7 +7,7 @@ import basis.brickness.Brick;
 @Brick
 public interface ConnectionManager {
 
-	public interface Worker {
+	public interface Delegate {
 		ByteConnection connectionFor(Contact contact);
 		void closeConnectionFor(Contact contact);
 		Source<Call> unknownCallers();
