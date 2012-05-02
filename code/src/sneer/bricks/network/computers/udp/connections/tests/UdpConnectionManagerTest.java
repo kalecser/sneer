@@ -34,8 +34,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	@Test(timeout=1000)
 	public void receiveData() throws Refusal{
 		subject.handle(packetFrom("Neide", "Hello".getBytes()));
-		my(SignalUtils.class).waitForValue(connectionFor("Neide").isConnected(), true);
-		assertFalse(isConnected("Maicon"));
 		
 		fail("Test invalid packet");
 	}

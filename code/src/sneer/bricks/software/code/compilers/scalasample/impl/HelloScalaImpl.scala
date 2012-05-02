@@ -1,6 +1,6 @@
 package sneer.bricks.software.code.compilers.scalasample.impl
 
-import sneer.foundation.environments.Environments.my
+import basis.environments.Environments.my
 
 import sneer.bricks.software.code.compilers.scalasample._
 import sneer.bricks.hardware.io.log._

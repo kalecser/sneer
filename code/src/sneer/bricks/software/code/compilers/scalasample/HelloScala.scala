@@ -1,7 +1,7 @@
 package sneer.bricks.software.code.compilers.scalasample
 
-import sneer.foundation.brickness._
-import sneer.bricks.software.bricks.snappstarter._
+import sneer.bricks.software.bricks.snapploader.Snapp
+import basis.brickness.Brick
 
 @Brick
 @Snapp
