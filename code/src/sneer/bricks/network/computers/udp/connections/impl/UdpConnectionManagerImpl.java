@@ -17,12 +17,13 @@ import basis.lang.Producer;
 
 class UdpConnectionManagerImpl implements UdpConnectionManager{
 
-	CacheMap<Contact, UdpByteConnection> connectionsByContact = CacheMap.newInstance(); 
+	CacheMap<Contact, UdpByteConnection> connectionsByContact = CacheMap.newInstance();
+	private Consumer<DatagramPacket> sender; 
 
 	@Override
 	public UdpByteConnection connectionFor(Contact contact) {
 		return connectionsByContact.get(contact, new Producer<UdpByteConnection>( ) {  @Override public UdpByteConnection produce() {
-			return new UdpByteConnection();
+			return new UdpByteConnection(sender);
 		}});
 	}
 
@@ -47,7 +48,8 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 
 	@Override
 	public void initSender(Consumer<DatagramPacket> sender) {
-		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
+		if (this.sender != null) throw new IllegalStateException();
+		this.sender = sender;
 	}
 
 }

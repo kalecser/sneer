@@ -22,6 +22,14 @@ class LangImpl implements Lang {
 
 	private final Arrays _arrays = new Lang.Arrays(){
 		@Override public void reverse(Object[] array) { ArrayUtils.reverse(array);}
+
+		@Override
+		public byte[] concat(byte[] a, byte[] b) {
+			byte[] ret = new byte[a.length + b.length];
+			System.arraycopy(a, 0, ret, 0, a.length);
+			System.arraycopy(b, 0, ret, a.length, b.length);
+			return ret;
+		}
 	};
 	
 	private final Serialization _serialization = new Lang.Serialization(){

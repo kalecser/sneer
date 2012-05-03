@@ -22,7 +22,7 @@ class ByteConnectionImpl implements ByteConnection {
 	private final SocketHolder _socketHolder = new SocketHolder();
 	
 	private PacketScheduler _scheduler;
-	private Consumer<byte[]> _receiver;
+	private Consumer<? super byte[]> _receiver;
 	
 	private Contract _contractToSend;
 	private Contract _contractToReceive;
@@ -35,7 +35,7 @@ class ByteConnectionImpl implements ByteConnection {
 
 
 	@Override
-	public void initCommunications(PacketScheduler sender, Consumer<byte[]> receiver) {
+	public void initCommunications(PacketScheduler sender, Consumer<? super byte[]> receiver) {
 		if (_scheduler != null) throw new IllegalStateException();
 		_scheduler = sender;
 		_receiver = receiver;

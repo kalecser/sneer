@@ -4,6 +4,7 @@ import static basis.environments.Environments.my;
 
 import java.io.UnsupportedEncodingException;
 import java.security.PublicKey;
+import java.util.Arrays;
 
 import basis.lang.Functor;
 import basis.lang.arrays.ImmutableByteArray;
@@ -50,7 +51,9 @@ class OwnSealImpl implements OwnSeal {
 	private Seal newTemporarySealForTests() {
 		if (!"true".equals(System.getProperty("sneer.testmode"))) throw new IllegalStateException("Internal Sneer Error: Public Key should have been generated already. Please report this error to the Sneer team.");
 		try {
-			return new Seal(new ImmutableByteArray(Long.toHexString(System.nanoTime()).getBytes("UTF-8")));
+			byte[] nanoTime = Long.toHexString(System.nanoTime()).getBytes("UTF-8");
+			byte[] bytes = Arrays.copyOf(nanoTime, Seal.SIZE_IN_BYTES);
+			return new Seal(new ImmutableByteArray(bytes));
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalStateException(e);
 		}

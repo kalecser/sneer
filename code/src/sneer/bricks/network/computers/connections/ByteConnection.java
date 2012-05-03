@@ -12,7 +12,7 @@ public interface ByteConnection {
 	
 	Signal<Boolean> isConnected();
 
-	void initCommunications(PacketScheduler sender, Consumer<byte[]> receiver);
+	void initCommunications(PacketScheduler sender, Consumer<? super byte[]> receiver);
 
 	
 }
