@@ -42,7 +42,7 @@ public class FileTransferTest extends BrickTestWithTuples {
 	 * - Ignore invalid accept
 	 * - Check if download hash is verified against downloaded contents. Check if hash of empty file and empty folder clash.
 	 * - Remove distinction between FileClient's file and folder downloads. Let download decide based on received contents.
-	 * - Require "source" seal always. Implement torrentness later when anonimity is ready.
+	 * - Download recovery on crash and startup.
 	 */
 	@Test (timeout=2000)
 	public void singleFileTransfer() throws IOException, MappingStopped {

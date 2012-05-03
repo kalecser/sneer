@@ -5,8 +5,6 @@ import static basis.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 
-import basis.lang.Consumer;
-
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
 import sneer.bricks.expression.files.hasher.FolderContentsHasher;
@@ -18,6 +16,8 @@ import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.identity.seals.Seal;
+import basis.lang.Consumer;
 
 class FolderDownload extends AbstractDownload {
 
@@ -25,8 +25,8 @@ class FolderDownload extends AbstractDownload {
 
 	@SuppressWarnings("unused") private WeakContract _folderContentConsumerContract;
 
-	FolderDownload(File folder, Hash hashOfFolder, boolean copyLocalFiles) {
-		super(folder, -1, hashOfFolder, null, copyLocalFiles);
+	FolderDownload(File folder, Hash hashOfFolder, Seal source, boolean copyLocalFiles) {
+		super(folder, -1, hashOfFolder, source, copyLocalFiles);
 		start();
 	}
 
@@ -73,8 +73,8 @@ class FolderDownload extends AbstractDownload {
 
 	private Download startSpinOffDownload(FileOrFolder entry) {
 		return entry.isFolder
-		? new FolderDownload(new File(_path, entry.name), entry.hashOfContents, _copyLocalFiles)
-		: new FileDownload(new File(_path, entry.name), entry.lastModified, entry.hashOfContents, _copyLocalFiles);	
+		? new FolderDownload(new File(_path, entry.name), entry.hashOfContents, _source, _copyLocalFiles)
+		: new FileDownload(new File(_path, entry.name), entry.lastModified, entry.hashOfContents, _source, _copyLocalFiles);	
 	}
 
 

@@ -40,8 +40,8 @@ abstract class AbstractDownload implements Download {
 	final long _lastModified;
 	final Hash _hash;
 
-	private final Seal _source;
 
+	protected final Seal _source;
 
 	private long _startTime;
 	private long _lastActivityTime;
@@ -66,7 +66,8 @@ abstract class AbstractDownload implements Download {
 		_lastModified = lastModified;
 		_hash = hashOfFile;
 
-		_source = source; 
+		if (source == null) throw new IllegalArgumentException("Source seal cannot be null.");
+		_source = source;
 
 		_copyLocalFiles = copyLocalFiles;
 
@@ -98,7 +99,7 @@ abstract class AbstractDownload implements Download {
 
 	@Override	public File file() {	return _actualPath; }
 	@Override	public Hash hash() { return _hash; }
-	@Override	public Seal source() {	return _source; }
+	@Override	public Seal source() { return _source; }
 	@Override	public Signal<Integer> progress() { return _progress.output(); }
 
 

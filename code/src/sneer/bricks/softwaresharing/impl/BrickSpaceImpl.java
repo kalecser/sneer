@@ -148,11 +148,11 @@ class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 	}
 
 
-	private void download(final BuildingHash srcFolderHash) throws IOException, TimeoutException {
+	private void download(BuildingHash srcFolderHash) throws IOException, TimeoutException {
 		File tmpFolderRoot = my(FolderConfig.class).tmpFolderFor(BrickSpace.class);
 		File tmpFolder = new File(tmpFolderRoot, String.valueOf(System.nanoTime()));
 		
-		Download download = my(FileClient.class).startFolderNoveltiesDownload(tmpFolder, srcFolderHash.value);
+		Download download = my(FileClient.class).startFolderNoveltiesDownload(tmpFolder, srcFolderHash.value, srcFolderHash.publisher);
 		download.waitTillFinished();
 	}
 

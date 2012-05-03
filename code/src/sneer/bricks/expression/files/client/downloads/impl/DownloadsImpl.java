@@ -15,8 +15,8 @@ class DownloadsImpl implements Downloads {
 	}
 
 	@Override
-	public Download newFolderDownload(File folder, Hash hashOfFolder, boolean copyLocalFiles) {
-		return new FolderDownload(folder, hashOfFolder, copyLocalFiles);
+	public Download newFolderDownload(File folder, Hash hashOfFolder, Seal source, boolean copyLocalFiles) {
+		return new FolderDownload(folder, hashOfFolder, source, copyLocalFiles);
 	}
 
 }

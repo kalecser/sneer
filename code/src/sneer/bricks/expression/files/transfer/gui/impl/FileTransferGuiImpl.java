@@ -37,7 +37,7 @@ public class FileTransferGuiImpl implements FileTransferGui {
 		my(ContactActionManager.class).addContactAction(new ContactAction(){
 			@Override public boolean isEnabled() { return true; }
 			@Override public boolean isVisible() { return true; }
-			@Override public String caption() { return "Send Files...";}
+			@Override public String caption() { return "Send File or Folder";}
 			@Override public void run() {
 				chooseFileToSend();
 			}

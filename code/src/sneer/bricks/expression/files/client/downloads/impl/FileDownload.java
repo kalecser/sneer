@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import basis.lang.Consumer;
-
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FileContents;
 import sneer.bricks.expression.files.protocol.FileContentsFirstBlock;
@@ -25,6 +23,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
+import basis.lang.Consumer;
 
 class FileDownload extends AbstractDownload {
 
@@ -38,11 +37,6 @@ class FileDownload extends AbstractDownload {
 	private long _lastRequestTime = -1;
 
 	@SuppressWarnings("unused") private WeakContract _fileContentConsumerContract;
-
-
-	FileDownload(File file, long lastModified, Hash hashOfFile, boolean copyLocalFiles) {
-		this(file, lastModified, hashOfFile, null, copyLocalFiles);
-	}
 
 
 	FileDownload(File file, long lastModified, Hash hashOfFile, Seal source, boolean copyLocalFiles) {

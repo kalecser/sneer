@@ -5,9 +5,6 @@ import static basis.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 
-import basis.environments.Environments;
-import basis.lang.ClosureX;
-
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
@@ -17,6 +14,8 @@ import sneer.bricks.hardware.clock.ticker.custom.CustomClockTicker;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
+import basis.environments.Environments;
+import basis.lang.ClosureX;
 
 public class RemoteCopyTest extends FileCopyTestBase {
 
@@ -34,7 +33,7 @@ public class RemoteCopyTest extends FileCopyTestBase {
 	@Override
 	protected void copyFolderFromFileMap(final Hash hashOfContents, final File destination) throws Exception {
 		copyFromFileMap(new ClosureX<Exception>() { @Override public void run() throws IOException, TimeoutException {
-			Download download = my(FileClient.class).startFolderDownload(destination, hashOfContents);
+			Download download = my(FileClient.class).startFolderDownload(destination, hashOfContents, _localSeal);
 			download.waitTillFinished();
 		}});
 	}

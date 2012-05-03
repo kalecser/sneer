@@ -23,7 +23,7 @@ class FileClientImpl implements FileClient {
 	@Override
 	public Download startDownload(File file, boolean isFolder, long lastModified, Hash hashOfFile, Seal source) {
 		return isFolder
-			? startFolderDownload(file, hashOfFile)
+			? startFolderDownload(file, hashOfFile, source)
 			: startFileDownload(file, lastModified, hashOfFile, source);
 	}
 
@@ -36,18 +36,18 @@ class FileClientImpl implements FileClient {
 	}
 
 	@Override
-	public Download startFolderDownload(final File folder, final Hash hashOfFolder) {
-		return startFolderDownload(folder, hashOfFolder, true);
+	public Download startFolderDownload(File folder, Hash hashOfFolder, Seal source) {
+		return startFolderDownload(folder, hashOfFolder, source, true);
 	}
 
 	@Override
-	public Download startFolderNoveltiesDownload(final File folder, final Hash hashOfFolder) {
-		return startFolderDownload(folder, hashOfFolder, false);
+	public Download startFolderNoveltiesDownload(File folder, Hash hashOfFolder, Seal source) {
+		return startFolderDownload(folder, hashOfFolder, source, false);
 	}
 	
-	private Download startFolderDownload(final File folder, final Hash hashOfFolder, final boolean copyLocalFiles) {
+	private Download startFolderDownload(final File folder, final Hash hashOfFolder, final Seal source, final boolean copyLocalFiles) {
 		return startDownload(hashOfFolder, new Producer<Download>() { @Override public Download produce() {
-			return cleaningOnFinished(my(Downloads.class).newFolderDownload(folder, hashOfFolder, copyLocalFiles), hashOfFolder);
+			return cleaningOnFinished(my(Downloads.class).newFolderDownload(folder, hashOfFolder, source, copyLocalFiles), hashOfFolder);
 		}});
 	}
 
