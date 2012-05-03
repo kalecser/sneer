@@ -7,7 +7,6 @@ import java.util.Arrays;
 
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.connections.Call;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
 import sneer.bricks.network.social.Contact;
@@ -21,7 +20,7 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 	CacheMap<Contact, UdpByteConnection> connectionsByContact = CacheMap.newInstance(); 
 
 	@Override
-	public ByteConnection connectionFor(Contact contact) {
+	public UdpByteConnection connectionFor(Contact contact) {
 		return connectionsByContact.get(contact, new Producer<UdpByteConnection>( ) {  @Override public UdpByteConnection produce() {
 			return new UdpByteConnection();
 		}});
@@ -39,9 +38,10 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 
 	@Override
 	public void handle(DatagramPacket packet) {
-		byte[] bytes = Arrays.copyOf(packet.getData(), Seal.SIZE_IN_BYTES);
-		Contact contact = my(ContactSeals.class).contactGiven(new Seal(bytes));
-		connectionsByContact.get(contact).becomeConnected();
+		byte[] seal = Arrays.copyOf(packet.getData(), Seal.SIZE_IN_BYTES);
+		Contact contact = my(ContactSeals.class).contactGiven(new Seal(seal));
+		connectionFor(contact).handle(packet.getData(), Seal.SIZE_IN_BYTES);
+		
 	}
 
 	@Override

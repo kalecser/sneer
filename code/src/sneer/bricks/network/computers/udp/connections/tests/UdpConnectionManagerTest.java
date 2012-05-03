@@ -5,7 +5,6 @@ import static basis.environments.Environments.my;
 import java.net.DatagramPacket;
 import java.util.Arrays;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.identity.seals.Seal;
@@ -15,13 +14,16 @@ import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
+import basis.lang.Consumer;
 import basis.lang.exceptions.Refusal;
+import basis.util.concurrent.Latch;
 
 public class UdpConnectionManagerTest extends BrickTestBase {
 
 	
 	private UdpConnectionManager subject = my(UdpConnectionManager.class);
 
+	
 	@Test(timeout=1000)
 	public void onFirstPacket_ShouldConnect() throws Refusal{
 		assertFalse(isConnected("Neide"));
@@ -30,14 +32,20 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		assertFalse(isConnected("Maicon"));
 	}
 
-	@Ignore
-	@Test(timeout=1000)
+
+	@Test (timeout=1000)
 	public void receiveData() throws Refusal{
-		subject.handle(packetFrom("Neide", "Hello".getBytes()));
+		final Latch latch = new Latch();
+		connectionFor("Neide").initCommunications(null, new Consumer<byte[]>() { @Override public void consume(byte[] value) {
+			assertEquals("Hello", new String(value));
+			latch.open();
+		}});
 		
-		fail("Test invalid packet");
+		subject.handle(packetFrom("Neide", "Hello".getBytes()));
+		latch.waitTillOpen();
 	}
 
+	
 	private DatagramPacket packetFrom(String nick, byte[] data) throws Refusal {
 		my(Contacts.class).produceContact(nick);
 		my(ContactSeals.class).put(nick, new Seal(fill(42)));
@@ -45,6 +53,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		return new DatagramPacket(bytes, bytes.length);
 	}
 
+	
 	private byte[] fill(int id) {
 		byte[] ret = new byte[Seal.SIZE_IN_BYTES];
 		Arrays.fill(ret, (byte)id);
