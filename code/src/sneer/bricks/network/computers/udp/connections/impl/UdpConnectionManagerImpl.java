@@ -40,6 +40,7 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 	public void handle(DatagramPacket packet) {
 		byte[] seal = Arrays.copyOf(packet.getData(), Seal.SIZE_IN_BYTES);
 		Contact contact = my(ContactSeals.class).contactGiven(new Seal(seal));
+		if (contact == null) return;
 		connectionFor(contact).handle(packet.getData(), Seal.SIZE_IN_BYTES);
 		
 	}

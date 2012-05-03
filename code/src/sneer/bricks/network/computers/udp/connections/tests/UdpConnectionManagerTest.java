@@ -46,6 +46,12 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 
 	
+	@Test
+	public void invalidPacket() {
+		subject.handle(new DatagramPacket(new byte[0], 0));
+	}
+
+	
 	private DatagramPacket packetFrom(String nick, byte[] data) throws Refusal {
 		my(Contacts.class).produceContact(nick);
 		my(ContactSeals.class).put(nick, new Seal(fill(42)));
