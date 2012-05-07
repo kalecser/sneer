@@ -17,7 +17,9 @@ public class InstallationWizard extends JFrame {
 		welcome();
 		license();
 		configInformation();
+		tipForMacUsers();
 	}
+	
 
 	private void welcome() {
 		showDialog(
@@ -26,6 +28,7 @@ public class InstallationWizard extends JFrame {
 		
 		"Whatever >"); 
 	}
+	
 
 	private void license() {
 		showDialog(
@@ -46,11 +49,22 @@ public class InstallationWizard extends JFrame {
 		
 		"Whatever >");
 	}
+
+
+	private void tipForMacUsers() {
+		if (System.getProperty("os.name").toLowerCase().contains("mac"))
+			showDialog(
+			"IMPORTANT TIP:\n\nUse Control-C and Control-V instead of\n" +
+			"Command-C and Command-V for copy\nand paste.", 
+			"Thanks >");
+	}
+
 	
 	private void showDialog(String msg, Object...options) {
 		Dialogs.show(WIZARD_TITLE, msg,	exitDialog(), options);
 	}
 
+	
 	private Runnable exitDialog() {
 		return new Runnable() { @Override public void run() {
 			Dialogs.show(WIZARD_TITLE, "This wizard will now exit with no changes to your system.", systemExit(), "Exit");
@@ -58,12 +72,14 @@ public class InstallationWizard extends JFrame {
 		}};
 	}
 
+	
 	private Runnable systemExit() {
 		return new Runnable() { @Override public void run() {
 			System.exit(0);
 		}};
 	}
 
+	
 	private static void setLookAndFeel() {
 		try {
 		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
@@ -74,5 +90,6 @@ public class InstallationWizard extends JFrame {
 		}
 	}
 
+	
 	private static final long serialVersionUID = 1L;
 }
