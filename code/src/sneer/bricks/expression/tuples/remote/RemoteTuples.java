@@ -6,6 +6,7 @@ import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 
 @Brick
+/** Same as TupleSpace, but filters out own tuples */
 public interface RemoteTuples {
 
 	/** Delegates to TupleSpace.addSubscribition() using a predicate to ignore tuples published by myself */

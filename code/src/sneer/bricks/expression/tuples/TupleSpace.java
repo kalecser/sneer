@@ -7,6 +7,7 @@ import basis.lang.Predicate;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 
 @Brick
+/** Observable tuple set for publishing/subscribing */
 public interface TupleSpace {
 
 	void add(Tuple tuple);
