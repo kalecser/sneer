@@ -21,9 +21,9 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 	private Consumer<DatagramPacket> sender; 
 
 	@Override
-	public UdpByteConnection connectionFor(Contact contact) {
+	public UdpByteConnection connectionFor(final Contact contact) {
 		return connectionsByContact.get(contact, new Producer<UdpByteConnection>( ) {  @Override public UdpByteConnection produce() {
-			return new UdpByteConnection(sender);
+			return new UdpByteConnection(sender, contact);
 		}});
 	}
 

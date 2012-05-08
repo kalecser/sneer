@@ -5,7 +5,6 @@ import static basis.environments.Environments.my;
 import java.net.DatagramPacket;
 import java.util.Arrays;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
@@ -13,9 +12,11 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
+import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.SignalUtils;
@@ -78,9 +79,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 
 	
-	@Ignore
 	@Test (timeout=1000)
-	public void sendData() {
+	public void sendData() throws Refusal {
 		final Register<String> packets = my(Signals.class).newRegister("");
 		subject.initSender(new Consumer<DatagramPacket>() {  @Override public void consume(DatagramPacket value) {
 			byte[] bytes = value.getData();
@@ -89,8 +89,11 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 			assertArrayEquals(ownSealBytes(), seal);
 			String current = packets.output().currentValue();
 			packets.setter().consume(current + new String(payload));
-			fail("test ip/port");
+			assertEquals("200.201.202.203", value.getAddress().getHostAddress());
+			assertEquals(123, value.getPort());
 		}});
+		
+		my(InternetAddressKeeper.class).put(produceContact("Neide"), "200.201.202.203", 123);
 		
 		PacketScheduler sender = new PacketSchedulerMock("foo", "bar");
 		connectionFor("Neide").initCommunications(sender, my(Signals.class).sink());
@@ -108,7 +111,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	private DatagramPacket packetFrom(String nick, byte[] data) throws Refusal {
-		my(Contacts.class).produceContact(nick);
+		produceContact(nick);
 		my(ContactSeals.class).put(nick, new Seal(fill(42)));
 		byte[] bytes = my(Lang.class).arrays().concat(fill(42), data);
 		return new DatagramPacket(bytes, bytes.length);
@@ -128,8 +131,13 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 
 	private ByteConnection connectionFor(String nick) {
-		ByteConnection connection = subject.connectionFor(my(Contacts.class).produceContact(nick));
+		ByteConnection connection = subject.connectionFor(produceContact(nick));
 		return connection;
+	}
+
+
+	private Contact produceContact(String nick) {
+		return my(Contacts.class).produceContact(nick);
 	}
 
 	private DatagramPacket packetFrom(String nick) throws Refusal {
