@@ -5,7 +5,7 @@ import javax.swing.AbstractListModel;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.FileVersion;
 
-public class FileVersionListModel extends AbstractListModel{
+public class FileVersionListModel extends AbstractListModel<Object>{
 
 	private final BrickVersion _brickVersion;
 

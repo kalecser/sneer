@@ -113,20 +113,20 @@ class ContactsGuiImpl implements ContactsGui {
 		return my(Contacts.class).produceContact("<New Contact>");
 	}
 
-	private JList contactList() {
-		return (JList)_contactList.getComponent();
+	private JList<Object> contactList() {
+		return (JList<Object>)_contactList.getComponent();
 	}	
 
 	private final class ListContactsPopUpSupport {
 		private ListContactsPopUpSupport() {
-			final JList list = _contactList.getMainWidget();
+			final JList<Object> list = _contactList.getMainWidget();
 			my(PopupTrigger.class).listen(list, new Consumer<MouseEvent>(){ @Override public void consume(MouseEvent e) {
 				tryToShowContactMenu(e);
 			}});
 		}
 		
 		private void tryToShowContactMenu(MouseEvent e) {
-			JList list = _contactList.getMainWidget();
+			JList<Object> list = _contactList.getMainWidget();
 			int index = list.locationToIndex(e.getPoint());
 			list.getSelectionModel().setSelectionInterval(index, index);
 			if (!e.isPopupTrigger()) return;

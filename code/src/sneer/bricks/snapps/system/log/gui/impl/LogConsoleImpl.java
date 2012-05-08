@@ -192,7 +192,8 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 			final ListRegister<String> whiteListEntries,
 			final ListWidget<String> includes, JButton delButton) {
 		delButton.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
-			Object[] values = includes.getMainWidget().getSelectedValues();
+			@SuppressWarnings("deprecation")
+			Object[] values = includes.getMainWidget().getSelectedValues();//use something else
 			for (Object value : values) 
 				whiteListEntries.remove((String)value);
 		}});

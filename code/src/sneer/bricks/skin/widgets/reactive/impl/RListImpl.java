@@ -25,7 +25,7 @@ import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.skin.widgets.reactive.ListWidget;
 
-class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
+class RListImpl<ELEMENT> extends JList<Object> implements ListWidget<ELEMENT> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -48,12 +48,13 @@ class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
 		SignalChooser<ELEMENT> chooser = new SignalChooser<ELEMENT>(){	@Override public Signal<?>[] signalsToReceiveFrom(ELEMENT element) {
 			return new Signal<?>[]{_labelProvider.imageFor(element), 
 								   	   _labelProvider.textFor(element)};}};
+		@SuppressWarnings("rawtypes")
 		ListModel model = new ListSignalModel<ELEMENT>(_source, chooser);
 		setModel(model);
 	}
 
 	@Override
-	public JList getMainWidget() {
+	public JList<Object> getMainWidget() {
 		return this;
 	}
 

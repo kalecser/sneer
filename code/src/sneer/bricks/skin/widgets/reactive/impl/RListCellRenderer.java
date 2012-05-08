@@ -16,7 +16,7 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.widgets.reactive.LabelProvider;
 
 
-class RListCellRenderer<ELEMENT> implements ListCellRenderer {
+class RListCellRenderer<ELEMENT> implements ListCellRenderer<Object> {
 
 	private final DefaultListCellRenderer _renderer = new DefaultListCellRenderer();
 	private final LabelProvider<ELEMENT> _labelProvider;
@@ -33,7 +33,7 @@ class RListCellRenderer<ELEMENT> implements ListCellRenderer {
 	
 	
 	@Override
-	public Component getListCellRendererComponent(JList jList, Object elementObject, int index, boolean isSelected, boolean cellHasFocus) {
+	public Component getListCellRendererComponent(@SuppressWarnings("rawtypes") JList jList, Object elementObject, int index, boolean isSelected, boolean cellHasFocus) {
 		ELEMENT element = (ELEMENT)elementObject;
 		JLabel label = (JLabel)_renderer.getListCellRendererComponent(jList, element, index, isSelected, cellHasFocus);
 

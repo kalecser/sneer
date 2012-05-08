@@ -48,13 +48,13 @@ class Snapp1 implements Instrument{
 		Container container = window.contentPane();
 		container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
 		
-		DefaultComboBoxModel model = new DefaultComboBoxModel(
+		DefaultComboBoxModel<Object> model = new DefaultComboBoxModel<Object>(
 			new Object[]{"Blue","Read", "Black", "White"}
 		);
-		JComboBox combo = new JComboBox();
+		JComboBox<Object> combo = new JComboBox<Object>();
 		combo.setModel(model);
 		
-		JList list = new JList(model);
+		JList<Object> list = new JList<Object>(model);
 		
 		container.add(combo);
 		container.add(list);

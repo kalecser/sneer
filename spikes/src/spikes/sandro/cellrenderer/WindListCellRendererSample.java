@@ -41,7 +41,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import spikes.wheel.testutil.MemorySentinel;
 
-class WindListCellRendererSample implements ListCellRenderer {
+class WindListCellRendererSample implements ListCellRenderer<Object> {
 
 	static final Image _me = getImage();
 	private static Image getImage(){
@@ -58,9 +58,9 @@ class WindListCellRendererSample implements ListCellRenderer {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Container contentPane = frame.getContentPane();
 
-		final DefaultListModel model = new DefaultListModel();
-		JList jlist = new JList(model);
-		ListCellRenderer renderer = new WindListCellRendererSample(new LabelProvider<String>(){
+		final DefaultListModel<Object> model = new DefaultListModel<Object>();
+		JList<Object> jlist = new JList<Object>(model);
+		ListCellRenderer<Object> renderer = new WindListCellRendererSample(new LabelProvider<String>(){
 
 			@Override
 			public Signal<Image> imageFor(String element) {
@@ -105,7 +105,7 @@ class WindListCellRendererSample implements ListCellRenderer {
 	}
 
 	@Override
-	public Component getListCellRendererComponent(JList jList, Object element, int ignored2, boolean isSelected, boolean cellHasFocus) {
+	public Component getListCellRendererComponent(JList<?> jList, Object element, int ignored2, boolean isSelected, boolean cellHasFocus) {
 		String shout = (String)element;
 		JComponent nick = createNick(shout);
 		JComponent shoutTime = createShoutTime(isSelected);

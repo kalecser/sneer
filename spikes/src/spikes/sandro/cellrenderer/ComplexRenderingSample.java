@@ -52,9 +52,9 @@ public class ComplexRenderingSample {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Container contentPane = frame.getContentPane();
 
-		final DefaultListModel model = new DefaultListModel();
-		JList jlist = new JList(model);
-		ListCellRenderer renderer = new ComplexCellRenderer();
+		final DefaultListModel<Object> model = new DefaultListModel<Object>();
+		JList<Object> jlist = new JList<Object>(model);
+		ListCellRenderer<Object> renderer = new ComplexCellRenderer();
 		jlist.setCellRenderer(renderer);
 		JScrollPane scrollPane = new JScrollPane(jlist);
 		contentPane.add(scrollPane, BorderLayout.CENTER);
@@ -75,11 +75,11 @@ public class ComplexRenderingSample {
 	}
 }
 
-class ComplexCellRenderer implements ListCellRenderer {
+class ComplexCellRenderer implements ListCellRenderer<Object> {
 	protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
 	@Override
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+	public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		Font theFont = null;
 		Color theForeground = null;
 		Icon theIcon = null;

@@ -25,7 +25,7 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.snapps.chat.ChatMessage;
 
-class MessageListCellRenderer implements ListCellRenderer {
+class MessageListCellRenderer implements ListCellRenderer<Object> {
 
 	private static final int MIN_SHOUT_WIDTH = 200;
 	private static final String SHOUT = "shout";
@@ -41,7 +41,7 @@ class MessageListCellRenderer implements ListCellRenderer {
 	}
 
 	@Override
-	public Component getListCellRendererComponent(JList jList, Object element, int ignored2, boolean isSelected, boolean cellHasFocus) {
+	public Component getListCellRendererComponent(@SuppressWarnings("rawtypes") JList jList, Object element, int ignored2, boolean isSelected, boolean cellHasFocus) {
 		ChatMessage shout = (ChatMessage)element;
 		JComponent nick = createNick(shout);
 		JComponent shoutTime = createShoutTime(shout, isSelected);
@@ -113,7 +113,7 @@ class MessageListCellRenderer implements ListCellRenderer {
 	    doc.addStyle( SHOUT, def );
 	}
 
-	private JComponent createRootPanel(JComponent nick, JComponent time, JComponent shout, @SuppressWarnings("unused") boolean isSelected, final JList list) {
+	private JComponent createRootPanel(JComponent nick, JComponent time, JComponent shout, @SuppressWarnings("unused") boolean isSelected, final JList<Object> list) {
 		JPanel root = new JPanel();
 		root.setLayout(new BorderLayout());
 		root.setOpaque(true);
@@ -137,7 +137,7 @@ class MessageListCellRenderer implements ListCellRenderer {
 		return root;
 	}
 
-	private int getShoutLimitWidth(final JList list) {
+	private int getShoutLimitWidth(final JList<Object> list) {
 		int width = list.getSize().width;
 		if(width<MIN_SHOUT_WIDTH) 
 			width=MIN_SHOUT_WIDTH;

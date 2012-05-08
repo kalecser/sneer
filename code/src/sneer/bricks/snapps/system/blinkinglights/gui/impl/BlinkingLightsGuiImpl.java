@@ -151,7 +151,7 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 		}		
 
 		private Light getClickedLight(final MouseEvent event) {
-			JList list = (JList)event.getSource();
+			JList<Object> list = (JList<Object>)event.getSource();
 			list.setSelectedIndex(list.locationToIndex(event.getPoint()));
 			return (Light)list.getSelectedValue();
 		}
