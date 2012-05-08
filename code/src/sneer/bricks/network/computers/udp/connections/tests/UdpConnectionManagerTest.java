@@ -8,7 +8,6 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
-import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -29,31 +28,6 @@ import basis.util.concurrent.Latch;
 public class UdpConnectionManagerTest extends BrickTestBase {
 
 	
-	private static final class PacketSchedulerMock implements PacketScheduler {
-		final String[] messages;
-		int next = 0;
-
-		public PacketSchedulerMock(String... messages){
-			this.messages = messages;
-		}
-		
-		@Override
-		public void previousPacketWasSent() {
-			next++;
-		}
-
-		@Override
-		public synchronized byte[] highestPriorityPacketToSend() {
-			blockIfFinished();
-			return messages[next].getBytes();
-		}
-
-		private void blockIfFinished() {
-			if (next == messages.length) my(Threads.class).waitWithoutInterruptions(this);
-		}
-	}
-
-
 	private UdpConnectionManager subject = my(UdpConnectionManager.class);
 
 	
@@ -82,22 +56,22 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	@Test (timeout=1000)
 	public void sendData() throws Refusal {
 		final Register<String> packets = my(Signals.class).newRegister("");
-		subject.initSender(new Consumer<DatagramPacket>() {  @Override public void consume(DatagramPacket value) {
-			byte[] bytes = value.getData();
+		subject.initSender(new Consumer<DatagramPacket>() {  @Override public void consume(DatagramPacket packetToSend) {
+			byte[] bytes = packetToSend.getData();
 			byte[] seal = Arrays.copyOf(bytes, Seal.SIZE_IN_BYTES);
 			byte[] payload = payload(bytes, Seal.SIZE_IN_BYTES);
 			assertArrayEquals(ownSealBytes(), seal);
 			String current = packets.output().currentValue();
-			packets.setter().consume(current + new String(payload));
-			assertEquals("200.201.202.203", value.getAddress().getHostAddress());
-			assertEquals(123, value.getPort());
+			packets.setter().consume(current + "+" + new String(payload));
+			assertEquals("200.201.202.203", packetToSend.getAddress().getHostAddress());
+			assertEquals(123, packetToSend.getPort());
 		}});
 		
 		my(InternetAddressKeeper.class).put(produceContact("Neide"), "200.201.202.203", 123);
 		
 		PacketScheduler sender = new PacketSchedulerMock("foo", "bar");
 		connectionFor("Neide").initCommunications(sender, my(Signals.class).sink());
-		my(SignalUtils.class).waitForValue(packets.output(), "foobar");
+		my(SignalUtils.class).waitForValue(packets.output(), "+foo+bar");
 	}
 	
 	
@@ -126,13 +100,11 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 	private Boolean isConnected(String nick) {
 		ByteConnection connection = connectionFor(nick);
-		Boolean isConnected = connection.isConnected().currentValue();
-		return isConnected;
+		return connection.isConnected().currentValue();
 	}
 
 	private ByteConnection connectionFor(String nick) {
-		ByteConnection connection = subject.connectionFor(produceContact(nick));
-		return connection;
+		return subject.connectionFor(produceContact(nick));
 	}
 
 
