@@ -31,9 +31,9 @@ public class JFontChooser extends JDialog implements ActionListener, ListSelecti
 	private int textStyle;
 	private int textSize;
 	
-	private JList<Object> fList = new JList<Object>(fonts);
-	private JList<Object> stList = new JList<Object>(style);
-	private JList<Object> sizeList = new JList<Object>(size);
+	private JList fList = new JList(fonts);
+	private JList stList = new JList(style);
+	private JList sizeList = new JList(size);
 	private JTextField jtfFonts = new JTextField();
 	private JTextField jtfStyle = new JTextField();
 	private JTextField jtfSize = new JTextField();
@@ -388,7 +388,7 @@ public class JFontChooser extends JDialog implements ActionListener, ListSelecti
 	 * scrollPane.
 	 */
 	
-	private void setScrollPos(JScrollPane sp, JList<Object> list, int index)
+	private void setScrollPos(JScrollPane sp, JList list, int index)
 	{
 		int unitSize = sp.getVerticalScrollBar().getMaximum() / list.getModel().getSize();
 		

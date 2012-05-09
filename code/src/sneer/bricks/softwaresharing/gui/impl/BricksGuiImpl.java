@@ -50,7 +50,7 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 	private static final JToggleButton _selectButton = new JToggleButton(loadIcon("add.png"));
 	private static final JToggleButton _rejectButton = new JToggleButton(loadIcon("rejectedVersion.png"));
 	private final JTree _tree = new JTree();
-	private final JList<Object> _files = new JList<Object>();
+	private final JList _files = new JList();
 	private final TextDiffPanel _diffPanel = my(TextDiffPanels.class).newPanel();
 	
 	private final Integer _OFFSET_X = 20;
@@ -152,7 +152,7 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		
 		Object selected = _tree.getSelectionPath().getLastPathComponent();
 		if(! (selected instanceof BrickVersionTreeNode)){
-			_files.setModel(new DefaultListModel<Object>());
+			_files.setModel(new DefaultListModel());
 			return;
 		}
 		
@@ -260,6 +260,6 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 //		RootTreeNode root = new RootTreeNode(FakeModel.bricks()); //Uncomment to see mock data.
 		
 		_tree.setModel(new DefaultTreeModel(root));
-		_files.setModel(new DefaultListModel<Object>());
+		_files.setModel(new DefaultListModel());
 	}
 }

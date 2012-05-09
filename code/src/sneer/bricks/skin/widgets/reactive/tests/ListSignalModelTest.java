@@ -32,7 +32,7 @@ public class ListSignalModelTest extends BrickTestBase {
 		addElement("0");
 		assertEvents("");
 		
-		ListModel<Register<String>> subject = _factory.newListSignalModel(_listRegister.output(), chooser());
+		ListModel subject = _factory.newListSignalModel(_listRegister.output(), chooser());
 		subject.addListDataListener(eventRecorder());
 		
 		Register<String> r1 = addElement("1");

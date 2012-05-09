@@ -44,5 +44,5 @@ public interface ReactiveWidgetFactory {
 	<T> ListWidget<T> newList(ListSignal<T> source);
 	<T> ListWidget<T> newList(ListSignal<T> source, LabelProvider<T> labelProvider);
 	
-	<T> ListModel<T> newListSignalModel(ListSignal<T> input, SignalChooser<T> chooser);
+	<T> ListModel newListSignalModel(ListSignal<T> input, SignalChooser<T> chooser);
 }

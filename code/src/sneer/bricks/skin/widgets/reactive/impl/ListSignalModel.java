@@ -12,7 +12,7 @@ import sneer.bricks.pulp.reactive.signalchooser.ListOfSignalsReceiver;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChoosers;
 
-class ListSignalModel<T> extends AbstractListModel<T> {
+class ListSignalModel<T> extends AbstractListModel {
 
 	private static final SignalChoosers _SignalChoosers = my(SignalChoosers.class);
 

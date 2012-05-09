@@ -31,7 +31,7 @@ final class FolderSelectionPanel extends JPanel {
 	FolderSelectionPanel(MusicViewListener listener) {
 		_listener = listener;
 		_selector = newSelector();
-		_folderChoices = (MutableComboBoxModel<Object>) _selector.getModel();
+		_folderChoices = (MutableComboBoxModel) _selector.getModel();
 		_trackDownloadedIcon = newTrackDownloadedIcon();
 
 		setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -43,8 +43,8 @@ final class FolderSelectionPanel extends JPanel {
 		initExternalEvents();
 	}
 
-	private JComboBox<Object> newSelector() {
-		JComboBox<Object> selector = new JComboBox<Object>();
+	private JComboBox newSelector() {
+		JComboBox selector = new JComboBox();
 		selector.addActionListener(newSelectorActionListener());
 		return selector;
 	}
@@ -52,7 +52,7 @@ final class FolderSelectionPanel extends JPanel {
 	private ActionListener newSelectorActionListener() {
 		return new ActionListener() { @Override public void actionPerformed(ActionEvent e) {
 			if (isEventInternal) return;
-			String folderChosen = (String)((JComboBox<Object>) e.getSource()).getModel().getSelectedItem();
+			String folderChosen = (String)((JComboBox) e.getSource()).getModel().getSelectedItem();
 			if (folderChosen == null) return;
 			_listener.playingFolderChosen(folderChosen);
 		}};
@@ -163,8 +163,8 @@ final class FolderSelectionPanel extends JPanel {
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc, _refToAvoidGc2, _refToAvoidGc3;
 
 	private final MusicViewListener _listener;
-	private final JComboBox<Object> _selector;
-	private final MutableComboBoxModel<Object> _folderChoices;
+	private final JComboBox _selector;
+	private final MutableComboBoxModel _folderChoices;
 	private final JLabel _trackDownloadedIcon;
 	
 	private boolean isEventInternal;

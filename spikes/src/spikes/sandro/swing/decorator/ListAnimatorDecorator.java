@@ -67,12 +67,12 @@ public abstract class ListAnimatorDecorator extends AbstractComponentDecorator {
     private Counter counter;
     private int insertionIndex = -1;
     private int draggedIndex = -1;
-    private JList<Object> _list;
+    private JList _list;
     private Map<Integer, Rectangle> bounds = new TreeMap<Integer, Rectangle>();
     private GhostedDragImage dragImage;
     private Point _origin;
     
-    public ListAnimatorDecorator(final JList<Object> list) {
+    public ListAnimatorDecorator(final JList list) {
         super(list);
         _list = list;
         counter = new Counter();
@@ -208,7 +208,7 @@ public abstract class ListAnimatorDecorator extends AbstractComponentDecorator {
             }
         }
         else if (insertionIndex != -1 && index > insertionIndex) {
-            ListCellRenderer<? super Object> rnd = _list.getCellRenderer();
+            ListCellRenderer rnd = _list.getCellRenderer();
             Component c = rnd.getListCellRendererComponent(_list, getPlaceholder(), insertionIndex, false, false);
             r.y += c.getHeight();
         }
