@@ -15,6 +15,15 @@ class StackTraceLoggerImpl implements StackTraceLogger{
 		return stackTrace(Thread.currentThread());
 	}
 
+
+	@Override
+	public String stackTrace(Thread thread) {
+		String result = "";
+		for (StackTraceElement element : thread.getStackTrace())
+			result += "\n\t" + element;
+		return result;
+	}
+	
 	
 	@Override
 	public void logStackTrace() {
@@ -42,11 +51,4 @@ class StackTraceLoggerImpl implements StackTraceLogger{
 	}
 
 
-	private String stackTrace(Thread thread) {
-		String result = "";
-		for (StackTraceElement element : thread.getStackTrace())
-			result += "\n\t" + element;
-		return result;
-	}
-	
 }

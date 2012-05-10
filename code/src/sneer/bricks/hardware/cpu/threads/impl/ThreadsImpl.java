@@ -75,7 +75,7 @@ class ThreadsImpl implements Threads {
 		StackTraceElement element = stackTrace[3];
 		String className = toSimpleClassName(element.getClassName());
 		
-		return className + "." + element.getMethodName() + "(" + Threads.class.getClassLoader() + ")"; 
+		return className + "." + element.getMethodName() + " Loader:" + Threads.class.getClassLoader(); 
 	}
 
 	private static String toSimpleClassName(String className) {

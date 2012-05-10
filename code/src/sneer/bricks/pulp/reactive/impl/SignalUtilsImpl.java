@@ -20,13 +20,13 @@ class SignalUtilsImpl implements SignalUtils {
 			if (equalsWithNulls(expected, value))
 				latch.open();
 			else
-				seen.append(value.toString() + ", ");
+				seen.append("[" + value.toString() + "]  ");
 		}});
 		
 		try {
 			latch.waitTillOpen();
 		} catch (RuntimeException e) {
-			throw new IllegalStateException("Expected: " + expected + " Seen: " + seen, e);
+			throw new IllegalStateException("Expected: [" + expected + "] Seen: " + seen, e);
 		}
 	}
 

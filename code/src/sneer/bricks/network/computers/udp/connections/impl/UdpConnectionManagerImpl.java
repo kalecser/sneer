@@ -5,6 +5,7 @@ import static basis.environments.Environments.my;
 import java.net.DatagramPacket;
 import java.util.Arrays;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.Call;
@@ -23,7 +24,9 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 	@Override
 	public UdpByteConnection connectionFor(final Contact contact) {
 		return connectionsByContact.get(contact, new Producer<UdpByteConnection>( ) {  @Override public UdpByteConnection produce() {
-			return new UdpByteConnection(sender, contact);
+			UdpByteConnection ret = new UdpByteConnection(sender, contact);
+			ret.hail();
+			return ret;
 		}});
 	}
 
@@ -34,7 +37,17 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 
 	@Override
 	public Source<Call> unknownCallers() {
-		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
+		return new Source<Call>() {
+			@Override
+			public WeakContract addPulseReceiver(Runnable pulseReceiver) {
+				return null;
+			}
+
+			@Override
+			public WeakContract addReceiver(Consumer<? super Call> receiver) {
+				return null;
+			}
+		};
 	}
 
 	@Override

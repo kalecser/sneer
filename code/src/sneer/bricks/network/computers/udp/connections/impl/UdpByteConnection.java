@@ -23,6 +23,7 @@ import basis.lang.Consumer;
 
 class UdpByteConnection implements ByteConnection {
 
+	private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 	private Register<Boolean> isConnected = my(Signals.class).newRegister(false);
 	private Consumer<? super byte[]> receiver;
 	private final Consumer<DatagramPacket> sender;
@@ -60,17 +61,23 @@ class UdpByteConnection implements ByteConnection {
 	}
 
 	private void tryToSendPacketFor(PacketScheduler scheduler) {
-		byte[] ownSeal = ownSealBytes();
 		byte[] payload = scheduler.highestPriorityPacketToSend();
+		if (send(payload))
+			scheduler.previousPacketWasSent();
+	}
+
+	private boolean send(byte[] payload) {
+		byte[] ownSeal = ownSealBytes();
 		byte[] data = my(Lang.class).arrays().concat(ownSeal, payload);
 		DatagramPacket packet = packetFor(data);
-		if(packet == null) return;
+		if(packet == null) return false;
 		sender.consume(packet);
-		scheduler.previousPacketWasSent();
+		return true;
 	}
 
 	private DatagramPacket packetFor(byte[] data) {
 		InternetAddress addr = my(InternetAddressKeeper.class).get(contact);
+		if (addr == null) return null;
 		try {
 			return new DatagramPacket(data, data.length, InetAddress.getByName(addr.host()), addr.port().currentValue()); //Optimize: reuse DatagramPacket
 		} catch (UnknownHostException e) {
@@ -81,6 +88,11 @@ class UdpByteConnection implements ByteConnection {
 	
 	private byte[] ownSealBytes() {
 		return my(OwnSeal.class).get().currentValue().bytes.copy();
+	}
+
+	
+	void hail() {
+		send(EMPTY_BYTE_ARRAY);
 	}
 
 }
