@@ -32,18 +32,22 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 
 	private void init() {
 		final UdpSocket socket;
-		int ownPort = ownPort();
-		try {
-			socket = my(UdpNetwork.class).openSocket(ownPort);
-		} catch (SocketException e) {
-			my(BlinkingLights.class).turnOn(LightType.ERROR, "Network Error", "Unable to open UDP server on port " + ownPort, e);
-			return;
-		}
+		socket = tryToOpenSocket();
+		if(socket == null) return;
 		socket.initReceiver(this);
-		
 		my(UdpConnectionManager.class).initSender(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
 			send(socket, packet);
 		}});
+	}
+
+	private UdpSocket tryToOpenSocket() {
+		int ownPort = ownPort();
+		try {
+			return my(UdpNetwork.class).openSocket(ownPort);
+		} catch (SocketException e) {
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Network Error", "Unable to open UDP server on port " + ownPort, e);
+			return null;
+		}
 	}
 	
 	private void send(final UdpSocket socket, DatagramPacket packet) {

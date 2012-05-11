@@ -24,9 +24,7 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 	@Override
 	public UdpByteConnection connectionFor(final Contact contact) {
 		return connectionsByContact.get(contact, new Producer<UdpByteConnection>( ) {  @Override public UdpByteConnection produce() {
-			UdpByteConnection ret = new UdpByteConnection(sender, contact);
-			ret.hail();
-			return ret;
+			return new UdpByteConnection(sender, contact);
 		}});
 	}
 
@@ -55,7 +53,7 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 		byte[] seal = Arrays.copyOf(packet.getData(), Seal.SIZE_IN_BYTES);
 		Contact contact = my(ContactSeals.class).contactGiven(new Seal(seal));
 		if (contact == null) return;
-		connectionFor(contact).handle(packet.getData(), Seal.SIZE_IN_BYTES);
+		connectionFor(contact).handle(packet, Seal.SIZE_IN_BYTES);
 		
 	}
 

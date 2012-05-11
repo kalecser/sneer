@@ -3,8 +3,11 @@ package sneer.bricks.network.computers.udp.connections.tests;
 import static basis.environments.Environments.my;
 
 import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
@@ -30,7 +33,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 	
 	@Test(timeout=1000)
-	public void onFirstPacket_ShouldConnect() throws Refusal{
+	public void onFirstPacket_ShouldConnect() throws Exception {
 		assertFalse(isConnected("Neide"));
 		subject.handle(packetFrom("Neide"));
 		my(SignalUtils.class).waitForValue(connectionFor("Neide").isConnected(), true);
@@ -39,7 +42,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 
 	@Test (timeout=1000)
-	public void receiveData() throws Refusal{
+	public void receiveData() throws Exception {
 		final Latch latch = new Latch();
 		connectionFor("Neide").initCommunications(new PacketSchedulerMock(), new Consumer<byte[]>() { @Override public void consume(byte[] value) {
 			assertEquals("Hello", new String(value));
@@ -80,13 +83,38 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		connectionFor("Neide");
 		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
 	}
-
 	
-	private DatagramPacket packetFrom(String nick, byte[] data) throws Refusal {
+	
+	@Test(timeout=1000)
+	public void onReceivePacket_ShouldUseInternetAddress() throws Exception {
+		LoggingSender sender = new LoggingSender();
+		subject.initSender(sender);
+		
+		DatagramPacket packet = packetFrom("Neide");
+				
+		subject.handle(packet);
+		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:234");
+	}
+	
+	
+	@Test
+	@Ignore
+	public void shouldNotHailUnnessecerily() {
+		fail();
+	}
+	
+	
+	private DatagramPacket packetFrom(String nick, byte[] data) throws Exception {
 		produceContact(nick);
+		
 		my(ContactSeals.class).put(nick, new Seal(fill(42)));
 		byte[] bytes = my(Lang.class).arrays().concat(fill(42), data);
-		return new DatagramPacket(bytes, bytes.length);
+		
+		DatagramPacket ret = new DatagramPacket(bytes, bytes.length);
+		ret.setAddress(InetAddress.getByName("200.201.202.203"));
+		ret.setPort(234);
+		
+		return ret;
 	}
 
 	
@@ -113,7 +141,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 
 	
-	private DatagramPacket packetFrom(String nick) throws Refusal {
+	private DatagramPacket packetFrom(String nick) throws Exception {
 		return packetFrom(nick, new byte[0]);
 	}
 

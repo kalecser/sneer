@@ -3,8 +3,9 @@ package sneer.bricks.network.computers.udp.connections.impl;
 import static basis.environments.Environments.my;
 
 import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.net.SocketException;
 import java.util.Arrays;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
@@ -28,10 +29,12 @@ class UdpByteConnection implements ByteConnection {
 	private Consumer<? super byte[]> receiver;
 	private final Consumer<DatagramPacket> sender;
 	private final Contact contact;
+	private SocketAddress lastPeerSighting;
 
 	UdpByteConnection(Consumer<DatagramPacket> sender, Contact contact) {
 		this.sender = sender;
 		this.contact = contact;
+		hail();
 	}
 
 	@Override
@@ -49,10 +52,12 @@ class UdpByteConnection implements ByteConnection {
 	}
 	
 	
-	void handle(byte[] data, int offset) {
+	void handle(DatagramPacket packet, int offset) {
 		isConnected.setter().consume(true);
+		lastPeerSighting = packet.getSocketAddress();
+		hail();
 		if (receiver == null) return;
-		receiver.consume(payload(data, offset));
+		receiver.consume(payload(packet.getData(), offset));
 	}
 
 	
@@ -67,31 +72,40 @@ class UdpByteConnection implements ByteConnection {
 	}
 
 	private boolean send(byte[] payload) {
+		if(sender == null) return false;
+		
 		byte[] ownSeal = ownSealBytes();
 		byte[] data = my(Lang.class).arrays().concat(ownSeal, payload);
+		
 		DatagramPacket packet = packetFor(data);
 		if(packet == null) return false;
+		
 		sender.consume(packet);
 		return true;
 	}
 
 	private DatagramPacket packetFor(byte[] data) {
-		InternetAddress addr = my(InternetAddressKeeper.class).get(contact);
+		SocketAddress addr = peerAddress();
 		if (addr == null) return null;
 		try {
-			return new DatagramPacket(data, data.length, InetAddress.getByName(addr.host()), addr.port().currentValue()); //Optimize: reuse DatagramPacket
-		} catch (UnknownHostException e) {
+			return new DatagramPacket(data, data.length, addr); //Optimize: reuse DatagramPacket
+		} catch (SocketException e) {
 			my(ExceptionLogger.class).log(e);
 			return null;
 		}
 	}
 	
+	private SocketAddress peerAddress() {
+		InternetAddress addr = my(InternetAddressKeeper.class).get(contact);
+		if(addr != null) return new InetSocketAddress(addr.host(), addr.port().currentValue());
+		return lastPeerSighting;
+	}
+
 	private byte[] ownSealBytes() {
 		return my(OwnSeal.class).get().currentValue().bytes.copy();
 	}
-
 	
-	void hail() {
+	private void hail() {
 		send(EMPTY_BYTE_ARRAY);
 	}
 
