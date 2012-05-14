@@ -15,7 +15,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
-
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -25,14 +24,9 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultStyledDocument;
-
 import basis.lang.Consumer;
-
 import sneer.bricks.hardware.gui.trayicon.TrayIcons;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
@@ -40,11 +34,11 @@ import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
-import sneer.bricks.snapps.chat.ChatMessage;
+import sneer.bricks.snapps.chat.gui.panels.Message;
 
 class ChatPanelImpl extends JPanel {
 
-	private final ListSignal<ChatMessage> _messages;
+	private final ListSignal<Message> _messages;
 	private final JScrollPane _listScrollPane;
 	private final JTextPane _shoutsList = new JTextPane();
 	private final ShoutPainter _shoutPainter = new ShoutPainter((DefaultStyledDocument) _shoutsList.getStyledDocument());
@@ -54,15 +48,15 @@ class ChatPanelImpl extends JPanel {
 	@SuppressWarnings("unused") private Object _refToAvoidGc;
 	
 
-	ChatPanelImpl(ListSignal<ChatMessage> messages, Consumer<String> messageSender) {
+	ChatPanelImpl(ListSignal<Message> messages, Consumer<String> messageSender) {
 		_messages = messages;
-		_listScrollPane = my(ReactiveAutoScroll.class).create(messages, new Consumer<CollectionChange<ChatMessage>>() { @Override public void consume(CollectionChange<ChatMessage> change) {
+		_listScrollPane = my(ReactiveAutoScroll.class).create(messages, new Consumer<CollectionChange<Message>>() { @Override public void consume(CollectionChange<Message> change) {
 			if (!change.elementsRemoved().isEmpty()){
 				_shoutPainter.repaintAllShouts(_messages);
 				return;
 			}
 
-			for (ChatMessage shout : change.elementsAdded())
+			for (Message shout : change.elementsAdded())
 				_shoutPainter.appendMessage(shout);
 		}});
 
@@ -114,41 +108,32 @@ class ChatPanelImpl extends JPanel {
 	}
 
 	private void initShoutAnnouncer() {
-		_refToAvoidGc = _messages.addReceiver(new Consumer<CollectionChange<ChatMessage>>() { @Override public void consume(CollectionChange<ChatMessage> shout) {
+		_refToAvoidGc = _messages.addReceiver(new Consumer<CollectionChange<Message>>() { @Override public void consume(CollectionChange<Message> shout) {
 			shoutAlert(shout.elementsAdded());
 		}});
 	}
 	
-	private void shoutAlert(Collection<ChatMessage> shouts) {
+	private void shoutAlert(Collection<Message> shouts) {
 		Window window = SwingUtilities.windowForComponent(this);
 		if(window == null || !window.isActive())
 			alertUser(shouts);
 	}
 
-	private synchronized void alertUser(Collection<ChatMessage> shouts) {
+	private synchronized void alertUser(Collection<Message> shouts) {
 		String shoutsAsString = shoutsAsString(shouts);
 		my(TrayIcons.class).messageBalloon("New shouts heard", shoutsAsString);
 	}
 
-	private String shoutsAsString(Collection<ChatMessage> messages) {
+	private String shoutsAsString(Collection<Message> messages) {
 		StringBuilder shoutsAsString = new StringBuilder();
-		for (ChatMessage message : messages){
+		for (Message message : messages){
 			
-			if (shoutsAsString.length() > 0){
+			if (shoutsAsString.length() > 0)
 				shoutsAsString.append("\n");
-			}
 			
-			Seal publisher = message.publisher;
-			shoutsAsString.append(nicknameOf(publisher) + " - " + message.text);
+			shoutsAsString.append(message.author() + " - " + message.text());
 		}
 		return shoutsAsString.toString();
-	}
-
-	private String nicknameOf(Seal publisher) {
-		Signal<String> result = my(ContactSeals.class).nicknameGiven(publisher);
-		return result == null
-			? "Unknown"
-			: result.currentValue();
 	}
 
 	private final class WindClipboardSupport implements ClipboardOwner{

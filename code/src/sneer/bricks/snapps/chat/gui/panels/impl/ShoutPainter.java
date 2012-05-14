@@ -1,17 +1,16 @@
 package sneer.bricks.snapps.chat.gui.panels.impl;
 
 import java.awt.Color;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
-
-import basis.lang.exceptions.NotImplementedYet;
-
 import sneer.bricks.pulp.reactive.collections.ListSignal;
-import sneer.bricks.snapps.chat.ChatMessage;
+import sneer.bricks.snapps.chat.gui.panels.Message;
+import basis.lang.exceptions.NotImplementedYet;
 
 class ShoutPainter {
 	
@@ -48,35 +47,37 @@ class ShoutPainter {
 		_document.addStyle("shout", _shout);
 	}
 
-	void repaintAllShouts(ListSignal<ChatMessage> messages) {
+	void repaintAllShouts(ListSignal<Message> messages) {
 		try {
 			_document.remove(0, _document.getLength());
 		} catch (BadLocationException e) {
 			throw new NotImplementedYet(e); // Fix Handle this exception.
 		}
-		for (ChatMessage message : messages) 
+		for (Message message : messages) 
 			appendMessage(message);
 	}
 	
-	void appendMessage(ChatMessage message) {
+	void appendMessage(Message message) {
 		try {
-			_document.insertString(_document.getLength(), nick(message) ,  _nick);
+			_document.insertString(_document.getLength(), message.author() ,  _nick);
 			_document.insertString(_document.getLength(), header(message) ,  _time);
-			_document.insertString(_document.getLength(), message.text ,  _shout);
+			_document.insertString(_document.getLength(), message.text() ,  _shout);
 			_document.insertString(_document.getLength(), "\n\n" ,  _space);
 		} catch (BadLocationException e) {
 			throw new NotImplementedYet(e); // Fix Handle this exception.
 		}	
 	}
 	
-	private String header(ChatMessage message){		
+	private String header(Message message){		
 		return new StringBuilder().append(" - ")
-			.append(ShoutUtils.getFormatedShoutTime(message)).append("\n").toString();
+			.append(getFormatedShoutTime(message)).append("\n").toString();
 	}
 
-	private String nick(ChatMessage shout) {
-		if(ShoutUtils.isMyOwnShout(shout)) return "Me";
-		
-		return ShoutUtils.publisherNick(shout);
-	}
+	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+	
+	static String getFormatedShoutTime(Message message) {
+		return FORMAT.format(new Date(message.time()));
+	}	
+
 }
+
