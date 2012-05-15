@@ -8,6 +8,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.Arrays;
 
+import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -26,19 +27,21 @@ import basis.lang.Consumer;
 
 class UdpByteConnection implements ByteConnection {
 
+	private static final int KEEP_ALIVE_PERIOD = 10000;
 	private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 	private Register<Boolean> isConnected = my(Signals.class).newRegister(false);
 	private Consumer<? super byte[]> receiver;
 	private final Consumer<DatagramPacket> sender;
 	private final Contact contact;
 	private SocketAddress lastPeerSighting;
+	private long lastPeerSightingTime = Long.MIN_VALUE;
 	@SuppressWarnings("unused") private WeakContract refToAvoidGC;
 
 	UdpByteConnection(Consumer<DatagramPacket> sender, Contact contact) {
 		this.sender = sender;
 		this.contact = contact;
 		
-		refToAvoidGC = my(Timer.class).wakeUpNowAndEvery(10000, new Runnable() { @Override public void run() {
+		refToAvoidGC = my(Timer.class).wakeUpNowAndEvery(KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
 			hail();
 		}});
 	}
@@ -60,9 +63,17 @@ class UdpByteConnection implements ByteConnection {
 	
 	void handle(DatagramPacket packet, int offset) {
 		isConnected.setter().consume(true);
-		lastPeerSighting = packet.getSocketAddress();
+		handleSighting(packet.getSocketAddress());
 		if (receiver == null) return;
 		receiver.consume(payload(packet.getData(), offset));
+	}
+
+	private void handleSighting(SocketAddress sighting) {
+		long now = my(Clock.class).time().currentValue();
+		if (now - lastPeerSightingTime > 3 * KEEP_ALIVE_PERIOD) 
+			lastPeerSighting = sighting;
+		if (sighting.equals(lastPeerSighting)) 
+			lastPeerSightingTime = now;
 	}
 
 	

@@ -88,7 +88,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
 	}
 	
-	
+	@Ignore
 	@Test(timeout=2000)
 	public void onReceivePacket_ShouldUseInternetAddress() throws Exception {
 		LoggingSender sender = new LoggingSender();
@@ -109,7 +109,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		fail();
 	}
 	
-	@Test
+	@Ignore
+	@Test(timeout = 2000)
 	public void onIdleRecognizeNewSighting() throws Exception {
 		LoggingSender sender = new LoggingSender();
 		subject.initSender(sender);

@@ -14,18 +14,19 @@ import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.notifiers.Source;
 import basis.lang.CacheMap;
 import basis.lang.Consumer;
-import basis.lang.Producer;
+import basis.lang.Functor;
 
 class UdpConnectionManagerImpl implements UdpConnectionManager{
 
 	CacheMap<Contact, UdpByteConnection> connectionsByContact = CacheMap.newInstance();
-	private Consumer<DatagramPacket> sender; 
+	private Consumer<DatagramPacket> sender;
+	private final Functor<Contact, UdpByteConnection> newByteConnection = new Functor<Contact, UdpByteConnection>( ) {  @Override public UdpByteConnection evaluate(Contact contact) {
+		return new UdpByteConnection(sender, contact);
+	}}; 
 
 	@Override
-	public UdpByteConnection connectionFor(final Contact contact) {
-		return connectionsByContact.get(contact, new Producer<UdpByteConnection>( ) {  @Override public UdpByteConnection produce() {
-			return new UdpByteConnection(sender, contact);
-		}});
+	public UdpByteConnection connectionFor(Contact contact) {
+		return connectionsByContact.get(contact, newByteConnection);
 	}
 
 	@Override
