@@ -33,7 +33,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	private UdpConnectionManager subject = my(UdpConnectionManager.class);
 
 	
-	@Test(timeout=1000)
+	@Test(timeout=2000)
 	public void onFirstPacket_ShouldConnect() throws Exception {
 		assertFalse(isConnected("Neide"));
 		subject.handle(packetFrom("Neide"));
@@ -42,7 +42,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 
 
-	@Test (timeout=1000)
+	@Test (timeout=2000)
 	public void receiveData() throws Exception {
 		final Latch latch = new Latch();
 		connectionFor("Neide").initCommunications(new PacketSchedulerMock(), new Consumer<byte[]>() { @Override public void consume(byte[] value) {
@@ -55,7 +55,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 
 	
-	@Test (timeout=1000)
+	@Test (timeout=2000)
 	public void sendData() throws Refusal {
 		LoggingSender sender = new LoggingSender();
 		subject.initSender(sender);
@@ -77,7 +77,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 
-	@Test(timeout=1000)
+	@Test(timeout=2000)
 	public void onNotConnected_ShouldSendHailingPacketsEverySoOften() throws Refusal {
 		LoggingSender sender = new LoggingSender();
 		subject.initSender(sender);
@@ -89,7 +89,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	@Test(timeout=1000)
+	@Test(timeout=2000)
 	public void onReceivePacket_ShouldUseInternetAddress() throws Exception {
 		LoggingSender sender = new LoggingSender();
 		subject.initSender(sender);
@@ -110,12 +110,23 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	@Test
-	@Ignore
-	public void onIdleRecognizeNewSighting() {
-		fail();
+	public void onIdleRecognizeNewSighting() throws Exception {
+		LoggingSender sender = new LoggingSender();
+		subject.initSender(sender);
+		
+		subject.handle(packetFrom("Neide"));
+		
+		my(Clock.class).advanceTime(KEEP_ALIVE_PERIOD * 3);
+		subject.handle(packetFrom("Neide", new byte[0], "100.101.102.103", 456));
+		
+		PacketScheduler scheduler = new PacketSchedulerMock("foo");
+		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
+		
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| foo,to:100.101.102.103,port:456");
+	
 	}
 	
-	@Test(timeout = 1000)
+	@Test(timeout = 2000)
 	public void keepAlive() throws Refusal {
 		LoggingSender sender = new LoggingSender();
 		subject.initSender(sender);
@@ -123,23 +134,26 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(InternetAddressKeeper.class).put(produceContact("Neide"), "200.201.202.203", 123);
 		connectionFor("Neide");
 		
+		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
+		
 		my(Clock.class).advanceTime(KEEP_ALIVE_PERIOD - 1);
 		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
 		
 		my(Clock.class).advanceTime(1);
+		
 		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123| <empty>,to:200.201.202.203,port:123");
 	}
 	
 	
-	private DatagramPacket packetFrom(String nick, byte[] data) throws Exception {
+	private DatagramPacket packetFrom(String nick, byte[] data, String ip, int port) throws Exception {
 		produceContact(nick);
 		
 		my(ContactSeals.class).put(nick, new Seal(fill(42)));
 		byte[] bytes = my(Lang.class).arrays().concat(fill(42), data);
 		
 		DatagramPacket ret = new DatagramPacket(bytes, bytes.length);
-		ret.setAddress(InetAddress.getByName("200.201.202.203"));
-		ret.setPort(234);
+		ret.setAddress(InetAddress.getByName(ip));
+		ret.setPort(port);
 		
 		return ret;
 	}
@@ -170,6 +184,11 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	private DatagramPacket packetFrom(String nick) throws Exception {
 		return packetFrom(nick, new byte[0]);
+	}
+
+
+	private DatagramPacket packetFrom(String nick, byte[] data) throws Exception {
+		return packetFrom(nick, data, "200.201.202.203", 234);
 	}
 
 }
