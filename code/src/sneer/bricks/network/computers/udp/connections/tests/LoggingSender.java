@@ -11,11 +11,15 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.pulp.reactive.collections.CollectionSignals;
+import sneer.bricks.pulp.reactive.collections.SetRegister;
+import sneer.bricks.pulp.reactive.collections.SetSignal;
 import basis.lang.Consumer;
 
 final class LoggingSender implements Consumer<DatagramPacket> {
 	
 	private Register<String> packetHistory = my(Signals.class).newRegister("");
+	private SetRegister<String> packetHistorySet = my(CollectionSignals.class).newSetRegister();
 
 	@Override public void consume(DatagramPacket packetToSend) {
 		byte[] bytes = packetToSend.getData();
@@ -23,12 +27,9 @@ final class LoggingSender implements Consumer<DatagramPacket> {
 		byte[] payload = payload(bytes, Seal.SIZE_IN_BYTES);
 		assertArrayEquals(ownSealBytes(), seal);
 		String current = packetHistory.output().currentValue();
-		packetHistory.setter().consume(
-			current
-			+ "| " + toString(payload)
-			+ ",to:" + packetToSend.getAddress().getHostAddress()
-			+ ",port:" + packetToSend.getPort()
-		);
+		String packet = "| " + toString(payload) + ",to:" + packetToSend.getAddress().getHostAddress() + ",port:" + packetToSend.getPort();
+		packetHistory.setter().consume(current + packet);
+		packetHistorySet.add(packet);
 	}
 
 	private String toString(byte[] payload) {
@@ -46,6 +47,10 @@ final class LoggingSender implements Consumer<DatagramPacket> {
 
 	private static byte[] ownSealBytes() {
 		return my(OwnSeal.class).get().currentValue().bytes.copy();
+	}
+
+	public SetSignal<String> historySet() {
+		return packetHistorySet.output();
 	}
 
 }

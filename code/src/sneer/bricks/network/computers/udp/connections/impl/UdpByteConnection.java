@@ -8,7 +8,9 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.Arrays;
 
+import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.Lang;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.identity.seals.OwnSeal;
@@ -30,11 +32,15 @@ class UdpByteConnection implements ByteConnection {
 	private final Consumer<DatagramPacket> sender;
 	private final Contact contact;
 	private SocketAddress lastPeerSighting;
+	@SuppressWarnings("unused") private WeakContract refToAvoidGC;
 
 	UdpByteConnection(Consumer<DatagramPacket> sender, Contact contact) {
 		this.sender = sender;
 		this.contact = contact;
-		hail();
+		
+		refToAvoidGC = my(Timer.class).wakeUpNowAndEvery(10000, new Runnable() { @Override public void run() {
+			hail();
+		}});
 	}
 
 	@Override
@@ -55,7 +61,6 @@ class UdpByteConnection implements ByteConnection {
 	void handle(DatagramPacket packet, int offset) {
 		isConnected.setter().consume(true);
 		lastPeerSighting = packet.getSocketAddress();
-		hail();
 		if (receiver == null) return;
 		receiver.consume(payload(packet.getData(), offset));
 	}

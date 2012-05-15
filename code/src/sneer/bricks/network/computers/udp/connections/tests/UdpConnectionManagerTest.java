@@ -9,6 +9,7 @@ import java.util.Arrays;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -28,6 +29,7 @@ import basis.util.concurrent.Latch;
 public class UdpConnectionManagerTest extends BrickTestBase {
 
 	
+	private static final int KEEP_ALIVE_PERIOD = 10000;
 	private UdpConnectionManager subject = my(UdpConnectionManager.class);
 
 	
@@ -60,8 +62,11 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		
 		my(InternetAddressKeeper.class).put(produceContact("Neide"), "200.201.202.203", 123);
 		
+		ByteConnection connection = connectionFor("Neide");
+		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
+		
 		PacketScheduler scheduler = new PacketSchedulerMock("foo", "bar");
-		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
+		connection.initCommunications(scheduler, my(Signals.class).sink());
 		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123| foo,to:200.201.202.203,port:123| bar,to:200.201.202.203,port:123");
 	}
 	
@@ -89,10 +94,12 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		LoggingSender sender = new LoggingSender();
 		subject.initSender(sender);
 		
-		DatagramPacket packet = packetFrom("Neide");
-				
-		subject.handle(packet);
-		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:234");
+		subject.handle(packetFrom("Neide"));
+		
+		PacketScheduler scheduler = new PacketSchedulerMock("foo");
+		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
+		
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| foo,to:200.201.202.203,port:234");
 	}
 	
 	
@@ -100,6 +107,27 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	@Ignore
 	public void shouldNotHailUnnessecerily() {
 		fail();
+	}
+	
+	@Test
+	@Ignore
+	public void onIdleRecognizeNewSighting() {
+		fail();
+	}
+	
+	@Test(timeout = 1000)
+	public void keepAlive() throws Refusal {
+		LoggingSender sender = new LoggingSender();
+		subject.initSender(sender);
+		
+		my(InternetAddressKeeper.class).put(produceContact("Neide"), "200.201.202.203", 123);
+		connectionFor("Neide");
+		
+		my(Clock.class).advanceTime(KEEP_ALIVE_PERIOD - 1);
+		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
+		
+		my(Clock.class).advanceTime(1);
+		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123| <empty>,to:200.201.202.203,port:123");
 	}
 	
 	
