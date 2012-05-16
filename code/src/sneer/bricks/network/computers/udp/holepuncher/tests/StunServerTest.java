@@ -65,13 +65,13 @@ public class StunServerTest extends BrickTestBase {
 		InetAddress ip = packet.getAddress();
 		int port = packet.getPort();
 		
-		DatagramPacket reply = subject.replyFor(packet);
-		if (reply == null) return null;
+		DatagramPacket[] reply = subject.repliesFor(packet);
+		if (reply.length == 0) return null;
 
-		assertEquals(0, reply.getOffset());
-		assertEquals(ip, reply.getAddress());
-		assertEquals(port, reply.getPort());
-		return reply;
+		assertEquals(0, reply[0].getOffset());
+		assertEquals(ip, reply[0].getAddress());
+		assertEquals(port, reply[0].getPort());
+		return reply[0];
 	}
 
 	

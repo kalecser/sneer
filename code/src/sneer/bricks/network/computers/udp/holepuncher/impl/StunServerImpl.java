@@ -10,25 +10,26 @@ import sneer.bricks.network.computers.udp.holepuncher.StunServer;
 
 class StunServerImpl implements StunServer {
 
+	private static final DatagramPacket[] NO_PACKETS = new DatagramPacket[0];
 	private final Map<String, IpAddresses> addressesBySeal = new HashMap<String, IpAddresses>();
 
 
 	@Override
-	public DatagramPacket replyFor(DatagramPacket packet) {
+	public DatagramPacket[] repliesFor(DatagramPacket packet) {
 		StunRequest req = StunRequest.umarshalFrom(packet.getData(), packet.getLength());
-		if (req == null) return null;
+		if (req == null) return NO_PACKETS;
 		
 		keepCallerAddresses(packet, req);
 
 		byte[] peer = req._peerToFind;
-		if (peer == null) return null;
+		if (peer == null) return NO_PACKETS;
 
 		IpAddresses addr = addressesBySeal.get(toString(peer));
 		StunReply reply = new StunReply(peer, addr.publicInternetAddress, addr.publicInternetPort, addr.localNetworkAddress, addr.localNetworkPort);
 		
 		int length = reply.marshalTo(packet.getData());
 		packet.setLength(length);
-		return packet;
+		return new DatagramPacket[]{packet};
 	}
 
 

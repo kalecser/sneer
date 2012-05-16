@@ -8,6 +8,6 @@ import basis.brickness.Brick;
 @Brick
 public interface StunServer {
 
-	DatagramPacket replyFor(DatagramPacket received);
+	DatagramPacket[] repliesFor(DatagramPacket received);
 
 }
