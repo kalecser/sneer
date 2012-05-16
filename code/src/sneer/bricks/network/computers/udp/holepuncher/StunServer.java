@@ -1,4 +1,4 @@
-package spikes.adenauer.puncher.server;
+package sneer.bricks.network.computers.udp.holepuncher;
 
 import java.net.DatagramPacket;
 

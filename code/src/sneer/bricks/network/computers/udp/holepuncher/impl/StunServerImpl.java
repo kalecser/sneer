@@ -1,12 +1,11 @@
-package spikes.adenauer.puncher.server.impl;
+package sneer.bricks.network.computers.udp.holepuncher.impl;
 
 import java.net.DatagramPacket;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import spikes.adenauer.puncher.IpAddresses;
-import spikes.adenauer.puncher.server.StunServer;
+import sneer.bricks.network.computers.udp.holepuncher.StunServer;
 
 
 class StunServerImpl implements StunServer {

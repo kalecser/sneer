@@ -1,8 +1,8 @@
-package spikes.adenauer.puncher.server.impl;
+package sneer.bricks.network.computers.udp.holepuncher.impl;
 
-import static spikes.adenauer.puncher.server.impl.DataUtils.dataInputFrom;
-import static spikes.adenauer.puncher.server.impl.DataUtils.ip;
-import static spikes.adenauer.puncher.server.impl.DataUtils.readNewArray;
+import static sneer.bricks.network.computers.udp.holepuncher.impl.DataUtils.dataInputFrom;
+import static sneer.bricks.network.computers.udp.holepuncher.impl.DataUtils.ip;
+import static sneer.bricks.network.computers.udp.holepuncher.impl.DataUtils.readNewArray;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
