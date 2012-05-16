@@ -129,10 +129,11 @@ class TimerImpl implements Timer {
 			_alarms.remove(this);
 			if (_isDisposed) return;
 			
+			long currentTime = currentTime();
 			step(_stepper);
 
 			if (!_isPeriodic) return;
-			_wakeUpTime = currentTime() + _period;
+			_wakeUpTime = currentTime + _period;
 			_alarms.add(this);
 		}
 
