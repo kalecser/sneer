@@ -4,6 +4,7 @@ import static basis.environments.Environments.my;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.Clipboard;
@@ -42,8 +43,9 @@ class ChatPanelImpl extends JPanel {
 	private final JScrollPane _listScrollPane;
 	private final JTextPane _shoutsList = new JTextPane();
 	private final ShoutPainter _shoutPainter = new ShoutPainter((DefaultStyledDocument) _shoutsList.getStyledDocument());
-
 	private final TextWidget<JTextPane> _messageInputPane;
+	private JSplitPane split;
+	private boolean firstTime = true;
 
 	@SuppressWarnings("unused") private Object _refToAvoidGc;
 	
@@ -90,15 +92,13 @@ class ChatPanelImpl extends JPanel {
 		horizontalLimit.add(_messageInputPane.getComponent());
 		inputScrollPane.getViewport().add(horizontalLimit);	
 		
-		JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, _listScrollPane, inputScrollPane);
+		split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, _listScrollPane, inputScrollPane);
 		split.setBorder(new EmptyBorder(0,0,0,0));
-
 		split.setOpaque(false);
-		split.setDividerLocation((int) (getHeight()*0.68)); 
 		split.setDividerSize(3);
 		setLayout(new BorderLayout());
 		add(split, BorderLayout.CENTER);
-
+		
 		_shoutsList.setBorder(new EmptyBorder(0,0,0,0));
 		_messageInputPane.getComponent().setBorder(new EmptyBorder(0,0,0,0));
 		
@@ -106,6 +106,18 @@ class ChatPanelImpl extends JPanel {
 			@Override public void focusGained(FocusEvent e) { 	_shoutsList.setEditable(false); }
 			@Override public void focusLost(FocusEvent e) {		_shoutsList.setEditable(true); }});
 	}
+	
+
+	@Override
+	public void paint(Graphics g) {
+		if(firstTime ){
+			firstTime = false;
+			split.setDividerLocation(0.7);
+			_messageInputPane.getMainWidget().requestFocus();
+		}
+		super.paint(g);
+	}
+
 
 	private void initShoutAnnouncer() {
 		_refToAvoidGc = _messages.addReceiver(new Consumer<CollectionChange<Message>>() { @Override public void consume(CollectionChange<Message> shout) {
@@ -165,6 +177,5 @@ class ChatPanelImpl extends JPanel {
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(fieldContent, this);	
 		}
 	}
-
-
+	
 }
