@@ -16,7 +16,7 @@ import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import basis.lang.Consumer;
 
-final class LoggingSender implements Consumer<DatagramPacket> {
+public final class LoggingSender implements Consumer<DatagramPacket> {
 	
 	private Register<String> packetHistory = my(Signals.class).newRegister("");
 	private SetRegister<String> packetHistorySet = my(CollectionSignals.class).newSetRegister();
@@ -37,7 +37,7 @@ final class LoggingSender implements Consumer<DatagramPacket> {
 		return ret.isEmpty() ? "<empty>" : ret;
 	}
 
-	Signal<String> history() {
+	public Signal<String> history() {
 		return packetHistory.output();
 	}
 
