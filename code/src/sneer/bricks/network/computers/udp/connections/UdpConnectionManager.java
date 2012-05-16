@@ -9,6 +9,9 @@ import basis.lang.Consumer;
 
 @Brick
 public interface UdpConnectionManager extends ConnectionManager.Delegate {
+	
+	static final int KEEP_ALIVE_PERIOD = 10000;
+	static final int IDLE_PERIOD = 3 * KEEP_ALIVE_PERIOD;
 
 	void handle(DatagramPacket packet);
 	

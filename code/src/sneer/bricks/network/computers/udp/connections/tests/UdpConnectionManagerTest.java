@@ -29,7 +29,6 @@ import basis.util.concurrent.Latch;
 public class UdpConnectionManagerTest extends BrickTestBase {
 
 	
-	private static final int KEEP_ALIVE_PERIOD = 10000;
 	private UdpConnectionManager subject = my(UdpConnectionManager.class);
 
 	
@@ -88,7 +87,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
 	}
 	
-	@Ignore
 	@Test(timeout=2000)
 	public void onReceivePacket_ShouldUseInternetAddress() throws Exception {
 		LoggingSender sender = new LoggingSender();
@@ -109,7 +107,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		fail();
 	}
 	
-	@Ignore
 	@Test(timeout = 2000)
 	public void onIdleRecognizeNewSighting() throws Exception {
 		LoggingSender sender = new LoggingSender();
@@ -117,14 +114,18 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		
 		subject.handle(packetFrom("Neide"));
 		
-		my(Clock.class).advanceTime(KEEP_ALIVE_PERIOD * 3);
+		ByteConnection connection = connectionFor("Neide");
+		
+		my(Clock.class).advanceTime(UdpConnectionManager.IDLE_PERIOD);
+		my(SignalUtils.class).waitForValue(connection.isConnected(), false);
+		
 		subject.handle(packetFrom("Neide", new byte[0], "100.101.102.103", 456));
+		my(SignalUtils.class).waitForValue(connection.isConnected(), true);
 		
 		PacketScheduler scheduler = new PacketSchedulerMock("foo");
-		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
+		connection.initCommunications(scheduler, my(Signals.class).sink());
 		
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| foo,to:100.101.102.103,port:456");
-	
 	}
 	
 	@Test(timeout = 2000)
@@ -137,14 +138,13 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		
 		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
 		
-		my(Clock.class).advanceTime(KEEP_ALIVE_PERIOD - 1);
+		my(Clock.class).advanceTime(UdpConnectionManager.KEEP_ALIVE_PERIOD - 1);
 		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
 		
 		my(Clock.class).advanceTime(1);
 		
 		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123| <empty>,to:200.201.202.203,port:123");
 	}
-	
 	
 	private DatagramPacket packetFrom(String nick, byte[] data, String ip, int port) throws Exception {
 		produceContact(nick);

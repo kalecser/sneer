@@ -5,6 +5,7 @@ import static basis.environments.Environments.my;
 import java.net.DatagramPacket;
 import java.util.Arrays;
 
+import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -18,12 +19,17 @@ import basis.lang.Functor;
 
 class UdpConnectionManagerImpl implements UdpConnectionManager{
 
+	private static final UdpByteConnection[] EMPTY_ARRAY = new UdpByteConnection[0];
 	CacheMap<Contact, UdpByteConnection> connectionsByContact = CacheMap.newInstance();
 	private Consumer<DatagramPacket> sender;
 	private final Functor<Contact, UdpByteConnection> newByteConnection = new Functor<Contact, UdpByteConnection>( ) {  @Override public UdpByteConnection evaluate(Contact contact) {
 		return new UdpByteConnection(sender, contact);
-	}}; 
-
+	}};
+	
+	@SuppressWarnings("unused") private WeakContract refToAvoidGC = my(Timer.class).wakeUpEvery(UdpConnectionManager.KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
+		updateStatus();
+	}}); 
+	
 	@Override
 	public UdpByteConnection connectionFor(Contact contact) {
 		return connectionsByContact.get(contact, newByteConnection);
@@ -62,6 +68,11 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 	public void initSender(Consumer<DatagramPacket> sender) {
 		if (this.sender != null) throw new IllegalStateException();
 		this.sender = sender;
+	}
+
+	private void updateStatus() {
+		for (UdpByteConnection connection : connectionsByContact.values().toArray(EMPTY_ARRAY))
+			connection.updateStatus();
 	}
 
 }

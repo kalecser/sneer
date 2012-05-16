@@ -18,6 +18,7 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.connections.ByteConnection;
+import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
@@ -27,21 +28,20 @@ import basis.lang.Consumer;
 
 class UdpByteConnection implements ByteConnection {
 
-	private static final int KEEP_ALIVE_PERIOD = 10000;
 	private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 	private Register<Boolean> isConnected = my(Signals.class).newRegister(false);
 	private Consumer<? super byte[]> receiver;
 	private final Consumer<DatagramPacket> sender;
 	private final Contact contact;
 	private SocketAddress lastPeerSighting;
-	private long lastPeerSightingTime = Long.MIN_VALUE;
+	private long lastPeerSightingTime = -UdpConnectionManager.IDLE_PERIOD;
 	@SuppressWarnings("unused") private WeakContract refToAvoidGC;
 
 	UdpByteConnection(Consumer<DatagramPacket> sender, Contact contact) {
 		this.sender = sender;
 		this.contact = contact;
 		
-		refToAvoidGC = my(Timer.class).wakeUpNowAndEvery(KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
+		refToAvoidGC = my(Timer.class).wakeUpNowAndEvery(UdpConnectionManager.KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
 			hail();
 		}});
 	}
@@ -62,7 +62,6 @@ class UdpByteConnection implements ByteConnection {
 	
 	
 	void handle(DatagramPacket packet, int offset) {
-		isConnected.setter().consume(true);
 		handleSighting(packet.getSocketAddress());
 		if (receiver == null) return;
 		receiver.consume(payload(packet.getData(), offset));
@@ -70,8 +69,10 @@ class UdpByteConnection implements ByteConnection {
 
 	private void handleSighting(SocketAddress sighting) {
 		long now = my(Clock.class).time().currentValue();
-		if (now - lastPeerSightingTime > 3 * KEEP_ALIVE_PERIOD) 
+		if (!isConnected.output().currentValue()){
+			isConnected.setter().consume(true);
 			lastPeerSighting = sighting;
+		}
 		if (sighting.equals(lastPeerSighting)) 
 			lastPeerSightingTime = now;
 	}
@@ -123,6 +124,12 @@ class UdpByteConnection implements ByteConnection {
 	
 	private void hail() {
 		send(EMPTY_BYTE_ARRAY);
+	}
+
+	void updateStatus() {
+		long now = my(Clock.class).time().currentValue();
+		if (now - lastPeerSightingTime >= UdpConnectionManager.IDLE_PERIOD)
+			isConnected.setter().consume(false);
 	}
 
 }
