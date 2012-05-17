@@ -32,7 +32,10 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	private UdpConnectionManager subject = my(UdpConnectionManager.class);
 
 	@Ignore @Test public void precedenceOfDestinationIps() {
-		//Own sighting
+		//DADOS:
+		//Fastest received hail return address
+
+		//HAIL:
 		//Sneer Ip & Port Own Attributes
 		//Stun response
 		//Remote sighting
