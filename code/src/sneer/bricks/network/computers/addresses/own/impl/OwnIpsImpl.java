@@ -28,7 +28,8 @@ public class OwnIpsImpl implements OwnIps {
 	private Light light = my(BlinkingLights.class).prepare(LightType.ERROR);
 
 	{
-		my(Timer.class).wakeUpNowAndEvery(TWO_MINUTES, new Closure() { @Override public void run() {
+		update();
+		my(Timer.class).wakeUpEvery(TWO_MINUTES, new Closure() { @Override public void run() {
 			update();
 		}});
 	}

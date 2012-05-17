@@ -31,7 +31,13 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	private UdpConnectionManager subject = my(UdpConnectionManager.class);
 
-	
+	@Ignore @Test public void precedenceOfDestinationIps() {
+		//Own sighting
+		//Sneer Ip & Port Own Attributes
+		//Stun response
+		//Remote sighting
+	}
+
 	@Test(timeout=2000)
 	public void onFirstPacket_ShouldConnect() throws Exception {
 		assertFalse(isConnected("Neide"));

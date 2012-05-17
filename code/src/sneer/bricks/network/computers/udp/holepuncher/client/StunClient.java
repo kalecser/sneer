@@ -8,7 +8,7 @@ import basis.lang.Consumer;
 @Brick
 public interface StunClient {
 
-	void initSender(Consumer<DatagramPacket> sender);
+	void init(Consumer<DatagramPacket> sender);
 
 	
 	
