@@ -41,9 +41,7 @@ class UdpByteConnection implements ByteConnection {
 		this.sender = sender;
 		this.contact = contact;
 		
-		refToAvoidGC = my(Timer.class).wakeUpNowAndEvery(UdpConnectionManager.KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
-			hail();
-		}});
+		startHailing();
 	}
 
 	@Override
@@ -61,6 +59,12 @@ class UdpByteConnection implements ByteConnection {
 	}
 	
 	
+	private void startHailing() {
+		refToAvoidGC = my(Timer.class).wakeUpNowAndEvery(UdpConnectionManager.KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
+			hail();
+		}});
+	}
+
 	void handle(DatagramPacket packet, int offset) {
 		handleSighting(packet.getSocketAddress());
 		if (receiver == null) return;
@@ -69,7 +73,7 @@ class UdpByteConnection implements ByteConnection {
 
 	private void handleSighting(SocketAddress sighting) {
 		long now = my(Clock.class).time().currentValue();
-		if (!isConnected.output().currentValue()){
+		if (!isConnected().currentValue()){
 			isConnected.setter().consume(true);
 			lastPeerSighting = sighting;
 		}
@@ -92,7 +96,7 @@ class UdpByteConnection implements ByteConnection {
 		if(sender == null) return false;
 		
 		byte[] ownSeal = ownSealBytes();
-		byte[] data = my(Lang.class).arrays().concat(ownSeal, payload);
+		byte[] data = my(Lang.class).arrays().concat(ownSeal, payload); //Optimize: Reuse array.
 		
 		DatagramPacket packet = packetFor(data);
 		if(packet == null) return false;
