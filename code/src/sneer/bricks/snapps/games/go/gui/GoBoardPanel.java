@@ -80,14 +80,14 @@ public class GoBoardPanel extends JPanel {
 	private volatile int _scrollXDelta;
 
 	private final Register<Move> _moveRegister;
-	private final StoneColor _side;
+	private final StoneColor _myPiecesColor;
 
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc2;
 
 
 	public GoBoardPanel(Register<Move> moveRegister, StoneColor side) {
-		_side = side;
+		_myPiecesColor = side;
 		_moveRegister = moveRegister;
 		_refToAvoidGc = _moveRegister.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) { 
 			if (move == null) return; 
@@ -164,13 +164,31 @@ public class GoBoardPanel extends JPanel {
 			graphics.drawImage(_bufferImage, x, y, this);
 		}
 		
-		
-		int scW=scoreWhite().currentValue(),
-		scB=scoreBlack().currentValue();
-		if (scW==scB) return;
-		if (_side==StoneColor.WHITE) isWinner=(scW>scB);
-		else isWinner=(scW<scB);
-		if (_board.nextToPlay()==null) graphics.drawImage((isWinner ? winImg : loseImg), 175, 185, this);
+		drawResultsIfGameEnded(graphics);
+	}
+
+	private void drawResultsIfGameEnded(Graphics graphics) {
+		if(_board.gameHasEndedWithResign()){
+			return;
+		}
+		if (_board.gameHasEnded()){
+			final int whiteScore = scoreWhite().currentValue();
+			final int blackScore = scoreBlack().currentValue();
+			final boolean draw = whiteScore==blackScore;
+			if (draw) return;
+			final boolean whiteWins = whiteScore>blackScore;
+			if(_myPiecesColor==StoneColor.WHITE){
+				isWinner = whiteWins;
+			}else{
+				final boolean blackWins = !whiteWins;
+				isWinner = blackWins;
+			}
+			Image winningDisplay = loseImg;
+			if(isWinner){
+				winningDisplay = winImg;
+			}
+			graphics.drawImage(winningDisplay, 175, 185, this);
+		}
 	}
 
 	private void drawHoverStone(Graphics2D graphics) {
@@ -304,7 +322,7 @@ public class GoBoardPanel extends JPanel {
 				return;
 			}
 			if (!_board.canPlayStone(x, y)) return;
-			if (_side != _board.nextToPlay()) return;
+			if (_myPiecesColor != _board.nextToPlay()) return;
 			_moveRegister.setter().consume(new Move(false, false, x,y, false));
 		}
 		

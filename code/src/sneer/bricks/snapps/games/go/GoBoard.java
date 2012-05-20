@@ -332,5 +332,15 @@ public class GoBoard {
 	public Signal<StoneColor> winner() {
 		return _winner.output(); 
 	}
+
+
+	public boolean gameHasEnded() {
+		return nextToPlay() == null;
+	}
+
+
+	public boolean gameHasEndedWithResign() {
+		return false;
+	}
 	
 }
