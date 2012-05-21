@@ -1,13 +1,17 @@
 package sneer.bricks.snapps.chat.gui.panels.impl;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.swing.ImageIcon;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
+
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.snapps.chat.gui.panels.Message;
 import basis.lang.exceptions.NotImplementedYet;
@@ -59,7 +63,8 @@ class ShoutPainter {
 	
 	void appendMessage(Message message) {
 		try {
-			_document.insertString(_document.getLength(), message.author() ,  _nick);
+			_document.insertString(_document.getLength(), "avatar" , addStyleImage(message.avatar()));
+			_document.insertString(_document.getLength(), " "+message.author() ,  _nick);
 			_document.insertString(_document.getLength(), header(message) ,  _time);
 			_document.insertString(_document.getLength(), message.text() ,  _shout);
 			_document.insertString(_document.getLength(), "\n\n" ,  _space);
@@ -78,6 +83,11 @@ class ShoutPainter {
 	static String getFormatedShoutTime(Message message) {
 		return FORMAT.format(new Date(message.time()));
 	}	
-
+	
+	public Style addStyleImage(Image image) {
+			Style style = _document.addStyle("", null);
+		 	StyleConstants.setIcon(style, new ImageIcon(image));
+		return style;
+	}
 }
 

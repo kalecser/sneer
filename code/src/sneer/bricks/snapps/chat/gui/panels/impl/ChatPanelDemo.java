@@ -1,6 +1,7 @@
 package sneer.bricks.snapps.chat.gui.panels.impl;
 
 import static basis.environments.Environments.my;
+
 import java.awt.BorderLayout;
 import java.awt.Image;
 
@@ -11,6 +12,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
+import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
@@ -72,7 +74,7 @@ class ChatPanelDemo {
 					
 					@Override
 					public Image avatar() {
-						return null;
+						return my(Images.class).getImage(getClass().getResource("me.png"));
 					}
 					
 					@Override
