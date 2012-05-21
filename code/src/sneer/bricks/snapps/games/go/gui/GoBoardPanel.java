@@ -163,37 +163,32 @@ public class GoBoardPanel extends JPanel {
 			int y=(int)(MARGIN+(BOARD_IMAGE_SIZE+CELL_SIZE)*(Math.floor(i/3)-1));
 			graphics.drawImage(_bufferImage, x, y, this);
 		}
+		
 		drawResultsIfGameEnded(graphics);
 	}
 
 	private void drawResultsIfGameEnded(Graphics graphics) {
-		if (!_board.gameHasEnded()){
+		if(_board.gameHasEndedWithResign()){
 			return;
 		}
-		boolean whiteWins = false;
-		final boolean endedWithResign = _board.gameHasEndedWithResign();
-		if(endedWithResign){
-			whiteWins = _board.winner().currentValue() == StoneColor.WHITE;
-		}else{
+		if (_board.gameHasEnded()){
 			final int whiteScore = scoreWhite().currentValue();
 			final int blackScore = scoreBlack().currentValue();
 			final boolean draw = whiteScore==blackScore;
 			if (draw) return;
-			whiteWins = whiteScore>blackScore;
+			final boolean whiteWins = whiteScore>blackScore;
+			if(_myPiecesColor==StoneColor.WHITE){
+				isWinner = whiteWins;
+			}else{
+				final boolean blackWins = !whiteWins;
+				isWinner = blackWins;
+			}
+			Image winningDisplay = loseImg;
+			if(isWinner){
+				winningDisplay = winImg;
+			}
+			graphics.drawImage(winningDisplay, 175, 185, this);
 		}
-		
-		if(_myPiecesColor==StoneColor.WHITE){
-			isWinner = whiteWins;
-		}else{
-			final boolean blackWins = !whiteWins;
-			isWinner = blackWins;
-		}
-		
-		Image winningDisplay = loseImg;
-		if(isWinner){
-			winningDisplay = winImg;
-		}
-		graphics.drawImage(winningDisplay, 175, 185, this);
 	}
 
 	private void drawHoverStone(Graphics2D graphics) {

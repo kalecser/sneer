@@ -142,7 +142,7 @@ public class GoBoard {
 		next();
 		
 		if (_previousWasPass)
-			endGame();
+			stopAcceptingMoves();
 		
 		_previousWasPass = true;
 	}
@@ -151,7 +151,7 @@ public class GoBoard {
 	public void resign() {
 		StoneColor loser = nextToPlay();
 		_winner.setter().consume(other(loser));
-		endGame();
+		stopAcceptingMoves();
 	}
 	
 	
@@ -257,7 +257,7 @@ public class GoBoard {
 	}
 	
 	
-	private void endGame() {
+	private void stopAcceptingMoves() {
 		_previousSituation = copySituation();
 		_nextToPlay.setter().consume(null);
 		
@@ -340,7 +340,7 @@ public class GoBoard {
 
 
 	public boolean gameHasEndedWithResign() {
-		return _winner.output() != null;
+		return false;
 	}
 	
 }
