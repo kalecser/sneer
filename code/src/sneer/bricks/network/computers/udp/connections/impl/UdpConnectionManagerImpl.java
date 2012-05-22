@@ -58,7 +58,6 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 		Contact contact = my(ContactSeals.class).contactGiven(new Seal(seal));
 		if (contact == null) return;
 		connectionFor(contact).handle(packet, Seal.SIZE_IN_BYTES);
-		
 	}
 
 	@Override

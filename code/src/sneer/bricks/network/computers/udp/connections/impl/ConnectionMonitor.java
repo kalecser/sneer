@@ -1,10 +1,10 @@
 package sneer.bricks.network.computers.udp.connections.impl;
 
 import static basis.environments.Environments.my;
-import basis.lang.Consumer;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
+import basis.lang.Consumer;
 
 class ConnectionMonitor {
 
@@ -13,7 +13,7 @@ class ConnectionMonitor {
 	private final UdpByteConnection connection;
 	private UdpSighting lastPeerSighting = null;
 	private long lastPeerSightingTime = -UdpConnectionManager.IDLE_PERIOD;
-	@SuppressWarnings("unused") private WeakContract refToAvoidGC;
+	@SuppressWarnings("unused") private final WeakContract refToAvoidGC;
 
 	ConnectionMonitor(UdpByteConnection connection) {
 		this.connection = connection;
@@ -32,7 +32,7 @@ class ConnectionMonitor {
 		if(sighting.isSameAddress(lastPeerSighting))
 			lastPeerSightingTime = my(Clock.class).time().currentValue();
 	}
-
+	
 	void keepAlive() {
 		hail();
 		disconnectIfIdle();
@@ -44,7 +44,7 @@ class ConnectionMonitor {
 
 	private void disconnectIfIdle() {
 		long now = my(Clock.class).time().currentValue();
-		if (now - lastPeerSightingTime  >= UdpConnectionManager.IDLE_PERIOD)
+		if (now - lastPeerSightingTime >= UdpConnectionManager.IDLE_PERIOD)
 			connection.becameDisconnected();
 	}
 

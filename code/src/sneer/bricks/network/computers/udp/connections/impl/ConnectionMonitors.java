@@ -12,15 +12,14 @@ import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
 class ConnectionMonitors {
 	
 	private static final ConnectionMonitor[] EMPTY_ARRAY = new ConnectionMonitor[0];
-	
 	private static final List<ConnectionMonitor> monitors = new ArrayList<ConnectionMonitor>();
-	
-	private ConnectionMonitors(){}
 
 	@SuppressWarnings("unused") private static final WeakContract refToAvoidGC = my(Timer.class).wakeUpEvery(UdpConnectionManager.KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
 		keepAlive();
 	}});
 
+	private ConnectionMonitors(){}
+	
 	static void startMonitoring(UdpByteConnection connection) {
 		monitors.add(new ConnectionMonitor(connection));
 	}
