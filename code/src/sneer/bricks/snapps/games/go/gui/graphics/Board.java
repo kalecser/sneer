@@ -18,12 +18,22 @@ public class Board{
 	}
 	
 	public void draw(Graphics2D buffer) {
+		paintBackground(buffer);
+		paintGrid(buffer);
+	}
+
+	private void paintGrid(Graphics2D buffer) {
 		buffer.setColor(new Color(0,0,0,0));
 		buffer.fillRect(0, 0, GoBoardPanel.SCREEN_SIZE, GoBoardPanel.SCREEN_SIZE);
 		buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		buffer.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		buffer.setColor(Color.black);
 		buffer.drawImage(_bufferGrid, 0, 0, null);
+	}
+
+	private void paintBackground(Graphics2D buffer) {
+		buffer.setColor(new Color(228,205,152));
+		buffer.fillRect(0, 0, GoBoardPanel.SCREEN_SIZE+10, GoBoardPanel.SCREEN_SIZE+10);
 	}
 	
 	private void paintGridSmall(Graphics2D buffer) {

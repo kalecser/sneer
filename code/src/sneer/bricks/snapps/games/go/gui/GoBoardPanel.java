@@ -5,8 +5,6 @@ import static basis.environments.Environments.my;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -25,6 +23,7 @@ import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.Move;
 import sneer.bricks.snapps.games.go.ToroidalGoBoard;
 import sneer.bricks.snapps.games.go.gui.graphics.Board;
+import sneer.bricks.snapps.games.go.gui.graphics.HUD;
 import sneer.bricks.snapps.games.go.gui.graphics.HoverStone;
 import sneer.bricks.snapps.games.go.gui.graphics.StonePainter;
 import sneer.bricks.snapps.games.go.gui.graphics.StonesInPlay;
@@ -67,7 +66,6 @@ public class GoBoardPanel extends JPanel {
 
 	private BufferedImage _bufferImage;
 	
-	private Image winImg, loseImg;//, blackStoneImg, whiteStoneImg;
 	private boolean isWinner=false;
 
 	private int _hoverX;
@@ -87,14 +85,15 @@ public class GoBoardPanel extends JPanel {
 
 	private Board board;
 	private HoverStone hoverStone;
-
 	private StonesInPlay stonesInPlay;
+	private HUD hud;
 
 	public GoBoardPanel(Register<Move> moveRegister, StoneColor side) {
 		board = new Board();
 		final StonePainter stonePainter = new StonePainter();
 		hoverStone = new HoverStone(stonePainter);
 		stonesInPlay = new StonesInPlay(stonePainter);
+		hud = new HUD();
 		
 		_side = side;
 		_moveRegister = moveRegister;
@@ -104,9 +103,7 @@ public class GoBoardPanel extends JPanel {
 		}});
 		
 		addMouseListener();
-	    _refToAvoidGc2 = my(Timer.class).wakeUpEvery(150, new Scroller());
-	    winImg=Toolkit.getDefaultToolkit().getImage(GoBoardPanel.class.getResource("images/winImg.png"));
-	    loseImg=Toolkit.getDefaultToolkit().getImage(GoBoardPanel.class.getResource("images/loseImg.png"));		
+	    _refToAvoidGc2 = my(Timer.class).wakeUpEvery(150, new Scroller());		
 	}
 	
 	private void play(Move move) {
@@ -142,25 +139,37 @@ public class GoBoardPanel extends JPanel {
 		hoverStone.draw(buffer, _board, _hoverX, _hoverY, _scrollX, _scrollY);
 		stonesInPlay.draw(buffer, _board, _scrollX, _scrollY);
 				
-		graphics.setColor(new Color(228,205,152));
-		graphics.fillRect(0, 0, SCREEN_SIZE+10, SCREEN_SIZE+10);
+		drawBoardOnAllSixCorners(graphics);
+		drawCameraBoundaries(graphics);		
+		
+		int winState = HUD.NOONE_WIN;
+		if (_board.nextToPlay()==null){
+			int scW=scoreWhite().currentValue(),
+					scB=scoreBlack().currentValue();
+			if (scW==scB) return;
+			if (_side==StoneColor.WHITE) isWinner=(scW>scB);
+			else isWinner=(scW<scB);
+			if(isWinner){
+				winState = HUD.PLAYER_WIN;
+			}else{
+				winState = HUD.PLAYER_LOSES;
+			}
+			
+		}
+		hud.draw(graphics, winState);
+	}
+
+	private void drawCameraBoundaries(Graphics graphics) {
 		graphics.setColor(Color.black);
 		((Graphics2D) graphics).draw(new Rectangle2D.Float(MARGIN+1, MARGIN+1, BOARD_IMAGE_SIZE-2, BOARD_IMAGE_SIZE-2));
-		
-		
+	}
+
+	private void drawBoardOnAllSixCorners(Graphics graphics) {
 		for (int i=0; i<9; i++) {
 			int x=(int)(MARGIN+(BOARD_IMAGE_SIZE+CELL_SIZE)*((i % 3)-1));
 			int y=(int)(MARGIN+(BOARD_IMAGE_SIZE+CELL_SIZE)*(Math.floor(i/3)-1));
 			graphics.drawImage(_bufferImage, x, y, this);
 		}
-		
-		
-		int scW=scoreWhite().currentValue(),
-		scB=scoreBlack().currentValue();
-		if (scW==scB) return;
-		if (_side==StoneColor.WHITE) isWinner=(scW>scB);
-		else isWinner=(scW<scB);
-		if (_board.nextToPlay()==null) graphics.drawImage((isWinner ? winImg : loseImg), 175, 185, this);
 	}
 
 	private int unscrollX(int x) { return (BOARD_SIZE + x - _scrollX) % BOARD_SIZE; }	
