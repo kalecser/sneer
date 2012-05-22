@@ -49,14 +49,33 @@ public class GoBoardPanel extends JPanel {
 
 		@Override
 		public void run() {
-			if(!_isScrolling) return;
+			if(!_mouseInsidePanel) return;
 			scroll();
-			if (_scrollXDelta != 0 || _scrollYDelta != 0) repaint();
+			if (_scrollingDirection != DIRECTION.STOPPED){
+				repaint();
+			}
 		}
 
 		private void scroll() {
-			_scrollX = (_scrollX + _scrollXDelta + BOARD_SIZE) % BOARD_SIZE;
-			_scrollY = (_scrollY + _scrollYDelta + BOARD_SIZE) % BOARD_SIZE;
+			
+			if (_scrollingDirection != DIRECTION.LEFT){
+//				_xOffsetMeasuredByPieces--;
+				System.out.println("before "+_xOffsetMeasuredByPieces);
+				_xOffsetMeasuredByPieces = (_xOffsetMeasuredByPieces -1 + BOARD_SIZE) % BOARD_SIZE;
+				System.out.println("after "+_xOffsetMeasuredByPieces);
+			}
+			if (_scrollingDirection != DIRECTION.RIGHT){
+//				_xOffsetMeasuredByPieces++;
+				_xOffsetMeasuredByPieces = (_xOffsetMeasuredByPieces + 1 + BOARD_SIZE) % BOARD_SIZE;
+			}
+			if (_scrollingDirection != DIRECTION.UP){
+				_yOffsetMeasuredByPieces--;
+			}
+			if (_scrollingDirection != DIRECTION.DOWN){
+				_yOffsetMeasuredByPieces++;
+			}
+			
+//			_yOffsetMeasuredByPieces = (_yOffsetMeasuredByPieces + _scrollYDelta + BOARD_SIZE) % BOARD_SIZE;
 		}
 	}
 
@@ -71,11 +90,11 @@ public class GoBoardPanel extends JPanel {
 	private int _hoverX;
 	private int _hoverY;
 
-	private volatile boolean _isScrolling;
-	private volatile int _scrollY;
-	private volatile int _scrollX;
-	private volatile int _scrollYDelta;
-	private volatile int _scrollXDelta;
+	private volatile boolean _mouseInsidePanel;
+	private volatile int _yOffsetMeasuredByPieces;
+	private volatile int _xOffsetMeasuredByPieces;
+	public static enum DIRECTION { STOPPED,UP,DOWN,LEFT,RIGHT;}
+	private volatile DIRECTION _scrollingDirection;
 
 	private final Register<Move> _moveRegister;
 	private final StoneColor _side;
@@ -136,8 +155,8 @@ public class GoBoardPanel extends JPanel {
 		Graphics2D buffer = getBuffer();
 		
 		board.draw(buffer);
-		hoverStone.draw(buffer, _board, _hoverX, _hoverY, _scrollX, _scrollY);
-		stonesInPlay.draw(buffer, _board, _scrollX, _scrollY);
+		hoverStone.draw(buffer, _board, _hoverX, _hoverY, _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
+		stonesInPlay.draw(buffer, _board, _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
 				
 		drawBoardOnAllSixCorners(graphics);
 		drawCameraBoundaries(graphics);		
@@ -172,8 +191,8 @@ public class GoBoardPanel extends JPanel {
 		}
 	}
 
-	private int unscrollX(int x) { return (BOARD_SIZE + x - _scrollX) % BOARD_SIZE; }	
-	private int unscrollY(int y) { return (BOARD_SIZE + y - _scrollY) % BOARD_SIZE; }
+	private int unscrollX(int x) { return (BOARD_SIZE + x - _xOffsetMeasuredByPieces) % BOARD_SIZE; }	
+	private int unscrollY(int y) { return (BOARD_SIZE + y - _yOffsetMeasuredByPieces) % BOARD_SIZE; }
 	
 	private Graphics2D getBuffer() {
 		_bufferImage = new BufferedImage((int)(BOARD_IMAGE_SIZE+CELL_SIZE), (int)(BOARD_IMAGE_SIZE+CELL_SIZE), 
@@ -213,13 +232,21 @@ public class GoBoardPanel extends JPanel {
 	private class GoMouseListener extends MouseAdapter {
 		@Override 
 		public void mouseMoved(final MouseEvent e) {
-			_scrollXDelta = scrollDeltaFor(e.getX());
-			_scrollYDelta = scrollDeltaFor(e.getY());
+			_scrollingDirection = getScrollingDirection(e.getX(),e.getY());
 			_hoverX = toScreenPosition(e.getX());
 			_hoverY = toScreenPosition(e.getY());
 			repaint();
 		}
 		
+		private DIRECTION getScrollingDirection(int x, int y) {
+			float bottomRightMargin = ((BOARD_SIZE-1) * CELL_SIZE) + MARGIN;
+			if (x > bottomRightMargin) return DIRECTION.RIGHT;
+			if (x < MARGIN) return DIRECTION.LEFT;
+			if (y > bottomRightMargin) return DIRECTION.DOWN;
+			if (y < MARGIN) return DIRECTION.UP;
+			return DIRECTION.STOPPED;
+		}
+
 		@Override 
 		public void mouseReleased(MouseEvent e) {
 			int x = unscrollX(toScreenPosition(e.getX()));
@@ -235,18 +262,7 @@ public class GoBoardPanel extends JPanel {
 		
 		@Override 
 		public void mouseExited(MouseEvent e) {
-			_isScrolling = false;
-		}
-		
-		@Override 
-		public void mouseEntered(MouseEvent e) {
-			_isScrolling = true;
-		}
-		
-		private int scrollDeltaFor(int coordinate) {
-			if (coordinate > (BOARD_SIZE-1) * CELL_SIZE + MARGIN) return -1;
-			if (coordinate < MARGIN) return 1;
-			return 0;
+			_scrollingDirection = DIRECTION.STOPPED;
 		}
 	}
 
