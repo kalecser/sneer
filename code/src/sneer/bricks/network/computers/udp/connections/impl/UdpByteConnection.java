@@ -10,7 +10,6 @@ import java.util.Arrays;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.identity.seals.OwnSeal;
@@ -27,19 +26,16 @@ import basis.lang.Consumer;
 
 class UdpByteConnection implements ByteConnection {
 
-	private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 	private Register<Boolean> isConnected = my(Signals.class).newRegister(false);
 	private Consumer<? super byte[]> receiver;
 	private final Consumer<DatagramPacket> sender;
 	private final Contact contact;
 	private SocketAddress lastPeerSighting;
 	private long lastPeerSightingTime = -UdpConnectionManager.IDLE_PERIOD;
-	@SuppressWarnings("unused") private WeakContract refToAvoidGC;
 
 	UdpByteConnection(Consumer<DatagramPacket> sender, Contact contact) {
 		this.sender = sender;
 		this.contact = contact;
-		hail();
 	}
 
 	@Override
@@ -83,7 +79,7 @@ class UdpByteConnection implements ByteConnection {
 			scheduler.previousPacketWasSent();
 	}
 
-	private boolean send(byte[] payload) {
+	boolean send(byte[] payload) {
 		if(sender == null) return false;
 		
 		byte[] ownSeal = ownSealBytes();
@@ -117,19 +113,12 @@ class UdpByteConnection implements ByteConnection {
 		return my(OwnSeal.class).get().currentValue().bytes.copy();
 	}
 	
-	private void hail() {
-		send(EMPTY_BYTE_ARRAY);
+	void becameDisconnected() {
+		isConnected.setter().consume(false);
 	}
 
-	void keepAlive() {
-		hail();
-		diconnectIfIdle();
-	}
-
-	private void diconnectIfIdle() {
-		long now = my(Clock.class).time().currentValue();
-		if (now - lastPeerSightingTime >= UdpConnectionManager.IDLE_PERIOD)
-			isConnected.setter().consume(false);
+	long lastPeerSightingTime() {
+		return lastPeerSightingTime;
 	}
 
 }
