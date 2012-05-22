@@ -17,7 +17,7 @@ class ConnectionMonitor {
 
 	ConnectionMonitor(UdpByteConnection connection) {
 		this.connection = connection;
-		refToAvoidGC = connection.sighting().addReceiver(new Consumer<UdpSighting>() { @Override public void consume(UdpSighting sighting) {
+		refToAvoidGC = connection.lastSighting().addReceiver(new Consumer<UdpSighting>() { @Override public void consume(UdpSighting sighting) {
 			handleSighting(sighting);
 		}});
 		keepAlive();

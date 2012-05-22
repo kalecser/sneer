@@ -93,7 +93,7 @@ class UdpByteConnection implements ByteConnection {
 		InternetAddress addr = my(InternetAddressKeeper.class).get(contact);
 		if(addr != null) return new InetSocketAddress(addr.host(), addr.port().currentValue());
 		
-		UdpSighting sighting = sighting().currentValue();
+		UdpSighting sighting = lastSighting().currentValue();
 		if(sighting != null) return sighting.address();
 		
 		return null;
@@ -111,7 +111,7 @@ class UdpByteConnection implements ByteConnection {
 		isConnected.setter().consume(false);
 	}
 	
-	Signal<UdpSighting> sighting() {
+	Signal<UdpSighting> lastSighting() {
 		return lastSighting.output();
 	}
 }
