@@ -1,10 +1,9 @@
-package sneer.bricks.snapps.games.go;
+package sneer.bricks.snapps.games.go.logic;
 
 
 import java.util.HashSet;
 import java.util.Set;
 
-import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
 
 class Intersection {
 
@@ -13,7 +12,7 @@ class Intersection {
 	private Intersection _up;
 	private Intersection _down;
 	
-	StoneColor _stone = null;
+	GoBoard.StoneColor _stone = null;
 
 	
 	void connectToYourLeft(Intersection other) {
@@ -28,13 +27,13 @@ class Intersection {
 	}
 
 	
-	void setStone(StoneColor stoneColor) throws IllegalMove {
+	void setStone(GoBoard.StoneColor stoneColor) throws IllegalMove {
 		if (!isLiberty()) throw new IllegalMove();
 		_stone = stoneColor;
 	}
 	
 	
-	void fillGroupWithNeighbours(StoneColor stoneColor, Set<Intersection> group) {
+	void fillGroupWithNeighbours(GoBoard.StoneColor stoneColor, Set<Intersection> group) {
 		if (group.contains(this)) return;
 		group.add(this);
 		
@@ -48,7 +47,7 @@ class Intersection {
 	
 	
 	void markDeadStones() {
-		StoneColor colorToKill = _stone;
+		GoBoard.StoneColor colorToKill = _stone;
 		boolean killed;
 		
 		do {
@@ -70,7 +69,7 @@ class Intersection {
 	}
 
 	
-	boolean killGroupIfSurrounded(StoneColor color) {
+	boolean killGroupIfSurrounded(GoBoard.StoneColor color) {
 		if (_stone != color) return false;
 		
 		Set<Intersection> groupWithNeighbours = getGroupWithNeighbours();

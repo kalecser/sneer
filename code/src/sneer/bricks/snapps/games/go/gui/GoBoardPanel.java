@@ -18,15 +18,15 @@ import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.snapps.games.go.GoBoard;
-import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
-import sneer.bricks.snapps.games.go.Move;
-import sneer.bricks.snapps.games.go.ToroidalGoBoard;
 import sneer.bricks.snapps.games.go.gui.graphics.Board;
 import sneer.bricks.snapps.games.go.gui.graphics.HUD;
 import sneer.bricks.snapps.games.go.gui.graphics.HoverStone;
 import sneer.bricks.snapps.games.go.gui.graphics.StonePainter;
 import sneer.bricks.snapps.games.go.gui.graphics.StonesInPlay;
+import sneer.bricks.snapps.games.go.logic.GoBoard;
+import sneer.bricks.snapps.games.go.logic.Move;
+import sneer.bricks.snapps.games.go.logic.ToroidalGoBoard;
+import sneer.bricks.snapps.games.go.logic.GoBoard.StoneColor;
 import basis.environments.Environment;
 import basis.environments.Environments;
 import basis.environments.ProxyInEnvironment;
@@ -190,27 +190,29 @@ public class GoBoardPanel extends JPanel {
 	}
 	
 
-	public Signal<Integer> scoreWhite() {return _board.whiteScore();}
-	public Signal<Integer> scoreBlack() {return _board.blackScore();}
+	public Signal<Integer> scoreWhite() {
+		return _board.whiteScore();
+	}
 	
-	public Signal<StoneColor> nextToPlaySignal() {return _board.nextToPlaySignal();}
+	public Signal<Integer> scoreBlack() {
+		return _board.blackScore();
+	}
+	
+	public Signal<StoneColor> nextToPlaySignal() {
+		return _board.nextToPlaySignal();
+	}
 
 	public void passTurn() {
 		_moveRegister.setter().consume(new Move(false, true, 0, 0, false));
 	}
+	
 	public void resignTurn() {
 		_moveRegister.setter().consume(new Move(true, false, 0, 0, false));
 	}
 	
 	private class GoMouseListener extends MouseAdapter {
-		
-		private int scrollDeltaFor(int coordinate) {
-			if (coordinate > (BOARD_SIZE-1) * CELL_SIZE + MARGIN) return -1;
-			if (coordinate < MARGIN) return 1;
-			return 0;
-		}
-
-		@Override public void mouseMoved(final MouseEvent e) {
+		@Override 
+		public void mouseMoved(final MouseEvent e) {
 			_scrollXDelta = scrollDeltaFor(e.getX());
 			_scrollYDelta = scrollDeltaFor(e.getY());
 			_hoverX = toScreenPosition(e.getX());
@@ -218,7 +220,8 @@ public class GoBoardPanel extends JPanel {
 			repaint();
 		}
 		
-		@Override public void mouseReleased(MouseEvent e) {
+		@Override 
+		public void mouseReleased(MouseEvent e) {
 			int x = unscrollX(toScreenPosition(e.getX()));
 			int y = unscrollY(toScreenPosition(e.getY()));
 			if (_board.nextToPlay()==null) {
@@ -230,8 +233,21 @@ public class GoBoardPanel extends JPanel {
 			_moveRegister.setter().consume(new Move(false, false, x,y, false));
 		}
 		
-		@Override public void mouseExited(MouseEvent e) {_isScrolling = false;}
-		@Override public void mouseEntered(MouseEvent e) {_isScrolling = true;}
+		@Override 
+		public void mouseExited(MouseEvent e) {
+			_isScrolling = false;
+		}
+		
+		@Override 
+		public void mouseEntered(MouseEvent e) {
+			_isScrolling = true;
+		}
+		
+		private int scrollDeltaFor(int coordinate) {
+			if (coordinate > (BOARD_SIZE-1) * CELL_SIZE + MARGIN) return -1;
+			if (coordinate < MARGIN) return 1;
+			return 0;
+		}
 	}
 
 }

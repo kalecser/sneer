@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.games.go;
+package sneer.bricks.snapps.games.go.network;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.identity.seals.Seal;

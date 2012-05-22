@@ -1,8 +1,8 @@
-package sneer.bricks.snapps.games.go;
+package sneer.bricks.snapps.games.go.logic;
 
 import static basis.environments.Environments.my;
-import static sneer.bricks.snapps.games.go.GoBoard.StoneColor.BLACK;
-import static sneer.bricks.snapps.games.go.GoBoard.StoneColor.WHITE;
+import static sneer.bricks.snapps.games.go.logic.GoBoard.StoneColor.BLACK;
+import static sneer.bricks.snapps.games.go.logic.GoBoard.StoneColor.WHITE;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -16,7 +16,6 @@ import sneer.bricks.pulp.reactive.Signals;
 public class GoBoard {
 
 	public static enum StoneColor { BLACK, WHITE;}
-	
 	
 	public GoBoard(int size) {
 		_intersections = new Intersection[size][size];

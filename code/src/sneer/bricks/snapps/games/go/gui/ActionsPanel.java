@@ -12,7 +12,7 @@ import basis.lang.Consumer;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
+import sneer.bricks.snapps.games.go.logic.GoBoard.StoneColor;
 
 public class ActionsPanel extends JPanel {
 	
@@ -27,7 +27,6 @@ public class ActionsPanel extends JPanel {
 		_side = side;
 		
 		final JButton passButton= new JButton("Pass");
-		
 		final JButton resignButton= new JButton("Resign");
 		 
 		add(passButton);

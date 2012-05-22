@@ -22,13 +22,13 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
-import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
-import sneer.bricks.snapps.games.go.GoInvitation;
 import sneer.bricks.snapps.games.go.GoMain;
-import sneer.bricks.snapps.games.go.GoMessage;
-import sneer.bricks.snapps.games.go.GoMove;
-import sneer.bricks.snapps.games.go.Move;
 import sneer.bricks.snapps.games.go.gui.GoFrame;
+import sneer.bricks.snapps.games.go.logic.Move;
+import sneer.bricks.snapps.games.go.logic.GoBoard.StoneColor;
+import sneer.bricks.snapps.games.go.network.GoInvitation;
+import sneer.bricks.snapps.games.go.network.GoMessage;
+import sneer.bricks.snapps.games.go.network.GoMove;
 
 class GoMainImpl implements GoMain {
 

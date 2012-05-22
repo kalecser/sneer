@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.games.go;
+package sneer.bricks.snapps.games.go.logic;
 
 
 public class Move {

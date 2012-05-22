@@ -1,10 +1,10 @@
-package sneer.bricks.snapps.games.go.tests;
+package sneer.bricks.snapps.games.go.tests.logic;
 
 import org.junit.Test;
 
-import sneer.bricks.snapps.games.go.GoBoard;
-import sneer.bricks.snapps.games.go.ToroidalGoBoard;
-import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
+import sneer.bricks.snapps.games.go.logic.GoBoard;
+import sneer.bricks.snapps.games.go.logic.ToroidalGoBoard;
+import sneer.bricks.snapps.games.go.logic.GoBoard.StoneColor;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
 public class GoTest extends BrickTestBase {

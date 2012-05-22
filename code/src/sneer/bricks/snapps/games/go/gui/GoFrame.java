@@ -14,8 +14,8 @@ import javax.swing.WindowConstants;
 import basis.lang.Closure;
 
 import sneer.bricks.pulp.reactive.Register;
-import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
-import sneer.bricks.snapps.games.go.Move;
+import sneer.bricks.snapps.games.go.logic.Move;
+import sneer.bricks.snapps.games.go.logic.GoBoard.StoneColor;
 
 public class GoFrame extends JFrame {
 	
