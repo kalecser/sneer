@@ -20,9 +20,7 @@ class ConnectionMonitors {
 	}});
 
 	static void startMonitoring(UdpByteConnection connection) {
-		ConnectionMonitor monitor = new ConnectionMonitor(connection);
-		monitor.keepAlive();
-		monitors.add(monitor);
+		monitors.add(new ConnectionMonitor(connection));
 	}
 
 	private static void keepAlive() {

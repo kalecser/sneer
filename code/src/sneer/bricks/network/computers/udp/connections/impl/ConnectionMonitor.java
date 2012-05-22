@@ -12,6 +12,7 @@ class ConnectionMonitor {
 
 	public ConnectionMonitor(UdpByteConnection connection) {
 		this.connection = connection;
+		keepAlive();
 	}
 	
 	void keepAlive() {
