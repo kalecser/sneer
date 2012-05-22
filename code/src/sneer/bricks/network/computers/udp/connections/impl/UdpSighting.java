@@ -2,7 +2,7 @@ package sneer.bricks.network.computers.udp.connections.impl;
 
 import java.net.SocketAddress;
 
-public class UdpSighting {
+class UdpSighting {
 
 	private final SocketAddress address;
 
@@ -12,6 +12,11 @@ public class UdpSighting {
 
 	public SocketAddress address() {
 		return address;
+	}
+
+	public boolean isSameAddress(UdpSighting otherAddress) {
+		if(otherAddress == null || address == null) return false;
+		return address.equals(otherAddress.address);
 	}
 
 }
