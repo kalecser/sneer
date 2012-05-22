@@ -7,6 +7,7 @@ class UdpSighting {
 	private final SocketAddress address;
 
 	public UdpSighting(SocketAddress address) {
+		if(address == null) throw new IllegalStateException();
 		this.address = address;
 	}
 
@@ -15,7 +16,7 @@ class UdpSighting {
 	}
 
 	public boolean isSameAddress(UdpSighting otherAddress) {
-		if(otherAddress == null || address == null) return false;
+		if(otherAddress == null) return false;
 		return address.equals(otherAddress.address);
 	}
 
