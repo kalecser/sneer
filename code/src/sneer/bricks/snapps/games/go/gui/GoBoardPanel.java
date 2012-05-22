@@ -13,37 +13,36 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
-
-import basis.environments.Environment;
-import basis.environments.Environments;
-import basis.environments.ProxyInEnvironment;
-import basis.lang.Closure;
-import basis.lang.Consumer;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.snapps.games.go.GoBoard;
+import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.Move;
 import sneer.bricks.snapps.games.go.ToroidalGoBoard;
-import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
+import sneer.bricks.snapps.games.go.gui.graphics.Board;
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.environments.ProxyInEnvironment;
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 public class GoBoardPanel extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 
-	private static final int BOARD_SIZE = 5;
-	private static final int SCREEN_SIZE = 500;
-	private static final float MARGIN = SCREEN_SIZE/5;
-	private static final float BOARD_IMAGE_SIZE = SCREEN_SIZE - MARGIN*2;
-	private static final float CELL_SIZE = BOARD_IMAGE_SIZE/(BOARD_SIZE-1);
-	private static final float STONE_DIAMETER = CELL_SIZE *0.97f;
+	public static final int BOARD_SIZE = 5;
+	public static final int SCREEN_SIZE = 500;
+	public static final float MARGIN = SCREEN_SIZE/5;
+	public static final float BOARD_IMAGE_SIZE = SCREEN_SIZE - MARGIN*2;
+	public static final float CELL_SIZE = BOARD_IMAGE_SIZE/(BOARD_SIZE-1);
+	public static final float STONE_DIAMETER = CELL_SIZE *0.97f;
 
 	
 	public class Scroller implements Runnable {
@@ -65,7 +64,7 @@ public class GoBoardPanel extends JPanel {
 
 	final GoBoard _board = new ToroidalGoBoard(BOARD_SIZE);
 
-	private BufferedImage _bufferImage, _bufferGrid;
+	private BufferedImage _bufferImage;
 	
 	private Image winImg, loseImg;//, blackStoneImg, whiteStoneImg;
 	private boolean isWinner=false;
@@ -85,8 +84,10 @@ public class GoBoardPanel extends JPanel {
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc2;
 
+	private Board board;
 
 	public GoBoardPanel(Register<Move> moveRegister, StoneColor side) {
+		board = new Board();
 		_side = side;
 		_moveRegister = moveRegister;
 		_refToAvoidGc = _moveRegister.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) { 
@@ -97,16 +98,7 @@ public class GoBoardPanel extends JPanel {
 		addMouseListener();
 	    _refToAvoidGc2 = my(Timer.class).wakeUpEvery(150, new Scroller());
 	    winImg=Toolkit.getDefaultToolkit().getImage(GoBoardPanel.class.getResource("images/winImg.png"));
-	    loseImg=Toolkit.getDefaultToolkit().getImage(GoBoardPanel.class.getResource("images/loseImg.png"));
-		createGridBuffer();
-		
-	}
-	
-	private void createGridBuffer() {
-		_bufferGrid = new BufferedImage((int)(BOARD_IMAGE_SIZE+CELL_SIZE), (int)(BOARD_IMAGE_SIZE+CELL_SIZE), 
-			      BufferedImage.TYPE_INT_ARGB);
-		Graphics2D buffer = (Graphics2D)_bufferGrid.getGraphics();
-		paintGridSmall(buffer);
+	    loseImg=Toolkit.getDefaultToolkit().getImage(GoBoardPanel.class.getResource("images/loseImg.png"));		
 	}
 	
 	private void play(Move move) {
@@ -138,15 +130,8 @@ public class GoBoardPanel extends JPanel {
 	private void paintInEnvironment(Graphics graphics) {
 		Graphics2D buffer = getBuffer();
 		
-		buffer.setColor(new Color(0,0,0,0));
-		buffer.fillRect(0, 0, SCREEN_SIZE, SCREEN_SIZE);
-			
+		board.draw(buffer);
 		
-		buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		buffer.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		buffer.setColor(Color.black);
-		buffer.drawImage(_bufferGrid, 0, 0, this);
-		//paintGridSmall(buffer);		
 		drawHoverStone(buffer);
 		paintStones(buffer);
 
@@ -181,16 +166,6 @@ public class GoBoardPanel extends JPanel {
 			
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		paintStoneOnCoordinates(graphics, toCoordinateSmall(_hoverX), toCoordinateSmall(_hoverY), false);
-	}
-
-	private void paintGridSmall(Graphics2D buffer) {
-		float c = 0;
-		for(int i = 0; i <= BOARD_SIZE; i++ ) {
-			buffer.setColor(Color.black);
-			buffer.draw(new Line2D.Float(c, 0, c, BOARD_IMAGE_SIZE+CELL_SIZE));
-			buffer.draw(new Line2D.Float(0, c, BOARD_IMAGE_SIZE+CELL_SIZE, c));
-			c += CELL_SIZE;
-		}
 	}
 
 	private void paintStones(Graphics2D graphics) {
