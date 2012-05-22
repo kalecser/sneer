@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 
 import sneer.bricks.snapps.games.go.gui.GoBoardPanel;
 
-public class Board implements Drawable{
+public class Board{
 
 	
 	private BufferedImage _bufferGrid;
@@ -17,12 +17,9 @@ public class Board implements Drawable{
 		createGridBuffer();
 	}
 	
-	@Override
 	public void draw(Graphics2D buffer) {
 		buffer.setColor(new Color(0,0,0,0));
 		buffer.fillRect(0, 0, GoBoardPanel.SCREEN_SIZE, GoBoardPanel.SCREEN_SIZE);
-			
-		
 		buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		buffer.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		buffer.setColor(Color.black);

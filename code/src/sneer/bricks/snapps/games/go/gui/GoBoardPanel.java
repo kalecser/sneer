@@ -27,6 +27,7 @@ import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.Move;
 import sneer.bricks.snapps.games.go.ToroidalGoBoard;
 import sneer.bricks.snapps.games.go.gui.graphics.Board;
+import sneer.bricks.snapps.games.go.gui.graphics.HoverStone;
 import basis.environments.Environment;
 import basis.environments.Environments;
 import basis.environments.ProxyInEnvironment;
@@ -85,9 +86,12 @@ public class GoBoardPanel extends JPanel {
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc2;
 
 	private Board board;
+	private HoverStone hoverStone;
 
 	public GoBoardPanel(Register<Move> moveRegister, StoneColor side) {
 		board = new Board();
+		hoverStone = new HoverStone();
+		
 		_side = side;
 		_moveRegister = moveRegister;
 		_refToAvoidGc = _moveRegister.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) { 
@@ -131,8 +135,8 @@ public class GoBoardPanel extends JPanel {
 		Graphics2D buffer = getBuffer();
 		
 		board.draw(buffer);
+		hoverStone.draw(buffer, _board, _hoverX, _hoverY, _scrollX, _scrollY);
 		
-		drawHoverStone(buffer);
 		paintStones(buffer);
 
 		
@@ -156,16 +160,6 @@ public class GoBoardPanel extends JPanel {
 		if (_side==StoneColor.WHITE) isWinner=(scW>scB);
 		else isWinner=(scW<scB);
 		if (_board.nextToPlay()==null) graphics.drawImage((isWinner ? winImg : loseImg), 175, 185, this);
-	}
-
-	private void drawHoverStone(Graphics2D graphics) {
-		if (!_board.canPlayStone(unscrollX(_hoverX), unscrollY(_hoverY))) return;
-
-		if(_board.nextToPlay() == StoneColor.BLACK) graphics.setColor(new Color(0, 0, 0, 50));
-		else graphics.setColor(new Color(255, 255, 255, 90));
-			
-		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		paintStoneOnCoordinates(graphics, toCoordinateSmall(_hoverX), toCoordinateSmall(_hoverY), false);
 	}
 
 	private void paintStones(Graphics2D graphics) {
