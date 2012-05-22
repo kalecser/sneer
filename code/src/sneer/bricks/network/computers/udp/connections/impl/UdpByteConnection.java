@@ -8,7 +8,6 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.Arrays;
 
-import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
@@ -16,7 +15,6 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.connections.ByteConnection;
-import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
@@ -30,8 +28,7 @@ class UdpByteConnection implements ByteConnection {
 	private Consumer<? super byte[]> receiver;
 	private final Consumer<DatagramPacket> sender;
 	private final Contact contact;
-	private SocketAddress lastPeerSighting;
-	private long lastPeerSightingTime = -UdpConnectionManager.IDLE_PERIOD;
+	private final Register<UdpSighting> lastSighting = my(Signals.class).newRegister(null);
 
 	UdpByteConnection(Consumer<DatagramPacket> sender, Contact contact) {
 		this.sender = sender;
@@ -53,22 +50,11 @@ class UdpByteConnection implements ByteConnection {
 	}
 	
 	void handle(DatagramPacket packet, int offset) {
-		handleSighting(packet.getSocketAddress());
+		lastSighting.setter().consume(new UdpSighting(packet.getSocketAddress()));
 		if (receiver == null) return;
 		receiver.consume(payload(packet.getData(), offset));
 	}
 
-	private void handleSighting(SocketAddress sighting) {
-		long now = my(Clock.class).time().currentValue();
-		if (!isConnected().currentValue()){
-			isConnected.setter().consume(true);
-			lastPeerSighting = sighting;
-		}
-		if (sighting.equals(lastPeerSighting)) 
-			lastPeerSightingTime = now;
-	}
-
-	
 	private byte[] payload(byte[] data, int offset) {
 		return Arrays.copyOfRange(data, offset, data.length);
 	}
@@ -106,19 +92,26 @@ class UdpByteConnection implements ByteConnection {
 	private SocketAddress peerAddress() {
 		InternetAddress addr = my(InternetAddressKeeper.class).get(contact);
 		if(addr != null) return new InetSocketAddress(addr.host(), addr.port().currentValue());
-		return lastPeerSighting;
+		
+		UdpSighting sighting = sighting().currentValue();
+		if(sighting != null) return sighting.address();
+		
+		return null;
 	}
 
 	private byte[] ownSealBytes() {
 		return my(OwnSeal.class).get().currentValue().bytes.copy();
 	}
 	
+	void becameConnected() {
+		isConnected.setter().consume(true);
+	}
+	
 	void becameDisconnected() {
 		isConnected.setter().consume(false);
 	}
-
-	long lastPeerSightingTime() {
-		return lastPeerSightingTime;
+	
+	Signal<UdpSighting> sighting() {
+		return lastSighting.output();
 	}
-
 }

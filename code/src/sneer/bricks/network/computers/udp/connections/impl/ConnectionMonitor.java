@@ -1,7 +1,9 @@
 package sneer.bricks.network.computers.udp.connections.impl;
 
 import static basis.environments.Environments.my;
+import basis.lang.Consumer;
 import sneer.bricks.hardware.clock.Clock;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
 
 class ConnectionMonitor {
@@ -9,12 +11,28 @@ class ConnectionMonitor {
 	private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 	
 	private final UdpByteConnection connection;
+	private UdpSighting lastPeerSighting = null;
+	private long lastPeerSightingTime = -UdpConnectionManager.IDLE_PERIOD;
+	@SuppressWarnings("unused") private WeakContract refToAvoidGC;
 
-	public ConnectionMonitor(UdpByteConnection connection) {
+	ConnectionMonitor(UdpByteConnection connection) {
 		this.connection = connection;
+		refToAvoidGC = connection.sighting().addReceiver(new Consumer<UdpSighting>() { @Override public void consume(UdpSighting sighting) {
+			handleSighting(sighting);
+		}});
 		keepAlive();
 	}
 	
+	private void handleSighting(UdpSighting sighting) {
+		if(sighting == null) return;
+		if(!connection.isConnected().currentValue()) {
+			lastPeerSighting = sighting;
+			connection.becameConnected();
+		}
+		if(sighting.equals(lastPeerSighting))
+			lastPeerSightingTime = my(Clock.class).time().currentValue();
+	}
+
 	void keepAlive() {
 		hail();
 		disconnectIfIdle();
@@ -26,7 +44,7 @@ class ConnectionMonitor {
 
 	private void disconnectIfIdle() {
 		long now = my(Clock.class).time().currentValue();
-		if (now - connection.lastPeerSightingTime() >= UdpConnectionManager.IDLE_PERIOD)
+		if (now - lastPeerSightingTime  >= UdpConnectionManager.IDLE_PERIOD)
 			connection.becameDisconnected();
 	}
 
