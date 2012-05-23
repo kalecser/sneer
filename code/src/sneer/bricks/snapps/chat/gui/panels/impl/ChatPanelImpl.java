@@ -16,6 +16,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
+
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -25,7 +26,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultStyledDocument;
-import basis.lang.Consumer;
+
 import sneer.bricks.hardware.gui.trayicon.TrayIcons;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.reactive.Signals;
@@ -36,6 +37,7 @@ import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
 import sneer.bricks.snapps.chat.gui.panels.Message;
+import basis.lang.Consumer;
 
 class ChatPanelImpl extends JPanel {
 

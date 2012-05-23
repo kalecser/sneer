@@ -1,19 +1,13 @@
 package sneer.bricks.snapps.wind.gui.impl;
 
 import static basis.environments.Environments.my;
-
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Image;
 import java.awt.Window;
 import java.util.Collection;
-
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
-import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.hardware.gui.trayicon.TrayIcons;
-import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.pulp.reactive.Signal;
@@ -23,6 +17,7 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.bricks.snapps.chat.ChatMessage;
+import sneer.bricks.snapps.chat.PrivateChat;
 import sneer.bricks.snapps.chat.gui.panels.ChatPanels;
 import sneer.bricks.snapps.chat.gui.panels.Message;
 import sneer.bricks.snapps.wind.Wind;
@@ -36,7 +31,6 @@ class WindGuiImpl implements WindGui {
 	private final Wind _wind = my(Wind.class);
 	private final JPanel chatPanel = my(ChatPanels.class).newPanel(convert(_wind.shoutsHeard()), _wind.megaphone()); 
 	
-	
 	@SuppressWarnings("unused") private Object _refToAvoidGc;
 
 	
@@ -49,44 +43,10 @@ class WindGuiImpl implements WindGui {
 		return my(CollectionSignals.class).adapt(shoutsHeard, new Functor<ChatMessage, Message>() {
 
 			@Override
-			public Message evaluate(ChatMessage value) {
-				return convert(value);
+			public Message evaluate(ChatMessage message) {
+				return my(PrivateChat.class).convert(message);
 			}
 		});
-	}
-
-
-	private Message convert(final ChatMessage message) {
-		return new Message() {
-			
-			@Override
-			public long time() {
-				return message.publicationTime;
-			}
-			
-			@Override
-			public String text() {
-				return message.text;
-			}
-			
-			@Override
-			public Image avatar() {
-				return isMyOwn(message) 
-					? my(Images.class).getImage(getClass().getResource("me.png")) 
-					: null;
-			}
-
-			private boolean isMyOwn(final ChatMessage message) {
-				return message.publisher.equals(my(OwnSeal.class).get().currentValue());
-			}
-			
-			@Override
-			public String author() {
-				return isMyOwn(message) 
-					? ""
-					: my(ContactSeals.class).contactGiven(message.publisher).nickname().currentValue();
-			}
-		};
 	}
 
 
