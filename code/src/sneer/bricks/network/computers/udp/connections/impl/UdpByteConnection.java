@@ -16,28 +16,29 @@ import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.pulp.reactive.Signals;
 import basis.lang.Closure;
 import basis.lang.Consumer;
 
 class UdpByteConnection implements ByteConnection {
+	
+	private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
-	private Register<Boolean> isConnected = my(Signals.class).newRegister(false);
 	private Consumer<? super byte[]> receiver;
 	private final Consumer<DatagramPacket> sender;
 	private final Contact contact;
-	private final Register<UdpSighting> lastSighting = my(Signals.class).newRegister(null);
+	private final ConnectionMonitor monitor;
 
 	UdpByteConnection(Consumer<DatagramPacket> sender, Contact contact) {
 		this.sender = sender;
 		this.contact = contact;
+		monitor = new ConnectionMonitor();
+		hail();
 	}
 
 	@Override
 	public Signal<Boolean> isConnected() {
-		return isConnected.output();
+		return monitor.isConnected();
 	}
 
 	@Override
@@ -50,7 +51,7 @@ class UdpByteConnection implements ByteConnection {
 	}
 	
 	void handle(DatagramPacket packet, int offset) {
-		lastSighting.setter().consume(new UdpSighting(packet.getSocketAddress()));
+		monitor.handleSighting(packet.getSocketAddress());
 		if (receiver == null) return;
 		receiver.consume(payload(packet.getData(), offset));
 	}
@@ -93,25 +94,19 @@ class UdpByteConnection implements ByteConnection {
 		InternetAddress addr = my(InternetAddressKeeper.class).get(contact);
 		if(addr != null) return new InetSocketAddress(addr.host(), addr.port().currentValue());
 		
-		UdpSighting sighting = lastSighting().currentValue();
-		if(sighting != null) return sighting.address();
-		
-		return null;
+		return monitor.lastSighting();
 	}
 
 	private byte[] ownSealBytes() {
 		return my(OwnSeal.class).get().currentValue().bytes.copy();
 	}
 	
-	void becameConnected() {
-		isConnected.setter().consume(true);
+	public void keepAlive() {
+		hail();
+		monitor.keepAlive();
 	}
-	
-	void becameDisconnected() {
-		isConnected.setter().consume(false);
-	}
-	
-	Signal<UdpSighting> lastSighting() {
-		return lastSighting.output();
+
+	private void hail() {
+		send(EMPTY_BYTE_ARRAY);
 	}
 }
