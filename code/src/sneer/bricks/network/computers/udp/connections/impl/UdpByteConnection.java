@@ -3,7 +3,6 @@ package sneer.bricks.network.computers.udp.connections.impl;
 import static basis.environments.Environments.my;
 
 import java.net.DatagramPacket;
-import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.Arrays;
@@ -12,9 +11,8 @@ import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.identity.seals.OwnSeal;
-import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
-import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.connections.ByteConnection;
+import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Signal;
 import basis.lang.Closure;
@@ -91,10 +89,8 @@ class UdpByteConnection implements ByteConnection {
 	}
 	
 	private SocketAddress peerAddress() {
-		InternetAddress addr = my(InternetAddressKeeper.class).get(contact);
-		if(addr != null) return new InetSocketAddress(addr.host(), addr.port().currentValue());
-		
-		return monitor.lastSighting();
+		SocketAddress addr = my(SightingKeeper.class).get(contact);
+		return addr != null ? addr : monitor.lastSighting();
 	}
 
 	private byte[] ownSealBytes() {

@@ -4,6 +4,7 @@ import static basis.environments.Environments.my;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.Arrays;
 
 import org.junit.Ignore;
@@ -13,17 +14,16 @@ import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
+import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import basis.lang.Consumer;
-import basis.lang.exceptions.Refusal;
 import basis.util.concurrent.Latch;
 
 public class UdpConnectionManagerTest extends BrickTestBase {
@@ -64,11 +64,11 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 	
 	@Test (timeout=2000)
-	public void sendData() throws Refusal {
+	public void sendData() {
 		LoggingSender sender = new LoggingSender();
 		subject.initSender(sender);
 		
-		my(InternetAddressKeeper.class).put(produceContact("Neide"), "200.201.202.203", 123);
+		my(SightingKeeper.class).put(produceContact("Neide"), new InetSocketAddress("200.201.202.203", 123));
 		
 		ByteConnection connection = connectionFor("Neide");
 		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
@@ -86,11 +86,11 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 
 	@Test(timeout=2000)
-	public void onNotConnected_ShouldSendHailingPacketsEverySoOften() throws Refusal {
+	public void onNotConnected_ShouldSendHailingPacketsEverySoOften() {
 		LoggingSender sender = new LoggingSender();
 		subject.initSender(sender);
 
-		my(InternetAddressKeeper.class).put(produceContact("Neide"), "200.201.202.203", 123);
+		my(SightingKeeper.class).put(produceContact("Neide"), new InetSocketAddress("200.201.202.203", 123));
 		
 		connectionFor("Neide");
 		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
@@ -138,11 +138,11 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	@Test(timeout = 2000)
-	public void keepAlive() throws Refusal {
+	public void keepAlive() {
 		LoggingSender sender = new LoggingSender();
 		subject.initSender(sender);
 		
-		my(InternetAddressKeeper.class).put(produceContact("Neide"), "200.201.202.203", 123);
+		my(SightingKeeper.class).put(produceContact("Neide"), new InetSocketAddress("200.201.202.203", 123));
 		connectionFor("Neide");
 		
 		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
