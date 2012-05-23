@@ -42,87 +42,75 @@ class ChatPanelImpl extends JPanel {
 	private final ListSignal<Message> _messages;
 	private final JScrollPane _listScrollPane;
 	private final JTextPane _shoutsList = new JTextPane();
-	private final ShoutPainter _shoutPainter = new ShoutPainter(
-			(DefaultStyledDocument) _shoutsList.getStyledDocument());
+	private final ShoutPainter _shoutPainter = new ShoutPainter((DefaultStyledDocument) _shoutsList.getStyledDocument());
 	private final TextWidget<JTextPane> _messageInputPane;
 	private JSplitPane split;
 	private boolean firstTime = true;
 
-	@SuppressWarnings("unused")
-	private Object _refToAvoidGc;
+	@SuppressWarnings("unused") private Object _refToAvoidGc;
+	
 
 	ChatPanelImpl(ListSignal<Message> messages, Consumer<String> messageSender) {
 		_messages = messages;
-		_listScrollPane = my(ReactiveAutoScroll.class).create(messages,
-				new Consumer<CollectionChange<Message>>() {
-					@Override
-					public void consume(CollectionChange<Message> change) {
-						if (!change.elementsRemoved().isEmpty()) {
-							_shoutPainter.repaintAllShouts(_messages);
-							return;
-						}
+		_listScrollPane = my(ReactiveAutoScroll.class).create(messages, new Consumer<CollectionChange<Message>>() { @Override public void consume(CollectionChange<Message> change) {
+			if (!change.elementsRemoved().isEmpty()){
+				_shoutPainter.repaintAllShouts(_messages);
+				return;
+			}
 
-						for (Message shout : change.elementsAdded())
-							_shoutPainter.appendMessage(shout);
-					}
-				});
+			for (Message shout : change.elementsAdded())
+				_shoutPainter.appendMessage(shout);
+		}});
 
 		_messageInputPane = my(ReactiveWidgetFactory.class).newTextPane(
-				my(Signals.class).newRegister("").output(), messageSender,
-				NotificationPolicy.OnEnterPressed);
-
+			my(Signals.class).newRegister("").output(), messageSender, NotificationPolicy.OnEnterPressed
+		);
+		
 		init();
-	}
-
+	} 
+	
+	
 	private void init() {
 		initGui();
 		initShoutAnnouncer();
 		new WindClipboardSupport();
 	}
 
+	
 	private void initGui() {
 		_listScrollPane.getViewport().add(_shoutsList);
 		JScrollPane inputScrollPane = new JScrollPane();
-		JPanel horizontalLimit = new JPanel() {
+		JPanel horizontalLimit = new JPanel(){
 			@Override
 			public Dimension getPreferredSize() {
 				Dimension preferredSize = super.getPreferredSize();
-				preferredSize.setSize(getWidth() - 30,
-						preferredSize.getHeight());
+				preferredSize.setSize(getWidth()-30, preferredSize.getHeight());
 				return preferredSize;
 			}
 		};
 		horizontalLimit.setLayout(new BorderLayout());
 		horizontalLimit.add(_messageInputPane.getComponent());
-		inputScrollPane.getViewport().add(horizontalLimit);
-
-		split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, _listScrollPane,
-				inputScrollPane);
-		split.setBorder(new EmptyBorder(0, 0, 0, 0));
+		inputScrollPane.getViewport().add(horizontalLimit);	
+		
+		split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, _listScrollPane, inputScrollPane);
+		split.setBorder(new EmptyBorder(0,0,0,0));
 		split.setOpaque(false);
 		split.setDividerSize(3);
 		setLayout(new BorderLayout());
 		add(split, BorderLayout.CENTER);
-
-		_shoutsList.setBorder(new EmptyBorder(0, 0, 0, 0));
-		_messageInputPane.getComponent().setBorder(new EmptyBorder(0, 0, 0, 0));
-
-		_shoutsList.addFocusListener(new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				_shoutsList.setEditable(false);
-			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				_shoutsList.setEditable(true);
-			}
-		});
+		
+		_shoutsList.setBorder(new EmptyBorder(0,0,0,0));
+		_messageInputPane.getComponent().setBorder(new EmptyBorder(0,0,0,0));
+		
+		_shoutsList.addFocusListener(new FocusListener(){
+			@Override public void focusGained(FocusEvent e) { 	_shoutsList.setEditable(false); }
+			@Override public void focusLost(FocusEvent e) {		_shoutsList.setEditable(true); }});
 	}
+	
 
 	@Override
 	public void paint(Graphics g) {
-		if (firstTime) {
+		if(firstTime ){
 			firstTime = false;
 			split.setDividerLocation(0.7);
 			_messageInputPane.getMainWidget().requestFocus();
@@ -130,19 +118,16 @@ class ChatPanelImpl extends JPanel {
 		super.paint(g);
 	}
 
-	private void initShoutAnnouncer() {
-		_refToAvoidGc = _messages
-				.addReceiver(new Consumer<CollectionChange<Message>>() {
-					@Override
-					public void consume(CollectionChange<Message> shout) {
-						shoutAlert(shout.elementsAdded());
-					}
-				});
-	}
 
+	private void initShoutAnnouncer() {
+		_refToAvoidGc = _messages.addReceiver(new Consumer<CollectionChange<Message>>() { @Override public void consume(CollectionChange<Message> shout) {
+			shoutAlert(shout.elementsAdded());
+		}});
+	}
+	
 	private void shoutAlert(Collection<Message> shouts) {
 		Window window = SwingUtilities.windowForComponent(this);
-		if (window == null || !window.isActive())
+		if(window == null || !window.isActive())
 			alertUser(shouts);
 	}
 
@@ -153,50 +138,44 @@ class ChatPanelImpl extends JPanel {
 
 	private String shoutsAsString(Collection<Message> messages) {
 		StringBuilder shoutsAsString = new StringBuilder();
-		for (Message message : messages) {
-
+		for (Message message : messages){
+			
 			if (shoutsAsString.length() > 0)
 				shoutsAsString.append("\n");
-
+			
 			shoutsAsString.append(message.author() + " - " + message.text());
 		}
 		return shoutsAsString.toString();
 	}
 
-	private final class WindClipboardSupport implements ClipboardOwner {
-
-		private WindClipboardSupport() {
+	private final class WindClipboardSupport implements ClipboardOwner{
+		
+		private WindClipboardSupport(){
 			addKeyStrokeListener();
 		}
 
 		private void addKeyStrokeListener() {
 			int modifiers = getPortableSoModifiers();
-			final KeyStroke ctrlc = KeyStroke.getKeyStroke(KeyEvent.VK_C,
-					modifiers);
-			_shoutsList.getInputMap().put(ctrlc, "ctrlc");
-			_shoutsList.getActionMap().put("ctrlc", new AbstractAction() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					copySelectedShoutToClipboard();
-				}
-			});
+			final KeyStroke ctrlc = KeyStroke.getKeyStroke(KeyEvent.VK_C, modifiers);
+			_shoutsList.getInputMap().put(ctrlc,  "ctrlc");
+			_shoutsList.getActionMap().put("ctrlc",  new AbstractAction(){@Override public void actionPerformed(ActionEvent e) {
+				copySelectedShoutToClipboard();
+			}});
 		}
-
+		
 		@Override
 		public void lostOwnership(Clipboard arg0, Transferable arg1) {
 			my(Logger.class).log("Lost Clipboard Ownership.");
 		}
-
+		
 		private int getPortableSoModifiers() {
 			return Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		}
-
+		
 		private void copySelectedShoutToClipboard() {
-			StringSelection fieldContent = new StringSelection(
-					_shoutsList.getSelectedText());
-			Toolkit.getDefaultToolkit().getSystemClipboard()
-					.setContents(fieldContent, this);
+			StringSelection fieldContent = new StringSelection(_shoutsList.getSelectedText());
+			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(fieldContent, this);	
 		}
 	}
-
+	
 }
