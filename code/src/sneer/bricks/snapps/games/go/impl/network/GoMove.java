@@ -1,7 +1,7 @@
-package sneer.bricks.snapps.games.go.network;
+package sneer.bricks.snapps.games.go.impl.network;
 
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.snapps.games.go.logic.Move;
+import sneer.bricks.snapps.games.go.impl.logic.Move;
 
 public class GoMove extends GoMessage {
 

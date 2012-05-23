@@ -23,12 +23,12 @@ import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.bricks.snapps.games.go.GoMain;
-import sneer.bricks.snapps.games.go.gui.GoFrame;
-import sneer.bricks.snapps.games.go.logic.Move;
-import sneer.bricks.snapps.games.go.logic.GoBoard.StoneColor;
-import sneer.bricks.snapps.games.go.network.GoInvitation;
-import sneer.bricks.snapps.games.go.network.GoMessage;
-import sneer.bricks.snapps.games.go.network.GoMove;
+import sneer.bricks.snapps.games.go.impl.gui.GoFrame;
+import sneer.bricks.snapps.games.go.impl.logic.Move;
+import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
+import sneer.bricks.snapps.games.go.impl.network.GoInvitation;
+import sneer.bricks.snapps.games.go.impl.network.GoMessage;
+import sneer.bricks.snapps.games.go.impl.network.GoMove;
 
 class GoMainImpl implements GoMain {
 
@@ -89,7 +89,12 @@ class GoMainImpl implements GoMain {
 
 //			my(TimeboxedEventQueue.class).startQueueing(5000); // Fix: Talk to Klaus about Timebox issue
 		my(GuiThread.class).invokeAndWaitForWussies(new Closure(){@Override public void run() {
-			new GoFrame(_moveRegister, stoneColor.value, 0);
+			RemotePlayer remotePlayer = new RemotePlayerOnSneer(_moveRegister);
+			System.out.println("A");
+			RemoteBoard remoteBoard = new RemoteBoardOnSneer(_moveRegister);
+			System.out.println("B");
+			new GoFrame(remotePlayer,remoteBoard, stoneColor.value, 0);
+			System.out.println("C");
 		}});
 		
 		_refToAvoidGc2 = _moveRegister.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) {

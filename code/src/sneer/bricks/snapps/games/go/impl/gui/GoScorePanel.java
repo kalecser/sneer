@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.games.go.gui;
+package sneer.bricks.snapps.games.go.impl.gui;
 
 import static basis.environments.Environments.my;
 

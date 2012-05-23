@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.games.go.gui.graphics;
+package sneer.bricks.snapps.games.go.impl.gui.graphics;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -6,7 +6,7 @@ import java.awt.RenderingHints;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 
-import sneer.bricks.snapps.games.go.gui.GoBoardPanel;
+import sneer.bricks.snapps.games.go.impl.gui.GoBoardPanel;
 
 public class BoardPainter{
 

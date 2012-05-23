@@ -1,4 +1,5 @@
-package sneer.bricks.snapps.games.go.logic;
+package sneer.bricks.snapps.games.go.impl.logic;
+
 
 
 

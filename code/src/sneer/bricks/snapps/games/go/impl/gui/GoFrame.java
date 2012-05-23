@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.games.go.gui;
+package sneer.bricks.snapps.games.go.impl.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -11,24 +11,26 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
+import sneer.bricks.snapps.games.go.impl.RemoteBoard;
+import sneer.bricks.snapps.games.go.impl.RemotePlayer;
+import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import basis.lang.Closure;
-
-import sneer.bricks.pulp.reactive.Register;
-import sneer.bricks.snapps.games.go.logic.Move;
-import sneer.bricks.snapps.games.go.logic.GoBoard.StoneColor;
 
 public class GoFrame extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	private final StoneColor _side;
 	
-	public GoFrame(Register<Move> _move, StoneColor side, int horizontalPosition) {
+	static {System.out.println("Go Frame static");}
+	
+	public GoFrame(final RemotePlayer remotePlayer, final RemoteBoard remoteBoard, StoneColor side, int horizontalPosition) {
+		System.out.println("GoFrame");
 		_side = side;
 	
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Go - " + _side.name());	  
 	    setResizable(false);
-	    addComponentPanel(_move);
+	    addComponentPanel(remotePlayer,remoteBoard); 
 	    setVisible(true);
 	    int bord=getInsets().left+getInsets().right;
 	    setBounds(horizontalPosition*(500+bord)+100, 100, 500+bord, 575);
@@ -36,11 +38,11 @@ public class GoFrame extends JFrame {
 		//setLocationRelativeTo(null);
 	}
 
-	private void addComponentPanel(Register<Move> move) {
+	private void addComponentPanel(final RemotePlayer remotePlayer, final RemoteBoard remoteBoard) {
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 		
-		final GoBoardPanel goBoardPanel = new GoBoardPanel(move, _side);
+		final GoBoardPanel goBoardPanel = new GoBoardPanel(remotePlayer,remoteBoard, _side);
 		contentPane.add(goBoardPanel, BorderLayout.CENTER);
 		
 		JPanel goEastPanel = new JPanel();

@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.games.go.logic;
+package sneer.bricks.snapps.games.go.impl.logic;
 
 
 import java.util.HashSet;
@@ -14,6 +14,16 @@ class Intersection {
 	
 	GoBoard.StoneColor _stone = null;
 
+		
+	protected Intersection copy(){
+		Intersection intersection = new Intersection();
+		intersection._left = _left;
+		intersection._right = _right;
+		intersection._up = _up;
+		intersection._down = _down;
+		intersection._stone = _stone;
+		return intersection;
+	}
 	
 	void connectToYourLeft(Intersection other) {
 		_left = other;

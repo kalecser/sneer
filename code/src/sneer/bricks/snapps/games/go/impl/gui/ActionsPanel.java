@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.games.go.gui;
+package sneer.bricks.snapps.games.go.impl.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,13 +6,12 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import basis.environments.ProxyInEnvironment;
 import basis.lang.Closure;
 import basis.lang.Consumer;
-
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.snapps.games.go.logic.GoBoard.StoneColor;
 
 public class ActionsPanel extends JPanel {
 	

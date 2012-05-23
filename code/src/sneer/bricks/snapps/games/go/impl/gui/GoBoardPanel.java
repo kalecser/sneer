@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.games.go.gui;
+package sneer.bricks.snapps.games.go.impl.gui;
 
 import static basis.environments.Environments.my;
 
@@ -16,22 +16,22 @@ import javax.swing.JPanel;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.snapps.games.go.gui.graphics.BoardPainter;
-import sneer.bricks.snapps.games.go.gui.graphics.HUDPainter;
-import sneer.bricks.snapps.games.go.gui.graphics.HoverStonePainter;
-import sneer.bricks.snapps.games.go.gui.graphics.StonePainter;
-import sneer.bricks.snapps.games.go.gui.graphics.StonesInPlayPainter;
-import sneer.bricks.snapps.games.go.logic.GoBoard;
-import sneer.bricks.snapps.games.go.logic.Move;
-import sneer.bricks.snapps.games.go.logic.ToroidalGoBoard;
-import sneer.bricks.snapps.games.go.logic.GoBoard.StoneColor;
+import sneer.bricks.snapps.games.go.impl.RemoteBoard;
+import sneer.bricks.snapps.games.go.impl.RemotePlayer;
+import sneer.bricks.snapps.games.go.impl.gui.graphics.BoardPainter;
+import sneer.bricks.snapps.games.go.impl.gui.graphics.HUDPainter;
+import sneer.bricks.snapps.games.go.impl.gui.graphics.HoverStonePainter;
+import sneer.bricks.snapps.games.go.impl.gui.graphics.StonePainter;
+import sneer.bricks.snapps.games.go.impl.gui.graphics.StonesInPlayPainter;
+import sneer.bricks.snapps.games.go.impl.logic.GoBoard;
+import sneer.bricks.snapps.games.go.impl.logic.Move;
+import sneer.bricks.snapps.games.go.impl.logic.ToroidalGoBoard;
+import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import basis.environments.Environment;
 import basis.environments.Environments;
 import basis.environments.ProxyInEnvironment;
 import basis.lang.Closure;
-import basis.lang.Consumer;
 
 public class GoBoardPanel extends JPanel {
 	
@@ -85,16 +85,13 @@ public class GoBoardPanel extends JPanel {
 	private int _hoverX;
 	private int _hoverY;
 
-	private volatile boolean _mouseInsidePanel;
 	private volatile int _yOffsetMeasuredByPieces;
 	private volatile int _xOffsetMeasuredByPieces;
 	public static enum DIRECTION { STOPPED,UP,DOWN,LEFT,RIGHT;}
 	private volatile DIRECTION _scrollingDirection;
 
-	private final Register<Move> _moveRegister;
 	private final StoneColor _side;
 
-	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc2;
 
 	private BoardPainter _boardPainter;
@@ -102,11 +99,13 @@ public class GoBoardPanel extends JPanel {
 	private StonesInPlayPainter _stonesInPlayPainter;
 	private HUDPainter _hudPainter;
 
-	public static void main(String[] args) {
-		
-	}
+	private final RemotePlayer _remotePlayer;
+
+	private final RemoteBoard _remoteBoard;
 	
-	public GoBoardPanel(Register<Move> moveRegister, StoneColor side) {
+	public GoBoardPanel(final RemotePlayer remotePlayer, final RemoteBoard remoteBoard, StoneColor side) {
+		_remotePlayer = remotePlayer;
+		_remoteBoard = remoteBoard;
 		_boardPainter = new BoardPainter();
 		final StonePainter stonePainter = new StonePainter();
 		_hoverStonePainter = new HoverStonePainter(stonePainter);
@@ -114,11 +113,7 @@ public class GoBoardPanel extends JPanel {
 		_hudPainter = new HUDPainter();
 		
 		_side = side;
-		_moveRegister = moveRegister;
-		_refToAvoidGc = _moveRegister.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) { 
-			if (move == null) return; 
-			play(move); 
-		}});
+		_remotePlayer.setBoard(this);
 		
 		addMouseListener();
 	    _refToAvoidGc2 = my(Timer.class).wakeUpEvery(150, new Scroller());		
@@ -150,7 +145,7 @@ public class GoBoardPanel extends JPanel {
 		_yOffsetMeasuredByPieces = (_yOffsetMeasuredByPieces + scrollYDelta + BOARD_SIZE) % BOARD_SIZE;
 	}
 
-	private void play(Move move) {
+	public void play(Move move) {
 		if (move.isResign) _board.resign();
 		else {
 			if (move.isPass) _board.passTurn();
@@ -247,11 +242,13 @@ public class GoBoardPanel extends JPanel {
 	}
 
 	public void passTurn() {
-		_moveRegister.setter().consume(new Move(false, true, 0, 0, false));
+		Move move = new Move(false, true, 0, 0, false);
+		_remoteBoard.play(move);
 	}
 	
 	public void resignTurn() {
-		_moveRegister.setter().consume(new Move(true, false, 0, 0, false));
+		Move move = new Move(true, false, 0, 0, false);
+		_remoteBoard.play(move);
 	}
 	
 	private class GoMouseListener extends MouseAdapter {
@@ -277,12 +274,14 @@ public class GoBoardPanel extends JPanel {
 			int x = unscrollX(toScreenPosition(e.getX()));
 			int y = unscrollY(toScreenPosition(e.getY()));
 			if (_board.nextToPlay()==null) {
-				_moveRegister.setter().consume(new Move(false, false, x,y, true));
+				Move move = new Move(false, false, x,y, true);
+				_remoteBoard.play(move);
 				return;
 			}
 			if (!_board.canPlayStone(x, y)) return;
 			if (_side != _board.nextToPlay()) return;
-			_moveRegister.setter().consume(new Move(false, false, x,y, false));
+			Move move = new Move(false, false, x,y, false);
+			_remoteBoard.play(move);
 		}
 		
 		@Override 

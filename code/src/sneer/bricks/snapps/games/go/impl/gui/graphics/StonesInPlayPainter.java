@@ -1,11 +1,11 @@
-package sneer.bricks.snapps.games.go.gui.graphics;
+package sneer.bricks.snapps.games.go.impl.gui.graphics;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import sneer.bricks.snapps.games.go.gui.GoBoardPanel;
-import sneer.bricks.snapps.games.go.logic.GoBoard;
-import sneer.bricks.snapps.games.go.logic.GoBoard.StoneColor;
+import sneer.bricks.snapps.games.go.impl.gui.GoBoardPanel;
+import sneer.bricks.snapps.games.go.impl.logic.GoBoard;
+import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 
 
 public class StonesInPlayPainter {

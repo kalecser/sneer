@@ -1,14 +1,13 @@
-package sneer.bricks.snapps.games.go.logic;
+package sneer.bricks.snapps.games.go.impl.logic;
 
 import static basis.environments.Environments.my;
-import static sneer.bricks.snapps.games.go.logic.GoBoard.StoneColor.BLACK;
-import static sneer.bricks.snapps.games.go.logic.GoBoard.StoneColor.WHITE;
+import static sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor.BLACK;
+import static sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor.WHITE;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import sneer.bricks.hardware.ram.deepcopy.DeepCopier;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -208,7 +207,13 @@ public class GoBoard {
 	
 	
 	private Intersection[][] copySituation() {
-		return my(DeepCopier.class).deepCopy(_intersections);
+		Intersection[][] copy =  new Intersection[_intersections.length][_intersections[0].length];
+		for (int i = 0; i < copy.length; i++) {
+			for (int j = 0; j < copy[i].length; j++) {
+				copy[i][j] = _intersections[i][j].copy();
+			}
+		}
+		return copy;
 	}
 	
 	
