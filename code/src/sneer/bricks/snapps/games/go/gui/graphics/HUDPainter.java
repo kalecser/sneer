@@ -6,7 +6,7 @@ import java.awt.Toolkit;
 
 import sneer.bricks.snapps.games.go.gui.GoBoardPanel;
 
-public class HUD {
+public class HUDPainter {
 
 	public static int NOONE_WIN = 0;
 	public static int PLAYER_WIN = 1;
@@ -14,7 +14,7 @@ public class HUD {
 	
 	private Image winImg, loseImg;
 	
-	public HUD() {
+	public HUDPainter() {
 		winImg=Toolkit.getDefaultToolkit().getImage(GoBoardPanel.class.getResource("images/winImg.png"));
 	    loseImg=Toolkit.getDefaultToolkit().getImage(GoBoardPanel.class.getResource("images/loseImg.png"));
 	}

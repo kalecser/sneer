@@ -8,12 +8,12 @@ import java.awt.image.BufferedImage;
 
 import sneer.bricks.snapps.games.go.gui.GoBoardPanel;
 
-public class Board{
+public class BoardPainter{
 
 	
 	private BufferedImage _bufferGrid;
 	
-	public Board() {
+	public BoardPainter() {
 		createGridBuffer();
 	}
 	

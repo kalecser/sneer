@@ -18,11 +18,11 @@ import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.snapps.games.go.gui.graphics.Board;
-import sneer.bricks.snapps.games.go.gui.graphics.HUD;
-import sneer.bricks.snapps.games.go.gui.graphics.HoverStone;
+import sneer.bricks.snapps.games.go.gui.graphics.BoardPainter;
+import sneer.bricks.snapps.games.go.gui.graphics.HUDPainter;
+import sneer.bricks.snapps.games.go.gui.graphics.HoverStonePainter;
 import sneer.bricks.snapps.games.go.gui.graphics.StonePainter;
-import sneer.bricks.snapps.games.go.gui.graphics.StonesInPlay;
+import sneer.bricks.snapps.games.go.gui.graphics.StonesInPlayPainter;
 import sneer.bricks.snapps.games.go.logic.GoBoard;
 import sneer.bricks.snapps.games.go.logic.Move;
 import sneer.bricks.snapps.games.go.logic.ToroidalGoBoard;
@@ -49,7 +49,6 @@ public class GoBoardPanel extends JPanel {
 
 		@Override
 		public void run() {
-			if(!_mouseInsidePanel) return;
 			scroll();
 			if (_scrollingDirection != DIRECTION.STOPPED){
 				repaint();
@@ -58,25 +57,21 @@ public class GoBoardPanel extends JPanel {
 
 		private void scroll() {
 			
-			if (_scrollingDirection != DIRECTION.LEFT){
-//				_xOffsetMeasuredByPieces--;
-				System.out.println("before "+_xOffsetMeasuredByPieces);
-				_xOffsetMeasuredByPieces = (_xOffsetMeasuredByPieces -1 + BOARD_SIZE) % BOARD_SIZE;
-				System.out.println("after "+_xOffsetMeasuredByPieces);
+			if (_scrollingDirection == DIRECTION.LEFT){
+				scrollOnePieceToTheLeft();
 			}
-			if (_scrollingDirection != DIRECTION.RIGHT){
-//				_xOffsetMeasuredByPieces++;
-				_xOffsetMeasuredByPieces = (_xOffsetMeasuredByPieces + 1 + BOARD_SIZE) % BOARD_SIZE;
+			if (_scrollingDirection == DIRECTION.RIGHT){
+				scrollOnePieceToTheRight();
 			}
-			if (_scrollingDirection != DIRECTION.UP){
-				_yOffsetMeasuredByPieces--;
+			if (_scrollingDirection == DIRECTION.UP){
+				scrollOnePieceToTheTop();
 			}
-			if (_scrollingDirection != DIRECTION.DOWN){
-				_yOffsetMeasuredByPieces++;
+			if (_scrollingDirection == DIRECTION.DOWN){
+				scrollOnePieceToTheBottom();
 			}
-			
-//			_yOffsetMeasuredByPieces = (_yOffsetMeasuredByPieces + _scrollYDelta + BOARD_SIZE) % BOARD_SIZE;
 		}
+
+		
 	}
 
 	private final Environment _environment = my(Environment.class);
@@ -102,17 +97,21 @@ public class GoBoardPanel extends JPanel {
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc;
 	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc2;
 
-	private Board board;
-	private HoverStone hoverStone;
-	private StonesInPlay stonesInPlay;
-	private HUD hud;
+	private BoardPainter _boardPainter;
+	private HoverStonePainter _hoverStonePainter;
+	private StonesInPlayPainter _stonesInPlayPainter;
+	private HUDPainter _hudPainter;
 
+	public static void main(String[] args) {
+		
+	}
+	
 	public GoBoardPanel(Register<Move> moveRegister, StoneColor side) {
-		board = new Board();
+		_boardPainter = new BoardPainter();
 		final StonePainter stonePainter = new StonePainter();
-		hoverStone = new HoverStone(stonePainter);
-		stonesInPlay = new StonesInPlay(stonePainter);
-		hud = new HUD();
+		_hoverStonePainter = new HoverStonePainter(stonePainter);
+		_stonesInPlayPainter = new StonesInPlayPainter(stonePainter);
+		_hudPainter = new HUDPainter();
 		
 		_side = side;
 		_moveRegister = moveRegister;
@@ -125,6 +124,32 @@ public class GoBoardPanel extends JPanel {
 	    _refToAvoidGc2 = my(Timer.class).wakeUpEvery(150, new Scroller());		
 	}
 	
+	private void scrollOnePieceToTheRight() {
+		scrollPiecesHorizontally(1);
+	}
+	
+	private void scrollOnePieceToTheLeft() {
+		scrollPiecesHorizontally(-1);
+	}
+	
+	private void scrollOnePieceToTheTop() {
+		scrollPiecesVerticaly(-1);
+	}
+	
+	private void scrollOnePieceToTheBottom() {
+		scrollPiecesVerticaly(1);
+	}
+	
+	private void scrollPiecesHorizontally(int scrollXDelta) {
+		System.out.println(_xOffsetMeasuredByPieces);
+		_xOffsetMeasuredByPieces = (_xOffsetMeasuredByPieces + scrollXDelta + BOARD_SIZE) % BOARD_SIZE;
+		System.out.println(">"+_xOffsetMeasuredByPieces);
+	}
+	
+	private void scrollPiecesVerticaly(int scrollYDelta) {
+		_yOffsetMeasuredByPieces = (_yOffsetMeasuredByPieces + scrollYDelta + BOARD_SIZE) % BOARD_SIZE;
+	}
+
 	private void play(Move move) {
 		if (move.isResign) _board.resign();
 		else {
@@ -154,14 +179,14 @@ public class GoBoardPanel extends JPanel {
 	private void paintInEnvironment(Graphics graphics) {
 		Graphics2D buffer = getBuffer();
 		
-		board.draw(buffer);
-		hoverStone.draw(buffer, _board, _hoverX, _hoverY, _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
-		stonesInPlay.draw(buffer, _board, _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
+		_boardPainter.draw(buffer);
+		_hoverStonePainter.draw(buffer, _board, _hoverX, _hoverY, _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
+		_stonesInPlayPainter.draw(buffer, _board, _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
 				
 		drawBoardOnAllSixCorners(graphics);
 		drawCameraBoundaries(graphics);		
 		
-		int winState = HUD.NOONE_WIN;
+		int winState = HUDPainter.NOONE_WIN;
 		if (_board.nextToPlay()==null){
 			int scW=scoreWhite().currentValue(),
 					scB=scoreBlack().currentValue();
@@ -169,13 +194,13 @@ public class GoBoardPanel extends JPanel {
 			if (_side==StoneColor.WHITE) isWinner=(scW>scB);
 			else isWinner=(scW<scB);
 			if(isWinner){
-				winState = HUD.PLAYER_WIN;
+				winState = HUDPainter.PLAYER_WIN;
 			}else{
-				winState = HUD.PLAYER_LOSES;
+				winState = HUDPainter.PLAYER_LOSES;
 			}
 			
 		}
-		hud.draw(graphics, winState);
+		_hudPainter.draw(graphics, winState);
 	}
 
 	private void drawCameraBoundaries(Graphics graphics) {

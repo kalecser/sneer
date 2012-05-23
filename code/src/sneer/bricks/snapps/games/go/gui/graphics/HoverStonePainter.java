@@ -8,11 +8,11 @@ import sneer.bricks.snapps.games.go.gui.GoBoardPanel;
 import sneer.bricks.snapps.games.go.logic.GoBoard;
 import sneer.bricks.snapps.games.go.logic.GoBoard.StoneColor;
 
-public class HoverStone{
+public class HoverStonePainter{
 
 	private StonePainter stonePainter;
 
-	public HoverStone(final StonePainter stonePainter) {
+	public HoverStonePainter(final StonePainter stonePainter) {
 		this.stonePainter = stonePainter;
 	}
 	
