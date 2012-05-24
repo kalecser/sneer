@@ -1,12 +1,15 @@
 package sneer.bricks.snapps.wind.gui.impl;
 
 import static basis.environments.Environments.my;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Window;
 import java.util.Collection;
+
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
 import sneer.bricks.hardware.gui.trayicon.TrayIcons;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -77,24 +80,19 @@ class WindGuiImpl implements WindGui {
 	}
 
 	private synchronized void alertUser(Collection<ChatMessage> shouts) {
-
 		String shoutsAsString = shoutsAsString(shouts);
 		my(TrayIcons.class).messageBalloon("New shouts heard", shoutsAsString);
 		// _player.play(this.getClass().getResource("alert.wav"));
 	}
 
 	private String shoutsAsString(Collection<ChatMessage> shouts) {
-		StringBuilder shoutsAsString = new StringBuilder();
+		StringBuilder ret = new StringBuilder();
 		for (ChatMessage shout : shouts){
-			
-			if (shoutsAsString.length() > 0){
-				shoutsAsString.append("\n");
-			}
-			
+			if (ret.length() > 0) ret.append("\n");
 			Seal publisher = shout.publisher;
-			shoutsAsString.append(nicknameOf(publisher) + " - " + shout.text);
+			ret.append(nicknameOf(publisher) + " - " + shout.text);
 		}
-		return shoutsAsString.toString();
+		return ret.toString();
 	}
 
 	private String nicknameOf(Seal publisher) {

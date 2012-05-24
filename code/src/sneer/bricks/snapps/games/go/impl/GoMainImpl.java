@@ -55,15 +55,13 @@ class GoMainImpl implements GoMain {
 		});
 
 		my(ContactActionManager.class).addContactAction(new ContactAction() {
-			@Override
-			public void run() {
+			@Override public void run() {
 				Contact contact = my(ContactsGui.class).selectedContact().currentValue();
 				_adversary = my(ContactSeals.class).sealGiven(contact).currentValue();
 				
 				my(TupleSpace.class).add(
 					new GoInvitation(_adversary, "Wanna play Go with " + my(Attributes.class).myAttributeValue(OwnName.class)  + "?")
 				);
-				
 			}
 
 			@Override public String caption() { return "Toroidal Go"; }
