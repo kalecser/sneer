@@ -49,7 +49,6 @@ public class GoBoardPanel extends JPanel implements Player{
 		
 		@Override
 		public void run() {
-			System.out.println(_scrollingDirection+" RUN " + toString());
 			scroll();
 			if (_scrollingDirection != DIRECTION.STOPPED){
 				repaint();
@@ -100,7 +99,7 @@ public class GoBoardPanel extends JPanel implements Player{
 	private StonesInPlayPainter _stonesInPlayPainter;
 	private HUDPainter _hudPainter;
 
-	private Player _playListener;
+	private Player _adversary;
 
 	private final Scroller _scroller;
 
@@ -249,12 +248,12 @@ public class GoBoardPanel extends JPanel implements Player{
 
 	public void passTurn() {
 		Move move = new Move(false, true, 0, 0, false);
-		_playListener.play(move);
+		_adversary.play(move);
 	}
 	
 	public void resignTurn() {
 		Move move = new Move(true, false, 0, 0, false);
-		_playListener.play(move);
+		_adversary.play(move);
 	}
 	
 	private class GoMouseListener extends MouseAdapter {
@@ -281,13 +280,13 @@ public class GoBoardPanel extends JPanel implements Player{
 			int y = unscrollY(toScreenPosition(e.getY()));
 			if (_board.nextToPlay()==null) {
 				Move move = new Move(false, false, x,y, true);
-				_playListener.play(move);
+				_adversary.play(move);
 				return;
 			}
 			if (!_board.canPlayStone(x, y)) return;
 			if (_side != _board.nextToPlay()) return;
 			Move move = new Move(false, false, x,y, false);
-			_playListener.play(move);
+			_adversary.play(move);
 		}
 		
 		@Override 
@@ -305,8 +304,8 @@ public class GoBoardPanel extends JPanel implements Player{
 	}
 
 	@Override
-	public void setAdversary(Player playListener) {
-		_playListener = playListener;
+	public void setAdversary(Player adversary) {
+		_adversary = adversary;
 	}
 
 }
