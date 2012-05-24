@@ -96,8 +96,7 @@ class UdpByteConnection implements ByteConnection {
 	
 	
 	private SocketAddress peerAddress() {
-		SocketAddress[] addrs = my(SightingKeeper.class).get(contact);
-		return addrs.length != 0 ? addrs[0] : monitor.lastSighting();
+		return monitor.lastSighting();
 	}
 
 	private byte[] ownSealBytes() {
