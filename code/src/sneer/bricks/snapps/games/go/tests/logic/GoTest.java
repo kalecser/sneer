@@ -13,8 +13,8 @@ public class GoTest extends BrickTestBase {
 	
 
 	private void assertScore(int black, int white) {
-		assertSame(black, _board.blackScore().currentValue());
-		assertSame(white, _board.whiteScore().currentValue());
+		assertSame(black, _board.blackScore());
+		assertSame(white, _board.whiteScore());
 	}
 
 	@Test
@@ -169,7 +169,7 @@ public class GoTest extends BrickTestBase {
 		ToroidalGoBoard subject = new ToroidalGoBoard(new String[]{});
 		subject.resign();
 		assertNull(subject.nextToPlay());
-		assertSame(StoneColor.WHITE, subject.winner().currentValue());
+		assertSame(StoneColor.WHITE, subject.winner());
 	}
 
 	@Test

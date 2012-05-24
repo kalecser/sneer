@@ -14,20 +14,17 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import sneer.bricks.hardware.clock.timer.Timer;
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.snapps.games.go.impl.RemoteBoard;
-import sneer.bricks.snapps.games.go.impl.RemotePlayer;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.BoardPainter;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.HUDPainter;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.HoverStonePainter;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.StonePainter;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.StonesInPlayPainter;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard;
+import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.impl.logic.Move;
 import sneer.bricks.snapps.games.go.impl.logic.ToroidalGoBoard;
-import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
+import sneer.bricks.snapps.games.go.impl.network.RemoteBoard;
+import sneer.bricks.snapps.games.go.impl.network.RemotePlayer;
 import basis.environments.Environment;
 import basis.environments.Environments;
 import basis.environments.ProxyInEnvironment;
@@ -46,9 +43,10 @@ public class GoBoardPanel extends JPanel {
 
 	
 	public class Scroller implements Runnable {
-
+		
 		@Override
 		public void run() {
+			System.out.println("RUN" + toString());
 			scroll();
 			if (_scrollingDirection != DIRECTION.STOPPED){
 				repaint();
@@ -92,8 +90,6 @@ public class GoBoardPanel extends JPanel {
 
 	private final StoneColor _side;
 
-	@SuppressWarnings("unused") private final WeakContract _refToAvoidGc2;
-
 	private BoardPainter _boardPainter;
 	private HoverStonePainter _hoverStonePainter;
 	private StonesInPlayPainter _stonesInPlayPainter;
@@ -103,7 +99,7 @@ public class GoBoardPanel extends JPanel {
 
 	private final RemoteBoard _remoteBoard;
 	
-	public GoBoardPanel(final RemotePlayer remotePlayer, final RemoteBoard remoteBoard, StoneColor side) {
+	public GoBoardPanel(final RemotePlayer remotePlayer, final RemoteBoard remoteBoard,final TimerFactory timerFactory, StoneColor side) {
 		_remotePlayer = remotePlayer;
 		_remoteBoard = remoteBoard;
 		_boardPainter = new BoardPainter();
@@ -116,7 +112,7 @@ public class GoBoardPanel extends JPanel {
 		_remotePlayer.setBoard(this);
 		
 		addMouseListener();
-	    _refToAvoidGc2 = my(Timer.class).wakeUpEvery(150, new Scroller());		
+		timerFactory.wakeUpEvery(150, new Scroller());    	
 	}
 	
 	private void scrollOnePieceToTheRight() {
@@ -136,9 +132,7 @@ public class GoBoardPanel extends JPanel {
 	}
 	
 	private void scrollPiecesHorizontally(int scrollXDelta) {
-		System.out.println(_xOffsetMeasuredByPieces);
 		_xOffsetMeasuredByPieces = (_xOffsetMeasuredByPieces + scrollXDelta + BOARD_SIZE) % BOARD_SIZE;
-		System.out.println(">"+_xOffsetMeasuredByPieces);
 	}
 	
 	private void scrollPiecesVerticaly(int scrollYDelta) {
@@ -183,8 +177,7 @@ public class GoBoardPanel extends JPanel {
 		
 		int winState = HUDPainter.NOONE_WIN;
 		if (_board.nextToPlay()==null){
-			int scW=scoreWhite().currentValue(),
-					scB=scoreBlack().currentValue();
+			int scW=scoreWhite(),scB=scoreBlack();
 			if (scW==scB) return;
 			if (_side==StoneColor.WHITE) isWinner=(scW>scB);
 			else isWinner=(scW<scB);
@@ -211,8 +204,13 @@ public class GoBoardPanel extends JPanel {
 		}
 	}
 
-	private int unscrollX(int x) { return (BOARD_SIZE + x - _xOffsetMeasuredByPieces) % BOARD_SIZE; }	
-	private int unscrollY(int y) { return (BOARD_SIZE + y - _yOffsetMeasuredByPieces) % BOARD_SIZE; }
+	private int unscrollX(int x) { 
+		return (BOARD_SIZE + x - _xOffsetMeasuredByPieces) % BOARD_SIZE; 
+	}
+	
+	private int unscrollY(int y) { 
+		return (BOARD_SIZE + y - _yOffsetMeasuredByPieces) % BOARD_SIZE; 
+	}
 	
 	private Graphics2D getBuffer() {
 		_bufferImage = new BufferedImage((int)(BOARD_IMAGE_SIZE+CELL_SIZE), (int)(BOARD_IMAGE_SIZE+CELL_SIZE), 
@@ -229,15 +227,15 @@ public class GoBoardPanel extends JPanel {
 	}
 	
 
-	public Signal<Integer> scoreWhite() {
+	public int scoreWhite() {
 		return _board.whiteScore();
 	}
 	
-	public Signal<Integer> scoreBlack() {
+	public int scoreBlack() {
 		return _board.blackScore();
 	}
 	
-	public Signal<StoneColor> nextToPlaySignal() {
+	public StoneColor nextToPlaySignal() {
 		return _board.nextToPlaySignal();
 	}
 
@@ -288,6 +286,14 @@ public class GoBoardPanel extends JPanel {
 		public void mouseExited(MouseEvent e) {
 			_scrollingDirection = DIRECTION.STOPPED;
 		}
+	}
+
+	public void addScoreChangeListener(ScoreChangeListener scoreChangeListener) {
+		_board.addScoreChangeListener(scoreChangeListener);
+	}
+
+	public void addNextToPlayListener(NextToPlayListeter nextToPlayListeter) {
+		_board.addNextToPlayListener(nextToPlayListeter);
 	}
 
 }

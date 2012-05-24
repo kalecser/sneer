@@ -11,9 +11,10 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-import sneer.bricks.snapps.games.go.impl.RemoteBoard;
-import sneer.bricks.snapps.games.go.impl.RemotePlayer;
+import sneer.bricks.snapps.games.go.impl.logic.Move;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
+import sneer.bricks.snapps.games.go.impl.network.RemoteBoard;
+import sneer.bricks.snapps.games.go.impl.network.RemotePlayer;
 import basis.lang.Closure;
 
 public class GoFrame extends JFrame {
@@ -21,16 +22,45 @@ public class GoFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private final StoneColor _side;
 	
-	static {System.out.println("Go Frame static");}
+	public static void main(String[] args) {
+		new GoFrame(new RemotePlayer() {
+			
+			@Override
+			public void setBoard(GoBoardPanel goBoardPanel) {
+			}
+		}, new RemoteBoard() {
+			
+			@Override
+			public void play(Move move) {
+			}
+		}, StoneColor.BLACK, 0, new TimerFactory() {
+			
+			@Override
+			public void wakeUpEvery(final int interval, final Runnable scroller) {
+				new Thread(){
+					@Override
+					public void run() {
+						while(true){
+							try {
+								scroller.run();
+								Thread.sleep(interval);
+							} catch (InterruptedException e) {
+								throw new RuntimeException(e);
+							}
+						}
+					};
+				}.start();
+			}
+		});
+	}
 	
-	public GoFrame(final RemotePlayer remotePlayer, final RemoteBoard remoteBoard, StoneColor side, int horizontalPosition) {
-		System.out.println("GoFrame");
+	public GoFrame(final RemotePlayer remotePlayer, final RemoteBoard remoteBoard, StoneColor side, int horizontalPosition, final TimerFactory timerFactory) {
 		_side = side;
 	
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Go - " + _side.name());	  
 	    setResizable(false);
-	    addComponentPanel(remotePlayer,remoteBoard); 
+	    addComponentPanel(remotePlayer,remoteBoard, timerFactory); 
 	    setVisible(true);
 	    int bord=getInsets().left+getInsets().right;
 	    setBounds(horizontalPosition*(500+bord)+100, 100, 500+bord, 575);
@@ -38,17 +68,17 @@ public class GoFrame extends JFrame {
 		//setLocationRelativeTo(null);
 	}
 
-	private void addComponentPanel(final RemotePlayer remotePlayer, final RemoteBoard remoteBoard) {
+	private void addComponentPanel(final RemotePlayer remotePlayer, final RemoteBoard remoteBoard, final TimerFactory timerFactory) {
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 		
-		final GoBoardPanel goBoardPanel = new GoBoardPanel(remotePlayer,remoteBoard, _side);
+		final GoBoardPanel goBoardPanel = new GoBoardPanel(remotePlayer,remoteBoard,timerFactory, _side);
 		contentPane.add(goBoardPanel, BorderLayout.CENTER);
 		
 		JPanel goEastPanel = new JPanel();
 		
 		goEastPanel.setLayout(new FlowLayout());
-		goEastPanel.add(new GoScorePanel(goBoardPanel.scoreBlack(), goBoardPanel.scoreWhite()));
+		goEastPanel.add(new GoScorePanel(goBoardPanel.scoreBlack(), goBoardPanel.scoreWhite(), goBoardPanel));
 		
 		JSeparator space= new JSeparator(SwingConstants.VERTICAL);
 		space.setPreferredSize(new Dimension(30,0));
@@ -59,8 +89,8 @@ public class GoFrame extends JFrame {
 		}};
 		Closure resign = new Closure() { @Override public void run() {
 			goBoardPanel.resignTurn();
-		}};
-		goEastPanel.add(new ActionsPanel(pass,resign, _side, goBoardPanel.nextToPlaySignal()));
+		}}; 
+		goEastPanel.add(new ActionsPanel(pass,resign, _side, goBoardPanel));
 				
 		contentPane.add(goEastPanel, BorderLayout.SOUTH);
 	}

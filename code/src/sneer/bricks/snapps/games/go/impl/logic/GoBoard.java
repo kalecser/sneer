@@ -1,6 +1,5 @@
 package sneer.bricks.snapps.games.go.impl.logic;
 
-import static basis.environments.Environments.my;
 import static sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor.BLACK;
 import static sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor.WHITE;
 
@@ -8,9 +7,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import sneer.bricks.pulp.reactive.Register;
-import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.snapps.games.go.impl.gui.NextToPlayListeter;
+import sneer.bricks.snapps.games.go.impl.gui.ScoreChangeListener;
 
 public class GoBoard {
 
@@ -35,15 +33,19 @@ public class GoBoard {
 	}
 
 	
+	private StoneColor _nextToPlay = BLACK;
+	private int _blackScore = 0;
+	private int _whiteScore = 0;
+	private StoneColor _winner = null;
+	
+	
 	private Intersection[][] _intersections;
-	private Register<StoneColor> _nextToPlay = my(Signals.class).newRegister(BLACK);
 	private Intersection[][] _previousSituation;
 	private boolean _previousWasPass = false;
-	private final Register<Integer> _blackScore = my(Signals.class).newRegister(0);
-	private final Register<Integer> _whiteScore = my(Signals.class).newRegister(0);
 	private int _capturedStonesBlack;
 	private int _capturedStonesWhite;
-	private Register<StoneColor> _winner = my(Signals.class).newRegister(null);
+	private ScoreChangeListener _goScorePanel;
+	private NextToPlayListeter _nextToPlayListeter;
 	
 		
 	protected Intersection intersection(int x, int y) {
@@ -148,23 +150,23 @@ public class GoBoard {
 	
 	public void resign() {
 		StoneColor loser = nextToPlay();
-		_winner.setter().consume(other(loser));
+		_winner = other(loser);
 		stopAcceptingMoves();
 	}
 	
 	
-	public Signal<Integer> blackScore() {
-		return _blackScore.output();
+	public int blackScore() {
+		return _blackScore;
 	}
 	
 	
-	public Signal<Integer> whiteScore() {
-		return _whiteScore.output();
+	public int whiteScore() {
+		return _whiteScore;
 	}
 	
 	
-	public Signal<StoneColor> nextToPlaySignal() {
-		return _nextToPlay.output();
+	public StoneColor nextToPlaySignal() {
+		return _nextToPlay;
 	}
 
 	
@@ -181,9 +183,8 @@ public class GoBoard {
 	
 	
 	public StoneColor nextToPlay() {
-		return _nextToPlay.output().currentValue();
+		return _nextToPlay;
 	}
-	
 	
 	public StoneColor getPrevColor(int x, int y) {
 		return _previousSituation[x][y]._stone;
@@ -263,20 +264,22 @@ public class GoBoard {
 	
 	private void stopAcceptingMoves() {
 		_previousSituation = copySituation();
-		_nextToPlay.setter().consume(null);
+		_nextToPlay = null;
+		_nextToPlayListeter.nextToPlay(_nextToPlay);
 		
-		_capturedStonesBlack = blackScore().currentValue();
-		_capturedStonesWhite = whiteScore().currentValue();
+		_capturedStonesBlack = _blackScore;
+		_capturedStonesWhite = _whiteScore;
 		
 		updateScore();
 	}
 	
 	
 	private void updateScore() {
-		_blackScore.setter().consume(_capturedStonesBlack);
-		_whiteScore.setter().consume(_capturedStonesWhite);
+		_blackScore = _capturedStonesBlack;
+		_whiteScore = _capturedStonesWhite;
 		countDeadStones();
 		countTerritories();
+		_goScorePanel.updateScore(_blackScore,_whiteScore);
 	}
 
 	
@@ -287,12 +290,15 @@ public class GoBoard {
 				if (!_intersections[x][y].isLiberty())
 					continue;
 				StoneColor previousStone = _previousSituation[x][y]._stone;
-				if (previousStone == BLACK) add(_whiteScore, 1);
-				if (previousStone == WHITE) add(_blackScore, 1);
+				if (previousStone == BLACK){
+					_whiteScore++;
+				}
+				if (previousStone == WHITE){
+					_blackScore++;
+				}
 			}
 		}
 	}
-	
 	
 	private void countTerritories() {
 	
@@ -312,29 +318,38 @@ public class GoBoard {
 				if (groupee._stone ==WHITE) belongsToW = true;
 				if (groupee.isLiberty()) numEmpty++;
 			}
-			if (belongsToB & !belongsToW) add(_blackScore, numEmpty);
-			if (!belongsToB & belongsToW) add(_whiteScore, numEmpty);
+			if (belongsToB & !belongsToW){
+				_blackScore += numEmpty;
+			}
+			if (!belongsToB & belongsToW){
+				_whiteScore += numEmpty;
+			}
 		}
-	}
-	
-	
-	private void add(Register<Integer> register, int ammount) {
-		register.setter().consume(register.output().currentValue() + ammount);
 	}
 
 	
 	private void next() {
-		_nextToPlay.setter().consume(other(nextToPlay()));
+		_nextToPlay = other(nextToPlay());
+		_nextToPlayListeter.nextToPlay(_nextToPlay);
 	}
-
 	
 	private void restoreSituation(Intersection[][] situation) {
 		_intersections = situation;
 	}
 
 	
-	public Signal<StoneColor> winner() {
-		return _winner.output(); 
+	public StoneColor winner() {
+		return _winner; 
+	}
+
+
+	public void addScoreChangeListener(ScoreChangeListener goScorePanel) {
+		_goScorePanel = goScorePanel;
+	}
+
+
+	public void addNextToPlayListener(NextToPlayListeter nextToPlayListeter) {
+		_nextToPlayListeter = nextToPlayListeter;
 	}
 	
 }

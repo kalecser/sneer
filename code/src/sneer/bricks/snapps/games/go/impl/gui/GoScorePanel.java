@@ -1,7 +1,5 @@
 package sneer.bricks.snapps.games.go.impl.gui;
 
-import static basis.environments.Environments.my;
-
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
@@ -9,38 +7,34 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
-import basis.lang.Functor;
-
-import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.pulp.reactive.Signals;
-import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
-import sneer.bricks.skin.widgets.reactive.TextWidget;
-
-public class GoScorePanel extends JPanel {
+public class GoScorePanel extends JPanel implements ScoreChangeListener{
 
 	private static final long serialVersionUID = 1L;
+	private JLabel _blackScore;
+	private JLabel _whiteScore;
 
-	public GoScorePanel(Signal<Integer> scoreBlack, Signal<Integer> scoreWhite) {
-		ReactiveWidgetFactory rfactory = my(ReactiveWidgetFactory.class);
-
-		TextWidget<?> newLabelBlack = rfactory.newLabel(adaptToString(scoreBlack));
-		TextWidget<?> newLabelWhite = rfactory.newLabel(adaptToString(scoreWhite));
-		
+	public GoScorePanel(int scoreBlack, int scoreWhite, GoBoardPanel goBoardPanel) {		
 		JSeparator space= new JSeparator(SwingConstants.VERTICAL);
 		space.setPreferredSize(new Dimension(8,0));
 		add(new JLabel("Score:"));
 		add(space);
 		add(new JLabel("Black"));
-		add(newLabelBlack.getComponent());
+		_whiteScore = new JLabel(scoreWhite+"");
+		_blackScore = new JLabel(scoreBlack+"");
+		
+		goBoardPanel.addScoreChangeListener(this);
+		
+		add(_blackScore);
 		add(new JLabel("White"));
-		add(newLabelWhite.getComponent());
+		add(_whiteScore);
 
 		setVisible(true);
 	}
 
-	private Signal<String> adaptToString(Signal<Integer> input) {
-		return my(Signals.class).adapt(input, new Functor<Integer, String>(){ @Override public String evaluate(Integer value) {
-			return "" + value;
-		}});
+	@Override
+	public void updateScore(int blackScore, int whiteScore) {
+		_whiteScore.setText(""+whiteScore);
+		_blackScore.setText(""+blackScore);
 	}
+
 }

@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.games.go.impl;
+package sneer.bricks.snapps.games.go.impl.network;
 
 import basis.lang.Consumer;
 import sneer.bricks.pulp.reactive.Register;
