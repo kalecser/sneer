@@ -55,7 +55,10 @@ class UdpByteConnection implements ByteConnection {
 	}
 	
 	void handle(DatagramPacket packet, int offset) {
-		monitor.handleSighting(packet.getSocketAddress());
+		SocketAddress sighting = packet.getSocketAddress();
+		my(SightingKeeper.class).keep(contact, sighting);
+		hail(sighting);
+		monitor.handleSighting(sighting);
 		if (receiver == null) return;
 		receiver.consume(payload(packet.getData(), offset));
 	}
@@ -109,8 +112,11 @@ class UdpByteConnection implements ByteConnection {
 	}
 
 	private void hail() {
-		SocketAddress[] addrs = my(SightingKeeper.class).get(contact);
-		for (SocketAddress addr : addrs)
-			send(EMPTY_BYTE_ARRAY, addr);
+		for (SocketAddress addr : my(SightingKeeper.class).get(contact))
+			hail(addr);
+	}
+
+	private void hail(SocketAddress addr) {
+		send(EMPTY_BYTE_ARRAY, addr);
 	}
 }

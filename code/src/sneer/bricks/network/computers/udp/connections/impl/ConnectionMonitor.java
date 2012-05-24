@@ -22,8 +22,8 @@ class ConnectionMonitor {
 	
 	void handleSighting(SocketAddress sighting) {
 		if(!isConnected().currentValue()) {
-			lastPeerSighting = sighting;
 			isConnected.setter().consume(true);
+			lastPeerSighting = sighting;
 		}
 		if(sighting.equals(lastPeerSighting))
 			lastPeerSightingTime = my(Clock.class).time().currentValue();

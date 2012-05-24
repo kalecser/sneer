@@ -95,9 +95,21 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| <empty>,to:200.201.202.203,port:123");
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| <empty>,to:192.168.1.100,port:7777");
 	}
+	
+	
+	@Test (timeout=2000)
+	public void onSighting_ShouldHail() throws Exception {
+		LoggingSender sender = new LoggingSender();
+		subject.initSender(sender);
+		
+		subject.handle(packetFrom("Neide", "Hello".getBytes()));
+		
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| <empty>,to:200.201.202.203,port:123");
+	}
+	
 
 	private void seeNeideIn(InetSocketAddress sighting) {
-		my(SightingKeeper.class).put(produceContact("Neide"), sighting);
+		my(SightingKeeper.class).keep(produceContact("Neide"), sighting);
 	}
 	
 	@Test(timeout=2000)
@@ -146,7 +158,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		LoggingSender sender = new LoggingSender();
 		subject.initSender(sender);
 		
-		my(SightingKeeper.class).put(produceContact("Neide"), new InetSocketAddress("200.201.202.203", 123));
+		my(SightingKeeper.class).keep(produceContact("Neide"), new InetSocketAddress("200.201.202.203", 123));
 		connectionFor("Neide");
 		
 		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
