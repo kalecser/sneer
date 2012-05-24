@@ -29,7 +29,7 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 	}});
 	
 	private final Functor<Contact, UdpByteConnection> newByteConnection = new Functor<Contact, UdpByteConnection>( ) {  @Override public UdpByteConnection evaluate(Contact contact) {
-		return new UdpByteConnection(sender, contact);
+		return UdpByteConnection.newInstance(sender, contact);
 	}};
 	
 	@Override

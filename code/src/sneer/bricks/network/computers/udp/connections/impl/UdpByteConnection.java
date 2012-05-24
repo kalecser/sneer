@@ -27,11 +27,16 @@ class UdpByteConnection implements ByteConnection {
 	private final Contact contact;
 	private final ConnectionMonitor monitor;
 
-	UdpByteConnection(Consumer<DatagramPacket> sender, Contact contact) {
+	static UdpByteConnection newInstance(Consumer<DatagramPacket> sender, Contact contact) {
+		UdpByteConnection ret = new UdpByteConnection(sender, contact);
+		ret.hail();
+		return ret;
+	}
+	
+	private UdpByteConnection(Consumer<DatagramPacket> sender, Contact contact) {
 		this.sender = sender;
 		this.contact = contact;
 		monitor = new ConnectionMonitor();
-		hail();
 	}
 
 	@Override
@@ -39,6 +44,7 @@ class UdpByteConnection implements ByteConnection {
 		return monitor.isConnected();
 	}
 
+	
 	@Override
 	public void initCommunications(final PacketScheduler scheduler, Consumer<? super byte[]> receiver) {
 		if (this.receiver != null) throw new IllegalStateException();

@@ -64,18 +64,16 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 	
 	@Test (timeout=2000)
-	public void sendData() {
+	public void sendData() throws Exception {
 		LoggingSender sender = new LoggingSender();
 		subject.initSender(sender);
 		
-		my(SightingKeeper.class).put(produceContact("Neide"), new InetSocketAddress("200.201.202.203", 123));
-		
-		ByteConnection connection = connectionFor("Neide");
-		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
+		subject.handle(packetFrom("Neide", "Hello".getBytes()));
 		
 		PacketScheduler scheduler = new PacketSchedulerMock("foo", "bar");
-		connection.initCommunications(scheduler, my(Signals.class).sink());
-		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123| foo,to:200.201.202.203,port:123| bar,to:200.201.202.203,port:123");
+		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| foo,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| bar,to:200.201.202.203,port:123");
 	}
 	
 	
@@ -112,7 +110,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		PacketScheduler scheduler = new PacketSchedulerMock("foo");
 		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
 		
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| foo,to:200.201.202.203,port:234");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| foo,to:200.201.202.203,port:123");
 	}
 	
 	
@@ -204,7 +202,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 
 	private DatagramPacket packetFrom(String nick, byte[] data) throws Exception {
-		return packetFrom(nick, data, "200.201.202.203", 234);
+		return packetFrom(nick, data, "200.201.202.203", 123);
 	}
 
 }
