@@ -6,37 +6,30 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.SocketException;
 
-import basis.lang.Consumer;
-
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.udp.UdpNetwork;
 import sneer.bricks.network.computers.udp.UdpNetwork.UdpSocket;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
+import sneer.bricks.network.computers.udp.sender.UdpSender;
 import sneer.bricks.network.computers.udp.server.UdpServer;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
-
-
+import basis.lang.Consumer;
 
 
 public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 
-	private Light sendError = my(BlinkingLights.class).prepare(LightType.ERROR);
-
-
-	{
-		init();
-	}
-
-	private void init() {
-		final UdpSocket socket;
+	private final Light sendError = my(BlinkingLights.class).prepare(LightType.ERROR);
+	private final UdpSocket socket;
+	
+	UdpServerImpl(){
 		socket = tryToOpenSocket();
 		if(socket == null) return;
 		socket.initReceiver(this);
-		my(UdpConnectionManager.class).initSender(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
-			send(socket, packet);
+		my(UdpSender.class).init(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
+			send(packet);
 		}});
 	}
 
@@ -50,7 +43,7 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 		}
 	}
 	
-	private void send(final UdpSocket socket, DatagramPacket packet) {
+	private void send(DatagramPacket packet) {
 		try {
 			socket.send(packet);
 		} catch (IOException e) {

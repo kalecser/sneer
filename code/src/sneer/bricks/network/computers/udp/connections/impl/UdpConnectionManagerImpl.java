@@ -22,14 +22,13 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 	private static final UdpByteConnection[] EMPTY_ARRAY = new UdpByteConnection[0];
 	
 	CacheMap<Contact, UdpByteConnection> connectionsByContact = CacheMap.newInstance();
-	private Consumer<DatagramPacket> sender;
 	
 	@SuppressWarnings("unused") private final WeakContract refToAvoidGC = my(Timer.class).wakeUpEvery(UdpConnectionManager.KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
 		keepAlive();
 	}});
 	
 	private final Functor<Contact, UdpByteConnection> newByteConnection = new Functor<Contact, UdpByteConnection>( ) {  @Override public UdpByteConnection evaluate(Contact contact) {
-		return UdpByteConnection.start(sender, contact);
+		return UdpByteConnection.start(contact);
 	}};
 	
 	@Override
@@ -65,12 +64,6 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 		connectionFor(contact).handle(packet, Seal.SIZE_IN_BYTES);
 	}
 
-	@Override
-	public void initSender(Consumer<DatagramPacket> sender) {
-		if (this.sender != null) throw new IllegalStateException();
-		this.sender = sender;
-	}
-	
 	private void keepAlive() {
 		for (UdpByteConnection connection : connectionsByContact.values().toArray(EMPTY_ARRAY))
 			connection.keepAlive();

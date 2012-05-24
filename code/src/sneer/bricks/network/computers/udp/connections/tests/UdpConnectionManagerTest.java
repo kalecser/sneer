@@ -23,6 +23,7 @@ import sneer.bricks.network.social.Contacts;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
+import basis.brickness.testsupport.Bind;
 import basis.lang.Consumer;
 import basis.util.concurrent.Latch;
 
@@ -30,6 +31,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 	
 	private UdpConnectionManager subject = my(UdpConnectionManager.class);
+	@Bind private final LoggingSender sender = new LoggingSender();
 
 	@Ignore @Test public void precedenceOfDestinationIps() {
 		//DADOS:
@@ -65,8 +67,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	@Test (timeout=2000)
 	public void sendData() throws Exception {
-		LoggingSender sender = new LoggingSender();
-		subject.initSender(sender);
 		
 		subject.handle(packetFrom("Neide", "Hello".getBytes()));
 		
@@ -85,9 +85,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 	@Test(timeout=2000)
 	public void onNotConnected_ShouldSendHailingPacketsEverySoOften() {
-		LoggingSender sender = new LoggingSender();
-		subject.initSender(sender);
-
 		seeNeideIn(new InetSocketAddress("200.201.202.203", 123));
 		seeNeideIn(new InetSocketAddress("192.168.1.100", 7777));
 		
@@ -99,9 +96,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	@Test (timeout=2000)
 	public void onSighting_ShouldHail() throws Exception {
-		LoggingSender sender = new LoggingSender();
-		subject.initSender(sender);
-		
 		subject.handle(packetFrom("Neide", "Hello".getBytes()));
 		
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| <empty>,to:200.201.202.203,port:123");
@@ -114,9 +108,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	@Test(timeout=2000)
 	public void onReceivePacket_ShouldUseInternetAddress() throws Exception {
-		LoggingSender sender = new LoggingSender();
-		subject.initSender(sender);
-		
 		subject.handle(packetFrom("Neide"));
 		
 		PacketScheduler scheduler = new PacketSchedulerMock("foo");
@@ -134,9 +125,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	@Test(timeout = 2000)
 	public void onIdleRecognizeNewSighting() throws Exception {
-		LoggingSender sender = new LoggingSender();
-		subject.initSender(sender);
-		
+	
 		subject.handle(packetFrom("Neide"));
 		
 		ByteConnection connection = connectionFor("Neide");
@@ -155,9 +144,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	@Test(timeout = 2000)
 	public void keepAlive() {
-		LoggingSender sender = new LoggingSender();
-		subject.initSender(sender);
-		
 		my(SightingKeeper.class).keep(produceContact("Neide"), new InetSocketAddress("200.201.202.203", 123));
 		connectionFor("Neide");
 		

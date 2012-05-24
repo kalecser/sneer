@@ -13,6 +13,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.network.computers.connections.ByteConnection;
+import sneer.bricks.network.computers.udp.sender.UdpSender;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Signal;
@@ -25,21 +26,20 @@ class UdpByteConnection implements ByteConnection {
 	private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
 	private Consumer<? super byte[]> receiver;
-	private final Consumer<DatagramPacket> sender;
+	private final UdpSender sender = my(UdpSender.class);
 	private final Contact contact;
 	private final ConnectionMonitor monitor;
 
 	@SuppressWarnings("unused")
 	private WeakContract ref;
 
-	static UdpByteConnection start(Consumer<DatagramPacket> sender, Contact contact) {
-		final UdpByteConnection ret = new UdpByteConnection(sender, contact);
+	static UdpByteConnection start(Contact contact) {
+		final UdpByteConnection ret = new UdpByteConnection(contact);
 		ret.startHailingOnSight();
 		return ret;
 	}
 	
-	private UdpByteConnection(Consumer<DatagramPacket> sender, Contact contact) {
-		this.sender = sender;
+	private UdpByteConnection(Contact contact) {
 		this.contact = contact;
 		monitor = new ConnectionMonitor();
 	}
@@ -86,7 +86,7 @@ class UdpByteConnection implements ByteConnection {
 		DatagramPacket packet = packetFor(data, peerAddress);
 		if(packet == null) return false;
 		
-		sender.consume(packet);
+		sender.send(packet);
 		return true;
 	}
 
@@ -101,14 +101,16 @@ class UdpByteConnection implements ByteConnection {
 		}
 	}
 	
+
+	private static byte[] ownSealBytes() {
+		return my(OwnSeal.class).get().currentValue().bytes.copy();
+	}
+	
 	
 	private SocketAddress peerAddress() {
 		return monitor.lastSighting();
 	}
-
-	private byte[] ownSealBytes() {
-		return my(OwnSeal.class).get().currentValue().bytes.copy();
-	}
+	
 	
 	void keepAlive() {
 		hail(my(SightingKeeper.class).sightingsOf(contact));
