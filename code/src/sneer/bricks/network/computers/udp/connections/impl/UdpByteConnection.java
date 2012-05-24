@@ -8,6 +8,7 @@ import java.net.SocketException;
 import java.util.Arrays;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.identity.seals.OwnSeal;
@@ -28,17 +29,13 @@ class UdpByteConnection implements ByteConnection {
 	private final Contact contact;
 	private final ConnectionMonitor monitor;
 
+	@SuppressWarnings("unused")
+	private WeakContract ref;
+
 	static UdpByteConnection start(Consumer<DatagramPacket> sender, Contact contact) {
 		final UdpByteConnection ret = new UdpByteConnection(sender, contact);
-		startHailingOnSight(contact, ret);
+		ret.startHailingOnSight();
 		return ret;
-	}
-
-	private static void startHailingOnSight(Contact contact,
-			final UdpByteConnection ret) {
-		my(SightingKeeper.class).get(contact).addReceiver(new Consumer<CollectionChange<SocketAddress>>() {  @Override public void consume(CollectionChange<SocketAddress> value) {
-			ret.hail(value.elementsAdded());
-		}});
 	}
 	
 	private UdpByteConnection(Consumer<DatagramPacket> sender, Contact contact) {
@@ -113,22 +110,20 @@ class UdpByteConnection implements ByteConnection {
 		return my(OwnSeal.class).get().currentValue().bytes.copy();
 	}
 	
-	public void keepAlive() {
-		hail();
+	void keepAlive() {
+		hail(my(SightingKeeper.class).sightingsOf(contact));
 		monitor.keepAlive();
 	}
-
-	private void hail() {
-		Iterable<SocketAddress> setSignal = my(SightingKeeper.class).get(contact);
-		hail(setSignal);
+	
+	private void startHailingOnSight() {
+		ref = my(SightingKeeper.class).sightingsOf(contact).addReceiver(new Consumer<CollectionChange<SocketAddress>>() {  @Override public void consume(CollectionChange<SocketAddress> value) {
+			hail(value.elementsAdded());
+		}});
 	}
 
 	private void hail(Iterable<SocketAddress> addrs) {
 		for (SocketAddress addr : addrs)
-			hail(addr);
+			send(EMPTY_BYTE_ARRAY, addr);
 	}
 
-	private void hail(SocketAddress addr) {
-		send(EMPTY_BYTE_ARRAY, addr);
-	}
 }

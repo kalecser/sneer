@@ -11,6 +11,6 @@ public interface SightingKeeper {
 
 	void keep(Contact contact, SocketAddress sighting);
 	
-	SetSignal<SocketAddress> get(Contact contact);
+	SetSignal<SocketAddress> sightingsOf(Contact contact);
 	
 }

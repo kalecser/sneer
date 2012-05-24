@@ -25,7 +25,7 @@ class SightingKeeperImpl implements SightingKeeper {
 	}
 
 	@Override
-	public SetSignal<SocketAddress> get(Contact contact) {
+	public SetSignal<SocketAddress> sightingsOf(Contact contact) {
 		return getAddresses(contact).output();
 	}
 
