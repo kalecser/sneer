@@ -60,37 +60,38 @@ class UdpByteConnection implements ByteConnection {
 
 	private void tryToSendPacketFor(PacketScheduler scheduler) {
 		byte[] payload = scheduler.highestPriorityPacketToSend();
-		if (send(payload))
+		if (send(payload, peerAddress()))
 			scheduler.previousPacketWasSent();
 	}
 
-	boolean send(byte[] payload) {
+	boolean send(byte[] payload, SocketAddress peerAddress) {
 		if(sender == null) return false;
 		
 		byte[] ownSeal = ownSealBytes();
 		byte[] data = my(Lang.class).arrays().concat(ownSeal, payload); //Optimize: Reuse array.
 		
-		DatagramPacket packet = packetFor(data);
+		DatagramPacket packet = packetFor(data, peerAddress);
 		if(packet == null) return false;
 		
 		sender.consume(packet);
 		return true;
 	}
 
-	private DatagramPacket packetFor(byte[] data) {
-		SocketAddress addr = peerAddress();
-		if (addr == null) return null;
+	
+	static private DatagramPacket packetFor(byte[] data, SocketAddress peerAddress) {
+		if (peerAddress == null) return null;
 		try {
-			return new DatagramPacket(data, data.length, addr); //Optimize: reuse DatagramPacket
+			return new DatagramPacket(data, data.length, peerAddress); //Optimize: reuse DatagramPacket
 		} catch (SocketException e) {
 			my(ExceptionLogger.class).log(e);
 			return null;
 		}
 	}
 	
+	
 	private SocketAddress peerAddress() {
-		SocketAddress addr = my(SightingKeeper.class).get(contact);
-		return addr != null ? addr : monitor.lastSighting();
+		SocketAddress[] addrs = my(SightingKeeper.class).get(contact);
+		return addrs.length != 0 ? addrs[0] : monitor.lastSighting();
 	}
 
 	private byte[] ownSealBytes() {
@@ -103,6 +104,8 @@ class UdpByteConnection implements ByteConnection {
 	}
 
 	private void hail() {
-		send(EMPTY_BYTE_ARRAY);
+		SocketAddress[] addrs = my(SightingKeeper.class).get(contact);
+		for (SocketAddress addr : addrs)
+			send(EMPTY_BYTE_ARRAY, addr);
 	}
 }

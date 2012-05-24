@@ -10,6 +10,6 @@ public interface SightingKeeper {
 
 	void put(Contact contact, SocketAddress sighting);
 	
-	SocketAddress get(Contact contact);
+	SocketAddress[] get(Contact contact);
 	
 }
