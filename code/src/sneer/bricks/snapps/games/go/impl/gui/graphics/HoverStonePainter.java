@@ -11,13 +11,17 @@ import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 public class HoverStonePainter{
 
 	private StonePainter stonePainter;
+	private int _xOffsetMeasuredByPieces;
+	private int _yOffsetMeasuredByPieces;
+	private int _hoverX;
+	private int _hoverY;
 
 	public HoverStonePainter(final StonePainter stonePainter) {
 		this.stonePainter = stonePainter;
 	}
 	
-	public void draw(final Graphics2D graphics, final GoBoard _board, final int _hoverX, final int _hoverY,final int _scrollX, final int _scrollY){
-		if (!_board.canPlayStone(unscrollX(_hoverX,_scrollX), unscrollY(_hoverY, _scrollY))) return;
+	public void draw(final Graphics2D graphics, final GoBoard _board){
+		if (!_board.canPlayStone(unscrollX(_hoverX,_xOffsetMeasuredByPieces), unscrollY(_hoverY, _yOffsetMeasuredByPieces))) return;
 
 		if(_board.nextToPlay() == StoneColor.BLACK) graphics.setColor(new Color(0, 0, 0, 50));
 		else graphics.setColor(new Color(255, 255, 255, 90));
@@ -37,6 +41,17 @@ public class HoverStonePainter{
 	private int unscrollY(int y,int _scrollY) { 
 		return (GoBoardPanel.BOARD_SIZE + y - _scrollY) % GoBoardPanel.BOARD_SIZE; 
 	}
+
+	public void setOffset(int xOffsetMeasuredByPieces, int yOffsetMeasuredByPieces) {
+		_xOffsetMeasuredByPieces = xOffsetMeasuredByPieces;
+		_yOffsetMeasuredByPieces = yOffsetMeasuredByPieces;
+	}
+
+	public void setHoverX(int hoverX) {
+		_hoverX = hoverX;
+	}
 	
-	
+	public void setHoverY(int hoverY) {
+		_hoverY = hoverY;
+	}
 }

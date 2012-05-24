@@ -91,7 +91,8 @@ class GoMainImpl implements GoMain {
 //			my(TimeboxedEventQueue.class).startQueueing(5000); // Fix: Talk to Klaus about Timebox issue
 		my(GuiThread.class).invokeAndWaitForWussies(new Closure(){@Override public void run() {
 			Player remotePlayer = new RemotePlayerOnSneer(_moveRegister);
-			new GoFrame(remotePlayer, stoneColor.value, 0, new SneerTimerFactory());
+			GoFrame goFrame = new GoFrame(stoneColor.value, 0, new SneerTimerFactory());
+			goFrame.setAdversary(remotePlayer);
 		}});
 		
 		_refToAvoidGc2 = _moveRegister.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) {

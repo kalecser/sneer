@@ -1,7 +1,5 @@
 package sneer.bricks.snapps.games.go.impl.gui;
 
-import static basis.environments.Environments.my;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -25,10 +23,7 @@ import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.impl.logic.Move;
 import sneer.bricks.snapps.games.go.impl.logic.ToroidalGoBoard;
 import sneer.bricks.snapps.games.go.impl.network.Player;
-import basis.environments.Environment;
-import basis.environments.Environments;
 import basis.environments.ProxyInEnvironment;
-import basis.lang.Closure;
 
 public class GoBoardPanel extends JPanel implements Player{
 	
@@ -78,16 +73,11 @@ public class GoBoardPanel extends JPanel implements Player{
 		
 	}
 
-	private final Environment _environment = my(Environment.class);
-
 	final GoBoard _board = new ToroidalGoBoard(BOARD_SIZE);
 
 	private BufferedImage _bufferImage;
 	
-	private boolean isWinner=false;
-
-	private int _hoverX;
-	private int _hoverY;
+	
 
 	private volatile int _yOffsetMeasuredByPieces;
 	private volatile int _xOffsetMeasuredByPieces;
@@ -106,8 +96,7 @@ public class GoBoardPanel extends JPanel implements Player{
 	@SuppressWarnings("unused")
 	private WeakContract _referenceToAvoidGc;
 	
-	public GoBoardPanel(final Player adversary,final TimerFactory timerFactory, StoneColor side) {
-		setAdversary(adversary);
+	public GoBoardPanel(final TimerFactory timerFactory, StoneColor side) {
 		_boardPainter = new BoardPainter();
 		final StonePainter stonePainter = new StonePainter();
 		_hoverStonePainter = new HoverStonePainter(stonePainter);
@@ -139,20 +128,30 @@ public class GoBoardPanel extends JPanel implements Player{
 	
 	private void scrollPiecesHorizontally(int scrollXDelta) {
 		_xOffsetMeasuredByPieces = (_xOffsetMeasuredByPieces + scrollXDelta + BOARD_SIZE) % BOARD_SIZE;
+		_hoverStonePainter.setOffset( _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
+		_stonesInPlayPainter.setOffset( _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
 	}
 	
 	private void scrollPiecesVerticaly(int scrollYDelta) {
 		_yOffsetMeasuredByPieces = (_yOffsetMeasuredByPieces + scrollYDelta + BOARD_SIZE) % BOARD_SIZE;
+		_hoverStonePainter.setOffset( _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
+		_stonesInPlayPainter.setOffset( _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
 	}
 
 	@Override
 	public void play(Move move) {
-		if (move.isResign) _board.resign();
-		else {
-			if (move.isPass) _board.passTurn();
-			else {
-				if (move.isMark) _board.toggleDeadStone(move.xCoordinate, move.yCoordinate);
-				else _board.playStone(move.xCoordinate, move.yCoordinate);
+		//TODO: make a visitor here
+		if (move.isResign) {
+			_board.resign();
+		}else {
+			if (move.isPass){
+				_board.passTurn();
+			} else {
+				if (move.isMark){
+					_board.toggleDeadStone(move.xCoordinate, move.yCoordinate);
+				}else{
+					_board.playStone(move.xCoordinate, move.yCoordinate);
+				}
 			}
 		}
 		repaint();			
@@ -166,36 +165,41 @@ public class GoBoardPanel extends JPanel implements Player{
 	
 	@Override
 	public void paint(final Graphics graphics) {
-		Environments.runWith(_environment, new Closure() { @Override public void run() {  //Refactor: Remove this when the gui nature is ready.
-			paintInEnvironment(graphics);
-		}});
-	}
-
-	
-	private void paintInEnvironment(Graphics graphics) {
 		Graphics2D buffer = getBuffer();
 		
 		_boardPainter.draw(buffer);
-		_hoverStonePainter.draw(buffer, _board, _hoverX, _hoverY, _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
-		_stonesInPlayPainter.draw(buffer, _board, _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
+		_hoverStonePainter.draw(buffer, _board);
+		_stonesInPlayPainter.draw(buffer, _board);
 				
 		drawBoardOnAllSixCorners(graphics);
 		drawCameraBoundaries(graphics);		
 		
+		gameLogicDecideWinner();
+		
+		_hudPainter.draw(graphics);
+	}
+
+	private void gameLogicDecideWinner() {
 		int winState = HUDPainter.NOONE_WIN;
 		if (_board.nextToPlay()==null){
-			int scW=scoreWhite(),scB=scoreBlack();
-			if (scW==scB) return;
-			if (_side==StoneColor.WHITE) isWinner=(scW>scB);
-			else isWinner=(scW<scB);
-			if(isWinner){
-				winState = HUDPainter.PLAYER_WIN;
-			}else{
-				winState = HUDPainter.PLAYER_LOSES;
+			int scoreWhite=scoreWhite();
+			int scoreBlack=scoreBlack();
+			boolean isNotADraw = scoreWhite!=scoreBlack;
+			if (isNotADraw){
+				boolean isWinner=false;
+				if (_side==StoneColor.WHITE){
+					isWinner=(scoreWhite>scoreBlack);
+				}else{
+					isWinner=(scoreWhite<scoreBlack);
+				}
+				if(isWinner){
+					winState = HUDPainter.PLAYER_WIN;
+				}else{
+					winState = HUDPainter.PLAYER_LOSES;
+				}
 			}
-			
 		}
-		_hudPainter.draw(graphics, winState);
+		_hudPainter.setWinState(winState);
 	}
 
 	private void drawCameraBoundaries(Graphics graphics) {
@@ -260,8 +264,8 @@ public class GoBoardPanel extends JPanel implements Player{
 		@Override 
 		public void mouseMoved(final MouseEvent e) {
 			_scroller.setDirection(getScrollingDirection(e.getX(),e.getY()));
-			_hoverX = toScreenPosition(e.getX());
-			_hoverY = toScreenPosition(e.getY());
+			_hoverStonePainter.setHoverX(toScreenPosition(e.getX()));
+			_hoverStonePainter.setHoverY(toScreenPosition(e.getY()));
 			repaint();
 		}
 		
