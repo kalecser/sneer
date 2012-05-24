@@ -15,6 +15,7 @@ import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Signal;
+import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import basis.lang.Closure;
 import basis.lang.Consumer;
 
@@ -28,9 +29,16 @@ class UdpByteConnection implements ByteConnection {
 	private final ConnectionMonitor monitor;
 
 	static UdpByteConnection start(Consumer<DatagramPacket> sender, Contact contact) {
-		UdpByteConnection ret = new UdpByteConnection(sender, contact);
-		ret.hail();
+		final UdpByteConnection ret = new UdpByteConnection(sender, contact);
+		startHailingOnSight(contact, ret);
 		return ret;
+	}
+
+	private static void startHailingOnSight(Contact contact,
+			final UdpByteConnection ret) {
+		my(SightingKeeper.class).get(contact).addReceiver(new Consumer<CollectionChange<SocketAddress>>() {  @Override public void consume(CollectionChange<SocketAddress> value) {
+			ret.hail(value.elementsAdded());
+		}});
 	}
 	
 	private UdpByteConnection(Consumer<DatagramPacket> sender, Contact contact) {
@@ -57,7 +65,6 @@ class UdpByteConnection implements ByteConnection {
 	void handle(DatagramPacket packet, int offset) {
 		SocketAddress sighting = packet.getSocketAddress();
 		my(SightingKeeper.class).keep(contact, sighting);
-		hail(sighting);
 		monitor.handleSighting(sighting);
 		if (receiver == null) return;
 		receiver.consume(payload(packet.getData(), offset));
@@ -112,7 +119,12 @@ class UdpByteConnection implements ByteConnection {
 	}
 
 	private void hail() {
-		for (SocketAddress addr : my(SightingKeeper.class).get(contact))
+		Iterable<SocketAddress> setSignal = my(SightingKeeper.class).get(contact);
+		hail(setSignal);
+	}
+
+	private void hail(Iterable<SocketAddress> addrs) {
+		for (SocketAddress addr : addrs)
 			hail(addr);
 	}
 
