@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.BoardPainter;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.HUDPainter;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.HoverStonePainter;
@@ -23,14 +24,13 @@ import sneer.bricks.snapps.games.go.impl.logic.GoBoard;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.impl.logic.Move;
 import sneer.bricks.snapps.games.go.impl.logic.ToroidalGoBoard;
-import sneer.bricks.snapps.games.go.impl.network.RemoteBoard;
-import sneer.bricks.snapps.games.go.impl.network.RemotePlayer;
+import sneer.bricks.snapps.games.go.impl.network.Player;
 import basis.environments.Environment;
 import basis.environments.Environments;
 import basis.environments.ProxyInEnvironment;
 import basis.lang.Closure;
 
-public class GoBoardPanel extends JPanel {
+public class GoBoardPanel extends JPanel implements Player{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -41,12 +41,15 @@ public class GoBoardPanel extends JPanel {
 	public static final float CELL_SIZE = BOARD_IMAGE_SIZE/(BOARD_SIZE-1);
 	public static final float STONE_DIAMETER = CELL_SIZE *0.97f;
 
+	public static enum DIRECTION { STOPPED,UP,DOWN,LEFT,RIGHT;}
 	
 	public class Scroller implements Runnable {
+		 
+		private DIRECTION _scrollingDirection = DIRECTION.STOPPED;
 		
 		@Override
 		public void run() {
-			System.out.println("RUN" + toString());
+			System.out.println(_scrollingDirection+" RUN " + toString());
 			scroll();
 			if (_scrollingDirection != DIRECTION.STOPPED){
 				repaint();
@@ -69,6 +72,10 @@ public class GoBoardPanel extends JPanel {
 			}
 		}
 
+		public void setDirection(DIRECTION scrollingDirection) {
+			_scrollingDirection = scrollingDirection;
+		}
+
 		
 	}
 
@@ -85,8 +92,6 @@ public class GoBoardPanel extends JPanel {
 
 	private volatile int _yOffsetMeasuredByPieces;
 	private volatile int _xOffsetMeasuredByPieces;
-	public static enum DIRECTION { STOPPED,UP,DOWN,LEFT,RIGHT;}
-	private volatile DIRECTION _scrollingDirection;
 
 	private final StoneColor _side;
 
@@ -95,13 +100,15 @@ public class GoBoardPanel extends JPanel {
 	private StonesInPlayPainter _stonesInPlayPainter;
 	private HUDPainter _hudPainter;
 
-	private final RemotePlayer _remotePlayer;
+	private Player _playListener;
 
-	private final RemoteBoard _remoteBoard;
+	private final Scroller _scroller;
+
+	@SuppressWarnings("unused")
+	private WeakContract _referenceToAvoidGc;
 	
-	public GoBoardPanel(final RemotePlayer remotePlayer, final RemoteBoard remoteBoard,final TimerFactory timerFactory, StoneColor side) {
-		_remotePlayer = remotePlayer;
-		_remoteBoard = remoteBoard;
+	public GoBoardPanel(final Player adversary,final TimerFactory timerFactory, StoneColor side) {
+		setAdversary(adversary);
 		_boardPainter = new BoardPainter();
 		final StonePainter stonePainter = new StonePainter();
 		_hoverStonePainter = new HoverStonePainter(stonePainter);
@@ -109,10 +116,10 @@ public class GoBoardPanel extends JPanel {
 		_hudPainter = new HUDPainter();
 		
 		_side = side;
-		_remotePlayer.setBoard(this);
 		
 		addMouseListener();
-		timerFactory.wakeUpEvery(150, new Scroller());    	
+		_scroller = new Scroller();
+		_referenceToAvoidGc = timerFactory.wakeUpEvery(150, _scroller);    	
 	}
 	
 	private void scrollOnePieceToTheRight() {
@@ -139,6 +146,7 @@ public class GoBoardPanel extends JPanel {
 		_yOffsetMeasuredByPieces = (_yOffsetMeasuredByPieces + scrollYDelta + BOARD_SIZE) % BOARD_SIZE;
 	}
 
+	@Override
 	public void play(Move move) {
 		if (move.isResign) _board.resign();
 		else {
@@ -241,18 +249,18 @@ public class GoBoardPanel extends JPanel {
 
 	public void passTurn() {
 		Move move = new Move(false, true, 0, 0, false);
-		_remoteBoard.play(move);
+		_playListener.play(move);
 	}
 	
 	public void resignTurn() {
 		Move move = new Move(true, false, 0, 0, false);
-		_remoteBoard.play(move);
+		_playListener.play(move);
 	}
 	
 	private class GoMouseListener extends MouseAdapter {
 		@Override 
 		public void mouseMoved(final MouseEvent e) {
-			_scrollingDirection = getScrollingDirection(e.getX(),e.getY());
+			_scroller.setDirection(getScrollingDirection(e.getX(),e.getY()));
 			_hoverX = toScreenPosition(e.getX());
 			_hoverY = toScreenPosition(e.getY());
 			repaint();
@@ -273,18 +281,18 @@ public class GoBoardPanel extends JPanel {
 			int y = unscrollY(toScreenPosition(e.getY()));
 			if (_board.nextToPlay()==null) {
 				Move move = new Move(false, false, x,y, true);
-				_remoteBoard.play(move);
+				_playListener.play(move);
 				return;
 			}
 			if (!_board.canPlayStone(x, y)) return;
 			if (_side != _board.nextToPlay()) return;
 			Move move = new Move(false, false, x,y, false);
-			_remoteBoard.play(move);
+			_playListener.play(move);
 		}
 		
 		@Override 
 		public void mouseExited(MouseEvent e) {
-			_scrollingDirection = DIRECTION.STOPPED;
+			_scroller.setDirection(DIRECTION.STOPPED);
 		}
 	}
 
@@ -294,6 +302,11 @@ public class GoBoardPanel extends JPanel {
 
 	public void addNextToPlayListener(NextToPlayListeter nextToPlayListeter) {
 		_board.addNextToPlayListener(nextToPlayListeter);
+	}
+
+	@Override
+	public void setAdversary(Player playListener) {
+		_playListener = playListener;
 	}
 
 }

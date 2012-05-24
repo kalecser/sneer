@@ -4,12 +4,7 @@ import static basis.environments.Environments.my;
 
 import javax.swing.JOptionPane;
 
-import basis.lang.ByRef;
-import basis.lang.Closure;
-import basis.lang.Consumer;
-
 import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.identity.name.OwnName;
@@ -25,16 +20,16 @@ import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.bricks.snapps.games.go.GoMain;
 import sneer.bricks.snapps.games.go.impl.gui.GoFrame;
-import sneer.bricks.snapps.games.go.impl.gui.TimerFactory;
-import sneer.bricks.snapps.games.go.impl.logic.Move;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
+import sneer.bricks.snapps.games.go.impl.logic.Move;
 import sneer.bricks.snapps.games.go.impl.network.GoInvitation;
 import sneer.bricks.snapps.games.go.impl.network.GoMessage;
 import sneer.bricks.snapps.games.go.impl.network.GoMove;
-import sneer.bricks.snapps.games.go.impl.network.RemoteBoard;
-import sneer.bricks.snapps.games.go.impl.network.RemoteBoardOnSneer;
-import sneer.bricks.snapps.games.go.impl.network.RemotePlayer;
+import sneer.bricks.snapps.games.go.impl.network.Player;
 import sneer.bricks.snapps.games.go.impl.network.RemotePlayerOnSneer;
+import basis.lang.ByRef;
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 class GoMainImpl implements GoMain {
 
@@ -95,17 +90,8 @@ class GoMainImpl implements GoMain {
 
 //			my(TimeboxedEventQueue.class).startQueueing(5000); // Fix: Talk to Klaus about Timebox issue
 		my(GuiThread.class).invokeAndWaitForWussies(new Closure(){@Override public void run() {
-			RemotePlayer remotePlayer = new RemotePlayerOnSneer(_moveRegister);
-			RemoteBoard remoteBoard = new RemoteBoardOnSneer(_moveRegister);
-			final TimerFactory timerFactory = new TimerFactory() {
-				@SuppressWarnings("unused")
-				private WeakContract _refToAvoidGcFoo;
-				@Override
-				public void wakeUpEvery(int interval, Runnable runnable) {
-					_refToAvoidGc2 = my(Timer.class).wakeUpEvery(interval, runnable);	
-				}
-			};
-			new GoFrame(remotePlayer,remoteBoard, stoneColor.value, 0, timerFactory);
+			Player remotePlayer = new RemotePlayerOnSneer(_moveRegister);
+			new GoFrame(remotePlayer, stoneColor.value, 0, new SneerTimerFactory());
 		}});
 		
 		_refToAvoidGc2 = _moveRegister.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) {
