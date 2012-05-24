@@ -27,7 +27,7 @@ class UdpByteConnection implements ByteConnection {
 	private final Contact contact;
 	private final ConnectionMonitor monitor;
 
-	static UdpByteConnection newInstance(Consumer<DatagramPacket> sender, Contact contact) {
+	static UdpByteConnection start(Consumer<DatagramPacket> sender, Contact contact) {
 		UdpByteConnection ret = new UdpByteConnection(sender, contact);
 		ret.hail();
 		return ret;
