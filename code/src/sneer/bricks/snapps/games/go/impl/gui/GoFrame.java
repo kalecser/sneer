@@ -16,11 +16,13 @@ import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.impl.network.Player;
 import basis.lang.Closure;
 
-public class GoFrame extends JFrame {
+public class GoFrame extends JFrame implements BoardListener{
 	
 	private static final long serialVersionUID = 1L;
 	private final StoneColor _side;
 	private GoBoardPanel _goBoardPanel;
+	private ActionsPanel actionsPanel;
+	private GoScorePanel scorePanel;
 	
 	public static void main(String[] args) {
 		TimerFactory timerFactory = new TimerFactory() {
@@ -71,12 +73,14 @@ public class GoFrame extends JFrame {
 		contentPane.setLayout(new BorderLayout());
 		
 		_goBoardPanel = new GoBoardPanel(timerFactory, _side);
+		_goBoardPanel.setBoardListener(this);
 		contentPane.add(_goBoardPanel, BorderLayout.CENTER);
 		
 		JPanel goEastPanel = new JPanel();
 		
 		goEastPanel.setLayout(new FlowLayout());
-		goEastPanel.add(new GoScorePanel(_goBoardPanel.scoreBlack(), _goBoardPanel.scoreWhite(), _goBoardPanel));
+		scorePanel = new GoScorePanel(_goBoardPanel.scoreBlack(), _goBoardPanel.scoreWhite());
+		goEastPanel.add(scorePanel);
 		
 		JSeparator space= new JSeparator(SwingConstants.VERTICAL);
 		space.setPreferredSize(new Dimension(30,0));
@@ -88,9 +92,20 @@ public class GoFrame extends JFrame {
 		Closure resign = new Closure() { @Override public void run() {
 			_goBoardPanel.resignTurn();
 		}}; 
-		goEastPanel.add(new ActionsPanel(pass,resign, _side, _goBoardPanel));
+		actionsPanel = new ActionsPanel(pass,resign, _side);
+		goEastPanel.add(actionsPanel);
 				
 		contentPane.add(goEastPanel, BorderLayout.SOUTH);
+	}
+
+	@Override
+	public void updateScore(int blackScore, int whiteScore) {
+		scorePanel.updateScore(blackScore, whiteScore);
+	}
+
+	@Override
+	public void nextToPlay(StoneColor nextToPlay) {
+		actionsPanel.nextToPlay(nextToPlay);
 	}
 
 }

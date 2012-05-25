@@ -10,7 +10,7 @@ import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import basis.environments.ProxyInEnvironment;
 import basis.lang.Closure;
 
-public class ActionsPanel extends JPanel implements NextToPlayListeter{
+public class ActionsPanel extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	private final StoneColor _side;
@@ -19,7 +19,7 @@ public class ActionsPanel extends JPanel implements NextToPlayListeter{
 	private JButton resignButton;
 
 	
-	public ActionsPanel(final Closure pass, final Closure resign, StoneColor side, GoBoardPanel board) {
+	public ActionsPanel(final Closure pass, final Closure resign, StoneColor side) {
 		_side = side;
 		 
 		passButton = new JButton("Pass");
@@ -37,20 +37,22 @@ public class ActionsPanel extends JPanel implements NextToPlayListeter{
 			resign.run();
 		}};
 		resignButton.addActionListener(ProxyInEnvironment.newInstance(listener));
-	
-		board.addNextToPlayListener(this);
 		
 		setVisible(true);
 
 	}
 
 
-	@Override
 	public void nextToPlay(StoneColor _nextToPlay) {
 		boolean isMyTurn = _nextToPlay == _side;
+		setTurn(isMyTurn);
+	}
+
+	private void setTurn(boolean isMyTurn) {
 		passButton.setEnabled(isMyTurn);
 		resignButton.setEnabled(isMyTurn);
 	}
+
 
 
 }

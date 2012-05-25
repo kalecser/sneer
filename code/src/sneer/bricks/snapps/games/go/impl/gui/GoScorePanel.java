@@ -7,13 +7,13 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
-public class GoScorePanel extends JPanel implements ScoreChangeListener{
+public class GoScorePanel extends JPanel{
 
 	private static final long serialVersionUID = 1L;
 	private JLabel _blackScore;
 	private JLabel _whiteScore;
 
-	public GoScorePanel(int scoreBlack, int scoreWhite, GoBoardPanel goBoardPanel) {		
+	public GoScorePanel(int scoreBlack, int scoreWhite) {		
 		JSeparator space= new JSeparator(SwingConstants.VERTICAL);
 		space.setPreferredSize(new Dimension(8,0));
 		add(new JLabel("Score:"));
@@ -22,8 +22,6 @@ public class GoScorePanel extends JPanel implements ScoreChangeListener{
 		_whiteScore = new JLabel(scoreWhite+"");
 		_blackScore = new JLabel(scoreBlack+"");
 		
-		goBoardPanel.addScoreChangeListener(this);
-		
 		add(_blackScore);
 		add(new JLabel("White"));
 		add(_whiteScore);
@@ -31,10 +29,8 @@ public class GoScorePanel extends JPanel implements ScoreChangeListener{
 		setVisible(true);
 	}
 
-	@Override
 	public void updateScore(int blackScore, int whiteScore) {
 		_whiteScore.setText(""+whiteScore);
 		_blackScore.setText(""+blackScore);
 	}
-
 }

@@ -7,8 +7,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import sneer.bricks.snapps.games.go.impl.gui.NextToPlayListeter;
-import sneer.bricks.snapps.games.go.impl.gui.ScoreChangeListener;
+import sneer.bricks.snapps.games.go.impl.gui.BoardListener;
 
 public class GoBoard {
 
@@ -44,8 +43,7 @@ public class GoBoard {
 	private boolean _previousWasPass = false;
 	private int _capturedStonesBlack;
 	private int _capturedStonesWhite;
-	private ScoreChangeListener _scoreChangeListener;
-	private NextToPlayListeter _nextToPlayListeter;
+	private BoardListener _boardListener;
 	
 		
 	protected Intersection intersection(int x, int y) {
@@ -267,8 +265,8 @@ public class GoBoard {
 	private void stopAcceptingMoves() {
 		_previousSituation = copySituation();
 		_nextToPlay = null;
-		if(_nextToPlayListeter != null){
-			_nextToPlayListeter.nextToPlay(_nextToPlay);
+		if(_boardListener != null){
+			_boardListener.nextToPlay(_nextToPlay);
 		}
 		
 		_capturedStonesBlack = _blackScore;
@@ -283,8 +281,8 @@ public class GoBoard {
 		_whiteScore = _capturedStonesWhite;
 		countDeadStones();
 		countTerritories();
-		if(_scoreChangeListener != null){
-			_scoreChangeListener.updateScore(_blackScore,_whiteScore);
+		if(_boardListener != null){
+			_boardListener.updateScore(_blackScore,_whiteScore);
 		}
 	}
 
@@ -336,8 +334,8 @@ public class GoBoard {
 	
 	private void next() {
 		_nextToPlay = other(nextToPlay());
-		if(_nextToPlayListeter!=null){
-			_nextToPlayListeter.nextToPlay(_nextToPlay);
+		if(_boardListener!=null){
+			_boardListener.nextToPlay(_nextToPlay);
 		}
 	}
 	
@@ -351,13 +349,8 @@ public class GoBoard {
 	}
 
 
-	public void addScoreChangeListener(ScoreChangeListener goScorePanel) {
-		_scoreChangeListener = goScorePanel;
-	}
-
-
-	public void addNextToPlayListener(NextToPlayListeter nextToPlayListeter) {
-		_nextToPlayListeter = nextToPlayListeter;
+	public void setBoardListener(BoardListener boardListener) {
+		_boardListener = boardListener;
 	}
 	
 }

@@ -299,12 +299,8 @@ public class GoBoardPanel extends JPanel implements Player{
 		}
 	}
 
-	public void addScoreChangeListener(ScoreChangeListener scoreChangeListener) {
-		_board.addScoreChangeListener(scoreChangeListener);
-	}
-
-	public void addNextToPlayListener(NextToPlayListeter nextToPlayListeter) {
-		_board.addNextToPlayListener(nextToPlayListeter);
+	public void setBoardListener(BoardListener boardListener) {
+		_board.setBoardListener(boardListener);
 	}
 
 	@Override
