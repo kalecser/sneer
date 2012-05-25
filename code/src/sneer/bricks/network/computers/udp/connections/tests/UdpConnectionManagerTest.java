@@ -46,7 +46,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	@Test(timeout=2000)
 	public void onFirstPacket_ShouldConnect() throws Exception {
 		assertFalse(isConnected("Neide"));
-		subject.handle(packetFrom("Neide"));
+		subject.handle(hailPacketFrom("Neide"));
 		my(SignalUtils.class).waitForValue(connectionFor("Neide").isConnected(), true);
 		assertFalse(isConnected("Maicon"));
 	}
@@ -102,13 +102,9 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 
-	private void seeNeideIn(InetSocketAddress sighting) {
-		my(SightingKeeper.class).keep(produceContact("Neide"), sighting);
-	}
-	
 	@Test(timeout=2000)
 	public void onReceivePacket_ShouldUseInternetAddress() throws Exception {
-		subject.handle(packetFrom("Neide"));
+		subject.handle(hailPacketFrom("Neide"));
 		
 		PacketScheduler scheduler = new PacketSchedulerMock("foo");
 		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
@@ -126,7 +122,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	@Test(timeout = 2000)
 	public void onIdleRecognizeNewSighting() throws Exception {
 	
-		subject.handle(packetFrom("Neide"));
+		subject.handle(hailPacketFrom("Neide"));
 		
 		ByteConnection connection = connectionFor("Neide");
 		
@@ -155,6 +151,22 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(Clock.class).advanceTime(1);
 		
 		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123| <empty>,to:200.201.202.203,port:123");
+	}
+	
+	@Ignore
+	@Test
+	public void onSighting_ShouldUseFastestAddress() throws Exception {
+		subject.handle(packetFrom("Neide", new byte[] { 20 }, "200.201.202.203", 123));
+		subject.handle(packetFrom("Neide", new byte[] { 10 }, "192.168.10.10", 7777));
+		
+		PacketScheduler scheduler = new PacketSchedulerMock("foo");
+		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
+		
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| foo,to:192.168.10.10,port:7777");
+	}
+	
+	private void seeNeideIn(InetSocketAddress sighting) {
+		my(SightingKeeper.class).keep(produceContact("Neide"), sighting);
 	}
 	
 	private DatagramPacket packetFrom(String nick, byte[] data, String ip, int port) throws Exception {
@@ -194,7 +206,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 
 	
-	private DatagramPacket packetFrom(String nick) throws Exception {
+	private DatagramPacket hailPacketFrom(String nick) throws Exception {
 		return packetFrom(nick, new byte[0]);
 	}
 
