@@ -28,27 +28,21 @@ class UdpByteConnection implements ByteConnection {
 	private Consumer<? super byte[]> receiver;
 	private final UdpSender sender = my(UdpSender.class);
 	private final Contact contact;
-	private final ConnectionMonitor monitor;
+	private final ConnectionMonitor monitor = new ConnectionMonitor();
 
-	@SuppressWarnings("unused")
-	private WeakContract ref;
+	@SuppressWarnings("unused") private final WeakContract refToAvoidGC;
 
-	static UdpByteConnection start(Contact contact) {
-		final UdpByteConnection ret = new UdpByteConnection(contact);
-		ret.startHailingOnSight();
-		return ret;
-	}
-	
-	private UdpByteConnection(Contact contact) {
+	UdpByteConnection(Contact contact) {
 		this.contact = contact;
-		monitor = new ConnectionMonitor();
+		refToAvoidGC = my(SightingKeeper.class).sightingsOf(contact).addReceiver(new Consumer<CollectionChange<SocketAddress>>() {  @Override public void consume(CollectionChange<SocketAddress> value) {
+			hail(value.elementsAdded());
+		}});
 	}
 
 	@Override
 	public Signal<Boolean> isConnected() {
 		return monitor.isConnected();
 	}
-
 	
 	@Override
 	public void initCommunications(final PacketScheduler scheduler, Consumer<? super byte[]> receiver) {
@@ -57,6 +51,12 @@ class UdpByteConnection implements ByteConnection {
 		my(Threads.class).startStepping("ByteConnection", new Closure() { @Override public void run() {
 			tryToSendPacketFor(scheduler);
 		}});
+	}
+	
+	private void tryToSendPacketFor(PacketScheduler scheduler) {
+		byte[] payload = scheduler.highestPriorityPacketToSend();
+		if (send(payload, monitor.lastSighting()))
+			scheduler.previousPacketWasSent();
 	}
 	
 	void handle(DatagramPacket packet, int offset) {
@@ -71,15 +71,7 @@ class UdpByteConnection implements ByteConnection {
 		return Arrays.copyOfRange(data, offset, data.length);
 	}
 
-	private void tryToSendPacketFor(PacketScheduler scheduler) {
-		byte[] payload = scheduler.highestPriorityPacketToSend();
-		if (send(payload, peerAddress()))
-			scheduler.previousPacketWasSent();
-	}
-
-	boolean send(byte[] payload, SocketAddress peerAddress) {
-		if(sender == null) return false;
-		
+	private boolean send(byte[] payload, SocketAddress peerAddress) {
 		byte[] ownSeal = ownSealBytes();
 		byte[] data = my(Lang.class).arrays().concat(ownSeal, payload); //Optimize: Reuse array.
 		
@@ -90,8 +82,7 @@ class UdpByteConnection implements ByteConnection {
 		return true;
 	}
 
-	
-	static private DatagramPacket packetFor(byte[] data, SocketAddress peerAddress) {
+	private static DatagramPacket packetFor(byte[] data, SocketAddress peerAddress) {
 		if (peerAddress == null) return null;
 		try {
 			return new DatagramPacket(data, data.length, peerAddress); //Optimize: reuse DatagramPacket
@@ -101,28 +92,15 @@ class UdpByteConnection implements ByteConnection {
 		}
 	}
 	
-
 	private static byte[] ownSealBytes() {
 		return my(OwnSeal.class).get().currentValue().bytes.copy();
 	}
 	
-	
-	private SocketAddress peerAddress() {
-		return monitor.lastSighting();
-	}
-	
-	
 	void keepAlive() {
 		hail(my(SightingKeeper.class).sightingsOf(contact));
-		monitor.keepAlive();
+		monitor.disconnectIfIdle();
 	}
 	
-	private void startHailingOnSight() {
-		ref = my(SightingKeeper.class).sightingsOf(contact).addReceiver(new Consumer<CollectionChange<SocketAddress>>() {  @Override public void consume(CollectionChange<SocketAddress> value) {
-			hail(value.elementsAdded());
-		}});
-	}
-
 	private void hail(Iterable<SocketAddress> addrs) {
 		for (SocketAddress addr : addrs)
 			send(EMPTY_BYTE_ARRAY, addr);

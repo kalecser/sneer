@@ -29,11 +29,7 @@ class ConnectionMonitor {
 			lastPeerSightingTime = my(Clock.class).time().currentValue();
 	}
 
-	void keepAlive() {
-		disconnectIfIdle();
-	}
-
-	private void disconnectIfIdle() {
+	void disconnectIfIdle() {
 		long now = my(Clock.class).time().currentValue();
 		if (now - lastPeerSightingTime >= UdpConnectionManager.IDLE_PERIOD)
 			isConnected.setter().consume(false);
