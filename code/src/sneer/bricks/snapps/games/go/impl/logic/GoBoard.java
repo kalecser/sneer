@@ -44,7 +44,7 @@ public class GoBoard {
 	private boolean _previousWasPass = false;
 	private int _capturedStonesBlack;
 	private int _capturedStonesWhite;
-	private ScoreChangeListener _goScorePanel;
+	private ScoreChangeListener _scoreChangeListener;
 	private NextToPlayListeter _nextToPlayListeter;
 	
 		
@@ -208,6 +208,8 @@ public class GoBoard {
 	
 	
 	private Intersection[][] copySituation() {
+		if(_intersections.length == 0)
+			return new Intersection[0][0];
 		Intersection[][] copy =  new Intersection[_intersections.length][_intersections[0].length];
 		for (int i = 0; i < copy.length; i++) {
 			for (int j = 0; j < copy[i].length; j++) {
@@ -265,7 +267,9 @@ public class GoBoard {
 	private void stopAcceptingMoves() {
 		_previousSituation = copySituation();
 		_nextToPlay = null;
-		_nextToPlayListeter.nextToPlay(_nextToPlay);
+		if(_nextToPlayListeter != null){
+			_nextToPlayListeter.nextToPlay(_nextToPlay);
+		}
 		
 		_capturedStonesBlack = _blackScore;
 		_capturedStonesWhite = _whiteScore;
@@ -279,7 +283,9 @@ public class GoBoard {
 		_whiteScore = _capturedStonesWhite;
 		countDeadStones();
 		countTerritories();
-		_goScorePanel.updateScore(_blackScore,_whiteScore);
+		if(_scoreChangeListener != null){
+			_scoreChangeListener.updateScore(_blackScore,_whiteScore);
+		}
 	}
 
 	
@@ -330,7 +336,9 @@ public class GoBoard {
 	
 	private void next() {
 		_nextToPlay = other(nextToPlay());
-		_nextToPlayListeter.nextToPlay(_nextToPlay);
+		if(_nextToPlayListeter!=null){
+			_nextToPlayListeter.nextToPlay(_nextToPlay);
+		}
 	}
 	
 	private void restoreSituation(Intersection[][] situation) {
@@ -344,7 +352,7 @@ public class GoBoard {
 
 
 	public void addScoreChangeListener(ScoreChangeListener goScorePanel) {
-		_goScorePanel = goScorePanel;
+		_scoreChangeListener = goScorePanel;
 	}
 
 
