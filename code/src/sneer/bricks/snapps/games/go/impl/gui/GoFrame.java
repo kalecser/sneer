@@ -11,18 +11,21 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
-import sneer.bricks.snapps.games.go.impl.network.Player;
 import basis.lang.Closure;
 
-public class GoFrame extends JFrame implements BoardListener{
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
+import sneer.bricks.snapps.games.go.impl.logic.Move;
+import sneer.bricks.snapps.games.go.impl.network.Player;
+
+public class GoFrame extends JFrame implements BoardListener,Player{
 	
 	private static final long serialVersionUID = 1L;
 	private final StoneColor _side;
 	private GoBoardPanel _goBoardPanel;
 	private ActionsPanel actionsPanel;
 	private GoScorePanel scorePanel;
+	private Player _adversary;
 	
 	public static void main(String[] args) {
 		TimerFactory timerFactory = new TimerFactory() {
@@ -46,7 +49,8 @@ public class GoFrame extends JFrame implements BoardListener{
 		};
 		GoFrame blackFrame = new GoFrame(StoneColor.BLACK, 0, timerFactory);
 		GoFrame whiteFrame = new GoFrame(StoneColor.WHITE, 0, timerFactory);
-		whiteFrame.setAdversary(blackFrame._goBoardPanel);
+		whiteFrame.setAdversary(blackFrame);
+		blackFrame.setAdversary(whiteFrame);
 	}
 	
 	public GoFrame(StoneColor side, int horizontalPosition, final TimerFactory timerFactory) {
@@ -62,17 +66,12 @@ public class GoFrame extends JFrame implements BoardListener{
 		//this is for when the game is running on a single window
 		//setLocationRelativeTo(null);
 	}
-
-	public void setAdversary(final Player remotePlayer){
-		_goBoardPanel.setAdversary(remotePlayer);		
-		remotePlayer.setAdversary(_goBoardPanel);
-	}
 	
 	private void addComponentPanel(final TimerFactory timerFactory) {
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 		
-		_goBoardPanel = new GoBoardPanel(timerFactory, _side);
+		_goBoardPanel = new GoBoardPanel(this,timerFactory, _side);
 		_goBoardPanel.setBoardListener(this);
 		contentPane.add(_goBoardPanel, BorderLayout.CENTER);
 		
@@ -85,14 +84,15 @@ public class GoFrame extends JFrame implements BoardListener{
 		JSeparator space= new JSeparator(SwingConstants.VERTICAL);
 		space.setPreferredSize(new Dimension(30,0));
 		
-		goEastPanel.add(space);
+		goEastPanel.add(space); 
 		
 		Closure pass = new Closure() { @Override public void run() {
-			_goBoardPanel.doMovePass();
+			doMovePass();
 		}};
 		Closure resign = new Closure() { @Override public void run() {
-			_goBoardPanel.doMoveResign();
+			doMoveResign();
 		}}; 
+		
 		actionsPanel = new ActionsPanel(pass,resign, _side);
 		
 		goEastPanel.add(actionsPanel);
@@ -110,4 +110,49 @@ public class GoFrame extends JFrame implements BoardListener{
 		actionsPanel.nextToPlay(nextToPlay);
 	}
 
+	@Override
+	public void setAdversary(Player adversary) {
+		_adversary = adversary;
+	}
+	//Game Plays traffic below
+	
+	public void doMovePass() {
+		Move move = new Move(false, true, 0, 0, false);
+		_adversary.play(move);
+	}
+	
+	public void doMoveResign() {
+		Move move = new Move(true, false, 0, 0, false);
+		_adversary.play(move);
+	}
+	
+	public void doMoveAddStone(int x, int y) {
+		Move move = new Move(false, false, x,y, false);
+		_adversary.play(move);
+	}
+
+	public void doMoveMarkStone(int x, int y) {
+		Move move = new Move(false, false, x,y, true);
+		_adversary.play(move);
+	}
+
+	@Override
+	public void play(Move move) {
+		if (move.isResign) {
+			_goBoardPanel.receiveMoveResign();
+			return;
+		}
+		if (move.isPass){
+			_goBoardPanel.receiveMovePassTurn();
+			return;
+		}
+		
+		if (move.isMark){
+			_goBoardPanel.receiveMoveMarkStone(move.xCoordinate, move.yCoordinate);
+			return;
+		}
+		
+		_goBoardPanel.receiveMoveAddStone(move.xCoordinate, move.yCoordinate);			
+	}
+	
 }

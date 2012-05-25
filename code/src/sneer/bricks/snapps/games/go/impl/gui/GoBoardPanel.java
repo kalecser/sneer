@@ -20,12 +20,10 @@ import sneer.bricks.snapps.games.go.impl.gui.graphics.StonePainter;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.StonesInPlayPainter;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
-import sneer.bricks.snapps.games.go.impl.logic.Move;
 import sneer.bricks.snapps.games.go.impl.logic.ToroidalGoBoard;
-import sneer.bricks.snapps.games.go.impl.network.Player;
 import basis.environments.ProxyInEnvironment;
 
-public class GoBoardPanel extends JPanel implements Player{
+public class GoBoardPanel extends JPanel{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -52,13 +50,13 @@ public class GoBoardPanel extends JPanel implements Player{
 	private StonesInPlayPainter _stonesInPlayPainter;
 	private HUDPainter _hudPainter;
 
-	private Player _adversary;
-
-
 	@SuppressWarnings("unused")
 	private WeakContract _referenceToAvoidGc;
+
+	private final GoFrame _goFrame;
 	
-	public GoBoardPanel(final TimerFactory timerFactory, StoneColor side) {
+	public GoBoardPanel(final GoFrame goFrame,final TimerFactory timerFactory, StoneColor side) {
+		_goFrame = goFrame;
 		_boardPainter = new BoardPainter();
 		final StonePainter stonePainter = new StonePainter();
 		_hoverStonePainter = new HoverStonePainter(stonePainter);
@@ -101,41 +99,22 @@ public class GoBoardPanel extends JPanel implements Player{
 		_stonesInPlayPainter.setOffset( _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
 	}
 
-	@Override
-	public void receivePlay(Move move) {
-		if (move.isResign) {
-			receiveMoveResign();
-			return;
-		}
-		if (move.isPass){
-			receiveMovePassTurn();
-			return;
-		}
-		
-		if (move.isMark){
-			receiveMoveMarkStone(move.xCoordinate, move.yCoordinate);
-			return;
-		}
-		
-		receiveMoveAddStone(move.xCoordinate, move.yCoordinate);			
-	}
-
-	private void receiveMoveAddStone(int xCoordinate, int yCoordinate) {
+	void receiveMoveAddStone(int xCoordinate, int yCoordinate) {
 		_board.playStone(xCoordinate, yCoordinate);
 		repaint();
 	}
 
-	private void receiveMoveMarkStone(int xCoordinate, int yCoordinate) {
+	void receiveMoveMarkStone(int xCoordinate, int yCoordinate) {
 		_board.toggleDeadStone(xCoordinate, yCoordinate);
 		repaint();
 	}
 
-	private void receiveMovePassTurn() {
+	void receiveMovePassTurn() {
 		_board.passTurn();
 		repaint();
 	}
 
-	private void receiveMoveResign() {
+	void receiveMoveResign() {
 		_board.resign();
 		repaint();
 	}
@@ -145,23 +124,11 @@ public class GoBoardPanel extends JPanel implements Player{
 	}
 
 	private void doMoveAddStone(int x, int y) {
-		Move move = new Move(false, false, x,y, false);
-		_adversary.receivePlay(move);
+		_goFrame.doMoveAddStone(x,y);
 	}
 	
 	private void doMoveMarkStone(int x, int y) {
-		Move move = new Move(false, false, x,y, true);
-		_adversary.receivePlay(move);
-	}
-	
-	public void doMovePass() {
-		Move move = new Move(false, true, 0, 0, false);
-		_adversary.receivePlay(move);
-	}
-	
-	public void doMoveResign() {
-		Move move = new Move(true, false, 0, 0, false);
-		_adversary.receivePlay(move);
+		_goFrame.doMoveMarkStone(x,y);
 	}
 	
 	private void addMouseListener() {
@@ -205,7 +172,7 @@ public class GoBoardPanel extends JPanel implements Player{
 		drawBoardOnAllSixCorners(graphics);
 		drawCameraBoundaries(graphics);		
 		
-		gameLogicDecideWinner();
+		gameLogicDecideWinner();//TODO: move this out of the paint method
 		
 		_hudPainter.draw(graphics);
 	}
@@ -317,11 +284,6 @@ public class GoBoardPanel extends JPanel implements Player{
 
 	public void setBoardListener(BoardListener boardListener) {
 		_board.setBoardListener(boardListener);
-	}
-
-	@Override
-	public void setAdversary(Player adversary) {
-		_adversary = adversary;
 	}
 
 }

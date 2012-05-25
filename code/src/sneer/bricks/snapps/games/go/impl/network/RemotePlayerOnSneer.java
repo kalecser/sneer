@@ -16,7 +16,7 @@ public class RemotePlayerOnSneer implements Player {
 	}
 
 	@Override
-	public void receivePlay(Move move) {
+	public void play(Move move) {
 		_move.setter().consume(move);
 	}
 
@@ -24,7 +24,7 @@ public class RemotePlayerOnSneer implements Player {
 	public void setAdversary(final Player playListener) {
 		_refToAvoidGc = _move.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) { 
 			if (move == null) return; 
-			playListener.receivePlay(move); 
+			playListener.play(move); 
 		}});
 	}
 
