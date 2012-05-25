@@ -86,13 +86,15 @@ public class GoFrame extends JFrame implements BoardListener{
 		space.setPreferredSize(new Dimension(30,0));
 		
 		goEastPanel.add(space);
+		
 		Closure pass = new Closure() { @Override public void run() {
-			_goBoardPanel.passTurn();
+			_goBoardPanel.doMovePass();
 		}};
 		Closure resign = new Closure() { @Override public void run() {
-			_goBoardPanel.resignTurn();
+			_goBoardPanel.doMoveResign();
 		}}; 
 		actionsPanel = new ActionsPanel(pass,resign, _side);
+		
 		goEastPanel.add(actionsPanel);
 				
 		contentPane.add(goEastPanel, BorderLayout.SOUTH);

@@ -140,21 +140,41 @@ public class GoBoardPanel extends JPanel implements Player{
 
 	@Override
 	public void play(Move move) {
-		//TODO: make a visitor here
 		if (move.isResign) {
-			_board.resign();
-		}else {
-			if (move.isPass){
-				_board.passTurn();
-			} else {
-				if (move.isMark){
-					_board.toggleDeadStone(move.xCoordinate, move.yCoordinate);
-				}else{
-					_board.playStone(move.xCoordinate, move.yCoordinate);
-				}
-			}
+			receiveMoveResign();
+			return;
 		}
-		repaint();			
+		if (move.isPass){
+			receiveMovePassTurn();
+			return;
+		}
+		
+		if (move.isMark){
+			receiveMoveMarkStone(move.xCoordinate, move.yCoordinate);
+			return;
+		}
+		
+		receiveMoveAddStone(move.xCoordinate, move.yCoordinate);			
+	}
+
+	private void receiveMoveAddStone(int xCoordinate, int yCoordinate) {
+		_board.playStone(xCoordinate, yCoordinate);
+		repaint();
+	}
+
+	private void receiveMoveMarkStone(int xCoordinate, int yCoordinate) {
+		_board.toggleDeadStone(xCoordinate, yCoordinate);
+		repaint();
+	}
+
+	private void receiveMovePassTurn() {
+		_board.passTurn();
+		repaint();
+	}
+
+	private void receiveMoveResign() {
+		_board.resign();
+		repaint();
 	}
 	
 	private void addMouseListener() {
@@ -250,12 +270,22 @@ public class GoBoardPanel extends JPanel implements Player{
 		return _board.nextToPlaySignal();
 	}
 
-	public void passTurn() {
+	private void doMoveAddStone(int x, int y) {
+		Move move = new Move(false, false, x,y, false);
+		_adversary.play(move);
+	}
+	
+	private void doMoveMarkStone(int x, int y) {
+		Move move = new Move(false, false, x,y, true);
+		_adversary.play(move);
+	}
+	
+	public void doMovePass() {
 		Move move = new Move(false, true, 0, 0, false);
 		_adversary.play(move);
 	}
 	
-	public void resignTurn() {
+	public void doMoveResign() {
 		Move move = new Move(true, false, 0, 0, false);
 		_adversary.play(move);
 	}
@@ -283,15 +313,14 @@ public class GoBoardPanel extends JPanel implements Player{
 			int x = unscrollX(toScreenPosition(e.getX()));
 			int y = unscrollY(toScreenPosition(e.getY()));
 			if (_board.nextToPlay()==null) {
-				Move move = new Move(false, false, x,y, true);
-				_adversary.play(move);
+				doMoveMarkStone(x, y);
 				return;
 			}
 			if (!_board.canPlayStone(x, y)) return;
 			if (_side != _board.nextToPlay()) return;
-			Move move = new Move(false, false, x,y, false);
-			_adversary.play(move);
+			doMoveAddStone(x, y);
 		}
+
 		
 		@Override 
 		public void mouseExited(MouseEvent e) {
