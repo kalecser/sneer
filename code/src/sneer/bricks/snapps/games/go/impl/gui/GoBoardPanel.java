@@ -37,48 +37,11 @@ public class GoBoardPanel extends JPanel implements Player{
 	public static final float STONE_DIAMETER = CELL_SIZE *0.97f;
 
 	public static enum DIRECTION { STOPPED,UP,DOWN,LEFT,RIGHT;}
-	
-	public class Scroller implements Runnable {
-		 
-		private DIRECTION _scrollingDirection = DIRECTION.STOPPED;
-		
-		@Override
-		public void run() {
-			scroll();
-			if (_scrollingDirection != DIRECTION.STOPPED){
-				repaint();
-			}
-		}
-
-		private void scroll() {
-			
-			if (_scrollingDirection == DIRECTION.LEFT){
-				scrollOnePieceToTheLeft();
-			}
-			if (_scrollingDirection == DIRECTION.RIGHT){
-				scrollOnePieceToTheRight();
-			}
-			if (_scrollingDirection == DIRECTION.UP){
-				scrollOnePieceToTheTop();
-			}
-			if (_scrollingDirection == DIRECTION.DOWN){
-				scrollOnePieceToTheBottom();
-			}
-		}
-
-		public void setDirection(DIRECTION scrollingDirection) {
-			_scrollingDirection = scrollingDirection;
-		}
-
-		
-	}
+	private DIRECTION _scrollingDirection = DIRECTION.STOPPED;
 
 	final GoBoard _board = new ToroidalGoBoard(BOARD_SIZE);
 
 	private BufferedImage _bufferImage;
-	
-	
-
 	private volatile int _yOffsetMeasuredByPieces;
 	private volatile int _xOffsetMeasuredByPieces;
 
@@ -91,7 +54,6 @@ public class GoBoardPanel extends JPanel implements Player{
 
 	private Player _adversary;
 
-	private final Scroller _scroller;
 
 	@SuppressWarnings("unused")
 	private WeakContract _referenceToAvoidGc;
@@ -106,8 +68,9 @@ public class GoBoardPanel extends JPanel implements Player{
 		_side = side;
 		
 		addMouseListener();
-		_scroller = new Scroller();
-		_referenceToAvoidGc = timerFactory.wakeUpEvery(150, _scroller);    	
+		_referenceToAvoidGc = timerFactory.wakeUpEvery(150, new Runnable() {@Override public void run() {
+			scroll();
+		}});    	
 	}
 	
 	private void scrollOnePieceToTheRight() {
@@ -139,7 +102,7 @@ public class GoBoardPanel extends JPanel implements Player{
 	}
 
 	@Override
-	public void play(Move move) {
+	public void receivePlay(Move move) {
 		if (move.isResign) {
 			receiveMoveResign();
 			return;
@@ -177,10 +140,58 @@ public class GoBoardPanel extends JPanel implements Player{
 		repaint();
 	}
 	
+	public StoneColor nextToPlaySignal() {
+		return _board.nextToPlaySignal();
+	}
+
+	private void doMoveAddStone(int x, int y) {
+		Move move = new Move(false, false, x,y, false);
+		_adversary.receivePlay(move);
+	}
+	
+	private void doMoveMarkStone(int x, int y) {
+		Move move = new Move(false, false, x,y, true);
+		_adversary.receivePlay(move);
+	}
+	
+	public void doMovePass() {
+		Move move = new Move(false, true, 0, 0, false);
+		_adversary.receivePlay(move);
+	}
+	
+	public void doMoveResign() {
+		Move move = new Move(true, false, 0, 0, false);
+		_adversary.receivePlay(move);
+	}
+	
 	private void addMouseListener() {
 		Object listener = ProxyInEnvironment.newInstance(new GoMouseListener());
 		addMouseListener((MouseListener) listener);
 	    addMouseMotionListener((MouseMotionListener) listener);
+	}
+	
+	private void scroll() {
+		if (_scrollingDirection == DIRECTION.STOPPED){
+			return;
+		}
+		
+		if (_scrollingDirection == DIRECTION.LEFT){
+			scrollOnePieceToTheLeft();
+		}
+		if (_scrollingDirection == DIRECTION.RIGHT){
+			scrollOnePieceToTheRight();
+		}
+		if (_scrollingDirection == DIRECTION.UP){
+			scrollOnePieceToTheTop();
+		}
+		if (_scrollingDirection == DIRECTION.DOWN){
+			scrollOnePieceToTheBottom();
+		}
+		repaint();
+	}
+	
+	private void setDirection(DIRECTION scrollingDirection) {
+		_scrollingDirection = scrollingDirection;
 	}
 	
 	@Override
@@ -266,34 +277,10 @@ public class GoBoardPanel extends JPanel implements Player{
 		return _board.blackScore();
 	}
 	
-	public StoneColor nextToPlaySignal() {
-		return _board.nextToPlaySignal();
-	}
-
-	private void doMoveAddStone(int x, int y) {
-		Move move = new Move(false, false, x,y, false);
-		_adversary.play(move);
-	}
-	
-	private void doMoveMarkStone(int x, int y) {
-		Move move = new Move(false, false, x,y, true);
-		_adversary.play(move);
-	}
-	
-	public void doMovePass() {
-		Move move = new Move(false, true, 0, 0, false);
-		_adversary.play(move);
-	}
-	
-	public void doMoveResign() {
-		Move move = new Move(true, false, 0, 0, false);
-		_adversary.play(move);
-	}
-	
 	private class GoMouseListener extends MouseAdapter {
 		@Override 
 		public void mouseMoved(final MouseEvent e) {
-			_scroller.setDirection(getScrollingDirection(e.getX(),e.getY()));
+			setDirection(getScrollingDirection(e.getX(),e.getY()));
 			_hoverStonePainter.setHoverX(toScreenPosition(e.getX()));
 			_hoverStonePainter.setHoverY(toScreenPosition(e.getY()));
 			repaint();
@@ -324,7 +311,7 @@ public class GoBoardPanel extends JPanel implements Player{
 		
 		@Override 
 		public void mouseExited(MouseEvent e) {
-			_scroller.setDirection(DIRECTION.STOPPED);
+			setDirection(DIRECTION.STOPPED);
 		}
 	}
 
