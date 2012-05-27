@@ -2,55 +2,47 @@ package sneer.bricks.snapps.games.go.impl.gui.graphics;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.Line2D;
-import java.awt.image.BufferedImage;
-
-import sneer.bricks.snapps.games.go.impl.gui.GoBoardPanel;
 
 public class BoardPainter{
+	
+	private static final Color BACKGROUND_COLOR = new Color(228,205,152);
+	private int _boardSize;
+	private float _boardImageSize;
+	private float _cellSize;
+	
+	public BoardPainter(int bOARD_SIZE,float bOARD_IMAGE_SIZE, float cELL_SIZE) {
+		setBoardDimensions( bOARD_SIZE, bOARD_IMAGE_SIZE, cELL_SIZE);
+	}
 
-	
-	private BufferedImage _bufferGrid;
-	
-	public BoardPainter() {
-		createGridBuffer();
+	public void setBoardDimensions(final int boardSize, final float boardImageSize, final float cellSize){
+		_boardSize = boardSize;
+		_boardImageSize = boardImageSize;
+		_cellSize = cellSize;
 	}
 	
 	public void draw(Graphics2D buffer) {
-		paintBackground(buffer);
-		paintGrid(buffer);
-	}
-
-	private void paintGrid(Graphics2D buffer) {
-		buffer.setColor(new Color(0,0,0,0));
-		buffer.fillRect(0, 0, GoBoardPanel.SCREEN_SIZE, GoBoardPanel.SCREEN_SIZE);
 		buffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		buffer.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		buffer.setColor(Color.black);
-		buffer.drawImage(_bufferGrid, 0, 0, null);
+		paintBackground(buffer);
+		paintGridSmall(buffer);
 	}
 
 	private void paintBackground(Graphics2D buffer) {
-		buffer.setColor(new Color(228,205,152));
-		buffer.fillRect(0, 0, GoBoardPanel.SCREEN_SIZE+10, GoBoardPanel.SCREEN_SIZE+10);
+		buffer.setColor(BACKGROUND_COLOR);
+		buffer.fillRect(0, 0,(int) _boardImageSize, (int)_boardImageSize);
 	}
 	
 	private void paintGridSmall(Graphics2D buffer) {
 		float c = 0;
-		for(int i = 0; i <= GoBoardPanel.BOARD_SIZE; i++ ) {
+		for(int i = 0; i <= _boardSize; i++ ) {
 			buffer.setColor(Color.black);
-			buffer.draw(new Line2D.Float(c, 0, c, GoBoardPanel.BOARD_IMAGE_SIZE+GoBoardPanel.CELL_SIZE));
-			buffer.draw(new Line2D.Float(0, c, GoBoardPanel.BOARD_IMAGE_SIZE+GoBoardPanel.CELL_SIZE, c));
-			c += GoBoardPanel.CELL_SIZE;
+			buffer.draw(new Line2D.Float(c, 0, c, _boardImageSize+_cellSize));
+			buffer.draw(new Line2D.Float(0, c, _boardImageSize+_cellSize, c));
+			c += _cellSize;
 		}
-	}
-	
-	private void createGridBuffer() {
-		_bufferGrid = new BufferedImage((int)(GoBoardPanel.BOARD_IMAGE_SIZE+GoBoardPanel.CELL_SIZE), (int)(GoBoardPanel.BOARD_IMAGE_SIZE+GoBoardPanel.CELL_SIZE), 
-			      BufferedImage.TYPE_INT_ARGB);
-		Graphics2D buffer = (Graphics2D)_bufferGrid.getGraphics();
-		paintGridSmall(buffer);
 	}
 
 }

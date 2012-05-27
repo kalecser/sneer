@@ -3,17 +3,29 @@ package sneer.bricks.snapps.games.go.impl.gui.graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 
-import sneer.bricks.snapps.games.go.impl.gui.GoBoardPanel;
-
 public class StonePainter {
 
+	private float _boardImageSize;
+	private float _stoneDiameter;
+	private float _cellSize; 
+	
+	public StonePainter(float bOARD_IMAGE_SIZE, float sTONE_DIAMETER,float cELL_SIZE) {
+		setBoardDimensions(bOARD_IMAGE_SIZE, sTONE_DIAMETER, cELL_SIZE); 
+	}
+
+	public void setBoardDimensions(final float boardImageSize, final float stoneDiameter,final float cellSize){
+		_boardImageSize = boardImageSize;
+		_stoneDiameter = stoneDiameter;
+		_cellSize = cellSize;
+	}
+	
 	public void paintStoneOnCoordinates(Graphics2D graphics, float x, float y, boolean dead) {
-		float d = GoBoardPanel.STONE_DIAMETER;
+		float d = _stoneDiameter;
 		if (dead) d*=0.6;
 		
 		graphics.fill(new Ellipse2D.Float(x - (d / 2), y - (d / 2), d, d));
 		//wrapping
-		int buffersize=(int)(GoBoardPanel.BOARD_IMAGE_SIZE+GoBoardPanel.CELL_SIZE);
+		int buffersize=(int)(_boardImageSize+_cellSize);
 		
 		if (x==0) graphics.fill(new Ellipse2D.Float(buffersize - (d / 2), y - (d / 2), d, d));
 		if (y==0) graphics.fill(new Ellipse2D.Float(x - (d / 2), buffersize - (d / 2), d, d));

@@ -4,20 +4,27 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import sneer.bricks.snapps.games.go.impl.gui.GoBoardPanel;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 
 public class HoverStonePainter{
 
-	private StonePainter stonePainter;
+	private StonePainter _stonePainter;
 	private int _xOffsetMeasuredByPieces;
 	private int _yOffsetMeasuredByPieces;
 	private int _hoverX;
 	private int _hoverY;
+	private int _boardSize;
+	private float _cellSize;
+	
+	public HoverStonePainter(StonePainter stonePainter, int bOARD_SIZE,float cELL_SIZE) {
+		_stonePainter = stonePainter;
+		setBoardDimensions(bOARD_SIZE, cELL_SIZE);
+	}
 
-	public HoverStonePainter(final StonePainter stonePainter) {
-		this.stonePainter = stonePainter;
+	public void setBoardDimensions(final int boardSize, final float cellSize){
+		_boardSize = boardSize;
+		_cellSize = cellSize;
 	}
 	
 	public void draw(final Graphics2D graphics, final GoBoard _board){
@@ -27,7 +34,7 @@ public class HoverStonePainter{
 		else graphics.setColor(new Color(255, 255, 255, 90));
 			
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		stonePainter.paintStoneOnCoordinates(graphics, toCoordinateSmall(_hoverX), toCoordinateSmall(_hoverY), false);
+		_stonePainter.paintStoneOnCoordinates(graphics, toCoordinateSmall(_hoverX), toCoordinateSmall(_hoverY), false);
 	}
 
 	public void setOffset(int xOffsetMeasuredByPieces, int yOffsetMeasuredByPieces) {
@@ -44,14 +51,14 @@ public class HoverStonePainter{
 	}
 
 	private float toCoordinateSmall(int position) {
-		return position * GoBoardPanel.CELL_SIZE;
+		return position * _cellSize;
 	}
 	
 	private int unscrollX(int x,int _scrollX) { 
-		return (GoBoardPanel.BOARD_SIZE + x - _scrollX) % GoBoardPanel.BOARD_SIZE; 
+		return (_boardSize + x - _scrollX) % _boardSize; 
 	}
 	
 	private int unscrollY(int y,int _scrollY) { 
-		return (GoBoardPanel.BOARD_SIZE + y - _scrollY) % GoBoardPanel.BOARD_SIZE; 
+		return (_boardSize + y - _scrollY) % _boardSize; 
 	}
 }

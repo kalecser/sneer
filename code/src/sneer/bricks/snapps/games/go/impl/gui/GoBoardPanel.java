@@ -1,13 +1,14 @@
 package sneer.bricks.snapps.games.go.impl.gui;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Rectangle2D;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
@@ -30,17 +31,17 @@ public class GoBoardPanel extends JPanel{
 	
 	private static final long serialVersionUID = 1L;
 
-	public static final int BOARD_SIZE = 5;
-	public static final int SCREEN_SIZE = 500;
-	public static final float MARGIN = SCREEN_SIZE/5;
-	public static final float BOARD_IMAGE_SIZE = SCREEN_SIZE - MARGIN*2;
-	public static final float CELL_SIZE = BOARD_IMAGE_SIZE/(BOARD_SIZE-1);
-	public static final float STONE_DIAMETER = CELL_SIZE *0.97f;
+	private int _boardSize;
+	private int _screenSize;
+	private float _margin;
+	private float _boardImageSize;
+	private float _cellSize;
+	private float _stoneDiameter;
+	final GoBoard _board;
 
 	public static enum DIRECTION { STOPPED,UP,DOWN,LEFT,RIGHT;}
 	private DIRECTION _scrollingDirection = DIRECTION.STOPPED;
 
-	final GoBoard _board = new ToroidalGoBoard(BOARD_SIZE);
 
 	private BufferedImage _bufferImage;
 	private volatile int _yOffsetMeasuredByPieces;
@@ -57,16 +58,17 @@ public class GoBoardPanel extends JPanel{
 	private WeakContract _referenceToAvoidGc;
 
 	private final GuiPlayer _goFrame;
+
+	private StonePainter _stonePainter;
 	
 	public GoBoardPanel(final GuiPlayer goFrame,final TimerFactory timerFactory, StoneColor side) {
-		_goFrame = goFrame;
-		_boardPainter = new BoardPainter();
-		final StonePainter stonePainter = new StonePainter();
-		_hoverStonePainter = new HoverStonePainter(stonePainter);
-		_stonesInPlayPainter = new StonesInPlayPainter(stonePainter);
-		_hudPainter = new HUDPainter();
-		
+		_goFrame = goFrame;		
 		_side = side;
+		
+		_boardSize = 15;
+		_board = new ToroidalGoBoard(_boardSize);
+		
+		createPainters();
 		
 		addMouseListener();
 		_referenceToAvoidGc = timerFactory.wakeUpEvery(150, new Runnable() {@Override public void run() {
@@ -74,18 +76,14 @@ public class GoBoardPanel extends JPanel{
 			repaint();
 		}});    	
 	}
-	
+
 	@Override
 	public void paint(final Graphics graphics) {
 		Graphics2D buffer = getBuffer();
-		
 		_boardPainter.draw(buffer);
 		_hoverStonePainter.draw(buffer, _board);
 		_stonesInPlayPainter.draw(buffer, _board);
-				
-		drawBoardOnAllSixCorners(graphics);
-		drawCameraBoundaries(graphics);
-		
+		drawBoardTiled(graphics);
 		_hudPainter.draw(graphics);
 	}
 
@@ -125,6 +123,31 @@ public class GoBoardPanel extends JPanel{
 		decideWinner();
 	}
 
+	private void createPainters() {		
+		_screenSize = 500;
+		_margin = _screenSize/5;
+		_cellSize = 40;
+		_boardImageSize = _cellSize*(_boardSize-1);
+		
+		_stoneDiameter = _cellSize *0.97f;
+		_boardPainter = new BoardPainter(_boardSize, _boardImageSize, _cellSize);
+		_stonePainter = new StonePainter(_boardImageSize, _stoneDiameter, _cellSize);
+		_hoverStonePainter = new HoverStonePainter(_stonePainter,_boardSize, _cellSize);		
+		_stonesInPlayPainter = new StonesInPlayPainter(_stonePainter,_boardSize);
+		_hudPainter = new HUDPainter();
+	}
+	
+	private void updateCellSize(int i) {
+		_cellSize += i;
+		System.out.println("c "+_cellSize);
+		_boardImageSize = _cellSize*(_boardSize-1);
+		_stoneDiameter = _cellSize *0.97f;
+		_boardPainter.setBoardDimensions(_boardSize, _boardImageSize, _cellSize);
+		_stonePainter.setBoardDimensions(_boardImageSize, _stoneDiameter, _cellSize);
+		_hoverStonePainter.setBoardDimensions(_boardSize, _cellSize);		
+		_stonesInPlayPainter.setBoardDimensions(_boardSize);		
+	}
+
 	private void scrollOnePieceToTheRight() {
 		scrollPiecesHorizontally(1);
 	}
@@ -142,13 +165,13 @@ public class GoBoardPanel extends JPanel{
 	}
 	
 	private void scrollPiecesHorizontally(int scrollXDelta) {
-		_xOffsetMeasuredByPieces = (_xOffsetMeasuredByPieces + scrollXDelta + BOARD_SIZE) % BOARD_SIZE;
+		_xOffsetMeasuredByPieces = (_xOffsetMeasuredByPieces + scrollXDelta + _boardSize) % _boardSize;
 		_hoverStonePainter.setOffset( _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
 		_stonesInPlayPainter.setOffset( _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
 	}
 	
 	private void scrollPiecesVerticaly(int scrollYDelta) {
-		_yOffsetMeasuredByPieces = (_yOffsetMeasuredByPieces + scrollYDelta + BOARD_SIZE) % BOARD_SIZE;
+		_yOffsetMeasuredByPieces = (_yOffsetMeasuredByPieces + scrollYDelta + _boardSize) % _boardSize;
 		_hoverStonePainter.setOffset( _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
 		_stonesInPlayPainter.setOffset( _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
 	}
@@ -169,6 +192,7 @@ public class GoBoardPanel extends JPanel{
 		Object listener = ProxyInEnvironment.newInstance(new GoMouseListener());
 		addMouseListener((MouseListener) listener);
 	    addMouseMotionListener((MouseMotionListener) listener);
+	    addMouseWheelListener((MouseWheelListener) listener);
 	}
 	
 	private void scroll() {
@@ -218,38 +242,42 @@ public class GoBoardPanel extends JPanel{
 		
 	}
 
-	private void drawCameraBoundaries(Graphics graphics) {
-		graphics.setColor(Color.black);
-		((Graphics2D) graphics).draw(new Rectangle2D.Float(MARGIN+1, MARGIN+1, BOARD_IMAGE_SIZE-2, BOARD_IMAGE_SIZE-2));
-	}
-
-	private void drawBoardOnAllSixCorners(Graphics graphics) {
-		for (int i=0; i<9; i++) {
-			int x=(int)(MARGIN+(BOARD_IMAGE_SIZE+CELL_SIZE)*((i % 3)-1));
-			int y=(int)(MARGIN+(BOARD_IMAGE_SIZE+CELL_SIZE)*(Math.floor(i/3)-1));
-			graphics.drawImage(_bufferImage, x, y, this);
+	private void drawBoardTiled(Graphics graphics) {
+		final Rectangle clipBounds = graphics.getClipBounds();
+		int x_ = 0;
+		int y_ = 0;
+		
+		graphics.drawImage(_bufferImage, x_, y_, this);
+		
+		while(clipBounds.contains(x_, y_)){
+			while(clipBounds.contains(x_, y_)){
+				graphics.drawImage(_bufferImage, x_, y_, this);
+				x_ += (_boardImageSize+1);
+			}
+			x_ = 0;
+			y_ += (_boardImageSize+1);
 		}
 	}
 
 	private int unscrollX(int x) { 
-		return (BOARD_SIZE + x - _xOffsetMeasuredByPieces) % BOARD_SIZE; 
+		return (_boardSize + x - _xOffsetMeasuredByPieces) % _boardSize; 
 	}
 	
 	private int unscrollY(int y) { 
-		return (BOARD_SIZE + y - _yOffsetMeasuredByPieces) % BOARD_SIZE; 
+		return (_boardSize + y - _yOffsetMeasuredByPieces) % _boardSize; 
 	}
 	
 	private Graphics2D getBuffer() {
-		_bufferImage = new BufferedImage((int)(BOARD_IMAGE_SIZE+CELL_SIZE), (int)(BOARD_IMAGE_SIZE+CELL_SIZE), 
+		_bufferImage = new BufferedImage((int)(_boardImageSize+_cellSize), (int)(_boardImageSize+_cellSize), 
 			      BufferedImage.TYPE_INT_ARGB);
 		return (Graphics2D)_bufferImage.getGraphics();
 	}
 
 	
 	private int toScreenPosition(int coordinate) {
-		float result = (coordinate - MARGIN + (CELL_SIZE / 2)) / CELL_SIZE;
+		float result = (coordinate - _margin + (_cellSize / 2)) / _cellSize;
 		if (result < 0) return 0;
-		if (result > BOARD_SIZE-1) return BOARD_SIZE-1;
+		if (result > _boardSize-1) return _boardSize-1;
 		return (int)Math.floor(result);
 	}
 	
@@ -264,11 +292,11 @@ public class GoBoardPanel extends JPanel{
 		}
 		
 		private DIRECTION getScrollingDirection(int x, int y) {
-			float bottomRightMargin = ((BOARD_SIZE-1) * CELL_SIZE) + MARGIN;
+			float bottomRightMargin = ((_boardSize-1) * _cellSize) + _margin;
 			if (x > bottomRightMargin) return DIRECTION.RIGHT;
-			if (x < MARGIN) return DIRECTION.LEFT;
+			if (x < _margin) return DIRECTION.LEFT;
 			if (y > bottomRightMargin) return DIRECTION.DOWN;
-			if (y < MARGIN) return DIRECTION.UP;
+			if (y < _margin) return DIRECTION.UP;
 			return DIRECTION.STOPPED;
 		}
 
@@ -284,7 +312,14 @@ public class GoBoardPanel extends JPanel{
 			if (_side != _board.nextToPlay()) return;
 			doMoveAddStone(x, y);
 		}
-
+		
+		@Override
+		public void mouseWheelMoved(MouseWheelEvent e) {
+			System.out.println(e);
+			final int wheelRotation = e.getWheelRotation();
+			System.out.println(wheelRotation);
+			updateCellSize(wheelRotation);
+		}
 		
 		@Override 
 		public void mouseExited(MouseEvent e) {

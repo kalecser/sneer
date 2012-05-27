@@ -3,19 +3,24 @@ package sneer.bricks.snapps.games.go.impl.gui.graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import sneer.bricks.snapps.games.go.impl.gui.GoBoardPanel;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 
 
 public class StonesInPlayPainter {
 
-	private final StonePainter stonePainter;
+	private final StonePainter _stonePainter;
 	private int _xOffsetMeasuredByPieces;
 	private int _yOffsetMeasuredByPieces;
+	private int _boardSize;
 
-	public StonesInPlayPainter(final StonePainter stonePainter) {
-		this.stonePainter = stonePainter;
+	public StonesInPlayPainter(StonePainter stonePainter, int bOARD_SIZE) {
+		this._stonePainter = stonePainter;
+		setBoardDimensions(bOARD_SIZE);
+	}
+
+	public void setBoardDimensions(final int boardSize){
+		_boardSize = boardSize;
 	}
 	
 	public void draw(final Graphics2D graphics, final GoBoard _board){
@@ -49,7 +54,7 @@ public class StonesInPlayPainter {
 		graphics.setColor(toAwtColor(color));
 		
 
-		stonePainter.paintStoneOnCoordinates(graphics, cx, cy, dead);
+		_stonePainter.paintStoneOnCoordinates(graphics, cx, cy, dead);
 	}
 
 	private Color toAwtColor(StoneColor color) {
@@ -57,14 +62,14 @@ public class StonesInPlayPainter {
 	}
 	
 	private int scrollX(int x, final int _scrollX) { 
-		return (x + _scrollX) % GoBoardPanel.BOARD_SIZE; 
+		return (x + _scrollX) % _boardSize; 
 	}
 	
 	private int scrollY(int y,final int _scrollY) { 
-		return (y + _scrollY) % GoBoardPanel.BOARD_SIZE; 
+		return (y + _scrollY) % _boardSize; 
 	}
 	
 	private float toCoordinateSmall(int position) {
-		return position * GoBoardPanel.CELL_SIZE;
+		return position * _boardSize;
 	}
 }
