@@ -13,12 +13,14 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.snapps.games.go.impl.TimerFactory;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.BoardPainter;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.HUDPainter;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.HoverStonePainter;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.StonePainter;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.StonesInPlayPainter;
 import sneer.bricks.snapps.games.go.impl.logging.GoLogger;
+import sneer.bricks.snapps.games.go.impl.logic.BoardListener;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.impl.logic.ToroidalGoBoard;
@@ -54,9 +56,9 @@ public class GoBoardPanel extends JPanel{
 	@SuppressWarnings("unused")
 	private WeakContract _referenceToAvoidGc;
 
-	private final GoFrame _goFrame;
+	private final GuiPlayer _goFrame;
 	
-	public GoBoardPanel(final GoFrame goFrame,final TimerFactory timerFactory, StoneColor side) {
+	public GoBoardPanel(final GuiPlayer goFrame,final TimerFactory timerFactory, StoneColor side) {
 		_goFrame = goFrame;
 		_boardPainter = new BoardPainter();
 		final StonePainter stonePainter = new StonePainter();

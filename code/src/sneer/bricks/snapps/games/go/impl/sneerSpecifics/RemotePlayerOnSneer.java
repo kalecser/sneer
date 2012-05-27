@@ -1,6 +1,7 @@
-package sneer.bricks.snapps.games.go.impl.network;
+package sneer.bricks.snapps.games.go.impl.sneerSpecifics;
 
 import sneer.bricks.pulp.reactive.Register;
+import sneer.bricks.snapps.games.go.impl.Player;
 import sneer.bricks.snapps.games.go.impl.logic.Move;
 import basis.lang.Consumer;
 

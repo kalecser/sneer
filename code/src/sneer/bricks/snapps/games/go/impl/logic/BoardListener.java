@@ -1,7 +1,6 @@
-package sneer.bricks.snapps.games.go.impl.gui;
+package sneer.bricks.snapps.games.go.impl.logic;
 
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
-
 
 public interface BoardListener {
 

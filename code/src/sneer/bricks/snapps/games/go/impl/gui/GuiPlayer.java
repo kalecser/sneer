@@ -14,12 +14,14 @@ import javax.swing.WindowConstants;
 import basis.lang.Closure;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.snapps.games.go.impl.Player;
+import sneer.bricks.snapps.games.go.impl.TimerFactory;
 import sneer.bricks.snapps.games.go.impl.logging.GoLogger;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
+import sneer.bricks.snapps.games.go.impl.logic.BoardListener;
 import sneer.bricks.snapps.games.go.impl.logic.Move;
-import sneer.bricks.snapps.games.go.impl.network.Player;
 
-public class GoFrame extends JFrame implements BoardListener,Player{
+public class GuiPlayer extends JFrame implements BoardListener,Player{
 	
 	private static final long serialVersionUID = 1L;
 	private final StoneColor _side;
@@ -48,13 +50,13 @@ public class GoFrame extends JFrame implements BoardListener,Player{
 				return null;
 			}
 		};
-		GoFrame blackFrame = new GoFrame(StoneColor.BLACK, 0, timerFactory);
-		GoFrame whiteFrame = new GoFrame(StoneColor.WHITE, 0, timerFactory);
+		GuiPlayer blackFrame = new GuiPlayer(StoneColor.BLACK, 0, timerFactory);
+		GuiPlayer whiteFrame = new GuiPlayer(StoneColor.WHITE, 0, timerFactory);
 		whiteFrame.setAdversary(blackFrame);
 		blackFrame.setAdversary(whiteFrame);
 	}
 	
-	public GoFrame(StoneColor side, int horizontalPosition, final TimerFactory timerFactory) {
+	public GuiPlayer(StoneColor side, int horizontalPosition, final TimerFactory timerFactory) {
 		_side = side;
 	
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
