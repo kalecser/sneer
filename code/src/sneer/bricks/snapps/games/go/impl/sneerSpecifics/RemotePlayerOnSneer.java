@@ -43,7 +43,7 @@ public class RemotePlayerOnSneer implements Player {
 			_move.setter().consume(move);
 			GoLogger.log("WaitingAcknowledge "+move);
 			try {
-				Thread.sleep(100);
+				Thread.sleep(100);//TODO: timeout here
 			} catch (InterruptedException e) {
 				throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 			}

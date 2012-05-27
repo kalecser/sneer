@@ -58,7 +58,6 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		GoLogger.log("GoFrame.setAdversary("+adversary+")");
 		_adversary = adversary;
 	}
-	//Game Plays traffic below
 	
 	public void doMovePass() {
 		GoLogger.log("GoFrame.doMovePass()");

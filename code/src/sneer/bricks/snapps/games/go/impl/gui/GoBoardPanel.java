@@ -105,35 +105,37 @@ public class GoBoardPanel extends JPanel{
 	void receiveMoveAddStone(int xCoordinate, int yCoordinate) {
 		GoLogger.log("GoBoardPanel.receiveMoveAddStone("+xCoordinate+","+yCoordinate+")");
 		_board.playStone(xCoordinate, yCoordinate);
-		repaint();
+		gameLogicDecideWinner();
 	}
 
 	void receiveMoveMarkStone(int xCoordinate, int yCoordinate) {
 		GoLogger.log("GoBoardPanel.receiveMoveMarkStone("+xCoordinate+","+yCoordinate+")");
 		_board.toggleDeadStone(xCoordinate, yCoordinate);
-		repaint();
+		gameLogicDecideWinner();
 	}
 
 	void receiveMovePassTurn() {
 		GoLogger.log("GoBoardPanel.receiveMovePassTurn()");
 		_board.passTurn();
-		repaint();
+		gameLogicDecideWinner();
 	}
 
 	void receiveMoveResign() {
 		GoLogger.log("GoBoardPanel.receiveMoveResign()");
 		_board.resign();
-		repaint();
+		gameLogicDecideWinner();
 	}
 
 	private void doMoveAddStone(int x, int y) {
 		GoLogger.log("GoBoardPanel.doMoveAddStone("+x+","+y+")");
 		_goFrame.doMoveAddStone(x,y);
+		gameLogicDecideWinner();
 	}
 	
 	private void doMoveMarkStone(int x, int y) {
 		GoLogger.log("GoBoardPanel.doMoveMarkStone("+x+","+y+")");
 		_goFrame.doMoveMarkStone(x,y);
+		gameLogicDecideWinner();
 	}
 	
 	private void addMouseListener() {
@@ -175,9 +177,7 @@ public class GoBoardPanel extends JPanel{
 		_stonesInPlayPainter.draw(buffer, _board);
 				
 		drawBoardOnAllSixCorners(graphics);
-		drawCameraBoundaries(graphics);		
-		
-		gameLogicDecideWinner();//TODO: move this out of the paint method
+		drawCameraBoundaries(graphics);
 		
 		_hudPainter.draw(graphics);
 	}
@@ -203,6 +203,7 @@ public class GoBoardPanel extends JPanel{
 			}
 		}
 		_hudPainter.setWinState(winState);
+		repaint();
 	}
 
 	private void drawCameraBoundaries(Graphics graphics) {
