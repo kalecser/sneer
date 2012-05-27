@@ -12,6 +12,7 @@ import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.snapps.games.go.impl.TimerFactory;
@@ -216,15 +217,17 @@ public class GoBoardPanel extends JPanel{
 	}
 
 	
-	private int toScreenPosition(int coordinate) {
-		float result = (coordinate -  (_cellSize / 2)) / _cellSize;
-		if (result < 0) return 0;
-		if (result > _boardSize-1) return _boardSize-1;
-		return (int)Math.ceil(result);
+	private int toScreenPosition(final int coordinate) {
+		int coordinateInsideBoard = (int) (coordinate %  _boardImageSize);
+		float result = (coordinateInsideBoard -  (_cellSize / 2)) / _cellSize;
+		return (int)Math.ceil(result)%_boardSize;
 	}
 	
 
 	private class GoMouseListener extends MouseAdapter {
+		private int _startX;
+		private int _startY;
+
 		@Override 
 		public void mouseMoved(final MouseEvent e) {
 			_hoverStonePainter.setHoverX(toScreenPosition(e.getX()));
@@ -234,11 +237,24 @@ public class GoBoardPanel extends JPanel{
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			throw new basis.lang.exceptions.NotImplementedYet(); // Implement
+			if(!SwingUtilities.isMiddleMouseButton(e)) return;
+			final int dragX = e.getX() - _startX;
+			final int dragY = e.getY() - _startY;
+			System.out.println("Drag "+dragX+" "+dragY);
+		}
+		
+		@Override
+		public void mousePressed(MouseEvent e) {
+			if(SwingUtilities.isMiddleMouseButton(e)){
+				_startX = e.getX();
+				_startY = e.getY();
+			}
 		}
 		
 		@Override 
 		public void mouseReleased(MouseEvent e) {
+			if(SwingUtilities.isMiddleMouseButton(e)) return;
+			
 			int x = unscrollX(toScreenPosition(e.getX()));
 			int y = unscrollY(toScreenPosition(e.getY()));
 			if (_board.nextToPlay()==null) {
