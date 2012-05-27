@@ -1,5 +1,7 @@
 package sneer.bricks.snapps.games.go.tests.logic;
 
+import javax.swing.JFrame;
+
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.snapps.games.go.impl.Player;
 import sneer.bricks.snapps.games.go.impl.TimerFactory;
@@ -15,8 +17,6 @@ public class RunGoWithoutSneer implements Player {
 
 	public static void main(String[] args) {
 		new RunGoWithoutSneer();
-		
-		
 	}
 
 	public RunGoWithoutSneer() {
@@ -40,13 +40,19 @@ public class RunGoWithoutSneer implements Player {
 			}
 		};
 		_blackFrame = new GuiPlayer(StoneColor.BLACK, 0, timerFactory);
-		_whiteFrame = new GuiPlayer(StoneColor.WHITE, 0, timerFactory);
+		_blackFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		_blackFrame.setAdversary(this);
+		_whiteFrame = new GuiPlayer(StoneColor.WHITE, 0, timerFactory);
+		_whiteFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		_whiteFrame.setAdversary(this);
 	}
 	
 	@Override
 	public void play(Move move) {
+		simulatePlaySignaling(move);
+	}
+
+	private void simulatePlaySignaling(Move move) {
 		_blackFrame.play(move);
 		_whiteFrame.play(move);
 	}

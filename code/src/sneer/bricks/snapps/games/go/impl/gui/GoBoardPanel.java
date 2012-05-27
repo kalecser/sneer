@@ -71,6 +71,7 @@ public class GoBoardPanel extends JPanel{
 		addMouseListener();
 		_referenceToAvoidGc = timerFactory.wakeUpEvery(150, new Runnable() {@Override public void run() {
 			scroll();
+			repaint();
 		}});    	
 	}
 	
@@ -105,37 +106,37 @@ public class GoBoardPanel extends JPanel{
 	void receiveMoveAddStone(int xCoordinate, int yCoordinate) {
 		GoLogger.log("GoBoardPanel.receiveMoveAddStone("+xCoordinate+","+yCoordinate+")");
 		_board.playStone(xCoordinate, yCoordinate);
-		gameLogicDecideWinner();
+		decideWinner();
 	}
 
 	void receiveMoveMarkStone(int xCoordinate, int yCoordinate) {
 		GoLogger.log("GoBoardPanel.receiveMoveMarkStone("+xCoordinate+","+yCoordinate+")");
 		_board.toggleDeadStone(xCoordinate, yCoordinate);
-		gameLogicDecideWinner();
+		decideWinner();
 	}
 
 	void receiveMovePassTurn() {
 		GoLogger.log("GoBoardPanel.receiveMovePassTurn()");
 		_board.passTurn();
-		gameLogicDecideWinner();
+		decideWinner();
 	}
 
 	void receiveMoveResign() {
 		GoLogger.log("GoBoardPanel.receiveMoveResign()");
 		_board.resign();
-		gameLogicDecideWinner();
+		decideWinner();
 	}
 
 	private void doMoveAddStone(int x, int y) {
 		GoLogger.log("GoBoardPanel.doMoveAddStone("+x+","+y+")");
 		_goFrame.doMoveAddStone(x,y);
-		gameLogicDecideWinner();
+		decideWinner();
 	}
 	
 	private void doMoveMarkStone(int x, int y) {
 		GoLogger.log("GoBoardPanel.doMoveMarkStone("+x+","+y+")");
 		_goFrame.doMoveMarkStone(x,y);
-		gameLogicDecideWinner();
+		decideWinner();
 	}
 	
 	private void addMouseListener() {
@@ -161,7 +162,6 @@ public class GoBoardPanel extends JPanel{
 		if (_scrollingDirection == DIRECTION.DOWN){
 			scrollOnePieceToTheBottom();
 		}
-		repaint();
 	}
 	
 	private void setDirection(DIRECTION scrollingDirection) {
@@ -182,7 +182,7 @@ public class GoBoardPanel extends JPanel{
 		_hudPainter.draw(graphics);
 	}
 
-	private void gameLogicDecideWinner() {
+	private void decideWinner() {
 		int winState = HUDPainter.NOONE_WIN;
 		if (_board.nextToPlay()==null){
 			int scoreWhite=scoreWhite();
@@ -203,7 +203,7 @@ public class GoBoardPanel extends JPanel{
 			}
 		}
 		_hudPainter.setWinState(winState);
-		repaint();
+		
 	}
 
 	private void drawCameraBoundaries(Graphics graphics) {
