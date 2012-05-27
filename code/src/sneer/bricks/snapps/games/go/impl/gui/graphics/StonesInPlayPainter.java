@@ -10,17 +10,15 @@ import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 public class StonesInPlayPainter {
 
 	private final StonePainter _stonePainter;
-	private int _xOffsetMeasuredByPieces;
-	private int _yOffsetMeasuredByPieces;
-	private int _boardSize;
+	private float _cellSize;
 
-	public StonesInPlayPainter(StonePainter stonePainter, int bOARD_SIZE) {
+	public StonesInPlayPainter(StonePainter stonePainter,final float cellSize) {
 		this._stonePainter = stonePainter;
-		setBoardDimensions(bOARD_SIZE);
+		setBoardDimensions(cellSize);
 	}
 
-	public void setBoardDimensions(final int boardSize){
-		_boardSize = boardSize;
+	public void setBoardDimensions(final float cellSize){
+		this._cellSize = cellSize;
 	}
 	
 	public void draw(final Graphics2D graphics, final GoBoard _board){
@@ -28,15 +26,10 @@ public class StonesInPlayPainter {
 		
 		for (int x = 0; x < size; x++)
 			for (int y = 0; y < size; y++)
-				paintStoneOnPosition(graphics,_board, x, y, _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);		
-	}
-	
-	public void setOffset(int xOffsetMeasuredByPieces, int yOffsetMeasuredByPieces) {
-		_xOffsetMeasuredByPieces = xOffsetMeasuredByPieces;
-		_yOffsetMeasuredByPieces = yOffsetMeasuredByPieces;
+				paintStoneOnPosition(graphics,_board, x, y);		
 	}
 
-	private void paintStoneOnPosition(Graphics2D graphics,final GoBoard _board, int x, int y,final int _scrollX, final int _scrollY) {
+	private void paintStoneOnPosition(Graphics2D graphics,final GoBoard _board, int x, int y) {
 		StoneColor color = _board.stoneAt(x, y);
 		boolean dead=false;
 		if (color == null) {
@@ -48,8 +41,8 @@ public class StonesInPlayPainter {
 			else return;
 		}
 		
-		float cx = toCoordinateSmall(scrollX(x, _scrollX));		
-		float cy = toCoordinateSmall(scrollY(y, _scrollY));		
+		float cx = _cellSize*x;		
+		float cy = _cellSize*y;		
 	
 		graphics.setColor(toAwtColor(color));
 		
@@ -59,17 +52,5 @@ public class StonesInPlayPainter {
 
 	private Color toAwtColor(StoneColor color) {
 		return color == StoneColor.BLACK? Color.black: Color.white;
-	}
-	
-	private int scrollX(int x, final int _scrollX) { 
-		return (x + _scrollX) % _boardSize; 
-	}
-	
-	private int scrollY(int y,final int _scrollY) { 
-		return (y + _scrollY) % _boardSize; 
-	}
-	
-	private float toCoordinateSmall(int position) {
-		return position * _boardSize;
 	}
 }
