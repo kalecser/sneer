@@ -125,10 +125,6 @@ public class GoBoardPanel extends JPanel{
 		_board.resign();
 		repaint();
 	}
-	
-	public StoneColor nextToPlaySignal() {
-		return _board.nextToPlaySignal();
-	}
 
 	private void doMoveAddStone(int x, int y) {
 		GoLogger.log("GoBoardPanel.doMoveAddStone("+x+","+y+")");

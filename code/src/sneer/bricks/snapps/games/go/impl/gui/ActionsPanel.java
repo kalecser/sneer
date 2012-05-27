@@ -39,9 +39,7 @@ public class ActionsPanel extends JPanel {
 		resignButton.addActionListener(ProxyInEnvironment.newInstance(listener));
 		
 		setVisible(true);
-
 	}
-
 
 	public void nextToPlay(StoneColor _nextToPlay) {
 		boolean isMyTurn = _nextToPlay == _side;

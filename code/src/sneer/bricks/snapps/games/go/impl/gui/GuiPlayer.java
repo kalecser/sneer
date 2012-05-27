@@ -11,15 +11,13 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-import basis.lang.Closure;
-
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.snapps.games.go.impl.Player;
 import sneer.bricks.snapps.games.go.impl.TimerFactory;
 import sneer.bricks.snapps.games.go.impl.logging.GoLogger;
-import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.impl.logic.BoardListener;
+import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.impl.logic.Move;
+import basis.lang.Closure;
 
 public class GuiPlayer extends JFrame implements BoardListener,Player{
 	
@@ -29,32 +27,6 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 	private ActionsPanel actionsPanel;
 	private GoScorePanel scorePanel;
 	private Player _adversary;
-	
-	public static void main(String[] args) {
-		TimerFactory timerFactory = new TimerFactory() {
-			@Override
-			public WeakContract wakeUpEvery(final int interval, final Runnable scroller) {
-				new Thread(){
-					@Override
-					public void run() {
-						while(true){
-							try {
-								scroller.run();
-								Thread.sleep(interval);
-							} catch (InterruptedException e) {
-								throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-							}
-						}
-					};
-				}.start();
-				return null;
-			}
-		};
-		GuiPlayer blackFrame = new GuiPlayer(StoneColor.BLACK, 0, timerFactory);
-		GuiPlayer whiteFrame = new GuiPlayer(StoneColor.WHITE, 0, timerFactory);
-		whiteFrame.setAdversary(blackFrame);
-		blackFrame.setAdversary(whiteFrame);
-	}
 	
 	public GuiPlayer(StoneColor side, int horizontalPosition, final TimerFactory timerFactory) {
 		_side = side;
@@ -70,39 +42,6 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		//setLocationRelativeTo(null);
 	}
 	
-	private void addComponentPanel(final TimerFactory timerFactory) {
-		Container contentPane = getContentPane();
-		contentPane.setLayout(new BorderLayout());
-		
-		_goBoardPanel = new GoBoardPanel(this,timerFactory, _side);
-		_goBoardPanel.setBoardListener(this);
-		contentPane.add(_goBoardPanel, BorderLayout.CENTER);
-		
-		JPanel goEastPanel = new JPanel();
-		
-		goEastPanel.setLayout(new FlowLayout());
-		scorePanel = new GoScorePanel(_goBoardPanel.scoreBlack(), _goBoardPanel.scoreWhite());
-		goEastPanel.add(scorePanel);
-		
-		JSeparator space= new JSeparator(SwingConstants.VERTICAL);
-		space.setPreferredSize(new Dimension(30,0));
-		
-		goEastPanel.add(space); 
-		
-		Closure pass = new Closure() { @Override public void run() {
-			doMovePass();
-		}};
-		Closure resign = new Closure() { @Override public void run() {
-			doMoveResign();
-		}}; 
-		
-		actionsPanel = new ActionsPanel(pass,resign, _side);
-		
-		goEastPanel.add(actionsPanel);
-				
-		contentPane.add(goEastPanel, BorderLayout.SOUTH);
-	}
-
 	@Override
 	public void updateScore(int blackScore, int whiteScore) {
 		scorePanel.updateScore(blackScore, whiteScore);
@@ -111,6 +50,7 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 	@Override
 	public void nextToPlay(StoneColor nextToPlay) {
 		actionsPanel.nextToPlay(nextToPlay);
+		_goBoardPanel.repaint();
 	}
 
 	@Override
@@ -161,6 +101,39 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		}
 		
 		_goBoardPanel.receiveMoveAddStone(move.xCoordinate, move.yCoordinate);			
+	}
+
+	private void addComponentPanel(final TimerFactory timerFactory) {
+		Container contentPane = getContentPane();
+		contentPane.setLayout(new BorderLayout());
+		
+		_goBoardPanel = new GoBoardPanel(this,timerFactory, _side);
+		_goBoardPanel.setBoardListener(this);
+		contentPane.add(_goBoardPanel, BorderLayout.CENTER);
+		
+		JPanel goEastPanel = new JPanel();
+		
+		goEastPanel.setLayout(new FlowLayout());
+		scorePanel = new GoScorePanel(_goBoardPanel.scoreBlack(), _goBoardPanel.scoreWhite());
+		goEastPanel.add(scorePanel);
+		
+		JSeparator space= new JSeparator(SwingConstants.VERTICAL);
+		space.setPreferredSize(new Dimension(30,0));
+		
+		goEastPanel.add(space); 
+		
+		Closure pass = new Closure() { @Override public void run() {
+			doMovePass();
+		}};
+		Closure resign = new Closure() { @Override public void run() {
+			doMoveResign();
+		}}; 
+		
+		actionsPanel = new ActionsPanel(pass,resign, _side);
+		
+		goEastPanel.add(actionsPanel);
+				
+		contentPane.add(goEastPanel, BorderLayout.SOUTH);
 	}
 	
 }

@@ -23,6 +23,7 @@ import sneer.bricks.snapps.games.go.impl.gui.GuiPlayer;
 import sneer.bricks.snapps.games.go.impl.logging.GoLogger;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.impl.logic.Move;
+import sneer.bricks.snapps.games.go.impl.network.AcknowledgeReceive;
 import sneer.bricks.snapps.games.go.impl.network.GoInvitation;
 import sneer.bricks.snapps.games.go.impl.network.GoMessage;
 import sneer.bricks.snapps.games.go.impl.network.GoMove;
@@ -35,29 +36,35 @@ import basis.lang.Consumer;
 class GoMainImpl implements GoMain {
 
 	private Register<Move> _moveRegister = my(Signals.class).newRegister(null);
+	private Register<AcknowledgeReceive> _ackRegister = my(Signals.class).newRegister(null);
 
 	@SuppressWarnings("unused") private WeakContract _refToAvoidGc;
-	@SuppressWarnings("unused") private WeakContract _refToAvoidGc2;
+	@SuppressWarnings("unused") private WeakContract _refToAvoidGc3;
 
 	private Move _remoteMove;
-
 	private Seal _adversary;
-
+	private StoneColor _localSide;
+	
 	{
 		setupContextMenu();
-		subscribeToReceiveGameMessages();
+		subscribeToReceiveGoMessages();
 	}
 
-	private void subscribeToReceiveGameMessages() {
+	private void subscribeToReceiveGoMessages() {
 		_refToAvoidGc = my(TupleSpace.class).addSubscription(GoMessage.class, new Consumer<GoMessage>() { @Override public void consume(final GoMessage message) {
 			if (message instanceof GoInvitation) { // Why not use only GoMessage with a string field (for handshake and moves exchange)?
 				handleInviation((GoInvitation)message);
 			}
 			
 			if (message instanceof GoMove) {
-				handleMove((GoMove)message);
+				final GoMove goMove = (GoMove)message;
+				final AcknowledgeReceive ack = new AcknowledgeReceive(goMove.move,_localSide);
+				GoLogger.log("Acknowledging receive "+goMove.move+" "+_localSide);
+				_ackRegister.setter().consume(ack);
+				handleMove(goMove);
 			}
 		}});
+		
 	}
 
 	private void setupContextMenu() {
@@ -94,26 +101,34 @@ class GoMainImpl implements GoMain {
 			if (response != JOptionPane.YES_OPTION) return;	
 		}
 
+		_localSide = stoneColor.value;
 		setupPlayers(stoneColor);
 		
-		_refToAvoidGc2 = _moveRegister.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) {
+		_refToAvoidGc3 = _moveRegister.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) {
 			GoLogger.log("received ("+move+")");
 			if(move == null ){
-				GoLogger.log("move is null");
+				GoLogger.log("move is null - starting value");
 				return;
-			}
+			}			
 			if(move.equals(_remoteMove)){
-				GoLogger.log("move is equals _remoteMove");
+				GoLogger.log("oops, already received this move "+move);
 				return;	
 			}
-			my(TupleSpace.class).add(new GoMove(_adversary, move));
+			final GoMove newMove = new GoMove(_adversary, move);
+			my(TupleSpace.class).add(newMove);
 		}});
 	}
 
 	private void setupPlayers(final ByRef<StoneColor> stoneColor) {
 		//			my(TimeboxedEventQueue.class).startQueueing(5000); // Fix: Talk to Klaus about Timebox issue
-		my(GuiThread.class).invokeAndWaitForWussies(new Closure(){@Override public void run() {
-			Player remotePlayer = new RemotePlayerOnSneer(_moveRegister);
+		my(GuiThread.class).invokeAndWaitForWussies(new Closure(){
+
+		@Override public void run() {
+			StoneColor remoteColor = StoneColor.BLACK;
+			if(stoneColor.value.equals(StoneColor.BLACK)){
+				remoteColor = StoneColor.WHITE;
+			}
+			Player remotePlayer = new RemotePlayerOnSneer(remoteColor,_moveRegister,_ackRegister);
 			Player localPlayer = new GuiPlayer(stoneColor.value, 0, new SneerTimerFactory()); 
 			localPlayer.setAdversary(remotePlayer);
 			remotePlayer.setAdversary(localPlayer);
@@ -121,11 +136,15 @@ class GoMainImpl implements GoMain {
 	}	
 	 
 	private void handleMove(GoMove message) {
-		if(message.publisher.equals(my(OwnSeal.class).get().currentValue()))
+		if(isOwnGoMove(message))
 			return;
 		GoLogger.log("GoMainImpl.handleMove("+message+")");
 		_remoteMove = message.move;
 		_moveRegister.setter().consume(message.move);
+	}
+
+	private boolean isOwnGoMove(GoMove message) {
+		return message.publisher.equals(my(OwnSeal.class).get().currentValue());
 	}
 
 }

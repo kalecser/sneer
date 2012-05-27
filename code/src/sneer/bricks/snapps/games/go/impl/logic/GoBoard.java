@@ -162,11 +162,6 @@ public class GoBoard {
 	}
 	
 	
-	public StoneColor nextToPlaySignal() {
-		return _nextToPlay;
-	}
-
-	
 	public StoneColor other(StoneColor color) {
 		return color == BLACK
 		? WHITE
@@ -178,7 +173,6 @@ public class GoBoard {
 		return intersection(x, y)._stone;
 	}
 	
-	
 	public StoneColor nextToPlay() {
 		return _nextToPlay;
 	}
@@ -188,6 +182,16 @@ public class GoBoard {
 	}
 	
 	
+	public StoneColor winner() {
+		return _winner; 
+	}
+
+
+	public void setBoardListener(BoardListener boardListener) {
+		_boardListener = boardListener;
+	}
+
+
 	private boolean sameSituationAs(Intersection[][] situation) {
 		return Arrays.deepEquals(situation, _intersections);
 	}
@@ -340,16 +344,6 @@ public class GoBoard {
 	
 	private void restoreSituation(Intersection[][] situation) {
 		_intersections = situation;
-	}
-
-	
-	public StoneColor winner() {
-		return _winner; 
-	}
-
-
-	public void setBoardListener(BoardListener boardListener) {
-		_boardListener = boardListener;
 	}
 	
 }
