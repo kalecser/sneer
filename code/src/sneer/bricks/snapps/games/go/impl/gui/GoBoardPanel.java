@@ -18,6 +18,7 @@ import sneer.bricks.snapps.games.go.impl.gui.graphics.HUDPainter;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.HoverStonePainter;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.StonePainter;
 import sneer.bricks.snapps.games.go.impl.gui.graphics.StonesInPlayPainter;
+import sneer.bricks.snapps.games.go.impl.logging.GoLogger;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.impl.logic.ToroidalGoBoard;
@@ -100,21 +101,25 @@ public class GoBoardPanel extends JPanel{
 	}
 
 	void receiveMoveAddStone(int xCoordinate, int yCoordinate) {
+		GoLogger.log("GoBoardPanel.receiveMoveAddStone("+xCoordinate+","+yCoordinate+")");
 		_board.playStone(xCoordinate, yCoordinate);
 		repaint();
 	}
 
 	void receiveMoveMarkStone(int xCoordinate, int yCoordinate) {
+		GoLogger.log("GoBoardPanel.receiveMoveMarkStone("+xCoordinate+","+yCoordinate+")");
 		_board.toggleDeadStone(xCoordinate, yCoordinate);
 		repaint();
 	}
 
 	void receiveMovePassTurn() {
+		GoLogger.log("GoBoardPanel.receiveMovePassTurn()");
 		_board.passTurn();
 		repaint();
 	}
 
 	void receiveMoveResign() {
+		GoLogger.log("GoBoardPanel.receiveMoveResign()");
 		_board.resign();
 		repaint();
 	}
@@ -124,10 +129,12 @@ public class GoBoardPanel extends JPanel{
 	}
 
 	private void doMoveAddStone(int x, int y) {
+		GoLogger.log("GoBoardPanel.doMoveAddStone("+x+","+y+")");
 		_goFrame.doMoveAddStone(x,y);
 	}
 	
 	private void doMoveMarkStone(int x, int y) {
+		GoLogger.log("GoBoardPanel.doMoveMarkStone("+x+","+y+")");
 		_goFrame.doMoveMarkStone(x,y);
 	}
 	

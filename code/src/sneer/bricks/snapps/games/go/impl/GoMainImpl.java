@@ -20,6 +20,7 @@ import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.bricks.snapps.games.go.GoMain;
 import sneer.bricks.snapps.games.go.impl.gui.GoFrame;
+import sneer.bricks.snapps.games.go.impl.logging.GoLogger;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.impl.logic.Move;
 import sneer.bricks.snapps.games.go.impl.network.GoInvitation;
@@ -43,6 +44,8 @@ class GoMainImpl implements GoMain {
 	private Seal _adversary;
 
 	{
+		setupContextMenu();
+		
 		_refToAvoidGc = my(TupleSpace.class).addSubscription(GoMessage.class, new Consumer<GoMessage>() { @Override public void consume(final GoMessage message) {
 			if (message instanceof GoInvitation) { // Why not use only GoMessage with a string field (for handshake and moves exchange)?
 				handleInviation((GoInvitation)message);
@@ -51,10 +54,11 @@ class GoMainImpl implements GoMain {
 			if (message instanceof GoMove) {
 				handleMove((GoMove)message);
 			}
-			
-		}
-		});
+		}});
 
+	}
+
+	private void setupContextMenu() {
 		my(ContactActionManager.class).addContactAction(new ContactAction() {
 			@Override
 			public void run() {
@@ -88,24 +92,36 @@ class GoMainImpl implements GoMain {
 			if (response != JOptionPane.YES_OPTION) return;	
 		}
 
-//			my(TimeboxedEventQueue.class).startQueueing(5000); // Fix: Talk to Klaus about Timebox issue
+		setupPlayers(stoneColor);
+		
+		_refToAvoidGc2 = _moveRegister.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) {
+			GoLogger.log("received ("+move+")");
+			if(move == null ){
+				GoLogger.log("move is null");
+				return;
+			}
+			if(move.equals(_remoteMove)){
+				GoLogger.log("move is equals _remoteMove");
+				return;	
+			}
+			my(TupleSpace.class).add(new GoMove(_adversary, move));
+		}});
+	}
+
+	private void setupPlayers(final ByRef<StoneColor> stoneColor) {
+		//			my(TimeboxedEventQueue.class).startQueueing(5000); // Fix: Talk to Klaus about Timebox issue
 		my(GuiThread.class).invokeAndWaitForWussies(new Closure(){@Override public void run() {
 			Player remotePlayer = new RemotePlayerOnSneer(_moveRegister);
 			GoFrame goFrame = new GoFrame(stoneColor.value, 0, new SneerTimerFactory());
 			goFrame.setAdversary(remotePlayer);
-		}});
-		
-		_refToAvoidGc2 = _moveRegister.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) {
-			if(move == null ) return;
-			if(move.equals(_remoteMove)) return;	
-			my(TupleSpace.class).add(new GoMove(_adversary, move));
+			remotePlayer.setAdversary(goFrame);
 		}});
 	}	
 	
 	private void handleMove(GoMove message) {
 		if(message.publisher.equals(my(OwnSeal.class).get().currentValue()))
 			return;
-		System.out.println(message);
+		GoLogger.log("GoMainImpl.handleMove("+message+")");
 		_remoteMove = message.move;
 		_moveRegister.setter().consume(message.move);
 	}

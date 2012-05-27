@@ -14,6 +14,7 @@ import javax.swing.WindowConstants;
 import basis.lang.Closure;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.snapps.games.go.impl.logging.GoLogger;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.impl.logic.Move;
 import sneer.bricks.snapps.games.go.impl.network.Player;
@@ -112,26 +113,31 @@ public class GoFrame extends JFrame implements BoardListener,Player{
 
 	@Override
 	public void setAdversary(Player adversary) {
+		GoLogger.log("GoFrame.setAdversary("+adversary+")");
 		_adversary = adversary;
 	}
 	//Game Plays traffic below
 	
 	public void doMovePass() {
+		GoLogger.log("GoFrame.doMovePass()");
 		Move move = new Move(false, true, 0, 0, false);
 		_adversary.play(move);
 	}
 	
 	public void doMoveResign() {
+		GoLogger.log("GoFrame.doMoveResign();");
 		Move move = new Move(true, false, 0, 0, false);
 		_adversary.play(move);
 	}
 	
 	public void doMoveAddStone(int x, int y) {
+		GoLogger.log("GoFrame.doMoveAddStone("+x+","+y+");");
 		Move move = new Move(false, false, x,y, false);
 		_adversary.play(move);
 	}
 
 	public void doMoveMarkStone(int x, int y) {
+		GoLogger.log("GoFrame.doMoveMarkStone("+x+","+y+");");
 		Move move = new Move(false, false, x,y, true);
 		_adversary.play(move);
 	}
