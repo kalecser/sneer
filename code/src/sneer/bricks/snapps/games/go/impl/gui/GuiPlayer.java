@@ -21,6 +21,7 @@ import basis.lang.Closure;
 
 public class GuiPlayer extends JFrame implements BoardListener,Player{
 	
+	private static final int BOARD_SIZE = 15;
 	private static final long serialVersionUID = 1L;
 	private final StoneColor _side;
 	private GoBoardPanel _goBoardPanel;
@@ -28,18 +29,16 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 	private GoScorePanel scorePanel;
 	private Player _adversary;
 	
-	public GuiPlayer(StoneColor side, int horizontalPosition, final TimerFactory timerFactory) {
+	public GuiPlayer(StoneColor side, final TimerFactory timerFactory) {
 		_side = side;
 	
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Go - " + _side.name());	  
 	    setResizable(true);
-	    addComponentPanel(timerFactory); 
+	    addAllComponents(timerFactory); 
 	    setVisible(true);
 	    int bord=getInsets().left+getInsets().right;
-	    setBounds(horizontalPosition*(500+bord)+100, 100, 500+bord, 575);
-		//this is for when the game is running on a single window
-		//setLocationRelativeTo(null);
+	    setBounds(0, 0,(int) ((BOARD_SIZE*_goBoardPanel.getCellSize())+_goBoardPanel.getCellSize()+bord), 700);
 	}
 	
 	@Override
@@ -102,23 +101,21 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		_goBoardPanel.receiveMoveAddStone(move.xCoordinate, move.yCoordinate);			
 	}
 
-	private void addComponentPanel(final TimerFactory timerFactory) {
+	private void addAllComponents(final TimerFactory timerFactory) {
+		
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
-		
-		_goBoardPanel = new GoBoardPanel(this,timerFactory, _side);
+		_goBoardPanel = new GoBoardPanel(this,timerFactory,BOARD_SIZE, _side);
 		_goBoardPanel.setBoardListener(this);
 		contentPane.add(_goBoardPanel, BorderLayout.CENTER);
 		
 		JPanel goEastPanel = new JPanel();
-		
 		goEastPanel.setLayout(new FlowLayout());
 		scorePanel = new GoScorePanel(_goBoardPanel.scoreBlack(), _goBoardPanel.scoreWhite());
 		goEastPanel.add(scorePanel);
 		
 		JSeparator space= new JSeparator(SwingConstants.VERTICAL);
 		space.setPreferredSize(new Dimension(30,0));
-		
 		goEastPanel.add(space); 
 		
 		Closure pass = new Closure() { @Override public void run() {
@@ -126,10 +123,8 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		}};
 		Closure resign = new Closure() { @Override public void run() {
 			doMoveResign();
-		}}; 
-		
+		}};
 		actionsPanel = new ActionsPanel(pass,resign, _side);
-		
 		goEastPanel.add(actionsPanel);
 				
 		contentPane.add(goEastPanel, BorderLayout.SOUTH);

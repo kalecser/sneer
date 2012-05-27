@@ -39,10 +39,10 @@ public class RunGoWithoutSneer implements Player {
 				return null;
 			}
 		};
-		_blackFrame = new GuiPlayer(StoneColor.BLACK, 0, timerFactory);
+		_blackFrame = new GuiPlayer(StoneColor.BLACK, timerFactory);
 		_blackFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		_blackFrame.setAdversary(this);
-		_whiteFrame = new GuiPlayer(StoneColor.WHITE, 0, timerFactory);
+		_whiteFrame = new GuiPlayer(StoneColor.WHITE, timerFactory);
 		_whiteFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		_whiteFrame.setAdversary(this);
 	}

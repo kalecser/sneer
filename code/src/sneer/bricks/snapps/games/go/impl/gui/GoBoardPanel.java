@@ -60,11 +60,11 @@ public class GoBoardPanel extends JPanel{
 
 	private StonePainter _stonePainter;
 	
-	public GoBoardPanel(final GuiPlayer goFrame,final TimerFactory timerFactory, StoneColor side) {
+	public GoBoardPanel(final GuiPlayer goFrame,final TimerFactory timerFactory,final int boardSize, StoneColor side) {
 		_goFrame = goFrame;		
 		_side = side;
 		
-		_boardSize = 15;
+		_boardSize = boardSize;
 		_board = new ToroidalGoBoard(_boardSize);
 		
 		createPainters();
@@ -97,6 +97,10 @@ public class GoBoardPanel extends JPanel{
 		_board.setBoardListener(boardListener);
 	}
 
+	public float getCellSize() {
+		return _cellSize;
+	}
+
 	void receiveMoveAddStone(int xCoordinate, int yCoordinate) {
 		GoLogger.log("GoBoardPanel.receiveMoveAddStone("+xCoordinate+","+yCoordinate+")");
 		_board.playStone(xCoordinate, yCoordinate);
@@ -126,6 +130,8 @@ public class GoBoardPanel extends JPanel{
 		_boardImageSize = _cellSize*(_boardSize-1);
 		_boardImageRectangle.width =(int) _boardImageSize;
 		_boardImageRectangle.height =(int) _boardImageSize;
+		_xOffset = (int) (_cellSize - _boardImageSize);
+		_yOffset = (int) (_cellSize - _boardImageSize);
 		
 		_boardPainter = new BoardPainter(_boardSize, _boardImageSize, _cellSize);
 		_stonePainter = new StonePainter(_boardImageSize, _cellSize);

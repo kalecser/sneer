@@ -129,7 +129,7 @@ class GoMainImpl implements GoMain {
 				remoteColor = StoneColor.WHITE;
 			}
 			Player remotePlayer = new RemotePlayerOnSneer(remoteColor,_moveRegister,_ackRegister);
-			Player localPlayer = new GuiPlayer(stoneColor.value, 0, new SneerTimerFactory()); 
+			Player localPlayer = new GuiPlayer(stoneColor.value, new SneerTimerFactory()); 
 			localPlayer.setAdversary(remotePlayer);
 			remotePlayer.setAdversary(localPlayer);
 		}});
