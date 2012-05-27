@@ -37,12 +37,11 @@ public class GoBoardPanel extends JPanel{
 
 	private int _boardSize;
 	private float _boardImageSize;
+	private final Rectangle _boardImageRectangle = new Rectangle(0,0,(int)_boardImageSize,(int)_boardImageSize);
 	private float _cellSize;
-	final GoBoard _board;
+	private final GoBoard _board;
 
 	private BufferedImage _bufferImage;
-	private volatile int _yOffsetMeasuredByPieces;
-	private volatile int _xOffsetMeasuredByPieces;
 
 	private final StoneColor _side;
 
@@ -50,6 +49,9 @@ public class GoBoardPanel extends JPanel{
 	private HoverStonePainter _hoverStonePainter;
 	private StonesInPlayPainter _stonesInPlayPainter;
 	private HUDPainter _hudPainter;
+	
+	private int _xOffset;
+	private int _yOffset;
 
 	@SuppressWarnings("unused")
 	private WeakContract _referenceToAvoidGc;
@@ -122,6 +124,8 @@ public class GoBoardPanel extends JPanel{
 	private void createPainters() {
 		_cellSize = 40;
 		_boardImageSize = _cellSize*(_boardSize-1);
+		_boardImageRectangle.width =(int) _boardImageSize;
+		_boardImageRectangle.height =(int) _boardImageSize;
 		
 		_boardPainter = new BoardPainter(_boardSize, _boardImageSize, _cellSize);
 		_stonePainter = new StonePainter(_boardImageSize, _cellSize);
@@ -131,12 +135,19 @@ public class GoBoardPanel extends JPanel{
 	}
 	
 	private void updateCellSize(int i) {
-		final float newCellSize = _cellSize + i;
-		if(newCellSize > CELL_MAX_SIZE) return;
-		if(newCellSize < CELL_MIN_SIZE) return;
+		float newCellSize = _cellSize + i;
+		if(newCellSize > CELL_MAX_SIZE){
+			newCellSize = CELL_MAX_SIZE;
+		}
+		if(newCellSize < CELL_MIN_SIZE){
+			newCellSize = CELL_MIN_SIZE;
+		}
 		
 		_cellSize = newCellSize;
 		_boardImageSize = _cellSize*(_boardSize-1);
+		_boardImageRectangle.width =(int) _boardImageSize;
+		_boardImageRectangle.height =(int) _boardImageSize;
+		
 		_boardPainter.setBoardDimensions(_boardSize, _boardImageSize, _cellSize);
 		_stonePainter.setBoardDimensions(_boardImageSize, _cellSize);
 		_hoverStonePainter.setBoardDimensions(_boardSize, _cellSize);
@@ -187,27 +198,18 @@ public class GoBoardPanel extends JPanel{
 
 	private void drawBoardTiled(Graphics graphics) {
 		final Rectangle clipBounds = graphics.getClipBounds();
-		int x_ = 0;
-		int y_ = 0;
 		
-		graphics.drawImage(_bufferImage, x_, y_, this);
+		_boardImageRectangle.x = _xOffset;
+		_boardImageRectangle.y = _yOffset;
 		
-		while(clipBounds.contains(x_, y_)){
-			while(clipBounds.contains(x_, y_)){
-				graphics.drawImage(_bufferImage, x_, y_, this);
-				x_ += (_boardImageSize+1);
+		while(clipBounds.intersects(_boardImageRectangle)){
+			while(clipBounds.intersects(_boardImageRectangle)){
+				graphics.drawImage(_bufferImage, _boardImageRectangle.x, _boardImageRectangle.y, this);
+				_boardImageRectangle.x += (_boardImageSize+1);
 			}
-			x_ = 0;
-			y_ += (_boardImageSize+1);
+			_boardImageRectangle.x = _xOffset;
+			_boardImageRectangle.y += (_boardImageSize+1);
 		}
-	}
-
-	private int unscrollX(int x) { 
-		return (_boardSize + x - _xOffsetMeasuredByPieces) % _boardSize; 
-	}
-	
-	private int unscrollY(int y) { 
-		return (_boardSize + y - _yOffsetMeasuredByPieces) % _boardSize; 
 	}
 	
 	private Graphics2D getBuffer() {
@@ -230,17 +232,21 @@ public class GoBoardPanel extends JPanel{
 
 		@Override 
 		public void mouseMoved(final MouseEvent e) {
-			_hoverStonePainter.setHoverX(toScreenPosition(e.getX()));
-			_hoverStonePainter.setHoverY(toScreenPosition(e.getY()));
+			_hoverStonePainter.setHoverX(toScreenPosition(e.getX()-_xOffset));
+			_hoverStonePainter.setHoverY(toScreenPosition(e.getY()-_yOffset));
 			repaint();
 		}
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			if(!SwingUtilities.isMiddleMouseButton(e)) return;
-			final int dragX = e.getX() - _startX;
-			final int dragY = e.getY() - _startY;
-			System.out.println("Drag "+dragX+" "+dragY);
+			_xOffset += e.getX() - _startX - _boardImageSize;
+			_xOffset = (int) (_xOffset % _boardImageSize);
+			_yOffset += e.getY() - _startY - _boardImageSize;
+			_yOffset = (int) (_yOffset % _boardImageSize);
+			_startX = e.getX();
+			_startY = e.getY();
+			repaint();
 		}
 		
 		@Override
@@ -255,8 +261,8 @@ public class GoBoardPanel extends JPanel{
 		public void mouseReleased(MouseEvent e) {
 			if(SwingUtilities.isMiddleMouseButton(e)) return;
 			
-			int x = unscrollX(toScreenPosition(e.getX()));
-			int y = unscrollY(toScreenPosition(e.getY()));
+			int x = toScreenPosition(e.getX()-_xOffset);
+			int y = toScreenPosition(e.getY()-_yOffset);
 			if (_board.nextToPlay()==null) {
 				doMoveMarkStone(x, y);
 				return;
