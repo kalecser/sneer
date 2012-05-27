@@ -45,7 +45,6 @@ public class StonesInPlayPainter {
 		float cy = _cellSize*y;		
 	
 		graphics.setColor(toAwtColor(color));
-		
 
 		_stonePainter.paintStoneOnCoordinates(graphics, cx, cy, dead);
 	}

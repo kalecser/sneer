@@ -37,7 +37,6 @@ public class GoBoardPanel extends JPanel{
 	private int _boardSize;
 	private float _boardImageSize;
 	private float _cellSize;
-	private float _stoneDiameter;
 	final GoBoard _board;
 
 	private BufferedImage _bufferImage;
@@ -123,9 +122,8 @@ public class GoBoardPanel extends JPanel{
 		_cellSize = 40;
 		_boardImageSize = _cellSize*(_boardSize-1);
 		
-		_stoneDiameter = _cellSize *0.97f;
 		_boardPainter = new BoardPainter(_boardSize, _boardImageSize, _cellSize);
-		_stonePainter = new StonePainter(_boardImageSize, _stoneDiameter, _cellSize);
+		_stonePainter = new StonePainter(_boardImageSize, _cellSize);
 		_hoverStonePainter = new HoverStonePainter(_stonePainter,_boardSize, _cellSize);		
 		_stonesInPlayPainter = new StonesInPlayPainter(_stonePainter,_cellSize);
 		_hudPainter = new HUDPainter();
@@ -138,10 +136,10 @@ public class GoBoardPanel extends JPanel{
 		
 		_cellSize = newCellSize;
 		_boardImageSize = _cellSize*(_boardSize-1);
-		_stoneDiameter = _cellSize *0.97f;
 		_boardPainter.setBoardDimensions(_boardSize, _boardImageSize, _cellSize);
-		_stonePainter.setBoardDimensions(_boardImageSize, _stoneDiameter, _cellSize);
-		_hoverStonePainter.setBoardDimensions(_boardSize, _cellSize);		
+		_stonePainter.setBoardDimensions(_boardImageSize, _cellSize);
+		_hoverStonePainter.setBoardDimensions(_boardSize, _cellSize);
+		_stonesInPlayPainter.setBoardDimensions(_cellSize);
 	}
 	private void doMoveAddStone(int x, int y) {
 		GoLogger.log("GoBoardPanel.doMoveAddStone("+x+","+y+")");
@@ -234,6 +232,11 @@ public class GoBoardPanel extends JPanel{
 			repaint();
 		}
 
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			throw new basis.lang.exceptions.NotImplementedYet(); // Implement
+		}
+		
 		@Override 
 		public void mouseReleased(MouseEvent e) {
 			int x = unscrollX(toScreenPosition(e.getX()));

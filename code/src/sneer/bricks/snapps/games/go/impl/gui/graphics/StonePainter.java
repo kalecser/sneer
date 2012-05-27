@@ -7,16 +7,14 @@ public class StonePainter {
 
 	private float _boardImageSize;
 	private float _stoneDiameter;
-	private float _cellSize; 
 	
-	public StonePainter(float bOARD_IMAGE_SIZE, float sTONE_DIAMETER,float cELL_SIZE) {
-		setBoardDimensions(bOARD_IMAGE_SIZE, sTONE_DIAMETER, cELL_SIZE); 
+	public StonePainter(float bOARD_IMAGE_SIZE, float cELL_SIZE) {
+		setBoardDimensions(bOARD_IMAGE_SIZE, cELL_SIZE); 
 	}
 
-	public void setBoardDimensions(final float boardImageSize, final float stoneDiameter,final float cellSize){
+	public void setBoardDimensions(final float boardImageSize, final float cellSize){
 		_boardImageSize = boardImageSize;
-		_stoneDiameter = stoneDiameter;
-		_cellSize = cellSize;
+		_stoneDiameter = cellSize *0.97f;
 	}
 	
 	public void paintStoneOnCoordinates(Graphics2D graphics, float x, float y, boolean dead) {
@@ -25,7 +23,7 @@ public class StonePainter {
 		
 		graphics.fill(new Ellipse2D.Float(x - (d / 2), y - (d / 2), d, d));
 		//wrapping
-		int buffersize=(int)(_boardImageSize+_cellSize);
+		int buffersize=(int)(_boardImageSize);
 		
 		if (x==0) graphics.fill(new Ellipse2D.Float(buffersize - (d / 2), y - (d / 2), d, d));
 		if (y==0) graphics.fill(new Ellipse2D.Float(x - (d / 2), buffersize - (d / 2), d, d));
