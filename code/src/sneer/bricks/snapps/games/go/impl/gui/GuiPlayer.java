@@ -33,7 +33,7 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 	
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Go - " + _side.name());	  
-	    setResizable(false);
+	    setResizable(true);
 	    addComponentPanel(timerFactory); 
 	    setVisible(true);
 	    int bord=getInsets().left+getInsets().right;

@@ -75,6 +75,56 @@ public class GoBoardPanel extends JPanel{
 		}});    	
 	}
 	
+	@Override
+	public void paint(final Graphics graphics) {
+		Graphics2D buffer = getBuffer();
+		
+		_boardPainter.draw(buffer);
+		_hoverStonePainter.draw(buffer, _board);
+		_stonesInPlayPainter.draw(buffer, _board);
+				
+		drawBoardOnAllSixCorners(graphics);
+		drawCameraBoundaries(graphics);
+		
+		_hudPainter.draw(graphics);
+	}
+
+	public int scoreWhite() {
+		return _board.whiteScore();
+	}
+
+	public int scoreBlack() {
+		return _board.blackScore();
+	}
+
+	public void setBoardListener(BoardListener boardListener) {
+		_board.setBoardListener(boardListener);
+	}
+
+	void receiveMoveAddStone(int xCoordinate, int yCoordinate) {
+		GoLogger.log("GoBoardPanel.receiveMoveAddStone("+xCoordinate+","+yCoordinate+")");
+		_board.playStone(xCoordinate, yCoordinate);
+		decideWinner();
+	}
+
+	void receiveMoveMarkStone(int xCoordinate, int yCoordinate) {
+		GoLogger.log("GoBoardPanel.receiveMoveMarkStone("+xCoordinate+","+yCoordinate+")");
+		_board.toggleDeadStone(xCoordinate, yCoordinate);
+		decideWinner();
+	}
+
+	void receiveMovePassTurn() {
+		GoLogger.log("GoBoardPanel.receiveMovePassTurn()");
+		_board.passTurn();
+		decideWinner();
+	}
+
+	void receiveMoveResign() {
+		GoLogger.log("GoBoardPanel.receiveMoveResign()");
+		_board.resign();
+		decideWinner();
+	}
+
 	private void scrollOnePieceToTheRight() {
 		scrollPiecesHorizontally(1);
 	}
@@ -101,30 +151,6 @@ public class GoBoardPanel extends JPanel{
 		_yOffsetMeasuredByPieces = (_yOffsetMeasuredByPieces + scrollYDelta + BOARD_SIZE) % BOARD_SIZE;
 		_hoverStonePainter.setOffset( _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
 		_stonesInPlayPainter.setOffset( _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);
-	}
-
-	void receiveMoveAddStone(int xCoordinate, int yCoordinate) {
-		GoLogger.log("GoBoardPanel.receiveMoveAddStone("+xCoordinate+","+yCoordinate+")");
-		_board.playStone(xCoordinate, yCoordinate);
-		decideWinner();
-	}
-
-	void receiveMoveMarkStone(int xCoordinate, int yCoordinate) {
-		GoLogger.log("GoBoardPanel.receiveMoveMarkStone("+xCoordinate+","+yCoordinate+")");
-		_board.toggleDeadStone(xCoordinate, yCoordinate);
-		decideWinner();
-	}
-
-	void receiveMovePassTurn() {
-		GoLogger.log("GoBoardPanel.receiveMovePassTurn()");
-		_board.passTurn();
-		decideWinner();
-	}
-
-	void receiveMoveResign() {
-		GoLogger.log("GoBoardPanel.receiveMoveResign()");
-		_board.resign();
-		decideWinner();
 	}
 
 	private void doMoveAddStone(int x, int y) {
@@ -168,20 +194,6 @@ public class GoBoardPanel extends JPanel{
 		_scrollingDirection = scrollingDirection;
 	}
 	
-	@Override
-	public void paint(final Graphics graphics) {
-		Graphics2D buffer = getBuffer();
-		
-		_boardPainter.draw(buffer);
-		_hoverStonePainter.draw(buffer, _board);
-		_stonesInPlayPainter.draw(buffer, _board);
-				
-		drawBoardOnAllSixCorners(graphics);
-		drawCameraBoundaries(graphics);
-		
-		_hudPainter.draw(graphics);
-	}
-
 	private void decideWinner() {
 		int winState = HUDPainter.NOONE_WIN;
 		if (_board.nextToPlay()==null){
@@ -242,14 +254,6 @@ public class GoBoardPanel extends JPanel{
 	}
 	
 
-	public int scoreWhite() {
-		return _board.whiteScore();
-	}
-	
-	public int scoreBlack() {
-		return _board.blackScore();
-	}
-	
 	private class GoMouseListener extends MouseAdapter {
 		@Override 
 		public void mouseMoved(final MouseEvent e) {
@@ -286,10 +290,6 @@ public class GoBoardPanel extends JPanel{
 		public void mouseExited(MouseEvent e) {
 			setDirection(DIRECTION.STOPPED);
 		}
-	}
-
-	public void setBoardListener(BoardListener boardListener) {
-		_board.setBoardListener(boardListener);
 	}
 
 }

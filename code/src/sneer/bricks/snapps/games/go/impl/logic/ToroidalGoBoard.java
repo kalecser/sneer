@@ -11,14 +11,14 @@ public class ToroidalGoBoard extends GoBoard {
 		makeToroidal();
 	}
 
-	private void makeToroidal() {
-		connectTopToBottom();
-		connectLeftToRight();
-	}
-
 	public ToroidalGoBoard(String[] setup) {
 		super(setup);
 		makeToroidal();
+	}
+
+	private void makeToroidal() {
+		connectTopToBottom();
+		connectLeftToRight();
 	}
 
 	private void connectTopToBottom() {

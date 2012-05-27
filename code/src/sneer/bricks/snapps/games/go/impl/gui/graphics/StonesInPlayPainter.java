@@ -26,6 +26,11 @@ public class StonesInPlayPainter {
 				paintStoneOnPosition(graphics,_board, x, y, _xOffsetMeasuredByPieces, _yOffsetMeasuredByPieces);		
 	}
 	
+	public void setOffset(int xOffsetMeasuredByPieces, int yOffsetMeasuredByPieces) {
+		_xOffsetMeasuredByPieces = xOffsetMeasuredByPieces;
+		_yOffsetMeasuredByPieces = yOffsetMeasuredByPieces;
+	}
+
 	private void paintStoneOnPosition(Graphics2D graphics,final GoBoard _board, int x, int y,final int _scrollX, final int _scrollY) {
 		StoneColor color = _board.stoneAt(x, y);
 		boolean dead=false;
@@ -61,10 +66,5 @@ public class StonesInPlayPainter {
 	
 	private float toCoordinateSmall(int position) {
 		return position * GoBoardPanel.CELL_SIZE;
-	}
-	
-	public void setOffset(int xOffsetMeasuredByPieces, int yOffsetMeasuredByPieces) {
-		_xOffsetMeasuredByPieces = xOffsetMeasuredByPieces;
-		_yOffsetMeasuredByPieces = yOffsetMeasuredByPieces;
 	}
 }

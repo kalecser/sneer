@@ -115,26 +115,6 @@ public class GoBoard {
 	}
 
 
-	private void unmarkDeadStones(int x, int y) {
-		Set<Intersection> group = _intersections[x][y].getGroupWithNeighbours();
-		for (Intersection intersection : group)
-			if (intersection._stone == null)
-				intersection._stone = previousEquivalent(intersection)._stone;
-	}
-
-	
-	private Intersection previousEquivalent(Intersection intersection) {
-		int size = _intersections.length;
-		for (int x = 0; x < size; x++) {
-			for (int y = 0; y < size; y++) {
-				if (_intersections[x][y] == intersection)
-					return _previousSituation[x][y];
-			}
-		}
-		throw new IllegalStateException("Intersection " + intersection + " not found.");
-	}
-
-
 	public void passTurn() {
 		next();
 		
@@ -189,6 +169,26 @@ public class GoBoard {
 
 	public void setBoardListener(BoardListener boardListener) {
 		_boardListener = boardListener;
+	}
+
+
+	private void unmarkDeadStones(int x, int y) {
+		Set<Intersection> group = _intersections[x][y].getGroupWithNeighbours();
+		for (Intersection intersection : group)
+			if (intersection._stone == null)
+				intersection._stone = previousEquivalent(intersection)._stone;
+	}
+
+
+	private Intersection previousEquivalent(Intersection intersection) {
+		int size = _intersections.length;
+		for (int x = 0; x < size; x++) {
+			for (int y = 0; y < size; y++) {
+				if (_intersections[x][y] == intersection)
+					return _previousSituation[x][y];
+			}
+		}
+		throw new IllegalStateException("Intersection " + intersection + " not found.");
 	}
 
 

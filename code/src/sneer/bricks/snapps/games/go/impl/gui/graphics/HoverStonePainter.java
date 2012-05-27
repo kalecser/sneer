@@ -30,6 +30,19 @@ public class HoverStonePainter{
 		stonePainter.paintStoneOnCoordinates(graphics, toCoordinateSmall(_hoverX), toCoordinateSmall(_hoverY), false);
 	}
 
+	public void setOffset(int xOffsetMeasuredByPieces, int yOffsetMeasuredByPieces) {
+		_xOffsetMeasuredByPieces = xOffsetMeasuredByPieces;
+		_yOffsetMeasuredByPieces = yOffsetMeasuredByPieces;
+	}
+
+	public void setHoverX(int hoverX) {
+		_hoverX = hoverX;
+	}
+
+	public void setHoverY(int hoverY) {
+		_hoverY = hoverY;
+	}
+
 	private float toCoordinateSmall(int position) {
 		return position * GoBoardPanel.CELL_SIZE;
 	}
@@ -40,18 +53,5 @@ public class HoverStonePainter{
 	
 	private int unscrollY(int y,int _scrollY) { 
 		return (GoBoardPanel.BOARD_SIZE + y - _scrollY) % GoBoardPanel.BOARD_SIZE; 
-	}
-
-	public void setOffset(int xOffsetMeasuredByPieces, int yOffsetMeasuredByPieces) {
-		_xOffsetMeasuredByPieces = xOffsetMeasuredByPieces;
-		_yOffsetMeasuredByPieces = yOffsetMeasuredByPieces;
-	}
-
-	public void setHoverX(int hoverX) {
-		_hoverX = hoverX;
-	}
-	
-	public void setHoverY(int hoverY) {
-		_hoverY = hoverY;
 	}
 }
