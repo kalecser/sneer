@@ -140,8 +140,8 @@ public class GoBoardPanel extends JPanel{
 		_hudPainter = new HUDPainter();
 	}
 	
-	private void updateCellSize(int i) {
-		float newCellSize = _cellSize + i;
+	private void updateCellSize(int add) {
+		float newCellSize = _cellSize + add;
 		if(newCellSize > CELL_MAX_SIZE){
 			newCellSize = CELL_MAX_SIZE;
 		}
@@ -149,10 +149,15 @@ public class GoBoardPanel extends JPanel{
 			newCellSize = CELL_MIN_SIZE;
 		}
 		
+		float oldBoardImageSize = _boardImageSize;
+		
 		_cellSize = newCellSize;
 		_boardImageSize = _cellSize*(_boardSize-1);
 		_boardImageRectangle.width =(int) _boardImageSize;
 		_boardImageRectangle.height =(int) _boardImageSize;
+		
+		_xOffset = (int) ((_xOffset / oldBoardImageSize)*_boardImageSize);
+		_yOffset = (int) ((_yOffset / oldBoardImageSize)*_boardImageSize);
 		
 		_boardPainter.setBoardDimensions(_boardSize, _boardImageSize, _cellSize);
 		_stonePainter.setBoardDimensions(_boardImageSize, _cellSize);
@@ -207,14 +212,19 @@ public class GoBoardPanel extends JPanel{
 		
 		_boardImageRectangle.x = _xOffset;
 		_boardImageRectangle.y = _yOffset;
+		int count = 0;
 		
 		while(clipBounds.intersects(_boardImageRectangle)){
 			while(clipBounds.intersects(_boardImageRectangle)){
+				count++;
 				graphics.drawImage(_bufferImage, _boardImageRectangle.x, _boardImageRectangle.y, this);
 				_boardImageRectangle.x += (_boardImageSize+1);
 			}
 			_boardImageRectangle.x = _xOffset;
 			_boardImageRectangle.y += (_boardImageSize+1);
+		}
+		if(count == 0){
+			System.out.println(count);
 		}
 	}
 	
@@ -248,6 +258,9 @@ public class GoBoardPanel extends JPanel{
 			if(!SwingUtilities.isMiddleMouseButton(e)) return;
 			_xOffset += e.getX() - _startX - _boardImageSize;
 			_xOffset = (int) (_xOffset % _boardImageSize);
+			if(_xOffset > _boardImageSize){
+				System.out.println();
+			}
 			_yOffset += e.getY() - _startY - _boardImageSize;
 			_yOffset = (int) (_yOffset % _boardImageSize);
 			_startX = e.getX();
