@@ -1,21 +1,16 @@
 package sneer.bricks.skin.widgets.reactive.impl;
 
-import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
-import javax.swing.AbstractAction;
 import javax.swing.JTextPane;
-import javax.swing.KeyStroke;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Keymap;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 
-import basis.lang.PickyConsumer;
-
-import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
-import static basis.environments.Environments.my;
+import basis.lang.PickyConsumer;
 
 class RTextPaneImpl extends RAbstractField<JTextPane> {
 	
@@ -31,24 +26,21 @@ class RTextPaneImpl extends RAbstractField<JTextPane> {
 
 	@Override
 	protected void addDoneListenerCommiter() {
-        Keymap kMap = _textComponent.getKeymap();
-        kMap.addActionForKeyStroke(KeyStroke.getKeyStroke("ENTER"), new AbstractAction(){ @Override public void actionPerformed(ActionEvent e) {
-        	my(Logger.class).log("Enter key pressed.");
-        	commitTextChanges();
- 		}});
-        insertLineBreakerListenerFor(kMap, "control ENTER");
-        insertLineBreakerListenerFor(kMap, "shift ENTER");
-        insertLineBreakerListenerFor(kMap, "alt ENTER");
+        _textComponent.addKeyListener(new KeyAdapter() { @Override public void keyPressed(KeyEvent e) {
+    		if (isEnterKey(e)) processenterKeypress(e);
+        }});
+	}
+	
+	private void processenterKeypress(KeyEvent e) {
+		if (hasModifier(e)){
+			insertLineBreak();
+			return;
+		}
+		commitTextChanges();
 	}
 
-	private void insertLineBreakerListenerFor(Keymap kMap, String key) {
-		kMap.addActionForKeyStroke(KeyStroke.getKeyStroke(key), new AbstractAction(){ @Override public void actionPerformed(ActionEvent e) {
-        	insertLineBreak();
-		}});
-	}
-
-    protected void insertLineBreak() {
-         try {
+	protected void insertLineBreak() {
+	     try {
 			int carretPosition = _textComponent.getCaretPosition();
 			StyledDocument document = (StyledDocument) _textComponent.getDocument();
 			SimpleAttributeSet attributes = new SimpleAttributeSet( document.getCharacterElement(carretPosition).getAttributes());
@@ -58,10 +50,18 @@ class RTextPaneImpl extends RAbstractField<JTextPane> {
 		} catch (BadLocationException e) {
 			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
-    }
-    
+	}
+	
 	@Override
 	public String getText() {
 		return super.getText().trim();
+	}
+
+	private boolean hasModifier(KeyEvent e) {
+		return e.isControlDown() || e.isAltDown() || e.isShiftDown();
+	}
+
+	private boolean isEnterKey(KeyEvent e) {
+		return e.getKeyCode() == KeyEvent.VK_ENTER;
 	}
 }
