@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.games.go.impl.gui;
+package sneer.bricks.snapps.games.go.impl.gui.game;
 
 import java.awt.Dimension;
 

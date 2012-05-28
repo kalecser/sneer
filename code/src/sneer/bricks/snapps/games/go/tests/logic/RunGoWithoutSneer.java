@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.snapps.games.go.impl.Player;
 import sneer.bricks.snapps.games.go.impl.TimerFactory;
-import sneer.bricks.snapps.games.go.impl.gui.GuiPlayer;
+import sneer.bricks.snapps.games.go.impl.gui.game.GuiPlayer;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.impl.logic.Move;
 
@@ -39,10 +39,12 @@ public class RunGoWithoutSneer implements Player {
 				return null;
 			}
 		};
-		_blackFrame = new GuiPlayer(StoneColor.BLACK, timerFactory);
+		final int boardSize = 10;
+		final int gameID = 1;
+		_blackFrame = new GuiPlayer(gameID,StoneColor.BLACK,boardSize, timerFactory);
 		_blackFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		_blackFrame.setAdversary(this);
-		_whiteFrame = new GuiPlayer(StoneColor.WHITE, timerFactory);
+		_whiteFrame = new GuiPlayer(gameID,StoneColor.WHITE,boardSize, timerFactory);
 		_whiteFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		_whiteFrame.setAdversary(this);
 	}

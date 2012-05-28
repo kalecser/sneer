@@ -23,8 +23,11 @@ public class RemotePlayerOnSneer implements Player {
 	private WeakContract _refToAvoidGc2;
 	
 	private Set<Move> movesAcknowleged = new LinkedHashSet<Move>();
+
+	private final int _gameId;
 	
-	public RemotePlayerOnSneer(final StoneColor remoteSide,Register<Move> move,Register<AcknowledgeReceive> ackRegister) {
+	public RemotePlayerOnSneer(final int gameId,final StoneColor remoteSide,Register<Move> move,Register<AcknowledgeReceive> ackRegister) {
+		this._gameId = gameId;
 		this._move = move;
 		_refToAvoidGc2 = ackRegister.output().addReceiver(new Consumer<AcknowledgeReceive>() { @Override public void consume(AcknowledgeReceive ack) {
 			if(ack == null)
@@ -53,7 +56,8 @@ public class RemotePlayerOnSneer implements Player {
 	@Override
 	public void setAdversary(final Player playListener) {
 		_refToAvoidGc = _move.output().addReceiver(new Consumer<Move>() { @Override public void consume(Move move) { 
-			if (move == null) return; 
+			if (move == null) return;
+			if(move.gameId != _gameId) return;
 			playListener.play(move);
 		}});
 	}

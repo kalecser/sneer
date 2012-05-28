@@ -13,13 +13,15 @@ public class Move {
 	public final int xCoordinate;
 	public final int yCoordinate;
 	public final int id;
+	public final int gameId;
 	
-	public Move(boolean resign_, boolean pass_, int x_, int y_, boolean mark_) {
+	public Move(boolean resign_, boolean pass_, int x_, int y_, boolean mark_, int gameId) {
 		isResign = resign_;
 		isPass = pass_;
 		isMark=mark_;
 		xCoordinate = x_;
 		yCoordinate = y_;
+		this.gameId = gameId;
 		id = idGen++;
 	}
 

@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.games.go.impl.gui.graphics;
+package sneer.bricks.snapps.games.go.impl.gui.game.painters;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

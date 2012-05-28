@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.games.go.impl.gui;
+package sneer.bricks.snapps.games.go.impl.gui.game;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -21,16 +21,19 @@ import basis.lang.Closure;
 
 public class GuiPlayer extends JFrame implements BoardListener,Player{
 	
-	private static final int BOARD_SIZE = 15;
 	private static final long serialVersionUID = 1L;
 	private final StoneColor _side;
 	private GoBoardPanel _goBoardPanel;
 	private ActionsPanel actionsPanel;
 	private GoScorePanel scorePanel;
 	private Player _adversary;
+	private final int _boardSize;
+	private final int _gameID;
 	
-	public GuiPlayer(StoneColor side, final TimerFactory timerFactory) {
+	public GuiPlayer(final int gameID,StoneColor side,final int boardSize, final TimerFactory timerFactory) {
+		this._gameID = gameID;
 		_side = side;
+		this._boardSize = boardSize;
 	
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Go - " + _side.name());	  
@@ -38,7 +41,9 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 	    addAllComponents(timerFactory); 
 	    setVisible(true);
 	    int bord=getInsets().left+getInsets().right;
-	    setBounds(0, 0,(int) ((BOARD_SIZE*_goBoardPanel.getCellSize())+_goBoardPanel.getCellSize()+bord), 700);
+	    final int width = (int) ((_boardSize*_goBoardPanel.getCellSize())+_goBoardPanel.getCellSize()+bord);
+		final int whatsLeftOfTheFrame = 70;
+		setBounds(0, 0,(width<500)?500:width, (width<500)?500+whatsLeftOfTheFrame:width+whatsLeftOfTheFrame);
 	}
 	
 	@Override
@@ -60,30 +65,33 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 	
 	public void doMovePass() {
 		GoLogger.log("GoFrame.doMovePass()");
-		Move move = new Move(false, true, 0, 0, false);
+		Move move = new Move(false, true, 0, 0, false,_gameID);
 		_adversary.play(move);
 	}
 	
 	public void doMoveResign() {
 		GoLogger.log("GoFrame.doMoveResign();");
-		Move move = new Move(true, false, 0, 0, false);
+		_goBoardPanel.setLostByReign();
+		Move move = new Move(true, false, 0, 0, false,_gameID);
 		_adversary.play(move);
 	}
 	
 	public void doMoveAddStone(int x, int y) {
 		GoLogger.log("GoFrame.doMoveAddStone("+x+","+y+");");
-		Move move = new Move(false, false, x,y, false);
+		Move move = new Move(false, false, x,y, false,_gameID);
 		_adversary.play(move);
 	}
 
 	public void doMoveMarkStone(int x, int y) {
 		GoLogger.log("GoFrame.doMoveMarkStone("+x+","+y+");");
-		Move move = new Move(false, false, x,y, true);
+		Move move = new Move(false, false, x,y, true,_gameID);
 		_adversary.play(move);
 	}
 
 	@Override
 	public void play(Move move) {
+		if(move.gameId != _gameID) return;
+			
 		if (move.isResign) {
 			_goBoardPanel.receiveMoveResign();
 			return;
@@ -93,7 +101,7 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 			return;
 		}
 		
-		if (move.isMark){
+		if (move.isMark){ 
 			_goBoardPanel.receiveMoveMarkStone(move.xCoordinate, move.yCoordinate);
 			return;
 		}
@@ -105,7 +113,7 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
-		_goBoardPanel = new GoBoardPanel(this,timerFactory,BOARD_SIZE, _side);
+		_goBoardPanel = new GoBoardPanel(this,timerFactory,_boardSize, _side);
 		_goBoardPanel.setBoardListener(this);
 		contentPane.add(_goBoardPanel, BorderLayout.CENTER);
 		

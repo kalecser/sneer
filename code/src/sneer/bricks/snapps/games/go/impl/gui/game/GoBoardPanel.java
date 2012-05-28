@@ -1,4 +1,4 @@
-package sneer.bricks.snapps.games.go.impl.gui;
+package sneer.bricks.snapps.games.go.impl.gui.game;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -16,11 +16,11 @@ import javax.swing.SwingUtilities;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.snapps.games.go.impl.TimerFactory;
-import sneer.bricks.snapps.games.go.impl.gui.graphics.BoardPainter;
-import sneer.bricks.snapps.games.go.impl.gui.graphics.HUDPainter;
-import sneer.bricks.snapps.games.go.impl.gui.graphics.HoverStonePainter;
-import sneer.bricks.snapps.games.go.impl.gui.graphics.StonePainter;
-import sneer.bricks.snapps.games.go.impl.gui.graphics.StonesInPlayPainter;
+import sneer.bricks.snapps.games.go.impl.gui.game.painters.BoardPainter;
+import sneer.bricks.snapps.games.go.impl.gui.game.painters.HUDPainter;
+import sneer.bricks.snapps.games.go.impl.gui.game.painters.HoverStonePainter;
+import sneer.bricks.snapps.games.go.impl.gui.game.painters.StonePainter;
+import sneer.bricks.snapps.games.go.impl.gui.game.painters.StonesInPlayPainter;
 import sneer.bricks.snapps.games.go.impl.logging.GoLogger;
 import sneer.bricks.snapps.games.go.impl.logic.BoardListener;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard;
@@ -59,6 +59,9 @@ public class GoBoardPanel extends JPanel{
 	private final GuiPlayer _goFrame;
 
 	private StonePainter _stonePainter;
+
+	private boolean _hasResigned = false;
+	private boolean _otherResigned = false;
 	
 	public GoBoardPanel(final GuiPlayer goFrame,final TimerFactory timerFactory,final int boardSize, StoneColor side) {
 		_goFrame = goFrame;		
@@ -101,6 +104,10 @@ public class GoBoardPanel extends JPanel{
 		return _cellSize;
 	}
 
+	public void setLostByReign() {
+		_hasResigned = true;
+	}
+
 	void receiveMoveAddStone(int xCoordinate, int yCoordinate) {
 		GoLogger.log("GoBoardPanel.receiveMoveAddStone("+xCoordinate+","+yCoordinate+")");
 		_board.playStone(xCoordinate, yCoordinate);
@@ -120,6 +127,8 @@ public class GoBoardPanel extends JPanel{
 	}
 
 	void receiveMoveResign() {
+		if(!_hasResigned)
+			_otherResigned = true;
 		GoLogger.log("GoBoardPanel.receiveMoveResign()");
 		_board.resign();
 		decideWinner();
@@ -203,6 +212,14 @@ public class GoBoardPanel extends JPanel{
 				}
 			}
 		}
+		
+		if(_hasResigned){
+			winState = HUDPainter.PLAYER_LOSES;
+		}
+		if(_otherResigned){
+			winState = HUDPainter.PLAYER_WIN;
+		}
+		
 		_hudPainter.setWinState(winState);
 		
 	}

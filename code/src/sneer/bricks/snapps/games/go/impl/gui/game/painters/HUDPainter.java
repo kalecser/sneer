@@ -1,10 +1,11 @@
-package sneer.bricks.snapps.games.go.impl.gui.graphics;
+package sneer.bricks.snapps.games.go.impl.gui.game.painters;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 
-import sneer.bricks.snapps.games.go.impl.gui.GoBoardPanel;
+import sneer.bricks.snapps.games.go.impl.gui.game.GoBoardPanel;
 
 public class HUDPainter {
 
@@ -28,6 +29,8 @@ public class HUDPainter {
 			graphics.drawImage(winImg,175, 185, null);
 		}
 		if(_winState == PLAYER_LOSES){
+			final Rectangle clipBounds = graphics.getClipBounds();
+			System.out.println(clipBounds);
 			graphics.drawImage(loseImg,175, 185, null);
 		}
 	}
