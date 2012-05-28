@@ -27,11 +27,11 @@ class RTextPaneImpl extends RAbstractField<JTextPane> {
 	@Override
 	protected void addDoneListenerCommiter() {
         _textComponent.addKeyListener(new KeyAdapter() { @Override public void keyPressed(KeyEvent e) {
-    		if (isEnterKey(e)) processenterKeypress(e);
+    		if (isEnterKey(e)) processEnterKeyPress(e);
         }});
 	}
 	
-	private void processenterKeypress(KeyEvent e) {
+	private void processEnterKeyPress(KeyEvent e) {
 		if (hasModifier(e)){
 			insertLineBreak();
 			return;
