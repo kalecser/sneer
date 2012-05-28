@@ -1,10 +1,10 @@
-package sneer.bricks.snapps.games.go.tests;
+package sneer.bricks.snapps.games.go.tests.logic;
 
 import org.junit.Test;
 
-import sneer.bricks.snapps.games.go.GoBoard;
-import sneer.bricks.snapps.games.go.ToroidalGoBoard;
-import sneer.bricks.snapps.games.go.GoBoard.StoneColor;
+import sneer.bricks.snapps.games.go.impl.logic.GoBoard;
+import sneer.bricks.snapps.games.go.impl.logic.ToroidalGoBoard;
+import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
 public class GoTest extends BrickTestBase {
@@ -13,8 +13,8 @@ public class GoTest extends BrickTestBase {
 	
 
 	private void assertScore(int black, int white) {
-		assertSame(black, _board.blackScore().currentValue());
-		assertSame(white, _board.whiteScore().currentValue());
+		assertSame(black, _board.blackScore());
+		assertSame(white, _board.whiteScore());
 	}
 
 	@Test
@@ -169,7 +169,7 @@ public class GoTest extends BrickTestBase {
 		ToroidalGoBoard subject = new ToroidalGoBoard(new String[]{});
 		subject.resign();
 		assertNull(subject.nextToPlay());
-		assertSame(StoneColor.WHITE, subject.winner().currentValue());
+		assertSame(StoneColor.WHITE, subject.winner());
 	}
 
 	@Test

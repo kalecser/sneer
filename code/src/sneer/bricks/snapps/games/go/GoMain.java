@@ -1,7 +1,7 @@
 package sneer.bricks.snapps.games.go;
 
-import basis.brickness.Brick;
 import sneer.bricks.software.bricks.snapploader.Snapp;
+import basis.brickness.Brick;
 
 @Snapp
 @Brick

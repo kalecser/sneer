@@ -1,4 +1,6 @@
-package sneer.bricks.snapps.games.go;
+package sneer.bricks.snapps.games.go.impl.logic;
+
+
 
 
 
@@ -9,14 +11,14 @@ public class ToroidalGoBoard extends GoBoard {
 		makeToroidal();
 	}
 
-	private void makeToroidal() {
-		connectTopToBottom();
-		connectLeftToRight();
-	}
-
 	public ToroidalGoBoard(String[] setup) {
 		super(setup);
 		makeToroidal();
+	}
+
+	private void makeToroidal() {
+		connectTopToBottom();
+		connectLeftToRight();
 	}
 
 	private void connectTopToBottom() {
