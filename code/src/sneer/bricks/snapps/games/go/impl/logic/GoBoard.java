@@ -13,11 +13,12 @@ public class GoBoard {
 	
 	public GoBoard(int size) {
 		_intersections = IntersectionUtils.createIntersections(size);
+		_previousSituation = IntersectionUtils.createIntersections(size);
 	}
 
 	public GoBoard(String[] setup) {
 		this(setup.length);
-		setup(setup);
+		IntersectionUtils.setup(_intersections,setup);
 	}
 
 	
@@ -51,14 +52,14 @@ public class GoBoard {
 	
 	public boolean canPlayStone(int x, int y) {
 		if (nextToPlay() == null) return false;
-		Intersection[][] storingOriginal = _intersections;
-		_intersections = IntersectionUtils.copy(_intersections);
+		
+		Intersection[][] situation = IntersectionUtils.copy(_intersections);
 		try {
 			tryToPlayStone(x, y);
 		} catch (IllegalMove im) {
 			return false;
 		} finally {
-			restoreSituation(storingOriginal);
+			restoreSituation(situation);
 		}
 		
 		return true;
@@ -183,26 +184,6 @@ public class GoBoard {
 		
 		return set;
 	}
-	
-	private void setup(String[] setup){
-		for (int y = 0; y < setup.length; y++)
-			setupLine(y, setup[y]);
-	}
-	
-	private void setupLine(int y, String line) {
-		int x = 0;
-		for(char symbol : line.toCharArray()) {
-			if (symbol == ' ') continue;
-			
-			StoneColor stone = null;
-			if(symbol == 'x') stone = BLACK;
-			if(symbol == 'o') stone = WHITE;
-			
-			intersection(x, y)._stone = stone;
-			x++;
-		}
-	}
-	
 	
 	private void tryToPlayStone(int x, int y) throws IllegalMove{
 		intersection(x, y).setStone(nextToPlay());

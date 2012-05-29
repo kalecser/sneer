@@ -1,9 +1,5 @@
 package sneer.bricks.snapps.games.go.impl.logic;
 
-
-
-
-
 public class ToroidalGoBoard extends GoBoard {
 
 	public ToroidalGoBoard(int size) {

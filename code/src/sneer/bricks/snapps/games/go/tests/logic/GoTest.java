@@ -43,9 +43,9 @@ public class GoTest extends BrickTestBase {
 		String[] setup = new String[]{
 			    "+ + + + + + + + +",
 				"+ + + + + + + + +",
-				"+ + + + x x + + +",
-				"+ + + x o o x + +",
-				"+ + + + x o x + +",
+				"+ + + + b b + + +",
+				"+ + + b w w b + +",
+				"+ + + + b w b + +",
 				"+ + + + + + + + +",
 				"+ + + + + + + + +",
 				"+ + + + + + + + +",
@@ -57,10 +57,10 @@ public class GoTest extends BrickTestBase {
 		assertEquals(
 		    " + + + + + + + + +\n" +
 			" + + + + + + + + +\n" +
-			" + + + + x x + + +\n" +
-			" + + + x + + x + +\n" +
-			" + + + + x + x + +\n" +
-			" + + + + + x + + +\n" +
+			" + + + + b b + + +\n" +
+			" + + + b + + b + +\n" +
+			" + + + + b + b + +\n" +
+			" + + + + + b + + +\n" +
 			" + + + + + + + + +\n" +
 			" + + + + + + + + +\n" +
 			" + + + + + + + + +\n",
@@ -75,10 +75,10 @@ public class GoTest extends BrickTestBase {
 		String[] setup = new String[] {
 			    "+ + + + + + + + +",
 				"+ + + + + + + + +",
-				"+ + + + o o + + +",
-				"+ + + o x x o + +",
-				"+ + + + o + o + +",
-				"+ + + + + o + + +",
+				"+ + + + w w + + +",
+				"+ + + w b b w + +",
+				"+ + + + w + w + +",
+				"+ + + + + w + + +",
 				"+ + + + + + + + +",
 				"+ + + + + + + + +",
 				"+ + + + + + + + +"};
@@ -91,10 +91,10 @@ public class GoTest extends BrickTestBase {
 	public void testKillOtherFirst() {
 		String[] setup = new String[]{
 			    "+ + + + + + + + +",
-				"+ + + + x + + + +",
-				"+ + + x o x + + +",
-				"+ + + o + o + + +",
-				"+ + + + o + + + +",
+				"+ + + + b + + + +",
+				"+ + + b w b + + +",
+				"+ + + w + w + + +",
+				"+ + + + w + + + +",
 				"+ + + + + + + + +",
 				"+ + + + + + + + +",
 				"+ + + + + + + + +",
@@ -107,10 +107,10 @@ public class GoTest extends BrickTestBase {
 	public void testKo() {
 		String[] setup = new String[]{
 			    "+ + + + + + + + +",
-				"+ + + + x + + + +",
-				"+ + + x o x + + +",
-				"+ + + o + o + + +",
-				"+ + + + o + + + +",
+				"+ + + + b + + + +",
+				"+ + + b w b + + +",
+				"+ + + w + w + + +",
+				"+ + + + w + + + +",
 				"+ + + + + + + + +",
 				"+ + + + + + + + +",
 				"+ + + + + + + + +",
@@ -126,10 +126,10 @@ public class GoTest extends BrickTestBase {
 	public void testMultipleGroupKill() {
 		String[] setup = new String[]{
 			    "+ + + + + + + + +",
-				"+ + + + x + + + +",
-				"+ + + x o x + + +",
-				"+ + x o + + + + +",
-				"+ + + x + + + + +",
+				"+ + + + b + + + +",
+				"+ + + b w b + + +",
+				"+ + b w + + + + +",
+				"+ + + b + + + + +",
 				"+ + + + + + + + +",
 				"+ + + + + + + + +",
 				"+ + + + + + + + +",
@@ -139,10 +139,10 @@ public class GoTest extends BrickTestBase {
 		_board.playStone(4, 3);
 		assertEquals(_board.printOut(),
 			 	" + + + + + + + + +\n"+
-				" + + + + x + + + +\n"+
-				" + + + x + x + + +\n"+
-				" + + x + x + + + +\n"+
-				" + + + x + + + + +\n"+
+				" + + + + b + + + +\n"+
+				" + + + b + b + + +\n"+
+				" + + b + b + + + +\n"+
+				" + + + b + + + + +\n"+
 				" + + + + + + + + +\n"+
 				" + + + + + + + + +\n"+
 				" + + + + + + + + +\n"+
@@ -182,9 +182,9 @@ public class GoTest extends BrickTestBase {
 		String[] setup = new String[]{
 			    "+ + + + + + + + +",
 				"+ + + + + + + + +",
-				"+ + + + x + + + +",
-				"+ + + x o x + + +",
-				"+ + + o + o + + +",
+				"+ + + + b + + + +",
+				"+ + + b w b + + +",
+				"+ + + w + w + + +",
 				"+ + + + + + + + +",
 				"+ + + + + + + + +",
 				"+ + + + + + + + +",
@@ -209,13 +209,13 @@ public class GoTest extends BrickTestBase {
 	public void testScore() {
 		String[] setup = new String[]{
 			    "+ + + + + + + + +",
-				"+ + + + x + + + +",
-				"+ + + x + x + + +",
-				"+ + x + x + + + +",
-				"+ + + x + + + + +",
-				"+ + + + o o o + +",
-				"+ + + + o + o + +",
-				"+ + + + + o + + +",
+				"+ + + + b + + + +",
+				"+ + + b + b + + +",
+				"+ + b + b + + + +",
+				"+ + + b + + + + +",
+				"+ + + + w w w + +",
+				"+ + + + w + w + +",
+				"+ + + + + w + + +",
 				"+ + + + + + + + +"};
 		_board = new ToroidalGoBoard(setup);
 		_board.passTurn();
@@ -228,13 +228,13 @@ public class GoTest extends BrickTestBase {
 	public void deadGroup() {
 		String[] setup = new String[]{
 			    "+ + + + + + + + +",
-				"+ + + + x x + + +",
-				"+ + + x + + x + +",
-				"+ + x + + + o x +",
-				"+ + + x + o o x +",
-				"+ + + + x o x + +",
-				"+ + + + x x x + +",
-				"+ o + + + + + + +",
+				"+ + + + b b + + +",
+				"+ + + b + + b + +",
+				"+ + b + + + w b +",
+				"+ + + b + w w b +",
+				"+ + + + b w b + +",
+				"+ + + + b b b + +",
+				"+ w + + + + + + +",
 				"+ + + + + + + + +"};
 		_board = new ToroidalGoBoard(setup);
 		_board.passTurn();
@@ -244,14 +244,14 @@ public class GoTest extends BrickTestBase {
 		
 		setup = new String[]{
 			    "+ + + + + + + + +",
-				"+ + + + x x + + +",
-				"+ x x x + o x + +",
-				"x o + o + o o x +",
-				"+ x x x + o o x +",
-				"+ + + + x o x + +",
-				"+ + o + x x x + +",
-				"+ o + o + + + + +",
-				"+ + o + + + + + +"};
+				"+ + + + b b + + +",
+				"+ b b b + w b + +",
+				"b w + w + w w b +",
+				"+ b b b + w w b +",
+				"+ + + + b w b + +",
+				"+ + w + b b b + +",
+				"+ w + w + + + + +",
+				"+ + w + + + + + +"};
 		_board = new ToroidalGoBoard(setup);
 		_board.passTurn();
 		_board.passTurn();
@@ -263,13 +263,13 @@ public class GoTest extends BrickTestBase {
 	public void deadGroupMisclickOnFreeIntersectionDoesNotFreeze() {
 		String[] setup = new String[]{
 			    "+ + + + + + + + +",
-				"+ + + + x x + + +",
-				"+ + + x + + x + +",
-				"+ + x + + + o x +",
-				"+ + + x + o o x +",
-				"+ + + + x o x + +",
-				"+ + + + x x x + +",
-				"+ o + + + + + + +",
+				"+ + + + b b + + +",
+				"+ + + b + + b + +",
+				"+ + b + + + w b +",
+				"+ + + b + w w b +",
+				"+ + + + b w b + +",
+				"+ + + + b b b + +",
+				"+ w + + + + + + +",
 				"+ + + + + + + + +"};
 		_board = new ToroidalGoBoard(setup);
 		_board.passTurn();
@@ -281,13 +281,13 @@ public class GoTest extends BrickTestBase {
 	public void untoggleDeadGroup() {
 		String[] setup = new String[]{
 			    "+ + + + + + + + +",
-				"+ + x x + + + + +",
-				"+ x o + x + + + +",
-				"+ + x x + + + + +",
-				"+ x o + x + + + +",
-				"+ + x x + + + + +",
+				"+ + b b + + + + +",
+				"+ b w + b + + + +",
+				"+ + b b + + + + +",
+				"+ b w + b + + + +",
+				"+ + b b + + + + +",
 				"+ + + + + + + + +",
-				"+ + + + + + o + +",
+				"+ + + + + + w + +",
 				"+ + + + + + + + +"};
 		_board = new ToroidalGoBoard(setup);
 		_board.passTurn();
