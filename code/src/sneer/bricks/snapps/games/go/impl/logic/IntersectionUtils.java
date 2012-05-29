@@ -47,6 +47,13 @@ public class IntersectionUtils {
 			}
 		}
 		
+		for (int x = 0; x < intersections.length; x++) {
+			for (int y = 0; y < intersections[x].length; y++) {
+				if (x != 0) copy[x][y].connectToYourLeft(copy[x - 1][y]);
+				if (y != 0) copy[x][y].connectUp(copy[x][y - 1]);
+			}
+		}
+		
 		return copy;
 	}
 
