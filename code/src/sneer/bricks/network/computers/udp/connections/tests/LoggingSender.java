@@ -23,15 +23,18 @@ public final class LoggingSender implements UdpSender {
 	private SetRegister<String> packetHistorySet = my(CollectionSignals.class).newSetRegister();
 
 	private String toString(byte[] payload) {
-		String ret = new String(payload);
-		return ret.isEmpty() ? "<empty>" : ret;
+		if (payload[0] == 0) 
+			return "hail " + payload[1];
+		if (payload[0] != 1)
+			throw new IllegalStateException("Unknown packet type");
+		return new String(copyToEnd(payload, 1));
 	}
 
 	public Signal<String> history() {
 		return packetHistory.output();
 	}
 
-	private static byte[] payload(byte[] data, int offset) {
+	private static byte[] copyToEnd(byte[] data, int offset) {
 		return Arrays.copyOfRange(data, offset, data.length);
 	}
 
@@ -47,7 +50,7 @@ public final class LoggingSender implements UdpSender {
 	public void send(DatagramPacket packet) {
 		byte[] bytes = packet.getData();
 		byte[] seal = Arrays.copyOf(bytes, Seal.SIZE_IN_BYTES);
-		byte[] payload = payload(bytes, Seal.SIZE_IN_BYTES + 1);
+		byte[] payload = copyToEnd(bytes, Seal.SIZE_IN_BYTES);
 		assertArrayEquals(ownSealBytes(), seal);
 		String current = packetHistory.output().currentValue();
 		String packet1 = "| " + toString(payload) + ",to:" + packet.getAddress().getHostAddress() + ",port:" + packet.getPort();

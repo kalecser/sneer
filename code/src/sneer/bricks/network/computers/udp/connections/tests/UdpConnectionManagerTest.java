@@ -26,6 +26,8 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import basis.brickness.testsupport.Bind;
 import basis.lang.Consumer;
 import basis.util.concurrent.Latch;
+import sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType;
+import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.*;
 
 public class UdpConnectionManagerTest extends BrickTestBase {
 
@@ -33,7 +35,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	private UdpConnectionManager subject = my(UdpConnectionManager.class);
 	@Bind private final LoggingSender sender = new LoggingSender();
 
-	@Ignore @Test public void precedenceOfDestinationIps() {
+	
 		//DADOS:
 		//Fastest received hail return address
 
@@ -41,7 +43,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		//First Hand Sightings
 		//Second Hand Sightings: Stun response, Remote sighting
 		//Sneer Ip & Port Own Attributes
-	}
+	
 
 	@Test(timeout=2000)
 	public void onFirstPacket_ShouldConnect() throws Exception {
@@ -60,7 +62,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 			latch.open();
 		}});
 		
-		subject.handle(packetFrom("Neide", "Hello".getBytes(), 1));
+		subject.handle(packetFrom("Neide", Data, "Hello".getBytes()));
 		latch.waitTillOpen();
 	}
 
@@ -83,23 +85,21 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 
-	@Ignore
 	@Test(timeout=2000)
 	public void onNotConnected_ShouldSendHailingPacketsEverySoOften() {
 		seeNeideIn(new InetSocketAddress("200.201.202.203", 123));
 		seeNeideIn(new InetSocketAddress("192.168.1.100", 7777));
 		
 		connectionFor("Neide");
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| 0,to:200.201.202.203,port:123");
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| 0,to:192.168.1.100,port:7777");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| hail 0,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| hail 0,to:192.168.1.100,port:7777");
 	}
 	
-	@Ignore
 	@Test (timeout=2000)
 	public void onSighting_ShouldHail() throws Exception {
-		subject.handle(packetFrom("Neide", "Hello".getBytes(), 1));
+		subject.handle(packetFrom("Neide", Data, "Hello".getBytes()));
 		
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| <empty>,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForValue(sender.history(), "| hail 1,to:200.201.202.203,port:123");
 	}
 	
 
@@ -114,13 +114,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	@Test
-	@Ignore
-	public void shouldNotHailUnnessecerily() {
-		fail();
-	}
-	
-	@Ignore
 	@Test(timeout = 2000)
 	public void onIdleRecognizeNewSighting() throws Exception {
 	
@@ -131,7 +124,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(Clock.class).advanceTime(UdpConnectionManager.IDLE_PERIOD);
 		my(SignalUtils.class).waitForValue(connection.isConnected(), false);
 		
-		subject.handle(packetFrom("Neide", new byte[0], "100.101.102.103", 456));
+		subject.handle(packetFrom("Neide", Hail, new byte[] { 50 }, "100.101.102.103", 456));
 		my(SignalUtils.class).waitForValue(connection.isConnected(), true);
 		
 		PacketScheduler scheduler = new PacketSchedulerMock("foo");
@@ -210,14 +203,20 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 	
 	private DatagramPacket hailPacketFrom(String nick) throws Exception {
-		return packetFrom(nick, new byte[] { 41 }, 0);
+		return packetFrom(nick, Hail, new byte[] { 41 });
 	}
 
 
-	private DatagramPacket packetFrom(String nick, byte[] data, int identifier) throws Exception {
-		byte[] dataIdentifier = new byte[] { (byte) identifier };
-		byte[] payload = my(Lang.class).arrays().concat(dataIdentifier, data);
-		return packetFrom(nick, payload, "200.201.202.203", 123);
+	private DatagramPacket packetFrom(String nick, PacketType type, byte[] payload) throws Exception {
+		return packetFrom(nick, type, payload, "200.201.202.203", 123);
+	}
+
+
+	private DatagramPacket packetFrom(String nick, PacketType type,
+			byte[] payload, String ip, int port) throws Exception {
+		byte[] typeByte = new byte[] { (byte)type.ordinal() };
+		byte[] bytes = my(Lang.class).arrays().concat(typeByte, payload);
+		return packetFrom(nick, bytes, ip, port);
 	}
 
 }

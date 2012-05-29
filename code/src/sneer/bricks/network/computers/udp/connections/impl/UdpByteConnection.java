@@ -1,6 +1,8 @@
 package sneer.bricks.network.computers.udp.connections.impl;
 
 import static basis.environments.Environments.my;
+import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Data;
+import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Hail;
 
 import java.net.DatagramPacket;
 import java.net.SocketAddress;
@@ -13,6 +15,7 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.network.computers.connections.ByteConnection;
+import sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType;
 import sneer.bricks.network.computers.udp.sender.UdpSender;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
 import sneer.bricks.network.social.Contact;
@@ -53,7 +56,7 @@ class UdpByteConnection implements ByteConnection {
 	
 	private void tryToSendPacketFor(PacketScheduler scheduler) {
 		byte[] payload = scheduler.highestPriorityPacketToSend();
-		if (send(payload, monitor.lastSighting()))
+		if (send(Data, payload, monitor.lastSighting()))
 			scheduler.previousPacketWasSent();
 	}
 	
@@ -63,24 +66,24 @@ class UdpByteConnection implements ByteConnection {
 
 		byte[] bytes = packet.getData();
 		
-		if(bytes[offset] == 0) {
-			monitor.handleSighting(sighting, bytes[offset + 1]);
+		if(bytes[offset] == Hail.ordinal()) {
+			monitor.handleHail(sighting, bytes[offset + 1]);
 			return;
 		}
 		
 		if (receiver == null) return;
-		receiver.consume(payload(bytes, offset + 1));
+		receiver.consume(copyToEnd(bytes, offset + 1));
 	}
 
-	private byte[] payload(byte[] data, int offset) {
+	private byte[] copyToEnd(byte[] data, int offset) {
 		return Arrays.copyOfRange(data, offset, data.length);
 	}
 
-	private boolean send(byte[] payload, SocketAddress peerAddress) {
+	private boolean send(PacketType type, byte[] payload, SocketAddress peerAddress) {
 		byte[] ownSeal = ownSealBytes();
-		byte[] dataIdentifier = new byte[] { 1 };
+		byte[] typeByte = new byte[] { (byte)type.ordinal() };
 		
-		byte[] data = my(Lang.class).arrays().concat(ownSeal, dataIdentifier);
+		byte[] data = my(Lang.class).arrays().concat(ownSeal, typeByte);
 		data = my(Lang.class).arrays().concat(data, payload); //Optimize: Reuse array.
 		
 		DatagramPacket packet = packetFor(data, peerAddress);
@@ -110,9 +113,9 @@ class UdpByteConnection implements ByteConnection {
 	}
 	
 	private void hail(Iterable<SocketAddress> addrs) {
-		byte[] bytes = new byte[] { 0, hailSequence++ };
+		byte[] sequence = new byte[] { hailSequence++ };
 		for (SocketAddress addr : addrs)
-			send(bytes, addr);
+			send(Hail, sequence, addr);
 	}
 
 }

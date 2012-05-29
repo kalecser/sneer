@@ -21,7 +21,7 @@ class ConnectionMonitor {
 		return isConnected.output();
 	}
 	
-	void handleSighting(SocketAddress sighting, byte hailSequence) {
+	void handleHail(SocketAddress sighting, byte hailSequence) {
 		if(!isConnected().currentValue() || (hailSequence - 10) > lastHailSequence) {
 			isConnected.setter().consume(true);
 			lastPeerSighting = sighting;
