@@ -133,20 +133,20 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| foo,to:100.101.102.103,port:456");
 	}
 	
-	@Ignore
+
 	@Test(timeout = 2000)
 	public void keepAlive() {
 		my(SightingKeeper.class).keep(produceContact("Neide"), new InetSocketAddress("200.201.202.203", 123));
 		connectionFor("Neide");
 		
-		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForValue(sender.history(), "| hail 0,to:200.201.202.203,port:123");
 		
 		my(Clock.class).advanceTime(UdpConnectionManager.KEEP_ALIVE_PERIOD - 1);
-		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForValue(sender.history(), "| hail 0,to:200.201.202.203,port:123");
 		
 		my(Clock.class).advanceTime(1);
 		
-		my(SignalUtils.class).waitForValue(sender.history(), "| <empty>,to:200.201.202.203,port:123| <empty>,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForValue(sender.history(), "| hail 0,to:200.201.202.203,port:123| hail 1,to:200.201.202.203,port:123");
 	}
 	
 	@Ignore
