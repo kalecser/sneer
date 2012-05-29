@@ -47,7 +47,7 @@ public final class LoggingSender implements UdpSender {
 	public void send(DatagramPacket packet) {
 		byte[] bytes = packet.getData();
 		byte[] seal = Arrays.copyOf(bytes, Seal.SIZE_IN_BYTES);
-		byte[] payload = payload(bytes, Seal.SIZE_IN_BYTES);
+		byte[] payload = payload(bytes, Seal.SIZE_IN_BYTES + 1);
 		assertArrayEquals(ownSealBytes(), seal);
 		String current = packetHistory.output().currentValue();
 		String packet1 = "| " + toString(payload) + ",to:" + packet.getAddress().getHostAddress() + ",port:" + packet.getPort();

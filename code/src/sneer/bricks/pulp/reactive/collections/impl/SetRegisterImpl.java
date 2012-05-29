@@ -36,7 +36,7 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 
 		@Override
 		public WeakContract addPulseReceiver(Runnable pulseReceiver) {
-			throw new basis.lang.exceptions.NotImplementedYet(); // Implement
+			return _notifier.output().addPulseReceiver(pulseReceiver);
 		}
 
 		@Override

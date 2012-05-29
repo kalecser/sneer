@@ -15,16 +15,19 @@ class ConnectionMonitor {
 	private SocketAddress lastPeerSighting = null;
 	private long lastPeerSightingTime = -UdpConnectionManager.IDLE_PERIOD;
 	private Register<Boolean> isConnected = my(Signals.class).newRegister(false);
+	private byte lastHailSequence = 0;
 	
 	Signal<Boolean> isConnected() {
 		return isConnected.output();
 	}
 	
-	void handleSighting(SocketAddress sighting) {
-		if(!isConnected().currentValue()) {
+	void handleSighting(SocketAddress sighting, byte hailSequence) {
+		if(!isConnected().currentValue() || (hailSequence - 10) > lastHailSequence) {
 			isConnected.setter().consume(true);
 			lastPeerSighting = sighting;
+			lastHailSequence = hailSequence;
 		}
+		
 		if(sighting.equals(lastPeerSighting))
 			lastPeerSightingTime = my(Clock.class).time().currentValue();
 	}
