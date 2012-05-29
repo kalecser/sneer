@@ -149,8 +149,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SignalUtils.class).waitForValue(sender.history(), "| hail 0,to:200.201.202.203,port:123| hail 1,to:200.201.202.203,port:123");
 	}
 	
-	@Ignore
-	@Test(timeout = 4000)
+	
+	@Test(timeout = 2000)
 	public void onSighting_ShouldUseFastestAddress() throws Exception {
 		subject.handle(packetFrom("Neide", Hail, new byte[] { 41 }, "200.201.202.203", 123));
 		subject.handle(packetFrom("Neide", Hail, new byte[] { 42 }, "192.168.10.10", 7777));
@@ -158,7 +158,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		PacketScheduler scheduler = new PacketSchedulerMock("foo");
 		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
 		
-		my(SignalUtils.class).waitForValue(sender.history(), "| foo,to:192.168.10.10,port:7777");
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| foo,to:192.168.10.10,port:7777");
 	}
 	

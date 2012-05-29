@@ -22,7 +22,7 @@ class ConnectionMonitor {
 	}
 	
 	void handleHail(SocketAddress sighting, byte hailSequence) {
-		if(!isConnected().currentValue() || (hailSequence - 10) > lastHailSequence) {
+		if(!isConnected().currentValue() || hailSequence > lastHailSequence) {
 			isConnected.setter().consume(true);
 			lastPeerSighting = sighting;
 			lastHailSequence = hailSequence;
