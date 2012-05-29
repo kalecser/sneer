@@ -14,6 +14,7 @@ import sneer.tests.SovereignFunctionalTestBase;
 
 public class Freedom6Test extends SovereignFunctionalTestBase {
 
+	@Ignore
 	@Test (timeout = 20000)
 	public void syncOneFile() throws IOException {
 		syncFiles("important_file.txt");

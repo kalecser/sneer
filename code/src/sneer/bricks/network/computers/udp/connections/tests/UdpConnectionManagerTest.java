@@ -1,13 +1,14 @@
 package sneer.bricks.network.computers.udp.connections.tests;
 
 import static basis.environments.Environments.my;
+import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Data;
+import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Hail;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
@@ -17,6 +18,7 @@ import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
+import sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
@@ -26,8 +28,6 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import basis.brickness.testsupport.Bind;
 import basis.lang.Consumer;
 import basis.util.concurrent.Latch;
-import sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType;
-import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.*;
 
 public class UdpConnectionManagerTest extends BrickTestBase {
 
