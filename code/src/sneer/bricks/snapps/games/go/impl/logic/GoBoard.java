@@ -12,8 +12,8 @@ public class GoBoard {
 	public static enum StoneColor { BLACK, WHITE;}
 	
 	public GoBoard(int size) {
-		_intersections = IntersectionUtils.createIntersections(size);
-		_previousSituation = IntersectionUtils.createIntersections(size);
+		_intersections = createIntersections(size);
+		_previousSituation = createIntersections(size);
 	}
 
 	public GoBoard(String[] setup) {
@@ -28,7 +28,7 @@ public class GoBoard {
 	private StoneColor _winner = null;
 	
 	
-	private Intersection[][] _intersections;
+	protected Intersection[][] _intersections;
 	private Intersection[][] _previousSituation;
 	private boolean _previousWasPass = false;
 	private int _capturedStonesBlack;
@@ -53,7 +53,7 @@ public class GoBoard {
 	public boolean canPlayStone(int x, int y) {
 		if (nextToPlay() == null) return false;
 		
-		Intersection[][] situation = IntersectionUtils.copy(_intersections);
+		Intersection[][] situation = copy(_intersections);
 		try {
 			tryToPlayStone(x, y);
 		} catch (IllegalMove im) {
@@ -67,7 +67,7 @@ public class GoBoard {
 	
 	
 	public void playStone(int x, int y) {
-		Intersection[][] situationFound = IntersectionUtils.copy(_intersections);
+		Intersection[][] situationFound = copy(_intersections);
 		
 		try {
 			tryToPlayStone(x, y);
@@ -198,7 +198,7 @@ public class GoBoard {
 	
 	
 	private void stopAcceptingMoves() {
-		_previousSituation = IntersectionUtils.copy(_intersections);
+		_previousSituation = copy(_intersections);
 		_nextToPlay = null;
 		if(_boardListener != null){
 			_boardListener.nextToPlay(_nextToPlay);
@@ -276,6 +276,45 @@ public class GoBoard {
 	
 	private void restoreSituation(Intersection[][] situation) {
 		_intersections = situation;
+	}
+	
+	protected Intersection[][] copy(Intersection[][] intersections) {
+		if(intersections.length == 0)
+			return new Intersection[0][0];
+		Intersection[][] copy =  new Intersection[intersections.length][intersections[0].length];
+		
+		for (int x = 0; x < intersections.length; x++) {
+			for (int y = 0; y < intersections[x].length; y++) {
+				copy[x][y] = intersections[x][y].copy();
+			}
+		}
+		
+		connectInternally(copy);
+		
+		return copy;
+	}
+	
+	private Intersection[][] createIntersections(int size) {
+		Intersection[][] intersections = new Intersection[size][size];
+		for (int x = 0; x < size; x++) {
+			for (int y = 0; y < size; y++) {
+				Intersection newOne = new Intersection();
+				intersections[x][y] = newOne;
+			}
+		}
+		
+		connectInternally(intersections);
+		return intersections;
+	}
+
+	private void connectInternally(Intersection[][] intersections) {
+		int size = intersections.length;
+		for (int x = 0; x < size; x++) {
+			for (int y = 0; y < size; y++) {
+				if (x != 0) intersections[x][y].connectToYourLeft(intersections[x - 1][y]);
+				if (y != 0) intersections[x][y].connectUp(intersections[x][y - 1]);
+			}
+		}
 	}
 	
 }

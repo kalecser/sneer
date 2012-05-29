@@ -39,7 +39,7 @@ public class GoTest extends BrickTestBase {
 	}
 	
 	@Test
-	public void testSingleStoneCaptureToroidal() {
+	public void testSingleStoneCaptureToroidal_shouldNotCapture() {
 		String[] setup = new String[]{
 			    "+ + + + w b + + +",
 				"+ + + + b + + + +",
@@ -64,6 +64,36 @@ public class GoTest extends BrickTestBase {
 			" + + + + + + + + +\n" +
 			" + + + + + + + + +\n" +
 			" + + + + + + + + +\n",
+			_board.printOut()
+		);
+	}
+	
+	@Test
+	public void testSingleStoneCaptureToroidal_shouldCapture() {
+		String[] setup = new String[]{
+			    "+ + + b w b + + +",
+				"+ + + + b + + + +",
+				"+ + + + + + + + +",
+				"+ + + + + + + + +",
+				"+ + + + + + + + +",
+				"+ + + + + + + + +",
+				"+ + + + + + + + +",
+				"+ + + + + + + + +",
+				"+ + + + + + + + +"};
+		_board = new ToroidalGoBoard(setup);
+		
+		play(4, 8);
+		
+		assertEquals(
+		    " + + + b + b + + +\n" +
+			" + + + + b + + + +\n" +
+			" + + + + + + + + +\n" +
+			" + + + + + + + + +\n" +
+			" + + + + + + + + +\n" +
+			" + + + + + + + + +\n" +
+			" + + + + + + + + +\n" +
+			" + + + + + + + + +\n" +
+			" + + + + b + + + +\n",
 			_board.printOut()
 		);
 	}
