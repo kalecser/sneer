@@ -12,18 +12,8 @@ public class Intersection {
 	private Intersection _up;
 	private Intersection _down;
 	
-	private static int idGen = 0; 
-	int _id;
 	GoBoard.StoneColor _stone = null;
 
-		
-	public Intersection(int id){
-		_id = id;
-	}
-	
-	public Intersection() {
-		this(idGen++);
-	}
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -32,12 +22,7 @@ public class Intersection {
 			return (other._stone == null);
 		return _stone.equals(other._stone);
 	}
-//
-//	@Override
-//	public int hashCode() {
-//		return (_stone == null)?1:_stone.hashCode();//(""+_id+_stone).hashCode();
-//	}
-//	
+	
 	public void setStone(GoBoard.StoneColor stoneColor) throws IllegalMove {
 		if (!isLiberty()) throw new IllegalMove();
 		_stone = stoneColor;
@@ -46,7 +31,6 @@ public class Intersection {
 	protected Intersection copy(){
 		Intersection intersection = new Intersection();
 		intersection._stone = _stone;
-		intersection._id = _id;
 		return intersection;
 	}
 	
