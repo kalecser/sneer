@@ -21,18 +21,23 @@ public class GoTest extends BrickTestBase {
 	public void testSingleStoneCapture() {
 		_board = new ToroidalGoBoard(9);
 		
-		_board.playStone(4, 2);
-		_board.playStone(4, 3);
-		_board.playStone(3, 3);
-		_board.playStone(3, 4);
-		_board.playStone(5, 3);
-		_board.playStone(5, 4);
+		play(4, 2);
+		play(4, 3);
+		play(3, 3);
+		play(3, 4);
+		play(5, 3);
+		play(5, 4);
 
 		assertNotNull(_board.stoneAt(4, 3));
-		_board.playStone(4,4);
+		play(4,4);
 		assertNull(   _board.stoneAt(4, 3));
 	}
 
+	private void play(int x, int y) {
+		assertTrue(_board.canPlayStone(x, y));
+		_board.playStone(x, y);
+	}
+	
 	@Test
 	public void testBigGroupCapture() {
 		String[] setup = new String[]{

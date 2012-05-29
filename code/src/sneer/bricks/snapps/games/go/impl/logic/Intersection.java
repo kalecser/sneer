@@ -5,23 +5,48 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-class Intersection {
+public class Intersection {
 
 	private Intersection _left;
 	private Intersection _right;
 	private Intersection _up;
 	private Intersection _down;
 	
+	private static int idGen = 0; 
+	int _id;
 	GoBoard.StoneColor _stone = null;
 
 		
+	public Intersection(int id){
+		_id = id;
+	}
+	
+	public Intersection() {
+		this(idGen++);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		final Intersection other = (Intersection) obj;
+		if (_stone == null) 
+			return (other._stone == null);
+		return _stone.equals(other._stone);
+	}
+//
+//	@Override
+//	public int hashCode() {
+//		return (_stone == null)?1:_stone.hashCode();//(""+_id+_stone).hashCode();
+//	}
+//	
+	public void setStone(GoBoard.StoneColor stoneColor) throws IllegalMove {
+		if (!isLiberty()) throw new IllegalMove();
+		_stone = stoneColor;
+	}
+
 	protected Intersection copy(){
 		Intersection intersection = new Intersection();
-		intersection._left = _left;
-		intersection._right = _right;
-		intersection._up = _up;
-		intersection._down = _down;
 		intersection._stone = _stone;
+		intersection._id = _id;
 		return intersection;
 	}
 	
@@ -36,12 +61,6 @@ class Intersection {
 		other._down = this;
 	}
 
-	
-	void setStone(GoBoard.StoneColor stoneColor) throws IllegalMove {
-		if (!isLiberty()) throw new IllegalMove();
-		_stone = stoneColor;
-	}
-	
 	
 	void fillGroupWithNeighbours(GoBoard.StoneColor stoneColor, Set<Intersection> group) {
 		if (group.contains(this)) return;
@@ -96,15 +115,6 @@ class Intersection {
 	
 	boolean isLiberty() {
 		return _stone == null;
-	}
-
-	
-	@Override
-	public boolean equals(Object obj) {
-		final Intersection other = (Intersection) obj;
-		if (_stone == null) 
-			return (other._stone == null);
-		return _stone.equals(other._stone);
 	}
 
 }

@@ -3,7 +3,6 @@ package sneer.bricks.snapps.games.go.impl.logic;
 import static sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor.BLACK;
 import static sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor.WHITE;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,18 +12,9 @@ public class GoBoard {
 	public static enum StoneColor { BLACK, WHITE;}
 	
 	public GoBoard(int size) {
-		_intersections = new Intersection[size][size];
-		for (int x = 0; x < size; x++) {
-			for (int y = 0; y < size; y++) {
-				Intersection newOne = new Intersection();
-				_intersections[x][y] = newOne;
-				if (x != 0) newOne.connectToYourLeft(_intersections[x - 1][y]);
-				if (y != 0) newOne.connectUp(_intersections[x][y - 1]);
-			}
-		}
+		_intersections = IntersectionUtils.createIntersections(size);
 	}
-	
-	
+
 	public GoBoard(String[] setup) {
 		this(setup.length);
 		setup(setup);
@@ -51,24 +41,9 @@ public class GoBoard {
 	
 	
 	public String printOut(){
-		StringBuffer result= new StringBuffer();
-		
-		for (int y = 0; y < size(); y++) {
-			for (int x = 0; x < size(); x++) {
-				StoneColor stone = stoneAt(x, y);
-				if(stone == WHITE)
-					result.append(" o");
-				else if(stone == BLACK)
-					result.append(" x");
-				else
-					result.append(" +");
-			}
-			result.append("\n");
-		}
-		return result.toString();
+		return IntersectionUtils.print(_intersections);
 	}
-	
-	
+
 	public int size() {
 		return _intersections.length;
 	}
@@ -76,14 +51,14 @@ public class GoBoard {
 	
 	public boolean canPlayStone(int x, int y) {
 		if (nextToPlay() == null) return false;
-		
-		Intersection[][] situation = copySituation();
+		Intersection[][] storingOriginal = _intersections;
+		_intersections = IntersectionUtils.copy(_intersections);
 		try {
 			tryToPlayStone(x, y);
 		} catch (IllegalMove im) {
 			return false;
 		} finally {
-			restoreSituation(situation);
+			restoreSituation(storingOriginal);
 		}
 		
 		return true;
@@ -91,7 +66,7 @@ public class GoBoard {
 	
 	
 	public void playStone(int x, int y) {
-		Intersection[][] situationFound = copySituation();
+		Intersection[][] situationFound = IntersectionUtils.copy(_intersections);
 		
 		try {
 			tryToPlayStone(x, y);
@@ -143,9 +118,7 @@ public class GoBoard {
 	
 	
 	public StoneColor other(StoneColor color) {
-		return color == BLACK
-		? WHITE
-				: BLACK;
+		return (color == BLACK) ? WHITE: BLACK;
 	}
 	
 	
@@ -184,19 +157,13 @@ public class GoBoard {
 		int size = _intersections.length;
 		for (int x = 0; x < size; x++) {
 			for (int y = 0; y < size; y++) {
-				if (_intersections[x][y] == intersection)
+				if ( _intersections[x][y] == intersection )
 					return _previousSituation[x][y];
 			}
 		}
 		throw new IllegalStateException("Intersection " + intersection + " not found.");
 	}
 
-
-	private boolean sameSituationAs(Intersection[][] situation) {
-		return Arrays.deepEquals(situation, _intersections);
-	}
-	
-	
 	private boolean killSurroundedStones(StoneColor color) {
 		boolean wereStonesKilled = false;
 		for(Intersection[] column : _intersections)
@@ -206,20 +173,6 @@ public class GoBoard {
 		
 		return wereStonesKilled;
 	}
-	
-	
-	private Intersection[][] copySituation() {
-		if(_intersections.length == 0)
-			return new Intersection[0][0];
-		Intersection[][] copy =  new Intersection[_intersections.length][_intersections[0].length];
-		for (int i = 0; i < copy.length; i++) {
-			for (int j = 0; j < copy[i].length; j++) {
-				copy[i][j] = _intersections[i][j].copy();
-			}
-		}
-		return copy;
-	}
-	
 	
 	private HashSet<Intersection> allIntersections() {
 		HashSet<Intersection> set = new HashSet<Intersection>();
@@ -231,12 +184,10 @@ public class GoBoard {
 		return set;
 	}
 	
-	
 	private void setup(String[] setup){
 		for (int y = 0; y < setup.length; y++)
 			setupLine(y, setup[y]);
 	}
-	
 	
 	private void setupLine(int y, String line) {
 		int x = 0;
@@ -260,13 +211,13 @@ public class GoBoard {
 		if (killSurroundedStones(nextToPlay()))
 			throw new IllegalMove();
 		
-		if(sameSituationAs(_previousSituation))
+		if(IntersectionUtils.sameSituation(_previousSituation, _intersections))
 			throw new IllegalMove();
 	}
 	
 	
 	private void stopAcceptingMoves() {
-		_previousSituation = copySituation();
+		_previousSituation = IntersectionUtils.copy(_intersections);
 		_nextToPlay = null;
 		if(_boardListener != null){
 			_boardListener.nextToPlay(_nextToPlay);
