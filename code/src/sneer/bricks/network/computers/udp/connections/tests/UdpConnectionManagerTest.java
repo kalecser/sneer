@@ -36,14 +36,13 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	private UdpConnectionManager subject = my(UdpConnectionManager.class);
 	@Bind private final LoggingSender sender = new LoggingSender();
 
-	
-		//DADOS:
-		//Fastest received hail return address
-
+			
 		//HAIL SIGHTINGS:
-		//First Hand Sightings
+		//First Hand Sightings - done
 		//Second Hand Sightings: Stun response, Remote sighting
 		//Sneer Ip & Port Own Attributes
+		
+		//Forget old sightings
 	
 
 	@Test(timeout=2000)

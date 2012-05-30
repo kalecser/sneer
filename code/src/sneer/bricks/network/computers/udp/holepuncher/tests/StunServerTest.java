@@ -27,13 +27,13 @@ public class StunServerTest extends BrickTestBase {
 	@Test
 	public void stun() throws Exception {
 		byte[] seal1 = seal(1);
-		assertNull(subjectsReplyFor(seal1, ip("200.243.227.1"), 4111, ip("10.42.10.1"), 1001, null));
+		assertEquals(0, subjectsRepliesFor(seal1, ip("200.243.227.1"), 4111, ip("10.42.10.1"), 1001, null).length);
 		
 		byte[] seal2 = seal(2);
 		byte[] peerToFind = seal1;
-		DatagramPacket packet2 = subjectsReplyFor(seal2, ip("205.65.114.2"), 4222, ip("10.42.10.2"), 1002, peerToFind);
+		DatagramPacket[] replies = subjectsRepliesFor(seal2, ip("205.65.114.2"), 4222, ip("10.42.10.2"), 1002, peerToFind);
 		
-		StunReply reply = unmarshalReply(packet2);
+		StunReply reply = unmarshalReply(replies[0]);
 		assertArrayEquals(seal1, reply.peerSeal);
 		assertEquals(ip("200.243.227.1"), reply.peerIp);
 		assertEquals(4111, reply.peerPort);
@@ -47,7 +47,7 @@ public class StunServerTest extends BrickTestBase {
 	}
 
 
-	private DatagramPacket subjectsReplyFor(byte[] ownSeal, InetAddress ip, int port, InetAddress localIp, int localPort, byte[] peerToFind) {
+	private DatagramPacket[] subjectsRepliesFor(byte[] ownSeal, InetAddress ip, int port, InetAddress localIp, int localPort, byte[] peerToFind) {
 		byte[] buf = newBuf();
 		int length = new StunRequest(ownSeal, localIp, localPort, peerToFind).marshalTo(buf);
 		return subjectsReplyFor(new DatagramPacket(buf, length, ip, port));
@@ -61,17 +61,17 @@ public class StunServerTest extends BrickTestBase {
 	}
 
 
-	private DatagramPacket subjectsReplyFor(DatagramPacket packet) {
+	private DatagramPacket[] subjectsReplyFor(DatagramPacket packet) {
 		InetAddress ip = packet.getAddress();
 		int port = packet.getPort();
 		
-		DatagramPacket[] reply = subject.repliesFor(packet);
-		if (reply.length == 0) return null;
+		DatagramPacket[] replies = subject.repliesFor(packet);
+		if (replies.length == 0) return replies;
 
-		assertEquals(0, reply[0].getOffset());
-		assertEquals(ip, reply[0].getAddress());
-		assertEquals(port, reply[0].getPort());
-		return reply[0];
+		assertEquals(0, replies[0].getOffset());
+		assertEquals(ip, replies[0].getAddress());
+		assertEquals(port, replies[0].getPort());
+		return replies;
 	}
 
 	
