@@ -33,12 +33,20 @@ public class StunServerTest extends BrickTestBase {
 		byte[] peerToFind = seal1;
 		DatagramPacket[] replies = subjectsRepliesFor(seal2, ip("205.65.114.2"), 4222, ip("10.42.10.2"), 1002, peerToFind);
 		
-		StunReply reply = unmarshalReply(replies[0]);
-		assertArrayEquals(seal1, reply.peerSeal);
-		assertEquals(ip("200.243.227.1"), reply.peerIp);
-		assertEquals(4111, reply.peerPort);
-		assertEquals(ip("10.42.10.1"), reply.peerLocalIp);
-		assertEquals(1001, reply.peerLocalPort);
+		StunReply replyToMe = unmarshalReply(replies[0]);
+		StunReply replyToPeer = unmarshalReply(replies[1]);
+		
+		assertArrayEquals(seal1, replyToMe.peerSeal);
+		assertEquals(ip("200.243.227.1"), replyToMe.peerIp);
+		assertEquals(4111, replyToMe.peerPort);
+		assertEquals(ip("10.42.10.1"), replyToMe.peerLocalIp);
+		assertEquals(1001, replyToMe.peerLocalPort);
+		
+		assertArrayEquals(seal2, replyToPeer.peerSeal);
+		assertEquals(ip("205.65.114.2"), replyToPeer.peerIp);
+		assertEquals(4222, replyToPeer.peerPort);
+		assertEquals(ip("10.42.10.2"), replyToPeer.peerLocalIp);
+		assertEquals(1002, replyToPeer.peerLocalPort);		
 	}
 
 
