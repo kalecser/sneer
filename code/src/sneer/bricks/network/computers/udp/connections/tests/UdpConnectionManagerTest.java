@@ -68,7 +68,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 	
 	@Test(timeout=2000)
-	public void sendData() throws Exception {
+	public void sendData_ShouldUseReceivedHailSighting() throws Exception {
 		subject.handle(hailPacketFrom("Neide"));
 		
 		PacketScheduler scheduler = new PacketSchedulerMock("foo", "bar");
@@ -101,18 +101,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		
 		my(SignalUtils.class).waitForValue(sender.history(), "| hail 1,to:200.201.202.203,port:123");
 	}
-	
-
-	@Test(timeout=2000)
-	public void onReceivePacket_ShouldUseInternetAddress() throws Exception {
-		subject.handle(hailPacketFrom("Neide"));
-		
-		PacketScheduler scheduler = new PacketSchedulerMock("foo");
-		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
-		
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| foo,to:200.201.202.203,port:123");
-	}
-	
 	
 	@Test(timeout = 2000)
 	public void onIdleRecognizeNewSighting() throws Exception {
