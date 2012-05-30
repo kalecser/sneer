@@ -8,7 +8,6 @@ import java.net.DatagramPacket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
@@ -76,9 +75,6 @@ class UdpByteConnection implements ByteConnection {
 		receiver.consume(payload);
 	}
 
-	private byte[] copyToEnd(byte[] data, int offset) {
-		return Arrays.copyOfRange(data, offset, data.length);
-	}
 
 	private boolean send(PacketType type, byte[] payload, SocketAddress peerAddress) {
 		byte[] ownSeal = ownSealBytes();

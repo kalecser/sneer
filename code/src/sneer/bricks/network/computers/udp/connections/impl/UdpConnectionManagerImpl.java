@@ -4,7 +4,6 @@ import static basis.environments.Environments.my;
 
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -12,6 +11,7 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.Call;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
+import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.notifiers.Source;
 import basis.lang.CacheMap;
@@ -63,7 +63,9 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 		
 		ByteBuffer data = ByteBuffer.wrap(packet.getData());
 		PacketType type = UdpConnectionManager.PacketType.values()[data.get()];
-		if (type != PacketType.Stun) {			
+		if (type == PacketType.Stun) 
+			my(StunClient.class).handle(data);
+		else {			
 			byte[] seal = new byte[Seal.SIZE_IN_BYTES];
 			data.get(seal);
 			Contact contact = my(ContactSeals.class).contactGiven(new Seal(seal));

@@ -3,6 +3,7 @@ package sneer.bricks.network.computers.udp.connections.tests;
 import static basis.environments.Environments.my;
 import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Data;
 import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Hail;
+import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Stun;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -10,6 +11,9 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import org.jmock.Expectations;
+import org.jmock.api.Invocation;
+import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
@@ -20,6 +24,7 @@ import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType;
+import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
@@ -35,6 +40,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	private UdpConnectionManager subject = my(UdpConnectionManager.class);
 	@Bind private final LoggingSender sender = new LoggingSender();
+	@Bind private final StunClient stunClient = mock(StunClient.class);
 
 			
 		//HAIL SIGHTINGS:
@@ -95,12 +101,28 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| hail 0,to:192.168.1.100,port:7777");
 	}
 	
+	
 	@Test (timeout=2000)
 	public void onSighting_ShouldHail() throws Exception {
 		subject.handle(packetFrom("Neide", Data, "Hello".getBytes()));
 		
 		my(SignalUtils.class).waitForValue(sender.history(), "| hail 0,to:200.201.202.203,port:123");
 	}
+	
+	
+	@Test (timeout=2000)
+	public void onStunPacketReceived_ShouldDelegateToStunClient() throws Exception {
+		final Latch latch = new Latch();
+		checking(new Expectations(){{
+			exactly(1).of(stunClient).handle(with(any(ByteBuffer.class))); will(new CustomAction("") { @Override public Object invoke(Invocation invocation) throws Throwable {
+				latch.open(); return null;
+			}});
+		}});
+		subject.handle(packetFrom("Neide", Stun, "Whatever".getBytes()));
+		
+		latch.waitTillOpen();
+	}
+	
 	
 	@Test(timeout = 2000)
 	public void onIdleRecognizeNewSighting() throws Exception {
