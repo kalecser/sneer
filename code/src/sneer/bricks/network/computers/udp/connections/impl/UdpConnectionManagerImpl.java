@@ -3,6 +3,7 @@ package sneer.bricks.network.computers.udp.connections.impl;
 import static basis.environments.Environments.my;
 
 import java.net.DatagramPacket;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import sneer.bricks.hardware.clock.timer.Timer;
@@ -58,10 +59,17 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 
 	@Override
 	public void handle(DatagramPacket packet) {
-		byte[] seal = Arrays.copyOf(packet.getData(), Seal.SIZE_IN_BYTES);
-		Contact contact = my(ContactSeals.class).contactGiven(new Seal(seal));
-		if (contact == null) return;
-		connectionFor(contact).handle(packet, Seal.SIZE_IN_BYTES);
+		if (packet.getLength() < Seal.SIZE_IN_BYTES + 1) return;
+		
+		ByteBuffer data = ByteBuffer.wrap(packet.getData());
+		PacketType type = UdpConnectionManager.PacketType.values()[data.get()];
+		if (type != PacketType.Stun) {			
+			byte[] seal = new byte[Seal.SIZE_IN_BYTES];
+			data.get(seal);
+			Contact contact = my(ContactSeals.class).contactGiven(new Seal(seal));
+			if (contact == null) return;
+			connectionFor(contact).handle(type, packet.getSocketAddress(), data);
+		}
 	}
 
 	private void keepAlive() {

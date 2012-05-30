@@ -61,20 +61,18 @@ class UdpByteConnection implements ByteConnection {
 			scheduler.previousPacketWasSent();
 	}
 	
-	void handle(DatagramPacket packet, int offset) {
-		SocketAddress sighting = packet.getSocketAddress();
-		my(SightingKeeper.class).keep(contact, sighting);
-
-		byte[] bytes = packet.getData();
-		byte[] payload = copyToEnd(bytes, offset + 1);
+	void handle(PacketType type, SocketAddress origin, ByteBuffer data) {
+		my(SightingKeeper.class).keep(contact, origin);
 		
-		if(bytes[offset] == Hail.ordinal()) {
-			long hailTimestamp = ByteBuffer.wrap(payload).getLong();
-			monitor.handleHail(sighting, hailTimestamp);
+		if(type == Hail) {
+			long hailTimestamp = data.getLong();
+			monitor.handleHail(origin, hailTimestamp);
 			return;
 		}
 		
 		if (receiver == null) return;
+		byte[] payload = new byte[data.remaining()];
+		data.get(payload);
 		receiver.consume(payload);
 	}
 

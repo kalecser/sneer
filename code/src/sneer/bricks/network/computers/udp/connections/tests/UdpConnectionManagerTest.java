@@ -158,11 +158,13 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SightingKeeper.class).keep(produceContact("Neide"), sighting);
 	}
 	
-	private DatagramPacket packetFrom(String nick, byte[] data, String ip, int port) throws Exception {
+	private DatagramPacket packetFrom(String nick, PacketType type, byte[] data, String ip, int port) throws Exception {
 		produceContact(nick);
-		
 		my(ContactSeals.class).put(nick, new Seal(fill(42)));
-		byte[] bytes = my(Lang.class).arrays().concat(fill(42), data);
+		
+		byte[] bytes = new byte[] { (byte)type.ordinal() };
+		bytes = my(Lang.class).arrays().concat(bytes, fill(42));
+		bytes = my(Lang.class).arrays().concat(bytes, data);
 		
 		DatagramPacket ret = new DatagramPacket(bytes, bytes.length);
 		ret.setAddress(InetAddress.getByName(ip));
@@ -202,14 +204,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 	private DatagramPacket packetFrom(String nick, PacketType type, byte[] payload) throws Exception {
 		return packetFrom(nick, type, payload, "200.201.202.203", 123);
-	}
-
-
-	private DatagramPacket packetFrom(String nick, PacketType type,
-			byte[] payload, String ip, int port) throws Exception {
-		byte[] typeByte = new byte[] { (byte)type.ordinal() };
-		byte[] bytes = my(Lang.class).arrays().concat(typeByte, payload);
-		return packetFrom(nick, bytes, ip, port);
 	}
 
 }
