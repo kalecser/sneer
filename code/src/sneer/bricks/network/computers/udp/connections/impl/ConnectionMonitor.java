@@ -12,24 +12,27 @@ import sneer.bricks.pulp.reactive.Signals;
 
 class ConnectionMonitor {
 
-	private SocketAddress lastPeerSighting = null;
+	private SocketAddress fastestPeerSighting = null;
 	private long lastPeerSightingTime = -UdpConnectionManager.IDLE_PERIOD;
 	private Register<Boolean> isConnected = my(Signals.class).newRegister(false);
-	private byte lastHailSequence = 0;
+	private long fastestHailDelay = 0;
 	
 	Signal<Boolean> isConnected() {
 		return isConnected.output();
 	}
 	
-	void handleHail(SocketAddress sighting, byte hailSequence) {
-		if(!isConnected().currentValue() || hailSequence > lastHailSequence) {
+	void handleHail(SocketAddress sighting, long timestamp) {
+		Long now = my(Clock.class).preciseTime();
+		long hailDelay = now - timestamp;
+		
+		if(!isConnected().currentValue() || hailDelay < fastestHailDelay) {
 			isConnected.setter().consume(true);
-			lastPeerSighting = sighting;
-			lastHailSequence = hailSequence;
+			fastestPeerSighting = sighting;
+			fastestHailDelay = hailDelay;
 		}
 		
-		if(sighting.equals(lastPeerSighting))
-			lastPeerSightingTime = my(Clock.class).time().currentValue();
+		if(sighting.equals(fastestPeerSighting))
+			lastPeerSightingTime = now;
 	}
 
 	void disconnectIfIdle() {
@@ -39,7 +42,7 @@ class ConnectionMonitor {
 	}
 
 	SocketAddress lastSighting() {
-		return lastPeerSighting;
+		return fastestPeerSighting;
 	}
 
 }

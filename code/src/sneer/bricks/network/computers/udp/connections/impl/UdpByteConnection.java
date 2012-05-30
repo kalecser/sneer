@@ -7,8 +7,10 @@ import static sneer.bricks.network.computers.udp.connections.UdpConnectionManage
 import java.net.DatagramPacket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
@@ -29,7 +31,6 @@ class UdpByteConnection implements ByteConnection {
 	private final UdpSender sender = my(UdpSender.class);
 	private final Contact contact;
 	private final ConnectionMonitor monitor = new ConnectionMonitor();
-	private byte hailSequence = 0;
 
 	@SuppressWarnings("unused") private final WeakContract refToAvoidGC;
 
@@ -65,14 +66,16 @@ class UdpByteConnection implements ByteConnection {
 		my(SightingKeeper.class).keep(contact, sighting);
 
 		byte[] bytes = packet.getData();
+		byte[] payload = copyToEnd(bytes, offset + 1);
 		
 		if(bytes[offset] == Hail.ordinal()) {
-			monitor.handleHail(sighting, bytes[offset + 1]);
+			long hailTimestamp = ByteBuffer.wrap(payload).getLong();
+			monitor.handleHail(sighting, hailTimestamp);
 			return;
 		}
 		
 		if (receiver == null) return;
-		receiver.consume(copyToEnd(bytes, offset + 1));
+		receiver.consume(payload);
 	}
 
 	private byte[] copyToEnd(byte[] data, int offset) {
@@ -113,9 +116,10 @@ class UdpByteConnection implements ByteConnection {
 	}
 	
 	private void hail(Iterable<SocketAddress> addrs) {
-		byte[] sequence = new byte[] { hailSequence++ };
+		long now = my(Clock.class).preciseTime();
+		byte[] hailBytes = ByteBuffer.allocate(8).putLong(now).array(); //Optimize: Reuse buffer
 		for (SocketAddress addr : addrs)
-			send(Hail, sequence, addr);
+			send(Hail, hailBytes, addr);
 	}
 
 }

@@ -4,6 +4,7 @@ import static basis.environments.Environments.my;
 import static org.junit.Assert.assertArrayEquals;
 
 import java.net.DatagramPacket;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import sneer.bricks.identity.seals.OwnSeal;
@@ -22,12 +23,16 @@ public final class LoggingSender implements UdpSender {
 	private Register<String> packetHistory = my(Signals.class).newRegister("");
 	private SetRegister<String> packetHistorySet = my(CollectionSignals.class).newSetRegister();
 
-	private String toString(byte[] payload) {
-		if (payload[0] == 0) 
-			return "hail " + payload[1];
-		if (payload[0] != 1)
+	private String toString(byte[] data) {
+		byte[] payload = copyToEnd(data, 1);
+		
+		if (data[0] == 0)			
+			return "hail " + ByteBuffer.wrap(payload).getLong();
+				
+		if (data[0] != 1)
 			throw new IllegalStateException("Unknown packet type");
-		return new String(copyToEnd(payload, 1));
+		
+		return new String(payload);
 	}
 
 	public Signal<String> history() {

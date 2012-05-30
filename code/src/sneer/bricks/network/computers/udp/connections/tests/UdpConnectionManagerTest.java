@@ -7,6 +7,7 @@ import static sneer.bricks.network.computers.udp.connections.UdpConnectionManage
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -99,7 +100,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	public void onSighting_ShouldHail() throws Exception {
 		subject.handle(packetFrom("Neide", Data, "Hello".getBytes()));
 		
-		my(SignalUtils.class).waitForValue(sender.history(), "| hail 1,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForValue(sender.history(), "| hail 0,to:200.201.202.203,port:123");
 	}
 	
 	@Test(timeout = 2000)
@@ -112,7 +113,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(Clock.class).advanceTime(UdpConnectionManager.IDLE_PERIOD);
 		my(SignalUtils.class).waitForValue(connection.isConnected(), false);
 		
-		subject.handle(packetFrom("Neide", Hail, new byte[] { 50 }, "100.101.102.103", 456));
+		subject.handle(packetFrom("Neide", Hail, asBytes(50), "100.101.102.103", 456));
 		my(SignalUtils.class).waitForValue(connection.isConnected(), true);
 		
 		PacketScheduler scheduler = new PacketSchedulerMock("foo");
@@ -134,19 +135,24 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		
 		my(Clock.class).advanceTime(1);
 		
-		my(SignalUtils.class).waitForValue(sender.history(), "| hail 0,to:200.201.202.203,port:123| hail 1,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| hail 10000,to:200.201.202.203,port:123");
 	}
 	
 	
 	@Test(timeout = 2000)
 	public void onSighting_ShouldUseFastestAddress() throws Exception {
-		subject.handle(packetFrom("Neide", Hail, new byte[] { 41 }, "200.201.202.203", 123));
-		subject.handle(packetFrom("Neide", Hail, new byte[] { 42 }, "192.168.10.10", 7777));
+		subject.handle(packetFrom("Neide", Hail, asBytes(41), "200.201.202.203", 123));
+		subject.handle(packetFrom("Neide", Hail, asBytes(42), "192.168.10.10", 7777));
 		
 		PacketScheduler scheduler = new PacketSchedulerMock("foo");
 		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
 		
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| foo,to:192.168.10.10,port:7777");
+	}
+
+
+	private byte[] asBytes(int value) {
+		return ByteBuffer.allocate(8).putLong(value).array();
 	}
 	
 	private void seeNeideIn(InetSocketAddress sighting) {
@@ -191,7 +197,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 	
 	private DatagramPacket hailPacketFrom(String nick) throws Exception {
-		return packetFrom(nick, Hail, new byte[] { 41 });
+		return packetFrom(nick, Hail, asBytes(41));
 	}
 
 

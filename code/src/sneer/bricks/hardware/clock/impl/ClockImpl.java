@@ -9,6 +9,8 @@ import sneer.bricks.pulp.reactive.Signals;
 
 class ClockImpl implements Clock {
 	
+	private static final boolean TEST_MODE = "true".equals(System.getProperty("sneer.testmode"));
+	
 	private final Register<Long> _currentTimeMillis = my(Signals.class).newRegister(0L);
 	final ExceptionHandler _exceptionHandler = my(ExceptionHandler.class);
 	
@@ -17,4 +19,5 @@ class ClockImpl implements Clock {
 	@Override public Signal<Long> time() { return _currentTimeMillis.output(); }
 	@Override synchronized public void advanceTime(long deltaMillis) { advanceTimeTo(currentTime() + deltaMillis); }
 	@Override synchronized public void advanceTimeTo(long absoluteTimeMillis) { _currentTimeMillis.setter().consume(absoluteTimeMillis); }
+	@Override public long preciseTime() { return TEST_MODE ? currentTime(): System.currentTimeMillis(); }
 }
