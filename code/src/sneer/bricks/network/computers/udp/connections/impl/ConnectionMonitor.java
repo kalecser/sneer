@@ -1,14 +1,17 @@
 package sneer.bricks.network.computers.udp.connections.impl;
 
 import static basis.environments.Environments.my;
+import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Hail;
 
 import java.net.SocketAddress;
+import java.nio.ByteBuffer;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.pulp.reactive.collections.SetSignal;
 
 class ConnectionMonitor {
 
@@ -16,7 +19,12 @@ class ConnectionMonitor {
 	private long lastPeerSightingTime = -UdpConnectionManager.IDLE_PERIOD;
 	private Register<Boolean> isConnected = my(Signals.class).newRegister(false);
 	private long fastestHailDelay = 0;
+	private final SetSignal<SocketAddress> sightings;
 	
+	public ConnectionMonitor(SetSignal<SocketAddress> sightings) {
+		this.sightings = sightings;
+	}
+
 	Signal<Boolean> isConnected() {
 		return isConnected.output();
 	}
@@ -34,8 +42,20 @@ class ConnectionMonitor {
 		if(sighting.equals(fastestPeerSighting))
 			lastPeerSightingTime = now;
 	}
+	
+	void keepAlive() {
+		hail();
+		disconnectIfIdle();
+	}
 
-	void disconnectIfIdle() {
+	private void hail() {
+		long now = my(Clock.class).preciseTime();
+		byte[] hailBytes = ByteBuffer.allocate(8).putLong(now).array(); //Optimize: Reuse buffer
+		for (SocketAddress addr : sightings)
+			UdpByteConnection.send(Hail, hailBytes, addr);
+	}
+	
+	private void disconnectIfIdle() {
 		long now = my(Clock.class).time().currentValue();
 		if (now - lastPeerSightingTime >= UdpConnectionManager.IDLE_PERIOD)
 			isConnected.setter().consume(false);
@@ -43,6 +63,6 @@ class ConnectionMonitor {
 
 	SocketAddress lastSighting() {
 		return fastestPeerSighting;
-	}
+	}	
 
 }

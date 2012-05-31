@@ -9,7 +9,6 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 
-import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
@@ -27,14 +26,14 @@ import basis.lang.Consumer;
 class UdpByteConnection implements ByteConnection {
 	
 	private Consumer<? super byte[]> receiver;
-	private final UdpSender sender = my(UdpSender.class);
 	private final Contact contact;
-	private final ConnectionMonitor monitor = new ConnectionMonitor();
+	private final ConnectionMonitor monitor;
 
 	@SuppressWarnings("unused") private final WeakContract refToAvoidGC;
 
 	UdpByteConnection(Contact contact) {
 		this.contact = contact;
+		this.monitor = new ConnectionMonitor(my(SightingKeeper.class).sightingsOf(contact));
 		refToAvoidGC = my(SightingKeeper.class).sightingsOf(contact).addPulseReceiver(new Closure() { @Override public void run() {
 			keepAlive();
 		}});
@@ -75,8 +74,9 @@ class UdpByteConnection implements ByteConnection {
 		receiver.consume(payload);
 	}
 
+	private static final UdpSender sender = my(UdpSender.class);
 
-	private boolean send(PacketType type, byte[] payload, SocketAddress peerAddress) {
+	static boolean send(PacketType type, byte[] payload, SocketAddress peerAddress) {
 		byte[] ownSeal = ownSealBytes();
 		byte[] typeByte = new byte[] { (byte)type.ordinal() };
 		
@@ -105,15 +105,7 @@ class UdpByteConnection implements ByteConnection {
 	}
 	
 	void keepAlive() {
-		hail(my(SightingKeeper.class).sightingsOf(contact));
-		monitor.disconnectIfIdle();
+		monitor.keepAlive();
 	}
 	
-	private void hail(Iterable<SocketAddress> addrs) {
-		long now = my(Clock.class).preciseTime();
-		byte[] hailBytes = ByteBuffer.allocate(8).putLong(now).array(); //Optimize: Reuse buffer
-		for (SocketAddress addr : addrs)
-			send(Hail, hailBytes, addr);
-	}
-
 }
