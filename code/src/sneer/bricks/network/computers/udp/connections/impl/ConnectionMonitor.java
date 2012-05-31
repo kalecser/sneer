@@ -2,6 +2,7 @@ package sneer.bricks.network.computers.udp.connections.impl;
 
 import static basis.environments.Environments.my;
 import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Hail;
+import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.send;
 
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
@@ -16,7 +17,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import basis.lang.Closure;
 
-class ConnectionMonitor {
+public class ConnectionMonitor {
 
 	private SocketAddress fastestPeerSighting = null;
 	private long lastPeerSightingTime = -UdpConnectionManager.IDLE_PERIOD;
@@ -73,7 +74,7 @@ class ConnectionMonitor {
 		long now = my(Clock.class).preciseTime();
 		byte[] hailBytes = ByteBuffer.allocate(8).putLong(now).array(); //Optimize: Reuse buffer
 		for (SocketAddress addr : sightings)
-			UdpByteConnection.send(Hail, hailBytes, addr);
+			send(Hail, hailBytes, addr);
 	}
 	
 	private void disconnectIfIdle() {

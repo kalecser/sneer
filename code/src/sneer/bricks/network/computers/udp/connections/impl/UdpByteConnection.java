@@ -3,19 +3,14 @@ package sneer.bricks.network.computers.udp.connections.impl;
 import static basis.environments.Environments.my;
 import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Data;
 import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Hail;
+import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.send;
 
-import java.net.DatagramPacket;
 import java.net.SocketAddress;
-import java.net.SocketException;
 import java.nio.ByteBuffer;
 
-import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
-import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType;
-import sneer.bricks.network.computers.udp.sender.UdpSender;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Signal;
@@ -66,36 +61,6 @@ class UdpByteConnection implements ByteConnection {
 		byte[] payload = new byte[data.remaining()];
 		data.get(payload);
 		receiver.consume(payload);
-	}
-
-	private static final UdpSender sender = my(UdpSender.class);
-
-	static boolean send(PacketType type, byte[] payload, SocketAddress peerAddress) {
-		byte[] ownSeal = ownSealBytes();
-		byte[] typeByte = new byte[] { (byte)type.ordinal() };
-		
-		byte[] data = my(Lang.class).arrays().concat(ownSeal, typeByte);
-		data = my(Lang.class).arrays().concat(data, payload); //Optimize: Reuse array.
-		
-		DatagramPacket packet = packetFor(data, peerAddress);
-		if(packet == null) return false;
-		
-		sender.send(packet);
-		return true;
-	}
-
-	private static DatagramPacket packetFor(byte[] data, SocketAddress peerAddress) {
-		if (peerAddress == null) return null;
-		try {
-			return new DatagramPacket(data, data.length, peerAddress); //Optimize: reuse DatagramPacket
-		} catch (SocketException e) {
-			my(ExceptionLogger.class).log(e);
-			return null;
-		}
-	}
-	
-	private static byte[] ownSealBytes() {
-		return my(OwnSeal.class).get().currentValue().bytes.copy();
 	}
 	
 }

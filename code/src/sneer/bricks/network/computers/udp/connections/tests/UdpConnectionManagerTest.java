@@ -101,15 +101,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| hail 0,to:192.168.1.100,port:7777");
 	}
 	
-	
-	@Test (timeout=2000)
-	public void onSighting_ShouldHail() throws Exception {
-		subject.handle(packetFrom("Neide", Data, "Hello".getBytes()));
-		
-		my(SignalUtils.class).waitForValue(sender.history(), "| hail 0,to:200.201.202.203,port:123");
-	}
-	
-	
+
 	@Test (timeout=2000)
 	public void onStunPacketReceived_ShouldDelegateToStunClient() throws Exception {
 		final Latch latch = new Latch();
