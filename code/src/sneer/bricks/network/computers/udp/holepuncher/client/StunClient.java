@@ -3,8 +3,6 @@ package sneer.bricks.network.computers.udp.holepuncher.client;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 
-import org.hamcrest.Matcher;
-
 import basis.brickness.Brick;
 import basis.lang.Consumer;
 

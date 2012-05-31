@@ -5,6 +5,7 @@ import static basis.environments.Environments.my;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.Iterator;
 
 import sneer.bricks.identity.seals.OwnSeal;
@@ -43,5 +44,10 @@ class StunClientImpl implements StunClient {
 
 	private byte[] ownSeal() {
 		return my(OwnSeal.class).get().currentValue().bytes.copy();
+	}
+
+	@Override
+	public void handle(ByteBuffer stunPacket) {
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
 }
