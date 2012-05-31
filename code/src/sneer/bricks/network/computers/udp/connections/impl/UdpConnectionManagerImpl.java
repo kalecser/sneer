@@ -5,7 +5,6 @@ import static basis.environments.Environments.my;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 
-import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -20,13 +19,7 @@ import basis.lang.Functor;
 
 class UdpConnectionManagerImpl implements UdpConnectionManager{
 
-	private static final UdpByteConnection[] EMPTY_ARRAY = new UdpByteConnection[0];
-	
 	CacheMap<Contact, UdpByteConnection> connectionsByContact = CacheMap.newInstance();
-	
-	@SuppressWarnings("unused") private final WeakContract refToAvoidGC = my(Timer.class).wakeUpEvery(UdpConnectionManager.KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
-		keepAlive();
-	}});
 	
 	private final Functor<Contact, UdpByteConnection> newByteConnection = new Functor<Contact, UdpByteConnection>( ) {  @Override public UdpByteConnection evaluate(Contact contact) {
 		return new UdpByteConnection(contact);
@@ -72,11 +65,6 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 			if (contact == null) return;
 			connectionFor(contact).handle(type, packet.getSocketAddress(), data);
 		}
-	}
-
-	private void keepAlive() {
-		for (UdpByteConnection connection : connectionsByContact.values().toArray(EMPTY_ARRAY))
-			connection.keepAlive();
 	}
 
 }

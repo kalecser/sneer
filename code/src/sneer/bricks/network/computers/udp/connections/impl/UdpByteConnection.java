@@ -10,7 +10,6 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 
 import sneer.bricks.hardware.cpu.lang.Lang;
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.identity.seals.OwnSeal;
@@ -29,14 +28,9 @@ class UdpByteConnection implements ByteConnection {
 	private final Contact contact;
 	private final ConnectionMonitor monitor;
 
-	@SuppressWarnings("unused") private final WeakContract refToAvoidGC;
-
 	UdpByteConnection(Contact contact) {
 		this.contact = contact;
 		this.monitor = new ConnectionMonitor(my(SightingKeeper.class).sightingsOf(contact));
-		refToAvoidGC = my(SightingKeeper.class).sightingsOf(contact).addPulseReceiver(new Closure() { @Override public void run() {
-			keepAlive();
-		}});
 	}
 
 	@Override
@@ -102,10 +96,6 @@ class UdpByteConnection implements ByteConnection {
 	
 	private static byte[] ownSealBytes() {
 		return my(OwnSeal.class).get().currentValue().bytes.copy();
-	}
-	
-	void keepAlive() {
-		monitor.keepAlive();
 	}
 	
 }

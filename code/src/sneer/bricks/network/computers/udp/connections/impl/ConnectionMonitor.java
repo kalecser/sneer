@@ -7,11 +7,14 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
 import sneer.bricks.hardware.clock.Clock;
+import sneer.bricks.hardware.clock.timer.Timer;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
+import basis.lang.Closure;
 
 class ConnectionMonitor {
 
@@ -21,13 +24,21 @@ class ConnectionMonitor {
 	private long fastestHailDelay = 0;
 	private final SetSignal<SocketAddress> sightings;
 	
+	@SuppressWarnings("unused") private WeakContract refToAvoidGC;	
+	@SuppressWarnings("unused")	private WeakContract refToAvoidGC2;
+	
 	public ConnectionMonitor(SetSignal<SocketAddress> sightings) {
 		this.sightings = sightings;
+		startHailing();
 	}
 
 	Signal<Boolean> isConnected() {
 		return isConnected.output();
 	}
+	
+	SocketAddress lastSighting() {
+		return fastestPeerSighting;
+	}	
 	
 	void handleHail(SocketAddress sighting, long timestamp) {
 		Long now = my(Clock.class).preciseTime();
@@ -43,7 +54,17 @@ class ConnectionMonitor {
 			lastPeerSightingTime = now;
 	}
 	
-	void keepAlive() {
+	private void startHailing() {
+		refToAvoidGC = my(Timer.class).wakeUpEvery(UdpConnectionManager.KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
+			keepAlive();
+		}});
+		
+		refToAvoidGC2 = sightings.addPulseReceiver(new Closure() { @Override public void run() {
+			keepAlive();
+		}});
+	}
+	
+	private void keepAlive() {
 		hail();
 		disconnectIfIdle();
 	}
@@ -60,9 +81,5 @@ class ConnectionMonitor {
 		if (now - lastPeerSightingTime >= UdpConnectionManager.IDLE_PERIOD)
 			isConnected.setter().consume(false);
 	}
-
-	SocketAddress lastSighting() {
-		return fastestPeerSighting;
-	}	
 
 }
