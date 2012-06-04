@@ -51,6 +51,13 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		//Forget old sightings
 	
 
+	@Test (timeout=2000)
+	public void onSighting_ShouldHail() throws Exception {
+		subject.handle(packetFrom("Neide", Data, "Hello".getBytes()));
+		
+		my(SignalUtils.class).waitForValue(sender.history(), "| hail 0,to:200.201.202.203,port:123");
+	}
+	
 	@Test(timeout=2000)
 	public void onFirstPacket_ShouldConnect() throws Exception {
 		assertFalse(isConnected("Neide"));
