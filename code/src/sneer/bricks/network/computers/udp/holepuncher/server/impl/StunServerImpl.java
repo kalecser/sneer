@@ -1,11 +1,16 @@
 package sneer.bricks.network.computers.udp.holepuncher.server.impl;
 
+import static basis.environments.Environments.my;
+
 import java.net.DatagramPacket;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import sneer.bricks.network.computers.udp.UdpNetwork;
+import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
+import sneer.bricks.network.computers.udp.holepuncher.protocol.StunReply;
+import sneer.bricks.network.computers.udp.holepuncher.protocol.StunRequest;
 import sneer.bricks.network.computers.udp.holepuncher.server.StunServer;
 
 
@@ -18,7 +23,7 @@ class StunServerImpl implements StunServer {
 
 	@Override
 	public DatagramPacket[] repliesFor(DatagramPacket packet) {
-		StunRequest req = StunRequest.umarshalFrom(packet.getData(), packet.getLength());
+		StunRequest req = my(StunProtocol.class).unmarshalRequest(packet.getData(), packet.getLength());
 		if (req == null) return NO_PACKETS;
 		
 		keepCallerAddresses(packet, req);
@@ -38,7 +43,7 @@ class StunServerImpl implements StunServer {
 
 
 	private void marshal(StunReply reply, DatagramPacket packet) {
-		int length = reply.marshalTo(packet.getData());
+		int length = my(StunProtocol.class).marshalReplyTo(reply, packet.getData());
 		packet.setLength(length);
 	}
 

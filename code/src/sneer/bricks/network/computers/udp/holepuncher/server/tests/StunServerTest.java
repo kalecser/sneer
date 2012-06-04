@@ -3,7 +3,6 @@ package sneer.bricks.network.computers.udp.holepuncher.server.tests;
 import static basis.environments.Environments.my;
 import static sneer.bricks.network.computers.udp.UdpNetwork.MAX_PACKET_PAYLOAD_SIZE;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -11,9 +10,10 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
+import sneer.bricks.network.computers.udp.holepuncher.protocol.StunReply;
+import sneer.bricks.network.computers.udp.holepuncher.protocol.StunRequest;
 import sneer.bricks.network.computers.udp.holepuncher.server.StunServer;
-import sneer.bricks.network.computers.udp.holepuncher.server.impl.StunReply;
-import sneer.bricks.network.computers.udp.holepuncher.server.impl.StunRequest;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
 
@@ -50,14 +50,15 @@ public class StunServerTest extends BrickTestBase {
 	}
 
 
-	private StunReply unmarshalReply(DatagramPacket packet) throws IOException {
-		return StunReply.unmarshalFrom(packet.getData(), packet.getLength());
+	private StunReply unmarshalReply(DatagramPacket packet) {
+		return my(StunProtocol.class).unmarshalReply(packet.getData(), packet.getLength());
 	}
 
 
 	private DatagramPacket[] subjectsRepliesFor(byte[] ownSeal, InetAddress ip, int port, InetAddress localIp, int localPort, byte[] peerToFind) {
+		StunRequest request = new StunRequest(ownSeal, localIp, localPort, peerToFind);
 		byte[] buf = newBuf();
-		int length = new StunRequest(ownSeal, localIp, localPort, peerToFind).marshalTo(buf);
+		int length = my(StunProtocol.class).marshalRequestTo(request, buf);
 		return subjectsReplyFor(new DatagramPacket(buf, length, ip, port));
 	}
 

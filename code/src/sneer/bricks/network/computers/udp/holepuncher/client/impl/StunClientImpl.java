@@ -12,7 +12,8 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.network.computers.addresses.own.OwnIps;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
-import sneer.bricks.network.computers.udp.holepuncher.server.impl.StunRequest;
+import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
+import sneer.bricks.network.computers.udp.holepuncher.protocol.StunRequest;
 import sneer.bricks.network.social.attributes.Attributes;
 import basis.lang.Consumer;
 
@@ -22,7 +23,7 @@ class StunClientImpl implements StunClient {
 	public void initSender(Consumer<DatagramPacket> sender) {
 		StunRequest request = new StunRequest(ownSeal(), ownIp(), ownPort(), null);
 		byte[] requestBytes = new byte[1024];
-		int requestLength = request.marshalTo(requestBytes);
+		int requestLength = my(StunProtocol.class).marshalRequestTo(request, requestBytes);
 		DatagramPacket packet = new DatagramPacket(requestBytes, requestLength);
 		try {
 			packet.setAddress(InetAddress.getByName("dynamic.sneer.me"));

@@ -1,10 +1,10 @@
-package sneer.bricks.network.computers.udp.holepuncher.server.impl;
+package sneer.bricks.network.computers.udp.holepuncher.protocol.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 
 
 public class DataUtils {
@@ -14,11 +14,10 @@ public class DataUtils {
 		return new DataInputStream(ret);
 	}
 
-	public static byte[] readNewArray(DataInputStream in, int length) throws IOException {
+	static byte[] readNextArray(ByteBuffer in, int length) {
+		if (!in.hasRemaining()) return null;
 		byte[] ret = new byte[length];
-		int count = in.read(ret);
-		if (count == -1) return null;
-		if (count != length) throw new IOException("Trying to read "+length+" bytes but only "+count+" were available.");
+		in.get(ret);
 		return ret;
 	}
 

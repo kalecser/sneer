@@ -14,7 +14,8 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.network.computers.addresses.own.OwnIps;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
-import sneer.bricks.network.computers.udp.holepuncher.server.impl.StunRequest;
+import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
+import sneer.bricks.network.computers.udp.holepuncher.protocol.StunRequest;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
@@ -47,7 +48,7 @@ public class StunClientTest extends BrickTestBase {
 					.getAddress()
 					.getHostName());
 			assertEquals(7777, packet.getPort());
-			StunRequest request = StunRequest.umarshalFrom(packet.getData(), packet.getLength());
+			StunRequest request = my(StunProtocol.class).unmarshalRequest(packet.getData(), packet.getLength());
 			assertArrayEquals(ownSeal(),request._ownSeal);
 			assertEquals("10.42.10.1", request._localIp.getHostAddress());
 			assertEquals(1234, request._localPort);
