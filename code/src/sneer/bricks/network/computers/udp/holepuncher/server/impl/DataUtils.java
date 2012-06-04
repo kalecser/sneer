@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.udp.holepuncher.impl;
+package sneer.bricks.network.computers.udp.holepuncher.server.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;

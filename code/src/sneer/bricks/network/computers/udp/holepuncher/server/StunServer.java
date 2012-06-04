@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.udp.holepuncher;
+package sneer.bricks.network.computers.udp.holepuncher.server;
 
 import java.net.DatagramPacket;
 

@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.udp.holepuncher.impl;
+package sneer.bricks.network.computers.udp.holepuncher.server.impl;
 
 import java.net.DatagramPacket;
 import java.util.Arrays;
@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import sneer.bricks.network.computers.udp.UdpNetwork;
-import sneer.bricks.network.computers.udp.holepuncher.StunServer;
+import sneer.bricks.network.computers.udp.holepuncher.server.StunServer;
 
 
 class StunServerImpl implements StunServer {

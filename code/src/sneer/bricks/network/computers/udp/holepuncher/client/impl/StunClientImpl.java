@@ -12,14 +12,14 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.network.computers.addresses.own.OwnIps;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
-import sneer.bricks.network.computers.udp.holepuncher.impl.StunRequest;
+import sneer.bricks.network.computers.udp.holepuncher.server.impl.StunRequest;
 import sneer.bricks.network.social.attributes.Attributes;
 import basis.lang.Consumer;
 
 class StunClientImpl implements StunClient {
 
 	@Override
-	public void init(Consumer<DatagramPacket> sender) {
+	public void initSender(Consumer<DatagramPacket> sender) {
 		StunRequest request = new StunRequest(ownSeal(), ownIp(), ownPort(), null);
 		byte[] requestBytes = new byte[1024];
 		int requestLength = request.marshalTo(requestBytes);

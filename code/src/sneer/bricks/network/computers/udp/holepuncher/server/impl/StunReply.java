@@ -1,13 +1,13 @@
-package sneer.bricks.network.computers.udp.holepuncher.impl;
+package sneer.bricks.network.computers.udp.holepuncher.server.impl;
 
-import static sneer.bricks.network.computers.udp.holepuncher.impl.DataUtils.dataInputFrom;
-import static sneer.bricks.network.computers.udp.holepuncher.impl.DataUtils.ip;
-import static sneer.bricks.network.computers.udp.holepuncher.impl.DataUtils.readNewArray;
+import static sneer.bricks.network.computers.udp.holepuncher.server.impl.DataUtils.dataInputFrom;
+import static sneer.bricks.network.computers.udp.holepuncher.server.impl.DataUtils.ip;
+import static sneer.bricks.network.computers.udp.holepuncher.server.impl.DataUtils.readNewArray;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.nio.ByteBuffer;
 
 
 public class StunReply {
@@ -43,25 +43,15 @@ public class StunReply {
 	
 	
 	public int marshalTo(byte[] buf) {
-		try {
-			return tryToMarshalTo(buf);
-		} catch (IOException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-
-
-	private int tryToMarshalTo(byte[] buf) throws IOException {
-		ByteArrayOutputStream data = new ByteArrayOutputStream(buf);
-		DataOutputStream out = new DataOutputStream(data);
-
-		out.write(peerSeal);
-		out.write(peerIp.getAddress());
-		out.writeShort(peerPort);
-		out.write(peerLocalIp.getAddress());
-		out.writeShort(peerLocalPort);
+		ByteBuffer data = ByteBuffer.wrap(buf);
 		
-		return data.bytesWritten();
+		data.put(peerSeal);
+		data.put(peerIp.getAddress());
+		data.putChar((char)peerPort);
+		data.put(peerLocalIp.getAddress());
+		data.putChar((char)peerLocalPort);
+		
+		return data.position();
 	}
 
 }

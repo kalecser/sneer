@@ -14,7 +14,7 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.network.computers.addresses.own.OwnIps;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
-import sneer.bricks.network.computers.udp.holepuncher.impl.StunRequest;
+import sneer.bricks.network.computers.udp.holepuncher.server.impl.StunRequest;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
@@ -39,10 +39,10 @@ public class StunClientTest extends BrickTestBase {
 	@Test(timeout = 2000)
 	public void stunRequest() throws Exception {
 		mockOwnIp("10.42.10.1");
-		setPort(1234);
+		setOwnPort(1234);
 		
 		final Latch latch = new Latch();
-		subject.init(new Consumer<DatagramPacket>() {  @Override public void consume(DatagramPacket packet) {
+		subject.initSender(new Consumer<DatagramPacket>() {  @Override public void consume(DatagramPacket packet) {
 			assertEquals("dynamic.sneer.me", packet
 					.getAddress()
 					.getHostName());
@@ -55,9 +55,9 @@ public class StunClientTest extends BrickTestBase {
 			latch.open();
 		}});
 		latch.waitTillOpen();
-		
 	}
 
+	
 	private void mockOwnIp(String ip) throws UnknownHostException {
 		final SetRegister<Object> ownIp = my(CollectionSignals.class).newSetRegister();
 		ownIp.add(InetAddress.getByName(ip));
@@ -66,7 +66,7 @@ public class StunClientTest extends BrickTestBase {
 		}});
 	}
 
-	private void setPort(int value) {
+	private void setOwnPort(int value) {
 		my(Attributes.class).myAttributeSetter(OwnPort.class).consume(value);
 	}
 	

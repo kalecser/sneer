@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.udp.holepuncher.tests;
+package sneer.bricks.network.computers.udp.holepuncher.server.tests;
 
 import static basis.environments.Environments.my;
 import static sneer.bricks.network.computers.udp.UdpNetwork.MAX_PACKET_PAYLOAD_SIZE;
@@ -11,9 +11,9 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import sneer.bricks.network.computers.udp.holepuncher.StunServer;
-import sneer.bricks.network.computers.udp.holepuncher.impl.StunReply;
-import sneer.bricks.network.computers.udp.holepuncher.impl.StunRequest;
+import sneer.bricks.network.computers.udp.holepuncher.server.StunServer;
+import sneer.bricks.network.computers.udp.holepuncher.server.impl.StunReply;
+import sneer.bricks.network.computers.udp.holepuncher.server.impl.StunRequest;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
 

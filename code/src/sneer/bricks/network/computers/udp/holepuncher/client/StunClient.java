@@ -9,7 +9,7 @@ import basis.lang.Consumer;
 @Brick
 public interface StunClient {
 
-	void init(Consumer<DatagramPacket> sender);
+	void initSender(Consumer<DatagramPacket> sender);
 
 	void handle(ByteBuffer stunPacket);
 
