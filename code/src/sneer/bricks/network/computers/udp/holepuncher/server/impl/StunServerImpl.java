@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import basis.lang.exceptions.NotImplementedYet;
+
 import sneer.bricks.network.computers.udp.UdpNetwork;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunReply;
@@ -49,9 +51,10 @@ class StunServerImpl implements StunServer {
 
 
 	private void keepCallerAddresses(DatagramPacket packet, StunRequest req) {
-		String caller = toString(req._ownSeal);
-		IpAddresses addresses = new IpAddresses(packet.getAddress(), packet.getPort(), req._localIp, req._localPort);
-		addressesBySeal.put(caller, addresses);
+		//String caller = toString(req._ownSeal);
+		//IpAddresses addresses = new IpAddresses(packet.getAddress(), packet.getPort(), req._localAddressData, req._localPort);
+		//addressesBySeal.put(caller, addresses);
+		throw new NotImplementedYet();
 	}
 
 	

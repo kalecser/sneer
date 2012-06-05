@@ -10,6 +10,8 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import basis.lang.exceptions.NotImplementedYet;
+
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunReply;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunRequest;
@@ -56,10 +58,11 @@ public class StunServerTest extends BrickTestBase {
 
 
 	private DatagramPacket[] subjectsRepliesFor(byte[] ownSeal, InetAddress ip, int port, InetAddress localIp, int localPort, byte[] peerToFind) {
-		StunRequest request = new StunRequest(ownSeal, localIp, localPort, peerToFind);
-		byte[] buf = newBuf();
-		int length = my(StunProtocol.class).marshalRequestTo(request, buf);
-		return subjectsReplyFor(new DatagramPacket(buf, length, ip, port));
+//		StunRequest request = new StunRequest(ownSeal, localIp, localPort, peerToFind);
+//		byte[] buf = newBuf();
+//		int length = my(StunProtocol.class).marshalRequestTo(request, buf);
+//		return subjectsReplyFor(new DatagramPacket(buf, length, ip, port));
+		throw new NotImplementedYet();
 	}
 
 	

@@ -15,8 +15,9 @@ public interface SetRegister<T> extends CollectionRegister<T> {
 	SetSignal<T> output();
 
 	void add(T elementAdded);
-	void addAll(Collection<T> elements);
-	void remove(T elementRemoved);
+	void addAll(Collection<? extends T> elements);
+	<U extends T> void addAll(U[] elements);
+	<U extends T> void remove(U elementRemoved);
 
 	void change(CollectionChange<T> change);
 

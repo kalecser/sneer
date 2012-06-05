@@ -15,7 +15,7 @@ import sneer.bricks.network.computers.udp.sender.UdpSender;
 class UdpByteConnectionUtils {
 	
 	private static final UdpSender sender = my(UdpSender.class);
-
+	
 	static boolean send(PacketType type, byte[] payload, SocketAddress peerAddress) {
 		byte[] ownSeal = ownSealBytes();
 		byte[] typeByte = new byte[] { (byte)type.ordinal() };

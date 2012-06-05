@@ -17,7 +17,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import basis.lang.Closure;
 
-public class ConnectionMonitor {
+class ConnectionMonitor {
 
 	private SocketAddress fastestPeerSighting = null;
 	private long lastPeerSightingTime = -UdpConnectionManager.IDLE_PERIOD;
@@ -28,7 +28,7 @@ public class ConnectionMonitor {
 	@SuppressWarnings("unused") private WeakContract refToAvoidGC;	
 	@SuppressWarnings("unused")	private WeakContract refToAvoidGC2;
 	
-	public ConnectionMonitor(SetSignal<SocketAddress> sightings) {
+	ConnectionMonitor(SetSignal<SocketAddress> sightings) {
 		this.sightings = sightings;
 		startHailing();
 	}

@@ -1,24 +1,17 @@
 package sneer.bricks.network.computers.udp.holepuncher.protocol;
 
-import java.net.InetAddress;
-
 import basis.lang.Immutable;
-
-
 
 public class StunRequest extends Immutable {
 
 	public final byte[] _ownSeal;
 	public final byte[] _peerToFind;
-	public final InetAddress _localIp;
-	public final int _localPort;
-
+	public final byte[] _localAddressData;
 	
-	public StunRequest(byte[] seal, InetAddress localIp, int localPort, byte[] peerToFind) {
+	public StunRequest(byte[] seal, byte[] peerToFind, byte[] localAddressData) {
 		_ownSeal = seal;
-		_localIp = localIp;
-		_localPort = localPort;
 		_peerToFind = peerToFind;
+		_localAddressData = localAddressData;
 	}
 
 }

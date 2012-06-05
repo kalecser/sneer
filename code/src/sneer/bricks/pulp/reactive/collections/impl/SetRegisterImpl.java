@@ -6,6 +6,7 @@ package sneer.bricks.pulp.reactive.collections.impl;
 
 import static basis.environments.Environments.my;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -89,7 +90,7 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 	}
 
 	@Override
-	public void remove(T elementRemoved) {
+	public <U extends T> void remove(U elementRemoved) {
 		change(new CollectionChangeImpl<T>(null, elementRemoved));
 	}
 
@@ -121,8 +122,13 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 	}
 
 	@Override
-	public void addAll(Collection<T> elements) {
+	public void addAll(Collection<? extends T> elements) {
 		change(new CollectionChangeImpl<T>(elements, null));
+	}
+
+	@Override
+	public <U extends T> void addAll(U[] elements) {
+		addAll(Arrays.asList(elements));
 	}
 
 }

@@ -6,7 +6,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.util.Iterator;
+import java.util.Collection;
 
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.network.computers.addresses.own.OwnIps;
@@ -21,7 +21,7 @@ class StunClientImpl implements StunClient {
 
 	@Override
 	public void initSender(Consumer<DatagramPacket> sender) {
-		StunRequest request = new StunRequest(ownSeal(), ownIp(), ownPort(), null);
+		StunRequest request = new StunRequest(ownSeal(), null, localAddressesData());
 		byte[] requestBytes = new byte[1024];
 		int requestLength = my(StunProtocol.class).marshalRequestTo(request, requestBytes);
 		DatagramPacket packet = new DatagramPacket(requestBytes, requestLength);
@@ -38,9 +38,17 @@ class StunClientImpl implements StunClient {
 		return my(Attributes.class).myAttributeValue(OwnPort.class).currentValue();
 	}
 
-	private InetAddress ownIp() {
-		Iterator<InetAddress> it = my(OwnIps.class).get().currentElements().iterator();
-		return it.hasNext() ? it.next() : null;
+	private byte[] localAddressesData() {
+		Collection<InetAddress> ownIps = my(OwnIps.class).get().currentElements();
+		ByteBuffer buf = ByteBuffer.allocate(2 + 1 + (ownIps.size() * 4)); //Port + Length + ips * 4
+		
+		buf.putChar((char) ownPort());
+		buf.put((byte) ownIps.size());
+		
+		for (InetAddress inetAddress : ownIps)
+			buf.put(inetAddress.getAddress());
+		
+		return buf.array();
 	}
 
 	private byte[] ownSeal() {

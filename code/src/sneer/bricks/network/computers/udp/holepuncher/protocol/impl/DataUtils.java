@@ -14,7 +14,7 @@ public class DataUtils {
 		return new DataInputStream(ret);
 	}
 
-	static byte[] readNextArray(ByteBuffer in, int length) {
+	static byte[] getNextArray(ByteBuffer in, int length) {
 		if (!in.hasRemaining()) return null;
 		byte[] ret = new byte[length];
 		in.get(ret);
