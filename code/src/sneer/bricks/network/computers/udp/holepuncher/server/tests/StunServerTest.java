@@ -10,8 +10,6 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import basis.lang.exceptions.NotImplementedYet;
-
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunReply;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunRequest;
@@ -29,26 +27,24 @@ public class StunServerTest extends BrickTestBase {
 	@Test
 	public void stun() throws Exception {
 		byte[] seal1 = seal(1);
-		assertEquals(0, subjectsRepliesFor(seal1, ip("200.243.227.1"), 4111, ip("10.42.10.1"), 1001, null).length);
+		assertEquals(0, subjectsRepliesFor(seal1, ip("200.243.227.1"), 4111, null, "local data 1".getBytes()).length);
 		
 		byte[] seal2 = seal(2);
 		byte[] peerToFind = seal1;
-		DatagramPacket[] replies = subjectsRepliesFor(seal2, ip("205.65.114.2"), 4222, ip("10.42.10.2"), 1002, peerToFind);
+		DatagramPacket[] replies = subjectsRepliesFor(seal2, ip("205.65.114.2"), 4222, peerToFind, "local data 2".getBytes());
 		
-		StunReply replyToMe = unmarshalReply(replies[0]);
-		StunReply replyToPeer = unmarshalReply(replies[1]);
+		StunReply replyTo2 = unmarshalReply(replies[0]);
+		StunReply replyTo1 = unmarshalReply(replies[1]);
 		
-		assertArrayEquals(seal1, replyToMe.peerSeal);
-		assertEquals(ip("200.243.227.1"), replyToMe.peerIp);
-		assertEquals(4111, replyToMe.peerPort);
-		assertEquals(ip("10.42.10.1"), replyToMe.peerLocalIp);
-		assertEquals(1001, replyToMe.peerLocalPort);
+		assertArrayEquals(seal1, replyTo2.peerSeal);
+		assertEquals(ip("200.243.227.1"), replyTo2.peerIp);
+		assertEquals(4111, replyTo2.peerPort);
+		assertEquals("local data 1", new String(replyTo2.peerLocalAddressData));
 		
-		assertArrayEquals(seal2, replyToPeer.peerSeal);
-		assertEquals(ip("205.65.114.2"), replyToPeer.peerIp);
-		assertEquals(4222, replyToPeer.peerPort);
-		assertEquals(ip("10.42.10.2"), replyToPeer.peerLocalIp);
-		assertEquals(1002, replyToPeer.peerLocalPort);		
+		assertArrayEquals(seal2, replyTo1.peerSeal);
+		assertEquals(ip("205.65.114.2"), replyTo1.peerIp);
+		assertEquals(4222, replyTo1.peerPort);
+		assertEquals("local data 2", new String(replyTo1.peerLocalAddressData));				
 	}
 
 
@@ -57,12 +53,14 @@ public class StunServerTest extends BrickTestBase {
 	}
 
 
-	private DatagramPacket[] subjectsRepliesFor(byte[] ownSeal, InetAddress ip, int port, InetAddress localIp, int localPort, byte[] peerToFind) {
-//		StunRequest request = new StunRequest(ownSeal, localIp, localPort, peerToFind);
-//		byte[] buf = newBuf();
-//		int length = my(StunProtocol.class).marshalRequestTo(request, buf);
-//		return subjectsReplyFor(new DatagramPacket(buf, length, ip, port));
-		throw new NotImplementedYet();
+	private DatagramPacket[] subjectsRepliesFor(byte[] ownSeal, InetAddress ip, int port, byte[] peerToFind, byte[] localAddressData) {
+		byte[][] peerSealsToFind = peerToFind == null 
+			? new byte[][]{} 
+			: new byte[][]{peerToFind};
+		StunRequest request = new StunRequest(ownSeal, peerSealsToFind, localAddressData);
+		byte[] buf = newBuf();
+		int length = my(StunProtocol.class).marshalRequestTo(request, buf);
+		return subjectsReplyFor(new DatagramPacket(buf, length, ip, port));		
 	}
 
 	

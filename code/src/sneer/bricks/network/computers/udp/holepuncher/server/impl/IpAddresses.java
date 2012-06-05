@@ -7,15 +7,13 @@ public class IpAddresses {
 
 	public final InetAddress publicInternetAddress;
 	public final int publicInternetPort;
-	public final InetAddress localNetworkAddress;
-	public final int localNetworkPort;
+	public byte[] localAddressData;
 
 
-	public IpAddresses(InetAddress publicInternetAddr, int publicInternetPort_, InetAddress localNetworkAddr, int localNetworkPort_) {
-		this.publicInternetAddress = publicInternetAddr;
-		this.publicInternetPort = publicInternetPort_;
-		this.localNetworkAddress = localNetworkAddr;
-		this.localNetworkPort = localNetworkPort_;
+	public IpAddresses(InetAddress publicInternetAddr_, int publicInternetPort_, byte[] localAddressData_) {
+		publicInternetAddress = publicInternetAddr_;
+		publicInternetPort = publicInternetPort_;
+		localAddressData = localAddressData_;		
 	}
 
 }

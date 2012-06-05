@@ -4,7 +4,6 @@ import static basis.environments.Environments.my;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 
@@ -14,6 +13,7 @@ import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunRequest;
+import sneer.bricks.network.computers.udp.holepuncher.server.StunServer;
 import sneer.bricks.network.social.attributes.Attributes;
 import basis.lang.Consumer;
 
@@ -21,15 +21,15 @@ class StunClientImpl implements StunClient {
 
 	@Override
 	public void initSender(Consumer<DatagramPacket> sender) {
-		StunRequest request = new StunRequest(ownSeal(), null, localAddressesData());
+		InetAddress serverAddress = my(StunServer.class).inetAddress();
+		if (serverAddress == null) return;
+		
+		StunRequest request = new StunRequest(ownSeal(), new byte[][]{}, localAddressesData());
 		byte[] requestBytes = new byte[1024];
 		int requestLength = my(StunProtocol.class).marshalRequestTo(request, requestBytes);
-		DatagramPacket packet = new DatagramPacket(requestBytes, requestLength);
-		try {
-			packet.setAddress(InetAddress.getByName("dynamic.sneer.me"));
-		} catch (UnknownHostException e) {
-			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
-		}
+		
+		DatagramPacket packet = new DatagramPacket(requestBytes, requestLength);		
+		packet.setAddress(serverAddress);
 		packet.setPort(7777);
 		sender.consume(packet);
 	}

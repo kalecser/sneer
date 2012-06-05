@@ -5,17 +5,14 @@ import static basis.environments.Environments.my;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
 
 import org.jmock.Expectations;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.network.computers.addresses.own.OwnIps;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
-import sneer.bricks.network.computers.udp.holepuncher.server.StunServer;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
@@ -34,8 +31,8 @@ public class StunClientTest extends BrickTestBase {
 	@Ignore @Test public void noOwnIp() {}
 	@Ignore @Test public void ownIpsChange() {}
 	
-	@Ignore
-	@Test(timeout = 2000)
+	
+	@Test//(timeout = 2000)
 	public void stunRequest() throws Exception {
 		mockOwnIps("10.42.10.1", "10.42.10.27");
 		setOwnPort(1234);
@@ -44,14 +41,18 @@ public class StunClientTest extends BrickTestBase {
 		subject.initSender(new Consumer<DatagramPacket>() {  @Override public void consume(DatagramPacket packet) {
 			assertEquals("dynamic.sneer.me", packet.getAddress().getHostName());
 			assertEquals(7777, packet.getPort());
-			DatagramPacket[] replies = my(StunServer.class).repliesFor(packet);
-			subject.handle(asBuffer(replies));
+		//	DatagramPacket[] replies = my(StunServer.class).repliesFor(packet);
+		//	subject.handle(asBuffer(replies));
 			latch.open();
 		}});
 		
 		latch.waitTillOpen();
 	}
 
+	
+//	private ByteBuffer asBuffer(DatagramPacket[] replies) {
+//		return ByteBuffer.wrap(replies[0].getData());
+//	}
 	
 	private void mockOwnIps(String... ips) throws UnknownHostException {
 		final SetRegister<InetAddress> ownIp = my(CollectionSignals.class).newSetRegister();
@@ -68,11 +69,5 @@ public class StunClientTest extends BrickTestBase {
 		my(Attributes.class).myAttributeSetter(OwnPort.class).consume(value);
 	}
 	
-	private byte[] ownSeal() {
-		return my(OwnSeal.class).get().currentValue().bytes.copy();
-	}
 	
-	private ByteBuffer asBuffer(DatagramPacket[] replies) {
-		return ByteBuffer.wrap(replies[0].getData());
-	}
 }

@@ -1,12 +1,10 @@
 package sneer.bricks.network.computers.udp.holepuncher.protocol.impl;
 
-import static sneer.bricks.network.computers.udp.holepuncher.protocol.impl.DataUtils.ip;
 import static sneer.bricks.network.computers.udp.holepuncher.protocol.impl.DataUtils.getNextArray;
+import static sneer.bricks.network.computers.udp.holepuncher.protocol.impl.DataUtils.ip;
 
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
-
-import basis.lang.exceptions.NotImplementedYet;
 
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunReply;
@@ -17,23 +15,24 @@ class StunProtocolImpl implements StunProtocol {
 	
 	@Override
 	public int marshalRequestTo(StunRequest request, byte[] data) {
-//		ByteBuffer buf = ByteBuffer.wrap(data);
-//		
-//		buf.put(request._ownSeal);
-//		
-//		InetAddress[] ips = request._localAddressData;
-//		
+		ByteBuffer buf = ByteBuffer.wrap(data);
+		
+		buf.put(request.ownSeal);
+		
+		buf.put((byte)request.peerSealsToFind.length);
+		for (byte[] seal : request.peerSealsToFind)
+			buf.put(seal);
+		
+		buf.put(request.localAddressData);
+		
 //		buf.put((byte)ips.length);
 //		for (int i = 0; i < ips.length; i++)
 //			buf.put(ips[i].getAddress());
 //				
 //		buf.putChar((char)request._localPort);
-//		
-//		if (request._peerToFind != null)
-//			buf.put(request._peerToFind);
-//		
-//		return buf.position();
-		throw new NotImplementedYet();
+		
+		
+		return buf.position();
 	}
 
 
@@ -43,16 +42,21 @@ class StunProtocolImpl implements StunProtocol {
 		
 		byte[] ownSeal = getNextArray(buf, 64);
 		
-		byte ipsLength = buf.get();
-		InetAddress[] localIps = new InetAddress[ipsLength];
-		for (int i = 0; i < ipsLength; i++)
-			localIps[i] = ip(getNextArray(buf, 4));
+		byte sealCount = buf.get();
+		byte[][] peerSealsToFind = new byte[sealCount][]; 
+		for (int i = 0; i < sealCount; i++) 
+			peerSealsToFind[i] = getNextArray(buf, 64);		
+				
 		
-		int localPort = buf.getChar();
-		byte[] peerSeal = getNextArray(buf, 64);
+//		byte ipsLength = buf.get();
+//		InetAddress[] localIps = new InetAddress[ipsLength];
+//		for (int i = 0; i < ipsLength; i++)
+//			localIps[i] = ip(getNextArray(buf, 4));
+//		
+//		int localPort = buf.getChar();
 
-		//return new StunRequest(ownSeal, localIps, localPort, peerSeal);
-		throw new NotImplementedYet();
+		byte[] localAddressData = getNextArray(buf, buf.remaining());
+		return new StunRequest(ownSeal, peerSealsToFind, localAddressData );
 	}
 
 	
@@ -63,8 +67,7 @@ class StunProtocolImpl implements StunProtocol {
 		buf.put(reply.peerSeal);
 		buf.put(reply.peerIp.getAddress());
 		buf.putChar((char)reply.peerPort);
-		buf.put(reply.peerLocalIp.getAddress());
-		buf.putChar((char)reply.peerLocalPort);
+		buf.put(reply.peerLocalAddressData);
 		
 		return buf.position();
 	}
@@ -77,10 +80,9 @@ class StunProtocolImpl implements StunProtocol {
 		byte[] peerSeal = getNextArray(buf, 64);
 		InetAddress ip = ip(getNextArray(buf, 4));
 		int port = buf.getChar();
-		InetAddress localIp = ip(getNextArray(buf, 4));
-		int localPort = buf.getChar();
+		byte[] localAddressData = getNextArray(buf, buf.remaining());
 		
-		return new StunReply(peerSeal, ip, port, localIp, localPort);
+		return new StunReply(peerSeal, ip, port, localAddressData);
 	}
 
 }
