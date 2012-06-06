@@ -5,7 +5,7 @@ import static sneer.bricks.network.computers.udp.connections.UdpConnectionManage
 import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Hail;
 import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.send;
 
-import java.net.SocketAddress;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
@@ -48,7 +48,7 @@ class UdpByteConnection implements ByteConnection {
 			scheduler.previousPacketWasSent();
 	}
 	
-	void handle(PacketType type, SocketAddress origin, ByteBuffer data) {
+	void handle(PacketType type, InetSocketAddress origin, ByteBuffer data) {
 		my(SightingKeeper.class).keep(contact, origin);
 		
 		if(type == Hail) {

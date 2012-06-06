@@ -3,6 +3,7 @@ package sneer.bricks.network.computers.udp.connections.impl;
 import static basis.environments.Environments.my;
 
 import java.net.DatagramPacket;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -63,7 +64,7 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 			data.get(seal);
 			Contact contact = my(ContactSeals.class).contactGiven(new Seal(seal));
 			if (contact == null) return;
-			connectionFor(contact).handle(type, packet.getSocketAddress(), data);
+			connectionFor(contact).handle(type, (InetSocketAddress) packet.getSocketAddress(), data);
 		}
 	}
 

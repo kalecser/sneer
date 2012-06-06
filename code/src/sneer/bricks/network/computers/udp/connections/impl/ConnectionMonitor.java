@@ -4,6 +4,7 @@ import static basis.environments.Environments.my;
 import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Hail;
 import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.send;
 
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
@@ -23,12 +24,12 @@ class ConnectionMonitor {
 	private long lastPeerSightingTime = -UdpConnectionManager.IDLE_PERIOD;
 	private Register<Boolean> isConnected = my(Signals.class).newRegister(false);
 	private long fastestHailDelay = 0;
-	private final SetSignal<SocketAddress> sightings;
+	private final SetSignal<InetSocketAddress> sightings;
 	
 	@SuppressWarnings("unused") private WeakContract refToAvoidGC;	
 	@SuppressWarnings("unused")	private WeakContract refToAvoidGC2;
 	
-	ConnectionMonitor(SetSignal<SocketAddress> sightings) {
+	ConnectionMonitor(SetSignal<InetSocketAddress> sightings) {
 		this.sightings = sightings;
 		startHailing();
 	}

@@ -12,7 +12,5 @@ public interface StunClient {
 	void initSender(Consumer<DatagramPacket> sender);
 
 	void handle(ByteBuffer stunPacket);
-
-	
 	
 }
