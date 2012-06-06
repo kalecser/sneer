@@ -4,55 +4,97 @@ import static basis.environments.Environments.my;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 
 import org.jmock.Expectations;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.own.OwnIps;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
+import sneer.bricks.network.computers.udp.holepuncher.server.StunServer;
+import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
+import sneer.bricks.network.social.Contact;
+import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
+import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
+import sneer.bricks.pulp.reactive.collections.SetSignal;
+import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import basis.brickness.testsupport.Bind;
+import basis.environments.Environments;
+import basis.lang.ByRef;
+import basis.lang.ClosureX;
 import basis.lang.Consumer;
 import basis.util.concurrent.Latch;
 
 
 public class StunClientTest extends BrickTestBase {
 
-	private final StunClient subject = my(StunClient.class);
-	
 	@Bind private final OwnIps ownIps = mock(OwnIps.class);
 	
 	@Ignore @Test public void noOwnIp() {}
 	@Ignore @Test public void ownIpsChange() {}
 	
 	
-	@Test//(timeout = 2000)
+	@Ignore
+	@Test(timeout = 2000)
 	public void stunRequest() throws Exception {
 		mockOwnIps("10.42.10.1", "10.42.10.27");
 		setOwnPort(1234);
 		
+		DatagramPacket[] replies = communicate(my(StunClient.class), my(StunServer.class));
+		assertEquals(0, replies.length);
+		
+		final Seal seal = my(OwnSeal.class).get().currentValue();
+		
+		Environments.runWith(newTestEnvironment(ownIps, my(StunServer.class)), new ClosureX<Exception>() { @Override public void run() throws Exception {
+			my(FolderConfig.class).storageFolder().set(newTmpFile("environment2"));
+			
+			final Contact neide = my(Contacts.class).produceContact("Neide");
+			my(ContactSeals.class).put("Neide", seal);
+			
+			mockOwnIps("192.168.10.1", "192.168.10.27");
+			setOwnPort(3412);
+			
+			DatagramPacket[] replies = communicate(my(StunClient.class), my(StunServer.class));
+			assertEquals(2, replies.length);
+			my(StunClient.class).handle(asBuffer(replies[0]));
+			
+			InetSocketAddress sighting1 = new InetSocketAddress("10.42.10.1", 1234);
+			InetSocketAddress sighting2 = new InetSocketAddress("10.42.10.27", 1234);
+			
+			SetSignal<InetSocketAddress> sightings = my(SightingKeeper.class).sightingsOf(neide);
+			my(SignalUtils.class).waitForElement(sightings, sighting1);
+			my(SignalUtils.class).waitForElement(sightings, sighting2);
+		}});
+	}
+	
+	private DatagramPacket[] communicate(final StunClient client, final StunServer server) {
+		final ByRef<DatagramPacket[]> replies = ByRef.newInstance();
 		final Latch latch = new Latch();
-		subject.initSender(new Consumer<DatagramPacket>() {  @Override public void consume(DatagramPacket packet) {
+		client.initSender(new Consumer<DatagramPacket>() {  @Override public void consume(DatagramPacket packet) {
 			assertEquals("dynamic.sneer.me", packet.getAddress().getHostName());
 			assertEquals(7777, packet.getPort());
-		//	DatagramPacket[] replies = my(StunServer.class).repliesFor(packet);
-		//	subject.handle(asBuffer(replies));
+			replies.value = server.repliesFor(packet);
 			latch.open();
 		}});
-		
 		latch.waitTillOpen();
+		return replies.value;
 	}
 
 	
-//	private ByteBuffer asBuffer(DatagramPacket[] replies) {
-//		return ByteBuffer.wrap(replies[0].getData());
-//	}
+	private ByteBuffer asBuffer(DatagramPacket replies) {
+		return ByteBuffer.wrap(replies.getData());
+	}
 	
 	private void mockOwnIps(String... ips) throws UnknownHostException {
 		final SetRegister<InetAddress> ownIp = my(CollectionSignals.class).newSetRegister();
