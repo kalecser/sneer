@@ -1,18 +1,11 @@
 package sneer.bricks.network.computers.udp.holepuncher.protocol.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
 
-public class DataUtils {
-
-	public static DataInputStream dataInputFrom(byte[] data, int length) {
-		ByteArrayInputStream ret = new ByteArrayInputStream(data, 0, length);
-		return new DataInputStream(ret);
-	}
+class DataUtils {
 
 	static byte[] getNextArray(ByteBuffer in, int length) {
 		if (!in.hasRemaining()) return null;
@@ -21,7 +14,8 @@ public class DataUtils {
 		return ret;
 	}
 
-	public static InetAddress ip(byte[] bytes) {
+	static InetAddress ip(byte[] bytes) {
+		if(bytes == null) return null;
 		try {
 			return InetAddress.getByAddress(bytes);
 		} catch (UnknownHostException e) {

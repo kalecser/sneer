@@ -25,13 +25,6 @@ class StunProtocolImpl implements StunProtocol {
 		
 		buf.put(request.localAddressData);
 		
-//		buf.put((byte)ips.length);
-//		for (int i = 0; i < ips.length; i++)
-//			buf.put(ips[i].getAddress());
-//				
-//		buf.putChar((char)request._localPort);
-		
-		
 		return buf.position();
 	}
 
@@ -47,14 +40,6 @@ class StunProtocolImpl implements StunProtocol {
 		for (int i = 0; i < sealCount; i++) 
 			peerSealsToFind[i] = getNextArray(buf, 64);		
 				
-		
-//		byte ipsLength = buf.get();
-//		InetAddress[] localIps = new InetAddress[ipsLength];
-//		for (int i = 0; i < ipsLength; i++)
-//			localIps[i] = ip(getNextArray(buf, 4));
-//		
-//		int localPort = buf.getChar();
-
 		byte[] localAddressData = getNextArray(buf, buf.remaining());
 		return new StunRequest(ownSeal, peerSealsToFind, localAddressData );
 	}

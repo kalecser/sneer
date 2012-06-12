@@ -12,6 +12,7 @@ import org.jmock.Expectations;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -45,7 +46,6 @@ public class StunClientTest extends BrickTestBase {
 	@Ignore @Test public void ownIpsChange() {}
 	
 	
-	@Ignore
 	@Test(timeout = 2000)
 	public void stunRequest() throws Exception {
 		mockOwnIps("10.42.10.1", "10.42.10.27");
@@ -75,6 +75,8 @@ public class StunClientTest extends BrickTestBase {
 			SetSignal<InetSocketAddress> sightings = my(SightingKeeper.class).sightingsOf(neide);
 			my(SignalUtils.class).waitForElement(sightings, sighting1);
 			my(SignalUtils.class).waitForElement(sightings, sighting2);
+			
+			my(Threads.class).crashAllThreads();
 		}});
 	}
 	
@@ -92,8 +94,8 @@ public class StunClientTest extends BrickTestBase {
 	}
 
 	
-	private ByteBuffer asBuffer(DatagramPacket replies) {
-		return ByteBuffer.wrap(replies.getData());
+	private ByteBuffer asBuffer(DatagramPacket packet) {
+		return ByteBuffer.wrap(packet.getData(), 0, packet.getLength());
 	}
 	
 	private void mockOwnIps(String... ips) throws UnknownHostException {
