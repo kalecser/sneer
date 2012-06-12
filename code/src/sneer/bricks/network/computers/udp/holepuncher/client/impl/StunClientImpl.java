@@ -90,7 +90,7 @@ class StunClientImpl implements StunClient {
 		}
 	}
 	
-	InetAddress ip(byte[] bytes) {
+	private static InetAddress ip(byte[] bytes) {
 		try {
 			return InetAddress.getByAddress(bytes);
 		} catch (UnknownHostException e) {
@@ -98,7 +98,7 @@ class StunClientImpl implements StunClient {
 		}
 	}
 	
-	byte[] getNextArray(ByteBuffer in, int length) {
+	private static byte[] getNextArray(ByteBuffer in, int length) {
 		if (!in.hasRemaining()) return null;
 		byte[] ret = new byte[length];
 		in.get(ret);
