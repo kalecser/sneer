@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -24,12 +25,26 @@ import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Signal;
+import basis.lang.Closure;
 import basis.lang.Consumer;
 
 class StunClientImpl implements StunClient {
+	
+	private Consumer<DatagramPacket> sender;
+	
+	@SuppressWarnings("unused") private final WeakContract refToAvoidGC = my(OwnIps.class).get().addPulseReceiver(new Closure() { @Override public void run() {
+		sendLocalAddressData();
+	}});
 
 	@Override
 	public void initSender(Consumer<DatagramPacket> sender) {
+		this.sender = sender;
+		sendLocalAddressData();
+	}
+
+	private void sendLocalAddressData() {
+		if(sender == null) return;
+		
 		InetAddress serverAddress = my(StunServer.class).inetAddress();
 		if (serverAddress == null) return;
 		
