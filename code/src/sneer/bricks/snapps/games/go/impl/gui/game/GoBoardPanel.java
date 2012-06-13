@@ -73,6 +73,7 @@ public class GoBoardPanel extends JPanel{
 		createPainters();
 		
 		addMouseListener();
+		
 		_referenceToAvoidGc = timerFactory.wakeUpEvery(150, new Runnable() {@Override public void run() {
 			repaint();
 		}});    	
@@ -272,12 +273,9 @@ public class GoBoardPanel extends JPanel{
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			if(!SwingUtilities.isMiddleMouseButton(e)) return;
+			if(!dragActionButtonsPressed(e)) return;
 			_xOffset += e.getX() - _startX - _boardImageSize;
 			_xOffset = (int) (_xOffset % _boardImageSize);
-			if(_xOffset > _boardImageSize){
-				System.out.println();
-			}
 			_yOffset += e.getY() - _startY - _boardImageSize;
 			_yOffset = (int) (_yOffset % _boardImageSize);
 			_startX = e.getX();
@@ -287,15 +285,21 @@ public class GoBoardPanel extends JPanel{
 		
 		@Override
 		public void mousePressed(MouseEvent e) {
-			if(SwingUtilities.isMiddleMouseButton(e)){
+			if(dragActionButtonsPressed(e)){
 				_startX = e.getX();
 				_startY = e.getY();
 			}
 		}
+
+		private boolean dragActionButtonsPressed(MouseEvent e) {
+			boolean middleMouseButton = SwingUtilities.isMiddleMouseButton(e);
+			boolean ctrlClick =  e.isControlDown() && SwingUtilities.isLeftMouseButton(e);
+			return middleMouseButton || ctrlClick;
+		}
 		
 		@Override 
 		public void mouseReleased(MouseEvent e) {
-			if(SwingUtilities.isMiddleMouseButton(e)) return;
+			if(dragActionButtonsPressed(e)) return;
 			
 			int x = toScreenPosition(e.getX()-_xOffset);
 			int y = toScreenPosition(e.getY()-_yOffset);
