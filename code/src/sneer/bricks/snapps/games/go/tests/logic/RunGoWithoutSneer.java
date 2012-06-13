@@ -16,10 +16,10 @@ public class RunGoWithoutSneer implements Player {
 	private GuiPlayer _whiteFrame;
 
 	public static void main(String[] args) {
-		new RunGoWithoutSneer();
+		new RunGoWithoutSneer(19);
 	}
 
-	public RunGoWithoutSneer() {
+	public RunGoWithoutSneer(final int boardSize) {
 		TimerFactory timerFactory = new TimerFactory() {
 			@Override
 			public WeakContract wakeUpEvery(final int interval, final Runnable scroller) {
@@ -31,7 +31,7 @@ public class RunGoWithoutSneer implements Player {
 								scroller.run();
 								Thread.sleep(interval);
 							} catch (InterruptedException e) {
-								throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+								//Don't care
 							}
 						}
 					};
@@ -39,8 +39,8 @@ public class RunGoWithoutSneer implements Player {
 				return null;
 			}
 		};
-		final int boardSize = 10;
 		final int gameID = 1;
+		
 		_blackFrame = new GuiPlayer(gameID,StoneColor.BLACK,boardSize, timerFactory);
 		_blackFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		_blackFrame.setAdversary(this);
@@ -61,6 +61,7 @@ public class RunGoWithoutSneer implements Player {
 
 	@Override
 	public void setAdversary(Player player) {
+		//do nothing
 	}
 
 }
