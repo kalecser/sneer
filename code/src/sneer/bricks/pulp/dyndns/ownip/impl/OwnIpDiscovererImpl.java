@@ -4,8 +4,6 @@ import static basis.environments.Environments.my;
 
 import java.io.IOException;
 
-import basis.lang.Closure;
-
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -19,6 +17,7 @@ import sneer.bricks.pulp.dyndns.ownip.OwnIpDiscoverer;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
+import basis.lang.Closure;
 
 class OwnIpDiscovererImpl implements OwnIpDiscoverer {
 	
@@ -67,6 +66,7 @@ class OwnIpDiscovererImpl implements OwnIpDiscoverer {
 			? _store.getLong(LAST_CHECK_TIME_KEY) + retryTimeMillis()
 			: 0;
 	}
+
 
 	protected void ipDiscovery() throws IOException {
 		_store.set(LAST_CHECK_TIME_KEY, my(Clock.class).time().currentValue());

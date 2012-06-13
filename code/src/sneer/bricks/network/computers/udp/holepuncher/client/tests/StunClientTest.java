@@ -69,25 +69,16 @@ public class StunClientTest extends BrickTestBase {
 			final Contact neide = my(Contacts.class).produceContact("Neide");
 			my(ContactSeals.class).put("Neide", seal);
 			
-			mockOwnIps("192.168.10.1", "192.168.10.27");
-			setOwnPort(3412);
-			
-			DatagramPacket[] replies = communicate(my(StunClient.class), my(StunServer.class));
-			assertEquals(2, replies.length);
-			my(StunClient.class).handle(asBuffer(replies[0]));
-			
-			InetSocketAddress sighting = new InetSocketAddress("10.42.10.1", 1234);
+			communicate(my(StunClient.class), my(StunServer.class));
 			
 			SetSignal<InetSocketAddress> sightings = my(SightingKeeper.class).sightingsOf(neide);
-			my(SignalUtils.class).waitForElement(sightings, sighting);
+			my(SignalUtils.class).waitForElement(sightings, new InetSocketAddress("10.42.10.1", 1234));
 		}});
 		
 		changeOwnIpsTo("10.42.10.50");
 		
 		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
-			DatagramPacket[] replies = communicate(my(StunClient.class), my(StunServer.class));
-			assertEquals(2, replies.length);
-			my(StunClient.class).handle(asBuffer(replies[0]));
+			communicate(my(StunClient.class), my(StunServer.class));
 			
 			InetSocketAddress sighting1 = new InetSocketAddress("10.42.10.1", 1234);
 			InetSocketAddress sighting2 = new InetSocketAddress("10.42.10.50", 1234);
@@ -107,8 +98,7 @@ public class StunClientTest extends BrickTestBase {
 		mockOwnIps("10.42.10.1", "10.42.10.27");
 		setOwnPort(1234);
 		
-		DatagramPacket[] replies = communicate(my(StunClient.class), my(StunServer.class));
-		assertEquals(0, replies.length);
+		communicate(my(StunClient.class), my(StunServer.class));
 		
 		final Seal seal = my(OwnSeal.class).get().currentValue();
 		
@@ -121,9 +111,7 @@ public class StunClientTest extends BrickTestBase {
 			mockOwnIps("192.168.10.1", "192.168.10.27");
 			setOwnPort(3412);
 			
-			DatagramPacket[] replies = communicate(my(StunClient.class), my(StunServer.class));
-			assertEquals(2, replies.length);
-			my(StunClient.class).handle(asBuffer(replies[0]));
+			communicate(my(StunClient.class), my(StunServer.class));
 			
 			InetSocketAddress sighting1 = new InetSocketAddress("10.42.10.1", 1234);
 			InetSocketAddress sighting2 = new InetSocketAddress("10.42.10.27", 1234);
@@ -136,7 +124,7 @@ public class StunClientTest extends BrickTestBase {
 		}});
 	}
 	
-	private DatagramPacket[] communicate(final StunClient client, final StunServer server) {
+	private void communicate(final StunClient client, final StunServer server) {
 		final ByRef<DatagramPacket[]> replies = ByRef.newInstance();
 		final Latch latch = new Latch();
 		client.initSender(new Consumer<DatagramPacket>() {  @Override public void consume(DatagramPacket packet) {
@@ -146,7 +134,11 @@ public class StunClientTest extends BrickTestBase {
 			latch.open();
 		}});
 		latch.waitTillOpen();
-		return replies.value;
+
+		if (replies.value.length == 0) return;
+		
+		assertEquals(2, replies.value.length);
+		my(StunClient.class).handle(asBuffer(replies.value[0]));
 	}
 
 	
