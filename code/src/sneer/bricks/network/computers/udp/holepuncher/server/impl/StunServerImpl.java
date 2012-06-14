@@ -37,6 +37,7 @@ class StunServerImpl implements StunServer {
 		if (peers.length == 0) return NO_PACKETS;
 
 		IpAddresses peerAddr = addressesBySeal.get(toString(peers[0]));
+		if (peerAddr == null) return NO_PACKETS;
 		IpAddresses ownAddr = addressesBySeal.get(toString(req.ownSeal));
 		StunReply toMe = new StunReply(peers[0], peerAddr.publicInternetAddress, peerAddr.publicInternetPort, peerAddr.localAddressData);
 		StunReply toPeer = new StunReply(req.ownSeal, ownAddr.publicInternetAddress, ownAddr.publicInternetPort, ownAddr.localAddressData);

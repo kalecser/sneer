@@ -50,7 +50,9 @@ public class StunClientTest extends BrickTestBase {
 		}});
 	}
 	
+	
 	@Ignore @Test public void noOwnIp() {}
+	
 	
 	@Test(timeout = 2000)
 	public void ownIpsChange() throws Exception {
@@ -71,8 +73,7 @@ public class StunClientTest extends BrickTestBase {
 			
 			communicate(my(StunClient.class), my(StunServer.class));
 			
-			SetSignal<InetSocketAddress> sightings = my(SightingKeeper.class).sightingsOf(neide);
-			my(SignalUtils.class).waitForElement(sightings, new InetSocketAddress("10.42.10.1", 1234));
+			waitForSighting(neide, "10.42.10.1", 1234);
 		}});
 		
 		mockOwnIps("10.42.10.50");
@@ -80,18 +81,15 @@ public class StunClientTest extends BrickTestBase {
 		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
 			communicate(my(StunClient.class), my(StunServer.class));
 			
-			InetSocketAddress sighting1 = new InetSocketAddress("10.42.10.1", 1234);
-			InetSocketAddress sighting2 = new InetSocketAddress("10.42.10.50", 1234);
-			
 			final Contact neide = my(Contacts.class).contactGiven("Neide");
-			
-			SetSignal<InetSocketAddress> sightings = my(SightingKeeper.class).sightingsOf(neide);
-			my(SignalUtils.class).waitForElement(sightings, sighting1);
-			my(SignalUtils.class).waitForElement(sightings, sighting2);
+
+			waitForSighting(neide, "10.42.10.1", 1234);
+			waitForSighting(neide, "10.42.10.50", 1234);
 			
 			my(Threads.class).crashAllThreads();
 		}});
 	}
+	
 	
 	@Test(timeout = 2000)
 	public void stunRequest() throws Exception {
@@ -113,24 +111,21 @@ public class StunClientTest extends BrickTestBase {
 			
 			communicate(my(StunClient.class), my(StunServer.class));
 			
-			InetSocketAddress sighting1 = new InetSocketAddress("10.42.10.1", 1234);
-			InetSocketAddress sighting2 = new InetSocketAddress("10.42.10.27", 1234);
-			
-			SetSignal<InetSocketAddress> sightings = my(SightingKeeper.class).sightingsOf(neide);
-			my(SignalUtils.class).waitForElement(sightings, sighting1);
-			my(SignalUtils.class).waitForElement(sightings, sighting2);
+			waitForSighting(neide, "10.42.10.1", 1234);
+			waitForSighting(neide, "10.42.10.27", 1234);
 			
 			my(Threads.class).crashAllThreads();
 		}});
 	}
 	
-	private void communicate(final StunClient client, final StunServer server) {
+	
+	private void communicate(StunClient client, final StunServer server) {
 		final ByRef<DatagramPacket[]> replies = ByRef.newInstance();
 		final Latch latch = new Latch();
-		client.initSender(new Consumer<DatagramPacket>() {  @Override public void consume(DatagramPacket packet) {
-			assertEquals("dynamic.sneer.me", packet.getAddress().getHostName());
-			assertEquals(7777, packet.getPort());
-			replies.value = server.repliesFor(packet);
+		client.initSender(new Consumer<DatagramPacket>() {  @Override public void consume(DatagramPacket request) {
+			assertEquals("dynamic.sneer.me", request.getAddress().getHostName());
+			assertEquals(7777, request.getPort());
+			replies.value = server.repliesFor(request);
 			latch.open();
 		}});
 		latch.waitTillOpen();
@@ -138,7 +133,13 @@ public class StunClientTest extends BrickTestBase {
 		if (replies.value.length == 0) return;
 		
 		assertEquals(2, replies.value.length);
-		my(StunClient.class).handle(asBuffer(replies.value[0]));
+		client.handle(asBuffer(replies.value[0]));
+	}
+	
+	
+	private void waitForSighting(Contact contact, String ip, int port) {
+		SetSignal<InetSocketAddress> sightings = my(SightingKeeper.class).sightingsOf(contact);
+		my(SignalUtils.class).waitForElement(sightings, new InetSocketAddress(ip, port));
 	}
 
 	
@@ -146,12 +147,14 @@ public class StunClientTest extends BrickTestBase {
 		return ByteBuffer.wrap(packet.getData(), 0, packet.getLength());
 	}
 	
+	
 	private void mockOwnIps(String... ips) throws UnknownHostException {
 		myIps.clear();
 		for (int i = 0; i < ips.length; i++)
 			myIps.add(InetAddress.getByName(ips[i]));
 	}
 
+	
 	private void setOwnPort(int value) {
 		my(Attributes.class).myAttributeSetter(OwnPort.class).consume(value);
 	}
