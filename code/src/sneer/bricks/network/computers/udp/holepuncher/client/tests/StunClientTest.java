@@ -100,14 +100,11 @@ public class StunClientTest extends BrickTestBase {
 		
 		final Seal seal = my(OwnSeal.class).get().currentValue();
 		
-		Environments.runWith(newTestEnvironment(ownIps, my(StunServer.class)), new ClosureX<Exception>() { @Override public void run() throws Exception {
+		Environments.runWith(newTestEnvironment(my(StunServer.class)), new ClosureX<Exception>() { @Override public void run() throws Exception {
 			my(FolderConfig.class).storageFolder().set(newTmpFile("environment2"));
 			
-			final Contact neide = my(Contacts.class).produceContact("Neide");
+			Contact neide = my(Contacts.class).produceContact("Neide");
 			my(ContactSeals.class).put("Neide", seal);
-			
-			mockOwnIps("192.168.10.1", "192.168.10.27");
-			setOwnPort(3412);
 			
 			communicate(my(StunClient.class), my(StunServer.class));
 			
