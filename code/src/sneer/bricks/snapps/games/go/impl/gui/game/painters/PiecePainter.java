@@ -53,13 +53,19 @@ import javax.swing.JPanel;
  public class PiecePainter{
 
 	public static void main(String... args) {
+		
+		showPiece(false);
+		showPiece(true);
+
+	}
+
+	private static void showPiece(final boolean black) {
 		JFrame demo = new JFrame();
 		final PiecePainter sphereComponent = new PiecePainter();
 
 		JPanel panel = new JPanel() {
 			@Override
 			public void paint(Graphics g) {
-				boolean black = false;
 				sphereComponent.paintPiece(g, black);
 			}
 		};
@@ -67,7 +73,6 @@ import javax.swing.JPanel;
 		demo.setSize(new Dimension(120, 120));
 		demo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		demo.setVisible(true);
-
 	}
 	
     private int _width;
