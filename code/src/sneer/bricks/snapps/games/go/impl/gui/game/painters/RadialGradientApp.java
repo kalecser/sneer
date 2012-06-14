@@ -38,10 +38,12 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.ImageCapabilities;
 import java.awt.Paint;
 import java.awt.RadialGradientPaint;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.color.ColorSpace;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
@@ -49,6 +51,9 @@ import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
+
 import javax.swing.JComponent;
 
 import javax.swing.JFrame;
@@ -74,17 +79,16 @@ public class RadialGradientApp extends JFrame {
         	}
         };
         add(panel);
-        
-        pack();
-        setLocationRelativeTo(null);
+        setSize(new Dimension(120,120));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
     }
     
     public static void main(String... args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
 			public void run() {
-                new RadialGradientApp().setVisible(true);
+                new RadialGradientApp();
             }
         });
     }
@@ -128,17 +132,26 @@ public class RadialGradientApp extends JFrame {
     
     private int _width;
 	private int _height;
-
+//	Color bottomOvalHighlightOutterCollor = new Color(64, 142, 203, 255);
+//	Color centerGlow = 						 new Color(6, 76, 160, 127);
+//	Color overallColor =                       new Color(1,83,204,255);
+	Color bottomOvalHighlightOutterCollor = new Color(64, 142, 203, 255);
+	Color centerGlow = 						 new Color(6, 76, 160, 127);
+	Color overallColor =                       new Color(1,83,204,255);
+	Color edges = new Color(0.0f, 0.0f, 0.0f, 0.8f);
+	
 	protected void paintComponent(Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
         _width = clipBounds.width;
         _height = clipBounds.height;
     	
-        Graphics2D g2 = (Graphics2D) g;
+        whitePiecesColorSettings();
+        
+        BufferedImage bufferedImage = new BufferedImage(_width, _height, BufferedImage.TYPE_INT_ARGB);
+        
+        Graphics2D g2 = (Graphics2D) bufferedImage.getGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
-        // Retains the previous state
-
         fillCircle(g2);
         paintTopShadow(g2); 
         paintBottomHighlights(g2);
@@ -146,8 +159,27 @@ public class RadialGradientApp extends JFrame {
         paintBottomOvalHighlight(g2);
         paintTopLeftOvalSpecularHighlight(g2);
         
-        // Restores the previous state
+//        ColorSpace instance = ColorSpace.getInstance(ColorSpace.CS_GRAY);
+//		ColorConvertOp colorConvert = new ColorConvertOp(instance, null);
+//        BufferedImage dest = new BufferedImage(_width, _height, BufferedImage.TYPE_INT_ARGB);
+//        colorConvert.filter(bufferedImage, dest);
+//        g.drawImage(dest, 0, 0, _width, _height, null);
+        
+        g.drawImage(bufferedImage, 0, 0, _width, _height, null);
     }
+
+	private void whitePiecesColorSettings() {
+		bottomOvalHighlightOutterCollor = getSaturatedColor(bottomOvalHighlightOutterCollor).brighter().brighter();
+        centerGlow = getSaturatedColor(centerGlow);
+        centerGlow = centerGlow.brighter().brighter();
+        overallColor = getSaturatedColor(overallColor);
+        edges = Color.LIGHT_GRAY;
+	}
+
+	private Color getSaturatedColor( Color color ) {
+		int saturated = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
+        return new Color(saturated,saturated,saturated,255);
+	}
 
 	private int getWidth() {
 		return _width;
@@ -174,14 +206,14 @@ public class RadialGradientApp extends JFrame {
 	}
 
 	private void paintBottomOvalHighlight(Graphics2D g2) {
-		Color color =  new Color(64, 142, 203, 255);
-		Color color2 = new Color(64, 142, 203, 0);		
+		Color bottomOvalHighlightInnerCollor = new Color(bottomOvalHighlightOutterCollor.getRed()
+				, bottomOvalHighlightOutterCollor.getGreen(), bottomOvalHighlightOutterCollor.getBlue(), 0);
 		
 		Point2D.Double center = new Point2D.Double(getWidth() / 2.0, getHeight() * 1.5);
 		float radius = getWidth() / 2.3f;
 		Point2D.Double focus = new Point2D.Double(getWidth() / 2.0, getHeight() * 1.75 + 6);
 		float[] fractions = new float[] { 0.0f, 0.8f };
-		Color[] colors = new Color[] { color,color2 };
+		Color[] colors = new Color[] { bottomOvalHighlightOutterCollor,bottomOvalHighlightInnerCollor };
 		AffineTransform scaleInstance = AffineTransform.getScaleInstance(1.0, 0.5);
 		Paint paint = new RadialGradientPaint(center, radius,focus,fractions,colors,RadialGradientPaint.CycleMethod.NO_CYCLE,
 				RadialGradientPaint.ColorSpaceType.SRGB, scaleInstance);
@@ -191,13 +223,11 @@ public class RadialGradientApp extends JFrame {
 	}
 
 	private void paintDarkEdges(Graphics2D g2) {
-		Color color = new Color(6, 76, 160, 127);
-		Color color2 = new Color(0.0f, 0.0f, 0.0f, 0.8f);
 		
 		Point2D.Double center = new Point2D.Double(getWidth() / 2.0, getHeight() / 2.0);
 		float radius = getWidth() / 2.0f;
 		float[] fractions = new float[] { 0.0f, 1.0f };
-		Color[] colors = new Color[] { color, color2 };
+		Color[] colors = new Color[] { centerGlow, edges };
 		Paint paint = new RadialGradientPaint(center, radius,fractions,colors);
         g2.setPaint(paint);
         
@@ -241,7 +271,7 @@ public class RadialGradientApp extends JFrame {
 	}
 
 	private void fillCircle(Graphics2D g2) {
-		g2.setColor(new Color(0x0153CC));
+		g2.setColor(overallColor);
         g2.fillOval(0, 0, getWidth() - 1, getHeight() - 1);
 	}
 }
