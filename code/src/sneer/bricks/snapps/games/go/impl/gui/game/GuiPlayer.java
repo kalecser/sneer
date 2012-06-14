@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -44,6 +46,24 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 	    final int width = (int) ((_boardSize*_goBoardPanel.getCellSize())+_goBoardPanel.getCellSize()+bord);
 		final int whatsLeftOfTheFrame = 70;
 		setBounds(0, 0,(width<500)?500:width, (width<500)?500+whatsLeftOfTheFrame:width+whatsLeftOfTheFrame);
+		
+		addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				System.out.println(arg0.getKeyCode());
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				System.out.println(arg0.getKeyCode());
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				System.out.println(arg0.getKeyCode());
+			}
+		});
 	}
 	
 	@Override

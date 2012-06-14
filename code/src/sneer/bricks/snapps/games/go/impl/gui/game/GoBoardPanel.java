@@ -2,7 +2,10 @@ package sneer.bricks.snapps.games.go.impl.gui.game;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -29,7 +32,7 @@ import sneer.bricks.snapps.games.go.impl.logic.ToroidalGoBoard;
 import basis.environments.ProxyInEnvironment;
 
 public class GoBoardPanel extends JPanel{
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private static final float CELL_MAX_SIZE = 100;
@@ -76,6 +79,36 @@ public class GoBoardPanel extends JPanel{
 		createPainters();
 		
 		addMouseListener();
+		
+		KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        manager.addKeyEventDispatcher(new KeyEventDispatcher() {
+			
+        	private static final int SCROLL_KEYBOARD_SPEED = 10;
+			@Override
+			public boolean dispatchKeyEvent(KeyEvent e) {
+				if(e.isControlDown()){
+					if(e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_EQUALS ){
+						updateCellSize(1);
+					}
+					if(e.getKeyCode() == KeyEvent.VK_MINUS){
+						updateCellSize(-1);
+					}
+				}
+				if(e.getKeyCode() == KeyEvent.VK_UP){
+					increaseYOffset(-SCROLL_KEYBOARD_SPEED);
+				}
+				if(e.getKeyCode() == KeyEvent.VK_DOWN){
+					increaseYOffset(SCROLL_KEYBOARD_SPEED);
+				}
+				if(e.getKeyCode() == KeyEvent.VK_LEFT){
+					increaseXOffset(-SCROLL_KEYBOARD_SPEED);
+				}
+				if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+					increaseXOffset(SCROLL_KEYBOARD_SPEED);
+				}
+				return false;
+			}
+		});
 		
 		_referenceToAvoidGc = timerFactory.wakeUpEvery(30, new Runnable() {@Override public void run() {
 			update();
