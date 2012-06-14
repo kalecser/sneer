@@ -1,4 +1,3 @@
-package sneer.bricks.snapps.games.go.impl.gui.game.painters;
 /*
  * Copyright (c) 2007, Romain Guy
  * All rights reserved.
@@ -29,108 +28,48 @@ package sneer.bricks.snapps.games.go.impl.gui.game.painters;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package sneer.bricks.snapps.games.go.impl.gui.game.painters;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.ImageCapabilities;
 import java.awt.Paint;
 import java.awt.RadialGradientPaint;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.color.ColorSpace;
-import java.awt.font.FontRenderContext;
-import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorConvertOp;
-
-import javax.swing.JComponent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-/**
- *
- * @author Romain GUy
- */
-public class RadialGradientApp extends JFrame {
-    
-    /** Creates a new instance of RadialGradientApp */
-    public RadialGradientApp() {
-        super("Radial Gradient");
-        
-        final SphereComponent sphereComponent = new SphereComponent();
-        
-        JPanel panel = new JPanel(){
-        	@Override
-        	public void paint(Graphics g) {
-        		boolean black = false;
-				sphereComponent.paintPiece(g, black);
-        	}
-        };
-        add(panel);
-        setSize(new Dimension(120,120));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
-    }
-    
-    public static void main(String... args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-			public void run() {
-                new RadialGradientApp();
-            }
-        });
-    }
-}
-/*
- * Copyright (c) 2007, Romain Guy
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above
- *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials provided
- *     with the distribution.
- *   * Neither the name of the TimingFramework project nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 
 /**
  *
  * @author Romain Guy
  */
- class SphereComponent{
-    
+ public class PiecePainter{
+
+	public static void main(String... args) {
+		JFrame demo = new JFrame();
+		final PiecePainter sphereComponent = new PiecePainter();
+
+		JPanel panel = new JPanel() {
+			@Override
+			public void paint(Graphics g) {
+				boolean black = false;
+				sphereComponent.paintPiece(g, black);
+			}
+		};
+		demo.add(panel);
+		demo.setSize(new Dimension(120, 120));
+		demo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		demo.setVisible(true);
+
+	}
+	
     private int _width;
 	private int _height;
 	
