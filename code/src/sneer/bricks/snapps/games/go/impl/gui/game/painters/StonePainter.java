@@ -1,5 +1,7 @@
 package sneer.bricks.snapps.games.go.impl.gui.game.painters;
 
+import java.awt.Color;
+import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 
@@ -20,6 +22,9 @@ public class StonePainter {
 	public void paintStoneOnCoordinates(Graphics2D graphics, float x, float y, boolean dead) {
 		float d = _stoneDiameter;
 		if (dead) d*=0.6;
+		
+		GradientPaint redtowhite = new GradientPaint(0,0,Color.RED,100, 0,Color.WHITE);
+		graphics.setPaint(redtowhite);
 		
 		graphics.fill(new Ellipse2D.Float(x - (d / 2), y - (d / 2), d, d));
 		//wrapping
