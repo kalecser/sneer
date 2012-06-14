@@ -59,7 +59,7 @@ public class StunClientTest extends BrickTestBase {
 		mockOwnIps("10.42.10.1");
 		setOwnPort(1234);
 		
-		communicate(my(StunClient.class), my(StunServer.class));
+		connect(my(StunClient.class), my(StunServer.class));
 		
 		Environment remote = newTestEnvironment(ownIps, my(StunServer.class));
 		
@@ -67,11 +67,10 @@ public class StunClientTest extends BrickTestBase {
 		
 		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
 			my(FolderConfig.class).storageFolder().set(newTmpFile("environment2"));
-			
 			final Contact neide = my(Contacts.class).produceContact("Neide");
 			my(ContactSeals.class).put("Neide", seal);
 			
-			communicate(my(StunClient.class), my(StunServer.class));
+			connect(my(StunClient.class), my(StunServer.class));
 			
 			waitForSighting(neide, "10.42.10.1", 1234);
 		}});
@@ -79,7 +78,7 @@ public class StunClientTest extends BrickTestBase {
 		mockOwnIps("10.42.10.50");
 		
 		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
-			communicate(my(StunClient.class), my(StunServer.class));
+			connect(my(StunClient.class), my(StunServer.class));
 			
 			final Contact neide = my(Contacts.class).contactGiven("Neide");
 
@@ -96,7 +95,7 @@ public class StunClientTest extends BrickTestBase {
 		mockOwnIps("10.42.10.1", "10.42.10.27");
 		setOwnPort(1234);
 		
-		communicate(my(StunClient.class), my(StunServer.class));
+		connect(my(StunClient.class), my(StunServer.class));
 		
 		final Seal seal = my(OwnSeal.class).get().currentValue();
 		
@@ -106,7 +105,7 @@ public class StunClientTest extends BrickTestBase {
 			Contact neide = my(Contacts.class).produceContact("Neide");
 			my(ContactSeals.class).put("Neide", seal);
 			
-			communicate(my(StunClient.class), my(StunServer.class));
+			connect(my(StunClient.class), my(StunServer.class));
 			
 			waitForSighting(neide, "10.42.10.1", 1234);
 			waitForSighting(neide, "10.42.10.27", 1234);
@@ -116,21 +115,17 @@ public class StunClientTest extends BrickTestBase {
 	}
 	
 	
-	private void communicate(StunClient client, final StunServer server) {
-		final ByRef<DatagramPacket[]> replies = ByRef.newInstance();
-		final Latch latch = new Latch();
-		client.initSender(new Consumer<DatagramPacket>() {  @Override public void consume(DatagramPacket request) {
+	private void connect(final StunClient client, final StunServer server) {
+		client.initSender(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket request) {
 			assertEquals("dynamic.sneer.me", request.getAddress().getHostName());
 			assertEquals(7777, request.getPort());
-			replies.value = server.repliesFor(request);
-			latch.open();
+			
+			DatagramPacket[] replies = server.repliesFor(request);
+			if (replies.length == 0) return;
+			
+			assertEquals(2, replies.length);
+			client.handle(asBuffer(replies[0]));
 		}});
-		latch.waitTillOpen();
-
-		if (replies.value.length == 0) return;
-		
-		assertEquals(2, replies.value.length);
-		client.handle(asBuffer(replies.value[0]));
 	}
 	
 	
