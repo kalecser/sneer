@@ -279,11 +279,9 @@ public class GoBoardPanel extends JPanel{
 		
 		_boardImageRectangle.x = _xOffset;
 		_boardImageRectangle.y = _yOffset;
-		int count = 0;
 		
 		while(clipBounds.intersects(_boardImageRectangle)){
 			while(clipBounds.intersects(_boardImageRectangle)){
-				count++;
 				graphics.drawImage(_bufferImage, _boardImageRectangle.x, _boardImageRectangle.y, this);
 				_boardImageRectangle.x += (_boardImageSize+1);
 			}
