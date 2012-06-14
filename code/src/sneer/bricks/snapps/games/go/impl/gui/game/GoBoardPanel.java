@@ -20,6 +20,7 @@ import javax.swing.SwingUtilities;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.snapps.games.go.impl.TimerFactory;
 import sneer.bricks.snapps.games.go.impl.gui.game.painters.BoardPainter;
+import sneer.bricks.snapps.games.go.impl.gui.game.painters.DarkBorderPainter;
 import sneer.bricks.snapps.games.go.impl.gui.game.painters.HUDPainter;
 import sneer.bricks.snapps.games.go.impl.gui.game.painters.HoverStonePainter;
 import sneer.bricks.snapps.games.go.impl.gui.game.painters.StonePainter;
@@ -38,6 +39,8 @@ public class GoBoardPanel extends JPanel{
 	private static final float CELL_MAX_SIZE = 100;
 	private static final float CELL_MIN_SIZE = 5;
 
+	private static final int SCROLL_EDGE = 60;
+	
 	private int _boardSize;
 	private float _boardImageSize;
 	private final Rectangle _boardImageRectangle = new Rectangle(0,0,(int)_boardImageSize,(int)_boardImageSize);
@@ -68,6 +71,8 @@ public class GoBoardPanel extends JPanel{
 	
 	private int scrollX = 0;
 	private int scrollY = 0;
+
+	private DarkBorderPainter _darkBorderPainter;
 	
 	public GoBoardPanel(final GuiPlayer goFrame,final TimerFactory timerFactory,final int boardSize, StoneColor side) {
 		_goFrame = goFrame;		
@@ -128,6 +133,7 @@ public class GoBoardPanel extends JPanel{
 		_hoverStonePainter.draw(buffer, _board);
 		_stonesInPlayPainter.draw(buffer, _board);
 		drawBoardTiled(graphics);
+		_darkBorderPainter.draw(graphics);
 		_hudPainter.draw(graphics);
 	}
 
@@ -189,6 +195,7 @@ public class GoBoardPanel extends JPanel{
 		_stonePainter = new StonePainter(_boardImageSize, _cellSize);
 		_hoverStonePainter = new HoverStonePainter(_stonePainter,_boardSize, _cellSize);		
 		_stonesInPlayPainter = new StonesInPlayPainter(_stonePainter,_cellSize);
+		_darkBorderPainter = new DarkBorderPainter(SCROLL_EDGE);
 		_hudPainter = new HUDPainter();
 	}
 	
@@ -283,9 +290,6 @@ public class GoBoardPanel extends JPanel{
 			_boardImageRectangle.x = _xOffset;
 			_boardImageRectangle.y += (_boardImageSize+1);
 		}
-		if(count == 0){
-			System.out.println(count);
-		}
 	}
 	
 	private Graphics2D getBuffer() {
@@ -313,7 +317,6 @@ public class GoBoardPanel extends JPanel{
 	
 	private class GoMouseListener extends MouseAdapter {
 		private static final int SCROLL_SPEED = 5;
-		private static final int SCROLL_EDGE = 60;
 		private int _startX;
 		private int _startY;
 
