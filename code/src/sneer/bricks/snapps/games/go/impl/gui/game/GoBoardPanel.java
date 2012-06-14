@@ -63,6 +63,9 @@ public class GoBoardPanel extends JPanel{
 	private boolean _hasResigned = false;
 	private boolean _otherResigned = false;
 	
+	private int scrollX = 0;
+	private int scrollY = 0;
+	
 	public GoBoardPanel(final GuiPlayer goFrame,final TimerFactory timerFactory,final int boardSize, StoneColor side) {
 		_goFrame = goFrame;		
 		_side = side;
@@ -74,11 +77,17 @@ public class GoBoardPanel extends JPanel{
 		
 		addMouseListener();
 		
-		_referenceToAvoidGc = timerFactory.wakeUpEvery(150, new Runnable() {@Override public void run() {
+		_referenceToAvoidGc = timerFactory.wakeUpEvery(30, new Runnable() {@Override public void run() {
+			update();
 			repaint();
 		}});    	
 	}
-
+	
+	public void update(){
+		increaseXOffset(scrollX);
+		increaseYOffset(scrollY);
+	}
+	
 	@Override
 	public void paint(final Graphics graphics) {
 		Graphics2D buffer = getBuffer();
@@ -259,27 +268,86 @@ public class GoBoardPanel extends JPanel{
 		return (int)Math.ceil(result)%_boardSize;
 	}
 	
+	public void increaseXOffset(final float xIncrease){
+		_xOffset += xIncrease - _boardImageSize;
+		_xOffset = (int) (_xOffset % _boardImageSize);
+	}
 
+	public void increaseYOffset(final float yIncrease){
+		_yOffset += yIncrease - _boardImageSize;
+		_yOffset = (int) (_yOffset % _boardImageSize);
+	}
+	
 	private class GoMouseListener extends MouseAdapter {
+		private static final int SCROLL_SPEED = 5;
+		private static final int SCROLL_EDGE = 60;
 		private int _startX;
 		private int _startY;
 
 		@Override 
 		public void mouseMoved(final MouseEvent e) {
-			_hoverStonePainter.setHoverX(toScreenPosition(e.getX()-_xOffset));
-			_hoverStonePainter.setHoverY(toScreenPosition(e.getY()-_yOffset));
+			final int mouseX = e.getX();
+			final int mouseY = e.getY();
+			
+			_hoverStonePainter.setHoverX(toScreenPosition(mouseX-_xOffset));
+			_hoverStonePainter.setHoverY(toScreenPosition(mouseY-_yOffset));
+			
+			scrollIfOnScrollRegion(mouseX, mouseY);
+			
 			repaint();
 		}
 
 		@Override
+		public void mouseExited(MouseEvent e) {
+			stopScrolling();
+		}
+
+		private void stopScrolling() {
+			scrollX = 0;
+			scrollY = 0;
+		}
+		
+		private void scrollIfOnScrollRegion(final int mouseX, final int mouseY) {
+			scrollHorizontallyIfOnScrollRegion(mouseX);
+			scrollVerticallyIfOnScrollRegion(mouseY);
+		}
+
+		private void scrollHorizontallyIfOnScrollRegion(final int mouseX) {
+			if(mouseX < SCROLL_EDGE){
+				scrollX = -SCROLL_SPEED;
+				return;
+			}
+			if(mouseX > getWidth()-SCROLL_EDGE){
+				scrollX = SCROLL_SPEED;
+				return;
+			}
+			scrollX = 0;
+		}
+		
+		private void scrollVerticallyIfOnScrollRegion(final int mouseY) {
+			if(mouseY < SCROLL_EDGE){
+				scrollY = -SCROLL_SPEED;
+				return;
+			}
+			if(mouseY > getHeight()-SCROLL_EDGE){
+				scrollY = SCROLL_SPEED;
+				return;
+			}
+			scrollY = 0;
+		}
+
+		@Override
 		public void mouseDragged(MouseEvent e) {
-			if(!dragActionButtonsPressed(e)) return;
-			_xOffset += e.getX() - _startX - _boardImageSize;
-			_xOffset = (int) (_xOffset % _boardImageSize);
-			_yOffset += e.getY() - _startY - _boardImageSize;
-			_yOffset = (int) (_yOffset % _boardImageSize);
-			_startX = e.getX();
-			_startY = e.getY();
+			final int mouseX = e.getX();
+			final int mouseY = e.getY();
+			
+			if(!dragActionButtonsPressed(e))return;
+			
+			increaseXOffset(mouseX - _startX);
+			increaseYOffset(mouseY - _startY);
+			
+			_startX = mouseX;
+			_startY = mouseY;
 			repaint();
 		}
 		
