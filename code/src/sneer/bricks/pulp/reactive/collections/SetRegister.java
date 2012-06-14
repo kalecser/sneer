@@ -6,9 +6,6 @@ package sneer.bricks.pulp.reactive.collections;
 
 import java.util.Collection;
 
-
-
-
 public interface SetRegister<T> extends CollectionRegister<T> {
 
 	@Override
@@ -20,6 +17,6 @@ public interface SetRegister<T> extends CollectionRegister<T> {
 	<U extends T> void remove(U elementRemoved);
 
 	void change(CollectionChange<T> change);
-
+	void clear();
 
 }

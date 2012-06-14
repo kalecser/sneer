@@ -131,4 +131,9 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 		addAll(Arrays.asList(elements));
 	}
 
+	@Override
+	public void clear() {
+		change(new CollectionChangeImpl<T>(null, _contents));
+	}
+
 }
