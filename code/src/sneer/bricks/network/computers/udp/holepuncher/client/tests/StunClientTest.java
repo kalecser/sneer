@@ -35,6 +35,7 @@ import basis.brickness.testsupport.Bind;
 import basis.environments.Environment;
 import basis.environments.Environments;
 import basis.environments.ProxyInEnvironment;
+import basis.lang.ByRef;
 import basis.lang.ClosureX;
 import basis.lang.Consumer;
 
@@ -78,12 +79,23 @@ public class StunClientTest extends BrickTestBase {
 		}});
 		
 		mockOwnIps("10.42.10.50");
-		
+
+		final ByRef<Seal> remoteSeal = ByRef.newInstance();
 		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
 			my(Clock.class).advanceTime(StunClient.REQUEST_PERIOD);
 			
 			Contact neide = my(Contacts.class).contactGiven("Neide");
 			waitForSighting(neide, "10.42.10.50", 1234);
+			
+			remoteSeal.value = my(OwnSeal.class).get().currentValue();
+		}});
+
+		my(Contacts.class).produceContact("Remote");
+		my(ContactSeals.class).put("Remote", remoteSeal.value);
+		mockOwnIps("10.42.10.100");
+		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
+			Contact neide = my(Contacts.class).contactGiven("Neide");
+			waitForSighting(neide, "10.42.10.100", 1234);
 			
 			my(Threads.class).crashAllThreads();
 		}});
@@ -134,17 +146,15 @@ public class StunClientTest extends BrickTestBase {
 			
 			assertEquals(2, replies.length);
 			clientInEnvironment.handle(asBuffer(replies[0]));
-//			if (other(client) != null)
-//				other(client).handle(asBuffer(replies[1]));
+			if (other(clientInEnvironment) != null)
+				other(clientInEnvironment).handle(asBuffer(replies[1]));
 		}});
 	}
 	
 	
-//	private StunClient other(StunClient client) {
-//		return client == neidesClient
-//			? remoteClient
-//			: neidesClient;
-//	}
+	private StunClient other(StunClient client) {
+		return client == client1 ? client2 : client1;
+	}
 
 
 	private void waitForSighting(Contact contact, String ip, int port) {
