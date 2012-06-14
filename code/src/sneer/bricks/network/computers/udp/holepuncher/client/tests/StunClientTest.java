@@ -75,7 +75,7 @@ public class StunClientTest extends BrickTestBase {
 			my(SignalUtils.class).waitForElement(sightings, new InetSocketAddress("10.42.10.1", 1234));
 		}});
 		
-		changeOwnIpsTo("10.42.10.50");
+		mockOwnIps("10.42.10.50");
 		
 		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
 			communicate(my(StunClient.class), my(StunServer.class));
@@ -147,15 +147,9 @@ public class StunClientTest extends BrickTestBase {
 	}
 	
 	private void mockOwnIps(String... ips) throws UnknownHostException {
+		myIps.clear();
 		for (int i = 0; i < ips.length; i++)
 			myIps.add(InetAddress.getByName(ips[i]));
-	}
-	
-	private void changeOwnIpsTo(String... ips) throws UnknownHostException {
-		for (InetAddress addr : myIps.output().currentElements().toArray(new InetAddress[0]))
-			myIps.remove(addr);
-		
-		mockOwnIps(ips);
 	}
 
 	private void setOwnPort(int value) {
