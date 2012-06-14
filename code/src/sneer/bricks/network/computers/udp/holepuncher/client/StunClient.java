@@ -9,6 +9,8 @@ import basis.lang.Consumer;
 @Brick
 public interface StunClient {
 
+	long REQUEST_PERIOD = 30 * 1000;
+
 	void initSender(Consumer<DatagramPacket> sender);
 
 	void handle(ByteBuffer stunPacket);

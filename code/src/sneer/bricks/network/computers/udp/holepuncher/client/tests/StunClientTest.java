@@ -12,6 +12,7 @@ import org.jmock.Expectations;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
@@ -33,20 +34,21 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import basis.brickness.testsupport.Bind;
 import basis.environments.Environment;
 import basis.environments.Environments;
-import basis.lang.ByRef;
+import basis.environments.ProxyInEnvironment;
 import basis.lang.ClosureX;
 import basis.lang.Consumer;
-import basis.util.concurrent.Latch;
 
 
 public class StunClientTest extends BrickTestBase {
 
-	private final SetRegister<InetAddress> myIps = my(CollectionSignals.class).newSetRegister();
-	@Bind private final OwnIps ownIps = mock(OwnIps.class);
+	@Bind private final OwnIps ownIpsMock = mock(OwnIps.class);
+	private final SetRegister<InetAddress> ownIps = my(CollectionSignals.class).newSetRegister();
+	private StunClient client1;
+	private StunClient client2;
 	
 	{
 		checking(new Expectations() {{
-			allowing(ownIps).get(); will(returnValue(myIps.output())); 
+			allowing(ownIpsMock).get(); will(returnValue(ownIps.output())); 
 		}});
 	}
 	
@@ -61,13 +63,13 @@ public class StunClientTest extends BrickTestBase {
 		
 		connect(my(StunClient.class), my(StunServer.class));
 		
-		Environment remote = newTestEnvironment(ownIps, my(StunServer.class));
+		Environment remote = newTestEnvironment(my(StunServer.class));
 		
 		final Seal seal = my(OwnSeal.class).get().currentValue();
 		
 		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
 			my(FolderConfig.class).storageFolder().set(newTmpFile("environment2"));
-			final Contact neide = my(Contacts.class).produceContact("Neide");
+			Contact neide = my(Contacts.class).produceContact("Neide");
 			my(ContactSeals.class).put("Neide", seal);
 			
 			connect(my(StunClient.class), my(StunServer.class));
@@ -78,15 +80,15 @@ public class StunClientTest extends BrickTestBase {
 		mockOwnIps("10.42.10.50");
 		
 		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
-			connect(my(StunClient.class), my(StunServer.class));
+			my(Clock.class).advanceTime(StunClient.REQUEST_PERIOD);
 			
-			final Contact neide = my(Contacts.class).contactGiven("Neide");
-
-			waitForSighting(neide, "10.42.10.1", 1234);
+			Contact neide = my(Contacts.class).contactGiven("Neide");
 			waitForSighting(neide, "10.42.10.50", 1234);
 			
 			my(Threads.class).crashAllThreads();
 		}});
+		
+		
 	}
 	
 	
@@ -115,7 +117,14 @@ public class StunClientTest extends BrickTestBase {
 	}
 	
 	
-	private void connect(final StunClient client, final StunServer server) {
+	private void connect(StunClient client, final StunServer server) {
+		final StunClient clientInEnvironment = ProxyInEnvironment.newInstance(client);
+		if (client1 == null) {
+			client1 = clientInEnvironment;
+		} else {
+			client2 = clientInEnvironment;
+		}
+		
 		client.initSender(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket request) {
 			assertEquals("dynamic.sneer.me", request.getAddress().getHostName());
 			assertEquals(7777, request.getPort());
@@ -124,11 +133,20 @@ public class StunClientTest extends BrickTestBase {
 			if (replies.length == 0) return;
 			
 			assertEquals(2, replies.length);
-			client.handle(asBuffer(replies[0]));
+			clientInEnvironment.handle(asBuffer(replies[0]));
+//			if (other(client) != null)
+//				other(client).handle(asBuffer(replies[1]));
 		}});
 	}
 	
 	
+//	private StunClient other(StunClient client) {
+//		return client == neidesClient
+//			? remoteClient
+//			: neidesClient;
+//	}
+
+
 	private void waitForSighting(Contact contact, String ip, int port) {
 		SetSignal<InetSocketAddress> sightings = my(SightingKeeper.class).sightingsOf(contact);
 		my(SignalUtils.class).waitForElement(sightings, new InetSocketAddress(ip, port));
@@ -141,9 +159,9 @@ public class StunClientTest extends BrickTestBase {
 	
 	
 	private void mockOwnIps(String... ips) throws UnknownHostException {
-		myIps.clear();
+		ownIps.clear();
 		for (int i = 0; i < ips.length; i++)
-			myIps.add(InetAddress.getByName(ips[i]));
+			ownIps.add(InetAddress.getByName(ips[i]));
 	}
 
 	

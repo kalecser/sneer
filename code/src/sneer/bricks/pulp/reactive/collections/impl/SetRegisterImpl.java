@@ -133,7 +133,9 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 
 	@Override
 	public void clear() {
-		change(new CollectionChangeImpl<T>(null, _contents));
+		synchronized (_contents) {
+			change(new CollectionChangeImpl<T>(null, _contents));
+		}
 	}
 
 }
