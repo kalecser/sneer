@@ -75,7 +75,8 @@ public class RadialGradientApp extends JFrame {
         JPanel panel = new JPanel(){
         	@Override
         	public void paint(Graphics g) {
-        		sphereComponent.paintComponent(g);
+        		boolean black = false;
+				sphereComponent.paintPiece(g, black);
         	}
         };
         add(panel);
@@ -132,20 +133,22 @@ public class RadialGradientApp extends JFrame {
     
     private int _width;
 	private int _height;
-//	Color bottomOvalHighlightOutterCollor = new Color(64, 142, 203, 255);
-//	Color centerGlow = 						 new Color(6, 76, 160, 127);
-//	Color overallColor =                       new Color(1,83,204,255);
+	
 	Color bottomOvalHighlightOutterCollor = new Color(64, 142, 203, 255);
 	Color centerGlow = 						 new Color(6, 76, 160, 127);
 	Color overallColor =                       new Color(1,83,204,255);
 	Color edges = new Color(0.0f, 0.0f, 0.0f, 0.8f);
 	
-	protected void paintComponent(Graphics g) {
+	protected void paintPiece(Graphics g, final boolean black) {
         Rectangle clipBounds = g.getClipBounds();
         _width = clipBounds.width;
         _height = clipBounds.height;
     	
-        whitePiecesColorSettings();
+        if(black){
+        	blackPiecesColorSettings();
+        }else{
+        	whitePiecesColorSettings();
+        }
         
         BufferedImage bufferedImage = new BufferedImage(_width, _height, BufferedImage.TYPE_INT_ARGB);
         
@@ -159,15 +162,15 @@ public class RadialGradientApp extends JFrame {
         paintBottomOvalHighlight(g2);
         paintTopLeftOvalSpecularHighlight(g2);
         
-//        ColorSpace instance = ColorSpace.getInstance(ColorSpace.CS_GRAY);
-//		ColorConvertOp colorConvert = new ColorConvertOp(instance, null);
-//        BufferedImage dest = new BufferedImage(_width, _height, BufferedImage.TYPE_INT_ARGB);
-//        colorConvert.filter(bufferedImage, dest);
-//        g.drawImage(dest, 0, 0, _width, _height, null);
-        
         g.drawImage(bufferedImage, 0, 0, _width, _height, null);
     }
 
+	private void blackPiecesColorSettings() {
+		bottomOvalHighlightOutterCollor = getSaturatedColor(bottomOvalHighlightOutterCollor);
+        centerGlow = getSaturatedColor(centerGlow);
+        overallColor = getSaturatedColor(overallColor);
+	}
+	
 	private void whitePiecesColorSettings() {
 		bottomOvalHighlightOutterCollor = getSaturatedColor(bottomOvalHighlightOutterCollor).brighter().brighter();
         centerGlow = getSaturatedColor(centerGlow);
