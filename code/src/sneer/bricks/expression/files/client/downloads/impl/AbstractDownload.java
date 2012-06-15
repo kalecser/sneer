@@ -175,21 +175,21 @@ abstract class AbstractDownload implements Download {
 	}
 
 
-	void finishWith(Exception e) {
+	protected void finishWith(Exception e) {
 		_exception = e;
 		my(Logger.class).log("Download failed with: {} message: {}", _exception.getClass(), _exception.getMessage());
 		finish();
 	}
 
 
-	void finishWithSuccess() throws IOException {
+	protected void finishWithSuccess() throws IOException {
 		my(DotParts.class).closeDotPart(_path, _lastModified);
 		updateFileMap();
 		finish();
 	}
 
 
-	void finish() {
+	private void finish() {
 		stopSendingRequests();
 		_isFinished.open();
 		_finished.setter().consume(true);
