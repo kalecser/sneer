@@ -184,7 +184,7 @@ public class GoBoardPanel extends JPanel{
 	}
 
 	private void createPainters() {
-		_cellSize = 40;
+		_cellSize = 60;
 		_boardImageSize = _cellSize*(_boardSize);
 		_boardImageRectangle.width =(int) _boardImageSize;
 		_boardImageRectangle.height =(int) _boardImageSize;
