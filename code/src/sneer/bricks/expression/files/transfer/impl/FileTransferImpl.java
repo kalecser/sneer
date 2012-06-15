@@ -33,12 +33,13 @@ public class FileTransferImpl implements FileTransfer {
 
 	private final Notifier<FileTransferSugestion> _sugestionHandlers = my(Notifiers.class).newInstance();
 	@SuppressWarnings("unused")
-	private WeakContract ref, ref2, ref3;
+	private WeakContract ref1, ref2, ref3;
 	private Map<FileTransferSugestion, File> filesBySugestion = new LinkedHashMap<FileTransferSugestion, File>();
 
+	
 	{
 		my(FileServer.class);
-		ref = my(RemoteTuples.class).addSubscription(FileTransferSugestion.class, new Consumer<FileTransferSugestion>(){  @Override public void consume(FileTransferSugestion sugestion) {
+		ref1 = my(RemoteTuples.class).addSubscription(FileTransferSugestion.class, new Consumer<FileTransferSugestion>(){  @Override public void consume(FileTransferSugestion sugestion) {
 			_sugestionHandlers.notifyReceivers(sugestion);
 		}});
 		
@@ -51,6 +52,7 @@ public class FileTransferImpl implements FileTransfer {
 		}});
 	}
 	
+	
 	@Override
 	public void tryToSend(File fileOrFolder, Seal peer) {
 		FileTransferSugestion sugestion = new FileTransferSugestion(peer, fileOrFolder.getName(), fileOrFolder.isDirectory(), fileOrFolder.lastModified());
@@ -58,21 +60,26 @@ public class FileTransferImpl implements FileTransfer {
 		filesBySugestion.put(sugestion, fileOrFolder);
 	}
 
+	
 	protected File getFile(FileTransferAccept accept) {
 		return filesBySugestion.get(accept.sugestion);
 	}
 
+	
 	@Override
 	public WeakContract registerHandler(Consumer<FileTransferSugestion> sugestionHandler) {
 		return _sugestionHandlers.output().addReceiver(sugestionHandler);
 	}
 
+	
 	@Override
 	public void accept(FileTransferSugestion sugestion) {
 		my(TupleSpace.class).add(new FileTransferAccept(sugestion));
 	}
 
+	
 	private void handleAccept(FileTransferAccept accept) {
+//		if (!isValid(accept)) return;
 		File file = getFile(accept);
 		Hash hash = map(file);
 		if (hash == null)
@@ -80,6 +87,16 @@ public class FileTransferImpl implements FileTransfer {
 		my(TupleSpace.class).add(new FileTransferDetails(accept, hash));
 	}
 	
+	
+//	private boolean isValid(FileTransferAccept accept) {
+//		Tuple sugestion = accept.sugestion;
+//		if (!sugestion.publisher.equals(my(OwnSeal.class).get().currentValue())) return false;
+//		if (!sugestion.addressee.equals(accept.publisher)) return false;
+//		
+//		return my(TupleSpace.class).contains(sugestion);
+//	}
+
+
 	private void handleDetails(FileTransferDetails details) {
 		FileTransferSugestion sugestion = details.accept.sugestion;
 		File destination = new File(downloadFolder(), sugestion.fileOrFolderName);
