@@ -1,6 +1,9 @@
 package sneer.bricks.network.computers.addresses.own.impl;
 
 import static basis.environments.Environments.my;
+import static sneer.bricks.pulp.blinkinglights.LightType.ERROR;
+import static sneer.bricks.pulp.blinkinglights.LightType.INFO;
+import static sneer.bricks.pulp.blinkinglights.LightType.WARNING;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -15,17 +18,24 @@ import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.network.computers.addresses.own.OwnIps;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
-import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import basis.lang.Closure;
+import basis.lang.Consumer;
 
 public class OwnIpsImpl implements OwnIps {
 
 	private static final long TWO_MINUTES = 1000 * 60 * 2;
 	private SetRegister<InetAddress> ownIps = my(CollectionSignals.class).newSetRegister();
-	private Light light = my(BlinkingLights.class).prepare(LightType.ERROR);
+	private Light error = my(BlinkingLights.class).prepare(ERROR);
+	private Light noIpsFound = my(BlinkingLights.class).prepare(WARNING);
+	
+	@SuppressWarnings("unused")
+	private final Object refToAvoidGC = ownIps.output().addReceiver(new Consumer<CollectionChange<InetAddress>>() { @Override public void consume(CollectionChange<InetAddress> change) {
+		log(change);
+	}});
 
 	{
 		update();
@@ -40,7 +50,16 @@ public class OwnIpsImpl implements OwnIps {
 		return ownIps.output();
 	}
 
+	
+	private void log(CollectionChange<InetAddress> change) {
+		for (InetAddress addr : change.elementsAdded())
+			my(BlinkingLights.class).turnOn(INFO, "IP " + addr.getHostAddress() + " found", "Your machine can receive connections on this IP address.", 7000);			
+		
+		for (InetAddress addr : change.elementsRemoved())
+			my(BlinkingLights.class).turnOn(INFO, "IP " + addr.getHostAddress() + " removed", "Your machine can no longer receive connections on this IP", 7000);
+	}
 
+	
 	private void update() {
 		Collection<InetAddress> currentIps = findOwnIps();
 		for (InetAddress old : ownIps.output())
@@ -52,14 +71,22 @@ public class OwnIpsImpl implements OwnIps {
 
 
 	private Collection<InetAddress> findOwnIps() {
+		Collection<InetAddress> ret;
+		
 		try {
-			Collection<InetAddress> ret = tryToFindOwnIps();
-			my(BlinkingLights.class).turnOffIfNecessary(light);
-			return ret;
+			ret = tryToFindOwnIps();
+			my(BlinkingLights.class).turnOffIfNecessary(error);
 		} catch (SocketException e) {
-			my(BlinkingLights.class).turnOnIfNecessary(light, "Network Error", e);
+			my(BlinkingLights.class).turnOnIfNecessary(error, "Error searching for IPs", e);
 			return Collections.EMPTY_LIST;
 		}
+		
+		if(ret.isEmpty())
+			my(BlinkingLights.class).turnOnIfNecessary(noIpsFound, "No IPs found", "No IPv4 address found on this machine. Check your network settings.");
+		else 
+			my(BlinkingLights.class).turnOffIfNecessary(noIpsFound);
+		
+		return ret;
 	}
 
 
