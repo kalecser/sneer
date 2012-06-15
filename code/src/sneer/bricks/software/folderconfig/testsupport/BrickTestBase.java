@@ -32,8 +32,7 @@ public abstract class BrickTestBase extends BrickTestWithThreads {
 		environments.clear();
 	}
 	
-	@Override
-	protected Environment newTestEnvironment(Object... bindings) {
+	protected Environment newSpecialTestEnvironment(Object... bindings) {
 		Environment ret = super.newTestEnvironment(bindings);
 		configureStorageFolder(ret, "environmentData" + environments.size());
 		configureTmpFolder(ret, "environmentTmp" + environments.size());

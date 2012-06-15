@@ -61,7 +61,7 @@ public class StunClientTest extends BrickTestBase {
 		
 		final Seal seal = my(OwnSeal.class).get().currentValue();
 		
-		Environment remote = newTestEnvironment(my(StunServer.class));
+		Environment remote = newSpecialTestEnvironment(my(StunServer.class));
 		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
 			Contact neide = my(Contacts.class).produceContact("Neide");
 			my(ContactSeals.class).put("Neide", seal);
