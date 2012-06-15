@@ -62,12 +62,6 @@ public class StonePainter {
 					0, 0, stoneRadius, diameter,
 					null);
 		
-		if (x==boardSize)
-			graphics.drawImage(pieceToDraw, 
-					0, offsetY, stoneRadius, offsetY+diameter,
-					stoneRadius, 0, diameter, diameter,
-					null);
-		
 		if (y==0)
 			graphics.drawImage(pieceToDraw, 
 					offsetX, boardSize-stoneRadius, offsetX+diameter, boardSize,
