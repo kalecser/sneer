@@ -9,11 +9,9 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
 import org.jmock.Expectations;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
-import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -29,7 +27,6 @@ import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import basis.brickness.testsupport.Bind;
 import basis.environments.Environment;
@@ -47,36 +44,35 @@ public class StunClientTest extends BrickTestBase {
 	private StunClient client1;
 	private StunClient client2;
 	
+
 	{
 		checking(new Expectations() {{
 			allowing(ownIpsMock).get(); will(returnValue(ownIps.output())); 
 		}});
 	}
 	
-	
-	@Ignore @Test public void noOwnIp() {}
-	
-	
+
 	@Test(timeout = 2000)
 	public void ownIpsChange() throws Exception {
-		mockOwnIps("10.42.10.1");
+		mockOwnIps("10.42.10.1", "10.42.10.2");
 		setOwnPort(1234);
 		
 		connect(my(StunClient.class), my(StunServer.class));
 		
-		Environment remote = newTestEnvironment(my(StunServer.class));
-		
 		final Seal seal = my(OwnSeal.class).get().currentValue();
 		
+		Environment remote = newTestEnvironment(my(StunServer.class));
 		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
-			my(FolderConfig.class).storageFolder().set(newTmpFile("environment2"));
 			Contact neide = my(Contacts.class).produceContact("Neide");
 			my(ContactSeals.class).put("Neide", seal);
 			
 			connect(my(StunClient.class), my(StunServer.class));
 			
 			waitForSighting(neide, "10.42.10.1", 1234);
+			waitForSighting(neide, "10.42.10.2", 1234);
 		}});
+		
+		//Test that requests are sent periodically:
 		
 		mockOwnIps("10.42.10.50");
 
@@ -89,6 +85,8 @@ public class StunClientTest extends BrickTestBase {
 			
 			remoteSeal.value = my(OwnSeal.class).get().currentValue();
 		}});
+		
+		//Test that known peers are notified:
 
 		my(Contacts.class).produceContact("Remote");
 		my(ContactSeals.class).put("Remote", remoteSeal.value);
@@ -96,39 +94,10 @@ public class StunClientTest extends BrickTestBase {
 		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
 			Contact neide = my(Contacts.class).contactGiven("Neide");
 			waitForSighting(neide, "10.42.10.100", 1234);
-			
-			my(Threads.class).crashAllThreads();
-		}});
-		
-		
-	}
-	
-	
-	@Test(timeout = 2000)
-	public void stunRequest() throws Exception {
-		mockOwnIps("10.42.10.1", "10.42.10.27");
-		setOwnPort(1234);
-		
-		connect(my(StunClient.class), my(StunServer.class));
-		
-		final Seal seal = my(OwnSeal.class).get().currentValue();
-		
-		Environments.runWith(newTestEnvironment(my(StunServer.class)), new ClosureX<Exception>() { @Override public void run() throws Exception {
-			my(FolderConfig.class).storageFolder().set(newTmpFile("environment2"));
-			
-			Contact neide = my(Contacts.class).produceContact("Neide");
-			my(ContactSeals.class).put("Neide", seal);
-			
-			connect(my(StunClient.class), my(StunServer.class));
-			
-			waitForSighting(neide, "10.42.10.1", 1234);
-			waitForSighting(neide, "10.42.10.27", 1234);
-			
-			my(Threads.class).crashAllThreads();
 		}});
 	}
 	
-	
+
 	private void connect(StunClient client, final StunServer server) {
 		final StunClient clientInEnvironment = ProxyInEnvironment.newInstance(client);
 		if (client1 == null) {
