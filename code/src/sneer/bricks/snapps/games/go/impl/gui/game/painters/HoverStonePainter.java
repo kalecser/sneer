@@ -1,6 +1,5 @@
 package sneer.bricks.snapps.games.go.impl.gui.game.painters;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
@@ -30,11 +29,13 @@ public class HoverStonePainter{
 	public void draw(final Graphics2D graphics, final GoBoard _board){
 		if (!_board.canPlayStone(unscrollX(_hoverX,_xOffsetMeasuredByPieces), unscrollY(_hoverY, _yOffsetMeasuredByPieces))) return;
 
-		if(_board.nextToPlay() == StoneColor.BLACK) graphics.setColor(new Color(0, 0, 0, 50));
-		else graphics.setColor(new Color(255, 255, 255, 90));
+		boolean black = false;
+		
+		if(_board.nextToPlay() == StoneColor.BLACK) 
+			black = true;
 			
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		_stonePainter.paintStoneOnCoordinates(graphics, toCoordinateSmall(_hoverX), toCoordinateSmall(_hoverY), false);
+		_stonePainter.paintStoneOnCoordinates(graphics, toCoordinateSmall(_hoverX), toCoordinateSmall(_hoverY),black,true, false);
 	}
 
 	public void setOffset(int xOffsetMeasuredByPieces, int yOffsetMeasuredByPieces) {

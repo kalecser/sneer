@@ -31,73 +31,42 @@
 package sneer.bricks.snapps.games.go.impl.gui.game.painters;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GradientPaint;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.RadialGradientPaint;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 /**
  *
  * @author Romain Guy
  */
  public class PiecePainter{
-
-	public static void main(String... args) {
-		
-		showPiece(false);
-		showPiece(true);
-
-	}
-
-	private static void showPiece(final boolean black) {
-		JFrame demo = new JFrame();
-		final PiecePainter sphereComponent = new PiecePainter();
-
-		JPanel panel = new JPanel() {
-			@Override
-			public void paint(Graphics g) {
-				sphereComponent.paintPiece(g, black);
-			}
-		};
-		demo.add(panel);
-		demo.setSize(new Dimension(120, 120));
-		demo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		demo.setVisible(true);
-	}
 	
     private int _width;
 	private int _height;
 	
-	Color bottomOvalHighlightOutterCollor = new Color(64, 142, 203, 255);
-	Color centerGlow = 						 new Color(6, 76, 160, 127);
-	Color overallColor =                       new Color(1,83,204,255);
-	Color edges = new Color(0.0f, 0.0f, 0.0f, 0.8f);
+	Color bottomOvalHighlightOutterCollor;
+	Color centerGlow;
+	Color overallColor;
+	Color edges;
 	
-	protected void paintPiece(Graphics g, final boolean black) {
-        Rectangle clipBounds = g.getClipBounds();
-        _width = clipBounds.width;
-        _height = clipBounds.height;
+	protected void paintPiece(BufferedImage image, final boolean black) {
+        _width = image.getWidth();
+        _height = image.getHeight();
+        Graphics2D g2 = (Graphics2D)image.getGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     	
+        defaultColorSettings();
         if(black){
         	blackPiecesColorSettings();
         }else{
         	whitePiecesColorSettings();
         }
         
-        BufferedImage bufferedImage = new BufferedImage(_width, _height, BufferedImage.TYPE_INT_ARGB);
-        
-        Graphics2D g2 = (Graphics2D) bufferedImage.getGraphics();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
         fillCircle(g2);
         paintTopShadow(g2); 
@@ -105,9 +74,14 @@ import javax.swing.JPanel;
         paintDarkEdges(g2);
         paintBottomOvalHighlight(g2);
         paintTopLeftOvalSpecularHighlight(g2);
-        
-        g.drawImage(bufferedImage, 0, 0, _width, _height, null);
     }
+
+	private void defaultColorSettings() {
+		bottomOvalHighlightOutterCollor = new Color(64, 142, 203, 255);
+		centerGlow = 						 new Color(6, 76, 160, 127);
+		overallColor =                       new Color(1,83,204,255);
+		edges = new Color(0.0f, 0.0f, 0.0f, 0.8f);
+	}
 
 	private void blackPiecesColorSettings() {
 		bottomOvalHighlightOutterCollor = getSaturatedColor(bottomOvalHighlightOutterCollor);
