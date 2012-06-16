@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.After;
 
 import sneer.bricks.hardware.cpu.threads.tests.BrickTestWithThreads;
+import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.software.folderconfig.FolderConfig;
 import basis.environments.Environment;
 import basis.environments.Environments;
@@ -32,7 +33,8 @@ public abstract class BrickTestBase extends BrickTestWithThreads {
 		environments.clear();
 	}
 	
-	protected Environment newSpecialTestEnvironment(Object... bindings) {
+	@Override
+	protected Environment newTestEnvironment(Object... bindings) {
 		Environment ret = super.newTestEnvironment(bindings);
 		configureStorageFolder(ret, "environmentData" + environments.size());
 		configureTmpFolder(ret, "environmentTmp" + environments.size());
@@ -42,13 +44,15 @@ public abstract class BrickTestBase extends BrickTestWithThreads {
 
 	protected void configureStorageFolder(Environment environment, final String folderName) {
 		Environments.runWith(environment, new Closure() { @Override public void run() {
-			my(FolderConfig.class).storageFolder().set(new File(tmpFolderName(), folderName));
+			ImmutableReference<File> storageFolder = my(FolderConfig.class).storageFolder();
+			if(!storageFolder.isAlreadySet()) storageFolder.set(new File(tmpFolderName(), folderName));
 		}});
 	}
 
 	protected void configureTmpFolder(Environment environment, final String folderName) {
 		Environments.runWith(environment, new Closure() { @Override public void run() {
-			my(FolderConfig.class).tmpFolder().set(new File(tmpFolderName(), folderName));
+			ImmutableReference<File> tmpFolder = my(FolderConfig.class).tmpFolder();
+			if(!tmpFolder.isAlreadySet()) tmpFolder.set(new File(tmpFolderName(), folderName));
 		}});
 	}
 

@@ -57,8 +57,6 @@ public abstract class BrickTestWithTuples extends BrickTestBase {
 
 	private void initRemoteEnviromentWith(Object... bindings) {
 		_remote = newTestEnvironment(bindings);
-		configureStorageFolder(_remote, "remote/data");
-		configureTmpFolder(_remote, "remote/tmp");
 		connectLocalToRemote();
 	}
 
