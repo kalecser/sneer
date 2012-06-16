@@ -140,7 +140,7 @@ class FileDownload extends AbstractDownload {
 
 
 	private boolean readyToFinish() {
-		return _nextBlockToWrite >= _fileSizeInBlocks;
+		return _nextBlockToWrite == _fileSizeInBlocks;
 	}
 
 	

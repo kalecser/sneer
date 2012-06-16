@@ -29,6 +29,7 @@ abstract class AbstractDownload implements Download {
 
 	private static int ACTIVITY_TIMEOUT = 60 * 1000;
 	private static int DURATION_TIMEOUT = 30 * 60 * 1000;
+	private static boolean IGNORE_DURATION_TIMEOUT = true;
 
 	static final int REQUEST_INTERVAL = 15 * 1000;
 	
@@ -175,21 +176,21 @@ abstract class AbstractDownload implements Download {
 	}
 
 
-	void finishWith(Exception e) {
+	protected void finishWith(Exception e) {
 		_exception = e;
 		my(Logger.class).log("Download failed with: {} message: {}", _exception.getClass(), _exception.getMessage());
 		finish();
 	}
 
 
-	void finishWithSuccess() throws IOException {
+	protected void finishWithSuccess() throws IOException {
 		my(DotParts.class).closeDotPart(_path, _lastModified);
 		updateFileMap();
 		finish();
 	}
 
 
-	void finish() {
+	private void finish() {
 		stopSendingRequests();
 		_isFinished.open();
 		_finished.setter().consume(true);
@@ -239,6 +240,7 @@ abstract class AbstractDownload implements Download {
 
 
 	private void checkForDurationTimeOut() {
+		if (IGNORE_DURATION_TIMEOUT) return;
 		Long currentTime = my(Clock.class).time().currentValue();
 		if (currentTime - _startTime > DURATION_TIMEOUT) timeout("Duration");
 	}

@@ -9,7 +9,7 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -32,17 +32,25 @@ class StunClientImpl implements StunClient {
 	
 	private Consumer<DatagramPacket> sender;
 	
-	@SuppressWarnings("unused") private final WeakContract refToAvoidGC = my(OwnIps.class).get().addPulseReceiver(new Closure() { @Override public void run() {
-		sendLocalAddressData();
+	@SuppressWarnings("unused") private final Object ref1 =
+	my(OwnIps.class).get().addPulseReceiver(new Closure() { @Override public void run() {
+		sendRequest();
+	}});
+	@SuppressWarnings("unused") private final Object ref2 =
+	my(Timer.class).wakeUpEvery(StunClient.REQUEST_PERIOD, new Closure() {  @Override public void run() {
+		sendRequest();
 	}});
 
+	
 	@Override
 	public void initSender(Consumer<DatagramPacket> sender) {
+		if (this.sender != null) throw new IllegalStateException();
 		this.sender = sender;
-		sendLocalAddressData();
+		sendRequest();
 	}
 
-	private void sendLocalAddressData() {
+	
+	private void sendRequest() {
 		if(sender == null) return;
 		
 		InetAddress serverAddress = my(StunServer.class).inetAddress();
@@ -58,6 +66,7 @@ class StunClientImpl implements StunClient {
 		sender.consume(packet);
 	}
 
+	
 	private byte[][] peersToFind() {
 		Contact[] contacts = my(Contacts.class).contacts().currentElements().toArray(new Contact[0]);
 		byte[][] peersSeals = new byte[contacts.length][];
@@ -68,10 +77,12 @@ class StunClientImpl implements StunClient {
 		return peersSeals;
 	}
 
+	
 	private int ownPort() {
 		return my(Attributes.class).myAttributeValue(OwnPort.class).currentValue();
 	}
 
+	
 	private byte[] localAddressesData() {
 		Collection<InetAddress> ownIps = my(OwnIps.class).get().currentElements();
 		ByteBuffer buf = ByteBuffer.allocate(2 + 1 + (ownIps.size() * 4)); //Port + Length + ips * 4
@@ -85,15 +96,18 @@ class StunClientImpl implements StunClient {
 		return buf.array();
 	}
 
+	
 	private byte[] ownSeal() {
 		return my(OwnSeal.class).get().currentValue().bytes.copy();
 	}
 
+	
 	@Override
 	public void handle(ByteBuffer replyPacket) {
 		StunReply reply = my(StunProtocol.class).unmarshalReply(replyPacket.array(), replyPacket.limit());
 		
 		Contact contact = my(ContactSeals.class).contactGiven(new Seal(reply.peerSeal));
+		if (contact == null) return;
 		
 		ByteBuffer buf = ByteBuffer.wrap(reply.peerLocalAddressData);
 		int localPort = buf.getChar(); 
@@ -105,6 +119,7 @@ class StunClientImpl implements StunClient {
 		}
 	}
 	
+	
 	private static InetAddress ip(byte[] bytes) {
 		try {
 			return InetAddress.getByAddress(bytes);
@@ -113,10 +128,12 @@ class StunClientImpl implements StunClient {
 		}
 	}
 	
+	
 	private static byte[] getNextArray(ByteBuffer in, int length) {
 		if (!in.hasRemaining()) return null;
 		byte[] ret = new byte[length];
 		in.get(ret);
 		return ret;
 	}
+	
 }

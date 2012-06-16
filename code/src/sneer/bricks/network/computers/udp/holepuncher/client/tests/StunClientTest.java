@@ -9,10 +9,9 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
 import org.jmock.Expectations;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -28,117 +27,108 @@ import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
-import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import basis.brickness.testsupport.Bind;
 import basis.environments.Environment;
 import basis.environments.Environments;
+import basis.environments.ProxyInEnvironment;
 import basis.lang.ByRef;
 import basis.lang.ClosureX;
 import basis.lang.Consumer;
-import basis.util.concurrent.Latch;
 
 
 public class StunClientTest extends BrickTestBase {
 
-	private final SetRegister<InetAddress> myIps = my(CollectionSignals.class).newSetRegister();
-	@Bind private final OwnIps ownIps = mock(OwnIps.class);
+	@Bind private final OwnIps ownIpsMock = mock(OwnIps.class);
+	private final SetRegister<InetAddress> ownIps = my(CollectionSignals.class).newSetRegister();
+	private StunClient client1;
+	private StunClient client2;
 	
+
 	{
 		checking(new Expectations() {{
-			allowing(ownIps).get(); will(returnValue(myIps.output())); 
+			allowing(ownIpsMock).get(); will(returnValue(ownIps.output())); 
 		}});
 	}
 	
-	@Ignore @Test public void noOwnIp() {}
-	
+
 	@Test(timeout = 2000)
 	public void ownIpsChange() throws Exception {
-		mockOwnIps("10.42.10.1");
+		mockOwnIps("10.42.10.1", "10.42.10.2");
 		setOwnPort(1234);
 		
-		communicate(my(StunClient.class), my(StunServer.class));
-		
-		Environment remote = newTestEnvironment(ownIps, my(StunServer.class));
+		connect(my(StunClient.class), my(StunServer.class));
 		
 		final Seal seal = my(OwnSeal.class).get().currentValue();
 		
+		Environment remote = newSpecialTestEnvironment(my(StunServer.class));
 		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
-			my(FolderConfig.class).storageFolder().set(newTmpFile("environment2"));
-			
-			final Contact neide = my(Contacts.class).produceContact("Neide");
+			Contact neide = my(Contacts.class).produceContact("Neide");
 			my(ContactSeals.class).put("Neide", seal);
 			
-			communicate(my(StunClient.class), my(StunServer.class));
+			connect(my(StunClient.class), my(StunServer.class));
 			
-			SetSignal<InetSocketAddress> sightings = my(SightingKeeper.class).sightingsOf(neide);
-			my(SignalUtils.class).waitForElement(sightings, new InetSocketAddress("10.42.10.1", 1234));
+			waitForSighting(neide, "10.42.10.1", 1234);
+			waitForSighting(neide, "10.42.10.2", 1234);
 		}});
+		
+		//Test that requests are sent periodically:
 		
 		mockOwnIps("10.42.10.50");
-		
-		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
-			communicate(my(StunClient.class), my(StunServer.class));
-			
-			InetSocketAddress sighting1 = new InetSocketAddress("10.42.10.1", 1234);
-			InetSocketAddress sighting2 = new InetSocketAddress("10.42.10.50", 1234);
-			
-			final Contact neide = my(Contacts.class).contactGiven("Neide");
-			
-			SetSignal<InetSocketAddress> sightings = my(SightingKeeper.class).sightingsOf(neide);
-			my(SignalUtils.class).waitForElement(sightings, sighting1);
-			my(SignalUtils.class).waitForElement(sightings, sighting2);
-			
-			my(Threads.class).crashAllThreads();
-		}});
-	}
-	
-	@Test(timeout = 2000)
-	public void stunRequest() throws Exception {
-		mockOwnIps("10.42.10.1", "10.42.10.27");
-		setOwnPort(1234);
-		
-		communicate(my(StunClient.class), my(StunServer.class));
-		
-		final Seal seal = my(OwnSeal.class).get().currentValue();
-		
-		Environments.runWith(newTestEnvironment(ownIps, my(StunServer.class)), new ClosureX<Exception>() { @Override public void run() throws Exception {
-			my(FolderConfig.class).storageFolder().set(newTmpFile("environment2"));
-			
-			final Contact neide = my(Contacts.class).produceContact("Neide");
-			my(ContactSeals.class).put("Neide", seal);
-			
-			mockOwnIps("192.168.10.1", "192.168.10.27");
-			setOwnPort(3412);
-			
-			communicate(my(StunClient.class), my(StunServer.class));
-			
-			InetSocketAddress sighting1 = new InetSocketAddress("10.42.10.1", 1234);
-			InetSocketAddress sighting2 = new InetSocketAddress("10.42.10.27", 1234);
-			
-			SetSignal<InetSocketAddress> sightings = my(SightingKeeper.class).sightingsOf(neide);
-			my(SignalUtils.class).waitForElement(sightings, sighting1);
-			my(SignalUtils.class).waitForElement(sightings, sighting2);
-			
-			my(Threads.class).crashAllThreads();
-		}});
-	}
-	
-	private void communicate(final StunClient client, final StunServer server) {
-		final ByRef<DatagramPacket[]> replies = ByRef.newInstance();
-		final Latch latch = new Latch();
-		client.initSender(new Consumer<DatagramPacket>() {  @Override public void consume(DatagramPacket packet) {
-			assertEquals("dynamic.sneer.me", packet.getAddress().getHostName());
-			assertEquals(7777, packet.getPort());
-			replies.value = server.repliesFor(packet);
-			latch.open();
-		}});
-		latch.waitTillOpen();
 
-		if (replies.value.length == 0) return;
+		final ByRef<Seal> remoteSeal = ByRef.newInstance();
+		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
+			my(Clock.class).advanceTime(StunClient.REQUEST_PERIOD);
+			
+			Contact neide = my(Contacts.class).contactGiven("Neide");
+			waitForSighting(neide, "10.42.10.50", 1234);
+			
+			remoteSeal.value = my(OwnSeal.class).get().currentValue();
+		}});
 		
-		assertEquals(2, replies.value.length);
-		my(StunClient.class).handle(asBuffer(replies.value[0]));
+		//Test that known peers are notified:
+
+		my(Contacts.class).produceContact("Remote");
+		my(ContactSeals.class).put("Remote", remoteSeal.value);
+		mockOwnIps("10.42.10.100");
+		Environments.runWith(remote, new ClosureX<Exception>() { @Override public void run() throws Exception {
+			Contact neide = my(Contacts.class).contactGiven("Neide");
+			waitForSighting(neide, "10.42.10.100", 1234);
+		}});
+	}
+	
+
+	private void connect(StunClient client, final StunServer server) {
+		final StunClient clientInEnvironment = ProxyInEnvironment.newInstance(client);
+		if (client1 == null) {
+			client1 = clientInEnvironment;
+		} else {
+			client2 = clientInEnvironment;
+		}
+		
+		client.initSender(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket request) {
+			assertEquals("dynamic.sneer.me", request.getAddress().getHostName());
+			assertEquals(7777, request.getPort());
+			
+			DatagramPacket[] replies = server.repliesFor(request);
+			if (replies.length == 0) return;
+			
+			assertEquals(2, replies.length);
+			clientInEnvironment.handle(asBuffer(replies[0]));
+			if (other(clientInEnvironment) != null)
+				other(clientInEnvironment).handle(asBuffer(replies[1]));
+		}});
+	}
+	
+	
+	private StunClient other(StunClient client) {
+		return client == client1 ? client2 : client1;
+	}
+
+
+	private void waitForSighting(Contact contact, String ip, int port) {
+		SetSignal<InetSocketAddress> sightings = my(SightingKeeper.class).sightingsOf(contact);
+		my(SignalUtils.class).waitForElement(sightings, new InetSocketAddress(ip, port));
 	}
 
 	
@@ -146,12 +136,14 @@ public class StunClientTest extends BrickTestBase {
 		return ByteBuffer.wrap(packet.getData(), 0, packet.getLength());
 	}
 	
+	
 	private void mockOwnIps(String... ips) throws UnknownHostException {
-		myIps.clear();
+		ownIps.clear();
 		for (int i = 0; i < ips.length; i++)
-			myIps.add(InetAddress.getByName(ips[i]));
+			ownIps.add(InetAddress.getByName(ips[i]));
 	}
 
+	
 	private void setOwnPort(int value) {
 		my(Attributes.class).myAttributeSetter(OwnPort.class).consume(value);
 	}
