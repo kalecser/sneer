@@ -42,8 +42,8 @@ public class StonesInPlayPainter {
 			else return;
 		}
 		
-		float cx = _cellSize*x;		
-		float cy = _cellSize*y;		
+		int cx = (int) (_cellSize*x);		
+		int cy = (int) (_cellSize*y);		
 	
 		boolean black = (color == StoneColor.BLACK);
 				

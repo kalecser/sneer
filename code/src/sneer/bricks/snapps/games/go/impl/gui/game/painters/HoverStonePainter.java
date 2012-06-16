@@ -51,8 +51,8 @@ public class HoverStonePainter{
 		_hoverY = hoverY;
 	}
 
-	private float toCoordinateSmall(int position) {
-		return position * _cellSize;
+	private int toCoordinateSmall(int position) {
+		return (int) (position * _cellSize);
 	}
 	
 	private int unscrollX(int x,int _scrollX) { 
