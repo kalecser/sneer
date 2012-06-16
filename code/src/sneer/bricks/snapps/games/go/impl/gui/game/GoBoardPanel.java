@@ -130,8 +130,8 @@ public class GoBoardPanel extends JPanel{
 	public void paint(final Graphics graphics) {
 		Graphics2D buffer = getBuffer();
 		_boardPainter.draw(buffer);
-		_hoverStonePainter.draw(buffer, _board);
 		_stonesInPlayPainter.draw(buffer, _board);
+		_hoverStonePainter.draw(buffer, _board);
 		drawBoardTiled(graphics);
 		_darkBorderPainter.draw(graphics);
 		_hudPainter.draw(graphics);
@@ -184,7 +184,7 @@ public class GoBoardPanel extends JPanel{
 	}
 
 	private void createPainters() {
-		_cellSize = 40;
+		_cellSize = 60;
 		_boardImageSize = _cellSize*(_boardSize);
 		_boardImageRectangle.width =(int) _boardImageSize;
 		_boardImageRectangle.height =(int) _boardImageSize;
@@ -283,10 +283,10 @@ public class GoBoardPanel extends JPanel{
 		while(clipBounds.intersects(_boardImageRectangle)){
 			while(clipBounds.intersects(_boardImageRectangle)){
 				graphics.drawImage(_bufferImage, _boardImageRectangle.x, _boardImageRectangle.y, this);
-				_boardImageRectangle.x += (_boardImageSize+1);
+				_boardImageRectangle.x += (_boardImageSize);
 			}
 			_boardImageRectangle.x = _xOffset;
-			_boardImageRectangle.y += (_boardImageSize+1);
+			_boardImageRectangle.y += (_boardImageSize);
 		}
 	}
 	

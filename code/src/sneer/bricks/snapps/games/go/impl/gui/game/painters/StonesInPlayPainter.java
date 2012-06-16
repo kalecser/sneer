@@ -31,7 +31,8 @@ public class StonesInPlayPainter {
 
 	private void paintStoneOnPosition(Graphics2D graphics,final GoBoard _board, int x, int y) {
 		StoneColor color = _board.stoneAt(x, y);
-		boolean dead=false;
+		boolean transparent = false;
+		boolean dead=transparent;
 		if (color == null) {
 			if (_board.nextToPlay()==null) {
 				color = _board.getPrevColor(x, y);
@@ -41,12 +42,14 @@ public class StonesInPlayPainter {
 			else return;
 		}
 		
-		float cx = _cellSize*x;		
-		float cy = _cellSize*y;		
+		int cx = (int) (_cellSize*x);		
+		int cy = (int) (_cellSize*y);		
 	
+		boolean black = (color == StoneColor.BLACK);
+				
 		graphics.setColor(toAwtColor(color));
 
-		_stonePainter.paintStoneOnCoordinates(graphics, cx, cy, dead);
+		_stonePainter.paintStoneOnCoordinates(graphics, cx, cy,black,transparent, dead);
 	}
 
 	private Color toAwtColor(StoneColor color) {
