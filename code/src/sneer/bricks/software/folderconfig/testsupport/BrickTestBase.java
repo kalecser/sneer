@@ -21,8 +21,7 @@ public abstract class BrickTestBase extends BrickTestWithThreads {
 	private final List<Environment> environments = new ArrayList<Environment>();
 
 	{
-		my(FolderConfig.class).storageFolder().set(new File(tmpFolderName(), "data"));
-		my(FolderConfig.class).tmpFolder()    .set(new File(tmpFolderName(), "tmp" ));
+		configureStorageFoldersIfNecessary();
 	}
 	
 	@After
@@ -36,24 +35,28 @@ public abstract class BrickTestBase extends BrickTestWithThreads {
 	@Override
 	protected Environment newTestEnvironment(Object... bindings) {
 		Environment ret = super.newTestEnvironment(bindings);
-		configureStorageFolder(ret, "environmentData" + environments.size());
-		configureTmpFolder(ret, "environmentTmp" + environments.size());
+		Environments.runWith(ret, new Closure() { @Override public void run() {
+			configureStorageFoldersIfNecessary();
+		}});
 		environments.add(ret);
 		return ret;
 	}
 
-	protected void configureStorageFolder(Environment environment, final String folderName) {
-		Environments.runWith(environment, new Closure() { @Override public void run() {
-			ImmutableReference<File> storageFolder = my(FolderConfig.class).storageFolder();
-			if(!storageFolder.isAlreadySet()) storageFolder.set(new File(tmpFolderName(), folderName));
-		}});
+	
+	private void configureStorageFoldersIfNecessary() {
+		configureIfNecessary(my(FolderConfig.class).storageFolder(), "data");
+		configureIfNecessary(my(FolderConfig.class).tmpFolder(), "tmp");
 	}
 
-	protected void configureTmpFolder(Environment environment, final String folderName) {
-		Environments.runWith(environment, new Closure() { @Override public void run() {
-			ImmutableReference<File> tmpFolder = my(FolderConfig.class).tmpFolder();
-			if(!tmpFolder.isAlreadySet()) tmpFolder.set(new File(tmpFolderName(), folderName));
-		}});
+	
+	private void configureIfNecessary(ImmutableReference<File> folder, String folderName) {
+		if(folder.isAlreadySet()) return;
+		folder.set(new File(tmpFolderName(), folderName + currentEnvironmentLabel()));
+	}
+
+	
+	private int currentEnvironmentLabel() {
+		return environments.size();
 	}
 
 }
