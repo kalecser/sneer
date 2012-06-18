@@ -6,7 +6,6 @@ import static sneer.bricks.network.computers.udp.holepuncher.protocol.impl.DataU
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
@@ -18,7 +17,7 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 
 class StunProtocolImpl implements StunProtocol {
 	
-	private static final SocketAddress SERVER_ADDRESS = initServerAddress();
+	private static final InetSocketAddress SERVER_ADDRESS = initServerAddress();
 	private static final String SERVER_HOST_NAME = "dynamic.sneer.me";
 	private static final int SERVER_PORT = 7777;
 	
@@ -81,12 +80,12 @@ class StunProtocolImpl implements StunProtocol {
 	
 
 	@Override
-	public SocketAddress serverAddress() {
+	public InetSocketAddress serverAddress() {
 		return SERVER_ADDRESS;
 	}
 
 
-	static private SocketAddress initServerAddress() {		
+	static private InetSocketAddress initServerAddress() {		
 		InetAddress host = serverHost();
 		return host == null ? null : new InetSocketAddress(host, SERVER_PORT);
 	}
