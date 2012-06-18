@@ -3,8 +3,6 @@ package sneer.bricks.network.computers.udp.holepuncher.server.impl;
 import static basis.environments.Environments.my;
 
 import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,15 +12,12 @@ import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunReply;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunRequest;
 import sneer.bricks.network.computers.udp.holepuncher.server.StunServer;
-import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.LightType;
 
 
 class StunServerImpl implements StunServer {
 
 	private static final DatagramPacket[] NO_PACKETS = new DatagramPacket[0];
 	private static final DatagramPacket REPLY_TO_PEER = new DatagramPacket(new byte[UdpNetwork.MAX_PACKET_PAYLOAD_SIZE], 0);
-	private static final InetAddress ADDRESS = initAddress();
 	private final Map<String, IpAddresses> addressesBySeal = new HashMap<String, IpAddresses>();
 
 
@@ -65,24 +60,6 @@ class StunServerImpl implements StunServer {
 		return Arrays.toString(arr);
 	}
 
-
-	@Override
-	public InetAddress inetAddress() {
-		return ADDRESS;
-	}
-
-
-	static private InetAddress initAddress() {		
-		String address = "dynamic.sneer.me";
-		try {
-			return "true".equals(System.getProperty("sneer.testmode"))
-				? InetAddress.getByAddress(address, new byte[]{111,112,113,114})
-				: InetAddress.getByName(address);
-		} catch (UnknownHostException e) {
-			my(BlinkingLights.class).turnOn(LightType.WARNING, "Stun Server not found", "Unable to resolve DNS for "+ address, 15000);
-			return null;
-		}
-	}
 }
 
 

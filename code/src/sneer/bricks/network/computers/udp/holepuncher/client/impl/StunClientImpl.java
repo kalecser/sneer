@@ -5,6 +5,7 @@ import static basis.environments.Environments.my;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Collection;
@@ -19,7 +20,6 @@ import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunReply;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunRequest;
-import sneer.bricks.network.computers.udp.holepuncher.server.StunServer;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
@@ -53,7 +53,7 @@ class StunClientImpl implements StunClient {
 	private void sendRequest() {
 		if(sender == null) return;
 		
-		InetAddress serverAddress = my(StunServer.class).inetAddress();
+		SocketAddress serverAddress = my(StunProtocol.class).serverAddress();
 		if (serverAddress == null) return;
 		
 		StunRequest request = new StunRequest(ownSeal(), peersToFind(), localAddressesData());
@@ -61,8 +61,7 @@ class StunClientImpl implements StunClient {
 		int requestLength = my(StunProtocol.class).marshalRequestTo(request, requestBytes);
 		
 		DatagramPacket packet = new DatagramPacket(requestBytes, requestLength);		
-		packet.setAddress(serverAddress);
-		packet.setPort(7777);
+		packet.setSocketAddress(serverAddress);
 		sender.consume(packet);
 	}
 
