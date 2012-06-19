@@ -55,7 +55,7 @@ class TupleKeeperImpl implements TupleKeeper {
 
 	
 	@Override
-	public boolean isAlreadyKept(Tuple tuple) {
+	public boolean contains(Tuple tuple) {
 		return KeptTuples.contains(tuple);
 	}
 

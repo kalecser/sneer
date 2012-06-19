@@ -27,6 +27,12 @@ class FloodedTupleCacheImpl implements FloodedTupleCache {
 			capSize();
 		}
 	}
+	
+	
+	@Override
+	public boolean contains(Tuple tuple) {
+		return _cache.contains(tuple);
+	}
 
 	
 	private void capSize() {

@@ -17,10 +17,13 @@ import sneer.bricks.expression.files.transfer.FileTransferAccept;
 import sneer.bricks.expression.files.transfer.FileTransferDetails;
 import sneer.bricks.expression.files.transfer.FileTransferSugestion;
 import sneer.bricks.expression.files.transfer.downloadfolder.DownloadFolder;
+import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
+import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
@@ -28,9 +31,12 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
 import basis.lang.Consumer;
+import basis.lang.Predicate;
 
 public class FileTransferImpl implements FileTransfer {
 
+	private static final int THREE_DAYS = 1000 * 60 * 60 * 24 * 3;
+	
 	private final Notifier<FileTransferSugestion> _sugestionHandlers = my(Notifiers.class).newInstance();
 	@SuppressWarnings("unused")
 	private WeakContract ref1, ref2, ref3;
@@ -38,7 +44,10 @@ public class FileTransferImpl implements FileTransfer {
 
 	
 	{
-		my(FileServer.class);
+		my(TupleSpace.class).keepChosen(FileTransferSugestion.class, new Predicate<FileTransferSugestion>() {  @Override public boolean evaluate(FileTransferSugestion sug) {
+			return isRecent(sug);
+		}});
+		
 		ref1 = my(RemoteTuples.class).addSubscription(FileTransferSugestion.class, new Consumer<FileTransferSugestion>(){  @Override public void consume(FileTransferSugestion sugestion) {
 			_sugestionHandlers.notifyReceivers(sugestion);
 		}});
@@ -50,6 +59,8 @@ public class FileTransferImpl implements FileTransfer {
 		ref3 = my(RemoteTuples.class).addSubscription(FileTransferDetails.class, new Consumer<FileTransferDetails>(){  @Override public void consume(FileTransferDetails details) {
 			handleDetails(details);
 		}});
+
+		my(FileServer.class);
 	}
 	
 	
@@ -79,7 +90,7 @@ public class FileTransferImpl implements FileTransfer {
 
 	
 	private void handleAccept(FileTransferAccept accept) {
-//		if (!isValid(accept)) return;
+		if (!isValid(accept)) return;
 		File file = getFile(accept);
 		Hash hash = map(file);
 		if (hash == null)
@@ -88,13 +99,13 @@ public class FileTransferImpl implements FileTransfer {
 	}
 	
 	
-//	private boolean isValid(FileTransferAccept accept) {
-//		Tuple sugestion = accept.sugestion;
-//		if (!sugestion.publisher.equals(my(OwnSeal.class).get().currentValue())) return false;
-//		if (!sugestion.addressee.equals(accept.publisher)) return false;
-//		
-//		return my(TupleSpace.class).contains(sugestion);
-//	}
+	private boolean isValid(FileTransferAccept accept) {
+		Tuple sugestion = accept.sugestion;
+		if (!sugestion.publisher.equals(my(OwnSeal.class).get().currentValue())) return false;
+		if (!sugestion.addressee.equals(accept.publisher)) return false;
+		
+		return my(TupleSpace.class).contains(sugestion);
+	}
 
 
 	private void handleDetails(FileTransferDetails details) {
@@ -132,4 +143,10 @@ public class FileTransferImpl implements FileTransfer {
 		
 		return null;
 	}
+	
+
+	private boolean isRecent(FileTransferSugestion sug) {
+		return (my(Clock.class).time().currentValue() - sug.publicationTime) < THREE_DAYS;
+	}
+	
 }
