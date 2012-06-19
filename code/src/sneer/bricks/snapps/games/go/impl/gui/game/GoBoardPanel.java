@@ -127,7 +127,13 @@ public class GoBoardPanel extends JPanel{
 	}
 	
 	@Override
-	public void paint(final Graphics graphics) {
+	protected void paintComponent(final Graphics g) {
+		render((Graphics2D) g);
+		paintComponents(g);
+		g.dispose();
+	}
+	
+	public void render(final Graphics2D graphics) {
 		Graphics2D buffer = getBuffer();
 		_boardPainter.draw(buffer);
 		_stonesInPlayPainter.draw(buffer, _board);
