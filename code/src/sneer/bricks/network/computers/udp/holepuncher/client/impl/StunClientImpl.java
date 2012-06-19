@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.util.Collection;
 
 import sneer.bricks.hardware.clock.timer.Timer;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -38,6 +39,7 @@ class StunClientImpl implements StunClient {
 	}});
 	@SuppressWarnings("unused") private final Object ref2 =
 	my(Timer.class).wakeUpEvery(StunClient.REQUEST_PERIOD, new Closure() {  @Override public void run() {
+		my(Logger.class).log("Stun Timer");
 		sendRequest();
 	}});
 
@@ -51,16 +53,17 @@ class StunClientImpl implements StunClient {
 
 	
 	private void sendRequest() {
-		if(sender == null) return;
+		if (sender == null) return;
 		
 		SocketAddress serverAddress = my(StunProtocol.class).serverAddress();
 		if (serverAddress == null) return;
 		
 		StunRequest request = new StunRequest(ownSeal(), peersToFind(), localAddressesData());
-		byte[] requestBytes = new byte[1024];
-		int requestLength = my(StunProtocol.class).marshalRequestTo(request, requestBytes);
+		my(Logger.class).log("Sending Stun Request ", request);
+		byte[] buf = new byte[1024];
+		int length = my(StunProtocol.class).marshalRequestTo(request, buf);
 		
-		DatagramPacket packet = new DatagramPacket(requestBytes, requestLength);		
+		DatagramPacket packet = new DatagramPacket(buf, length);		
 		packet.setSocketAddress(serverAddress);
 		sender.consume(packet);
 	}

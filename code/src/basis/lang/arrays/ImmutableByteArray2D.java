@@ -27,4 +27,8 @@ public class ImmutableByteArray2D {
 		return result;
 	}
 
+	public int length() {
+		return _payload.length;
+	}
+
 }
