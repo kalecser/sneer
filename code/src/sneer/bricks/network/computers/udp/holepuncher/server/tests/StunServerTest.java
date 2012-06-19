@@ -29,11 +29,11 @@ public class StunServerTest extends BrickTestBase {
 	@Test
 	public void stun() throws Exception {
 		byte[] seal1 = seal(1);
-		assertEquals(0, subjectsRepliesFor(seal1, ip("200.243.227.1"), 4111, null, "local data 1".getBytes()).length);
+		assertEquals(0, subjectsRepliesFor(seal1, ip("200.243.227.1"), 4111, "local data 1".getBytes()).length);
 		
 		byte[] seal2 = seal(2);
 		byte[] peerToFind = seal1;
-		DatagramPacket[] replies = subjectsRepliesFor(seal2, ip("200.243.227.2"), 4222, peerToFind, "local data 2".getBytes());
+		DatagramPacket[] replies = subjectsRepliesFor(seal2, ip("200.243.227.2"), 4222, "local data 2".getBytes(), peerToFind);
 		
 		StunReply replyTo2 = unmarshalReply(replies[0]);
 		StunReply replyTo1 = unmarshalReply(replies[1]);
@@ -57,11 +57,8 @@ public class StunServerTest extends BrickTestBase {
 	}
 
 
-	private DatagramPacket[] subjectsRepliesFor(byte[] ownSeal, InetAddress ip, int port, byte[] peerToFind, byte[] localAddressData) {
-		byte[][] peerSealsToFind = peerToFind == null 
-			? new byte[][]{} 
-			: new byte[][]{peerToFind};
-		StunRequest request = new StunRequest(ownSeal, peerSealsToFind, localAddressData);
+	private DatagramPacket[] subjectsRepliesFor(byte[] ownSeal, InetAddress ip, int port, byte[] localAddressData, byte[]... peersToFind) {
+		StunRequest request = new StunRequest(ownSeal, peersToFind, localAddressData);
 		ByteBuffer buf = newBuf();
 		my(StunProtocol.class).marshalRequestTo(request, buf);
 		return subjectsReplyFor(asPacket(buf, ip, port));		
