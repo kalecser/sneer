@@ -42,11 +42,12 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	@Bind private final LoggingSender sender = new LoggingSender();
 	@Bind private final StunClient stunClient = mock(StunClient.class);
 
-			
+		//To do:
+	
 		//HAIL SIGHTINGS:
 		//First Hand Sightings - done
 		//Second Hand Sightings: Stun response, Remote sighting
-		//Sneer Ip & Port Own Attributes
+		//Sneer Host & Port Own Attributes
 		
 		//Forget old sightings
 	
