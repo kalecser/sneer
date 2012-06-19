@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.computers.udp.UdpNetwork;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunReply;
@@ -23,6 +24,7 @@ class StunServerImpl implements StunServer {
 
 	@Override
 	public DatagramPacket[] repliesFor(DatagramPacket packet) {
+		my(Logger.class).log("Stun server: Packet received ", packet);
 		StunRequest req = my(StunProtocol.class).unmarshalRequest(packet.getData(), packet.getLength());
 		if (req == null) return NO_PACKETS;
 		

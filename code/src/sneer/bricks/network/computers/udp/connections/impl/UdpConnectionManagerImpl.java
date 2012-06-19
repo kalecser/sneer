@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.Call;
@@ -53,10 +54,14 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 
 	@Override
 	public void handle(DatagramPacket packet) {
+		my(Logger.class).log("Packet Received");
 		if (packet.getLength() < Seal.SIZE_IN_BYTES + 1) return;
-		
 		ByteBuffer data = ByteBuffer.wrap(packet.getData());
-		PacketType type = UdpConnectionManager.PacketType.values()[data.get()];
+		
+		PacketType type = type(data.get());
+		if (type == null) return;
+		
+		my(Logger.class).log("Packet Received ", type);
 		if (type == PacketType.Stun) 
 			my(StunClient.class).handle(data);
 		else {			
@@ -66,6 +71,13 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 			if (contact == null) return;
 			connectionFor(contact).handle(type, (InetSocketAddress) packet.getSocketAddress(), data);
 		}
+	}
+
+	
+	static private PacketType type(byte i) {
+		if (i < 0) return null;
+		if (i >= PacketType.values().length) return null;
+		return PacketType.values()[i];
 	}
 
 }

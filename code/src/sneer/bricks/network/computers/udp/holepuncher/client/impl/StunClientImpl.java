@@ -39,7 +39,6 @@ class StunClientImpl implements StunClient {
 	}});
 	@SuppressWarnings("unused") private final Object ref2 =
 	my(Timer.class).wakeUpEvery(StunClient.REQUEST_PERIOD, new Closure() {  @Override public void run() {
-		my(Logger.class).log("Stun Timer");
 		sendRequest();
 	}});
 

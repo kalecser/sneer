@@ -20,7 +20,7 @@ class UdpByteConnectionUtils {
 		byte[] ownSeal = ownSealBytes();
 		byte[] typeByte = new byte[] { (byte)type.ordinal() };
 		
-		byte[] data = my(Lang.class).arrays().concat(ownSeal, typeByte);
+		byte[] data = my(Lang.class).arrays().concat(typeByte, ownSeal);
 		data = my(Lang.class).arrays().concat(data, payload); //Optimize: Reuse array.
 		
 		DatagramPacket packet = packetFor(data, peerAddress);

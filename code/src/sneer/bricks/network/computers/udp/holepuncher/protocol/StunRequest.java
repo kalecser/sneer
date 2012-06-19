@@ -1,8 +1,7 @@
 package sneer.bricks.network.computers.udp.holepuncher.protocol;
 
-import basis.lang.Immutable;
 
-public class StunRequest extends Immutable {
+public class StunRequest {
 
 	public final byte[] ownSeal;
 	public final byte[][] peerSealsToFind;
@@ -13,5 +12,12 @@ public class StunRequest extends Immutable {
 		peerSealsToFind = peerSealsToFind_;
 		localAddressData = localAddressData_;
 	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + " peerSealsToFind: " + peerSealsToFind.length + ", localAddressData: " + localAddressData.length + " bytes.";
+	}
+	
+	
 
 }
