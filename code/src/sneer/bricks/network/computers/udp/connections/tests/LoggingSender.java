@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType;
+import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.sender.UdpSender;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
@@ -25,8 +25,8 @@ public final class LoggingSender implements UdpSender {
 	private SetRegister<String> packetHistorySet = my(CollectionSignals.class).newSetRegister();
 
 	private String toString(byte type, byte[] payload) {
-		PacketType packetType = PacketType.values()[type];
-		if (packetType == PacketType.Hail)			
+		UdpPacketType packetType = UdpPacketType.search(type);
+		if (packetType == UdpPacketType.Hail)			
 			return "hail " + ByteBuffer.wrap(payload).getLong();
 				
 		return new String(payload);

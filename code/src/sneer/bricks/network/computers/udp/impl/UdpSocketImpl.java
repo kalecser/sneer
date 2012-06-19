@@ -7,9 +7,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-import basis.lang.Closure;
-import basis.lang.Consumer;
-
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.network.computers.udp.UdpNetwork;
@@ -17,6 +14,8 @@ import sneer.bricks.network.computers.udp.UdpNetwork.UdpSocket;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 
 class UdpSocketImpl implements UdpSocket {
@@ -58,18 +57,14 @@ class UdpSocketImpl implements UdpSocket {
 
 
 	private void receivePacket() {
+		incoming.setLength(UdpNetwork.MAX_PACKET_PAYLOAD_SIZE);
 		try {
-			tryToReceivePacket();
+			socket.receive(incoming);
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOnIfNecessary(errorReceiving, "Error receiving UDP Packet", e);
 			receptionContract.dispose();
+			return;
 		}
-	}
-
-
-	private void tryToReceivePacket() throws IOException {
-		incoming.setLength(UdpNetwork.MAX_PACKET_PAYLOAD_SIZE);
-		socket.receive(incoming);
 		receiver.consume(incoming);
 	}
 

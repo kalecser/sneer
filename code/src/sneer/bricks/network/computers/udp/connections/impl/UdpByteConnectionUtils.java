@@ -9,14 +9,14 @@ import java.net.SocketException;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.identity.seals.OwnSeal;
-import sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType;
+import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.sender.UdpSender;
 
 class UdpByteConnectionUtils {
 	
 	private static final UdpSender sender = my(UdpSender.class);
 	
-	static boolean send(PacketType type, byte[] payload, SocketAddress peerAddress) {
+	static boolean send(UdpPacketType type, byte[] payload, SocketAddress peerAddress) {
 		byte[] ownSeal = ownSealBytes();
 		byte[] typeByte = new byte[] { (byte)type.ordinal() };
 		

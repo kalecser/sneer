@@ -1,8 +1,8 @@
 package sneer.bricks.network.computers.udp.connections.impl;
 
 import static basis.environments.Environments.my;
-import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Data;
-import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Hail;
+import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Data;
+import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Hail;
 import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.send;
 
 import java.net.InetSocketAddress;
@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.network.computers.connections.ByteConnection;
-import sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType;
+import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.Signal;
@@ -48,7 +48,7 @@ class UdpByteConnection implements ByteConnection {
 			scheduler.previousPacketWasSent();
 	}
 	
-	void handle(PacketType type, InetSocketAddress origin, ByteBuffer data) {
+	void handle(UdpPacketType type, InetSocketAddress origin, ByteBuffer data) {
 		my(SightingKeeper.class).keep(contact, origin);
 		
 		if(type == Hail) {

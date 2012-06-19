@@ -1,6 +1,7 @@
 package sneer.bricks.network.computers.udp.holepuncher.protocol;
 
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 
 import basis.brickness.Brick;
 
@@ -8,11 +9,11 @@ import basis.brickness.Brick;
 @Brick
 public interface StunProtocol {
 
-	int marshalRequestTo(StunRequest request, byte[] requestBytes);
-	StunRequest unmarshalRequest(byte[] data, int length);
+	void marshalRequestTo(StunRequest request, ByteBuffer out);
+	StunRequest unmarshalRequest(ByteBuffer in);
 
-	int marshalReplyTo(StunReply reply, byte[] data);
-	StunReply unmarshalReply(byte[] data, int length);
+	void marshalReplyTo(StunReply reply, ByteBuffer out);
+	StunReply unmarshalReply(ByteBuffer in);
 	
 	InetSocketAddress serverAddress();
 

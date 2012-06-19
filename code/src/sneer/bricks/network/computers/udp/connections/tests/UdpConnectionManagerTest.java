@@ -1,9 +1,9 @@
 package sneer.bricks.network.computers.udp.connections.tests;
 
 import static basis.environments.Environments.my;
-import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Data;
-import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Hail;
-import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Stun;
+import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Data;
+import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Hail;
+import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Stun;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -23,7 +23,7 @@ import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
-import sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType;
+import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
 import sneer.bricks.network.social.Contact;
@@ -180,7 +180,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SightingKeeper.class).keep(produceContact("Neide"), sighting);
 	}
 	
-	private DatagramPacket packetFrom(String nick, PacketType type, byte[] data, String ip, int port) throws Exception {
+	private DatagramPacket packetFrom(String nick, UdpPacketType type, byte[] data, String ip, int port) throws Exception {
 		produceContact(nick);
 		my(ContactSeals.class).put(nick, new Seal(fill(42)));
 		
@@ -224,7 +224,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 
 
-	private DatagramPacket packetFrom(String nick, PacketType type, byte[] payload) throws Exception {
+	private DatagramPacket packetFrom(String nick, UdpPacketType type, byte[] payload) throws Exception {
 		return packetFrom(nick, type, payload, "200.201.202.203", 123);
 	}
 

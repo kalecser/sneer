@@ -12,6 +12,7 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.Call;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
+import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.notifiers.Source;
@@ -19,7 +20,7 @@ import basis.lang.CacheMap;
 import basis.lang.Consumer;
 import basis.lang.Functor;
 
-class UdpConnectionManagerImpl implements UdpConnectionManager{
+class UdpConnectionManagerImpl implements UdpConnectionManager {
 
 	CacheMap<Contact, UdpByteConnection> connectionsByContact = CacheMap.newInstance();
 	
@@ -56,28 +57,29 @@ class UdpConnectionManagerImpl implements UdpConnectionManager{
 	public void handle(DatagramPacket packet) {
 		my(Logger.class).log("Packet Received");
 		if (packet.getLength() < Seal.SIZE_IN_BYTES + 1) return;
-		ByteBuffer data = ByteBuffer.wrap(packet.getData());
+		ByteBuffer buf = ByteBuffer.wrap(packet.getData());
 		
-		PacketType type = type(data.get());
+		UdpPacketType type = type(buf.get());
 		if (type == null) return;
 		
 		my(Logger.class).log("Packet Received ", type);
-		if (type == PacketType.Stun) 
-			my(StunClient.class).handle(data);
-		else {			
-			byte[] seal = new byte[Seal.SIZE_IN_BYTES];
-			data.get(seal);
-			Contact contact = my(ContactSeals.class).contactGiven(new Seal(seal));
-			if (contact == null) return;
-			connectionFor(contact).handle(type, (InetSocketAddress) packet.getSocketAddress(), data);
+		if (type == UdpPacketType.Stun) {
+			my(StunClient.class).handle(buf);
+			return;
 		}
+		
+		byte[] seal = new byte[Seal.SIZE_IN_BYTES];
+		buf.get(seal);
+		Contact contact = my(ContactSeals.class).contactGiven(new Seal(seal));
+		if (contact == null) return;
+		connectionFor(contact).handle(type, (InetSocketAddress) packet.getSocketAddress(), buf);
 	}
 
 	
-	static private PacketType type(byte i) {
+	static private UdpPacketType type(byte i) {
 		if (i < 0) return null;
-		if (i >= PacketType.values().length) return null;
-		return PacketType.values()[i];
+		if (i >= UdpPacketType.values().length) return null;
+		return UdpPacketType.values()[i];
 	}
 
 }

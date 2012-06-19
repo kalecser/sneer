@@ -1,7 +1,7 @@
 package sneer.bricks.network.computers.udp.connections.impl;
 
 import static basis.environments.Environments.my;
-import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.PacketType.Hail;
+import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Hail;
 import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.send;
 
 import java.net.InetSocketAddress;

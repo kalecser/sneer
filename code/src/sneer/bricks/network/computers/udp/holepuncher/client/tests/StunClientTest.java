@@ -17,6 +17,7 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.own.OwnIps;
 import sneer.bricks.network.computers.ports.OwnPort;
+import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
 import sneer.bricks.network.computers.udp.holepuncher.server.StunServer;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
@@ -132,8 +133,10 @@ public class StunClientTest extends BrickTestBase {
 	}
 
 	
-	private ByteBuffer asBuffer(DatagramPacket packet) {
-		return ByteBuffer.wrap(packet.getData(), 0, packet.getLength());
+	private ByteBuffer asBuffer(DatagramPacket reply) {
+		ByteBuffer ret = ByteBuffer.wrap(reply.getData(), 0, reply.getLength());
+		assertEquals(UdpPacketType.Stun.ordinal(), ret.get());
+		return ret;
 	}
 	
 	

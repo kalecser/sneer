@@ -17,6 +17,7 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.own.OwnIps;
 import sneer.bricks.network.computers.ports.OwnPort;
+import sneer.bricks.network.computers.udp.UdpNetwork;
 import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunReply;
@@ -59,10 +60,10 @@ class StunClientImpl implements StunClient {
 		
 		StunRequest request = new StunRequest(ownSeal(), peersToFind(), localAddressesData());
 		my(Logger.class).log("Sending Stun Request ", request);
-		byte[] buf = new byte[1024];
-		int length = my(StunProtocol.class).marshalRequestTo(request, buf);
+		ByteBuffer buf = ByteBuffer.wrap(new byte[UdpNetwork.MAX_PACKET_PAYLOAD_SIZE]);
+		my(StunProtocol.class).marshalRequestTo(request, buf);
 		
-		DatagramPacket packet = new DatagramPacket(buf, length);		
+		DatagramPacket packet = new DatagramPacket(buf.array(), buf.position());		
 		packet.setSocketAddress(serverAddress);
 		sender.consume(packet);
 	}
@@ -105,7 +106,7 @@ class StunClientImpl implements StunClient {
 	
 	@Override
 	public void handle(ByteBuffer replyPacket) {
-		StunReply reply = my(StunProtocol.class).unmarshalReply(replyPacket.array(), replyPacket.limit());
+		StunReply reply = my(StunProtocol.class).unmarshalReply(replyPacket);
 		
 		Contact contact = my(ContactSeals.class).contactGiven(new Seal(reply.peerSeal));
 		if (contact == null) return;

@@ -3,6 +3,7 @@ package sneer.bricks.network.computers.udp.holepuncher.server.impl;
 import static basis.environments.Environments.my;
 
 import java.net.DatagramPacket;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,14 +19,14 @@ import sneer.bricks.network.computers.udp.holepuncher.server.StunServer;
 class StunServerImpl implements StunServer {
 
 	private static final DatagramPacket[] NO_PACKETS = new DatagramPacket[0];
-	private static final DatagramPacket REPLY_TO_PEER = new DatagramPacket(new byte[UdpNetwork.MAX_PACKET_PAYLOAD_SIZE], 0);
+	private static final DatagramPacket PACKET_TO_PEER = new DatagramPacket(new byte[UdpNetwork.MAX_PACKET_PAYLOAD_SIZE], 0);
 	private final Map<String, IpAddresses> addressesBySeal = new HashMap<String, IpAddresses>();
 
 
 	@Override
 	public DatagramPacket[] repliesFor(DatagramPacket packet) {
 		my(Logger.class).log("Stun server: Packet received ", packet);
-		StunRequest req = my(StunProtocol.class).unmarshalRequest(packet.getData(), packet.getLength());
+		StunRequest req = my(StunProtocol.class).unmarshalRequest(ByteBuffer.wrap(packet.getData(), 0, packet.getLength()));
 		if (req == null) return NO_PACKETS;
 		
 		keepCallerAddresses(packet, req);
@@ -36,18 +37,19 @@ class StunServerImpl implements StunServer {
 		IpAddresses peerAddr = addressesBySeal.get(toString(peers[0]));
 		if (peerAddr == null) return NO_PACKETS;
 		IpAddresses ownAddr = addressesBySeal.get(toString(req.ownSeal));
-		StunReply toMe = new StunReply(peers[0], peerAddr.publicInternetAddress, peerAddr.publicInternetPort, peerAddr.localAddressData);
+		StunReply toCaller = new StunReply(peers[0], peerAddr.publicInternetAddress, peerAddr.publicInternetPort, peerAddr.localAddressData);
 		StunReply toPeer = new StunReply(req.ownSeal, ownAddr.publicInternetAddress, ownAddr.publicInternetPort, ownAddr.localAddressData);
 		
-		marshal(toMe, packet);
-		marshal(toPeer, REPLY_TO_PEER);
-		return new DatagramPacket[]{packet, REPLY_TO_PEER};
+		marshal(toCaller, packet);
+		marshal(toPeer, PACKET_TO_PEER);
+		return new DatagramPacket[]{packet, PACKET_TO_PEER};
 	}
 
 
 	private void marshal(StunReply reply, DatagramPacket packet) {
-		int length = my(StunProtocol.class).marshalReplyTo(reply, packet.getData());
-		packet.setLength(length);
+		ByteBuffer buf = ByteBuffer.wrap(packet.getData());
+		my(StunProtocol.class).marshalReplyTo(reply, buf);
+		packet.setLength(buf.position());
 	}
 
 

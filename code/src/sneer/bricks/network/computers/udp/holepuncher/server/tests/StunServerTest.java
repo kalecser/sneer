@@ -6,10 +6,12 @@ import static sneer.bricks.network.computers.udp.UdpNetwork.MAX_PACKET_PAYLOAD_S
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import org.junit.Test;
 
+import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunReply;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunRequest;
@@ -31,7 +33,7 @@ public class StunServerTest extends BrickTestBase {
 		
 		byte[] seal2 = seal(2);
 		byte[] peerToFind = seal1;
-		DatagramPacket[] replies = subjectsRepliesFor(seal2, ip("205.65.114.2"), 4222, peerToFind, "local data 2".getBytes());
+		DatagramPacket[] replies = subjectsRepliesFor(seal2, ip("200.243.227.2"), 4222, peerToFind, "local data 2".getBytes());
 		
 		StunReply replyTo2 = unmarshalReply(replies[0]);
 		StunReply replyTo1 = unmarshalReply(replies[1]);
@@ -42,14 +44,16 @@ public class StunServerTest extends BrickTestBase {
 		assertEquals("local data 1", new String(replyTo2.peerLocalAddressData));
 		
 		assertArrayEquals(seal2, replyTo1.peerSeal);
-		assertEquals(ip("205.65.114.2"), replyTo1.peerIp);
+		assertEquals(ip("200.243.227.2"), replyTo1.peerIp);
 		assertEquals(4222, replyTo1.peerPort);
 		assertEquals("local data 2", new String(replyTo1.peerLocalAddressData));				
 	}
 
 
 	private StunReply unmarshalReply(DatagramPacket packet) {
-		return my(StunProtocol.class).unmarshalReply(packet.getData(), packet.getLength());
+		ByteBuffer buf = asBuffer(packet);
+		assertSame(UdpPacketType.Stun, UdpPacketType.search(buf.get()));
+		return my(StunProtocol.class).unmarshalReply(buf);
 	}
 
 
@@ -58,9 +62,14 @@ public class StunServerTest extends BrickTestBase {
 			? new byte[][]{} 
 			: new byte[][]{peerToFind};
 		StunRequest request = new StunRequest(ownSeal, peerSealsToFind, localAddressData);
-		byte[] buf = newBuf();
-		int length = my(StunProtocol.class).marshalRequestTo(request, buf);
-		return subjectsReplyFor(new DatagramPacket(buf, length, ip, port));		
+		ByteBuffer buf = newBuf();
+		my(StunProtocol.class).marshalRequestTo(request, buf);
+		return subjectsReplyFor(asPacket(buf, ip, port));		
+	}
+
+
+	static private DatagramPacket asPacket(ByteBuffer buf, InetAddress ip, int port) {
+		return new DatagramPacket(buf.array(), buf.position(), ip, port);
 	}
 
 	
@@ -85,13 +94,18 @@ public class StunServerTest extends BrickTestBase {
 	}
 
 	
-	private byte[] newBuf() {
-		return new byte[MAX_PACKET_PAYLOAD_SIZE];
+	private ByteBuffer newBuf() {
+		return ByteBuffer.wrap(new byte[MAX_PACKET_PAYLOAD_SIZE]);
 	}
 
 	
 	private InetAddress ip(String address) throws UnknownHostException {
 		return InetAddress.getByName(address);
+	}
+	
+	
+	static private ByteBuffer asBuffer(DatagramPacket packet) {
+		return ByteBuffer.wrap(packet.getData(), 0, packet.getLength());
 	}
 	
 }
