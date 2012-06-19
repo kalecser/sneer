@@ -92,9 +92,9 @@ import java.awt.image.BufferedImage;
 	private void whitePiecesColorSettings() {
 		bottomOvalHighlightOutterCollor = getSaturatedColor(bottomOvalHighlightOutterCollor).brighter().brighter();
         centerGlow = getSaturatedColor(centerGlow);
-        centerGlow = centerGlow.brighter().brighter();
+        centerGlow = Color.WHITE;
         overallColor = getSaturatedColor(overallColor);
-        edges = Color.LIGHT_GRAY;
+        edges = new Color(255,255,255,180);
 	}
 
 	private Color getSaturatedColor( Color color ) {
