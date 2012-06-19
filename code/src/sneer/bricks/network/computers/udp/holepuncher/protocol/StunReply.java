@@ -2,10 +2,8 @@ package sneer.bricks.network.computers.udp.holepuncher.protocol;
 
 import java.net.InetAddress;
 
-import basis.lang.Immutable;
 
-
-public class StunReply extends Immutable {
+public class StunReply {
 
 	public final byte[] peerSeal;
 	public final InetAddress peerIp;
