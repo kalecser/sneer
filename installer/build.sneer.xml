@@ -136,6 +136,12 @@
 		<jar destfile="${dist.dir}/sneer.jar">
 			<fileset dir="${sneer.home}">
 				<include name='**/*.*' />
+				<exclude name='bin/' />
+				<exclude name='**/TEST-*.txt' />
+				<exclude name='**/TEST-*.xml' />
+			</fileset>
+			<fileset dir="${build.dir}">
+				<include name='bin/**' />
 				<exclude name='**/TEST-*.txt' />
 				<exclude name='**/TEST-*.xml' />
 			</fileset>
