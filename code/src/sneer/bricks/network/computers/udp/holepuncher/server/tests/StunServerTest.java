@@ -34,18 +34,19 @@ public class StunServerTest extends BrickTestBase {
 
 		byte[][] peersToFind = new byte[][]{seal1, seal2};
 
-		DatagramPacket[] replies1 = subjectsRepliesFor(seal1, ip("200.243.227.1"), 4111, "local data 1".getBytes());
-		DatagramPacket[] replies2 = subjectsRepliesFor(seal2, ip("200.243.227.2"), 4222, "local data 2".getBytes());
-		DatagramPacket[] replies3 = subjectsRepliesFor(seal3, ip("200.243.227.3"), 4333, "local data 3".getBytes(),
+		DatagramPacket[] replies;
+		
+		replies = subjectsRepliesFor(seal1, ip("200.243.227.1"), 4111, "local data 1".getBytes());
+		assertEquals(0, replies.length);
+		replies = subjectsRepliesFor(seal2, ip("200.243.227.2"), 4222, "local data 2".getBytes());
+		assertEquals(0, replies.length);
+		replies = subjectsRepliesFor(seal3, ip("200.243.227.3"), 4333, "local data 3".getBytes(),
 			peersToFind
 		);
 		
-		assertEquals(0, replies1.length);
-		assertEquals(0, replies2.length);
-		
-		assertReply(replies3[0], seal1, "200.243.227.1", 4111, "local data 1");
-		assertReply(replies3[1], seal3, "200.243.227.3", 4333, "local data 3");
-//		assertReply(replies3[2], seal3, "200.243.227.3", 4333, "local data 3");
+		assertReply(replies[0], seal1, "200.243.227.1", 4111, "local data 1");
+		assertReply(replies[1], seal3, "200.243.227.3", 4333, "local data 3");
+//		assertReply(replies[2], seal3, "200.243.227.3", 4333, "local data 3");
 	}
 
 
