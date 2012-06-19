@@ -1,7 +1,7 @@
 package sneer.bricks.expression.tuples.floodcache;
 
-import basis.brickness.Brick;
 import sneer.bricks.expression.tuples.Tuple;
+import basis.brickness.Brick;
 
 @Brick
 public interface FloodedTupleCache {
@@ -9,5 +9,7 @@ public interface FloodedTupleCache {
 	int maxSize();
 
 	boolean add(Tuple tuple);
+
+	boolean contains(Tuple tuple);
 
 }

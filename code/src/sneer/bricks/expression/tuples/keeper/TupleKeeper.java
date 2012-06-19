@@ -14,7 +14,7 @@ public interface TupleKeeper {
 	<T extends Tuple> void keepNewest(Class<T> tupleType, Functor<? super T, Object> grouping);
 	
 	void keepIfNecessary(Tuple tuple);
-	boolean isAlreadyKept(Tuple tuple);
+	boolean contains(Tuple tuple);
 	Tuple[] keptTuples();
 
 	void garbageCollect();

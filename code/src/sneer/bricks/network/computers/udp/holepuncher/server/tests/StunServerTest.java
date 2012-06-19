@@ -29,24 +29,33 @@ public class StunServerTest extends BrickTestBase {
 	@Test
 	public void stun() throws Exception {
 		byte[] seal1 = seal(1);
-		assertEquals(0, subjectsRepliesFor(seal1, ip("200.243.227.1"), 4111, "local data 1".getBytes()).length);
-		
 		byte[] seal2 = seal(2);
-		byte[] peerToFind = seal1;
-		DatagramPacket[] replies = subjectsRepliesFor(seal2, ip("200.243.227.2"), 4222, "local data 2".getBytes(), peerToFind);
+		byte[] seal3 = seal(3);
+
+		byte[][] peersToFind = new byte[][]{seal1, seal2};
+
+		DatagramPacket[] replies;
 		
-		StunReply replyTo2 = unmarshalReply(replies[0]);
-		StunReply replyTo1 = unmarshalReply(replies[1]);
+		replies = subjectsRepliesFor(seal1, ip("200.243.227.1"), 4111, "local data 1".getBytes());
+		assertEquals(0, replies.length);
+		replies = subjectsRepliesFor(seal2, ip("200.243.227.2"), 4222, "local data 2".getBytes());
+		assertEquals(0, replies.length);
+		replies = subjectsRepliesFor(seal3, ip("200.243.227.3"), 4333, "local data 3".getBytes(),
+			peersToFind
+		);
 		
-		assertArrayEquals(seal1, replyTo2.peerSeal);
-		assertEquals(ip("200.243.227.1"), replyTo2.peerIp);
-		assertEquals(4111, replyTo2.peerPort);
-		assertEquals("local data 1", new String(replyTo2.peerLocalAddressData));
-		
-		assertArrayEquals(seal2, replyTo1.peerSeal);
-		assertEquals(ip("200.243.227.2"), replyTo1.peerIp);
-		assertEquals(4222, replyTo1.peerPort);
-		assertEquals("local data 2", new String(replyTo1.peerLocalAddressData));				
+		assertReply(replies[0], seal1, "200.243.227.1", 4111, "local data 1");
+		assertReply(replies[1], seal3, "200.243.227.3", 4333, "local data 3");
+//		assertReply(replies[2], seal3, "200.243.227.3", 4333, "local data 3");
+	}
+
+
+	private void assertReply(DatagramPacket replyPacket, byte[] seal, String ip, int port, String localAddressData) throws UnknownHostException {
+		StunReply reply = unmarshalReply(replyPacket);
+		assertArrayEquals(seal, reply.peerSeal);
+		assertEquals(ip(ip), reply.peerIp);
+		assertEquals(port, reply.peerPort);
+		assertEquals(localAddressData, new String(reply.peerLocalAddressData));
 	}
 
 

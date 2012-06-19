@@ -6,10 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import basis.lang.Consumer;
-import basis.lang.Functor;
-import basis.lang.Predicate;
-
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.floodcache.FloodedTupleCache;
@@ -20,6 +16,9 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
+import basis.lang.Consumer;
+import basis.lang.Functor;
+import basis.lang.Predicate;
 
 class TupleSpaceImpl implements TupleSpace {
 
@@ -85,7 +84,7 @@ class TupleSpaceImpl implements TupleSpace {
 
 	
 	private boolean isAlreadyKept(Tuple tuple) {
-		boolean result = TupleKeeper.isAlreadyKept(tuple);
+		boolean result = TupleKeeper.contains(tuple);
 		if (result) logDuplicateTupleIgnored(tuple);
 		return result;
 	}
@@ -116,6 +115,12 @@ class TupleSpaceImpl implements TupleSpace {
 	
 	private void logDuplicateTupleIgnored(Tuple tuple) {
 		my(Logger.class).log("Duplicate tuple ignored: ", tuple);
+	}
+
+
+	@Override
+	public boolean contains(Tuple tuple) {
+		return TupleKeeper.contains(tuple) || FloodedTupleCache.contains(tuple);
 	}
 
 }
