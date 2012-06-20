@@ -32,14 +32,11 @@ class StunServerImpl implements StunServer {
 		
 		keepCallerAddresses(packet, req);
 
-		byte[][] peers = req.peerSealsToFind;
-		if (peers.length == 0) return EMPTY_ARRAY;
-		
 		IpAddresses callerAddr = addressesBySeal.get(toString(req.ownSeal));
 		StunReply toPeer = new StunReply(req.ownSeal, callerAddr.publicInternetAddress, callerAddr.publicInternetPort, callerAddr.localAddressData);
 		
-		List<DatagramPacket> replies = new ArrayList<DatagramPacket>(1 + peers.length);
-		for(byte[] peer : peers) {
+		List<DatagramPacket> replies = new ArrayList<DatagramPacket>();
+		for(byte[] peer : req.peerSealsToFind) {
 			IpAddresses peerAddr = addressesBySeal.get(toString(peer));
 			if(peerAddr == null) continue; 
 			
@@ -61,10 +58,12 @@ class StunServerImpl implements StunServer {
 
 
 	private DatagramPacket packetTo(IpAddresses addr) {
-		DatagramPacket ret = new DatagramPacket(new byte[UdpNetwork.MAX_PACKET_PAYLOAD_SIZE], 0);
-		ret.setAddress(addr.publicInternetAddress);
-		ret.setPort(addr.publicInternetPort);
-		return ret;
+		return new DatagramPacket(
+			new byte[UdpNetwork.MAX_PACKET_PAYLOAD_SIZE],
+			0,
+			addr.publicInternetAddress,
+			addr.publicInternetPort
+		);
 	}
 
 

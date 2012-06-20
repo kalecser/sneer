@@ -21,7 +21,7 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
 public class StunServerTest extends BrickTestBase {
 
-	//TODO Spread outgoing port.
+	//Implement Spread outgoing port.
 	
 	private final StunServer subject = my(StunServer.class);
 	
@@ -32,7 +32,7 @@ public class StunServerTest extends BrickTestBase {
 		byte[] seal2 = seal(2);
 		byte[] seal3 = seal(3);
 
-		byte[][] peersToFind = new byte[][]{seal1, seal2};
+		byte[][] peersToFind = new byte[][]{ seal1, seal2 };
 
 		DatagramPacket[] replies;
 		
