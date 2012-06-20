@@ -46,7 +46,8 @@ public class StunServerTest extends BrickTestBase {
 		
 		assertReply(replies[0], "200.243.227.3", 4333, seal1, "200.243.227.1", 4111, "local data 1");
 		assertReply(replies[1], "200.243.227.1", 4111, seal3, "200.243.227.3", 4333, "local data 3");
-//		assertReply(replies[2], "200.243.227.2", 4222, seal3, "200.243.227.3", 4333, "local data 3");
+		assertReply(replies[2], "200.243.227.3", 4333, seal2, "200.243.227.2", 4222, "local data 2");
+		assertReply(replies[3], "200.243.227.2", 4222, seal3, "200.243.227.3", 4333, "local data 3");
 	}
 
 
