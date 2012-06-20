@@ -38,23 +38,24 @@ public class FileTransferTest extends BrickTestWithTuples {
 	@SuppressWarnings("unused")	private WeakContract ref;
 	
 
+		
 	/*
-	 * - Ignore invalid accept
-	 * - Check if download hash is verified against downloaded contents. Check if hash of empty file and empty folder clash.
+	 * - Large file transfers.
+	 * - Check download hash against downloaded contents. Check if hash of empty file and empty folder clash.
 	 * - Remove distinction between FileClient's file and folder downloads. Let download decide based on received contents.
 	 * - Download recovery on crash and startup.
 	 */
 	@Test (timeout=2000)
 	public void singleFileTransfer() throws IOException, MappingStopped {
-		final File file = createTmpFileWithFileNameAsContent("banana");
+		File file = createTmpFileWithFileNameAsContent("banana");
 		transfer(file);
 	}
 
 	
 	@Test (timeout=2000)
 	public void folderTransfer() throws IOException, MappingStopped {
-		final File file = createTmpFileWithFileNameAsContent("folder/banana");
-		final File folder = file.getParentFile();
+		File file = createTmpFileWithFileNameAsContent("folder/banana");
+		File folder = file.getParentFile();
 		
 		transfer(folder);
 	}
