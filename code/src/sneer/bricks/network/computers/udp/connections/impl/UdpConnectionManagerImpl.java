@@ -55,7 +55,6 @@ class UdpConnectionManagerImpl implements UdpConnectionManager {
 
 	@Override
 	public void handle(DatagramPacket packet) {
-		my(Logger.class).log("Packet Received");
 		if (packet.getLength() < Seal.SIZE_IN_BYTES + 1) return;
 		ByteBuffer buf = ByteBuffer.wrap(packet.getData());
 		
