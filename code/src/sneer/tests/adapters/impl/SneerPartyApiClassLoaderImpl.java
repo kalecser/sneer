@@ -5,14 +5,14 @@ package sneer.tests.adapters.impl;
 
 import java.net.URL;
 
-import basis.brickness.impl.EagerClassLoader;
-
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.computers.tcp.ByteArrayServerSocket;
 import sneer.bricks.network.computers.tcp.ByteArraySocket;
 import sneer.bricks.network.computers.tcp.TcpNetwork;
+import sneer.bricks.network.computers.udp.UdpNetwork;
 import sneer.tests.adapters.SneerPartyApiClassLoader;
 import sneer.tests.adapters.SneerPartyController;
+import basis.brickness.impl.EagerClassLoader;
 
 public final class SneerPartyApiClassLoaderImpl extends EagerClassLoader implements SneerPartyApiClassLoader {
 	private final String _name;
@@ -41,6 +41,9 @@ public final class SneerPartyApiClassLoaderImpl extends EagerClassLoader impleme
 	}
 
 	private boolean isNetworkClass(String className) {
+		if (className.equals(UdpNetwork.class.getName())) return true;
+		if (className.equals(UdpNetwork.UdpSocket.class.getName())) return true;
+
 		if (className.equals(TcpNetwork.class.getName())) return true;
 		if (className.equals(ByteArrayServerSocket.class.getName())) return true;
 		if (className.equals(ByteArraySocket.class.getName())) return true;

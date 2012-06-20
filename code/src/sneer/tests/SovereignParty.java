@@ -38,4 +38,5 @@ public interface SovereignParty {
 	void stageBricksForInstallation(String... brickNames) throws IOException, CompilerException;
 	void copyToSourceFolder(File folderWithBricks) throws IOException;
 	void loadBrick(String brickName);
+	void loadUnsharedBrick(String brickName);
 }

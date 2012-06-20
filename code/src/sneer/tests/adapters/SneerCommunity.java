@@ -10,24 +10,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.hardware.io.log.tests.LoggerMocks;
+import sneer.bricks.network.computers.udp.UdpNetwork;
+import sneer.bricks.software.code.classutils.ClassUtils;
+import sneer.tests.SovereignCommunity;
+import sneer.tests.SovereignParty;
+import sneer.tests.adapters.impl.SneerPartyApiClassLoaderImpl;
+import sneer.tests.adapters.impl.utils.network.udp.impl.InProcessUdpNetworkImpl;
 import basis.brickness.Brickness;
 import basis.environments.Environment;
 import basis.environments.EnvironmentUtils;
 import basis.environments.ProxyInEnvironment;
 import basis.languagesupport.JarFinder;
 
-import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.hardware.io.log.tests.LoggerMocks;
-import sneer.bricks.network.computers.tcp.TcpNetwork;
-import sneer.bricks.software.code.classutils.ClassUtils;
-import sneer.tests.SovereignCommunity;
-import sneer.tests.SovereignParty;
-import sneer.tests.adapters.impl.SneerPartyApiClassLoaderImpl;
-import sneer.tests.adapters.impl.utils.network.InProcessNetwork;
-
 public class SneerCommunity implements SovereignCommunity {
 	
-	private final TcpNetwork _network = new InProcessNetwork();
+//	private final TcpNetwork _network = new InProcessNetwork();
+	private final UdpNetwork _network = new InProcessUdpNetworkImpl();
 	private int _nextPort = 10000;
 
 	private final File _tmpFolder;
@@ -37,11 +37,14 @@ public class SneerCommunity implements SovereignCommunity {
 	
 	public SneerCommunity(File tmpFolder) {
 		_tmpFolder = tmpFolder;
+		startStunServer();
 	}
+
 	
 	public List<SneerParty> allParties() {
 		return Collections.unmodifiableList(_allParties);
 	}
+	
 	
 	@Override
 	public SovereignParty createParty(final String name) {
@@ -50,7 +53,15 @@ public class SneerCommunity implements SovereignCommunity {
 	}
 
 
-	private SovereignParty createParty(final String name, int port) {
+	private SovereignParty createParty(String name, int port) {
+		SneerParty ret = prepareParty(name);
+		ret.start(name, port);
+		_allParties.add(ret);
+		return ret;
+	}
+	
+
+	private SneerParty prepareParty(String name) {
 		File sneerHome = rootFolder(name);
 		File dataFolder        = makeFolder(sneerHome, "data");
 		File tmpFolder         = makeFolder(sneerHome, "tmp");
@@ -67,10 +78,6 @@ public class SneerCommunity implements SovereignCommunity {
 		final SneerParty party = ProxyInEnvironment.newInstance(container, partyImpl);
 		
 		party.configDirectories(dataFolder, tmpFolder, currentCodeFolder, privateSrc, privateBin, stageFolder);
-
-		party.start(name, port);
-
-		_allParties.add(party);
 		return party;
 	}
 
@@ -93,6 +100,7 @@ public class SneerCommunity implements SovereignCommunity {
 		_allParties.remove(party);
 	}
 
+	
 	private File makeFolder(File parent, String child) {
 		File result = new File(parent, child);
 		if (!result.exists() && !result.mkdirs())
@@ -100,6 +108,7 @@ public class SneerCommunity implements SovereignCommunity {
 		return result;
 	}
 
+	
 	private Class<?> loadControllerUsing(URLClassLoader apiClassLoader) {
 		try {
 			return apiClassLoader.loadClass(SneerPartyController.class.getName());
@@ -108,6 +117,7 @@ public class SneerCommunity implements SovereignCommunity {
 		}
 	}
 
+	
 	private URLClassLoader apiClassLoader(File privateBin, File sharedBin, final String name) {
 		URL[] langJars = JarFinder.languageSupportJars(sharedBin);
 		URL[] classPath = new URL[langJars.length + 2];
@@ -117,6 +127,7 @@ public class SneerCommunity implements SovereignCommunity {
 		return new SneerPartyApiClassLoaderImpl(classPath, SneerCommunity.class.getClassLoader(), name);
 	}
 
+	
 	private URL toURL(File file) {
 		try {
 			return file.toURI().toURL();
@@ -125,11 +136,13 @@ public class SneerCommunity implements SovereignCommunity {
 		}
 	}
 
+	
 	private File rootFolder(String name) {
 		String home = "sneer-" + name.replace(' ', '_');
 		return makeFolder(_tmpFolder, home);
 	}
 
+	
 	@Override
 	public void connect(SovereignParty a, SovereignParty b) {
 		if (a.isContact(b.ownName()))
@@ -154,5 +167,9 @@ public class SneerCommunity implements SovereignCommunity {
 		_allParties.clear();
 	}
 
+
+	private void startStunServer() {
+		prepareParty("Stun Server").loadBrick("sneer.bricks.network.computers.udp.holepuncher.server.listener.StunServerListener");
+	}
 
 }

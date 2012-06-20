@@ -20,7 +20,6 @@ class StunProtocolImpl implements StunProtocol {
 	
 	private static final InetSocketAddress SERVER_ADDRESS = initServerAddress();
 	private static final String SERVER_HOST_NAME = "dynamic.sneer.me";
-//	private static final String SERVER_HOST_NAME = "localhost";
 	private static final int SERVER_PORT = 5555;
 	
 	@Override
@@ -86,7 +85,7 @@ class StunProtocolImpl implements StunProtocol {
 	static private InetAddress serverHost() {
 		try {
 			return "true".equals(System.getProperty("sneer.testmode"))
-				? InetAddress.getByAddress(SERVER_HOST_NAME, new byte[]{111,112,113,114}) //Avoid dns lookup
+				? InetAddress.getByAddress(SERVER_HOST_NAME, new byte[]{127,0,0,1})
 				: InetAddress.getByName(SERVER_HOST_NAME);
 		} catch (UnknownHostException e) {
 			my(BlinkingLights.class).turnOn(LightType.WARNING, "Stun Server not found", "Unable to resolve DNS for " + SERVER_HOST_NAME + ". This might make it harder for Sneer to find your peers.", 15000);

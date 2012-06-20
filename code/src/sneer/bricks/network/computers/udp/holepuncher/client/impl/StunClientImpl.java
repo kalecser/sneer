@@ -8,7 +8,9 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.io.log.Logger;
@@ -26,12 +28,13 @@ import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
-import sneer.bricks.pulp.reactive.Signal;
 import basis.lang.Closure;
 import basis.lang.Consumer;
 
 class StunClientImpl implements StunClient {
 	
+	private static final byte[][] EMPTY_ARRAY = new byte[][]{};
+
 	private Consumer<DatagramPacket> sender;
 	
 	@SuppressWarnings("unused") private final Object ref1 =
@@ -71,12 +74,13 @@ class StunClientImpl implements StunClient {
 	
 	private byte[][] peersToFind() {
 		Contact[] contacts = my(Contacts.class).contacts().currentElements().toArray(new Contact[0]);
-		byte[][] peersSeals = new byte[contacts.length][];
-		for (int i = 0; i < contacts.length; i++) {
-			Signal<Seal> seal = my(ContactSeals.class).sealGiven(contacts[i]);
-			peersSeals[i] = seal.currentValue().bytes.copy();
+		List<byte[]> ret = new ArrayList<byte[]>(contacts.length);
+		for (Contact c : contacts) {
+			Seal seal = my(ContactSeals.class).sealGiven(c).currentValue();
+			if (seal == null) continue;
+			ret.add(seal.bytes.copy());
 		}
-		return peersSeals;
+		return ret.toArray(EMPTY_ARRAY);
 	}
 
 	

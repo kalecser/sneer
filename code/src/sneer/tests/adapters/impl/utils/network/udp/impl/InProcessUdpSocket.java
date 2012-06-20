@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.udp.inprocess.impl;
+package sneer.tests.adapters.impl.utils.network.udp.impl;
 
 import static basis.environments.Environments.my;
 
@@ -10,13 +10,12 @@ import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import sneer.bricks.network.computers.udp.UdpNetwork.UdpSocket;
+import basis.environments.Environment;
+import basis.environments.Environments;
 import basis.lang.Closure;
 import basis.lang.Consumer;
 import basis.lang.Functor;
-
-import sneer.bricks.hardware.cpu.lang.contracts.Contract;
-import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.network.computers.udp.UdpNetwork.UdpSocket;
 
 
 class InProcessUdpSocket implements UdpSocket {
@@ -26,10 +25,9 @@ class InProcessUdpSocket implements UdpSocket {
 	private final int portNumber;
 	private final Functor<Integer, InProcessUdpSocket> socketsByNumberFinder;
 
-	private Contract receivingContract;
 	private final BlockingQueue<DatagramPacket> incomingPackets = new LinkedBlockingQueue<DatagramPacket>();
 
-	private boolean isCrashed = false;
+	private volatile boolean isCrashed = false;
 
 
 	InProcessUdpSocket(int portNumber, Functor<Integer, InProcessUdpSocket> socketsByNumberFinder) {
@@ -41,10 +39,14 @@ class InProcessUdpSocket implements UdpSocket {
 	@Override
 	synchronized
 	public void initReceiver(final Consumer<DatagramPacket> receiver) {
-		if (receivingContract != null) throw new IllegalStateException();
-		receivingContract = my(Threads.class).startStepping(new Closure() { @Override public void run() {
-			receiver.consume(waitForNextPacket());
-		}});
+		final Environment env = my(Environment.class);
+		new Thread() { { setDaemon(true); } @Override public void run() {
+			Environments.runWith(env, new Closure() { @Override public void run() {
+				while (!isCrashed) {
+					receiver.consume(waitForNextPacket());
+				}
+			}});
+		}}.start();
 	}
 
 	
@@ -55,6 +57,7 @@ class InProcessUdpSocket implements UdpSocket {
 		checkLocalhost(packet);
 		
 		InProcessUdpSocket dest = socketsByNumberFinder.evaluate(packet.getPort());
+		if (dest == null) return;
 		dest.incomingPackets.add(asMine(packet));
 	}
 
@@ -78,7 +81,6 @@ class InProcessUdpSocket implements UdpSocket {
 
 	@Override
 	public void crash() {
-		receivingContract.dispose();
 		isCrashed = true;
 	}
 

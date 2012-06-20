@@ -37,7 +37,7 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 		System.clearProperty("freedom7.y.Y.installed");
 		newSession(b());
 		b().enableCodeSharing();
-		b().loadBrick("freedom7.y.Y");
+		b().loadUnsharedBrick("freedom7.y.Y");
 		assertEquals("true", System.getProperty("freedom7.y.Y.installed"));
 
 		b().waitForAvailableBrick("freedom7.y.Y", "CURRENT");
@@ -74,7 +74,7 @@ public class Freedom7Test extends SovereignFunctionalTestBase {
 		for (String brickName : brickNames) a().waitForAvailableBrick(brickName, "CURRENT");
 		a().stageBricksForInstallation(brickNames);
 		newSession(a());
-		for (String brickName : brickNames) a().loadBrick(brickName);
+		for (String brickName : brickNames) a().loadUnsharedBrick(brickName);
 	}
 	
 	private File generateX() throws Exception {

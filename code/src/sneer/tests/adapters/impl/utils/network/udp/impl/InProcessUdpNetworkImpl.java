@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.udp.inprocess.impl;
+package sneer.tests.adapters.impl.utils.network.udp.impl;
 
 import java.net.BindException;
 import java.net.SocketException;
@@ -7,7 +7,7 @@ import java.util.Map;
 
 import basis.lang.Functor;
 
-import sneer.bricks.network.computers.udp.inprocess.InProcessUdpNetwork;
+import sneer.tests.adapters.impl.utils.network.udp.InProcessUdpNetwork;
 
 
 public class InProcessUdpNetworkImpl implements InProcessUdpNetwork {

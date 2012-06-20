@@ -5,11 +5,12 @@ import static sneer.bricks.pulp.blinkinglights.LightType.ERROR;
 import static sneer.bricks.pulp.blinkinglights.LightType.INFO;
 import static sneer.bricks.pulp.blinkinglights.LightType.WARNING;
 
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -76,7 +77,7 @@ public class OwnIpsImpl implements OwnIps {
 		try {
 			ret = tryToFindOwnIps();
 			my(BlinkingLights.class).turnOffIfNecessary(error);
-		} catch (SocketException e) {
+		} catch (IOException e) {
 			my(BlinkingLights.class).turnOnIfNecessary(error, "Error searching for IPs", e);
 			return Collections.EMPTY_LIST;
 		}
@@ -90,7 +91,9 @@ public class OwnIpsImpl implements OwnIps {
 	}
 
 
-	private static Collection<InetAddress> tryToFindOwnIps() throws SocketException {
+	private static Collection<InetAddress> tryToFindOwnIps() throws IOException {
+		if ("true".equals(System.getProperty("sneer.testmode"))) return Arrays.asList(InetAddress.getByName("127.0.0.1"));
+				
 		Collection<InetAddress> ret = new ArrayList<InetAddress>();
 		Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
 		while (nis.hasMoreElements())
@@ -110,7 +113,7 @@ public class OwnIpsImpl implements OwnIps {
 	}
 
 	
-	public static void main(String[] args) throws SocketException {
+	public static void main(String[] args) throws IOException {
 		System.out.println(tryToFindOwnIps());
 	}
 	

@@ -277,7 +277,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 
 	@Override
-	public void loadBrick(String brickName) {
+	public void loadUnsharedBrick(String brickName) {
 		try {
 			SneerPartyApiClassLoader apiClassLoader = (SneerPartyApiClassLoader) apiClassLoader();
 			my(apiClassLoader.loadUnsharedBrickClass(brickName));
@@ -285,10 +285,22 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 			throw new IllegalStateException(e);
 		}
 	}
+	
+	
+	@Override
+	public void loadBrick(String brickName) {
+		try {
+			my(apiClassLoader().loadClass(brickName));
+		} catch (ClassNotFoundException e) {
+			throw new IllegalStateException(e);
+		}
+	}
 
+	
 	private ClassLoader apiClassLoader() {
 		return SneerPartyController.class.getClassLoader();
 	}
+	
 	
 	@Override
 	public boolean isOnline(String nickname) {
