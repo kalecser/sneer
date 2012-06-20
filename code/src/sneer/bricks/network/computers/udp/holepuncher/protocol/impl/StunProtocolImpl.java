@@ -21,7 +21,7 @@ class StunProtocolImpl implements StunProtocol {
 	private static final InetSocketAddress SERVER_ADDRESS = initServerAddress();
 	private static final String SERVER_HOST_NAME = "dynamic.sneer.me";
 //	private static final String SERVER_HOST_NAME = "localhost";
-	private static final int SERVER_PORT = 7777;
+	private static final int SERVER_PORT = 5555;
 	
 	@Override
 	public void marshalRequestTo(StunRequest request, ByteBuffer out) {

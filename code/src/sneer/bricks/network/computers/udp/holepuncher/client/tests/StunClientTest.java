@@ -109,7 +109,7 @@ public class StunClientTest extends BrickTestBase {
 		
 		client.initSender(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket request) {
 			assertEquals("dynamic.sneer.me", request.getAddress().getHostName());
-			assertEquals(7777, request.getPort());
+			assertEquals(5555, request.getPort());
 			
 			DatagramPacket[] replies = server.repliesFor(request);
 			if (replies.length == 0) return;

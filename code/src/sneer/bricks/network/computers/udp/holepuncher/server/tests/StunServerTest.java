@@ -37,25 +37,33 @@ public class StunServerTest extends BrickTestBase {
 		DatagramPacket[] replies;
 		
 		replies = subjectsRepliesFor(seal1, ip("200.243.227.1"), 4111, "local data 1".getBytes());
-		assertEquals(0, replies.length);
+		assertEmpty(replies);
 		replies = subjectsRepliesFor(seal2, ip("200.243.227.2"), 4222, "local data 2".getBytes());
-		assertEquals(0, replies.length);
+		assertEmpty(replies);
 		replies = subjectsRepliesFor(seal3, ip("200.243.227.3"), 4333, "local data 3".getBytes(),
 			peersToFind
 		);
 		
-		assertReply(replies[0], seal1, "200.243.227.1", 4111, "local data 1");
-		assertReply(replies[1], seal3, "200.243.227.3", 4333, "local data 3");
-//		assertReply(replies[2], seal3, "200.243.227.3", 4333, "local data 3");
+		assertReply(replies[0], "200.243.227.3", 4333, seal1, "200.243.227.1", 4111, "local data 1");
+		assertReply(replies[1], "200.243.227.1", 4111, seal3, "200.243.227.3", 4333, "local data 3");
+//		assertReply(replies[2], "200.243.227.2", 4222, seal3, "200.243.227.3", 4333, "local data 3");
 	}
 
 
-	private void assertReply(DatagramPacket replyPacket, byte[] seal, String ip, int port, String localAddressData) throws UnknownHostException {
+	private void assertEmpty(DatagramPacket[] replies) {
+		assertEquals(0, replies.length);
+	}
+
+
+	private void assertReply(DatagramPacket replyPacket, String ip, int port, byte[] seal, String peerIp, int peerPort, String peerAddressData) throws UnknownHostException {
+		assertEquals(ip, replyPacket.getAddress().getHostAddress());
+		assertEquals(port, replyPacket.getPort());
+		
 		StunReply reply = unmarshalReply(replyPacket);
 		assertArrayEquals(seal, reply.peerSeal);
-		assertEquals(ip(ip), reply.peerIp);
-		assertEquals(port, reply.peerPort);
-		assertEquals(localAddressData, new String(reply.peerLocalAddressData));
+		assertEquals(ip(peerIp), reply.peerIp);
+		assertEquals(peerPort, reply.peerPort);
+		assertEquals(peerAddressData, new String(reply.peerLocalAddressData));
 	}
 
 
