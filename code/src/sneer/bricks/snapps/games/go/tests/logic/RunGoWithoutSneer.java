@@ -1,6 +1,8 @@
 package sneer.bricks.snapps.games.go.tests.logic;
 
 import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.snapps.games.go.impl.Player;
@@ -20,6 +22,17 @@ public class RunGoWithoutSneer implements Player {
 	}
 
 	public RunGoWithoutSneer(final int boardSize) {
+		try {
+		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+		    }
+		} catch (Exception e) {
+		    // If Nimbus is not available, you can set the GUI to another look and feel.
+		}
+		
 		TimerFactory timerFactory = new TimerFactory() {
 			@Override
 			public WeakContract wakeUpEvery(final int interval, final Runnable scroller) {

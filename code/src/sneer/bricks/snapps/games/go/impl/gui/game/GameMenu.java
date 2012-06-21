@@ -17,7 +17,7 @@ public class GameMenu extends JFrame {
 	private JLabel _blackScore;
 	private JLabel _whiteScore;
 
-	public GameMenu() {
+	public GameMenu() {		
 		final JPanel jPanel = new JPanel();
 		addMenu(jPanel);
 		getContentPane().add(jPanel);
@@ -82,9 +82,13 @@ public class GameMenu extends JFrame {
 
 	public void setMyTurn(boolean enable) {
 		_passButton.setEnabled(enable);
-		_resignButton.setEnabled(enable); 
 	}
 
+	public void setGameEnded() {
+		_passButton.setEnabled(false);
+		_resignButton.setEnabled(false);
+	}
+	
 	public void updateScore(int blackScore, int whiteScore) { 
 		_blackScore.setText(blackScore+"");
 		_whiteScore.setText(whiteScore+"");

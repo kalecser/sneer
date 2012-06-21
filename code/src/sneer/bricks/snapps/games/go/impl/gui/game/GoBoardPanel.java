@@ -128,8 +128,9 @@ public class GoBoardPanel extends JPanel{
 	
 	@Override
 	protected void paintComponent(final Graphics g) {
-		render((Graphics2D) g);
-		paintComponents(g);
+		final Graphics2D g2 = (Graphics2D) g;
+		render(g2);
+		paintComponents(g2);
 		g.dispose();
 	}
 	
@@ -251,6 +252,7 @@ public class GoBoardPanel extends JPanel{
 	private void decideWinner() {
 		int winState = HUDPainter.NOONE_WIN;
 		if (_board.nextToPlay()==null){
+			_goFrame.gameEnded();
 			int scoreWhite=scoreWhite();
 			int scoreBlack=scoreBlack();
 			boolean isNotADraw = scoreWhite!=scoreBlack;

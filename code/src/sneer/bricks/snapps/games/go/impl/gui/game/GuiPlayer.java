@@ -6,7 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import sneer.bricks.snapps.games.go.impl.Player;
 import sneer.bricks.snapps.games.go.impl.TimerFactory;
@@ -26,6 +29,9 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 	private final GameMenu _gameMenu;
 	
 	public GuiPlayer(final int gameID,StoneColor side,final int boardSize, final TimerFactory timerFactory) {
+		
+		settLookAndFeel();
+		
 		this._gameID = gameID;
 		_side = side;
 		this._boardSize = boardSize;
@@ -42,6 +48,14 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		setBounds(0, 0,(width<500)?500:width, (width<500)?500+whatsLeftOfTheFrame:width+whatsLeftOfTheFrame);
 		
 		nextToPlay(StoneColor.BLACK);
+	}
+
+	private void settLookAndFeel() {
+		try {
+			UIManager.setLookAndFeel(new MetalLookAndFeel());
+		} catch (UnsupportedLookAndFeelException e) {
+			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
+		}
 	}
 	
 	@Override
@@ -130,6 +144,10 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		
 		_goBoardPanel.setBoardListener(this);
 		contentPane.add(_goBoardPanel, BorderLayout.CENTER);
+	}
+
+	public void gameEnded() {
+		_gameMenu.setGameEnded();
 	}
 	
 }
