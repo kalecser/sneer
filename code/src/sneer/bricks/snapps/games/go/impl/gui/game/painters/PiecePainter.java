@@ -91,7 +91,7 @@ import java.awt.image.BufferedImage;
         
         g2.setStroke(new BasicStroke(getWidth()*0.03f));
 		g2.setColor(strokeColor);
-        g2.drawOval(1, 1, getWidth() - 3, getHeight() - 3);
+        g2.drawOval(0, 0, getWidth() - 1, getHeight() - 1);
 	}
 
 	private void defaultColorSettings() {
