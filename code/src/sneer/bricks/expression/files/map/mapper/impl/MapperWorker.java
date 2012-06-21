@@ -132,7 +132,6 @@ class MapperWorker {
 	private void unmapDeletedFiles(String folderPath, List<FileOrFolder> newEntries, FolderContents oldContents) {
 		if (oldContents == null) return;
 		for (FileOrFolder oldEntry : oldContents.contents)
-			//if (!newEntries.contains(oldEntry))
 			if (!containsFileName(newEntries, oldEntry))
 				unmap(folderPath, oldEntry);
 	}
@@ -189,10 +188,11 @@ class MapperWorker {
 		String path = file.getAbsolutePath();
 		long lastModified = file.lastModified();
 
-		Hash result = FileMap.getHash(path);
-		if (result != null && lastModified == FileMap.getLastModified(path))
-			return result;
+		Hash cached = FileMap.getHash(path);
+		if (cached != null && lastModified == FileMap.getLastModified(path))
+			return cached;
 
+		Hash result;
 		try {
 			result = my(Crypto.class).digest(file);
 		} catch (IOException e) {
