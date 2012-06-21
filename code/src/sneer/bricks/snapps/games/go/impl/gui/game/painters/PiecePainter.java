@@ -30,6 +30,7 @@
  */
 package sneer.bricks.snapps.games.go.impl.gui.game.painters;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
@@ -53,8 +54,11 @@ import java.awt.image.BufferedImage;
 	Color centerGlow;
 	Color overallColor;
 	Color edges;
-	
 	protected void paintPiece(BufferedImage image, final boolean black) {
+		paintPiece(image,black, false);
+	}
+	
+	protected void paintPiece(BufferedImage image, final boolean black, final boolean stroke) {
         _width = image.getWidth();
         _height = image.getHeight();
         Graphics2D g2 = (Graphics2D)image.getGraphics();
@@ -74,7 +78,21 @@ import java.awt.image.BufferedImage;
         paintDarkEdges(g2);
         paintBottomOvalHighlight(g2);
         paintTopLeftOvalSpecularHighlight(g2);
+        if(stroke)
+        	drawStroke(black, g2);
     }
+
+	private void drawStroke(final boolean black, Graphics2D g2) {
+		final Color strokeColor;
+        if(black)
+        	strokeColor = Color.WHITE;
+        else
+        	strokeColor = Color.BLACK;
+        
+        g2.setStroke(new BasicStroke(getWidth()*0.03f));
+		g2.setColor(strokeColor);
+        g2.drawOval(1, 1, getWidth() - 3, getHeight() - 3);
+	}
 
 	private void defaultColorSettings() {
 		bottomOvalHighlightOutterCollor = new Color(64, 142, 203, 255);
