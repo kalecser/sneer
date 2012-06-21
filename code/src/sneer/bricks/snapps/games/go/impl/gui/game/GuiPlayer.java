@@ -2,15 +2,10 @@ package sneer.bricks.snapps.games.go.impl.gui.game;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
 import sneer.bricks.snapps.games.go.impl.Player;
@@ -19,61 +14,45 @@ import sneer.bricks.snapps.games.go.impl.logging.GoLogger;
 import sneer.bricks.snapps.games.go.impl.logic.BoardListener;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.impl.logic.Move;
-import basis.lang.Closure;
 
 public class GuiPlayer extends JFrame implements BoardListener,Player{
 	
 	private static final long serialVersionUID = 1L;
 	private final StoneColor _side;
 	private GoBoardPanel _goBoardPanel;
-	private ActionsPanel actionsPanel;
-	private GoScorePanel scorePanel;
 	private Player _adversary;
 	private final int _boardSize;
 	private final int _gameID;
+	private final GameMenu _gameMenu;
 	
 	public GuiPlayer(final int gameID,StoneColor side,final int boardSize, final TimerFactory timerFactory) {
 		this._gameID = gameID;
 		_side = side;
 		this._boardSize = boardSize;
+		_gameMenu = new GameMenu();
 	
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Go - " + _side.name());	  
 	    setResizable(true);
-	    addAllComponents(timerFactory); 
+	    addAllComponents(timerFactory);
 	    setVisible(true);
 	    int bord=getInsets().left+getInsets().right;
 	    final int width = (int) ((_boardSize*_goBoardPanel.getCellSize())+_goBoardPanel.getCellSize()+bord);
 		final int whatsLeftOfTheFrame = 70;
 		setBounds(0, 0,(width<500)?500:width, (width<500)?500+whatsLeftOfTheFrame:width+whatsLeftOfTheFrame);
 		
-		addKeyListener(new KeyListener() {
-			
-			@Override
-			public void keyTyped(KeyEvent arg0) {
-				System.out.println(arg0.getKeyCode());
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				System.out.println(arg0.getKeyCode());
-			}
-			
-			@Override
-			public void keyPressed(KeyEvent arg0) {
-				System.out.println(arg0.getKeyCode());
-			}
-		});
+		nextToPlay(StoneColor.BLACK);
 	}
 	
 	@Override
 	public void updateScore(int blackScore, int whiteScore) {
-		scorePanel.updateScore(blackScore, whiteScore);
+		_gameMenu.updateScore(blackScore, whiteScore);
 	}
 
 	@Override
 	public void nextToPlay(StoneColor nextToPlay) {
-		actionsPanel.nextToPlay(nextToPlay);
+		boolean isMyTurn = nextToPlay == _side;
+		_gameMenu.setMyTurn(isMyTurn);
 		_goBoardPanel.repaint();
 	}
 
@@ -134,28 +113,23 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 		_goBoardPanel = new GoBoardPanel(this,timerFactory,_boardSize, _side);
-		_goBoardPanel.setBoardListener(this);
-		contentPane.add(_goBoardPanel, BorderLayout.CENTER);
+		_gameMenu.addMenu(_goBoardPanel);
 		
-		JPanel goEastPanel = new JPanel();
-		goEastPanel.setLayout(new FlowLayout());
-		scorePanel = new GoScorePanel(_goBoardPanel.scoreBlack(), _goBoardPanel.scoreWhite());
-		goEastPanel.add(scorePanel);
-		
-		JSeparator space= new JSeparator(SwingConstants.VERTICAL);
-		space.setPreferredSize(new Dimension(30,0));
-		goEastPanel.add(space); 
-		
-		Closure pass = new Closure() { @Override public void run() {
+		final ActionListener onPassPress = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
+			GoLogger.log("doMovePass();");
 			doMovePass();
 		}};
-		Closure resign = new Closure() { @Override public void run() {
+		
+		final ActionListener onResignPress = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
+			GoLogger.log("doMoveResign();");
 			doMoveResign();
 		}};
-		actionsPanel = new ActionsPanel(pass,resign, _side);
-		goEastPanel.add(actionsPanel);
-				
-		contentPane.add(goEastPanel, BorderLayout.SOUTH);
+		
+		_gameMenu._passButton.addActionListener(onPassPress);
+		_gameMenu._resignButton.addActionListener(onResignPress);
+		
+		_goBoardPanel.setBoardListener(this);
+		contentPane.add(_goBoardPanel, BorderLayout.CENTER);
 	}
 	
 }

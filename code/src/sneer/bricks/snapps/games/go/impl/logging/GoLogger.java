@@ -3,11 +3,12 @@ package sneer.bricks.snapps.games.go.impl.logging;
 
 public class GoLogger {
 
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 	
-	public static void log(String log){
-		if(!DEBUG) return;
-		System.out.println(log);
+	public static void log(Object log){
+		if(DEBUG){
+			System.out.println(log);
+		}
 	}
 	
 }

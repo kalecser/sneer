@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 
 import sneer.bricks.snapps.games.go.impl.gui.game.GoBoardPanel;
+import sneer.bricks.snapps.games.go.impl.logging.GoLogger;
 
 public class HUDPainter {
 
@@ -30,7 +31,7 @@ public class HUDPainter {
 		}
 		if(_winState == PLAYER_LOSES){
 			final Rectangle clipBounds = graphics.getClipBounds();
-			System.out.println(clipBounds);
+			GoLogger.log(clipBounds);
 			graphics.drawImage(loseImg,175, 185, null);
 		}
 	}
