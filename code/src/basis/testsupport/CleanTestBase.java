@@ -151,7 +151,6 @@ public abstract class CleanTestBase extends AssertUtils {
 		while (true) {
 			if (thread.getState() == Thread.State.TERMINATED) return true;
 			if (System.currentTimeMillis() - t0 > 2000) return false;
-			System.gc();
 			sleep(10);
 		}
 	}
