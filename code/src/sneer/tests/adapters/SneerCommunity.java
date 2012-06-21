@@ -12,11 +12,13 @@ import java.util.List;
 
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.io.log.tests.LoggerMocks;
+import sneer.bricks.network.computers.tcp.TcpNetwork;
 import sneer.bricks.network.computers.udp.UdpNetwork;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.tests.SovereignCommunity;
 import sneer.tests.SovereignParty;
 import sneer.tests.adapters.impl.SneerPartyApiClassLoaderImpl;
+import sneer.tests.adapters.impl.utils.network.InProcessNetwork;
 import sneer.tests.adapters.impl.utils.network.udp.impl.InProcessUdpNetworkImpl;
 import basis.brickness.Brickness;
 import basis.environments.Environment;
@@ -26,8 +28,8 @@ import basis.languagesupport.JarFinder;
 
 public class SneerCommunity implements SovereignCommunity {
 	
-//	private final TcpNetwork _network = new InProcessNetwork();
-	private final UdpNetwork _network = new InProcessUdpNetworkImpl();
+	private final TcpNetwork _tcpNetwork = new InProcessNetwork();
+//	private final UdpNetwork _udpNetwork = new InProcessUdpNetworkImpl();
 	private int _nextPort = 10000;
 
 	private final File _tmpFolder;
@@ -71,7 +73,7 @@ public class SneerCommunity implements SovereignCommunity {
 		File stageFolder       = new File  (sneerHome, "code/stage");
 		File sharedBin = my(ClassUtils.class).classpathRootFor(SneerCommunity.class);
 		
-		Environment container = Brickness.newBrickContainer(_network, newLogger(name));
+		Environment container = Brickness.newBrickContainer(_tcpNetwork, newLogger(name));
 		URLClassLoader apiClassLoader = apiClassLoader(privateBin, sharedBin, name);
 		
 		SneerParty partyImpl = (SneerParty)EnvironmentUtils.retrieveFrom(container, loadControllerUsing(apiClassLoader));
@@ -169,7 +171,7 @@ public class SneerCommunity implements SovereignCommunity {
 
 
 	private void startStunServer() {
-		prepareParty("Stun Server").loadBrick("sneer.bricks.network.computers.udp.holepuncher.server.listener.StunServerListener");
+		//prepareParty("Stun Server").startStunServer();
 	}
 
 }

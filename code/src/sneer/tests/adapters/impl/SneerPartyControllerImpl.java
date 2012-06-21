@@ -28,6 +28,7 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.ports.OwnPort;
+import sneer.bricks.network.computers.udp.holepuncher.server.listener.StunServerListener;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
@@ -286,16 +287,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		}
 	}
 	
-	
-	@Override
-	public void loadBrick(String brickName) {
-		try {
-			my(apiClassLoader().loadClass(brickName));
-		} catch (ClassNotFoundException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-
 	
 	private ClassLoader apiClassLoader() {
 		return SneerPartyController.class.getClassLoader();
@@ -581,9 +572,16 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		}
 	}
 
+	
 	@Override
 	public File folderToSync() {
 		String currentValue = my(Snackup.class).folderToSync().currentValue();
 		return currentValue == null ? null : new File(currentValue);
+	}
+
+	
+	@Override
+	public void startStunServer() {
+		my(StunServerListener.class);
 	}
 }

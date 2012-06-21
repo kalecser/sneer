@@ -27,7 +27,9 @@ class InProcessUdpSocket implements UdpSocket {
 
 	private final BlockingQueue<DatagramPacket> incomingPackets = new LinkedBlockingQueue<DatagramPacket>();
 
+	private Thread thread;
 	private volatile boolean isCrashed = false;
+	
 
 
 	InProcessUdpSocket(int portNumber, Functor<Integer, InProcessUdpSocket> socketsByNumberFinder) {
@@ -40,13 +42,16 @@ class InProcessUdpSocket implements UdpSocket {
 	synchronized
 	public void initReceiver(final Consumer<DatagramPacket> receiver) {
 		final Environment env = my(Environment.class);
-		new Thread() { { setDaemon(true); } @Override public void run() {
+		thread = new Thread("In Process Udp Socket") { { setDaemon(true); start(); } @Override public void run() {
 			Environments.runWith(env, new Closure() { @Override public void run() {
-				while (!isCrashed) {
-					receiver.consume(waitForNextPacket());
-				}
+				while (!isCrashed)
+					try {
+						receiver.consume(incomingPackets.take());
+					} catch (InterruptedException e) {
+						return;
+					}
 			}});
-		}}.start();
+		}};
 	}
 
 	
@@ -69,7 +74,7 @@ class InProcessUdpSocket implements UdpSocket {
 
 
 	private void checkNotCrashed() throws IOException {
-		if (isCrashed) throw new IOException("UdpSocket on port " + portNumber + " already crashed.");
+		if (isCrashed()) throw new IOException("UdpSocket on port " + portNumber + " already crashed.");
 	}
 
 
@@ -82,6 +87,7 @@ class InProcessUdpSocket implements UdpSocket {
 	@Override
 	public void crash() {
 		isCrashed = true;
+		thread.interrupt();
 	}
 
 	
@@ -89,15 +95,6 @@ class InProcessUdpSocket implements UdpSocket {
 		return isCrashed;
 	}
 
-	
-	private DatagramPacket waitForNextPacket() {
-		try {
-			return incomingPackets.take();
-		} catch (InterruptedException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-	
 	
 	private static InetAddress localhost() {
 		try {
