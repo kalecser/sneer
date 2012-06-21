@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
@@ -30,7 +31,9 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 	
 	public GuiPlayer(final int gameID,StoneColor side,final int boardSize, final TimerFactory timerFactory) {
 		
-		settLookAndFeel();
+		final LookAndFeel defaultLookAndFeel = UIManager.getLookAndFeel();
+		
+		settLookAndFeel(new MetalLookAndFeel());
 		
 		this._gameID = gameID;
 		_side = side;
@@ -48,11 +51,13 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		setBounds(0, 0,(width<500)?500:width, (width<500)?500+whatsLeftOfTheFrame:width+whatsLeftOfTheFrame);
 		
 		nextToPlay(StoneColor.BLACK);
+		
+		settLookAndFeel(defaultLookAndFeel);
 	}
 
-	private void settLookAndFeel() {
+	private void settLookAndFeel(LookAndFeel laf) {
 		try {
-			UIManager.setLookAndFeel(new MetalLookAndFeel());
+			UIManager.setLookAndFeel(laf);
 		} catch (UnsupportedLookAndFeelException e) {
 			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		}
