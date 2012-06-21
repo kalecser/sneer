@@ -35,7 +35,10 @@ public class HoverStonePainter{
 			black = true;
 			
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		_stonePainter.paintStoneOnCoordinates(graphics, toCoordinateSmall(_hoverX), toCoordinateSmall(_hoverY),black,true, false);
+		final boolean lastPlayed = false;
+		final boolean dead = false;
+		final boolean hover = true;
+		_stonePainter.paintStoneOnCoordinates(graphics, toCoordinateSmall(_hoverX), toCoordinateSmall(_hoverY),black,hover, dead, lastPlayed);
 	}
 
 	public void setOffset(int xOffsetMeasuredByPieces, int yOffsetMeasuredByPieces) {

@@ -49,7 +49,8 @@ public class StonesInPlayPainter {
 				
 		graphics.setColor(toAwtColor(color));
 
-		_stonePainter.paintStoneOnCoordinates(graphics, cx, cy,black,transparent, dead);
+		final boolean stoneAtPositionIsLastPlayedStone = _board.stoneAtPositionIsLastPlayedStone(x, y);
+		_stonePainter.paintStoneOnCoordinates(graphics, cx, cy,black,transparent, dead, stoneAtPositionIsLastPlayedStone);
 	}
 
 	private Color toAwtColor(StoneColor color) {

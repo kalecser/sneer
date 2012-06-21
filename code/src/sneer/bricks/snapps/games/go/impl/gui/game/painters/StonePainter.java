@@ -10,6 +10,8 @@ public class StonePainter {
 	private PiecePainter _piecePainter = new PiecePainter(); 
 	private BufferedImage _whiteStoneAlive;
 	private BufferedImage _blackStoneAlive;
+	private BufferedImage _whiteStoneAliveLastPlayed;
+	private BufferedImage _blackStoneAliveLastPlayed;
 	private BufferedImage _whiteStoneHover;
 	private BufferedImage _blackStoneHover;
 	private BufferedImage _whiteStoneDead;
@@ -31,6 +33,8 @@ public class StonePainter {
 		
 		_whiteStoneAlive = new BufferedImage(stoneDiameter, stoneDiameter, BufferedImage.TYPE_INT_ARGB);
 		_piecePainter.paintPiece(_whiteStoneAlive, false);
+		_whiteStoneAliveLastPlayed = new BufferedImage(stoneDiameter, stoneDiameter, BufferedImage.TYPE_INT_ARGB);
+		_piecePainter.paintPiece(_whiteStoneAliveLastPlayed, false, true);
 		_whiteStoneHover = new BufferedImage(stoneDiameter, stoneDiameter, BufferedImage.TYPE_INT_ARGB);
 		_makeTransparentFiler.filter(_whiteStoneAlive, _whiteStoneHover);
 		_whiteStoneDead = new BufferedImage(deadStoneDiameter, deadStoneDiameter, BufferedImage.TYPE_INT_ARGB);
@@ -38,15 +42,18 @@ public class StonePainter {
 		
 		_blackStoneAlive = new BufferedImage(stoneDiameter, stoneDiameter, BufferedImage.TYPE_INT_ARGB);
 		_piecePainter.paintPiece(_blackStoneAlive, true);
+		_blackStoneAliveLastPlayed = new BufferedImage(stoneDiameter, stoneDiameter, BufferedImage.TYPE_INT_ARGB);
+		_piecePainter.paintPiece(_blackStoneAliveLastPlayed, true,true);
+		
 		_blackStoneHover = new BufferedImage(stoneDiameter, stoneDiameter, BufferedImage.TYPE_INT_ARGB);
 		_makeTransparentFiler.filter(_blackStoneAlive, _blackStoneHover);
 		_blackStoneDead = new BufferedImage(deadStoneDiameter, deadStoneDiameter, BufferedImage.TYPE_INT_ARGB);
 		_piecePainter.paintPiece(_blackStoneDead, true);
 	}
 	
-	public void paintStoneOnCoordinates(Graphics2D graphics, int x, int y,boolean black,boolean hover, boolean dead) {
+	public void paintStoneOnCoordinates(Graphics2D graphics, int x, int y,boolean black,boolean hover, boolean dead, boolean lastPlayed) {
 		
-		BufferedImage pieceToDraw = getPieceImageToDraw(black, hover, dead);
+		BufferedImage pieceToDraw = getPieceImageToDraw(black, hover, dead, lastPlayed);
 		
 		int stoneDiameter = pieceToDraw.getWidth();
 		int stoneRadius = stoneDiameter  / 2;
@@ -79,7 +86,7 @@ public class StonePainter {
 	}
 
 	private BufferedImage getPieceImageToDraw(boolean black, boolean hover,
-			boolean dead) {
+			boolean dead, boolean lastPlayed) {
 		BufferedImage pieceToDraw = _blackStoneAlive;
 		
 		if(black) {			
@@ -87,6 +94,9 @@ public class StonePainter {
 		}
 		if(black && hover) {			
 			pieceToDraw = _blackStoneHover;
+		}
+		if(black && lastPlayed) {			
+			pieceToDraw = _blackStoneAliveLastPlayed;
 		}
 		if(black && dead) {			
 			pieceToDraw = _blackStoneDead;
@@ -97,6 +107,9 @@ public class StonePainter {
 		}
 		if(white && hover) {			
 			pieceToDraw = _whiteStoneHover;
+		}
+		if(white && lastPlayed) {			
+			pieceToDraw = _whiteStoneAliveLastPlayed;
 		}
 		if(white && dead) {			
 			pieceToDraw = _whiteStoneDead;
