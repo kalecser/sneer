@@ -39,8 +39,9 @@ class AttributesImpl implements Attributes {
 	private final Object monitor = new Object();
 	private final List<WeakReference<AttributeSubscriber<?>>> subscribers = new ArrayList<WeakReference<AttributeSubscriber<?>>>();
 	private final List<WeakReference<AttributeValue>> liveTuples = new ArrayList<WeakReference<AttributeValue>>();
+	private int read; //This code is complex to avoid adding too many subscriptions to the TupleSpace. When the TSpace uses less threads, a TSpace subscription can be created for each AttributeSubscription and these weak lists above can be removed.   
 
-
+	
 	private AttributesImpl() {
 		_myAttributes = my(CollectionSignals.class).newSetRegister();
 

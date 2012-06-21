@@ -26,7 +26,6 @@ import basis.environments.Environments;
 import basis.lang.Closure;
 import basis.lang.Consumer;
 import basis.lang.exceptions.Refusal;
-import basis.util.concurrent.Latch;
 import basis.util.concurrent.RefLatch;
 
 public class ContactInternetAddressesTest extends BrickTestWithTuples {
