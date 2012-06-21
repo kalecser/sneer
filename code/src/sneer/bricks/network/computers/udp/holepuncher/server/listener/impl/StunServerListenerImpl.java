@@ -13,6 +13,7 @@ import sneer.bricks.network.computers.udp.UdpNetwork.UdpSocket;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
 import sneer.bricks.network.computers.udp.holepuncher.server.StunServer;
 import sneer.bricks.network.computers.udp.holepuncher.server.listener.StunServerListener;
+import sneer.bricks.network.computers.udp.receiver.ReceiverThreads;
 import basis.lang.Consumer;
 
 class StunServerListenerImpl implements StunServerListener {
@@ -29,7 +30,7 @@ class StunServerListenerImpl implements StunServerListener {
 		}
 		my(Logger.class).log("Stun Server port open.");
 		
-		socket.initReceiver(new Consumer<DatagramPacket>() {  @Override public void consume(DatagramPacket packet) {
+		my(ReceiverThreads.class).start(socket, new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
 			handle(packet);
 		}});
 	}

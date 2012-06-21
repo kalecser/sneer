@@ -1,7 +1,5 @@
 package sneer.tests.adapters.impl.utils.network.udp.impl;
 
-import static basis.environments.Environments.my;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -11,10 +9,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import sneer.bricks.network.computers.udp.UdpNetwork.UdpSocket;
-import basis.environments.Environment;
-import basis.environments.Environments;
-import basis.lang.Closure;
-import basis.lang.Consumer;
 import basis.lang.Functor;
 
 
@@ -27,7 +21,6 @@ class InProcessUdpSocket implements UdpSocket {
 
 	private final BlockingQueue<DatagramPacket> incomingPackets = new LinkedBlockingQueue<DatagramPacket>();
 
-	private Thread thread;
 	private volatile boolean isCrashed = false;
 	
 
@@ -40,18 +33,26 @@ class InProcessUdpSocket implements UdpSocket {
 
 	@Override
 	synchronized
-	public void initReceiver(final Consumer<DatagramPacket> receiver) {
-		final Environment env = my(Environment.class);
-		thread = new Thread("In Process Udp Socket") { { setDaemon(true); start(); } @Override public void run() {
-			Environments.runWith(env, new Closure() { @Override public void run() {
-				while (!isCrashed)
-					try {
-						receiver.consume(incomingPackets.take());
-					} catch (InterruptedException e) {
-						return;
-					}
-			}});
-		}};
+	public void receive(DatagramPacket packet) throws IOException {
+		checkNotCrashed();
+		copyInto(waitForPacket(), packet);
+	}
+
+
+	private void copyInto(DatagramPacket original, DatagramPacket copy) {
+		int len = original.getLength();
+		System.arraycopy(original.getData(), 0, copy.getData(), 0, len);
+		copy.setLength(len);
+		copy.setSocketAddress(original.getSocketAddress());
+	}
+
+
+	private DatagramPacket waitForPacket() {
+		try {
+			return incomingPackets.take();
+		} catch (InterruptedException e) {
+			throw new IllegalStateException();
+		}
 	}
 
 	
@@ -87,7 +88,6 @@ class InProcessUdpSocket implements UdpSocket {
 	@Override
 	public void crash() {
 		isCrashed = true;
-		thread.interrupt();
 	}
 
 	

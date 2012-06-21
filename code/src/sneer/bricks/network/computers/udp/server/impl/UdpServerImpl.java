@@ -10,6 +10,7 @@ import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.udp.UdpNetwork;
 import sneer.bricks.network.computers.udp.UdpNetwork.UdpSocket;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
+import sneer.bricks.network.computers.udp.receiver.ReceiverThreads;
 import sneer.bricks.network.computers.udp.sender.UdpSender;
 import sneer.bricks.network.computers.udp.server.UdpServer;
 import sneer.bricks.network.social.attributes.Attributes;
@@ -27,7 +28,7 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 	UdpServerImpl(){
 		socket = tryToOpenSocket();
 		if(socket == null) return;
-		socket.initReceiver(this);
+		my(ReceiverThreads.class).start(socket, this);
 		my(UdpSender.class).init(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
 			send(packet);
 		}});

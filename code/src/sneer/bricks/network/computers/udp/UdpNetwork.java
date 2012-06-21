@@ -5,7 +5,6 @@ import java.net.DatagramPacket;
 import java.net.SocketException;
 
 import basis.brickness.Brick;
-import basis.lang.Consumer;
 
 
 
@@ -17,7 +16,7 @@ public interface UdpNetwork {
 	UdpSocket openSocket(int portNumber) throws SocketException;
 
 	interface UdpSocket {
-		void initReceiver(Consumer<DatagramPacket> receiver);
+		void receive(DatagramPacket packet) throws IOException;
 		void send(DatagramPacket packet) throws IOException;
 		void crash();
 	}

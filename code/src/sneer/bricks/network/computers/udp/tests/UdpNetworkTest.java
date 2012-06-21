@@ -9,12 +9,12 @@ import java.net.SocketException;
 
 import org.junit.Test;
 
-import basis.lang.Consumer;
-import basis.util.concurrent.Latch;
-
 import sneer.bricks.network.computers.udp.UdpNetwork;
 import sneer.bricks.network.computers.udp.UdpNetwork.UdpSocket;
+import sneer.bricks.network.computers.udp.receiver.ReceiverThreads;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
+import basis.lang.Consumer;
+import basis.util.concurrent.Latch;
 
 
 
@@ -33,8 +33,8 @@ public class UdpNetworkTest extends BrickTestBase {
 		startUppercaseEchoOn(s1);
 
 		final Latch latch = new Latch();
-		final StringBuffer replies = new StringBuffer(); 
-		s2.initReceiver(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
+		final StringBuffer replies = new StringBuffer();
+		my(ReceiverThreads.class).start(s2, new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
 			replies.append(unmarshal(packet));
 			if (replies.toString().equals("HI THERE MY FRIENDS "))
 				latch.open();
@@ -62,11 +62,11 @@ public class UdpNetworkTest extends BrickTestBase {
 	}
 
 	
-	private void startUppercaseEchoOn(final UdpSocket s) {
-		s.initReceiver(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
+	private void startUppercaseEchoOn(final UdpSocket socket) {
+		my(ReceiverThreads.class).start(socket, new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
 			convertToUppercase(packet);
 			try {
-				s.send(packet);
+				socket.send(packet);
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
 			}

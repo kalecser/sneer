@@ -29,7 +29,7 @@ import basis.languagesupport.JarFinder;
 public class SneerCommunity implements SovereignCommunity {
 	
 	private final TcpNetwork _tcpNetwork = new InProcessNetwork();
-//	private final UdpNetwork _udpNetwork = new InProcessUdpNetworkImpl();
+	private final UdpNetwork _udpNetwork = new InProcessUdpNetworkImpl();
 	private int _nextPort = 10000;
 
 	private final File _tmpFolder;
@@ -55,15 +55,7 @@ public class SneerCommunity implements SovereignCommunity {
 	}
 
 
-	private SovereignParty createParty(String name, int port) {
-		SneerParty ret = prepareParty(name);
-		ret.start(name, port);
-		_allParties.add(ret);
-		return ret;
-	}
-	
-
-	private SneerParty prepareParty(String name) {
+	private SneerParty createParty(String name, int port) {
 		File sneerHome = rootFolder(name);
 		File dataFolder        = makeFolder(sneerHome, "data");
 		File tmpFolder         = makeFolder(sneerHome, "tmp");
@@ -73,14 +65,17 @@ public class SneerCommunity implements SovereignCommunity {
 		File stageFolder       = new File  (sneerHome, "code/stage");
 		File sharedBin = my(ClassUtils.class).classpathRootFor(SneerCommunity.class);
 		
-		Environment container = Brickness.newBrickContainer(_tcpNetwork, newLogger(name));
+		Environment container = Brickness.newBrickContainer(_udpNetwork, _tcpNetwork, newLogger(name));
 		URLClassLoader apiClassLoader = apiClassLoader(privateBin, sharedBin, name);
 		
 		SneerParty partyImpl = (SneerParty)EnvironmentUtils.retrieveFrom(container, loadControllerUsing(apiClassLoader));
-		final SneerParty party = ProxyInEnvironment.newInstance(container, partyImpl);
+		final SneerParty ret = ProxyInEnvironment.newInstance(container, partyImpl);
 		
-		party.configDirectories(dataFolder, tmpFolder, currentCodeFolder, privateSrc, privateBin, stageFolder);
-		return party;
+		ret.configDirectories(dataFolder, tmpFolder, currentCodeFolder, privateSrc, privateBin, stageFolder);
+		_allParties.add(ret);
+
+		ret.start(name, port);
+		return ret;
 	}
 
 
@@ -171,7 +166,7 @@ public class SneerCommunity implements SovereignCommunity {
 
 
 	private void startStunServer() {
-		//prepareParty("Stun Server").startStunServer();
+		//createParty("Stun Server", 0).startStunServer();
 	}
 
 }
