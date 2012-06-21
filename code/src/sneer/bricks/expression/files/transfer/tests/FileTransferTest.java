@@ -40,6 +40,7 @@ public class FileTransferTest extends BrickTestWithTuples {
 
 		
 	/*
+	 * - FileMap.getFile() -> getFiles() + FileMapper.getExistingFile(); Something like this.
 	 * - Large file transfers.
 	 * - Check download hash against downloaded contents. Check if hash of empty file and empty folder clash.
 	 * - Remove distinction between FileClient's file and folder downloads. Let download decide based on received contents.

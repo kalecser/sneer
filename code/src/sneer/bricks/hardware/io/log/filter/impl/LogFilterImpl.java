@@ -24,7 +24,7 @@ class LogFilterImpl implements LogFilter {
 		_phrases.add("Fetch");
 //		_phrases.add("Track");
 //		_phrases.add("File");
-		_phrases.add("Mapping");
+		_phrases.add("Map");
 		_phrases.add("key");
 		_phrases.add("peak");
 		_phrases.add("Thread count");
@@ -36,6 +36,7 @@ class LogFilterImpl implements LogFilter {
 		_phrases.add("Attribute");
 		_phrases.add("Stun");
 		_phrases.add("Packet");
+		_phrases.add("Sleep");
 //		_phrases.add("Stepper");
 //		_phrases.add("Sending");
 //		_phrases.add("[");
