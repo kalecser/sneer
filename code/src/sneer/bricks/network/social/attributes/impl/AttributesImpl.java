@@ -1,13 +1,14 @@
 package sneer.bricks.network.social.attributes.impl;
 
 import static basis.environments.Environments.my;
-import basis.lang.Consumer;
-import basis.lang.Functor;
-import basis.lang.Pair;
-import basis.lang.PickyConsumer;
-import basis.lang.arrays.ImmutableByteArray;
-import basis.lang.exceptions.Refusal;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -20,10 +21,24 @@ import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
 import sneer.bricks.pulp.serialization.Serializer;
+import basis.lang.Consumer;
+import basis.lang.Functor;
+import basis.lang.Pair;
+import basis.lang.PickyConsumer;
+import basis.lang.arrays.ImmutableByteArray;
+import basis.lang.exceptions.Refusal;
 
 class AttributesImpl implements Attributes {
 
+	private static final WeakReference<AttributeSubscriber<?>>[] EMPTY_ARRAY = new WeakReference[0];
+
 	private SetRegister<Class<? extends Attribute<?>>> _myAttributes;
+
+	@SuppressWarnings("unused") private final WeakContract _toAvoidGC;
+
+	private final Object monitor = new Object();
+	private final List<WeakReference<AttributeSubscriber<?>>> subscribers = new ArrayList<WeakReference<AttributeSubscriber<?>>>();
+	private final List<WeakReference<AttributeValue>> liveTuples = new ArrayList<WeakReference<AttributeValue>>();
 
 
 	private AttributesImpl() {
@@ -31,6 +46,10 @@ class AttributesImpl implements Attributes {
 
 		my(TupleSpace.class).keepNewest(AttributeValue.class, new Functor<AttributeValue, Object>() {  @Override public Object evaluate(AttributeValue attributeValue) {
 			return Pair.of(attributeValue.publisher, attributeValue.attributeName);
+		}});
+		
+		_toAvoidGC = my(TupleSpace.class).addSubscription(AttributeValue.class, new Consumer<AttributeValue>() { @Override public void consume(AttributeValue tuple) {
+			handle(tuple);
 		}});
 	}
 
@@ -45,8 +64,21 @@ class AttributesImpl implements Attributes {
 
 
 	@Override
-	public <T> Signal<T> myAttributeValue(final Class<? extends Attribute<T>> attribute) {
-		return new AttributeSubscriber<T>(null, attribute, Object.class).output();
+	public <T> Signal<T> myAttributeValue(Class<? extends Attribute<T>> attribute) {
+		AttributeSubscriber<T> ret = new AttributeSubscriber<T>(null, attribute, Object.class);
+		synchronized (monitor) {
+			subscribers.add(new WeakReference<AttributeSubscriber<?>>(ret));
+			Iterator<WeakReference<AttributeValue>> it = liveTuples.iterator();
+			while (it.hasNext()) {
+				WeakReference<AttributeValue> ref = it.next();
+				AttributeValue tuple = ref.get();
+				if (tuple == null)
+					it.remove();
+				else
+					ret.handle(tuple);
+			}
+		}
+		return ret.output();
 	}
 
 
@@ -82,6 +114,22 @@ class AttributesImpl implements Attributes {
 	@Override
 	public SetSignal<Class<? extends Attribute<?>>> all() {
 		return _myAttributes.output();
+	}
+
+
+	private void handle(AttributeValue tuple) {
+		WeakReference<AttributeSubscriber<?>>[] currentSubscribers;
+		synchronized (monitor) { 
+			currentSubscribers = subscribers.toArray(EMPTY_ARRAY);
+			liveTuples.add(new WeakReference<AttributeValue>(tuple));
+		}
+		for (WeakReference<AttributeSubscriber<?>> ref : currentSubscribers) {
+			AttributeSubscriber<?> subscriber = ref.get();
+			if (subscriber == null)
+				subscribers.remove(ref);
+			else
+				subscriber.handle(tuple);
+		}
 	}
 
 

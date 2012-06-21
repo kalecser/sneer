@@ -166,7 +166,7 @@ public class SneerCommunity implements SovereignCommunity {
 
 
 	private void startStunServer() {
-		//createParty("Stun Server", 0).startStunServer();
+		createParty("Stun Server", 0).startStunServer();
 	}
 
 }

@@ -2,13 +2,10 @@ package sneer.bricks.network.computers.addresses.tests;
 
 import static basis.environments.Environments.my;
 
+import java.util.Iterator;
+
 import org.jmock.Expectations;
 import org.junit.Test;
-
-import basis.brickness.testsupport.Bind;
-import basis.environments.Environments;
-import basis.lang.Closure;
-import basis.lang.exceptions.Refusal;
 
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
@@ -23,6 +20,14 @@ import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Signals;
+import sneer.bricks.pulp.reactive.collections.CollectionChange;
+import basis.brickness.testsupport.Bind;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.exceptions.Refusal;
+import basis.util.concurrent.Latch;
+import basis.util.concurrent.RefLatch;
 
 public class ContactInternetAddressesTest extends BrickTestWithTuples {
 
@@ -69,7 +74,14 @@ public class ContactInternetAddressesTest extends BrickTestWithTuples {
 	
 	
 	private InternetAddress firstKeptAddress() {
-		return _subject.addresses().currentElements().iterator().next();
+		final RefLatch<InternetAddress> latch = new RefLatch<InternetAddress>();
+		_subject.addresses().addReceiver(new Consumer<CollectionChange<InternetAddress>>() { @Override public void consume(CollectionChange<InternetAddress> change) {
+			Iterator<InternetAddress> it = change.elementsAdded().iterator();
+			if (!it.hasNext()) return;
+			latch.set(it.next());
+			if (it.hasNext()) throw new IllegalStateException("More than one address found.");
+		}});
+		return latch.waitAndGet();
 	}
 
 	
