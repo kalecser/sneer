@@ -3,6 +3,7 @@ package sneer.bricks.snapps.games.go.impl.logic;
 import static sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor.BLACK;
 import static sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor.WHITE;
 
+import java.awt.Point;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,6 +35,7 @@ public class GoBoard {
 	private int _capturedStonesBlack;
 	private int _capturedStonesWhite;
 	private BoardListener _boardListener;
+	private Point _lastPlayedPiece;
 	
 		
 	protected Intersection intersection(int x, int y) {
@@ -74,6 +76,7 @@ public class GoBoard {
 		} catch (IllegalMove e) {
 			throw new IllegalArgumentException(e);
 		}
+		_lastPlayedPiece = new Point(x, y);
 		_previousWasPass = false;
 		_previousSituation = situationFound;
 		countDeadStones();
@@ -315,6 +318,11 @@ public class GoBoard {
 				if (y != 0) intersections[x][y].connectUp(intersections[x][y - 1]);
 			}
 		}
+	}
+
+	public boolean stoneAtPositionIsLastPlayedStone(int x, int y) {
+		if(_lastPlayedPiece == null) return false;
+		return x == _lastPlayedPiece.x && y == _lastPlayedPiece.y; 
 	}
 	
 }
