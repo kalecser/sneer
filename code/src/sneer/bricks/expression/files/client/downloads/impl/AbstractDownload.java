@@ -3,6 +3,7 @@ package sneer.bricks.expression.files.client.downloads.impl;
 import static basis.environments.Environments.my;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,7 +83,7 @@ abstract class AbstractDownload implements Download {
 	abstract protected Tuple requestToPublishIfNecessary();
 	abstract protected boolean isWaitingForActivity();
 
-	abstract protected Object mappedContentsBy(Hash hashOfContents);
+	abstract protected Object mappedContentsBy(Hash hashOfContents) throws FileNotFoundException;
 	abstract protected void finishWithLocalContents(Object contents) throws IOException, TimeoutException;
 	
 	abstract protected void updateFileMap();
@@ -225,9 +226,8 @@ abstract class AbstractDownload implements Download {
 		}
 		if (mappedPath.contains(DOT_PART)) return; // .part files might be renamed at any moment; Optimize Downloads that include identical files in different folders will download all of them redundantly. The problem is .part files can be renamed to their actual name at any moment. 
 		
-		Object mappedContents = mappedContentsBy(_hash);
 		try {
-			finishWithLocalContents(mappedContents);
+			finishWithLocalContents(mappedContentsBy(_hash));
 		} catch (Exception e) {
 			finishWith(new IllegalStateException(mappedPath, e));
 		}

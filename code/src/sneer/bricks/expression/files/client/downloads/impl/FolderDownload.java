@@ -4,6 +4,7 @@ import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
@@ -100,7 +101,7 @@ class FolderDownload extends AbstractDownload {
 
 
 	@Override
-	protected Object mappedContentsBy(Hash hashOfContents) {
+	protected FolderContents mappedContentsBy(Hash hashOfContents) {
 		return my(FileMap.class).getFolderContents(hashOfContents);
 	}
 
@@ -113,7 +114,8 @@ class FolderDownload extends AbstractDownload {
 
 	@Override
 	protected String getMappedPath(Hash hash) {
-		return my(FileMap.class).getFolder(hash);
+		List<String> folders = my(FileMap.class).getFolders(hash);
+		return folders.isEmpty() ? null : folders.get(0);
 	}
 
 

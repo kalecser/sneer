@@ -38,7 +38,7 @@ public class FileMapperTest extends BrickTestBase {
 		assertContentsInAnyOrder(names, "directory1", "directory2", "track4.txt", "track5.txt");
 		
 		Hash hashOfFile = hashOfFile("directory1/track1.txt");
-		assertNotNull(my(FileMap.class).getFile(hashOfFile));
+		assertFalse(my(FileMap.class).getFiles(hashOfFile).isEmpty());
 	}
 
 

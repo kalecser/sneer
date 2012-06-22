@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import sneer.bricks.expression.files.map.FileMap;
+import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.expression.files.writer.atomic.AtomicFileWriter;
 import sneer.bricks.hardware.cpu.crypto.Hash;
@@ -28,7 +29,7 @@ public class LocalCopyTest extends FileCopyTestBase {
 	private void copyFromFileMap(Hash hashOfContents, File destination) throws IOException {
 		FolderContents folder = my(FileMap.class).getFolderContents(hashOfContents);
 		if (folder == null)
-			copyFile(destination, new File(my(FileMap.class).getFile(hashOfContents)));
+			copyFile(destination, my(FileMapper.class).getExistingMappedFile(hashOfContents));
 		else
 			copyFolder(folder, destination);
 	}

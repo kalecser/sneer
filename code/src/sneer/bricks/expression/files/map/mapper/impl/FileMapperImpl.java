@@ -3,11 +3,14 @@ package sneer.bricks.expression.files.map.mapper.impl;
 import static basis.environments.Environments.my;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import basis.lang.CacheMap;
 import basis.lang.Producer;
 
+import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.hardware.cpu.crypto.Hash;
@@ -44,4 +47,13 @@ class FileMapperImpl implements FileMapper {
 		_workersByFileOrFolder.remove(folder);
 	}
 
+	@Override
+	public File getExistingMappedFile(final Hash hash) throws FileNotFoundException {
+		List<String> fileNames = my(FileMap.class).getFiles(hash);
+		for (String fileName : fileNames) {
+			File file = new File(fileName);
+			if (file.exists()) return file;
+		}
+		throw new FileNotFoundException("Mapped file not found with hash " + hash + " (might have been deleted or renamed)");
+	}
 }

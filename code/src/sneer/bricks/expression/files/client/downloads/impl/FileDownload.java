@@ -3,6 +3,7 @@ package sneer.bricks.expression.files.client.downloads.impl;
 import static basis.environments.Environments.my;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import sneer.bricks.expression.files.map.FileMap;
+import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.protocol.FileContents;
 import sneer.bricks.expression.files.protocol.FileContentsFirstBlock;
 import sneer.bricks.expression.files.protocol.FileRequest;
@@ -170,14 +172,14 @@ class FileDownload extends AbstractDownload {
 
 
 	@Override
-	protected Object mappedContentsBy(Hash hashOfContents) {
-		return my(FileMap.class).getFile(hashOfContents);
+	protected File mappedContentsBy(Hash hashOfContents) throws FileNotFoundException {
+		return my(FileMapper.class).getExistingMappedFile(hashOfContents);
 	}
 
 
 	@Override
 	protected void finishWithLocalContents(Object pathToContents) throws IOException {
-		my(IO.class).files().copyFile(new File((String)pathToContents), _path);
+		my(IO.class).files().copyFile((File)pathToContents, _path);
 		finishWithSuccess();
 	}
 
@@ -188,7 +190,11 @@ class FileDownload extends AbstractDownload {
 
 	@Override
 	protected String getMappedPath(Hash hash) {
-		return my(FileMap.class).getFile(hash);
+		try {
+			return mappedContentsBy(hash).getAbsolutePath();
+		} catch (FileNotFoundException e) {
+			return null;
+		}
 	}
 
 }

@@ -34,14 +34,10 @@ class FileMapImpl implements FileMap {
 		return _delegate.getLastModified(normalize(file));
 	}
 
-	@Override
-	public String getFile(Hash hash) {
-		return _delegate.getFile(hash);
-	}
 
 	@Override
-	public String getFolder(Hash hash) {
-		return _delegate.getFolder(hash);
+	public List<String> getFolders(Hash hash) {
+		return _delegate.getFolders(hash);
 	}
 
 	@Override

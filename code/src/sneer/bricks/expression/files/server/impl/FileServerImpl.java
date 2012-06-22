@@ -3,12 +3,11 @@ package sneer.bricks.expression.files.server.impl;
 import static basis.environments.Environments.my;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import basis.lang.Consumer;
-import basis.lang.arrays.ImmutableByteArray;
-
 import sneer.bricks.expression.files.map.FileMap;
+import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.protocol.FileContents;
 import sneer.bricks.expression.files.protocol.FileContentsFirstBlock;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
@@ -24,6 +23,8 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import basis.lang.Consumer;
+import basis.lang.arrays.ImmutableByteArray;
 
 public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
@@ -68,8 +69,11 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 		Object response = my(FileMap.class).getFolderContents(request.hashOfContents);
 		if (response != null) return response;
 		
-		String path = my(FileMap.class).getFile(request.hashOfContents);
-		return path == null ? null : new File(path);
+		try {
+			return my(FileMapper.class).getExistingMappedFile(request.hashOfContents);
+		} catch (FileNotFoundException e) {
+			return null;
+		}
 	}
 
 

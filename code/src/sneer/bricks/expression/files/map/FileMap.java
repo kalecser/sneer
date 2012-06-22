@@ -2,13 +2,12 @@ package sneer.bricks.expression.files.map;
 
 import java.util.List;
 
-import basis.brickness.Brick;
-
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.io.prevalence.nature.Prevalent;
 import sneer.bricks.hardware.io.prevalence.nature.Transaction;
+import basis.brickness.Brick;
 
 @Brick (Prevalent.class)
 public interface FileMap {
@@ -18,10 +17,9 @@ public interface FileMap {
 	
 	Hash getHash(String path);
 
-	String getFile(Hash hash);
 	List<String> getFiles(Hash hash);
 	List<FileOrFolder> dir(String path);
-	String getFolder(Hash hash);
+	List<String> getFolders(Hash hash);
 	long getLastModified(String file);
 	
 	FolderContents getFolderContents(Hash hash);

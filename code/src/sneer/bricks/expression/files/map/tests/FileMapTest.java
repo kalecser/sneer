@@ -20,12 +20,12 @@ public class FileMapTest extends BrickTestBase {
 		Hash hash = hash(42);
 		
 		_subject.putFile("hello.txt", 1234, hash);
-		assertEquals("hello.txt", _subject.getFile(hash));
+		assertEquals("hello.txt", _subject.getFiles(hash).get(0));
 		assertEquals(hash, _subject.getHash("hello.txt"));
 		assertEquals(1234, _subject.getLastModified("hello.txt"));
 
 		_subject.remove("hello.txt");
-		assertNull(_subject.getFile(hash));
+		assertEquals(0, _subject.getFiles(hash).size());
 		assertNull(_subject.getHash("hello.txt"));
 	}
 
@@ -46,7 +46,7 @@ public class FileMapTest extends BrickTestBase {
 		assertEquals(121, _subject.getLastModified("1/2/1"));
 		assertEquals(131, _subject.getLastModified("1/3/1"));
 		
-		assertNotNull(_subject.getFolder(hash(119)));
+		assertFalse(_subject.getFolders(hash(119)).isEmpty());
 		assertEquals(hash(119), _subject.getHash("AnotherFolderWithHash119"));
 	}
 
@@ -65,7 +65,7 @@ public class FileMapTest extends BrickTestBase {
 		assertNull(_subject.getHash("1/1/7"));
 		assertNull(_subject.getHash("1/1/8"));
 
-		assertEquals("AnotherFolderWithHash119", _subject.getFolder(hash(119)));
+		assertEquals("AnotherFolderWithHash119", _subject.getFolders(hash(119)).get(0));
 		assertEquals(hash(119), _subject.getHash("AnotherFolderWithHash119"));
 	}
 
@@ -94,15 +94,15 @@ public class FileMapTest extends BrickTestBase {
 		_subject.putFolder("1a", hash(1));
 		_subject.putFolder("1b", hash(1));
 		_subject.remove("1b");
-		assertEquals("1a", _subject.getFolder(hash(1)));
+		assertEquals("1a", _subject.getFolders(hash(1)).get(0));
 	}
 	
 	@Test
 	public void fileAndFolderWithSameHash() {
 		_subject.putFolder("emptyFolder", hash(1));
 		_subject.putFile("emptyFile", 42, hash(1));
-		assertEquals("emptyFile", _subject.getFile(hash(1)));
-		assertEquals("emptyFolder", _subject.getFolder(hash(1)));
+		assertEquals("emptyFile", _subject.getFiles(hash(1)).get(0));
+		assertEquals("emptyFolder", _subject.getFolders(hash(1)).get(0));
 	}
 
 

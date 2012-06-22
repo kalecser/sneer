@@ -59,20 +59,6 @@ class NormalizedFileMap implements FileMap {
 	
 	
 	@Override
-	public String getFile(Hash hash) {
-		return getFileOrFolder(hash, false);
-	}
-
-	@Override
-	public String getFolder(Hash hash) {
-		return getFileOrFolder(hash, true);
-	}
-
-	private String getFileOrFolder(Hash hash, boolean isFolder) {
-		return _data.getPath(hash, isFolder);
-	}
-	
-	@Override
 	public Hash getHash(String path) {
 		return _data.getHash(path);
 	}
@@ -173,6 +159,12 @@ class NormalizedFileMap implements FileMap {
 		for (String candidate : _data.allPaths())
 			FolderContentsGetter.accumulateChild(_data, candidate, folder, contents, false);
 		return contents;
+	}
+
+
+	@Override
+	public List<String> getFolders(Hash hash) {
+		return _data.getFolders(hash);
 	}
 
 }

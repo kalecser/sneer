@@ -37,20 +37,6 @@ class FileMapData {
 	}
 
 
-	synchronized
-	String getPath(Hash hash, boolean isFolder) {
-		Object paths = _pathsByHash.get(hash);
-		if (paths instanceof String)
-			if (entry((String) paths).isFolder == isFolder)
-				return (String)paths;
-		if (paths instanceof List)
-			for (String path : (List<String>)paths)
-				if (entry(path).isFolder == isFolder)
-					return path;
-		return null;
-	}
-
-
 	private Entry entry(String paths) {
 		return _entriesByPath.get(paths);
 	}

@@ -8,11 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import basis.lang.CacheMap;
-import basis.lang.Closure;
-import basis.lang.ClosureX;
-import basis.lang.Consumer;
-
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
@@ -35,6 +30,10 @@ import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.demolisher.Demolisher;
 import sneer.bricks.softwaresharing.publisher.BuildingHash;
 import sneer.bricks.softwaresharing.publisher.BuildingPublisher;
+import basis.lang.CacheMap;
+import basis.lang.Closure;
+import basis.lang.ClosureX;
+import basis.lang.Consumer;
 
 
 class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
@@ -101,7 +100,7 @@ class BrickSpaceImpl implements BrickSpace, Consumer<BuildingHash> {
 
 
 	private boolean isAlreadyMapped(final BuildingHash buildingHash) {
-		return my(FileMap.class).getFolder(buildingHash.value) != null;
+		return !my(FileMap.class).getFolders(buildingHash.value).isEmpty();
 	}
 
 	

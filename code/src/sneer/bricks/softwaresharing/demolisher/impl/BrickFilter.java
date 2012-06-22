@@ -38,7 +38,7 @@ class BrickFilter {
 
 	private static boolean isFolder(FileOrFolder candidate) {
 		if (FileMap.getFolderContents(candidate.hashOfContents) != null) return true;
-		if (FileMap.getFile(candidate.hashOfContents) != null) return false;
+		if (!FileMap.getFiles(candidate.hashOfContents).isEmpty()) return false;
 		throw new IllegalStateException("Unable to find FileMap entry for: " + candidate);
 	}
 

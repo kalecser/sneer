@@ -1,6 +1,7 @@
 package sneer.bricks.expression.files.map.mapper;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import basis.brickness.Brick;
@@ -16,5 +17,8 @@ public interface FileMapper {
 	
 	/** Stops the updating thread of fileOrFolder. */
 	void stopMapping(File fileOrFolder);
+
+	/** Several files might be mapped with the same hash, returns the first one that still exists (has not been renamed or deleted on the file system). */ 
+	File getExistingMappedFile(Hash hash) throws FileNotFoundException;
 
 }
