@@ -92,7 +92,6 @@ import java.awt.image.BufferedImage;
         float relativeStrokeWidth = getWidth()*0.03f;
 		g2.setStroke(new BasicStroke(relativeStrokeWidth));
 		g2.setColor(strokeColor);
-        g2.drawOval(0, 0, getWidth() - 1, getHeight() - 1);
         int centralDotRadius = getWidth()/6;
 		g2.fillOval((getWidth()/2)-centralDotRadius, (getWidth()/2)-centralDotRadius, centralDotRadius*2, centralDotRadius*2);
 	}
