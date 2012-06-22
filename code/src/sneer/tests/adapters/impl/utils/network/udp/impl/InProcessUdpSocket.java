@@ -1,5 +1,7 @@
 package sneer.tests.adapters.impl.utils.network.udp.impl;
 
+import static basis.environments.Environments.my;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -8,6 +10,7 @@ import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.network.computers.udp.UdpNetwork.UdpSocket;
 import basis.lang.Functor;
 import basis.lang.exceptions.Crashed;
@@ -50,12 +53,20 @@ class InProcessUdpSocket implements UdpSocket {
 	private DatagramPacket waitForPacket() {
 		try {
 			return incomingPackets.take();
+		} catch (IllegalMonitorStateException e) { //Possible if the producer thread is killed preemptively during a test, for example.
+			sleepForever();
+			return null;
 		} catch (InterruptedException e) {
 			throw new IllegalStateException();
 		}
 	}
 
 	
+	private void sleepForever() {
+		while (true) try { Thread.sleep(10000); } catch (InterruptedException e) {}
+	}
+
+
 	@Override
 	public void send(DatagramPacket packet) throws IOException {
 		checkNotCrashed();
