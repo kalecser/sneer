@@ -10,6 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import sneer.bricks.network.computers.udp.UdpNetwork.UdpSocket;
 import basis.lang.Functor;
+import basis.lang.exceptions.Crashed;
 
 
 class InProcessUdpSocket implements UdpSocket {
@@ -73,7 +74,7 @@ class InProcessUdpSocket implements UdpSocket {
 
 
 	private void checkNotCrashed() throws IOException {
-		if (isCrashed()) throw new IOException("UdpSocket on port " + portNumber + " already crashed.");
+		if (isCrashed()) throw new Crashed();
 	}
 
 

@@ -14,6 +14,7 @@ import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import basis.lang.Closure;
 import basis.lang.Consumer;
+import basis.lang.exceptions.Crashed;
 
 
 class ReceiverThreadImpl {
@@ -40,6 +41,9 @@ class ReceiverThreadImpl {
 		incoming.setLength(UdpNetwork.MAX_PACKET_PAYLOAD_SIZE);
 		try {
 			socket.receive(incoming);
+		} catch (Crashed e) {
+			receptionContract.dispose();
+			return;
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOnIfNecessary(error, "Error receiving UDP Packet", e);
 			receptionContract.dispose();
