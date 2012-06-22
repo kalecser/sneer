@@ -1,7 +1,5 @@
 package sneer.tests.adapters.impl.utils.network.udp.impl;
 
-import static basis.environments.Environments.my;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -10,7 +8,6 @@ import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.network.computers.udp.UdpNetwork.UdpSocket;
 import basis.lang.Functor;
 import basis.lang.exceptions.Crashed;
