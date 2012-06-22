@@ -29,6 +29,7 @@ import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.udp.holepuncher.server.listener.StunServerListener;
+import sneer.bricks.network.computers.udp.server.UdpServer;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
@@ -436,6 +437,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	@Override
 	public	void crash() {
+		my(UdpServer.class).crash();
 		my(Threads.class).crashAllThreads();
 	}
 

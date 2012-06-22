@@ -61,4 +61,12 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 	public void consume(DatagramPacket packet) {
 		my(UdpConnectionManager.class).handle(packet);
 	}
+
+	
+	@Override
+	public void crash() {
+		if (socket == null) return;
+		socket.crash();
+	}
+
 }
