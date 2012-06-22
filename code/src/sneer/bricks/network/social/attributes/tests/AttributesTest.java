@@ -73,7 +73,7 @@ public class AttributesTest extends BrickTestWithTuples {
 	
 	private <T> void setPeerAttribute(final Class<? extends Attribute<T>> attribute, final T value) {
 		Environments.runWith(remote(), new Closure() { @Override public void run() {
-			_subject.myAttributeSetter(attribute).consume(value);
+			my(Attributes.class).myAttributeSetter(attribute).consume(value);
 		}});
 	}
 }

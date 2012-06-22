@@ -68,9 +68,23 @@ class AttributesImpl implements Attributes {
 
 	@Override
 	public <T> Signal<T> myAttributeValue(Class<? extends Attribute<T>> attribute) {
-		AttributeSubscriber<T> ret = new AttributeSubscriber<T>(null, attribute, Object.class);
+		AttributeSubscriber<T> ret = new AttributeSubscriber<T>(attribute);
+		update(ret);
+		return ret.output();
+	}
+
+
+	@Override
+	public <T> Signal<T> attributeValueFor(Contact contact, final Class<? extends Attribute<T>> attribute, Class<T> valueType) {
+		AttributeSubscriber<T> ret = new AttributeSubscriber<T>(contact, attribute, valueType);
+		update(ret);
+		return ret.output();
+	}
+
+
+	private <T> void update(AttributeSubscriber<T> subscriber) {
 		synchronized (monitor) {
-			subscribers.add(new WeakReference<AttributeSubscriber<?>>(ret));
+			subscribers.add(new WeakReference<AttributeSubscriber<?>>(subscriber));
 			Iterator<WeakReference<AttributeValue>> it = liveTuples.iterator();
 			while (it.hasNext()) {
 				WeakReference<AttributeValue> ref = it.next();
@@ -78,10 +92,9 @@ class AttributesImpl implements Attributes {
 				if (tuple == null)
 					it.remove();
 				else
-					ret.handle(tuple);
+					subscriber.handle(tuple);
 			}
 		}
-		return ret.output();
 	}
 
 
@@ -95,14 +108,8 @@ class AttributesImpl implements Attributes {
 			my(Logger.class).log("Setting attribute '{}' for contact '{}' to: {}", attribute.getSimpleName(), contact, value);
 		}};
 	}
-
-
-	@Override
-	public <T> Signal<T> attributeValueFor(final Contact contact, final Class<? extends Attribute<T>> attribute, Class<T> valueType) {
-		return new AttributeSubscriber<T>(contact, attribute, valueType).output();
-	}
-
-
+	
+	
 	private ImmutableByteArray serialize(Object value) {
 		return new ImmutableByteArray(my(Serializer.class).serialize(value));
 	}
