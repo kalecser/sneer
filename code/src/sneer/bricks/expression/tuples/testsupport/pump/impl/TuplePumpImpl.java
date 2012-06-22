@@ -1,7 +1,9 @@
 package sneer.bricks.expression.tuples.testsupport.pump.impl;
 
 import static basis.environments.Environments.my;
+import static basis.environments.Environments.runWith;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,7 +28,7 @@ class TuplePumpImpl implements TuplePump {
 	private final WeakContract _pipe1;
 	private final WeakContract _pipe2;
 
-	private final Set<Tuple> _tuplesThatWillEcho = new HashSet<Tuple>();
+	private final Set<Tuple> _tuplesThatWillEcho = Collections.synchronizedSet(new HashSet<Tuple>());
 
 	TuplePumpImpl(Environment aTupleWell, Environment anotherTupleWell) {
 		_well1 = aTupleWell;
@@ -42,7 +44,7 @@ class TuplePumpImpl implements TuplePump {
 			return my(TupleSpace.class).addSubscription(Tuple.class, new Consumer<Tuple>() { @Override public void consume(final Tuple tuple) {
 				if (_tuplesThatWillEcho.remove(tuple)) return; //Tuple that was sent and is returning.
 				_tuplesThatWillEcho.add(tuple);
-				Environments.runWith(to, new Closure() { @Override public void run() {
+				runWith(to, new Closure() { @Override public void run() {
 					my(TupleSpace.class).add(tuple);
 				}});
 			}});
