@@ -356,11 +356,11 @@ public class GoBoardPanel extends JPanel{
 
 		private void scrollHorizontallyIfOnScrollRegion(final int mouseX) {
 			if(mouseX < SCROLL_EDGE){
-				scrollX = -SCROLL_SPEED;
+				scrollX = SCROLL_SPEED;
 				return;
 			}
 			if(mouseX > getWidth()-SCROLL_EDGE){
-				scrollX = SCROLL_SPEED;
+				scrollX = -SCROLL_SPEED;
 				return;
 			}
 			scrollX = 0;
@@ -368,11 +368,11 @@ public class GoBoardPanel extends JPanel{
 		
 		private void scrollVerticallyIfOnScrollRegion(final int mouseY) {
 			if(mouseY < SCROLL_EDGE){
-				scrollY = -SCROLL_SPEED;
+				scrollY = SCROLL_SPEED;
 				return;
 			}
 			if(mouseY > getHeight()-SCROLL_EDGE){
-				scrollY = SCROLL_SPEED;
+				scrollY = -SCROLL_SPEED;
 				return;
 			}
 			scrollY = 0;
