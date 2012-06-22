@@ -29,9 +29,13 @@ class AttributeSubscriber<T> {
 	private final Register<T> _value;
 
 
+	AttributeSubscriber(Class<? extends Attribute<T>> attribute) {
+		this(null, attribute, Object.class);
+	}
+
 	AttributeSubscriber(Contact contact, Class<? extends Attribute<T>> attribute, Class<? super T> valueType) {
 		_contact = contact;
-		_partySeal = sealFor(contact);
+		_partySeal = sealFor(_contact);
 		_attribute = attribute;
 		_valueType = valueType;
 

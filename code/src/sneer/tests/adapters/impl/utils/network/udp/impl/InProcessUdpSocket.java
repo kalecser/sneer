@@ -32,7 +32,6 @@ class InProcessUdpSocket implements UdpSocket {
 
 
 	@Override
-	synchronized
 	public void receive(DatagramPacket packet) throws IOException {
 		checkNotCrashed();
 		copyInto(waitForPacket(), packet);
@@ -57,7 +56,6 @@ class InProcessUdpSocket implements UdpSocket {
 
 	
 	@Override
-	synchronized
 	public void send(DatagramPacket packet) throws IOException {
 		checkNotCrashed();
 		checkLocalhost(packet);
