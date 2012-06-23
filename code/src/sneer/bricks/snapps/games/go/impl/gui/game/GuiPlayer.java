@@ -131,8 +131,7 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
-		_goBoardPanel = new GoBoardPanel(this,timerFactory,_boardSize, _side);
-		_gameMenu.addMenu(_goBoardPanel);
+		_goBoardPanel = new GoBoardPanel(this,_gameMenu,timerFactory,_boardSize, _side);
 		
 		final ActionListener onPassPress = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
 			GoLogger.log("doMovePass();");

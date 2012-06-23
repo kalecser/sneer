@@ -127,4 +127,8 @@ public class GameMenu extends JFrame {
 		_whiteScore.setText(whiteScore+"");
 	}
 
+	public int getMenuWidth() {
+		return 163;
+	}
+
 }

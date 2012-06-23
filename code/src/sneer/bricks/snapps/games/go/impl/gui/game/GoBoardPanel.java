@@ -41,7 +41,6 @@ public class GoBoardPanel extends JPanel{
 	private static final float CELL_MIN_SIZE = 5;
 
 	private static final int SCROLL_EDGE = 60;
-	private static final int MENU_WIDTH = 163;
 	
 	private int _boardSize;
 	private float _boardImageSize;
@@ -75,13 +74,18 @@ public class GoBoardPanel extends JPanel{
 	private int scrollY = 0;
 
 	private DarkBorderPainter _darkBorderPainter;
+
+	private final GameMenu _gameMenu;
 	
-	public GoBoardPanel(final GuiPlayer goFrame,final TimerFactory timerFactory,final int boardSize, StoneColor side) {
-		_goFrame = goFrame;		
+	public GoBoardPanel(final GuiPlayer goFrame,final GameMenu gameMenu,final TimerFactory timerFactory,final int boardSize, StoneColor side) {
+		_goFrame = goFrame;
+		this._gameMenu = gameMenu;		
 		_side = side;
 		
 		_boardSize = boardSize;
 		_board = new ToroidalGoBoard(_boardSize);
+		_gameMenu.addMenu(this);
+		updateTurnMessage();
 		
 		createPainters();
 		
@@ -169,7 +173,16 @@ public class GoBoardPanel extends JPanel{
 	void receiveMoveAddStone(int xCoordinate, int yCoordinate) {
 		GoLogger.log("GoBoardPanel.receiveMoveAddStone("+xCoordinate+","+yCoordinate+")");
 		_board.playStone(xCoordinate, yCoordinate);
+		updateTurnMessage();
 		decideWinner();
+	}
+
+	private void updateTurnMessage() {
+		if(_board.nextToPlay() == _side){
+			_gameMenu.setMessage("Your turn");
+		}else{
+			_gameMenu.setMessage("Waiting for the other player");
+		}
 	}
 
 	void receiveMoveMarkStone(int xCoordinate, int yCoordinate) {
@@ -204,7 +217,7 @@ public class GoBoardPanel extends JPanel{
 		_stonePainter = new StonePainter(_boardImageSize, _cellSize);
 		_hoverStonePainter = new HoverStonePainter(_stonePainter,_boardSize, _cellSize);		
 		_stonesInPlayPainter = new StonesInPlayPainter(_stonePainter,_cellSize);
-		_darkBorderPainter = new DarkBorderPainter(SCROLL_EDGE, MENU_WIDTH);
+		_darkBorderPainter = new DarkBorderPainter(SCROLL_EDGE, _gameMenu.getMenuWidth());
 		_hudPainter = new HUDPainter();
 	}
 	
@@ -361,8 +374,8 @@ public class GoBoardPanel extends JPanel{
 				scrollX = SCROLL_SPEED;
 				return;
 			}
-			if(mouseX > getWidth()-SCROLL_EDGE-MENU_WIDTH){
-				if(mouseX < getWidth()-MENU_WIDTH){
+			if(mouseX > getWidth()-SCROLL_EDGE-_gameMenu.getMenuWidth()){
+				if(mouseX < getWidth()-_gameMenu.getMenuWidth()){
 					scrollX = -SCROLL_SPEED;
 					return;
 				}
@@ -372,13 +385,13 @@ public class GoBoardPanel extends JPanel{
 		
 		private void scrollVerticallyIfOnScrollRegion(final int mouseX,final int mouseY) {
 			if(mouseY < SCROLL_EDGE){
-				if(mouseX < getWidth()-MENU_WIDTH){
+				if(mouseX < getWidth()-_gameMenu.getMenuWidth()){
 					scrollY = SCROLL_SPEED;
 					return;
 				}
 			}
 			if(mouseY > getHeight()-SCROLL_EDGE){
-				if(mouseX < getWidth()-MENU_WIDTH){
+				if(mouseX < getWidth()-_gameMenu.getMenuWidth()){
 					scrollY = -SCROLL_SPEED;
 					return;
 				}
