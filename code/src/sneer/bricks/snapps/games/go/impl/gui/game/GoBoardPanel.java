@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -77,14 +79,27 @@ public class GoBoardPanel extends JPanel{
 
 	private final GameMenu _gameMenu;
 	
-	public GoBoardPanel(final GuiPlayer goFrame,final GameMenu gameMenu,final TimerFactory timerFactory,final int boardSize, StoneColor side) {
+	public GoBoardPanel(final GuiPlayer goFrame,final TimerFactory timerFactory,final int boardSize, StoneColor side) {
 		_goFrame = goFrame;
-		this._gameMenu = gameMenu;		
+		_gameMenu = new GameMenu(this);
+		final ActionListener onPassPress = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
+			GoLogger.log("doMovePass();");
+			goFrame.doMovePass();
+		}};
+		
+		final ActionListener onResignPress = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
+			GoLogger.log("doMoveResign();");
+			goFrame.doMoveResign();
+		}};
+		
+		_gameMenu._passButton.addActionListener(onPassPress);
+		_gameMenu._resignButton.addActionListener(onResignPress);
+		
 		_side = side;
 		
 		_boardSize = boardSize;
 		_board = new ToroidalGoBoard(_boardSize);
-		_gameMenu.addMenu(this);
+		
 		updateTurnMessage();
 		
 		createPainters();
@@ -178,10 +193,16 @@ public class GoBoardPanel extends JPanel{
 	}
 
 	private void updateTurnMessage() {
-		if(_board.nextToPlay() == _side){
-			_gameMenu.setMessage("Your turn");
-		}else{
-			_gameMenu.setMessage("Waiting for the other player");
+		_gameMenu.setMessage("Your turn.");
+		updateTurnMessageIfWaiting();
+	}
+
+	private void updateTurnMessageIfWaiting() {
+		if(_board.nextToPlay() != _side){
+			_gameMenu.setMessage("Waiting for the other player...");
+		}
+		if(_board.nextToPlay() == null){
+			_gameMenu.setMessage("Game ended. Mark the dead stones to decide the winner.");
 		}
 	}
 
@@ -194,6 +215,8 @@ public class GoBoardPanel extends JPanel{
 	void receiveMovePassTurn() {
 		GoLogger.log("GoBoardPanel.receiveMovePassTurn()");
 		_board.passTurn();
+		_gameMenu.setMessage("Other player passed. Your turn.");
+		updateTurnMessageIfWaiting();
 		decideWinner();
 	}
 
@@ -202,7 +225,11 @@ public class GoBoardPanel extends JPanel{
 			_otherResigned = true;
 		GoLogger.log("GoBoardPanel.receiveMoveResign()");
 		_board.resign();
-		decideWinner();
+		if(_hasResigned){
+			_gameMenu.setMessage("You lost by resign.");
+		}else{
+			_gameMenu.setMessage("Other player resigned. You Won!");
+		}
 	}
 
 	private void createPainters() {
@@ -449,6 +476,20 @@ public class GoBoardPanel extends JPanel{
 			int factor = 2;
 			updateCellSize(wheelRotation*factor*-1);
 		}
+	}
+
+	public void updateScore(int blackScore, int whiteScore) {
+		_gameMenu.updateScore(blackScore, whiteScore);
+	}
+
+	public void nextToPlay(StoneColor nextToPlay) {
+		boolean isMyTurn = nextToPlay == _side;
+		_gameMenu.setMyTurn(isMyTurn);
+		repaint();
+	}
+
+	public void setGameEnded() {
+		_gameMenu.setGameEnded();
 	}
 
 }

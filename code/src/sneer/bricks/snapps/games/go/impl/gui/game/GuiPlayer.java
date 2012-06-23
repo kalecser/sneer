@@ -2,8 +2,6 @@ package sneer.bricks.snapps.games.go.impl.gui.game;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.LookAndFeel;
@@ -27,7 +25,6 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 	private Player _adversary;
 	private final int _boardSize;
 	private final int _gameID;
-	private final GameMenu _gameMenu;
 	
 	public GuiPlayer(final int gameID,StoneColor side,final int boardSize, final TimerFactory timerFactory) {
 		
@@ -38,7 +35,6 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		this._gameID = gameID;
 		_side = side;
 		this._boardSize = boardSize;
-		_gameMenu = new GameMenu();
 	
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Go - " + _side.name());	  
@@ -65,14 +61,12 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 	
 	@Override
 	public void updateScore(int blackScore, int whiteScore) {
-		_gameMenu.updateScore(blackScore, whiteScore);
+		_goBoardPanel.updateScore(blackScore, whiteScore);
 	}
 
 	@Override
 	public void nextToPlay(StoneColor nextToPlay) {
-		boolean isMyTurn = nextToPlay == _side;
-		_gameMenu.setMyTurn(isMyTurn);
-		_goBoardPanel.repaint();
+		_goBoardPanel.nextToPlay(nextToPlay);
 	}
 
 	@Override
@@ -131,27 +125,14 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
-		_goBoardPanel = new GoBoardPanel(this,_gameMenu,timerFactory,_boardSize, _side);
-		
-		final ActionListener onPassPress = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-			GoLogger.log("doMovePass();");
-			doMovePass();
-		}};
-		
-		final ActionListener onResignPress = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-			GoLogger.log("doMoveResign();");
-			doMoveResign();
-		}};
-		
-		_gameMenu._passButton.addActionListener(onPassPress);
-		_gameMenu._resignButton.addActionListener(onResignPress);
+		_goBoardPanel = new GoBoardPanel(this,timerFactory,_boardSize, _side);
 		
 		_goBoardPanel.setBoardListener(this);
 		contentPane.add(_goBoardPanel, BorderLayout.CENTER);
 	}
 
 	public void gameEnded() {
-		_gameMenu.setGameEnded();
+		_goBoardPanel.setGameEnded();
 	}
 	
 }

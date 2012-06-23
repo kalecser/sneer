@@ -21,13 +21,14 @@ public class GameMenu extends JFrame {
 	private JLabel _message;
 	private JPanel fakePanelToTrickWindowBuilder;
 
-	public GameMenu() {		
+	public GameMenu(final JPanel jPanel) {		
 		fakePanelToTrickWindowBuilder = new JPanel();
 		addMenu(fakePanelToTrickWindowBuilder);
+		addMenu(jPanel);
 		getContentPane().add(fakePanelToTrickWindowBuilder);
 	}
 
-	public void addMenu(final JPanel jPanel) {
+	private void addMenu(final JPanel jPanel) {
 		GridBagLayout gbl_jPanel_1 = new GridBagLayout();
 		gbl_jPanel_1.columnWidths = new int[]{0, 104, 59, 0};
 		gbl_jPanel_1.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
