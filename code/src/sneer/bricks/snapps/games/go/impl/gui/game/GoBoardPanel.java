@@ -34,12 +34,14 @@ import basis.environments.ProxyInEnvironment;
 
 public class GoBoardPanel extends JPanel{
 
+
 	private static final long serialVersionUID = 1L;
 
 	private static final float CELL_MAX_SIZE = 100;
 	private static final float CELL_MIN_SIZE = 5;
 
 	private static final int SCROLL_EDGE = 60;
+	private static final int MENU_WIDTH = 163;
 	
 	private int _boardSize;
 	private float _boardImageSize;
@@ -202,7 +204,7 @@ public class GoBoardPanel extends JPanel{
 		_stonePainter = new StonePainter(_boardImageSize, _cellSize);
 		_hoverStonePainter = new HoverStonePainter(_stonePainter,_boardSize, _cellSize);		
 		_stonesInPlayPainter = new StonesInPlayPainter(_stonePainter,_cellSize);
-		_darkBorderPainter = new DarkBorderPainter(SCROLL_EDGE);
+		_darkBorderPainter = new DarkBorderPainter(SCROLL_EDGE, MENU_WIDTH);
 		_hudPainter = new HUDPainter();
 	}
 	
@@ -351,7 +353,7 @@ public class GoBoardPanel extends JPanel{
 		
 		private void scrollIfOnScrollRegion(final int mouseX, final int mouseY) {
 			scrollHorizontallyIfOnScrollRegion(mouseX);
-			scrollVerticallyIfOnScrollRegion(mouseY);
+			scrollVerticallyIfOnScrollRegion(mouseX,mouseY);
 		}
 
 		private void scrollHorizontallyIfOnScrollRegion(final int mouseX) {
@@ -359,21 +361,27 @@ public class GoBoardPanel extends JPanel{
 				scrollX = SCROLL_SPEED;
 				return;
 			}
-			if(mouseX > getWidth()-SCROLL_EDGE){
-				scrollX = -SCROLL_SPEED;
-				return;
+			if(mouseX > getWidth()-SCROLL_EDGE-MENU_WIDTH){
+				if(mouseX < getWidth()-MENU_WIDTH){
+					scrollX = -SCROLL_SPEED;
+					return;
+				}
 			}
 			scrollX = 0;
 		}
 		
-		private void scrollVerticallyIfOnScrollRegion(final int mouseY) {
+		private void scrollVerticallyIfOnScrollRegion(final int mouseX,final int mouseY) {
 			if(mouseY < SCROLL_EDGE){
-				scrollY = SCROLL_SPEED;
-				return;
+				if(mouseX < getWidth()-MENU_WIDTH){
+					scrollY = SCROLL_SPEED;
+					return;
+				}
 			}
 			if(mouseY > getHeight()-SCROLL_EDGE){
-				scrollY = -SCROLL_SPEED;
-				return;
+				if(mouseX < getWidth()-MENU_WIDTH){
+					scrollY = -SCROLL_SPEED;
+					return;
+				}
 			}
 			scrollY = 0;
 		}
