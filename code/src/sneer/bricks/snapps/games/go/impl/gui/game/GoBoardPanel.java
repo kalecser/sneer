@@ -230,6 +230,7 @@ public class GoBoardPanel extends JPanel{
 		}else{
 			_gameMenu.setMessage("Other player resigned. You Won!");
 		}
+		_gameMenu.setGameEnded();
 	}
 
 	private void createPainters() {
