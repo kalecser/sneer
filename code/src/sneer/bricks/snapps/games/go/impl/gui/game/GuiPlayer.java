@@ -41,10 +41,7 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 	    setResizable(true);
 	    addAllComponents(timerFactory);
 	    setVisible(true);
-	    int bord=getInsets().left+getInsets().right;
-	    final int width = (int) ((_boardSize*_goBoardPanel.getCellSize())+_goBoardPanel.getCellSize()+bord);
-		final int whatsLeftOfTheFrame = 70;
-		setBounds(0, 0,(width<500)?500:width, (width<500)?500+whatsLeftOfTheFrame:width+whatsLeftOfTheFrame);
+		setBounds(0, 0,800,600);
 		
 		nextToPlay(StoneColor.BLACK);
 		
