@@ -21,6 +21,7 @@ import javax.swing.SwingUtilities;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.snapps.games.go.impl.TimerFactory;
+import sneer.bricks.snapps.games.go.impl.gui.game.painters.BoardImagePainter;
 import sneer.bricks.snapps.games.go.impl.gui.game.painters.BoardPainter;
 import sneer.bricks.snapps.games.go.impl.gui.game.painters.DarkBorderPainter;
 import sneer.bricks.snapps.games.go.impl.gui.game.painters.HUDPainter;
@@ -43,8 +44,7 @@ public class GoBoardPanel extends JPanel{
 
 	private static final int SCROLL_EDGE = 60;
 	
-	private float _boardImageSize;
-	private final Rectangle _boardImageRectangle = new Rectangle(0,0,(int)_boardImageSize,(int)_boardImageSize);
+	private int _boardImageSize;
 	private float _cellSize;
 	private final GoBoard _board;
 
@@ -76,8 +76,10 @@ public class GoBoardPanel extends JPanel{
 	private DarkBorderPainter _darkBorderPainter;
 
 	private final GameMenu _gameMenu;
+
+	private BoardImagePainter _boardImagePainter;
 	
-	public GoBoardPanel(final GuiPlayer goFrame,GoBoard goBoard,final TimerFactory timerFactory,StoneColor side) {
+	public GoBoardPanel(final GuiPlayer goFrame,GoBoard goBoard,final TimerFactory timerFactory,BoardImagePainter boardImagePainter,StoneColor side) {
 		_goFrame = goFrame;
 		_gameMenu = new GameMenu(this);
 		final ActionListener onPassPress = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
@@ -95,6 +97,8 @@ public class GoBoardPanel extends JPanel{
 		
 		_side = side;
 		_board = goBoard;
+		
+		_boardImagePainter = boardImagePainter;
 		
 		updateTurnMessage();
 		
@@ -156,7 +160,7 @@ public class GoBoardPanel extends JPanel{
 		_boardPainter.draw(buffer);
 		_stonesInPlayPainter.draw(buffer, _board);
 		_hoverStonePainter.draw(buffer, _board);
-		drawBoardTiled(graphics);
+		drawBoardImage(graphics);
 		_darkBorderPainter.draw(graphics);
 		_hudPainter.draw(graphics);
 	}
@@ -232,9 +236,7 @@ public class GoBoardPanel extends JPanel{
 	private void createPainters() {
 		_cellSize = 60;
 		int boardSize = _board.size();
-		_boardImageSize = _cellSize*(boardSize);
-		_boardImageRectangle.width =(int) _boardImageSize;
-		_boardImageRectangle.height =(int) _boardImageSize;
+		_boardImageSize = (int) (_cellSize*(boardSize));
 		_xOffset = (int) (_cellSize - _boardImageSize);
 		_yOffset = (int) (_cellSize - _boardImageSize);
 		
@@ -259,9 +261,7 @@ public class GoBoardPanel extends JPanel{
 		
 		_cellSize = newCellSize;
 		int boardSize = _board.size();
-		_boardImageSize = _cellSize*(boardSize);
-		_boardImageRectangle.width =(int) _boardImageSize;
-		_boardImageRectangle.height =(int) _boardImageSize;
+		_boardImageSize = (int) (_cellSize*(boardSize));
 		
 		_xOffset = (int) ((_xOffset / oldBoardImageSize)*_boardImageSize);
 		_yOffset = (int) ((_yOffset / oldBoardImageSize)*_boardImageSize);
@@ -323,22 +323,12 @@ public class GoBoardPanel extends JPanel{
 		
 	}
 
-	private void drawBoardTiled(Graphics graphics) {
-		final Rectangle clipBounds = graphics.getClipBounds();
-		
-		_boardImageRectangle.x = _xOffset;
-		_boardImageRectangle.y = _yOffset;
-		
-		while(clipBounds.intersects(_boardImageRectangle)){
-			while(clipBounds.intersects(_boardImageRectangle)){
-				graphics.drawImage(_bufferImage, _boardImageRectangle.x, _boardImageRectangle.y, this);
-				_boardImageRectangle.x += (_boardImageSize);
-			}
-			_boardImageRectangle.x = _xOffset;
-			_boardImageRectangle.y += (_boardImageSize);
-		}
+	private void drawBoardImage(Graphics graphics) {
+		Rectangle boardImageRectangle = new Rectangle(_xOffset, _yOffset, _boardImageSize, _boardImageSize);
+		final BufferedImage bufferImage = _bufferImage;
+		_boardImagePainter.drawBoardAndSurroundings(graphics, boardImageRectangle, bufferImage);
 	}
-	
+
 	private Graphics2D getBuffer() {
 		_bufferImage = new BufferedImage((int)(_boardImageSize+_cellSize), (int)(_boardImageSize+_cellSize), 
 			      BufferedImage.TYPE_INT_ARGB);
@@ -347,19 +337,19 @@ public class GoBoardPanel extends JPanel{
 
 	
 	private int toScreenPosition(final int coordinate) {
-		int coordinateInsideBoard = (int) (coordinate %  _boardImageSize);
+		int coordinateInsideBoard = coordinate %  _boardImageSize;
 		float result = (coordinateInsideBoard -  (_cellSize / 2)) / _cellSize;
 		return (int)Math.ceil(result)%_board.size();
 	}
 	
 	public void increaseXOffset(final float xIncrease){
 		_xOffset += xIncrease - _boardImageSize;
-		_xOffset = (int) (_xOffset % _boardImageSize);
+		_xOffset = _xOffset % _boardImageSize;
 	}
 
 	public void increaseYOffset(final float yIncrease){
 		_yOffset += yIncrease - _boardImageSize;
-		_yOffset = (int) (_yOffset % _boardImageSize);
+		_yOffset = _yOffset % _boardImageSize;
 	}
 	
 	private class GoMouseListener extends MouseAdapter {

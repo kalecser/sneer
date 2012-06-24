@@ -12,6 +12,7 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import sneer.bricks.snapps.games.go.impl.Player;
 import sneer.bricks.snapps.games.go.impl.TimerFactory;
+import sneer.bricks.snapps.games.go.impl.gui.game.painters.ToroidalBoardImagePainter;
 import sneer.bricks.snapps.games.go.impl.logging.GoLogger;
 import sneer.bricks.snapps.games.go.impl.logic.BoardListener;
 import sneer.bricks.snapps.games.go.impl.logic.ToroidalGoBoard;
@@ -123,7 +124,7 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
-		_goBoardPanel = new GoBoardPanel(this,new ToroidalGoBoard(_boardSize),timerFactory, _side);
+		_goBoardPanel = new GoBoardPanel(this,new ToroidalGoBoard(_boardSize),timerFactory, new ToroidalBoardImagePainter(), _side);
 		
 		_goBoardPanel.setBoardListener(this);
 		contentPane.add(_goBoardPanel, BorderLayout.CENTER);
