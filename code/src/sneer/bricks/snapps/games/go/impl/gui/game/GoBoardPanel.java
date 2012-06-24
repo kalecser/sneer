@@ -237,8 +237,8 @@ public class GoBoardPanel extends JPanel{
 		_cellSize = 60;
 		int boardSize = _board.size();
 		_boardImageSize = (int) (_cellSize*(boardSize));
-		_xOffset = (int) (_cellSize - _boardImageSize);
-		_yOffset = (int) (_cellSize - _boardImageSize);
+		setXOffset((int) (_cellSize - _boardImageSize));
+		setYOffset((int) (_cellSize - _boardImageSize));
 		
 		_boardPainter = new BoardPainter(boardSize, _boardImageSize, _cellSize);
 		_stonePainter = new StonePainter(_boardImageSize, _cellSize);
@@ -263,8 +263,8 @@ public class GoBoardPanel extends JPanel{
 		int boardSize = _board.size();
 		_boardImageSize = (int) (_cellSize*(boardSize));
 		
-		_xOffset = (int) ((_xOffset / oldBoardImageSize)*_boardImageSize);
-		_yOffset = (int) ((_yOffset / oldBoardImageSize)*_boardImageSize);
+		setXOffset((int) ((_xOffset / oldBoardImageSize)*_boardImageSize));
+		setYOffset((int) ((_yOffset / oldBoardImageSize)*_boardImageSize));
 		
 		_boardPainter.setBoardDimensions(boardSize, _boardImageSize, _cellSize);
 		_stonePainter.setBoardDimensions(_boardImageSize, _cellSize);
@@ -342,14 +342,20 @@ public class GoBoardPanel extends JPanel{
 		return (int)Math.ceil(result)%_board.size();
 	}
 	
-	public void increaseXOffset(final float xIncrease){
-		_xOffset += xIncrease - _boardImageSize;
-		_xOffset = _xOffset % _boardImageSize;
+	private void setXOffset(final float newXOffset){
+		_xOffset = (int) (newXOffset % _boardImageSize);
+	}
+	
+	private void setYOffset(final float newYOffset){
+		_yOffset = (int) (newYOffset % _boardImageSize);
+	}
+	
+	private void increaseXOffset(final float xIncrease){
+		setXOffset(_xOffset +( xIncrease - _boardImageSize));
 	}
 
-	public void increaseYOffset(final float yIncrease){
-		_yOffset += yIncrease - _boardImageSize;
-		_yOffset = _yOffset % _boardImageSize;
+	private void increaseYOffset(final float yIncrease){
+		setYOffset(_yOffset +(yIncrease - _boardImageSize));
 	}
 	
 	private class GoMouseListener extends MouseAdapter {
