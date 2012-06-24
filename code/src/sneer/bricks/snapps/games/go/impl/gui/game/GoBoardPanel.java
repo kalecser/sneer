@@ -31,7 +31,6 @@ import sneer.bricks.snapps.games.go.impl.logging.GoLogger;
 import sneer.bricks.snapps.games.go.impl.logic.BoardListener;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
-import sneer.bricks.snapps.games.go.impl.logic.ToroidalGoBoard;
 import basis.environments.ProxyInEnvironment;
 
 public class GoBoardPanel extends JPanel{
@@ -44,7 +43,6 @@ public class GoBoardPanel extends JPanel{
 
 	private static final int SCROLL_EDGE = 60;
 	
-	private int _boardSize;
 	private float _boardImageSize;
 	private final Rectangle _boardImageRectangle = new Rectangle(0,0,(int)_boardImageSize,(int)_boardImageSize);
 	private float _cellSize;
@@ -79,7 +77,7 @@ public class GoBoardPanel extends JPanel{
 
 	private final GameMenu _gameMenu;
 	
-	public GoBoardPanel(final GuiPlayer goFrame,final TimerFactory timerFactory,final int boardSize, StoneColor side) {
+	public GoBoardPanel(final GuiPlayer goFrame,GoBoard goBoard,final TimerFactory timerFactory,StoneColor side) {
 		_goFrame = goFrame;
 		_gameMenu = new GameMenu(this);
 		final ActionListener onPassPress = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
@@ -96,9 +94,7 @@ public class GoBoardPanel extends JPanel{
 		_gameMenu._resignButton.addActionListener(onResignPress);
 		
 		_side = side;
-		
-		_boardSize = boardSize;
-		_board = new ToroidalGoBoard(_boardSize);
+		_board = goBoard;
 		
 		updateTurnMessage();
 		
@@ -235,15 +231,16 @@ public class GoBoardPanel extends JPanel{
 
 	private void createPainters() {
 		_cellSize = 60;
-		_boardImageSize = _cellSize*(_boardSize);
+		int boardSize = _board.size();
+		_boardImageSize = _cellSize*(boardSize);
 		_boardImageRectangle.width =(int) _boardImageSize;
 		_boardImageRectangle.height =(int) _boardImageSize;
 		_xOffset = (int) (_cellSize - _boardImageSize);
 		_yOffset = (int) (_cellSize - _boardImageSize);
 		
-		_boardPainter = new BoardPainter(_boardSize, _boardImageSize, _cellSize);
+		_boardPainter = new BoardPainter(boardSize, _boardImageSize, _cellSize);
 		_stonePainter = new StonePainter(_boardImageSize, _cellSize);
-		_hoverStonePainter = new HoverStonePainter(_stonePainter,_boardSize, _cellSize);		
+		_hoverStonePainter = new HoverStonePainter(_stonePainter,boardSize, _cellSize);		
 		_stonesInPlayPainter = new StonesInPlayPainter(_stonePainter,_cellSize);
 		_darkBorderPainter = new DarkBorderPainter(SCROLL_EDGE, _gameMenu.getMenuWidth());
 		_hudPainter = new HUDPainter();
@@ -261,16 +258,17 @@ public class GoBoardPanel extends JPanel{
 		float oldBoardImageSize = _boardImageSize;
 		
 		_cellSize = newCellSize;
-		_boardImageSize = _cellSize*(_boardSize);
+		int boardSize = _board.size();
+		_boardImageSize = _cellSize*(boardSize);
 		_boardImageRectangle.width =(int) _boardImageSize;
 		_boardImageRectangle.height =(int) _boardImageSize;
 		
 		_xOffset = (int) ((_xOffset / oldBoardImageSize)*_boardImageSize);
 		_yOffset = (int) ((_yOffset / oldBoardImageSize)*_boardImageSize);
 		
-		_boardPainter.setBoardDimensions(_boardSize, _boardImageSize, _cellSize);
+		_boardPainter.setBoardDimensions(boardSize, _boardImageSize, _cellSize);
 		_stonePainter.setBoardDimensions(_boardImageSize, _cellSize);
-		_hoverStonePainter.setBoardDimensions(_boardSize, _cellSize);
+		_hoverStonePainter.setBoardDimensions(boardSize, _cellSize);
 		_stonesInPlayPainter.setBoardDimensions(_cellSize);
 	}
 	private void doMoveAddStone(int x, int y) {
@@ -351,7 +349,7 @@ public class GoBoardPanel extends JPanel{
 	private int toScreenPosition(final int coordinate) {
 		int coordinateInsideBoard = (int) (coordinate %  _boardImageSize);
 		float result = (coordinateInsideBoard -  (_cellSize / 2)) / _cellSize;
-		return (int)Math.ceil(result)%_boardSize;
+		return (int)Math.ceil(result)%_board.size();
 	}
 	
 	public void increaseXOffset(final float xIncrease){

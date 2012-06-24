@@ -14,6 +14,7 @@ import sneer.bricks.snapps.games.go.impl.Player;
 import sneer.bricks.snapps.games.go.impl.TimerFactory;
 import sneer.bricks.snapps.games.go.impl.logging.GoLogger;
 import sneer.bricks.snapps.games.go.impl.logic.BoardListener;
+import sneer.bricks.snapps.games.go.impl.logic.ToroidalGoBoard;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
 import sneer.bricks.snapps.games.go.impl.logic.Move;
 
@@ -122,7 +123,7 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
-		_goBoardPanel = new GoBoardPanel(this,timerFactory,_boardSize, _side);
+		_goBoardPanel = new GoBoardPanel(this,new ToroidalGoBoard(_boardSize),timerFactory, _side);
 		
 		_goBoardPanel.setBoardListener(this);
 		contentPane.add(_goBoardPanel, BorderLayout.CENTER);
