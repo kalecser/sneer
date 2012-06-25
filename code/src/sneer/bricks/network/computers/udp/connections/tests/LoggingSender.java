@@ -36,10 +36,6 @@ public final class LoggingSender implements UdpSender {
 		return packetHistory.output();
 	}
 
-	private static byte[] copyToEnd(byte[] data, int offset) {
-		return Arrays.copyOfRange(data, offset, data.length);
-	}
-
 	private static byte[] ownSealBytes() {
 		return my(OwnSeal.class).get().currentValue().bytes.copy();
 	}
@@ -53,7 +49,7 @@ public final class LoggingSender implements UdpSender {
 		byte[] bytes = packet.getData();
 		byte type = bytes[0];
 		byte[] seal = Arrays.copyOfRange(bytes, 1, Seal.SIZE_IN_BYTES + 1);
-		byte[] payload = copyToEnd(bytes, Seal.SIZE_IN_BYTES + 1);
+		byte[] payload = Arrays.copyOfRange(bytes, Seal.SIZE_IN_BYTES + 1, packet.getLength());
 		assertArrayEquals(ownSealBytes(), seal);
 		String current = packetHistory.output().currentValue();
 		String packet1 = "| " + toString(type, payload) + ",to:" + packet.getAddress().getHostAddress() + ",port:" + packet.getPort();
