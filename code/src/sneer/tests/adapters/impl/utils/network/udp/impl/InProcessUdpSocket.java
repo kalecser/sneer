@@ -47,20 +47,14 @@ class InProcessUdpSocket implements UdpSocket {
 	}
 
 
-	private DatagramPacket waitForPacket() {
+	private DatagramPacket waitForPacket() throws Crashed {
 		try {
 			return incomingPackets.take();
-		} catch (IllegalMonitorStateException e) { //Possible if the producer thread is killed preemptively during a test, for example.
-			sleepForever();
-			return null;
+		} catch (IllegalMonitorStateException e) { //Possible if the producer or consumer thread is killed preemptively during a test, for example.
+			crash(); throw new Crashed();
 		} catch (InterruptedException e) {
-			throw new IllegalStateException();
+			crash(); throw new Crashed();
 		}
-	}
-
-	
-	private void sleepForever() {
-		while (true) try { Thread.sleep(10000); } catch (InterruptedException e) {}
 	}
 
 
