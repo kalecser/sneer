@@ -28,7 +28,7 @@ public final class LoggingSender implements UdpSender {
 		String ret = packetType.name() + " ";
 
 		if (packetType == UdpPacketType.Hail)			
-			ret += buf.getLong();
+			ret += buf.getLong() + " ";
 		
 		byte[] payload = new byte[buf.remaining()];
 		buf.get(payload);

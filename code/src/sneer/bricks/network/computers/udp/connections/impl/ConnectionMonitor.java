@@ -8,11 +8,14 @@ import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnect
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
+import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -20,7 +23,9 @@ import sneer.bricks.pulp.reactive.collections.SetSignal;
 import basis.lang.Closure;
 
 class ConnectionMonitor {
-
+	
+	private static final Charset UTF8 = Charset.forName("UTF-8");
+	
 	private SocketAddress fastestPeerSighting = null;
 	private long lastPeerSightingTime = -UdpConnectionManager.IDLE_PERIOD;
 	private Register<Boolean> isConnected = my(Signals.class).newRegister(false);
@@ -82,11 +87,17 @@ class ConnectionMonitor {
 	private void hail() {
 		long now = my(Clock.class).preciseTime();
 		ByteBuffer buf = prepare(Hail).putLong(now);
+		buf.put(ownNameBytes());
 		for (SocketAddress addr : sightings)
 			send(buf, addr);
 	}
 	
 	
+	private byte[] ownNameBytes() {
+		return my(Attributes.class).myAttributeValue(OwnName.class).currentValue().getBytes(UTF8);
+	}
+
+
 	private void disconnectIfIdle() {
 		long now = my(Clock.class).time().currentValue();
 		if (now - lastPeerSightingTime >= UdpConnectionManager.IDLE_PERIOD)
