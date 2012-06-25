@@ -27,14 +27,14 @@ public class Network2010Test extends BrickTestBase {
 		_threads.startDaemon("Uppercase Service", new Closure() { @Override public void run() {
 			try {
 				ByteArraySocket request = server.accept();
-				request.write(new String(request.read()).toUpperCase().getBytes());
+				request.write(new String(request.read()).toUpperCase().getBytes("UTF-8"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}});
 
 		ByteArraySocket client = network.openSocket("localhost", 9090);
-		client.write("hello".getBytes());
+		client.write("hello".getBytes("UTF-8"));
 		byte[] reply = client.read();
 		assertEquals("HELLO", new String(reply));
 		

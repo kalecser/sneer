@@ -2,6 +2,7 @@ package sneer.bricks.softwaresharing.gui.impl;
 
 import static basis.environments.Environments.my;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,9 @@ import sneer.bricks.softwaresharing.FileVersion;
 class FakeModel {
 
 	private static long _initialTimeStamp = System.currentTimeMillis();
-
+	private static final Charset UTF8 = Charset.forName("UTF-8");
+	
+	
 	static List<BrickHistory> bricks(){
 		List<FileVersion> files = new ArrayList<FileVersion>();
 		List<BrickHistory> infos = new ArrayList<BrickHistory>();
@@ -65,8 +68,8 @@ class FakeModel {
 	private static FileVersion newFileVersion(final String contents, final String currentContents, 
 			final String fileName, final sneer.bricks.softwaresharing.FileVersion.Status status) {
 		return new FileVersion(){ 
-			@Override public byte[] contents() {  return contents.getBytes(); }
-			@Override public byte[] contentsInCurrentVersion() { 	return currentContents.getBytes(); }
+			@Override public byte[] contents() {  return contents.getBytes(UTF8); }
+			@Override public byte[] contentsInCurrentVersion() { 	return currentContents.getBytes(UTF8); }
 			@Override public String relativePath() { return fileName; }
 			@Override public Status status() { return status; }
 			@Override public long lastModified() { return System.currentTimeMillis(); }

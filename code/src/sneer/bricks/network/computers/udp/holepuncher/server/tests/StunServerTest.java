@@ -7,6 +7,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -22,6 +23,7 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 public class StunServerTest extends BrickTestBase {
 
 	//Implement Spread outgoing port.
+	private static final Charset UTF8 = Charset.forName("UTF-8");
 	
 	private final StunServer subject = my(StunServer.class);
 	
@@ -36,11 +38,11 @@ public class StunServerTest extends BrickTestBase {
 
 		DatagramPacket[] replies;
 		
-		replies = subjectsRepliesFor(seal1, ip("200.243.227.1"), 4111, "local data 1".getBytes());
+		replies = subjectsRepliesFor(seal1, ip("200.243.227.1"), 4111, "local data 1".getBytes(UTF8));
 		assertEmpty(replies);
-		replies = subjectsRepliesFor(seal2, ip("200.243.227.2"), 4222, "local data 2".getBytes());
+		replies = subjectsRepliesFor(seal2, ip("200.243.227.2"), 4222, "local data 2".getBytes(UTF8));
 		assertEmpty(replies);
-		replies = subjectsRepliesFor(seal3, ip("200.243.227.3"), 4333, "local data 3".getBytes(),
+		replies = subjectsRepliesFor(seal3, ip("200.243.227.3"), 4333, "local data 3".getBytes(UTF8),
 			peersToFind
 		);
 		

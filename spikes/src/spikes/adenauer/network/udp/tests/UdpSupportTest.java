@@ -3,14 +3,11 @@ package spikes.adenauer.network.udp.tests;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.nio.charset.Charset;
 
 import org.jmock.Expectations;
 import org.junit.After;
 import org.junit.Test;
-
-import basis.brickness.testsupport.Bind;
-import basis.lang.Consumer;
-import basis.util.concurrent.Latch;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
@@ -19,10 +16,16 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import spikes.adenauer.network.UdpNetworkSpike.Packet;
 import spikes.adenauer.network.udp.UdpAddressResolver;
 import spikes.adenauer.network.udp.impl.UdpNetworkImpl;
+import basis.brickness.testsupport.Bind;
+import basis.lang.Consumer;
+import basis.util.concurrent.Latch;
 
 
 public class UdpSupportTest extends BrickTestBase {
-
+	
+	private static final Charset UTF8 = Charset.forName("UTF-8");
+	
+	
 	private final SocketAddress address1 = new InetSocketAddress("127.0.0.1", 10001);
 	private final SocketAddress address2 = new InetSocketAddress("127.0.0.1", 10002);
 	private final Seal seal1 = new Seal(new byte[] {1, 1, 1});
@@ -37,7 +40,7 @@ public class UdpSupportTest extends BrickTestBase {
 	public void packetsToUnknownDestinationsAreIgnored() {
 		final Seal unknownSeal = new Seal(new byte[] {-1, -1, -1});
 		expectToResolve(unknownSeal, null);
-		subject1.send("anything".getBytes(), unknownSeal);
+		subject1.send("anything".getBytes(UTF8), unknownSeal);
 	}
 
 
@@ -52,7 +55,7 @@ public class UdpSupportTest extends BrickTestBase {
 				latch.open();
 			}});
 
-		sendData("hello".getBytes());
+		sendData("hello".getBytes(UTF8));
 		latch.waitTillOpen();
 	}
 	
@@ -66,7 +69,7 @@ public class UdpSupportTest extends BrickTestBase {
 					latch.open(); 
 			}});
 		
-		sendData("hello".getBytes());
+		sendData("hello".getBytes(UTF8));
 		latch.waitTillOpen();
 	}
 	

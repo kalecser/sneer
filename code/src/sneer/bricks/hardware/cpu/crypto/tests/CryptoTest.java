@@ -5,6 +5,7 @@ import static basis.environments.Environments.my;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Random;
 
 import org.junit.Test;
@@ -20,18 +21,21 @@ public class CryptoTest extends BrickTestBase {
 	private static final String SHA512    = "07e547d9586f6a73f73fbac0435ed76951218fb7d0c8d788a309d785436bbb642e93a252a954f23912547d1e8a3b5ed6e1bfd7097821233fa0538f3db854fee6";
 //	private static final String WHIRLPOOL = "b97de512e91e3828b40d2b0fdce9ceb3c4a71f9bea8d88e75c4fa854df36725fd2b52eb6544edcacd6f8beddfea403cb55ae31f03ad62a5ef54e42ee82c3fb35";
 
+	static private Charset UTF8 = Charset.forName("UTF-8");
+	
+
 	private final Crypto _subject = my(Crypto.class);
 
 	@Test
 	public void testDigestWithSmallString() throws Exception {
 		final String INPUT = "The quick brown fox jumps over the lazy dog";
 
-		Hash hashOfString = _subject.digest(INPUT.getBytes());
+		Hash hashOfString = _subject.digest(INPUT.getBytes(UTF8));
 		assertEquals(512, hashOfString.bytes.copy().length * 8);
 //		assertHexa(SHA512 + WHIRLPOOL, hashOfString.bytes());
 		assertHexa(SHA512, hashOfString.bytes.copy());
 
-		File file = createFileWithContent(INPUT.getBytes());
+		File file = createFileWithContent(INPUT.getBytes(UTF8));
 		Hash hashOfFile = _subject.digest(file);
 		assertEquals(hashOfString, hashOfFile);
 	}

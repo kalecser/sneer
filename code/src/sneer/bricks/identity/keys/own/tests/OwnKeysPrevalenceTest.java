@@ -4,11 +4,10 @@ import static basis.environments.Environments.my;
 
 import org.junit.Test;
 
-import basis.environments.Environments;
-import basis.lang.Closure;
-
 import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
+import basis.environments.Environments;
+import basis.lang.Closure;
 
 public class OwnKeysPrevalenceTest extends BrickTestBase {
 
@@ -17,8 +16,8 @@ public class OwnKeysPrevalenceTest extends BrickTestBase {
 
 	
 	@Test
-	public void recoversFromPrevalence() {
-		my(OwnKeys.class).generateKeyPair(PASSPHRASE.getBytes());
+	public void recoversFromPrevalence() throws Exception {
+		my(OwnKeys.class).generateKeyPair(PASSPHRASE.getBytes("UTF-8"));
 		final byte[] encoded = myPK();
 		for (int i = 0; i < NUM_RUNS; i++) {
 			Environments.runWith(newTestEnvironment(my(OwnKeys.class)), new Closure() { @Override public void run() {

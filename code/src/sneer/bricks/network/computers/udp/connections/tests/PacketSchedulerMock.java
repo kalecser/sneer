@@ -1,10 +1,16 @@
 package sneer.bricks.network.computers.udp.connections.tests;
 
 import static basis.environments.Environments.my;
+
+import java.nio.charset.Charset;
+
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
 
 final class PacketSchedulerMock implements PacketScheduler {
+	
+	private static final Charset UTF8 = Charset.forName("UTF-8");
+	
 	final String[] messages;
 	int next = 0;
 
@@ -20,7 +26,7 @@ final class PacketSchedulerMock implements PacketScheduler {
 	@Override
 	public synchronized byte[] highestPriorityPacketToSend() {
 		blockIfFinished();
-		return messages[next].getBytes();
+		return messages[next].getBytes(UTF8);
 	}
 
 	private void blockIfFinished() {

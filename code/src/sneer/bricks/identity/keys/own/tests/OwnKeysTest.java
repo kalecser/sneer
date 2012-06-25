@@ -15,8 +15,8 @@ public class OwnKeysTest extends BrickTestBase {
 	OwnKeys _subject = my(OwnKeys.class);
 	
 	@Test
-	public void keyGeneration() {
-		_subject.generateKeyPair(PASSPHRASE.getBytes());
+	public void keyGeneration() throws Exception {
+		_subject.generateKeyPair(PASSPHRASE.getBytes("UTF-8"));
 		assertNotNull(_subject.ownPublicKey().currentValue());
 	}
 	

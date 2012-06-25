@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import org.jmock.Expectations;
@@ -41,6 +42,8 @@ import basis.util.concurrent.RefLatch;
 
 public class UdpConnectionManagerTest extends BrickTestBase {
 
+	private static final Charset UTF8 = Charset.forName("UTF-8");
+	
 	
 	private UdpConnectionManager subject = my(UdpConnectionManager.class);
 	@Bind private final LoggingSender sender = new LoggingSender();
@@ -60,7 +63,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 	@Test (timeout=2000)
 	public void onSighting_ShouldHail() throws Exception {
-		subject.handle(packetFrom("Neide", Data, "Hello".getBytes()));
+		subject.handle(packetFrom("Neide", Data, bytes("Hello")));
 		
 		my(SignalUtils.class).waitForValue(sender.history(), "| hail 0,to:200.201.202.203,port:123");
 	}
@@ -96,8 +99,13 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 			latch.open();
 		}});
 		
-		subject.handle(packetFrom("Neide", Data, "Hello".getBytes()));
+		subject.handle(packetFrom("Neide", Data, bytes("Hello")));
 		latch.waitTillOpen();
+	}
+
+
+	private byte[] bytes(String message) {
+		return message.getBytes(UTF8);
 	}
 
 	
@@ -138,7 +146,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 				latch.open(); return null;
 			}});
 		}});
-		subject.handle(packetFrom("Neide", Stun, "Whatever".getBytes()));
+		subject.handle(packetFrom("Neide", Stun, "Whatever".getBytes(UTF8)));
 		
 		latch.waitTillOpen();
 	}

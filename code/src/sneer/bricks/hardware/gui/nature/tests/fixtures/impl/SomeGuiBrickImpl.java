@@ -48,7 +48,7 @@ class SomeGuiBrickImpl implements SomeGuiBrick {
 	public Thread complexMethodWithVariablesAndFinallyBlock() {
 		InputStream is = null;
 		try {
-			is = new ByteArrayInputStream("foo".getBytes()); 
+			is = new ByteArrayInputStream("foo".getBytes("UTF-8")); 
 		} catch (Exception e) {
 			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle this exception.
 		} finally {

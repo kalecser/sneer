@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.nio.charset.Charset;
 
 import org.junit.Test;
 
@@ -19,7 +20,7 @@ import basis.util.concurrent.Latch;
 
 
 public class UdpNetworkTest extends BrickTestBase {
-	
+	private static final Charset UTF8 = Charset.forName("UTF-8");
 
 	@Test(timeout = 2000)
 	public void packetsBackAndForth() throws IOException {
@@ -57,7 +58,7 @@ public class UdpNetworkTest extends BrickTestBase {
 	
 	
 	private DatagramPacket marshal(String string, int portNumber) throws SocketException {
-		byte[] bytes = string.getBytes();
+		byte[] bytes = string.getBytes(UTF8);
 		return new DatagramPacket(bytes, bytes.length, new InetSocketAddress("localhost", portNumber));
 	}
 
@@ -76,7 +77,7 @@ public class UdpNetworkTest extends BrickTestBase {
 	
 	private void convertToUppercase(DatagramPacket packet) {
 		String upper = new String(packet.getData(), 0, packet.getLength()).toUpperCase(); 
-		System.arraycopy(upper.getBytes(), 0, packet.getData(), 0, upper.length());
+		System.arraycopy(upper.getBytes(UTF8), 0, packet.getData(), 0, upper.length());
 	}
 	
 }

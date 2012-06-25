@@ -5,10 +5,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class IOUtils {
+	
+	private static final Charset UTF8 = Charset.forName("UTF-8");
+	
 	
 	static void write(File file, byte[] bytes) throws IOException {
 		file.getParentFile().mkdirs();
@@ -21,8 +25,9 @@ public class IOUtils {
         }	
 	}
 	
+	
 	static void write(File file, String text) throws IOException {
-         write(file, text.getBytes());
+         write(file, text.getBytes(UTF8));
 	}	
 	
 
@@ -41,6 +46,7 @@ public class IOUtils {
         }	
 	}
 
+	
 	static void writeEntry(JarFile jar, JarEntry entry, File file) throws IOException {
 		final InputStream is = jar.getInputStream(entry);
 		FileOutputStream output = new FileOutputStream(file);
@@ -56,4 +62,5 @@ public class IOUtils {
 			try { is.close(); } catch (Throwable ignore) { }
 		}		
 	}
+	
 }
