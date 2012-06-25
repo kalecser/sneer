@@ -18,6 +18,7 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import basis.lang.Consumer;
+import basis.lang.exceptions.Crashed;
 
 
 public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
@@ -47,6 +48,8 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 	private void send(DatagramPacket packet) {
 		try {
 			socket.send(packet);
+		} catch (Crashed e) {
+			//Crashed in test mode.
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOnIfNecessary(sendError, "Error sending UDP packet", e);
 		}

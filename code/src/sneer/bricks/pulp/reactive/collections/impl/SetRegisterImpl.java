@@ -6,6 +6,7 @@ package sneer.bricks.pulp.reactive.collections.impl;
 
 import static basis.environments.Environments.my;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -94,10 +95,11 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 		change(new CollectionChangeImpl<T>(null, elementRemoved));
 	}
 
+	
 	@Override
 	public void change(CollectionChange<T> change) {
 		synchronized (_contents) {
-			preserveOnlyActualChanges(change);
+			change = preserveOnlyActualChanges(change);
 			if (change.elementsAdded().isEmpty() && change.elementsRemoved().isEmpty())
 				return;
 			
@@ -109,13 +111,33 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 		}
 	}
 
+	
 	private void updateSize() {
 		Integer size = _contents.size();
 		if (size != _size.output().currentValue())
 			_size.setter().consume(size);
 	}
 
-	private void preserveOnlyActualChanges(CollectionChange<T> change) {
+	
+	private CollectionChange<T> preserveOnlyActualChanges(CollectionChange<T> change) {
+		try {
+			tryToPreserveOnlyActualChanges(change);
+		} catch (UnsupportedOperationException e) {
+			change = convert(change);
+			tryToPreserveOnlyActualChanges(change);
+		}
+		return change;
+	}
+
+	
+	private CollectionChange<T> convert(CollectionChange<T> change) {
+		return new CollectionChangeImpl<T>(
+			new ArrayList<T>(change.elementsAdded()),
+			new ArrayList<T>(change.elementsRemoved())
+		);
+	}
+
+	private void tryToPreserveOnlyActualChanges(CollectionChange<T> change) {
 		change.elementsAdded().removeAll(_contents);
 		change.elementsRemoved().retainAll(_contents);
 		change.elementsAdded().removeAll(change.elementsRemoved());
