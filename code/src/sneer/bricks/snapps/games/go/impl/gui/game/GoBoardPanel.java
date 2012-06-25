@@ -57,9 +57,6 @@ public class GoBoardPanel extends JPanel{
 	private StonesInPlayPainter _stonesInPlayPainter;
 	private HUDPainter _hudPainter;
 	
-	private int _xOffset;
-	private int _yOffset;
-
 	@SuppressWarnings("unused")
 	private WeakContract _referenceToAvoidGc;
 
@@ -78,9 +75,12 @@ public class GoBoardPanel extends JPanel{
 	private final GameMenu _gameMenu;
 
 	private BoardImagePainter _boardImagePainter;
+
+	private Offset _offset;
 	
-	public GoBoardPanel(final GuiPlayer goFrame,GoBoard goBoard,final TimerFactory timerFactory,BoardImagePainter boardImagePainter,StoneColor side) {
+	public GoBoardPanel(final GuiPlayer goFrame,GoBoard goBoard,final TimerFactory timerFactory,BoardImagePainter boardImagePainter,StoneColor side, Offset offset) {
 		_goFrame = goFrame;
+		_offset = offset;
 		_gameMenu = new GameMenu(this);
 		final ActionListener onPassPress = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
 			GoLogger.log("doMovePass();");
@@ -121,16 +121,16 @@ public class GoBoardPanel extends JPanel{
 					}
 				}
 				if(e.getKeyCode() == KeyEvent.VK_UP){
-					increaseYOffset(-SCROLL_KEYBOARD_SPEED);
+					_offset.increaseYOffset(-SCROLL_KEYBOARD_SPEED);
 				}
 				if(e.getKeyCode() == KeyEvent.VK_DOWN){
-					increaseYOffset(SCROLL_KEYBOARD_SPEED);
+					_offset.increaseYOffset(SCROLL_KEYBOARD_SPEED);
 				}
 				if(e.getKeyCode() == KeyEvent.VK_LEFT){
-					increaseXOffset(-SCROLL_KEYBOARD_SPEED);
+					_offset.increaseXOffset(-SCROLL_KEYBOARD_SPEED);
 				}
 				if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-					increaseXOffset(SCROLL_KEYBOARD_SPEED);
+					_offset.increaseXOffset(SCROLL_KEYBOARD_SPEED);
 				}
 				return false;
 			}
@@ -143,8 +143,8 @@ public class GoBoardPanel extends JPanel{
 	}
 	
 	public void update(){
-		increaseXOffset(scrollX);
-		increaseYOffset(scrollY);
+		_offset.increaseXOffset(scrollX);
+		_offset.increaseYOffset(scrollY);
 	}
 	
 	@Override
@@ -236,9 +236,9 @@ public class GoBoardPanel extends JPanel{
 	private void createPainters() {
 		_cellSize = 60;
 		int boardSize = _board.size();
-		_boardImageSize = (int) (_cellSize*(boardSize));
-		setXOffset((int) (_cellSize - _boardImageSize));
-		setYOffset((int) (_cellSize - _boardImageSize));
+		setBoardSize(boardSize);
+		_offset.setXOffset((int) (_cellSize - _boardImageSize));
+		_offset.setYOffset((int) (_cellSize - _boardImageSize));
 		
 		_boardPainter = new BoardPainter(boardSize, _boardImageSize, _cellSize);
 		_stonePainter = new StonePainter(_boardImageSize, _cellSize);
@@ -246,6 +246,11 @@ public class GoBoardPanel extends JPanel{
 		_stonesInPlayPainter = new StonesInPlayPainter(_stonePainter,_cellSize);
 		_darkBorderPainter = new DarkBorderPainter(SCROLL_EDGE, _gameMenu.getMenuWidth());
 		_hudPainter = new HUDPainter();
+	}
+
+	private void setBoardSize(int boardSize) {
+		_boardImageSize = (int) (_cellSize*(boardSize));
+		_offset.setBoardImageSize(_boardImageSize);
 	}
 	
 	private void updateCellSize(int add) {
@@ -261,10 +266,10 @@ public class GoBoardPanel extends JPanel{
 		
 		_cellSize = newCellSize;
 		int boardSize = _board.size();
-		_boardImageSize = (int) (_cellSize*(boardSize));
+		setBoardSize(boardSize);
 		
-		setXOffset((int) ((_xOffset / oldBoardImageSize)*_boardImageSize));
-		setYOffset((int) ((_yOffset / oldBoardImageSize)*_boardImageSize));
+		_offset.setXOffset((int) ((_offset.getXOffset() / oldBoardImageSize)*_boardImageSize));
+		_offset.setYOffset((int) ((_offset.getYOffset() / oldBoardImageSize)*_boardImageSize));
 		
 		_boardPainter.setBoardDimensions(boardSize, _boardImageSize, _cellSize);
 		_stonePainter.setBoardDimensions(_boardImageSize, _cellSize);
@@ -324,14 +329,13 @@ public class GoBoardPanel extends JPanel{
 	}
 
 	private void drawBoardImage(Graphics graphics) {
-		Rectangle boardImageRectangle = new Rectangle(_xOffset, _yOffset, _boardImageSize, _boardImageSize);
+		Rectangle boardImageRectangle = new Rectangle(_offset.getXOffset(), _offset.getYOffset(), _boardImageSize, _boardImageSize);
 		final BufferedImage bufferImage = _bufferImage;
 		_boardImagePainter.drawBoardAndSurroundings(graphics, boardImageRectangle, bufferImage);
 	}
 
 	private Graphics2D getBuffer() {
-		_bufferImage = new BufferedImage((int)(_boardImageSize+_cellSize), (int)(_boardImageSize+_cellSize), 
-			      BufferedImage.TYPE_INT_ARGB);
+		_bufferImage = new BufferedImage((int)(_boardImageSize+_cellSize), (int)(_boardImageSize+_cellSize), BufferedImage.TYPE_INT_ARGB);
 		return (Graphics2D)_bufferImage.getGraphics();
 	}
 
@@ -340,22 +344,6 @@ public class GoBoardPanel extends JPanel{
 		int coordinateInsideBoard = coordinate %  _boardImageSize;
 		float result = (coordinateInsideBoard -  (_cellSize / 2)) / _cellSize;
 		return (int)Math.ceil(result)%_board.size();
-	}
-	
-	private void setXOffset(final float newXOffset){
-		_xOffset = (int) (newXOffset % _boardImageSize);
-	}
-	
-	private void setYOffset(final float newYOffset){
-		_yOffset = (int) (newYOffset % _boardImageSize);
-	}
-	
-	private void increaseXOffset(final float xIncrease){
-		setXOffset(_xOffset +( xIncrease - _boardImageSize));
-	}
-
-	private void increaseYOffset(final float yIncrease){
-		setYOffset(_yOffset +(yIncrease - _boardImageSize));
 	}
 	
 	private class GoMouseListener extends MouseAdapter {
@@ -368,8 +356,8 @@ public class GoBoardPanel extends JPanel{
 			final int mouseX = e.getX();
 			final int mouseY = e.getY();
 			
-			_hoverStonePainter.setHoverX(toScreenPosition(mouseX-_xOffset));
-			_hoverStonePainter.setHoverY(toScreenPosition(mouseY-_yOffset));
+			_hoverStonePainter.setHoverX(toScreenPosition(mouseX-_offset.getXOffset()));
+			_hoverStonePainter.setHoverY(toScreenPosition(mouseY-_offset.getYOffset()));
 			
 			scrollIfOnScrollRegion(mouseX, mouseY);
 			
@@ -428,8 +416,8 @@ public class GoBoardPanel extends JPanel{
 			
 			if(!dragActionButtonsPressed(e))return;
 			
-			increaseXOffset(mouseX - _startX);
-			increaseYOffset(mouseY - _startY);
+			_offset.increaseXOffset(mouseX - _startX);
+			_offset.increaseYOffset(mouseY - _startY);
 			
 			_startX = mouseX;
 			_startY = mouseY;
@@ -454,8 +442,8 @@ public class GoBoardPanel extends JPanel{
 		public void mouseReleased(MouseEvent e) {
 			if(dragActionButtonsPressed(e)) return;
 			
-			int x = toScreenPosition(e.getX()-_xOffset);
-			int y = toScreenPosition(e.getY()-_yOffset);
+			int x = toScreenPosition(e.getX()-_offset.getXOffset());
+			int y = toScreenPosition(e.getY()-_offset.getYOffset());
 			if (_board.nextToPlay()==null) {
 				doMoveMarkStone(x, y);
 				return;
