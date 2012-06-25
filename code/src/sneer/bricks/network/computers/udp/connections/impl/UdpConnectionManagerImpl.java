@@ -7,6 +7,7 @@ import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Stun;
 import java.net.DatagramPacket;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
@@ -24,6 +25,7 @@ import basis.lang.Functor;
 
 class UdpConnectionManagerImpl implements UdpConnectionManager {
 
+	static private Charset ENCODING = Charset.forName("UTF-8");
 	CacheMap<Contact, UdpByteConnection> connectionsByContact = CacheMap.newInstance();
 	
 	private final Functor<Contact, UdpByteConnection> newByteConnection = new Functor<Contact, UdpByteConnection>( ) {  @Override public UdpByteConnection evaluate(Contact contact) {
@@ -74,18 +76,28 @@ class UdpConnectionManagerImpl implements UdpConnectionManager {
 	}
 
 	
-	private void handleFromUnknownSender(UdpPacketType type, final Seal sendersSeal, ByteBuffer buf) {
+	private void handleFromUnknownSender(UdpPacketType type, final Seal sendersSeal, final ByteBuffer buf) {
 		if (type != Hail) return;
 		unknownCallers.notifyReceivers(new Call() {
 
-			@Override
-			public String callerName() {
-				return "wesley";
+			private final String callerName = callerName(buf);
+
+			private String callerName(ByteBuffer buf) {
+				buf.getLong(); //Skip the timestamp;
+				
+				byte[] ret = new byte[buf.remaining()];
+				buf.get(ret);
+				return new String(ret, ENCODING);
 			}
 
 			@Override
 			public Seal callerSeal() {
 				return sendersSeal;
+			}
+
+			@Override
+			public String callerName() {
+				return callerName;
 			}});
 	}
 	
