@@ -77,7 +77,7 @@ public class ContactInternetAddressesTest extends BrickTestWithTuples {
 		_subject.addresses().addReceiver(new Consumer<CollectionChange<InternetAddress>>() { @Override public void consume(CollectionChange<InternetAddress> change) {
 			Iterator<InternetAddress> it = change.elementsAdded().iterator();
 			if (!it.hasNext()) return;
-			latch.set(it.next());
+			latch.consume(it.next());
 			if (it.hasNext()) throw new IllegalStateException("More than one address found.");
 		}});
 		return latch.waitAndGet();
