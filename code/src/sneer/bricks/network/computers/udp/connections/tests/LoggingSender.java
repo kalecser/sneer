@@ -5,7 +5,6 @@ import static org.junit.Assert.assertArrayEquals;
 
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
@@ -24,12 +23,16 @@ public final class LoggingSender implements UdpSender {
 	private Register<String> packetHistory = my(Signals.class).newRegister("");
 	private SetRegister<String> packetHistorySet = my(CollectionSignals.class).newSetRegister();
 
-	private String toString(byte type, byte[] payload) {
+	private String toString(byte type, ByteBuffer buf) {
 		UdpPacketType packetType = UdpPacketType.search(type);
+		String ret = packetType.name() + " ";
+
 		if (packetType == UdpPacketType.Hail)			
-			return "hail " + ByteBuffer.wrap(payload).getLong();
-				
-		return new String(payload);
+			ret += buf.getLong();
+		
+		byte[] payload = new byte[buf.remaining()];
+		buf.get(payload);
+		return ret + new String(payload);
 	}
 
 	public Signal<String> history() {
@@ -46,15 +49,14 @@ public final class LoggingSender implements UdpSender {
 
 	@Override
 	public void send(DatagramPacket packet) {
-		byte[] bytes = packet.getData();
-		byte type = bytes[0];
-		byte[] seal = Arrays.copyOfRange(bytes, 1, Seal.SIZE_IN_BYTES + 1);
-		byte[] payload = Arrays.copyOfRange(bytes, Seal.SIZE_IN_BYTES + 1, packet.getLength());
+		ByteBuffer buf = ByteBuffer.wrap(packet.getData(), 0, packet.getLength());
+		byte type = buf.get();
+		byte[] seal = new byte[Seal.SIZE_IN_BYTES];
+		buf.get(seal);
 		assertArrayEquals(ownSealBytes(), seal);
-		String current = packetHistory.output().currentValue();
-		String packet1 = "| " + toString(type, payload) + ",to:" + packet.getAddress().getHostAddress() + ",port:" + packet.getPort();
-		packetHistory.setter().consume(current + packet1);
-		packetHistorySet.add(packet1);
+		String packetString = "| " + toString(type, buf) + ",to:" + packet.getAddress().getHostAddress() + ",port:" + packet.getPort();
+		packetHistory.setter().consume(packetHistory.output().currentValue() + packetString);
+		packetHistorySet.add(packetString);
 	}
 
 	@Override

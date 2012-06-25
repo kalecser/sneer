@@ -65,7 +65,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	public void onSighting_ShouldHail() throws Exception {
 		subject.handle(packetFrom("Neide", Data, bytes("Hello")));
 		
-		my(SignalUtils.class).waitForValue(sender.history(), "| hail 0,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForValue(sender.history(), "| Hail 0,to:200.201.202.203,port:123");
 	}
 	
 	
@@ -116,8 +116,9 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		PacketScheduler scheduler = new PacketSchedulerMock("foo", "bar");
 		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
 
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| foo,to:200.201.202.203,port:123");
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| bar,to:200.201.202.203,port:123");
+//		my(SignalUtils.class).waitForValue(sender.history(), "| Data foo,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data foo,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data bar,to:200.201.202.203,port:123");
 	}
 	
 	
@@ -133,8 +134,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		seeNeideIn(new InetSocketAddress("192.168.1.100", 7777));
 		
 		connectionFor("Neide");
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| hail 0,to:200.201.202.203,port:123");
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| hail 0,to:192.168.1.100,port:7777");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| Hail 0,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| Hail 0,to:192.168.1.100,port:7777");
 	}
 	
 
@@ -168,7 +169,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		PacketScheduler scheduler = new PacketSchedulerMock("foo");
 		connection.initCommunications(scheduler, my(Signals.class).sink());
 		
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| foo,to:100.101.102.103,port:456");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data foo,to:100.101.102.103,port:456");
 	}
 	
 
@@ -177,14 +178,14 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SightingKeeper.class).keep(produceContact("Neide"), new InetSocketAddress("200.201.202.203", 123));
 		connectionFor("Neide");
 		
-		my(SignalUtils.class).waitForValue(sender.history(), "| hail 0,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForValue(sender.history(), "| Hail 0,to:200.201.202.203,port:123");
 		
 		my(Clock.class).advanceTime(UdpConnectionManager.KEEP_ALIVE_PERIOD - 1);
-		my(SignalUtils.class).waitForValue(sender.history(), "| hail 0,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForValue(sender.history(), "| Hail 0,to:200.201.202.203,port:123");
 		
 		my(Clock.class).advanceTime(1);
 		
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| hail 10000,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| Hail 10000,to:200.201.202.203,port:123");
 	}
 	
 	
@@ -196,7 +197,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		PacketScheduler scheduler = new PacketSchedulerMock("foo");
 		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
 		
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| foo,to:192.168.10.10,port:7777");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data foo,to:192.168.10.10,port:7777");
 	}
 
 
