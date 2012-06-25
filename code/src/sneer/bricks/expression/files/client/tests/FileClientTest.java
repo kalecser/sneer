@@ -60,11 +60,26 @@ public class FileClientTest extends BrickTestWithTuples {
 		my(IO.class).files().assertSameContents(tmpFile, file);
 	}
 
+	
+	@Test (timeout = 4000, expected = IOException.class)
+	public void receiveFileThatDoesntMatchExpectedHash() throws IOException, TimeoutException {
+		final Hash wrongHash = new Hash(new ImmutableByteArray(new byte[]{ 42 }));
+		final File smallFile = createTmpFileWithRandomContent(3 * Protocol.FILE_BLOCK_SIZE);
+
+		receiveInRandomOrder(wrongHash, smallFile);
+	}
+
+	
 	@Test (timeout = 4000)
 	public void receiveFileContentBlocksOutOfSequence() throws IOException, TimeoutException {
 		final File smallFile = createTmpFileWithRandomContent(3 * Protocol.FILE_BLOCK_SIZE);
-		final Hash fileHash = new Hash(new ImmutableByteArray(new byte[]{ 42 }));
+		final Hash fileHash = my(Crypto.class).digest(smallFile);
 
+		receiveInRandomOrder(fileHash, smallFile);
+	}
+
+	
+	private void receiveInRandomOrder(final Hash fileHash, final File smallFile)	throws IOException, TimeoutException {
 		final Seal addressee = my(OwnSeal.class).get().currentValue();
 		Environments.runWith(remote(my(Clock.class)), new ClosureX<IOException>() { @Override public void run() throws IOException {
 			final Iterator<FileContents> blocksOutOfSequence = createFileContentBlocks(addressee, smallFile, fileHash).iterator();

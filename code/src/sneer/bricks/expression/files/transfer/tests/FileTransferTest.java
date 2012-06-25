@@ -42,7 +42,7 @@ public class FileTransferTest extends BrickTestWithTuples {
 	/*
 	 * - Revise AbstractDownload.finishIfLocallyAvailable especially with regard to folders.
 	 * - Large file transfers.
-	 * - Check download hash against downloaded contents. Check if hash of empty file and empty folder clash.
+	 * - Unignore FileCopyTestBase tests.
 	 * - Remove distinction between FileClient's file and folder downloads. Let download decide based on received contents.
 	 * - Download recovery on crash and startup.
 	 */
