@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -19,6 +21,7 @@ import javax.swing.SwingUtilities;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.snapps.games.go.impl.TimerFactory;
+import sneer.bricks.snapps.games.go.impl.gui.game.painters.BoardImagePainter;
 import sneer.bricks.snapps.games.go.impl.gui.game.painters.BoardPainter;
 import sneer.bricks.snapps.games.go.impl.gui.game.painters.DarkBorderPainter;
 import sneer.bricks.snapps.games.go.impl.gui.game.painters.HUDPainter;
@@ -29,10 +32,10 @@ import sneer.bricks.snapps.games.go.impl.logging.GoLogger;
 import sneer.bricks.snapps.games.go.impl.logic.BoardListener;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard;
 import sneer.bricks.snapps.games.go.impl.logic.GoBoard.StoneColor;
-import sneer.bricks.snapps.games.go.impl.logic.ToroidalGoBoard;
 import basis.environments.ProxyInEnvironment;
 
 public class GoBoardPanel extends JPanel{
+
 
 	private static final long serialVersionUID = 1L;
 
@@ -41,9 +44,7 @@ public class GoBoardPanel extends JPanel{
 
 	private static final int SCROLL_EDGE = 60;
 	
-	private int _boardSize;
-	private float _boardImageSize;
-	private final Rectangle _boardImageRectangle = new Rectangle(0,0,(int)_boardImageSize,(int)_boardImageSize);
+	private int _boardImageSize;
 	private float _cellSize;
 	private final GoBoard _board;
 
@@ -56,9 +57,6 @@ public class GoBoardPanel extends JPanel{
 	private StonesInPlayPainter _stonesInPlayPainter;
 	private HUDPainter _hudPainter;
 	
-	private int _xOffset;
-	private int _yOffset;
-
 	@SuppressWarnings("unused")
 	private WeakContract _referenceToAvoidGc;
 
@@ -73,13 +71,36 @@ public class GoBoardPanel extends JPanel{
 	private int scrollY = 0;
 
 	private DarkBorderPainter _darkBorderPainter;
+
+	private final GameMenu _gameMenu;
+
+	private BoardImagePainter _boardImagePainter;
+
+	private Offset _offset;
 	
-	public GoBoardPanel(final GuiPlayer goFrame,final TimerFactory timerFactory,final int boardSize, StoneColor side) {
-		_goFrame = goFrame;		
-		_side = side;
+	public GoBoardPanel(final GuiPlayer goFrame,GoBoard goBoard,final TimerFactory timerFactory,BoardImagePainter boardImagePainter,StoneColor side, Offset offset) {
+		_goFrame = goFrame;
+		_offset = offset;
+		_gameMenu = new GameMenu(this);
+		final ActionListener onPassPress = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
+			GoLogger.log("doMovePass();");
+			goFrame.doMovePass();
+		}};
 		
-		_boardSize = boardSize;
-		_board = new ToroidalGoBoard(_boardSize);
+		final ActionListener onResignPress = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
+			GoLogger.log("doMoveResign();");
+			goFrame.doMoveResign();
+		}};
+		
+		_gameMenu._passButton.addActionListener(onPassPress);
+		_gameMenu._resignButton.addActionListener(onResignPress);
+		
+		_side = side;
+		_board = goBoard;
+		
+		_boardImagePainter = boardImagePainter;
+		
+		updateTurnMessage();
 		
 		createPainters();
 		
@@ -100,16 +121,16 @@ public class GoBoardPanel extends JPanel{
 					}
 				}
 				if(e.getKeyCode() == KeyEvent.VK_UP){
-					increaseYOffset(-SCROLL_KEYBOARD_SPEED);
+					_offset.increaseYOffset(-SCROLL_KEYBOARD_SPEED);
 				}
 				if(e.getKeyCode() == KeyEvent.VK_DOWN){
-					increaseYOffset(SCROLL_KEYBOARD_SPEED);
+					_offset.increaseYOffset(SCROLL_KEYBOARD_SPEED);
 				}
 				if(e.getKeyCode() == KeyEvent.VK_LEFT){
-					increaseXOffset(-SCROLL_KEYBOARD_SPEED);
+					_offset.increaseXOffset(-SCROLL_KEYBOARD_SPEED);
 				}
 				if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-					increaseXOffset(SCROLL_KEYBOARD_SPEED);
+					_offset.increaseXOffset(SCROLL_KEYBOARD_SPEED);
 				}
 				return false;
 			}
@@ -122,8 +143,8 @@ public class GoBoardPanel extends JPanel{
 	}
 	
 	public void update(){
-		increaseXOffset(scrollX);
-		increaseYOffset(scrollY);
+		_offset.increaseXOffset(scrollX);
+		_offset.increaseYOffset(scrollY);
 	}
 	
 	@Override
@@ -139,7 +160,7 @@ public class GoBoardPanel extends JPanel{
 		_boardPainter.draw(buffer);
 		_stonesInPlayPainter.draw(buffer, _board);
 		_hoverStonePainter.draw(buffer, _board);
-		drawBoardTiled(graphics);
+		drawBoardImage(graphics);
 		_darkBorderPainter.draw(graphics);
 		_hudPainter.draw(graphics);
 	}
@@ -167,7 +188,22 @@ public class GoBoardPanel extends JPanel{
 	void receiveMoveAddStone(int xCoordinate, int yCoordinate) {
 		GoLogger.log("GoBoardPanel.receiveMoveAddStone("+xCoordinate+","+yCoordinate+")");
 		_board.playStone(xCoordinate, yCoordinate);
+		updateTurnMessage();
 		decideWinner();
+	}
+
+	private void updateTurnMessage() {
+		_gameMenu.setMessage("Your turn.");
+		updateTurnMessageIfWaiting();
+	}
+
+	private void updateTurnMessageIfWaiting() {
+		if(_board.nextToPlay() != _side){
+			_gameMenu.setMessage("Waiting for the other player...");
+		}
+		if(_board.nextToPlay() == null){
+			_gameMenu.setMessage("Game ended. Mark the dead stones to decide the winner.");
+		}
 	}
 
 	void receiveMoveMarkStone(int xCoordinate, int yCoordinate) {
@@ -179,6 +215,8 @@ public class GoBoardPanel extends JPanel{
 	void receiveMovePassTurn() {
 		GoLogger.log("GoBoardPanel.receiveMovePassTurn()");
 		_board.passTurn();
+		_gameMenu.setMessage("Other player passed. Your turn.");
+		updateTurnMessageIfWaiting();
 		decideWinner();
 	}
 
@@ -187,23 +225,32 @@ public class GoBoardPanel extends JPanel{
 			_otherResigned = true;
 		GoLogger.log("GoBoardPanel.receiveMoveResign()");
 		_board.resign();
-		decideWinner();
+		if(_hasResigned){
+			_gameMenu.setMessage("You lost by resign.");
+		}else{
+			_gameMenu.setMessage("Other player resigned. You Won!");
+		}
+		_gameMenu.setGameEnded();
 	}
 
 	private void createPainters() {
 		_cellSize = 60;
-		_boardImageSize = _cellSize*(_boardSize);
-		_boardImageRectangle.width =(int) _boardImageSize;
-		_boardImageRectangle.height =(int) _boardImageSize;
-		_xOffset = (int) (_cellSize - _boardImageSize);
-		_yOffset = (int) (_cellSize - _boardImageSize);
+		int boardSize = _board.size();
+		setBoardSize(boardSize);
+		_offset.setXOffset((int) (_cellSize - _boardImageSize));
+		_offset.setYOffset((int) (_cellSize - _boardImageSize));
 		
-		_boardPainter = new BoardPainter(_boardSize, _boardImageSize, _cellSize);
+		_boardPainter = new BoardPainter(boardSize, _boardImageSize, _cellSize);
 		_stonePainter = new StonePainter(_boardImageSize, _cellSize);
-		_hoverStonePainter = new HoverStonePainter(_stonePainter,_boardSize, _cellSize);		
+		_hoverStonePainter = new HoverStonePainter(_stonePainter,boardSize, _cellSize);		
 		_stonesInPlayPainter = new StonesInPlayPainter(_stonePainter,_cellSize);
-		_darkBorderPainter = new DarkBorderPainter(SCROLL_EDGE);
+		_darkBorderPainter = new DarkBorderPainter(SCROLL_EDGE, _gameMenu.getMenuWidth());
 		_hudPainter = new HUDPainter();
+	}
+
+	private void setBoardSize(int boardSize) {
+		_boardImageSize = (int) (_cellSize*(boardSize));
+		_offset.setBoardImageSize(_boardImageSize);
 	}
 	
 	private void updateCellSize(int add) {
@@ -218,16 +265,15 @@ public class GoBoardPanel extends JPanel{
 		float oldBoardImageSize = _boardImageSize;
 		
 		_cellSize = newCellSize;
-		_boardImageSize = _cellSize*(_boardSize);
-		_boardImageRectangle.width =(int) _boardImageSize;
-		_boardImageRectangle.height =(int) _boardImageSize;
+		int boardSize = _board.size();
+		setBoardSize(boardSize);
 		
-		_xOffset = (int) ((_xOffset / oldBoardImageSize)*_boardImageSize);
-		_yOffset = (int) ((_yOffset / oldBoardImageSize)*_boardImageSize);
+		_offset.setXOffset((int) ((_offset.getXOffset() / oldBoardImageSize)*_boardImageSize));
+		_offset.setYOffset((int) ((_offset.getYOffset() / oldBoardImageSize)*_boardImageSize));
 		
-		_boardPainter.setBoardDimensions(_boardSize, _boardImageSize, _cellSize);
+		_boardPainter.setBoardDimensions(boardSize, _boardImageSize, _cellSize);
 		_stonePainter.setBoardDimensions(_boardImageSize, _cellSize);
-		_hoverStonePainter.setBoardDimensions(_boardSize, _cellSize);
+		_hoverStonePainter.setBoardDimensions(boardSize, _cellSize);
 		_stonesInPlayPainter.setBoardDimensions(_cellSize);
 	}
 	private void doMoveAddStone(int x, int y) {
@@ -282,43 +328,22 @@ public class GoBoardPanel extends JPanel{
 		
 	}
 
-	private void drawBoardTiled(Graphics graphics) {
-		final Rectangle clipBounds = graphics.getClipBounds();
-		
-		_boardImageRectangle.x = _xOffset;
-		_boardImageRectangle.y = _yOffset;
-		
-		while(clipBounds.intersects(_boardImageRectangle)){
-			while(clipBounds.intersects(_boardImageRectangle)){
-				graphics.drawImage(_bufferImage, _boardImageRectangle.x, _boardImageRectangle.y, this);
-				_boardImageRectangle.x += (_boardImageSize);
-			}
-			_boardImageRectangle.x = _xOffset;
-			_boardImageRectangle.y += (_boardImageSize);
-		}
+	private void drawBoardImage(Graphics graphics) {
+		Rectangle boardImageRectangle = new Rectangle(_offset.getXOffset(), _offset.getYOffset(), _boardImageSize, _boardImageSize);
+		final BufferedImage bufferImage = _bufferImage;
+		_boardImagePainter.drawBoardAndSurroundings(graphics, boardImageRectangle, bufferImage);
 	}
-	
+
 	private Graphics2D getBuffer() {
-		_bufferImage = new BufferedImage((int)(_boardImageSize+_cellSize), (int)(_boardImageSize+_cellSize), 
-			      BufferedImage.TYPE_INT_ARGB);
+		_bufferImage = new BufferedImage((int)(_boardImageSize+_cellSize), (int)(_boardImageSize+_cellSize), BufferedImage.TYPE_INT_ARGB);
 		return (Graphics2D)_bufferImage.getGraphics();
 	}
 
 	
 	private int toScreenPosition(final int coordinate) {
-		int coordinateInsideBoard = (int) (coordinate %  _boardImageSize);
+		int coordinateInsideBoard = coordinate %  _boardImageSize;
 		float result = (coordinateInsideBoard -  (_cellSize / 2)) / _cellSize;
-		return (int)Math.ceil(result)%_boardSize;
-	}
-	
-	public void increaseXOffset(final float xIncrease){
-		_xOffset += xIncrease - _boardImageSize;
-		_xOffset = (int) (_xOffset % _boardImageSize);
-	}
-
-	public void increaseYOffset(final float yIncrease){
-		_yOffset += yIncrease - _boardImageSize;
-		_yOffset = (int) (_yOffset % _boardImageSize);
+		return (int)Math.ceil(result)%_board.size();
 	}
 	
 	private class GoMouseListener extends MouseAdapter {
@@ -331,8 +356,8 @@ public class GoBoardPanel extends JPanel{
 			final int mouseX = e.getX();
 			final int mouseY = e.getY();
 			
-			_hoverStonePainter.setHoverX(toScreenPosition(mouseX-_xOffset));
-			_hoverStonePainter.setHoverY(toScreenPosition(mouseY-_yOffset));
+			_hoverStonePainter.setHoverX(toScreenPosition(mouseX-_offset.getXOffset()));
+			_hoverStonePainter.setHoverY(toScreenPosition(mouseY-_offset.getYOffset()));
 			
 			scrollIfOnScrollRegion(mouseX, mouseY);
 			
@@ -351,7 +376,7 @@ public class GoBoardPanel extends JPanel{
 		
 		private void scrollIfOnScrollRegion(final int mouseX, final int mouseY) {
 			scrollHorizontallyIfOnScrollRegion(mouseX);
-			scrollVerticallyIfOnScrollRegion(mouseY);
+			scrollVerticallyIfOnScrollRegion(mouseX,mouseY);
 		}
 
 		private void scrollHorizontallyIfOnScrollRegion(final int mouseX) {
@@ -359,21 +384,27 @@ public class GoBoardPanel extends JPanel{
 				scrollX = SCROLL_SPEED;
 				return;
 			}
-			if(mouseX > getWidth()-SCROLL_EDGE){
-				scrollX = -SCROLL_SPEED;
-				return;
+			if(mouseX > getWidth()-SCROLL_EDGE-_gameMenu.getMenuWidth()){
+				if(mouseX < getWidth()-_gameMenu.getMenuWidth()){
+					scrollX = -SCROLL_SPEED;
+					return;
+				}
 			}
 			scrollX = 0;
 		}
 		
-		private void scrollVerticallyIfOnScrollRegion(final int mouseY) {
+		private void scrollVerticallyIfOnScrollRegion(final int mouseX,final int mouseY) {
 			if(mouseY < SCROLL_EDGE){
-				scrollY = SCROLL_SPEED;
-				return;
+				if(mouseX < getWidth()-_gameMenu.getMenuWidth()){
+					scrollY = SCROLL_SPEED;
+					return;
+				}
 			}
 			if(mouseY > getHeight()-SCROLL_EDGE){
-				scrollY = -SCROLL_SPEED;
-				return;
+				if(mouseX < getWidth()-_gameMenu.getMenuWidth()){
+					scrollY = -SCROLL_SPEED;
+					return;
+				}
 			}
 			scrollY = 0;
 		}
@@ -385,8 +416,8 @@ public class GoBoardPanel extends JPanel{
 			
 			if(!dragActionButtonsPressed(e))return;
 			
-			increaseXOffset(mouseX - _startX);
-			increaseYOffset(mouseY - _startY);
+			_offset.increaseXOffset(mouseX - _startX);
+			_offset.increaseYOffset(mouseY - _startY);
 			
 			_startX = mouseX;
 			_startY = mouseY;
@@ -411,8 +442,8 @@ public class GoBoardPanel extends JPanel{
 		public void mouseReleased(MouseEvent e) {
 			if(dragActionButtonsPressed(e)) return;
 			
-			int x = toScreenPosition(e.getX()-_xOffset);
-			int y = toScreenPosition(e.getY()-_yOffset);
+			int x = toScreenPosition(e.getX()-_offset.getXOffset());
+			int y = toScreenPosition(e.getY()-_offset.getYOffset());
 			if (_board.nextToPlay()==null) {
 				doMoveMarkStone(x, y);
 				return;
@@ -428,6 +459,20 @@ public class GoBoardPanel extends JPanel{
 			int factor = 2;
 			updateCellSize(wheelRotation*factor*-1);
 		}
+	}
+
+	public void updateScore(int blackScore, int whiteScore) {
+		_gameMenu.updateScore(blackScore, whiteScore);
+	}
+
+	public void nextToPlay(StoneColor nextToPlay) {
+		boolean isMyTurn = nextToPlay == _side;
+		_gameMenu.setMyTurn(isMyTurn);
+		repaint();
+	}
+
+	public void setGameEnded() {
+		_gameMenu.setGameEnded();
 	}
 
 }

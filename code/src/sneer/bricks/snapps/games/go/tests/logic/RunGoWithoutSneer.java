@@ -18,7 +18,7 @@ public class RunGoWithoutSneer implements Player {
 	private GuiPlayer _whiteFrame;
 
 	public static void main(String[] args) {
-		new RunGoWithoutSneer(10);
+		new RunGoWithoutSneer(3);
 	}
 
 	public RunGoWithoutSneer(final int boardSize) {

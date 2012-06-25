@@ -8,6 +8,7 @@ import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Stun;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -18,10 +19,12 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
+import sneer.bricks.network.computers.connections.Call;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
 import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
@@ -34,6 +37,7 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import basis.brickness.testsupport.Bind;
 import basis.lang.Consumer;
 import basis.util.concurrent.Latch;
+import basis.util.concurrent.RefLatch;
 
 public class UdpConnectionManagerTest extends BrickTestBase {
 
@@ -46,7 +50,9 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 		//HAIL SIGHTINGS:
 		//First Hand Sightings - done
-		//Second Hand Sightings: Stun response, Remote sighting
+		//Second Hand Sightings:
+		//	Stun response - done
+		//	Remote sighting
 		//Sneer Host & Port Own Attributes
 		
 		//Forget old sightings
@@ -59,6 +65,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SignalUtils.class).waitForValue(sender.history(), "| hail 0,to:200.201.202.203,port:123");
 	}
 	
+	
 	@Test(timeout=2000)
 	public void onFirstPacket_ShouldConnect() throws Exception {
 		assertFalse(isConnected("Neide"));
@@ -66,8 +73,21 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SignalUtils.class).waitForValue(connectionFor("Neide").isConnected(), true);
 		assertFalse(isConnected("Maicon"));
 	}
+	
+	
+	@Test(timeout=2000)
+	public void onUnknownCaller_ShouldNotify() throws Exception {
+		RefLatch<Call> latch = new RefLatch<Call>();
+		@SuppressWarnings("unused") WeakContract ref =
+		subject.unknownCallers().addReceiver(latch);
+		byte[] seal = fill(123);
+		subject.handle(hailPacketFrom(seal, "Wesley"));
+		Call call = latch.waitAndGet();
+		assertEquals(new Seal(seal), call.callerSeal());
+		assertEquals("Wesley", call.callerName());
+	}
 
-
+	
 	@Test (timeout=2000)
 	public void receiveData() throws Exception {
 		final Latch latch = new Latch();
@@ -176,16 +196,42 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		return ByteBuffer.allocate(8).putLong(value).array();
 	}
 	
+	
 	private void seeNeideIn(InetSocketAddress sighting) {
 		my(SightingKeeper.class).keep(produceContact("Neide"), sighting);
 	}
 	
+	
+	private DatagramPacket hailPacketFrom(String nick) throws Exception {
+		byte[] timestamp = asBytes(41);
+		return packetFrom(nick, Hail, timestamp);
+	}
+
+	
+	private DatagramPacket hailPacketFrom(byte[] seal, String senderName) throws Exception {
+		byte[] timestamp = asBytes(41);
+		byte[] data = my(Lang.class).arrays().concat(timestamp, senderName.getBytes("UTF-8"));
+		return packetFrom(Hail, seal, data, "200.42.0.35", 4567);
+	}
+	
+	
+	private DatagramPacket packetFrom(String nick, UdpPacketType type, byte[] payload) throws Exception {
+		return packetFrom(nick, type, payload, "200.201.202.203", 123);
+	}
+
+	
 	private DatagramPacket packetFrom(String nick, UdpPacketType type, byte[] data, String ip, int port) throws Exception {
 		produceContact(nick);
-		my(ContactSeals.class).put(nick, new Seal(fill(42)));
+		byte[] sealBytes = fill(42);
+		my(ContactSeals.class).put(nick, new Seal(sealBytes));
 		
+		return packetFrom(type, sealBytes, data, ip, port);
+	}
+
+	
+	private DatagramPacket packetFrom(UdpPacketType type, byte[] seal, byte[] data, String ip, int port) throws UnknownHostException {
 		byte[] bytes = new byte[] { (byte)type.ordinal() };
-		bytes = my(Lang.class).arrays().concat(bytes, fill(42));
+		bytes = my(Lang.class).arrays().concat(bytes, seal);
 		bytes = my(Lang.class).arrays().concat(bytes, data);
 		
 		DatagramPacket ret = new DatagramPacket(bytes, bytes.length);
@@ -216,16 +262,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 	private Contact produceContact(String nick) {
 		return my(Contacts.class).produceContact(nick);
-	}
-
-	
-	private DatagramPacket hailPacketFrom(String nick) throws Exception {
-		return packetFrom(nick, Hail, asBytes(41));
-	}
-
-
-	private DatagramPacket packetFrom(String nick, UdpPacketType type, byte[] payload) throws Exception {
-		return packetFrom(nick, type, payload, "200.201.202.203", 123);
 	}
 
 }

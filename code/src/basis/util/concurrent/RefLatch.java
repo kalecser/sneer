@@ -2,8 +2,10 @@ package basis.util.concurrent;
 
 import java.util.concurrent.CountDownLatch;
 
+import basis.lang.Consumer;
 
-public class RefLatch<T> {
+
+public class RefLatch<T> implements Consumer<T>{
 
 	private final CountDownLatch delegate = new CountDownLatch(1);
 	private volatile T value;
@@ -19,7 +21,8 @@ public class RefLatch<T> {
 	}
 
 	
-	public void set(T value) {
+	@Override
+	public void consume(T value) {
 		delegate.countDown();
 		this.value = value;
 	}

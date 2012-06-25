@@ -38,8 +38,8 @@ public class BoardPainter{
 		float c = 0;
 		for(int i = 0; i <= _boardSize; i++ ) {
 			buffer.setColor(Color.black);
-			buffer.draw(new Line2D.Float(c, 0, c, _boardImageSize+_cellSize));
-			buffer.draw(new Line2D.Float(0, c, _boardImageSize+_cellSize, c));
+			buffer.draw(new Line2D.Float(c, 0, c, _boardImageSize));
+			buffer.draw(new Line2D.Float(0, c, _boardImageSize, c));
 			c += _cellSize;
 		}
 	}
