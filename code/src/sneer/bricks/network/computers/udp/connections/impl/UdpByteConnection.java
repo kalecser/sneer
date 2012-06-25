@@ -3,6 +3,7 @@ package sneer.bricks.network.computers.udp.connections.impl;
 import static basis.environments.Environments.my;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Data;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Hail;
+import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.prepare;
 import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.send;
 
 import java.net.InetSocketAddress;
@@ -44,7 +45,9 @@ class UdpByteConnection implements ByteConnection {
 	
 	private void tryToSendPacketFor(PacketScheduler scheduler) {
 		byte[] payload = scheduler.highestPriorityPacketToSend();
-		if (send(Data, payload, monitor.lastSighting()))
+		ByteBuffer buf = prepare(Data)
+			.put(payload);
+		if (send(buf, monitor.lastSighting()))
 			scheduler.previousPacketWasSent();
 	}
 	

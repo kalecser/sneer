@@ -2,6 +2,7 @@ package sneer.bricks.network.computers.udp.connections.impl;
 
 import static basis.environments.Environments.my;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Hail;
+import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.prepare;
 import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.send;
 
 import java.net.InetSocketAddress;
@@ -29,18 +30,22 @@ class ConnectionMonitor {
 	@SuppressWarnings("unused") private WeakContract refToAvoidGC;	
 	@SuppressWarnings("unused")	private WeakContract refToAvoidGC2;
 	
+	
 	ConnectionMonitor(SetSignal<InetSocketAddress> sightings) {
 		this.sightings = sightings;
 		startHailing();
 	}
 
+	
 	Signal<Boolean> isConnected() {
 		return isConnected.output();
 	}
 	
+	
 	SocketAddress lastSighting() {
 		return fastestPeerSighting;
 	}	
+	
 	
 	void handleHail(SocketAddress sighting, long timestamp) {
 		Long now = my(Clock.class).preciseTime();
@@ -56,6 +61,7 @@ class ConnectionMonitor {
 			lastPeerSightingTime = now;
 	}
 	
+	
 	private void startHailing() {
 		refToAvoidGC = my(Timer.class).wakeUpEvery(UdpConnectionManager.KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
 			keepAlive();
@@ -66,17 +72,20 @@ class ConnectionMonitor {
 		}});
 	}
 	
+	
 	private void keepAlive() {
 		hail();
 		disconnectIfIdle();
 	}
 
+	
 	private void hail() {
 		long now = my(Clock.class).preciseTime();
-		byte[] hailBytes = ByteBuffer.allocate(8).putLong(now).array(); //Optimize: Reuse buffer
+		ByteBuffer buf = prepare(Hail).putLong(now);
 		for (SocketAddress addr : sightings)
-			send(Hail, hailBytes, addr);
+			send(buf, addr);
 	}
+	
 	
 	private void disconnectIfIdle() {
 		long now = my(Clock.class).time().currentValue();
