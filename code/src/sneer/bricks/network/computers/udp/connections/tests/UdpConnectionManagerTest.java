@@ -75,7 +75,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	@Test//(timeout=2000)
+	@Test(timeout=2000)
 	public void onUnknownCaller_ShouldNotify() throws Exception {
 		RefLatch<Call> latch = new RefLatch<Call>();
 		@SuppressWarnings("unused") WeakContract ref =
