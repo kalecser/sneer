@@ -127,7 +127,7 @@ public class GuiPlayer extends JFrame implements BoardListener,Player{
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 		_goBoardPanel = new GoBoardPanel(this,new ToroidalGoBoard(_boardSize),timerFactory, new ToroidalBoardImagePainter(), _side, new MutableOffset());
-//		_goBoardPanel = new GoBoardPanel(this,new GoBoard(_boardSize),timerFactory, new RegularGoBoardImagePainter(), _side);
+//		_goBoardPanel = new GoBoardPanel(this,new GoBoard(_boardSize),timerFactory, new RegularGoBoardImagePainter(), _side, new FixedCentralizedOffset());
 		
 		_goBoardPanel.setBoardListener(this);
 		contentPane.add(_goBoardPanel, BorderLayout.CENTER);
