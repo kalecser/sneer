@@ -19,6 +19,7 @@ import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.Lang;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.ByteConnection;
@@ -77,6 +78,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	@Test//(timeout=2000)
 	public void onUnknownCaller_ShouldNotify() throws Exception {
 		RefLatch<Call> latch = new RefLatch<Call>();
+		@SuppressWarnings("unused") WeakContract ref =
 		subject.unknownCallers().addReceiver(latch);
 		byte[] seal = fill(123);
 		subject.handle(hailPacketFrom(seal, "Wesley"));
