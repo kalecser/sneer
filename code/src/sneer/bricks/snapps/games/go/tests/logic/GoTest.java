@@ -361,7 +361,7 @@ public class GoTest extends BrickTestBase {
 	}
 
 	@Test
-	public void getLastPlayedPiece(){
+	public void getLastPlayedStone(){
 		_board = new ToroidalGoBoard(3);
 		_board.playStone(0,0);
 		assertTrue(_board.stoneAtPositionIsLastPlayedStone(0,0));

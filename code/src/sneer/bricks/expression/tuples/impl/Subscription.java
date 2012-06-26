@@ -100,7 +100,7 @@ class Subscription<T extends Tuple> {
 	}
 	
 	
-	/** Removes this subscription as soon as possible. The subscription might still receive tuple notifications from other threads AFTER this method returns, though. It is impossible to guarantee synchronicity of this method without risking deadlocks, especially with the GUI thread. If you really need to know when the subscription was removed, get in touch with us. We can change the API to provide for a callback.*/
+	/** Removes this subscription as soon as possible. The subscription might still receive one tuple notification from another thread AFTER this method returns, though. It is impossible to guarantee synchronization of this method without risking deadlocks, especially with the GUI thread. If you really need to know when the subscription was removed, get in touch with us. We can change the API to provide for a callback.*/
 	synchronized
 	void dispose() {
 		if (isDisposed) throw new IllegalStateException("Tuples subscription was already disposed");
