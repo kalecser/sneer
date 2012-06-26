@@ -3,9 +3,8 @@ package sneer.bricks.expression.files.writer.atomic;
 import java.io.File;
 import java.io.IOException;
 
-import basis.brickness.Brick;
-
 import sneer.bricks.expression.files.protocol.FolderContents;
+import basis.brickness.Brick;
 
 @Brick
 public interface AtomicFileWriter {

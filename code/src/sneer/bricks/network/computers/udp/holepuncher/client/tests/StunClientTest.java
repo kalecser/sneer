@@ -58,7 +58,7 @@ public class StunClientTest extends BrickTestBase {
 		mockOwnIps("10.42.10.1", "10.42.10.2");
 		setOwnPort(1234);
 		
-		connect(my(StunClient.class), my(StunServer.class));
+		connect(my(StunClient.class), "200.200.200.201", 11111, my(StunServer.class));
 		
 		final Seal seal = my(OwnSeal.class).get().currentValue();
 		
@@ -67,10 +67,11 @@ public class StunClientTest extends BrickTestBase {
 			Contact neide = my(Contacts.class).produceContact("Neide");
 			my(ContactSeals.class).put("Neide", seal);
 			
-			connect(my(StunClient.class), my(StunServer.class));
+			connect(my(StunClient.class), "200.200.200.202", 22222, my(StunServer.class));
 			
 			waitForSighting(neide, "10.42.10.1", 1234);
 			waitForSighting(neide, "10.42.10.2", 1234);
+			waitForSighting(neide, "200.200.200.201", 11111);
 		}});
 		
 		//Test that requests are sent periodically:
@@ -99,7 +100,7 @@ public class StunClientTest extends BrickTestBase {
 	}
 	
 
-	private void connect(StunClient client, final StunServer server) {
+	private void connect(StunClient client, final String originIp, final int originPort, final StunServer server) {
 		final StunClient clientInEnvironment = ProxyInEnvironment.newInstance(client);
 		if (client1 == null) {
 			client1 = clientInEnvironment;
@@ -110,6 +111,7 @@ public class StunClientTest extends BrickTestBase {
 		client.initSender(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket request) {
 			assertEquals("dynamic.sneer.me", request.getAddress().getHostName());
 			assertEquals(5555, request.getPort());
+			setOrigin(request, originIp, originPort);
 			
 			DatagramPacket[] replies = server.repliesFor(request);
 			if (replies.length == 0) return;
@@ -122,6 +124,16 @@ public class StunClientTest extends BrickTestBase {
 	}
 	
 	
+	private void setOrigin(DatagramPacket request, String originIp, int originPort) {
+		try {
+			request.setAddress(InetAddress.getByName(originIp));
+			request.setPort(originPort);
+		} catch (UnknownHostException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+
 	private StunClient other(StunClient client) {
 		return client == client1 ? client2 : client1;
 	}

@@ -22,7 +22,6 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
 public class StunServerTest extends BrickTestBase {
 
-	//Implement Spread outgoing port.
 	private static final Charset UTF8 = Charset.forName("UTF-8");
 	
 	private final StunServer subject = my(StunServer.class);

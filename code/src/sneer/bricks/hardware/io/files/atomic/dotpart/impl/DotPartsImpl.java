@@ -7,7 +7,6 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Collection;
 
-import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.IO.Filter;
 import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
@@ -19,23 +18,21 @@ class DotPartsImpl implements DotParts {
 	private static final String DOT_PART_EXTENSION = "." + DOT_PART_PURE_EXTENSION;
 
 	@Override
-	public File openDotPartFor(File actualFile) throws IOException {
+	public File openDotPartFor(File actualFile, String tempName) throws IOException {
 		if (actualFile.exists()) throw new IOException("File already exists: " + actualFile);
 		
-		File result = new File(actualFile.getParent(), actualFile.getName() + DOT_PART_EXTENSION);
-		my(IO.class).files().forceDelete(result);
-		return result;
+		return new File(actualFile.getParent(), tempName + DOT_PART_EXTENSION);
 	}
 
 
+
 	@Override
-	public File closeDotPart(File dotPartFile, long lastModified) throws IOException {
+	public File closeDotPart(File dotPartFile, File actualFile, long lastModified) throws IOException {
 		my(Logger.class).log("Closing dotPart file: ", dotPartFile);
 		
 		if (lastModified != -1)
 			dotPartFile.setLastModified(lastModified);
 		
-		final File actualFile = actualFile(dotPartFile);
 		if (!dotPartFile.renameTo(actualFile))
 			throw new IOException(unableToRenameMessage(dotPartFile, actualFile));
 
@@ -49,11 +46,6 @@ class DotPartsImpl implements DotParts {
 		if (!dotPartFile.exists()) result += " (.part file/folder does not exist)";
 		
 		return result;
-	}
-
-
-	private File actualFile(File dotPartFile) {
-		return new File(my(Lang.class).strings().chomp(dotPartFile.getAbsolutePath(), DOT_PART_EXTENSION));
 	}
 
 
@@ -88,3 +80,4 @@ class DotPartsImpl implements DotParts {
 	}
 
 }
+

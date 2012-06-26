@@ -114,15 +114,20 @@ class StunClientImpl implements StunClient {
 		
 		Contact contact = my(ContactSeals.class).contactGiven(new Seal(reply.peerSeal));
 		if (contact == null) return;
-		
+
+		keepSighting(contact, reply.peerIp, reply.peerPort);
+
 		ByteBuffer buf = ByteBuffer.wrap(reply.peerLocalAddressData);
 		int localPort = buf.getChar(); 
 		byte ipsLength = buf.get();
 		
-		for (int i = 0; i < ipsLength; i++) {
-			InetAddress addr = ip(getNextArray(buf, 4));
-			my(SightingKeeper.class).keep(contact, new InetSocketAddress(addr, localPort));
-		}
+		for (int i = 0; i < ipsLength; i++)
+			keepSighting(contact, ip(getNextArray(buf, 4)), localPort);
+	}
+
+
+	private void keepSighting(Contact contact, InetAddress addr, int localPort) {
+		my(SightingKeeper.class).keep(contact, new InetSocketAddress(addr, localPort));
 	}
 	
 	
@@ -136,7 +141,6 @@ class StunClientImpl implements StunClient {
 	
 	
 	private static byte[] getNextArray(ByteBuffer in, int length) {
-		if (!in.hasRemaining()) return null;
 		byte[] ret = new byte[length];
 		in.get(ret);
 		return ret;

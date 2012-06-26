@@ -12,16 +12,16 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.security.Signature;
+import java.util.Arrays;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
-import basis.lang.ProducerX;
-import basis.lang.arrays.ImmutableByteArray;
 
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Digester;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
+import basis.lang.ProducerX;
+import basis.lang.arrays.ImmutableByteArray;
 
 class CryptoImpl implements Crypto {
 
@@ -91,11 +91,17 @@ class CryptoImpl implements Crypto {
 	public KeyPair newECDSAKeyPair(final byte[] seed) {
 		return safelyProduce(new ProducerX<KeyPair, Exception>() { @Override public KeyPair produce() throws NoSuchAlgorithmException, NoSuchProviderException {
 			KeyPairGenerator generator = KeyPairGenerator.getInstance("ECDSA", BOUNCY_CASTLE);
-			generator.initialize(256, new UsableSecureRandom(seed));
+			generator.initialize(256, new RandomWrapper(mix256bits(seed)));
 			return generator.generateKeyPair();
 		}});
 	}
+		
 
+	private byte[] mix256bits(final byte[] seed) {
+		byte[] sha512Hash = digest(seed).bytes.copy();
+		return Arrays.copyOf(sha512Hash, 32); //32 * 8 = 256
+	}
+	
 	
 	private <T> T safelyProduce(ProducerX<T, Exception> producer) {
 		try {
