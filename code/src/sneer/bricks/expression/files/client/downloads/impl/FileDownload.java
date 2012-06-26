@@ -20,7 +20,6 @@ import sneer.bricks.expression.files.protocol.Protocol;
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.clock.Clock;
-import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.IO;
@@ -131,8 +130,7 @@ class FileDownload extends AbstractDownload {
 		++_nextBlockToWrite;
 		if (readyToFinish()) {
 			my(IO.class).crash(_output);
-			if (_hash.equals(my(Crypto.class).digest(_path))) finishWithSuccess();
-			else throw new IOException("Downloaded file did not match its expected hash");
+			finishWithSuccess();
 		}
 	}
 
