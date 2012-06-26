@@ -60,7 +60,9 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		//	Remote sighting
 		//Sneer Host & Port Own Attributes
 		
-		//Forget old sightings
+		//Spread outgoing port. "Objective Solutions Curitiba" mode.
+	
+
 	
 
 	@Test (timeout=2000)
