@@ -47,7 +47,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	private static final Charset UTF8 = Charset.forName("UTF-8");
 	
 	
-	private UdpConnectionManager subject = my(UdpConnectionManager.class);
+	private final UdpConnectionManager subject = my(UdpConnectionManager.class);
 	@Bind private final LoggingSender sender = new LoggingSender();
 	@Bind private final StunClient stunClient = mock(StunClient.class);
 
