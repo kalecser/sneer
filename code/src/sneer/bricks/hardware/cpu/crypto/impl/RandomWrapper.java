@@ -5,21 +5,17 @@ package sneer.bricks.hardware.cpu.crypto.impl;
 
 import java.security.SecureRandom;
 
-import org.bouncycastle.crypto.digests.SHA512Digest;
-import org.bouncycastle.crypto.prng.DigestRandomGenerator;
-import org.bouncycastle.crypto.prng.RandomGenerator;
-
 /**
  * Using SecureRandom instances provided by the java security mechanism is a bloody mess.
  * There is no way of creating a new Secure random implementation with a given seed and specific algorithm. 
  */
-class UsableSecureRandom extends SecureRandom {
+class RandomWrapper extends SecureRandom {
 	
-	private RandomGenerator _delegate;
 
-	UsableSecureRandom(byte[] seed) {
-		_delegate = new DigestRandomGenerator(new SHA512Digest());
-		_delegate.addSeedMaterial(seed);
+	private byte[] randomBytes;
+
+	RandomWrapper(byte[] randomBytes) {
+		this.randomBytes = randomBytes;
 	}
 
 	@Override
@@ -45,7 +41,9 @@ class UsableSecureRandom extends SecureRandom {
 
 	@Override
 	public synchronized void nextBytes(byte[] bytes) {
-		_delegate.nextBytes(bytes);
+		if (bytes.length != randomBytes.length) throw new IllegalStateException();
+		System.arraycopy(randomBytes, 0, bytes, 0, randomBytes.length);
+		randomBytes = null;
 	}
 	
 }
