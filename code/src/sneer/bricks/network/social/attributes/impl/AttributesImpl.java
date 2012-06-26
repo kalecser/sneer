@@ -1,15 +1,8 @@
 package sneer.bricks.network.social.attributes.impl;
 
 import static basis.environments.Environments.my;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -31,27 +24,13 @@ import basis.lang.exceptions.Refusal;
 
 class AttributesImpl implements Attributes {
 
-	private static final WeakReference<AttributeSubscriber<?>>[] EMPTY_ARRAY = new WeakReference[0];
-
 	private SetRegister<Class<? extends Attribute<?>>> _myAttributes;
 
-	@SuppressWarnings("unused") private final WeakContract _toAvoidGC;
-
-	private final Object monitor = new Object();
-	private final List<WeakReference<AttributeSubscriber<?>>> subscribers = new ArrayList<WeakReference<AttributeSubscriber<?>>>();
-	private final List<WeakReference<AttributeValue>> liveTuples = new ArrayList<WeakReference<AttributeValue>>();
-	private int readMe; //This code is complex to avoid adding too many subscriptions to the TupleSpace. When the TSpace uses less threads, a TSpace subscription can be created for each AttributeSubscription and these weak lists above can be removed.   
-
-	
 	private AttributesImpl() {
 		_myAttributes = my(CollectionSignals.class).newSetRegister();
 
 		my(TupleSpace.class).keepNewest(AttributeValue.class, new Functor<AttributeValue, Object>() {  @Override public Object evaluate(AttributeValue attributeValue) {
 			return Pair.of(attributeValue.publisher, attributeValue.attributeName);
-		}});
-		
-		_toAvoidGC = my(TupleSpace.class).addSubscription(AttributeValue.class, new Consumer<AttributeValue>() { @Override public void consume(AttributeValue tuple) {
-			handle(tuple);
 		}});
 	}
 
@@ -68,33 +47,13 @@ class AttributesImpl implements Attributes {
 
 	@Override
 	public <T> Signal<T> myAttributeValue(Class<? extends Attribute<T>> attribute) {
-		AttributeSubscriber<T> ret = new AttributeSubscriber<T>(attribute);
-		update(ret);
-		return ret.output();
+		return new AttributeSubscriber<T>(attribute).output();
 	}
 
 
 	@Override
 	public <T> Signal<T> attributeValueFor(Contact contact, final Class<? extends Attribute<T>> attribute, Class<T> valueType) {
-		AttributeSubscriber<T> ret = new AttributeSubscriber<T>(contact, attribute, valueType);
-		update(ret);
-		return ret.output();
-	}
-
-
-	private <T> void update(AttributeSubscriber<T> subscriber) {
-		synchronized (monitor) {
-			subscribers.add(new WeakReference<AttributeSubscriber<?>>(subscriber));
-			Iterator<WeakReference<AttributeValue>> it = liveTuples.iterator();
-			while (it.hasNext()) {
-				WeakReference<AttributeValue> ref = it.next();
-				AttributeValue tuple = ref.get();
-				if (tuple == null)
-					it.remove();
-				else
-					subscriber.handle(tuple);
-			}
-		}
+		return new AttributeSubscriber<T>(contact, attribute, valueType).output();
 	}
 
 
@@ -124,22 +83,6 @@ class AttributesImpl implements Attributes {
 	@Override
 	public SetSignal<Class<? extends Attribute<?>>> all() {
 		return _myAttributes.output();
-	}
-
-
-	private void handle(AttributeValue tuple) {
-		WeakReference<AttributeSubscriber<?>>[] currentSubscribers;
-		synchronized (monitor) { 
-			currentSubscribers = subscribers.toArray(EMPTY_ARRAY);
-			liveTuples.add(new WeakReference<AttributeValue>(tuple));
-		}
-		for (WeakReference<AttributeSubscriber<?>> ref : currentSubscribers) {
-			AttributeSubscriber<?> subscriber = ref.get();
-			if (subscriber == null)
-				subscribers.remove(ref);
-			else
-				subscriber.handle(tuple);
-		}
 	}
 
 

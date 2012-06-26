@@ -4,6 +4,8 @@ import static basis.environments.Environments.my;
 
 import java.lang.reflect.Field;
 
+import sneer.bricks.expression.tuples.TupleSpace;
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.ram.ref.weak.keeper.WeakReferenceKeeper;
 import sneer.bricks.identity.seals.OwnSeal;
@@ -18,15 +20,18 @@ import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.serialization.Serializer;
+import basis.lang.Consumer;
 
-class AttributeSubscriber<T> {
+class AttributeSubscriber<T> implements Consumer<AttributeValue> {
 
 	private final Contact _contact;
 	private final Signal<Seal> _partySeal;
 	private final Class<? extends Attribute<T>> _attribute;
 	private final Class<? super T> _valueType;
-
+	
 	private final Register<T> _value;
+	
+	@SuppressWarnings("unused") private final WeakContract _refToAvoidGC;
 
 
 	AttributeSubscriber(Class<? extends Attribute<T>> attribute) {
@@ -38,12 +43,14 @@ class AttributeSubscriber<T> {
 		_partySeal = sealFor(_contact);
 		_attribute = attribute;
 		_valueType = valueType;
-
+		
 		_value = my(Signals.class).newRegister(defaultValue());
+		
+		_refToAvoidGC = my(TupleSpace.class).addSubscription(AttributeValue.class, this);
 	}
 
-	
-	void handle(AttributeValue tuple) {
+	@Override
+	public void consume(AttributeValue tuple) {
 		if (!_attribute.getName().equals(tuple.attributeName)) return;
 
 		Seal seal = _partySeal.currentValue();
