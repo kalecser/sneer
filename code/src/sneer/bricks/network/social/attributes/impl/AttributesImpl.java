@@ -2,7 +2,6 @@ package sneer.bricks.network.social.attributes.impl;
 
 import static basis.environments.Environments.my;
 import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
