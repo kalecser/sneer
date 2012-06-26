@@ -21,7 +21,7 @@ import basis.lang.Consumer;
 
 class ConnectionManagerImpl implements ConnectionManager {
 
-	private static final boolean USE_UDP = false;
+	private static final boolean USE_UDP = true;
 	private final Delegate delegate = USE_UDP
 		? my(UdpConnectionManager.class)
 		: my(TcpConnectionManager.class);
