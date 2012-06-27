@@ -37,6 +37,7 @@ public class GameMenu extends JFrame {
 		jPanel.setLayout(gbl_jPanel_1);
 		
 		_message = new JLabel("");
+		_message.setForeground(Color.WHITE);
 		_message.setFont(new Font("Arial", Font.BOLD, 32));
 		GridBagConstraints gbc_lblMessage = new GridBagConstraints();
 		gbc_lblMessage.anchor = GridBagConstraints.NORTH;
