@@ -71,7 +71,7 @@ class FileClientImpl implements FileClient {
 	}
 
 
-	private Runnable downloadCleaner(final Hash hash) { 
+	private Closure downloadCleaner(final Hash hash) { 
 		return new Closure() { @Override public void run() {
 			synchronized (_downloadsByHash) {
 				_downloadsByHash.remove(hash);				

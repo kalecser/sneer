@@ -7,6 +7,7 @@ import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.pulp.reactive.Signal;
+import basis.lang.Closure;
 
 public interface Download extends WeakContract {
 
@@ -24,6 +25,6 @@ public interface Download extends WeakContract {
 
 	boolean hasFinishedSuccessfully();
 
-	void onFinished(Runnable action);
+	void onFinished(Closure action);
 
 }

@@ -4,8 +4,8 @@ import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
@@ -27,9 +27,11 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
+import basis.lang.Closure;
 import basis.lang.Consumer;
 import basis.lang.Predicate;
 
@@ -40,7 +42,11 @@ public class FileTransferImpl implements FileTransfer {
 	private final Notifier<FileTransferSugestion> _sugestionHandlers = my(Notifiers.class).newInstance();
 	@SuppressWarnings("unused")
 	private WeakContract ref1, ref2, ref3;
-	private Map<FileTransferSugestion, File> filesBySugestion = new LinkedHashMap<FileTransferSugestion, File>();
+	private Map<FileTransferSugestion, File> filesBySugestion = new ConcurrentHashMap<FileTransferSugestion, File>();
+
+	private Map<FileTransferSugestion, Light> waitingLightsBySuggestion = new ConcurrentHashMap<FileTransferSugestion, Light>();
+
+	private WeakContract ref;
 
 	
 	{
@@ -86,9 +92,10 @@ public class FileTransferImpl implements FileTransfer {
 	@Override
 	public void accept(FileTransferSugestion sugestion) {
 		my(TupleSpace.class).add(new FileTransferAccept(sugestion));
+		turnOnWaitingLight(sugestion);
 	}
 
-	
+
 	private void handleAccept(FileTransferAccept accept) {
 		if (!isValid(accept)) return;
 		File file = getFile(accept);
@@ -110,13 +117,16 @@ public class FileTransferImpl implements FileTransfer {
 
 	private void handleDetails(FileTransferDetails details) {
 		FileTransferSugestion sugestion = details.accept.sugestion;
+		turnOffWaitingLight(sugestion);
+		
 		File destination = new File(downloadFolder(), sugestion.fileOrFolderName);
 		Download download = my(FileClient.class).startDownload(
 			destination, sugestion.isFolder, sugestion.fileLastModified, details.hash, details.publisher);
-		blinkWhenFinished(download);
+		
+		displayProgress(download);
 	}
 
-	
+
 	private File downloadFolder() {
 		String path = my(Attributes.class).myAttributeValue(DownloadFolder.class).currentValue();
 		if (path == null) throw new IllegalStateException("DownloadFolder must be set.");
@@ -126,12 +136,38 @@ public class FileTransferImpl implements FileTransfer {
 	}
 
 	
-	private void blinkWhenFinished(final Download download) {
-		download.onFinished(new Runnable() { @Override public void run() {
+	private void turnOnWaitingLight(FileTransferSugestion sugestion) {
+		Light light = my(BlinkingLights.class).turnOn(LightType.INFO, "Waiting for " + sugestion.fileOrFolderName, "The transfer is being prepared at the sending side...");
+		waitingLightsBySuggestion.put(sugestion, light);
+	}
+
+	
+	private void turnOffWaitingLight(FileTransferSugestion sugestion) {
+		Light light = waitingLightsBySuggestion.remove(sugestion);
+		if (light != null)
+			turnOff(light);
+	}
+
+	
+	private void displayProgress(final Download download) {
+		final Light progressLight = my(BlinkingLights.class).prepare(LightType.INFO);
+
+		int thisRefCannotBeAsingleField;
+		ref = download.progress().addReceiver(new Consumer<Integer>() {  @Override public void consume(Integer value) {
+			turnOff(progressLight);
+			my(BlinkingLights.class).turnOnIfNecessary(progressLight, value + "% " + download.file().getName(), "Download in progress:\n\n " + download.file().getAbsolutePath());
+		}});
+		download.onFinished(new Closure() { @Override public void run() {
+			turnOff(progressLight);
 			my(BlinkingLights.class).turnOn(LightType.GOOD_NEWS, download.file().getName() + " downloaded!", download.file().getAbsolutePath(), 10000);
 		}});
 	}
 
+	private void turnOff(final Light light) {
+		my(BlinkingLights.class).turnOffIfNecessary(light);
+	}
+	
+	
 	private Hash map(File file) {
 		try {
 			return my(FileMapper.class).mapFileOrFolder(file);
@@ -148,5 +184,5 @@ public class FileTransferImpl implements FileTransfer {
 	private boolean isRecent(FileTransferSugestion sug) {
 		return (my(Clock.class).time().currentValue() - sug.publicationTime) < THREE_DAYS;
 	}
-	
+
 }

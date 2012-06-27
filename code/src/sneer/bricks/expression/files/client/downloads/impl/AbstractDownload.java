@@ -141,7 +141,7 @@ abstract class AbstractDownload implements Download {
 	
 	@Override
 	synchronized
-	public void onFinished(Runnable action) {
+	public void onFinished(Closure action) {
 		if (hasFinishedSuccessfully()) {
 			action.run();
 			return;
