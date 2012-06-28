@@ -46,6 +46,7 @@ public class FileTransferImpl implements FileTransfer {
 
 	private Map<FileTransferSugestion, Light> waitingLightsBySuggestion = new ConcurrentHashMap<FileTransferSugestion, Light>();
 
+	@SuppressWarnings("unused")
 	private WeakContract ref;
 
 	
