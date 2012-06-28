@@ -48,6 +48,7 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 	private void send(DatagramPacket packet) {
 		try {
 			socket.send(packet);
+			my(BlinkingLights.class).turnOffIfNecessary(sendError);
 		} catch (Crashed e) {
 			//Crashed in test mode.
 		} catch (IOException e) {

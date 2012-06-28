@@ -43,9 +43,10 @@ class RendezvousImpl implements Rendezvous {
 			@Override public String caption() {return "Reject";}
 			@Override public void run() {my(BlinkingLights.class).turnOffIfNecessary(light);}
 		});
-		my(BlinkingLights.class).turnOnIfNecessary(light, getMessage(call), getHelpMessage());
+		my(BlinkingLights.class).turnOnIfNecessary(light, captionFor(call), helpMessage(), 9000);
 	}
 
+	
 	protected void acceptCall(Call call) {
 		my(Contacts.class).produceContact(call.callerName());
 		try {
@@ -56,11 +57,13 @@ class RendezvousImpl implements Rendezvous {
 		}
 	}
 
-	private String getMessage(Call call) {
+	
+	static private String captionFor(Call call) {
 		return call.callerName() + " wants to connect to you.";
 	}
 
-	private String getHelpMessage() {
+	
+	static private String helpMessage() {
 		return "Do you want to accept this request and allow this person to connect to you?\n\nIf you reject it now, you can manually add this contact later.";
 	}
 }

@@ -12,19 +12,13 @@ class LogFilterImpl implements LogFilter {
 
 	private final ListRegister<String> _phrases = my(CollectionSignals.class).newListRegister();
 	{
-//		_phrases.add("socket");
-		_phrases.add("Musical taste");
-		_phrases.add("UPnP");
-//		_phrases.add("Exception");
 		_phrases.add("thrown");
+		_phrases.add("Blinking Light");
 		_phrases.add("online");
 		_phrases.add("offline");
 		_phrases.add("Transaction");
-//		_phrases.add("Tuple");
 		_phrases.add("Fetch");
-//		_phrases.add("Track");
-//		_phrases.add("File");
-		_phrases.add("Map");
+		_phrases.add("Mapping");
 		_phrases.add("key");
 		_phrases.add("peak");
 		_phrases.add("Thread count");
@@ -37,9 +31,6 @@ class LogFilterImpl implements LogFilter {
 		_phrases.add("Stun");
 		_phrases.add("Packet");
 		_phrases.add("Sleep");
-//		_phrases.add("Stepper");
-//		_phrases.add("Sending");
-//		_phrases.add("[");
 	}
 	
 	@Override
