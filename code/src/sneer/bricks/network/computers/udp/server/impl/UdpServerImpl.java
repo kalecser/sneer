@@ -6,10 +6,12 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.SocketException;
 
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.udp.UdpNetwork;
 import sneer.bricks.network.computers.udp.UdpNetwork.UdpSocket;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
+import sneer.bricks.network.computers.udp.receiver.ReceiverThread;
 import sneer.bricks.network.computers.udp.receiver.ReceiverThreads;
 import sneer.bricks.network.computers.udp.sender.UdpSender;
 import sneer.bricks.network.computers.udp.server.UdpServer;
@@ -17,6 +19,7 @@ import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.bricks.pulp.reactive.Signal;
 import basis.lang.Consumer;
 import basis.lang.exceptions.Crashed;
 
@@ -24,19 +27,46 @@ import basis.lang.exceptions.Crashed;
 public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 
 	private final Light sendError = my(BlinkingLights.class).prepare(LightType.ERROR);
-	private final UdpSocket socket;
+	private UdpSocket socket;
+	private ReceiverThread receiverThread;
 	
-	UdpServerImpl(){
-		socket = tryToOpenSocket();
-		if(socket == null) return;
-		my(ReceiverThreads.class).start(socket, this);
+	
+	@SuppressWarnings("unused") private WeakContract refToAvoidGC = ownPort().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer port) {
+		handlePort(port);
+	}});
+	
+	
+	{
 		my(UdpSender.class).init(new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
 			send(packet);
 		}});
 	}
+	
+	
+	static private Signal<Integer> ownPort() {
+		return my(Attributes.class).myAttributeValue(OwnPort.class);
+	}
+	
 
-	private UdpSocket tryToOpenSocket() {
-		int ownPort = ownPort();
+	private void handlePort(Integer ownPort) {
+		if (ownPort == null) return;
+		closeCommunicationIfNecessary();
+		
+		socket = tryToOpenSocket(ownPort);
+		if(socket == null) return;
+		receiverThread = my(ReceiverThreads.class).start(socket, this);
+	}
+	
+
+	private void closeCommunicationIfNecessary() {
+		if (socket == null) return;
+		receiverThread.crash();
+		socket.crash();
+		socket = null;
+	}
+	
+
+	private UdpSocket tryToOpenSocket(int ownPort) {
 		try {
 			return my(UdpNetwork.class).openSocket(ownPort);
 		} catch (SocketException e) {
@@ -45,7 +75,9 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 		}
 	}
 	
+	
 	private void send(DatagramPacket packet) {
+		if (socket == null) return;
 		try {
 			socket.send(packet);
 			my(BlinkingLights.class).turnOffIfNecessary(sendError);
@@ -56,11 +88,7 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 		}
 	}
 	
-	private int ownPort() {
-		return my(Attributes.class).myAttributeValue(OwnPort.class).currentValue();
-	}
-
-
+	
 	@Override
 	public void consume(DatagramPacket packet) {
 		my(UdpConnectionManager.class).handle(packet);

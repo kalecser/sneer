@@ -9,6 +9,6 @@ import basis.lang.Consumer;
 @Brick
 public interface ReceiverThreads {
 
-	void start(UdpSocket socket, Consumer<DatagramPacket> receiver);
+	ReceiverThread start(UdpSocket socket, Consumer<DatagramPacket> receiver);
 
 }
