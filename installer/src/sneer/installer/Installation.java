@@ -118,6 +118,7 @@ class Installation {
         	
         	IOUtils.writeEntry(jar, entry, file);
         }
+        jis.close();
 	}
 
 	

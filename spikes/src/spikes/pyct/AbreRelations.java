@@ -40,6 +40,7 @@ public class AbreRelations {
 			
 			
 		}
+		br.close();
 	}
 
 }
