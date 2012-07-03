@@ -53,6 +53,7 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 		openUpdSocket(port);
 	}
 
+	
 	synchronized
 	private void openUpdSocket(int port) {
 		closeSocketIfNecessary();
@@ -102,6 +103,7 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 	@Override
 	public void crash() {
 		if (socket == null) return;
+		receiverThread.crash();
 		socket.crash();
 	}
 
