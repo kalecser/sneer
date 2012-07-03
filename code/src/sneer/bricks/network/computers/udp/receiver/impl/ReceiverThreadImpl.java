@@ -25,6 +25,7 @@ class ReceiverThreadImpl implements ReceiverThread {
 	private final DatagramPacket incoming = initIncomingPacket();
 	private final Light error = my(BlinkingLights.class).prepare(LightType.ERROR);
 	private Contract receptionContract;
+	private boolean isCrashed = false;
 
 
 	ReceiverThreadImpl(UdpSocket socket, Consumer<DatagramPacket> receiver) {
@@ -45,7 +46,7 @@ class ReceiverThreadImpl implements ReceiverThread {
 			receptionContract.dispose();
 			return;
 		} catch (IOException e) {
-			if (receptionContract == null) return;
+			if (isCrashed) return;
 			my(BlinkingLights.class).turnOnIfNecessary(error, "Error receiving UDP Packet", e);
 			receptionContract.dispose();
 			return;
@@ -62,8 +63,9 @@ class ReceiverThreadImpl implements ReceiverThread {
 
 	@Override
 	public void crash() {
+		if (isCrashed) return;
+		isCrashed = true;
 		receptionContract.dispose();
-		receptionContract = null;
 	}
 
 }
