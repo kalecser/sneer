@@ -48,17 +48,22 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 	}
 	
 
-	private void handlePort(Integer ownPort) {
-		if (ownPort == null) return;
-		closeCommunicationIfNecessary();
-		
-		socket = tryToOpenSocket(ownPort);
+	private void handlePort(Integer port) {
+		if (port == null) return;
+		openUpdSocket(port);
+	}
+
+	
+	synchronized
+	private void openUpdSocket(int port) {
+		closeSocketIfNecessary();
+		socket = tryToOpenSocket(port);
 		if(socket == null) return;
 		receiverThread = my(ReceiverThreads.class).start(socket, this);
 	}
 	
 
-	private void closeCommunicationIfNecessary() {
+	private void closeSocketIfNecessary() {
 		if (socket == null) return;
 		receiverThread.crash();
 		socket.crash();
@@ -66,11 +71,11 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 	}
 	
 
-	private UdpSocket tryToOpenSocket(int ownPort) {
+	private UdpSocket tryToOpenSocket(int port) {
 		try {
-			return my(UdpNetwork.class).openSocket(ownPort);
+			return my(UdpNetwork.class).openSocket(port);
 		} catch (SocketException e) {
-			my(BlinkingLights.class).turnOn(LightType.ERROR, "Network Error", "Unable to open UDP server on port " + ownPort, e);
+			my(BlinkingLights.class).turnOn(LightType.ERROR, "Network Error", "Unable to open UDP server on port " + port, e);
 			return null;
 		}
 	}
@@ -98,6 +103,7 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 	@Override
 	public void crash() {
 		if (socket == null) return;
+		receiverThread.crash();
 		socket.crash();
 	}
 
