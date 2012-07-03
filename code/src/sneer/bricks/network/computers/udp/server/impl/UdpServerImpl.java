@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.SocketException;
 
+import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.udp.UdpNetwork;
 import sneer.bricks.network.computers.udp.UdpNetwork.UdpSocket;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
-import sneer.bricks.network.computers.udp.receiver.ReceiverThread;
 import sneer.bricks.network.computers.udp.receiver.ReceiverThreads;
 import sneer.bricks.network.computers.udp.sender.UdpSender;
 import sneer.bricks.network.computers.udp.server.UdpServer;
@@ -19,7 +19,6 @@ import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.bricks.pulp.reactive.Signal;
 import basis.lang.Consumer;
 import basis.lang.exceptions.Crashed;
 
@@ -28,10 +27,11 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 
 	private final Light sendError = my(BlinkingLights.class).prepare(LightType.ERROR);
 	private UdpSocket socket;
-	private ReceiverThread receiverThread;
+	private Contract receiverThread;
 	
 	
-	@SuppressWarnings("unused") private WeakContract refToAvoidGC = ownPort().addReceiver(new Consumer<Integer>() { @Override public void consume(Integer port) {
+	@SuppressWarnings("unused") private WeakContract refToAvoidGC = 
+	my(Attributes.class).myAttributeValue(OwnPort.class).addReceiver(new Consumer<Integer>() { @Override public void consume(Integer port) {
 		handlePort(port);
 	}});
 	
@@ -43,29 +43,20 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 	}
 	
 	
-	static private Signal<Integer> ownPort() {
-		return my(Attributes.class).myAttributeValue(OwnPort.class);
-	}
-	
-
 	private void handlePort(Integer port) {
 		if (port == null) return;
-		openUpdSocket(port);
+		synchronized (this) {
+			closeSocketIfNecessary();
+			socket = tryToOpenSocket(port);
+			if(socket == null) return;
+			receiverThread = my(ReceiverThreads.class).start(socket, this);
+		}
 	}
 
 	
-	synchronized
-	private void openUpdSocket(int port) {
-		closeSocketIfNecessary();
-		socket = tryToOpenSocket(port);
-		if(socket == null) return;
-		receiverThread = my(ReceiverThreads.class).start(socket, this);
-	}
-	
-
 	private void closeSocketIfNecessary() {
 		if (socket == null) return;
-		receiverThread.crash();
+		receiverThread.dispose();
 		socket.crash();
 		socket = null;
 	}
@@ -102,8 +93,7 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 	
 	@Override
 	public void crash() {
-		if (socket == null) return;
-		receiverThread.crash();
+		if(socket == null) return;
 		socket.crash();
 	}
 

@@ -9,7 +9,6 @@ import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.network.computers.udp.UdpNetwork;
 import sneer.bricks.network.computers.udp.UdpNetwork.UdpSocket;
-import sneer.bricks.network.computers.udp.receiver.ReceiverThread;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
@@ -17,7 +16,7 @@ import basis.lang.Closure;
 import basis.lang.Consumer;
 import basis.lang.exceptions.Crashed;
 
-class ReceiverThreadImpl implements ReceiverThread {
+class ReceiverThread implements Contract {
 
 	private final UdpSocket socket;
 	private final Consumer<DatagramPacket> receiver;
@@ -25,10 +24,10 @@ class ReceiverThreadImpl implements ReceiverThread {
 	private final DatagramPacket incoming = initIncomingPacket();
 	private final Light error = my(BlinkingLights.class).prepare(LightType.ERROR);
 	private Contract receptionContract;
-	private boolean isCrashed = false;
+	private boolean isDisposed = false;
 
 
-	ReceiverThreadImpl(UdpSocket socket, Consumer<DatagramPacket> receiver) {
+	ReceiverThread(UdpSocket socket, Consumer<DatagramPacket> receiver) {
 		this.socket = socket;
 		this.receiver = receiver;
 	
@@ -43,12 +42,12 @@ class ReceiverThreadImpl implements ReceiverThread {
 		try {
 			socket.receive(incoming);
 		} catch (Crashed e) {
-			receptionContract.dispose();
+			dispose();
 			return;
 		} catch (IOException e) {
-			if (isCrashed) return;
+			if (isDisposed) return;
 			my(BlinkingLights.class).turnOnIfNecessary(error, "Error receiving UDP Packet", e);
-			receptionContract.dispose();
+			dispose();
 			return;
 		}
 		receiver.consume(incoming);
@@ -62,9 +61,9 @@ class ReceiverThreadImpl implements ReceiverThread {
 
 
 	@Override
-	public void crash() {
-		if (isCrashed) return;
-		isCrashed = true;
+	public void dispose() {
+		if(isDisposed) return;
+		isDisposed = true;
 		receptionContract.dispose();
 	}
 
