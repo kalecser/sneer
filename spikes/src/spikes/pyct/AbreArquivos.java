@@ -53,5 +53,6 @@ public class AbreArquivos {
 			yFinal[indice]			= _yFinal;
 			vetorCaminho[indice]	= caminho;
 		}
+		br.close();
 	}
 }
