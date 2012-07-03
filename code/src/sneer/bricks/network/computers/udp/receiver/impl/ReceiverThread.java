@@ -24,7 +24,7 @@ class ReceiverThread implements Contract {
 	private final DatagramPacket incoming = initIncomingPacket();
 	private final Light error = my(BlinkingLights.class).prepare(LightType.ERROR);
 	private Contract receptionContract;
-	private boolean isDisposed = false;
+	private boolean wasDisposed = false;
 
 
 	ReceiverThread(UdpSocket socket, Consumer<DatagramPacket> receiver) {
@@ -45,7 +45,7 @@ class ReceiverThread implements Contract {
 			dispose();
 			return;
 		} catch (IOException e) {
-			if (isDisposed) return;
+			if (wasDisposed) return;
 			my(BlinkingLights.class).turnOnIfNecessary(error, "Error receiving UDP Packet", e);
 			dispose();
 			return;
@@ -62,8 +62,8 @@ class ReceiverThread implements Contract {
 
 	@Override
 	public void dispose() {
-		if(isDisposed) return;
-		isDisposed = true;
+		if(wasDisposed) return;
+		wasDisposed = true;
 		receptionContract.dispose();
 	}
 
