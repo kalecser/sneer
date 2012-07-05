@@ -11,17 +11,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import basis.lang.Functor;
-
 import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.hardware.ram.collections.CollectionUtils;
+import sneer.bricks.network.computers.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.gates.strings.StringGates;
 import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.snapps.contacts.gui.ContactTextProvider;
+import basis.lang.Functor;
 
 final class ContactLabelProvider implements LabelProvider<Contact> {
 
@@ -32,7 +31,7 @@ final class ContactLabelProvider implements LabelProvider<Contact> {
 
 		@Override
 		public Signal<Image> imageFor(final Contact contact) {
-			Signal<Boolean> isOnline = my(Stethoscope.class).isAlive(contact);
+			Signal<Boolean> isOnline = my(ConnectionManager.class).connectionFor(contact).isConnected();
 			return my(Signals.class).adapt(isOnline, new Functor<Boolean, Image>(){ @Override public Image evaluate(Boolean value) {
 				return value ? ONLINE : OFFLINE;
 			}});

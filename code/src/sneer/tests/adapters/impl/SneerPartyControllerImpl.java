@@ -27,6 +27,7 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
+import sneer.bricks.network.computers.connections.ConnectionManager;
 import sneer.bricks.network.computers.ports.OwnPort;
 import sneer.bricks.network.computers.udp.holepuncher.server.listener.StunServerListener;
 import sneer.bricks.network.computers.udp.server.UdpServer;
@@ -34,7 +35,6 @@ import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.network.social.heartbeat.Heart;
-import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.network.social.rendezvous.Rendezvous;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
@@ -178,7 +178,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
     
 	private Signal<Boolean> isAlive(Contact contact) {
-		return my(Stethoscope.class).isAlive(contact);
+		return my(ConnectionManager.class).connectionFor(contact).isConnected();
 	}
 
 	

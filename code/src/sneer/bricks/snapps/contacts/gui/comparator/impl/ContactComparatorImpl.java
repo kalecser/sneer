@@ -4,8 +4,8 @@
 package sneer.bricks.snapps.contacts.gui.comparator.impl;
 
 import static basis.environments.Environments.my;
+import sneer.bricks.network.computers.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.snapps.contacts.gui.comparator.ContactComparator;
 
 class ContactComparatorImpl implements ContactComparator {
@@ -28,6 +28,6 @@ class ContactComparatorImpl implements ContactComparator {
 	}
 
 	private boolean isOnline(Contact contact) {
-		return my(Stethoscope.class).isAlive(contact).currentValue();
+		return my(ConnectionManager.class).connectionFor(contact).isConnected().currentValue();
 	}
 }
