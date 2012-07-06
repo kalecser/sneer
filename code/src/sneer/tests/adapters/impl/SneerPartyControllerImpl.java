@@ -34,7 +34,6 @@ import sneer.bricks.network.computers.udp.server.UdpServer;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
-import sneer.bricks.network.social.heartbeat.Heart;
 import sneer.bricks.network.social.rendezvous.Rendezvous;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
@@ -268,8 +267,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		startAndKeep(Wind.class);
 
 		startAndKeep(FileServer.class);
-
-		startAndKeep(Heart.class);
 	}
 
 	
