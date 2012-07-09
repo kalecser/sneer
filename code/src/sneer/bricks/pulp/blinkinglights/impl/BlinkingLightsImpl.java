@@ -123,7 +123,7 @@ class BlinkingLightsImpl implements BlinkingLights {
 	
 			if (light.isOn().currentValue()) return;
 			light.turnOn();
-			light._caption = caption;
+			light._caption.setter().consume(caption);
 			light._error = t;
 			light._helpMessage = helpMessage == null ? "If this problem doesn't go away on its own, get an expert sovereign friend to help you. ;)" : helpMessage;
 			

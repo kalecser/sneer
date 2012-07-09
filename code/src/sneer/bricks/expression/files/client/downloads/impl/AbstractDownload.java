@@ -56,7 +56,7 @@ abstract class AbstractDownload implements Download {
 
 	private Exception _exception;
 
-	private final Collection<Runnable> _toCallWhenFinished = new ArrayList<Runnable>(1);
+	private final Collection<Closure> _toCallWhenFinished = new ArrayList<Closure>(1);
 
 	private WeakContract _timerContract;
 	protected final boolean _copyLocalFiles;

@@ -465,7 +465,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	private void approveConnectionRequestsIfAny() {
 		for (Light light : my(BlinkingLights.class).lights())
-			if (light.caption().startsWith(_nameOfExpectedCaller + " wants to connect to you")) {
+			if (light.caption().currentValue().startsWith(_nameOfExpectedCaller + " wants to connect to you")) {
 				runAcceptAction(light);
 				_nameOfExpectedCaller = null;
 			}
