@@ -3,8 +3,6 @@ package spikes.demos;
 import static basis.environments.Environments.my;
 
 import java.awt.Container;
-import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
