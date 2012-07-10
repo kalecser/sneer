@@ -47,7 +47,7 @@ class ReceiverThread implements Contract {
 		} catch (IOException e) {
 			if (wasDisposed) return;
 			my(BlinkingLights.class).turnOnIfNecessary(error, "Error receiving UDP Packet", e);
-			dispose();
+			my(Threads.class).sleepWithoutInterruptions(3000);
 			return;
 		}
 		receiver.consume(incoming);
