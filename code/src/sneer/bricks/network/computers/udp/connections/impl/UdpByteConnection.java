@@ -14,6 +14,9 @@ import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
 import sneer.bricks.network.social.Contact;
+import sneer.bricks.pulp.blinkinglights.BlinkingLights;
+import sneer.bricks.pulp.blinkinglights.Light;
+import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
 import basis.lang.Closure;
 import basis.lang.Consumer;
@@ -23,6 +26,7 @@ class UdpByteConnection implements ByteConnection {
 	private Consumer<? super byte[]> receiver;
 	private final Contact contact;
 	private final ConnectionMonitor monitor;
+	private final Light error = my(BlinkingLights.class).prepare(LightType.ERROR);
 
 	UdpByteConnection(Contact contact) {
 		this.contact = contact;
@@ -45,8 +49,15 @@ class UdpByteConnection implements ByteConnection {
 	
 	private void tryToSendPacketFor(PacketScheduler scheduler) {
 		byte[] payload = scheduler.highestPriorityPacketToSend();
-		ByteBuffer buf = prepare(Data)
-			.put(payload);
+		ByteBuffer buf = prepare(Data);
+		
+		if (payload.length > buf.remaining()) {
+			my(BlinkingLights.class).turnOnIfNecessary(error, "Packet too long", "Trying to send packet bigger than " + buf.remaining());
+			scheduler.previousPacketWasSent();
+			return;
+		}
+			
+		buf.put(payload);
 		if (send(buf, monitor.lastSighting()))
 			scheduler.previousPacketWasSent();
 	}
