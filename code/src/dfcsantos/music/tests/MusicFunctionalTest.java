@@ -112,7 +112,7 @@ public class MusicFunctionalTest extends BrickTestWithTuples {
 
 	private void assertLightExists(String caption) {
 		for (Light light : my(BlinkingLights.class).lights())
-			if (caption.equals(light.caption()))
+			if (caption.equals(light.caption().currentValue()))
 				return;
 		fail("Light not found: '" +caption + "'");
 	}
