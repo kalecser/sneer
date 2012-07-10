@@ -56,7 +56,7 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 	
 	synchronized
 	private void handlePort(int port) {
-		crash();
+		close();
 		if (port < 1) return; 
 		open(port);
 	}
@@ -73,7 +73,7 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 	private UdpSocket tryToOpenSocket(int port) {
 		try {
 			UdpSocket ret = my(UdpNetwork.class).openSocket(port);
-			crashRetryIfNecessary();
+			disposeRetryIfNecessary();
 			my(BlinkingLights.class).turnOffIfNecessary(openError);
 			return ret;
 		} catch (SocketException e) {
@@ -112,7 +112,12 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 	
 	@Override
 	public void crash() {
-		crashRetryIfNecessary();
+		close();
+	}
+
+
+	private void close() {
+		disposeRetryIfNecessary();
 		
 		if (receiverThread != null) {
 			receiverThread.dispose();
@@ -126,7 +131,7 @@ public class UdpServerImpl implements UdpServer, Consumer<DatagramPacket> {
 	}
 
 
-	private void crashRetryIfNecessary() {
+	private void disposeRetryIfNecessary() {
 		if (retryContract == null) return; 
 		retryContract.dispose();
 		retryContract = null;
