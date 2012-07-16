@@ -127,7 +127,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		PacketScheduler scheduler = new PacketSchedulerMock("foo", "bar");
 		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
 
-//		my(SignalUtils.class).waitForValue(sender.history(), "| Data foo,to:200.201.202.203,port:123");
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data foo,to:200.201.202.203,port:123");
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data bar,to:200.201.202.203,port:123");
 	}
