@@ -55,12 +55,18 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 		//HAIL SIGHTINGS:
 		//First Hand Sightings - done
+		//Sneer Host & Port Own Attributes
 		//Second Hand Sightings:
 		//	Stun response - done
 		//	Remote sighting
-		//Sneer Host & Port Own Attributes
-		
+	
+		//Direct Connect
+	
+		//Persist sightings
+		//Purge old sightings
+	
 		//Spread outgoing port. "Objective Solutions Curitiba" mode.
+	
 	
 
 	
@@ -134,7 +140,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 
 	@Test(timeout=2000)
-	public void onNotConnected_ShouldSendHailingPacketsEverySoOften() {
+	public void onNotConnected_ShouldSendHailPackets() {
 		seeNeideIn(new InetSocketAddress("200.201.202.203", 123));
 		seeNeideIn(new InetSocketAddress("192.168.1.100", 7777));
 		
