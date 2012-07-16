@@ -34,7 +34,7 @@ import sneer.bricks.hardware.cpu.utils.consumers.parsers.integer.IntegerParsers;
 import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.codec.SealCodec;
-import sneer.bricks.network.computers.ports.OwnPort;
+import sneer.bricks.network.computers.addresses.own.port.OwnPort;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccount;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccountKeeper;

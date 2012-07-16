@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.addresses.tests;
+package sneer.bricks.network.computers.addresses.contacts.tcp.tests;
 
 import static basis.environments.Environments.my;
 
@@ -11,10 +11,10 @@ import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
+import sneer.bricks.network.computers.addresses.contacts.tcp.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
-import sneer.bricks.network.computers.ports.OwnPort;
+import sneer.bricks.network.computers.addresses.own.port.OwnPort;
 import sneer.bricks.network.computers.tcp.connections.Sighting;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;

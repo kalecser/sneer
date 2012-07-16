@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.ports;
+package sneer.bricks.network.computers.addresses.own.port;
 
 import basis.brickness.Brick;
 import sneer.bricks.network.social.attributes.Attribute;

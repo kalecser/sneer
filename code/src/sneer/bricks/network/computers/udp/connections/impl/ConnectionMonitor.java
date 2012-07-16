@@ -30,13 +30,16 @@ class ConnectionMonitor {
 	private long lastPeerSightingTime = -UdpConnectionManager.IDLE_PERIOD;
 	private Register<Boolean> isConnected = my(Signals.class).newRegister(false);
 	private long fastestHailDelay = 0;
+	private final Signal<InetSocketAddress> address;
 	private final SetSignal<InetSocketAddress> sightings;
 	
 	@SuppressWarnings("unused") private WeakContract refToAvoidGC;	
 	@SuppressWarnings("unused")	private WeakContract refToAvoidGC2;
+
 	
 	
-	ConnectionMonitor(SetSignal<InetSocketAddress> sightings) {
+	ConnectionMonitor(Signal<InetSocketAddress> address, SetSignal<InetSocketAddress> sightings) {
+		this.address = address;
 		this.sightings = sightings;
 		startHailing();
 	}
@@ -73,7 +76,7 @@ class ConnectionMonitor {
 		}});
 		
 		refToAvoidGC2 = sightings.addPulseReceiver(new Closure() { @Override public void run() {
-			keepAlive();
+			hail();
 		}});
 	}
 	
@@ -88,6 +91,7 @@ class ConnectionMonitor {
 		long now = my(Clock.class).preciseTime();
 		ByteBuffer buf = prepare(Hail).putLong(now);
 		buf.put(ownNameBytes());
+		send(buf, address.currentValue());
 		for (SocketAddress addr : sightings)
 			send(buf, addr);
 	}

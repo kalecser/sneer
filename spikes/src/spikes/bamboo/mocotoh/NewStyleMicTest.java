@@ -29,14 +29,14 @@ public class NewStyleMicTest {
 			final Threads threads = mock();
 			final Audio audio = mock();
 			TargetDataLine line;
-			@SuppressWarnings("unused")	private WeakContract _tupleSpaceContract;
+			@SuppressWarnings("unused")	private WeakContract ref;
 			
 			final Consumer<PcmSoundPacket> subscriber = mock();
 			
 			@Override
 			public void stimuli() throws Exception {	
 				new Stimulus() {{
-					_tupleSpaceContract = tuples.addSubscription(PcmSoundPacket.class, subscriber);
+					ref = tuples.addSubscription(PcmSoundPacket.class, subscriber);
 				}};
 	
 				final Closure stepper = capture();

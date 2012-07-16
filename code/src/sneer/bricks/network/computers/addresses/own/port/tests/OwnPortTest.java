@@ -1,10 +1,10 @@
-package sneer.bricks.network.computers.ports.tests;
+package sneer.bricks.network.computers.addresses.own.port.tests;
 
 import static basis.environments.Environments.my;
 
 import org.junit.Test;
 
-import sneer.bricks.network.computers.ports.OwnPort;
+import sneer.bricks.network.computers.addresses.own.port.OwnPort;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 

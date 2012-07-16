@@ -10,6 +10,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.network.computers.addresses.contacts.ContactAddresses;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
@@ -30,7 +31,9 @@ class UdpByteConnection implements ByteConnection {
 
 	UdpByteConnection(Contact contact) {
 		this.contact = contact;
-		this.monitor = new ConnectionMonitor(my(SightingKeeper.class).sightingsOf(contact));
+		this.monitor = new ConnectionMonitor(
+			my(ContactAddresses.class).given(contact), 
+			my(SightingKeeper.class).sightingsOf(contact));
 	}
 
 	@Override

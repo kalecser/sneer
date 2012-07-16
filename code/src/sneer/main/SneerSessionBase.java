@@ -32,13 +32,16 @@ public abstract class SneerSessionBase {
 			my(Threads.class).waitUntilCrash();
 		}});
 	}
+	
 
 	protected abstract void start();
 
+	
 	private static Environment container() {
 		return Brickness.newBrickContainer();
 	}
 
+	
 	private void prepare() {
 		setContextClassLoader();
 		configure(my(FolderConfig.class));
@@ -46,16 +49,19 @@ public abstract class SneerSessionBase {
 		startLogging();
 	}
 
+	
 	private void setContextClassLoader() {
 		Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 	}
 
+	
 	private void startLogging() {
 		my(RobustExceptionLogging.class).turnOn();
 		my(LogToSysout.class);
 		my(LogToFile.class).startWritingLogTo(LOG_FILE);
 	}
 
+	
 	private static void configure(FolderConfig dirs) {
 		createAndSet(dirs.storageFolder(), DATA);
 		createAndSet(dirs.tmpFolder(), TMP);
@@ -66,6 +72,7 @@ public abstract class SneerSessionBase {
 		dirs.stageFolder().set(STAGE);
 	}
 
+	
 	private static void createAndSet(ImmutableReference<File> property, File folder) {
 		if (!folder.exists() && !folder.mkdirs()) throw new IllegalStateException("Unable to create folder " + property);
 		property.set(folder);

@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.addresses.own;
+package sneer.bricks.network.computers.addresses.own.ips;
 
 import java.net.InetAddress;
 

@@ -11,7 +11,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.network.computers.ports.OwnPort;
+import sneer.bricks.network.computers.addresses.own.port.OwnPort;
 import sneer.bricks.network.computers.tcp.ByteArrayServerSocket;
 import sneer.bricks.network.computers.tcp.ByteArraySocket;
 import sneer.bricks.network.computers.tcp.TcpNetwork;

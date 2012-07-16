@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.addresses;
+package sneer.bricks.network.computers.addresses.contacts.tcp;
 
 import basis.brickness.Brick;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;

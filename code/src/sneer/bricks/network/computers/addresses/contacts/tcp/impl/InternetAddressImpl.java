@@ -1,11 +1,11 @@
 /**
  * 
  */
-package sneer.bricks.network.computers.addresses.impl;
+package sneer.bricks.network.computers.addresses.contacts.tcp.impl;
 
 import static basis.environments.Environments.my;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
-import sneer.bricks.network.computers.ports.OwnPort;
+import sneer.bricks.network.computers.addresses.own.port.OwnPort;
 import sneer.bricks.network.computers.tcp.connections.Sighting;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.attributes.Attributes;

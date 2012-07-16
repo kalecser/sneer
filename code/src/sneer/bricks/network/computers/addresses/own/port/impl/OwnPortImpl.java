@@ -1,10 +1,10 @@
-package sneer.bricks.network.computers.ports.impl;
+package sneer.bricks.network.computers.addresses.own.port.impl;
 
 import static basis.environments.Environments.my;
 
 import java.util.Random;
 
-import sneer.bricks.network.computers.ports.OwnPort;
+import sneer.bricks.network.computers.addresses.own.port.OwnPort;
 import sneer.bricks.network.social.attributes.Attributes;
 
 class OwnPortImpl implements OwnPort {

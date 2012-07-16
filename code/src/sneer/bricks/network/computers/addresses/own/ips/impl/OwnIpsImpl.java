@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.addresses.own.impl;
+package sneer.bricks.network.computers.addresses.own.ips.impl;
 
 import static basis.environments.Environments.my;
 import static sneer.bricks.pulp.blinkinglights.LightType.ERROR;
@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 
 import sneer.bricks.hardware.clock.timer.Timer;
-import sneer.bricks.network.computers.addresses.own.OwnIps;
+import sneer.bricks.network.computers.addresses.own.ips.OwnIps;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;

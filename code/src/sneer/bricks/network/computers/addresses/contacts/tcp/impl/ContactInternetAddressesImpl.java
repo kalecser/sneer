@@ -1,11 +1,11 @@
-package sneer.bricks.network.computers.addresses.impl;
+package sneer.bricks.network.computers.addresses.contacts.tcp.impl;
 
 import static basis.environments.Environments.my;
 import basis.lang.Consumer;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
+import sneer.bricks.network.computers.addresses.contacts.tcp.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.tcp.connections.Sighting;
