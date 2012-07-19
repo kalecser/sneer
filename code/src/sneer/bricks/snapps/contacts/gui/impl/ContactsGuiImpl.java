@@ -15,9 +15,9 @@ import javax.swing.JScrollPane;
 import basis.lang.Consumer;
 
 import sneer.bricks.hardware.gui.actions.Action;
+import sneer.bricks.network.computers.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
-import sneer.bricks.network.social.heartbeat.stethoscope.Stethoscope;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.collections.listsorter.ListSorter;
@@ -52,7 +52,7 @@ class ContactsGuiImpl implements ContactsGui {
 		);
 
 		final ListSignal<Contact> _sortedList = my(ListSorter.class).sort(my(Contacts.class).contacts() , my(ContactComparator.class), new SignalChooser<Contact>() { @Override public Signal<?>[] signalsToReceiveFrom(Contact contact) {
-			return new Signal<?>[] { my(Stethoscope.class).isAlive(contact), contact.nickname() };
+			return new Signal<?>[] { my(ConnectionManager.class).connectionFor(contact).isConnected(), contact.nickname() };
 		}});
 
 		_contactList = my(ReactiveWidgetFactory.class).newList(_sortedList, _labelProvider);

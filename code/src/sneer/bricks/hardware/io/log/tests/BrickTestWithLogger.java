@@ -14,16 +14,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import sneer.bricks.hardware.io.log.Logger;
 import basis.brickness.testsupport.Bind;
 import basis.brickness.testsupport.BrickTestWithMocks;
 import basis.environments.Environment;
 
-import sneer.bricks.hardware.io.log.Logger;
-
 public abstract class BrickTestWithLogger extends BrickTestWithMocks {
 	
 	@Bind private final LoggerMocks _loggerMocks = new LoggerMocks(); 
-	@SuppressWarnings("unused") @Bind private final Logger _logger = _loggerMocks.newInstance(); 
+	@Bind private final Logger _logger = _loggerMocks.newInstance(); 
     
 
 	@Override

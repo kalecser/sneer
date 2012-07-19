@@ -9,11 +9,9 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
+import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import basis.lang.CacheMap;
 import basis.lang.Producer;
-
-import sneer.bricks.pulp.reactive.Signal;
-import sneer.bricks.skin.widgets.reactive.LabelProvider;
 
 
 class RListCellRenderer<ELEMENT> implements ListCellRenderer {
@@ -21,9 +19,6 @@ class RListCellRenderer<ELEMENT> implements ListCellRenderer {
 	private final DefaultListCellRenderer _renderer = new DefaultListCellRenderer();
 	private final LabelProvider<ELEMENT> _labelProvider;
 
-	//Fix: This is a leak. Only elements actually being rendered by the JList should be kept. Not all elements that ever appeared on the list.
-	private final CacheMap<ELEMENT, Signal<String>> _textsByElement = CacheMap.newInstance();
-	private final CacheMap<ELEMENT, Signal<? extends Image>> _imagesByElement = CacheMap.newInstance();
 	private final CacheMap<Image, ImageIcon> _iconsByImage = CacheMap.newInstance();
 
 	
@@ -57,19 +52,13 @@ class RListCellRenderer<ELEMENT> implements ListCellRenderer {
 	}
 
 
-	private Image imageFor(final ELEMENT element) {
-		Signal<? extends Image> result = _imagesByElement.get(element, new Producer<Signal<? extends Image>>() { @Override public Signal<? extends Image> produce() {
-			return _labelProvider.imageFor(element);
-		}});
-		return result.currentValue();
+	private Image imageFor(ELEMENT element) {
+		return _labelProvider.imageFor(element).currentValue();
 	}
 
 
-	private String textFor(final ELEMENT element) {
-		Signal<String> result = _textsByElement.get(element, new Producer<Signal<String>>() { @Override public Signal<String> produce() {
-			return _labelProvider.textFor(element);
-		}});
-		return result.currentValue();
+	private String textFor(ELEMENT element) {
+		return _labelProvider.textFor(element).currentValue();
 	}
 	
 }

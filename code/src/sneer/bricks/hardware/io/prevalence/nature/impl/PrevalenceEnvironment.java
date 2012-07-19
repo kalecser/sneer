@@ -21,7 +21,7 @@ class PrevalenceEnvironment implements Environment {
 	private PrevalenceEnvironment() {}
 	
 	
-	private final NonBlockingEnvironment _environment = (NonBlockingEnvironment)my(Environment.class); 
+	private final NonBlockingEnvironment delegate = (NonBlockingEnvironment)my(Environment.class); 
 
 	
 	@Override
@@ -29,9 +29,9 @@ class PrevalenceEnvironment implements Environment {
 		if (PrevalenceFlag.class.isAssignableFrom(brick)) return (T)FLAG;
 		
 		if (!isPrevalent(brick))
-			return _environment.provide(brick); //Could be a test environment.
+			return delegate.provide(brick); //Could be a test environment.
 
-		_environment.provideWithoutBlocking(brick); //This avoids deadlock in the case some other thread is already providing this brick and waiting for transaction log replay.
+		delegate.provideWithoutBlocking(brick); //This avoids deadlock in the case some other thread is already providing this brick and waiting for transaction log replay.
 		return building().waitForInstance(brick);
 	}
 
@@ -45,7 +45,10 @@ class PrevalenceEnvironment implements Environment {
 	
 	
 	private boolean isPrevalent(Class<?> brick) {
-		for (Class<? extends Nature> nature : brick.getAnnotation(Brick.class).value())
+		Brick annotation = brick.getAnnotation(Brick.class);
+		if (annotation == null) return false;
+		
+		for (Class<? extends Nature> nature : annotation.value())
 			if (nature == Prevalent.class) return true;
 			
 		return false;

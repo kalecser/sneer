@@ -5,7 +5,7 @@ import static basis.environments.Environments.my;
 import java.util.HashMap;
 import java.util.Map;
 
-import sneer.bricks.network.computers.addresses.ContactInternetAddresses;
+import sneer.bricks.network.computers.addresses.contacts.tcp.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.tcp.connections.originator.SocketOriginator;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;

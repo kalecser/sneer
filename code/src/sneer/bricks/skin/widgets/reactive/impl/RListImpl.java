@@ -9,12 +9,9 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JComponent;
 import javax.swing.JList;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-
-import basis.lang.Closure;
 
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.pulp.reactive.Register;
@@ -24,6 +21,7 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
 import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.skin.widgets.reactive.ListWidget;
+import basis.lang.Closure;
 
 class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
 
@@ -44,19 +42,24 @@ class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
 		addSelectionSupport();
 	}
 	
+	
 	private void initModel() {
-		SignalChooser<ELEMENT> chooser = new SignalChooser<ELEMENT>(){	@Override public Signal<?>[] signalsToReceiveFrom(ELEMENT element) {
-			return new Signal<?>[]{_labelProvider.imageFor(element), 
-								   	   _labelProvider.textFor(element)};}};
-		ListModel model = new ListSignalModel<ELEMENT>(_source, chooser);
-		setModel(model);
+		SignalChooser<ELEMENT> chooser = new SignalChooser<ELEMENT>() { @Override public Signal<?>[] signalsToReceiveFrom(ELEMENT element) {
+			return new Signal<?>[]{
+				_labelProvider.imageFor(element), 
+				_labelProvider.textFor(element)
+			};
+		}};
+		setModel(new ListSignalModel<ELEMENT>(_source, chooser));
 	}
 
+	
 	@Override
 	public JList getMainWidget() {
 		return this;
 	}
 
+	
 	@Override
 	public JComponent getComponent() {
 		return this;
@@ -82,11 +85,11 @@ class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
 		}});
 
 		getModel().addListDataListener(new ListDataListener(){
-			@Override public void contentsChanged(ListDataEvent e) { changeSelectionGuiToSelectedContact();}
-			@Override public void intervalAdded(ListDataEvent e) { changeSelectionGuiToSelectedContact();}
-			@Override public void intervalRemoved(ListDataEvent e) { changeSelectionGuiToSelectedContact();}
+			@Override public void contentsChanged(ListDataEvent e) { changeSelectionGuiToSelectedElement();}
+			@Override public void intervalAdded(ListDataEvent e) { changeSelectionGuiToSelectedElement();}
+			@Override public void intervalRemoved(ListDataEvent e) { changeSelectionGuiToSelectedElement();}
 
-			private void changeSelectionGuiToSelectedContact() {
+			private void changeSelectionGuiToSelectedElement() {
 				final ELEMENT element = _selectedElement.output().currentValue();
 				my(GuiThread.class).invokeLater(new Closure(){ @Override public void run() {
 					if(getSelectedValue()==element)

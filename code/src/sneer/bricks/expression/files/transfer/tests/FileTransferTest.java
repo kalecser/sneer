@@ -25,6 +25,7 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.social.attributes.Attributes;
 import basis.brickness.testsupport.Bind;
+import basis.lang.Closure;
 import basis.lang.ClosureX;
 import basis.lang.Consumer;
 import basis.util.concurrent.Latch;
@@ -40,20 +41,21 @@ public class FileTransferTest extends BrickTestWithTuples {
 
 		
 	/*
-	 * - Revise AbstractDownload.finishIfLocallyAvailable especially with regard to folders.
-	 * - Large file transfers.
-	 * - Check download hash against downloaded contents. Check if hash of empty file and empty folder clash.
-	 * - Remove distinction between FileClient's file and folder downloads. Let download decide based on received contents.
+	 * - FileTransferImpl.ref must be a weak collection or something.
 	 * - Download recovery on crash and startup.
+	 * - Prefix to group temp download files
+	 * - Folder per contact
+	 * - Performance: Request and block exchange is currently synchronous. Send block speculatively.
+	 * - Auto accept per contact
 	 */
-	@Test (timeout=2000)
+	@Test (timeout=4000)
 	public void singleFileTransfer() throws IOException, MappingStopped {
 		File file = createTmpFileWithFileNameAsContent("banana");
 		transfer(file);
 	}
 
 	
-	@Test (timeout=2000)
+	@Test (timeout=4000)
 	public void folderTransfer() throws IOException, MappingStopped {
 		File file = createTmpFileWithFileNameAsContent("folder/banana");
 		File folder = file.getParentFile();
@@ -83,7 +85,7 @@ public class FileTransferTest extends BrickTestWithTuples {
 					return download;
 				}}
 			);
-			allowing(download).onFinished(with(any(Runnable.class)));
+			allowing(download).onFinished(with(any(Closure.class)));
 		}});
 		
 		setDownloadFolder(downloadFolder);

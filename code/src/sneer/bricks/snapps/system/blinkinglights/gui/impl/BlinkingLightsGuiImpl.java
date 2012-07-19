@@ -31,8 +31,6 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
-import basis.lang.Closure;
-
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.gui.images.Images;
@@ -47,6 +45,7 @@ import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.skin.widgets.reactive.ListWidget;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.snapps.system.blinkinglights.gui.BlinkingLightsGui;
+import basis.lang.Closure;
 
 class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 	
@@ -77,7 +76,7 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 	@Override public String title() { return "Blinking Lights"; }	
 	
 	private final class BlinkingLightsLabelProvider implements LabelProvider<Light> {
-		@Override public Signal<String> textFor(Light light) {  return my(Signals.class).constant(light.caption()); }
+		@Override public Signal<String> textFor(Light light) { return light.caption(); }
 		@Override public Signal<Image> imageFor(Light light) { return _images.get(light.type()); }
 	}
 
@@ -176,7 +175,7 @@ class BlinkingLightsGuiImpl implements BlinkingLightsGui {
 		}
 
 		private void setWindowTitle(Light light) {
-			_window.setTitle(light.caption());
+			_window.setTitle(light.caption().currentValue());
 			_window.setIconImage(_images.get(light.type()).currentValue());
 		}
 		

@@ -1,14 +1,13 @@
 package sneer.bricks.pulp.blinkinglights.impl;
 
 import static basis.environments.Environments.my;
+import static sneer.bricks.pulp.blinkinglights.LightType.ERROR;
+import static sneer.bricks.pulp.blinkinglights.LightType.GOOD_NEWS;
+import static sneer.bricks.pulp.blinkinglights.LightType.INFO;
+import static sneer.bricks.pulp.blinkinglights.LightType.WARNING;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import basis.lang.ByRef;
-import basis.lang.Closure;
-import basis.lang.exceptions.FriendlyException;
-import basis.util.concurrent.Latch;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -19,6 +18,10 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
+import basis.lang.ByRef;
+import basis.lang.Closure;
+import basis.lang.exceptions.FriendlyException;
+import basis.util.concurrent.Latch;
 
 class BlinkingLightsImpl implements BlinkingLights {
 	
@@ -99,6 +102,11 @@ class BlinkingLightsImpl implements BlinkingLights {
 	}
 	
 	@Override
+	public void turnOnIfNecessary(Light light, String caption, String helpMessage, int timeout) {
+		turnOnIfNecessary(light, caption, helpMessage, null, timeout);
+	}
+	
+	@Override
 	public void turnOnIfNecessary(Light light, String caption, Throwable t) {
 		turnOnIfNecessary(light, caption, null, t, LightImpl.NEVER);
 	}
@@ -115,7 +123,7 @@ class BlinkingLightsImpl implements BlinkingLights {
 	
 			if (light.isOn().currentValue()) return;
 			light.turnOn();
-			light._caption = caption;
+			light._caption.setter().consume(caption);
 			light._error = t;
 			light._helpMessage = helpMessage == null ? "If this problem doesn't go away on its own, get an expert sovereign friend to help you. ;)" : helpMessage;
 			
@@ -129,14 +137,17 @@ class BlinkingLightsImpl implements BlinkingLights {
 	}
 
 	private void log(LightType lightType, String caption) {
-		my(Logger.class).log(severityTag(lightType), caption);
+		my(Logger.class).log(severityTag(lightType), caption, " (Blinking Light)");
 	}
 
 	
-	private String severityTag(LightType lightType) {
-		if (lightType == LightType.ERROR) return "> > > > > > ERROR: ";
-		if (lightType == LightType.WARNING) return "> > > WARNING: ";
-		return "   ";
+	private String severityTag(LightType type) {
+		String prefix = null;
+		if (type == ERROR) prefix = "----------";
+		if (type == WARNING) prefix = "-----";
+		if (type == GOOD_NEWS) prefix = "+++";
+		if (type == INFO) prefix = "---";
+		return prefix + type + ": ";
 	}
 
 }

@@ -9,7 +9,7 @@ public interface Light {
 	Signal<Boolean> isOn();
 	
 	LightType type();
-	String caption();
+	Signal<String> caption();
 	Throwable error();
 	String helpMessage();
 

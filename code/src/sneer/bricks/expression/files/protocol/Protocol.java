@@ -6,6 +6,6 @@ import basis.brickness.Brick;
 @Brick
 public interface Protocol {
 
-	int FILE_BLOCK_SIZE = 10240; // 10 KB - Suitable network packet size
+	int FILE_BLOCK_SIZE = 1024; // 1 KB - Suitable network packet size
 
 }

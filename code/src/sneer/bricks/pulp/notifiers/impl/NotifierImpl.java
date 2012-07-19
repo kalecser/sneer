@@ -2,25 +2,25 @@ package sneer.bricks.pulp.notifiers.impl;
 
 import static basis.environments.Environments.my;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import basis.environments.Environments;
-import basis.lang.Closure;
-import basis.lang.Consumer;
-import basis.lang.Producer;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Source;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.Producer;
 
 class NotifierImpl<T> implements Notifier<T>, Source<T> {
 
-	private static final Consumer<?>[] RECEIVER_HOLDER_ARRAY_TYPE = new Consumer[0];
+	private static final WeakReference<?>[] RECEIVER_HOLDER_ARRAY_TYPE = new WeakReference[0];
 	
-	private final List<Consumer<? super T>> _receivers = Collections.synchronizedList(new ArrayList<Consumer<? super T>>());
+	private final List<WeakReference<Consumer<? super T>>> _receivers = Collections.synchronizedList(new ArrayList<WeakReference<Consumer<? super T>>>());
 	private final Producer<? extends T> _welcomeEventProducer;
 
 	
@@ -31,8 +31,8 @@ class NotifierImpl<T> implements Notifier<T>, Source<T> {
 	
 	@Override
 	public void notifyReceivers(T valueChange) {
-		Consumer<T>[] receivers = copyOfReceiversToAvoidConcurrentModificationAsResultOfNotifications();
-		for (Consumer<T> reference : receivers)
+		WeakReference<Consumer<? super T>>[] receivers = copyOfReceiversToAvoidConcurrentModificationAsResultOfNotifications();
+		for (WeakReference<Consumer<? super T>> reference : receivers)
 			notify(reference, valueChange);
 	}
 
@@ -47,7 +47,7 @@ class NotifierImpl<T> implements Notifier<T>, Source<T> {
 	
 	@Override
 	public WeakContract addReceiver(final Consumer<? super T> eventReceiver) {
-		_receivers.add(eventReceiver);
+		_receivers.add(new WeakReference<Consumer<? super T>>(eventReceiver));
 		notifyCurrentValue(eventReceiver); //Fix: this is a potential inconsistency. The receiver might be notified of changes before the initial value. Reversing this line and the one above can cause the receiver to lose events. Some sort of synchronization has to happen here, without blocking too much.
 		
 		return new WeakContract() {
@@ -67,12 +67,17 @@ class NotifierImpl<T> implements Notifier<T>, Source<T> {
 	}
 	
 	
-	private Consumer<T>[] copyOfReceiversToAvoidConcurrentModificationAsResultOfNotifications() {
-		return (Consumer<T>[]) _receivers.toArray(RECEIVER_HOLDER_ARRAY_TYPE);
+	private WeakReference<Consumer<? super T>>[] copyOfReceiversToAvoidConcurrentModificationAsResultOfNotifications() {
+		return (WeakReference<Consumer<? super T>>[]) _receivers.toArray(RECEIVER_HOLDER_ARRAY_TYPE);
 	}
 
 	
-	private void notify(final Consumer<T> receiver, final T valueChange) {
+	private void notify(final WeakReference<Consumer<? super T>> ref, final T valueChange) {
+		final Consumer<? super T> receiver = ref.get();
+		if (receiver == null) {
+			_receivers.remove(ref);
+			return;
+		}
 		my(ExceptionHandler.class).shield(new Closure() { @Override public void run() {
 			receiver.consume(valueChange);
 		}});

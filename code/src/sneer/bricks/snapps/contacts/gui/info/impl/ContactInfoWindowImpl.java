@@ -7,33 +7,21 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
-
-import basis.lang.Functor;
-import basis.lang.PickyConsumer;
-import basis.lang.exceptions.Refusal;
 
 import sneer.bricks.hardware.cpu.codec.DecodeException;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.codec.SealCodec;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
-import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
-import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
-import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
@@ -43,6 +31,9 @@ import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.bricks.snapps.contacts.gui.info.ContactInfoWindow;
+import basis.lang.Functor;
+import basis.lang.PickyConsumer;
+import basis.lang.exceptions.Refusal;
 
 class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 
@@ -55,15 +46,6 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 	private TextWidget<JTextPane> _sealTP;
 	private JScrollPane _sealScroll;
 
-	private JPanel _inetAddressesPanel;
-
-	private JLabel _hostLb;
-	private JTextField _hostTF;
-
-	private JLabel _portLb;
-	private JTextField _portTF;
-
-	private JButton closeButton;
 
 	ContactInfoWindowImpl() {
 		addContactEditAction();
@@ -109,22 +91,9 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 			ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
 		);
 
-		 _inetAddressesPanel = new JPanel();
+		setGridBagLayout(); //GridBagLayout is probably overkill now that some fields have been removed from this window.
 
-		_hostLb = new JLabel("Host Address (Optional)");
-		_hostTF = new JTextField();
-
-		_portLb = new JLabel("Port (Optional)");
-		_portTF = new JTextField();
-
-		closeButton = new JButton("Close"); closeButton.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
-			close();
-		}});
-
-		setGridBagLayout();
-		initInternetAddressFields();
-
-		this.setSize(330, 310);
+		this.setSize(330, 220);
 	}
 
 
@@ -190,84 +159,8 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 
 		contentPane.add(_sealScroll,  new GridBagConstraints(0, 2, 5, 1, 0.5, 0.5, 
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
-
-		contentPane.add(_inetAddressesPanel,  new GridBagConstraints(0, 3, 2, 1, 1.0, 0.2, 
-				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
-
-		_inetAddressesPanel.setLayout(new GridBagLayout());
-
-		_inetAddressesPanel.add(_hostLb, new GridBagConstraints(0, 2, 6, 1, 0.0, 0.0, 
-				GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5,3,0,0), 0, 0) );
-
-		_inetAddressesPanel.add(_hostTF, new GridBagConstraints(0, 3, 6, 1, 2.0, 0.0, 
-				GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0) );
-
-		_inetAddressesPanel.add(_portLb, new GridBagConstraints(6, 2, 6, 1, 0.0, 0.0, 
-				GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(5,3,0,0), 0, 0) );
-		
-		_inetAddressesPanel.add(_portTF, new GridBagConstraints(6, 3, 6, 1, 0.0, 0.0, 
-				GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0,0,0,0), 0, 0) );
-		
-		_inetAddressesPanel.add(closeButton, new GridBagConstraints(8, 4, 3, 1, 0.0, 0.0, 
-				GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(5,0,5,0), 0, 0) );
 	}
 	
-	
-	private void initInternetAddressFields() {
-		InternetAddress address = my(InternetAddressKeeper.class).get(contact());
-		if (address == null) {
-			cleanFields();
-			return;
-		}
-
-		_hostTF.setText(address.host());
-		_portTF.setText(""+address.port());
-	}
-
-	
-	private void display(Refusal r) {
-		my(BlinkingLights.class).turnOn(LightType.ERROR, "Invalid Host or Port Value", r.getMessage(), r, 20000);
-	}
-
-	
-	private void close() {
-		setVisible(false);
-		
-		if (host().isEmpty()) {
-			my(InternetAddressKeeper.class).remove(contact());
-			return;
-		}
-		
-		try {
-			my(InternetAddressKeeper.class).put(contact(), host(), port());
-		} catch (Refusal r) {
-			display(r);
-		}
-	}
-
-	private String host() {
-		return textIn(_hostTF);
-	}
-	private int port() throws Refusal {
-		String result = textIn(_portTF);
-		try {
-			return Integer.parseInt(result);
-		} catch (NumberFormatException e) {
-			throw new Refusal("Not a valid port number: " + result);
-		}
-	}
-
-	private String textIn(JTextField field) {
-		String text = field.getText();
-		return text == null ? "" : text.trim();
-	}
-
-
-	private void cleanFields() {
-		_hostTF.setText("");
-		_portTF.setText("");
-	}
-
 	
 	private Contact contact() {
 		return my(ContactsGui.class).selectedContact().currentValue();

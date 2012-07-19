@@ -14,6 +14,7 @@ import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
+import sneer.bricks.hardware.cpu.codec.Codec;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.io.files.atomic.dotpart.DotParts;
@@ -55,7 +56,7 @@ abstract class AbstractDownload implements Download {
 
 	private Exception _exception;
 
-	private final Collection<Runnable> _toCallWhenFinished = new ArrayList<Runnable>(1);
+	private final Collection<Closure> _toCallWhenFinished = new ArrayList<Closure>(1);
 
 	private WeakContract _timerContract;
 	protected final boolean _copyLocalFiles;
@@ -64,9 +65,9 @@ abstract class AbstractDownload implements Download {
 	AbstractDownload(File path, long lastModified, Hash hashOfFile, Seal source, boolean copyLocalFiles) {
 		_actualPath = path;
 		
-		_path = dotPartFor(path);
-		_lastModified = lastModified;
 		_hash = hashOfFile;
+		_path = dotPartFile();
+		_lastModified = lastModified;
 
 		if (source == null) throw new IllegalArgumentException("Source seal cannot be null.");
 		_source = source;
@@ -140,7 +141,7 @@ abstract class AbstractDownload implements Download {
 	
 	@Override
 	synchronized
-	public void onFinished(Runnable action) {
+	public void onFinished(Closure action) {
 		if (hasFinishedSuccessfully()) {
 			action.run();
 			return;
@@ -149,9 +150,9 @@ abstract class AbstractDownload implements Download {
 		
 	}
 
-	private File dotPartFor(File path) {
+	private File dotPartFile() {
 		try {
-			return my(DotParts.class).openDotPartFor(path);
+			return my(DotParts.class).openDotPartFor(_actualPath, hex(_hash));
 		} catch (IOException e) {
 			finishWith(e);
 			return null;
@@ -185,7 +186,7 @@ abstract class AbstractDownload implements Download {
 
 
 	protected void finishWithSuccess() throws IOException {
-		my(DotParts.class).closeDotPart(_path, _lastModified);
+		my(DotParts.class).closeDotPart(_path, _actualPath, _lastModified);
 		updateFileMap();
 		finish();
 	}
@@ -287,6 +288,10 @@ abstract class AbstractDownload implements Download {
 	protected void finalize() throws Throwable {
 		my(Logger.class).log("Download garbage collected: " + _path);
 		this.dispose();
+	}
+
+	private static String hex(Hash hash) {
+		return my(Codec.class).hex().encode(hash.bytes.copy());
 	}
 
 }

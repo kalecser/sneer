@@ -24,6 +24,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
+import sneer.bricks.network.computers.addresses.contacts.ContactAddresses;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
 import sneer.bricks.network.computers.connections.Call;
@@ -47,20 +48,39 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	private static final Charset UTF8 = Charset.forName("UTF-8");
 	
 	
-	private UdpConnectionManager subject = my(UdpConnectionManager.class);
+	private final UdpConnectionManager subject = my(UdpConnectionManager.class);
 	@Bind private final LoggingSender sender = new LoggingSender();
 	@Bind private final StunClient stunClient = mock(StunClient.class);
+	@Bind private final ContactAddresses contactAddresses = mock(ContactAddresses.class);
+	private InetSocketAddress contactAddress = null;
+	{
+		checking(new Expectations(){{
+			allowing(contactAddresses).given(with(any(Contact.class)));
+			will(new CustomAction("") { @Override public Object invoke(Invocation invocation) throws Throwable {
+				return my(Signals.class).constant(contactAddress);
+			}});
+		}});
+	}
 
 		//To do:
 	
-		//HAIL SIGHTINGS:
+		//HAIL:
 		//First Hand Sightings - done
+		//Sneer Host & Port Own Attributes
+		//	Set in Settings Window
 		//Second Hand Sightings:
 		//	Stun response - done
 		//	Remote sighting
-		//Sneer Host & Port Own Attributes
-		
-		//Forget old sightings
+	
+		//Direct Connect
+	
+		//Persist sightings
+		//Purge old sightings
+	
+		//Spread outgoing port. "Objective Solutions Curitiba" mode.
+	
+	
+
 	
 
 	@Test (timeout=2000)
@@ -119,7 +139,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		PacketScheduler scheduler = new PacketSchedulerMock("foo", "bar");
 		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
 
-//		my(SignalUtils.class).waitForValue(sender.history(), "| Data foo,to:200.201.202.203,port:123");
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data foo,to:200.201.202.203,port:123");
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data bar,to:200.201.202.203,port:123");
 	}
@@ -132,15 +151,29 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 
 	@Test(timeout=2000)
-	public void onNotConnected_ShouldSendHailingPacketsEverySoOften() {
-		seeNeideIn(new InetSocketAddress("200.201.202.203", 123));
+	public void onNotConnected_ShouldSendHailPacketsToSightings() {
+		seeNeideIn(new InetSocketAddress("200.201.202.203", 1234));
 		seeNeideIn(new InetSocketAddress("192.168.1.100", 7777));
 		
 		connectionFor("Neide");
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| Hail 0 ,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| Hail 0 ,to:200.201.202.203,port:1234");
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| Hail 0 ,to:192.168.1.100,port:7777");
 	}
 	
+
+	@Test(timeout=2000)
+	public void onNotConnected_ShouldSendHailPacketsToAddressOfContact() throws Exception {
+		mockContactAddressAttributes("200.211.222.233", 1234);
+		
+		connectionFor("Neide");
+		my(SignalUtils.class).waitForValue(sender.history(), "| Hail 0 ,to:200.211.222.233,port:1234");
+	}
+	
+
+	private void mockContactAddressAttributes(final String host, final int port) {
+		contactAddress = new InetSocketAddress(host, port);
+	}
+
 
 	@Test (timeout=2000)
 	public void onStunPacketReceived_ShouldDelegateToStunClient() throws Exception {

@@ -11,7 +11,7 @@ import net.sbbi.upnp.messages.UPNPResponseException;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.log.Logger;
-import sneer.bricks.network.computers.ports.OwnPort;
+import sneer.bricks.network.computers.addresses.own.port.OwnPort;
 import sneer.bricks.network.computers.upnp.Upnp;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;

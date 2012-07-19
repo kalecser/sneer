@@ -20,7 +20,7 @@ class LightImpl implements Light {
 
 	private final LightType _type;
 	
-	String _caption;
+	final Register<String> _caption = my(Signals.class).newRegister(null);
 	Throwable _error;
 	String _helpMessage;
 
@@ -33,7 +33,7 @@ class LightImpl implements Light {
 
 	@Override public Throwable error() { return _error; }
 	@Override public Signal<Boolean> isOn() { return _isOn.output(); }
-	@Override public String caption() { return _caption; }
+	@Override public Signal<String> caption() { return _caption.output(); }
 	@Override public LightType type() { return _type; }
 	@Override public String helpMessage() { return _helpMessage; }
 	

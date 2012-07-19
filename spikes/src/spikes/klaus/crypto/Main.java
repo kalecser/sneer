@@ -79,7 +79,10 @@ public class Main {
 		byte[] signature2 = generateSignature(keys.getPrivate(), bytecodeDummy);
 		avoidSonyPS3EpicFail(signature1,signature2);
 		
-		boolean ok = verifySignature(keys.getPublic(), bytecodeDummy, signature1);
+		boolean ok;
+		ok = verifySignature(keys.getPublic(), bytecodeDummy, signature1);
+		System.out.println("PK Signature ok: " + ok);
+		ok = verifySignature(keys.getPublic(), bytecodeDummy, signature2);
 		System.out.println("PK Signature ok: " + ok);
 	}
 
@@ -140,7 +143,7 @@ public class Main {
 		PublicKey publicKeyDecoded = keyFactory.generatePublic(publicKeySpec);
 
 		verifier.initVerify(publicKeyDecoded);
-		verifier.update("The same verifier instance can be used over again.".getBytes());
+		verifier.update("Dirt (after this the same verifier instance can be used again).".getBytes());
 
 		verifier.initVerify(publicKeyDecoded);
 		verifier.update(message);

@@ -29,11 +29,6 @@ public class FileTransferGuiImpl implements FileTransferGui {
 	private WeakContract ref;
 
 	{
-		ref = my(FileTransfer.class).registerHandler(new Consumer<FileTransferSugestion>() { @Override public void consume(FileTransferSugestion sugestion) {
-			if (JOptionPane.showConfirmDialog(null, "Do you want to download " + sugestion.fileOrFolderName + "?", "Download",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) 
-				download(sugestion);
-		}});
-		
 		my(ContactActionManager.class).addContactAction(new ContactAction(){
 			@Override public boolean isEnabled() { return true; }
 			@Override public boolean isVisible() { return true; }
@@ -44,6 +39,11 @@ public class FileTransferGuiImpl implements FileTransferGui {
 			
 			@Override public int positionInMenu() { return 200; }
 		});
+
+		ref = my(FileTransfer.class).registerHandler(new Consumer<FileTransferSugestion>() { @Override public void consume(FileTransferSugestion sugestion) {
+			if (JOptionPane.showConfirmDialog(null, "Do you want to download " + sugestion.fileOrFolderName + " from " + nick(sugestion) + "?", "Download",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) 
+				download(sugestion);
+		}});
 	}
 
 	private void chooseFileToSend() {
@@ -73,12 +73,18 @@ public class FileTransferGuiImpl implements FileTransferGui {
 		return new File(path).isDirectory();
 	}
 
-
+	
 	private Seal selectedSeal() {
 		return my(ContactSeals.class).sealGiven(selectedContact()).currentValue();
 	}
 
+	
 	private Contact selectedContact() {
 		return my(ContactsGui.class).selectedContact().currentValue();
+	}
+
+	
+	private String nick(FileTransferSugestion sugestion) {
+		return my(ContactSeals.class).contactGiven(sugestion.publisher).nickname().currentValue();
 	}
 }

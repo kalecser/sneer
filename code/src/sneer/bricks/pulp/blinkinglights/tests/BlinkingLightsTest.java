@@ -25,7 +25,7 @@ public class BlinkingLightsTest extends BrickTestBase {
 		
 		Light light = _subject.turnOn(LightType.ERROR, "caption", "some error", new NullPointerException());
 		assertTrue(light.isOn());
-		assertEquals("caption", light.caption());
+		assertEquals("caption", light.caption().currentValue());
 		assertNotNull(light.error());
 		assertLightCount(1, _subject);
 		
