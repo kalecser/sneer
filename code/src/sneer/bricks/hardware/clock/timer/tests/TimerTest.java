@@ -8,14 +8,13 @@ import java.util.concurrent.CountDownLatch;
 
 import org.junit.Test;
 
-import basis.lang.ByRef;
-import basis.lang.Closure;
-import basis.util.concurrent.Latch;
-
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
+import basis.lang.ByRef;
+import basis.lang.Closure;
+import basis.util.concurrent.Latch;
 
 public class TimerTest extends BrickTestBase {
 

@@ -13,19 +13,22 @@ class WeakContractImpl implements WeakContract {
 	private Disposable _service;
 	private final Environment _environment;
 
+	
 	WeakContractImpl(Disposable service) {
 		_service = service;
 		_environment = my(Environment.class);
 	}
 
+	
 	@Override
 	synchronized
 	public void dispose() {
 		if (_service == null) return;
-		_service.dispose();
 		_service = null;
+		_service.dispose();
 	}
 
+	
 	@Override
 	protected void finalize() throws Throwable {
 		if (_service != null)
