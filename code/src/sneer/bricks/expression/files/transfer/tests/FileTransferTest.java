@@ -24,6 +24,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.social.attributes.Attributes;
+import sneer.bricks.pulp.reactive.Signals;
 import basis.brickness.testsupport.Bind;
 import basis.lang.Closure;
 import basis.lang.ClosureX;
@@ -86,6 +87,7 @@ public class FileTransferTest extends BrickTestWithTuples {
 				}}
 			);
 			allowing(download).onFinished(with(any(Closure.class)));
+			allowing(download).progress();will(returnValue(my(Signals.class).constant(100)));
 		}});
 		
 		setDownloadFolder(downloadFolder);
