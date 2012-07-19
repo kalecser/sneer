@@ -46,13 +46,14 @@ class NotifierImpl<T> implements Notifier<T>, Source<T> {
 
 	
 	@Override
-	public WeakContract addReceiver(final Consumer<? super T> eventReceiver) {
-		_receivers.add(new WeakReference<Consumer<? super T>>(eventReceiver));
+	public WeakContract addReceiver(Consumer<? super T> eventReceiver) {
+		final WeakReference<Consumer<? super T>> weakReference = new WeakReference<Consumer<? super T>>(eventReceiver);
+		_receivers.add(weakReference);
 		notifyCurrentValue(eventReceiver); //Fix: this is a potential inconsistency. The receiver might be notified of changes before the initial value. Reversing this line and the one above can cause the receiver to lose events. Some sort of synchronization has to happen here, without blocking too much.
 		
 		return new WeakContract() {
 			@Override public void dispose() {
-				_receivers.remove(eventReceiver); //Optimize consider a Set for when there is a great number of receivers.
+				_receivers.remove(weakReference); //Optimize consider a Set for when there is a great number of receivers.
 			}
 			@Override protected void finalize() {
 				dispose();
