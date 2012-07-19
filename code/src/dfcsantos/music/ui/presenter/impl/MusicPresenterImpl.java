@@ -7,10 +7,6 @@ import java.util.List;
 
 import javax.swing.JFileChooser;
 
-import basis.lang.Closure;
-import basis.lang.Consumer;
-import basis.lang.Functor;
-
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
@@ -23,6 +19,9 @@ import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.skin.filechooser.FileChoosers;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.Functor;
 import dfcsantos.music.Music;
 import dfcsantos.music.ui.presenter.MusicPresenter;
 import dfcsantos.music.ui.view.MusicView;
@@ -216,7 +215,7 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 
 	private void initChoicesRefresh() {
-		final Runnable choicesRefresh = new Runnable() { @Override public void run() {
+		final Closure choicesRefresh = new Closure() { @Override public void run() {
 			refreshChoices();
 		}};
 		

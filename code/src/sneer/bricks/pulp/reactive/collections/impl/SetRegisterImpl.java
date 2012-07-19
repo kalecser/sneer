@@ -22,6 +22,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
+import basis.lang.Closure;
 import basis.lang.Consumer;
 import basis.lang.Producer;
 
@@ -37,7 +38,7 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 		}});
 
 		@Override
-		public WeakContract addPulseReceiver(Runnable pulseReceiver) {
+		public WeakContract addPulseReceiver(Closure pulseReceiver) {
 			return _notifier.output().addPulseReceiver(pulseReceiver);
 		}
 

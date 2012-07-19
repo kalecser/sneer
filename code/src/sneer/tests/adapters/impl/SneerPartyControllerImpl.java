@@ -457,7 +457,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	private void startApprovingConnectionRequests() {
-		_refToAvoidGc.add(my(BlinkingLights.class).lights().addPulseReceiver(new Runnable() {@Override public void run() {
+		_refToAvoidGc.add(my(BlinkingLights.class).lights().addPulseReceiver(new Closure() {@Override public void run() {
 			approveConnectionRequestsIfAny();
 		}}));
 	}

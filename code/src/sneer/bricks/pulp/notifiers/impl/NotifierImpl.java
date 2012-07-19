@@ -38,7 +38,7 @@ class NotifierImpl<T> implements Notifier<T>, Source<T> {
 
 	
 	@Override
-	public WeakContract addPulseReceiver(final Runnable pulseReceiver) {
+	public WeakContract addPulseReceiver(final Closure pulseReceiver) {
 		return addReceiver(new Consumer<Object>() { @Override public void consume(Object ignored) {
 			pulseReceiver.run();
 		}});

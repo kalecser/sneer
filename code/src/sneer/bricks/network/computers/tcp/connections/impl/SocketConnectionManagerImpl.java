@@ -12,11 +12,12 @@ import sneer.bricks.network.computers.tcp.ByteArraySocket;
 import sneer.bricks.network.computers.tcp.connections.TcpConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.notifiers.Source;
+import basis.lang.Closure;
 import basis.lang.ClosureX;
 
 class TcpConnectionManagerImpl implements TcpConnectionManager {
 	
-	static final WeakContract crashingContract = my(Threads.class).crashed().addPulseReceiver(new Runnable() { @Override public void run() {
+	static final WeakContract crashingContract = my(Threads.class).crashed().addPulseReceiver(new Closure() { @Override public void run() {
 		for (ByteConnectionImpl victim : ConnectionsByContact.all())
 			victim.close();
 	}});

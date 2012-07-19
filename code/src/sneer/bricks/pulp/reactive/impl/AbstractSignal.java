@@ -5,12 +5,13 @@
 package sneer.bricks.pulp.reactive.impl;
 
 import static basis.environments.Environments.my;
-import basis.lang.Consumer;
-import basis.lang.Producer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
 import sneer.bricks.pulp.reactive.Signal;
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.Producer;
 
 abstract class AbstractSignal<T> implements Signal<T> {
 
@@ -35,7 +36,7 @@ abstract class AbstractSignal<T> implements Signal<T> {
 	}
 
 	@Override
-	public WeakContract addPulseReceiver(Runnable pulseReceiver) {
+	public WeakContract addPulseReceiver(Closure pulseReceiver) {
 		return _notifier.output().addPulseReceiver(pulseReceiver);
 	}
 	

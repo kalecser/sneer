@@ -1,15 +1,16 @@
 package sneer.bricks.pulp.reactive.collections.impl;
 
 import static basis.environments.Environments.my;
-import basis.lang.Consumer;
-import basis.lang.Producer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.ListChange;
-import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.collections.ListChange.Visitor;
+import sneer.bricks.pulp.reactive.collections.ListSignal;
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.Producer;
 
 abstract class AbstractListSignal<T> implements ListSignal<T> {
 
@@ -24,7 +25,7 @@ abstract class AbstractListSignal<T> implements ListSignal<T> {
 
 	
 	@Override
-	public WeakContract addPulseReceiver(Runnable pulseReceiver) {
+	public WeakContract addPulseReceiver(Closure pulseReceiver) {
 		return _notifierAsCollection.output().addPulseReceiver(pulseReceiver);
 	}
 

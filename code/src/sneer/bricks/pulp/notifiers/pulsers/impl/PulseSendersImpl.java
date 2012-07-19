@@ -4,6 +4,7 @@ import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.notifiers.pulsers.PulseSender;
 import sneer.bricks.pulp.notifiers.pulsers.PulseSenders;
 import sneer.bricks.pulp.notifiers.pulsers.Pulser;
+import basis.lang.Closure;
 
 class PulseSendersImpl implements PulseSenders {
 
@@ -13,7 +14,7 @@ class PulseSendersImpl implements PulseSenders {
 	}
 
 	@Override
-	public WeakContract receive(Runnable receiver, Pulser... multipleSources) {
+	public WeakContract receive(Closure receiver, Pulser... multipleSources) {
 		return new UmbrellaContract(receiver, multipleSources);
 	}
 

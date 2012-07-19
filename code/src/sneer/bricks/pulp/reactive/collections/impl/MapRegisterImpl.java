@@ -9,9 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import basis.lang.Consumer;
-import basis.lang.Producer;
-
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
@@ -23,6 +20,9 @@ import sneer.bricks.pulp.reactive.collections.MapRegister;
 import sneer.bricks.pulp.reactive.collections.MapSignal;
 import sneer.bricks.pulp.reactive.collections.SetRegister;
 import sneer.bricks.pulp.reactive.collections.SetSignal;
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.Producer;
 
 class MapRegisterImpl<K,V> implements MapRegister<K,V> {
 	
@@ -65,7 +65,7 @@ class MapRegisterImpl<K,V> implements MapRegister<K,V> {
 		}
 
 		@Override
-		public WeakContract addPulseReceiver(Runnable pulseReceiver) {
+		public WeakContract addPulseReceiver(Closure pulseReceiver) {
 			throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 		}
 

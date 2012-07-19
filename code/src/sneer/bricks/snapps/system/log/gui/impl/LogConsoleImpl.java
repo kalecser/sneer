@@ -89,7 +89,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		}});
 		
 		Signal<String> processTitle = my(ProcessTitle.class).title();
-		refToAvoidGc = processTitle.addPulseReceiver(new Runnable() {	@Override	public void run() {
+		refToAvoidGc = processTitle.addPulseReceiver(new Closure() {	@Override	public void run() {
 				updateTitle();
 		}});
 		

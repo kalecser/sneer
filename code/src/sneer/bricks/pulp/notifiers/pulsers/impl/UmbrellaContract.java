@@ -5,6 +5,7 @@ import java.util.List;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.notifiers.pulsers.Pulser;
+import basis.lang.Closure;
 
 class UmbrellaContract implements WeakContract {
 
@@ -12,7 +13,7 @@ class UmbrellaContract implements WeakContract {
 	private final List<WeakContract> _subContracts;
 
 	
-	UmbrellaContract(Runnable receiver, Pulser... sources) {
+	UmbrellaContract(Closure receiver, Pulser... sources) {
 		_subContracts = new ArrayList<WeakContract>(sources.length);
 		
 		for (Pulser source : sources)

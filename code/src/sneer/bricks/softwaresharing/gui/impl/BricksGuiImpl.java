@@ -27,8 +27,6 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
-import basis.lang.Closure;
-
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.skin.image.ImageFactory;
@@ -44,6 +42,7 @@ import sneer.bricks.softwaresharing.BrickVersion.Status;
 import sneer.bricks.softwaresharing.FileVersion;
 import sneer.bricks.softwaresharing.gui.BricksGui;
 import sneer.bricks.softwaresharing.stager.BrickStager;
+import basis.lang.Closure;
 
 class BricksGuiImpl extends JFrame implements BricksGui {
 
@@ -223,7 +222,7 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		scrollDiff.getViewport().add(_diffPanel.component());
 		scrollFiles.getViewport().add(_files);
 
-		_refToAvoidGc = my(BrickSpace.class).newBuildingFound().addPulseReceiver(new Runnable() { @Override public void run() {
+		_refToAvoidGc = my(BrickSpace.class).newBuildingFound().addPulseReceiver(new Closure() { @Override public void run() {
 			refreshBrickTree();
 		}});
 //		refreshBrickTree(); //Uncomment to see mock data.
