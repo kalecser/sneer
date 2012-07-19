@@ -24,8 +24,8 @@ class WeakContractImpl implements WeakContract {
 	synchronized
 	public void dispose() {
 		if (_service == null) return;
-		_service = null;
 		_service.dispose();
+		_service = null;
 	}
 
 	
