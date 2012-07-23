@@ -1,10 +1,12 @@
 package sneer.bricks.snapps.chat.impl;
 
 import static basis.environments.Environments.my;
+
 import java.awt.Image;
+
 import javax.swing.JFrame;
+
 import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.expression.tuples.remote.RemoteTuples;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.images.Images;
@@ -35,7 +37,7 @@ class ChatFrame extends JFrame {
 			sendTo(to, message);
 		}}));
 		
-		refToAvoidGc = my(RemoteTuples.class).addSubscription(ChatMessage.class, new Consumer<ChatMessage>() { @Override public void consume(ChatMessage message) {
+		refToAvoidGc = my(TupleSpace.class).addSubscription(ChatMessage.class, new Consumer<ChatMessage>() { @Override public void consume(ChatMessage message) {
 			if (isPublic(message)) return;
 			if (isOld(message)) return;
 			messages.add(convert(message));
