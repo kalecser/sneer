@@ -25,6 +25,7 @@ public class OwnIpDiscovererTest extends BrickTestBase {
 	
 	@Bind private final CheckIp _checkip = mock(CheckIp.class);
 	@Bind private final Timer _timer = mock(Timer.class);
+	@SuppressWarnings("unused")
 	@Bind private final PropertyStore _store = new TransientPropertyStore();
 
 	private long _retryTime;

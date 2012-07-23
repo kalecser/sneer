@@ -22,6 +22,7 @@ import basis.environments.Environment;
 public abstract class BrickTestWithLogger extends BrickTestWithMocks {
 	
 	@Bind private final LoggerMocks _loggerMocks = new LoggerMocks(); 
+	@SuppressWarnings("unused")
 	@Bind private final Logger _logger = _loggerMocks.newInstance(); 
     
 
