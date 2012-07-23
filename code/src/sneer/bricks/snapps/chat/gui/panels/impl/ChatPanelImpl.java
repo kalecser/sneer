@@ -114,7 +114,7 @@ class ChatPanelImpl extends JPanel {
 	public void paint(Graphics g) {
 		if(firstTime ){
 			firstTime = false;
-			split.setDividerLocation(0.7);
+			split.setDividerLocation(0.8);
 			_messageInputPane.getMainWidget().requestFocus();
 		}
 		super.paint(g);

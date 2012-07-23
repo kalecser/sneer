@@ -14,7 +14,6 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
@@ -47,7 +46,7 @@ class ChatFrame {
 			if (isOld(message)) return;
 			messages.add(convert(message));
 		}});
-		delegate.setBounds(0, 0, 200, 300);
+		delegate.setBounds(100, 100, 400, 600);
 	}
 	
 	private void sendTo(Seal to, String text) {
