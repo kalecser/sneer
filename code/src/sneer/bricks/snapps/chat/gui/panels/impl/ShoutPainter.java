@@ -63,7 +63,9 @@ class ShoutPainter {
 	
 	void appendMessage(Message message) {
 		try {
-			_document.insertString(_document.getLength(), "avatar" , addStyleImage(message.avatar()));
+			Image avatar = message.avatar();
+			if (avatar != null)
+				_document.insertString(_document.getLength(), "avatar" , addStyleImage(avatar));
 			_document.insertString(_document.getLength(), " "+message.author() ,  _nick);
 			_document.insertString(_document.getLength(), header(message) ,  _time);
 			_document.insertString(_document.getLength(), message.text() ,  _shout);
@@ -84,9 +86,9 @@ class ShoutPainter {
 		return FORMAT.format(new Date(message.time()));
 	}	
 	
-	public Style addStyleImage(Image image) {
-			Style style = _document.addStyle("", null);
-		 	StyleConstants.setIcon(style, new ImageIcon(image));
+	private Style addStyleImage(Image image) {
+		Style style = _document.addStyle("", null);
+		StyleConstants.setIcon(style, new ImageIcon(image));
 		return style;
 	}
 }
