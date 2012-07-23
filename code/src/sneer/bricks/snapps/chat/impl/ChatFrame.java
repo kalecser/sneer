@@ -29,15 +29,11 @@ class ChatFrame extends JFrame {
 
 	ChatFrame(Contact con) {
 		this.contact = con;
-		getContentPane().add(my(ChatPanels.class).newPanel(messages.output(), new Consumer<String>() {
-			
-			@Override
-			public void consume(String message) {
-				if (message == null || message.trim().isEmpty()) return;
-				Seal to = my(ContactSeals.class).sealGiven(contact).currentValue();
-				sendTo(to, message);
-			}
-		}));
+		getContentPane().add(my(ChatPanels.class).newPanel(messages.output(), new Consumer<String>() { @Override public void consume(String message) {
+			if (message == null || message.trim().isEmpty()) return;
+			Seal to = my(ContactSeals.class).sealGiven(contact).currentValue();
+			sendTo(to, message);
+		}}));
 		
 		refToAvoidGc = my(RemoteTuples.class).addSubscription(ChatMessage.class, new Consumer<ChatMessage>() { @Override public void consume(ChatMessage message) {
 			if (isPublic(message)) return;
