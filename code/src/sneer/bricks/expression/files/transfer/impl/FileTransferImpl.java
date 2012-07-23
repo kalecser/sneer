@@ -44,12 +44,11 @@ public class FileTransferImpl implements FileTransfer {
 	
 	private final Notifier<FileTransferSugestion> _sugestionHandlers = my(Notifiers.class).newInstance();
 	@SuppressWarnings("unused")
-	private final WeakContract ref1, ref2, ref3;
+	private final Object ref1, ref2, ref3;
+	private final Collection<Object> refs = new ArrayList<Object>();
 
 	private final Map<FileTransferSugestion, File> filesBySugestion = new ConcurrentHashMap<FileTransferSugestion, File>();
 	private final Map<FileTransferSugestion, Light> waitingLightsBySuggestion = new ConcurrentHashMap<FileTransferSugestion, Light>();
-
-	private final Collection<Object> refs = new ArrayList<Object>();
 
 	
 	{
@@ -153,13 +152,11 @@ public class FileTransferImpl implements FileTransfer {
 
 	
 	private void startDisplayingProgress(final Download download) {
-		refs.add(download);
 		final Light progressLight = my(BlinkingLights.class).prepare(INFO);
 
 		final Object progressContract = download.progress().addReceiver(new Consumer<Integer>() {  @Override public void consume(Integer value) {
 			turnOff(progressLight);
 			my(BlinkingLights.class).turnOnIfNecessary(progressLight, value + "% " + download.file().getName(), "Download in progress:\n\n " + download.file().getAbsolutePath());
-//			my(BlinkingLights.class).turnOn(INFO, value + "% " + download.file().getName(), "Download in progress:\n\n " + download.file().getAbsolutePath(), 2000);
 		}});
 		refs.add(progressContract);
 		
