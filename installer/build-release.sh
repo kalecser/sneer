@@ -1,4 +1,4 @@
-cd ./build/dist
+cd build/dist
 rm sneer.jar
 rm own.jar
 rm log.txt
