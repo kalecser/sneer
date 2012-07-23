@@ -19,15 +19,11 @@ class PrivateChatImpl implements PrivateChat {
 	protected CacheMap<Contact, JFrame> framesByContacts = CacheMap.newInstance();
 
 	{
-		my(ContactActionManager.class).addContactAction(new ContactAction() {@Override public void run() {
+		my(ContactActionManager.class).addContactAction(new ContactAction() { @Override public void run() {
 			final Contact contact = my(ContactsGui.class).selectedContact().currentValue();
-			framesByContacts.get(contact,new Producer<JFrame>() {
-
-				@Override
-				public JFrame produce() {
-					return new ChatFrame(contact);
-				}
-			}).setVisible(true);
+			framesByContacts.get(contact, new Producer<JFrame>() { @Override public JFrame produce() {
+				return new ChatFrame(contact);
+			}}).setVisible(true);
 		}
 
 		@Override public String caption() { return "Chat"; }
