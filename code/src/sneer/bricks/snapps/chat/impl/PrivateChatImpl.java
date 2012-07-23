@@ -22,7 +22,7 @@ class PrivateChatImpl implements PrivateChat {
 		my(ContactActionManager.class).addContactAction(new ContactAction() { @Override public void run() {
 			final Contact contact = my(ContactsGui.class).selectedContact().currentValue();
 			framesByContacts.get(contact, new Producer<JFrame>() { @Override public JFrame produce() {
-				return new ChatFrame(contact);
+				return new ChatFrame(contact).jFrame();
 			}}).setVisible(true);
 		}
 

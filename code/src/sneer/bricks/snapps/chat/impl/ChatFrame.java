@@ -14,24 +14,29 @@ import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
+import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
 import sneer.bricks.pulp.reactive.collections.ListRegister;
+import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.snapps.chat.ChatMessage;
 import sneer.bricks.snapps.chat.gui.panels.ChatPanels;
 import sneer.bricks.snapps.chat.gui.panels.Message;
 import basis.lang.Consumer;
 
-class ChatFrame extends JFrame {
+class ChatFrame {
 
 	private final Contact contact;
 	private ListRegister<Message> messages = my(CollectionSignals.class).newListRegister();
 	
 	@SuppressWarnings("unused")private final WeakContract refToAvoidGc;
+	private final JFrame delegate;
+	
 	private static final int TEN_MINUTES = 1000 * 60 * 10;
 
 	ChatFrame(Contact con) {
 		this.contact = con;
-		getContentPane().add(my(ChatPanels.class).newPanel(messages.output(), new Consumer<String>() { @Override public void consume(String message) {
+		delegate = my(ReactiveWidgetFactory.class).newFrame(con.nickname()).getMainWidget();
+		delegate.getContentPane().add(my(ChatPanels.class).newPanel(messages.output(), new Consumer<String>() { @Override public void consume(String message) {
 			if (message == null || message.trim().isEmpty()) return;
 			Seal to = my(ContactSeals.class).sealGiven(contact).currentValue();
 			sendTo(to, message);
@@ -42,7 +47,7 @@ class ChatFrame extends JFrame {
 			if (isOld(message)) return;
 			messages.add(convert(message));
 		}});
-		setBounds(0, 0, 200, 300);
+		delegate.setBounds(0, 0, 200, 300);
 	}
 	
 	private void sendTo(Seal to, String text) {
@@ -98,5 +103,9 @@ class ChatFrame extends JFrame {
 					: my(ContactSeals.class).contactGiven(message.publisher).nickname().currentValue();
 			}
 		};
+	}
+
+	JFrame jFrame() {
+		return delegate;
 	}
 }
