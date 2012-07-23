@@ -33,7 +33,7 @@ public class UdpServerImpl implements UdpServer {
 	
 	synchronized
 	private void handlePort(int port) {
-		closePort();
+		closeSession();
 		if (port < 1) return; 
 		portSession = new UdpPortSession(port, new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
 			my(UdpConnectionManager.class).handle(packet);
@@ -50,11 +50,11 @@ public class UdpServerImpl implements UdpServer {
 	@Override
 	public void crash() {
 		portContract.dispose();
-		closePort();
+		closeSession();
 	}
 
 
-	private void closePort() {
+	private void closeSession() {
 		if (portSession == null) return;
 		portSession.crash();
 		portSession = null;
