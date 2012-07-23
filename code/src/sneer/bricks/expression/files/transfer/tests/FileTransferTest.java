@@ -42,9 +42,7 @@ public class FileTransferTest extends BrickTestWithTuples {
 
 		
 	/*
-	 * - FileTransferImpl.ref must be a weak collection or something.
 	 * - Download recovery on crash and startup.
-	 * - Prefix to group temp download files
 	 * - Folder per contact
 	 * - Performance: Request and block exchange is currently synchronous. Send block speculatively.
 	 * - Auto accept per contact

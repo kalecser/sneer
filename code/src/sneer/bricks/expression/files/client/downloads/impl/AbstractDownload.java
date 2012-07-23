@@ -152,7 +152,7 @@ abstract class AbstractDownload implements Download {
 
 	private File dotPartFile() {
 		try {
-			return my(DotParts.class).openDotPartFor(_actualPath, hex(_hash));
+			return my(DotParts.class).openDotPartFor(_actualPath, "downloading-" + hex(_hash));
 		} catch (IOException e) {
 			finishWith(e);
 			return null;
