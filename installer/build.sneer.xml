@@ -120,7 +120,7 @@
 
 	<target name="compile" depends="clean, copy-resources">
 		<javac srcdir="${sneer.src}" destdir="${bin.dir}" listfiles="true"
-			   failonerror="true" debug="on" target="1.6" encoding="utf-8">
+			   failonerror="true" debug="on" source="1.6" target="1.6" encoding="utf-8">
 			<classpath refid="classpath"/>
 		</javac>
 	    <!-- scalac srcdir="${sneer.src}"
