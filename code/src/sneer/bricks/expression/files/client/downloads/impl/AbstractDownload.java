@@ -152,7 +152,7 @@ abstract class AbstractDownload implements Download {
 
 	private File dotPartFile() {
 		try {
-			return my(DotParts.class).openDotPartFor(_actualPath, "downloading-" + hex(_hash));
+			return my(DotParts.class).newDotPartFor(_actualPath, "downloading-" + hex(_hash));
 		} catch (IOException e) {
 			finishWith(e);
 			return null;
@@ -186,7 +186,7 @@ abstract class AbstractDownload implements Download {
 
 
 	protected void finishWithSuccess() throws IOException {
-		my(DotParts.class).closeDotPart(_path, _actualPath, _lastModified);
+		my(DotParts.class).concludeDotPart(_path, _actualPath, _lastModified);
 		updateFileMap();
 		finish();
 	}
@@ -286,7 +286,7 @@ abstract class AbstractDownload implements Download {
 
 	@Override
 	protected void finalize() throws Throwable {
-		my(Logger.class).log("Download garbage collected: " + _path);
+		my(Logger.class).log("Download garbage collected: " + _actualPath);
 		this.dispose();
 	}
 

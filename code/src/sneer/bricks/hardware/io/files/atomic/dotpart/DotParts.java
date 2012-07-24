@@ -10,8 +10,8 @@ import basis.brickness.Brick;
 @Brick
 public interface DotParts {
 
-	File openDotPartFor(File actualFile, String tempName) throws IOException;
-	File closeDotPart(File dotPartFile, File actualFile, long lastModified) throws IOException;
+	File newDotPartFor(File actualFile, String tempName) throws IOException;
+	File concludeDotPart(File dotPartFile, File actualFile, long lastModified) throws IOException;
 
 	FileFilter dotPartExclusionFilter();
 	String dotPartExtention();

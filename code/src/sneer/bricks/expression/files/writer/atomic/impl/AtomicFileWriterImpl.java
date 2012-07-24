@@ -31,9 +31,9 @@ class AtomicFileWriterImpl implements AtomicFileWriter {
 		if (fileOrFolder.exists())
 			throw new IOException("File or folder to be written already exists: " + fileOrFolder);
 
-		final File dotPart = my(DotParts.class).openDotPartFor(fileOrFolder, fileOrFolder.getName());
+		final File dotPart = my(DotParts.class).newDotPartFor(fileOrFolder, fileOrFolder.getName());
 		writeTo(dotPart, contents);
-		my(DotParts.class).closeDotPart(dotPart, fileOrFolder, lastModified);
+		my(DotParts.class).concludeDotPart(dotPart, fileOrFolder, lastModified);
 	}
 
 
