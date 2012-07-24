@@ -286,7 +286,7 @@ abstract class AbstractDownload implements Download {
 
 	@Override
 	protected void finalize() throws Throwable {
-		my(Logger.class).log("Download garbage collected: " + _path);
+		my(Logger.class).log("Download garbage collected: " + _actualPath);
 		this.dispose();
 	}
 

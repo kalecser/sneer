@@ -42,6 +42,7 @@ public class FileTransferTest extends BrickTestWithTuples {
 
 		
 	/*
+	 * - Unrevert hash check of downloaded file.
 	 * - Download recovery on crash and startup.
 	 * - Folder per contact
 	 * - Performance: Request and block exchange is currently synchronous. Send block speculatively.
