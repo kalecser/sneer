@@ -18,7 +18,7 @@ class DotPartsImpl implements DotParts {
 	private static final String DOT_PART_EXTENSION = "." + DOT_PART_PURE_EXTENSION;
 
 	@Override
-	public File openDotPartFor(File actualFile, String tempName) throws IOException {
+	public File newDotPartFor(File actualFile, String tempName) throws IOException {
 		if (actualFile.exists()) throw new IOException("File already exists: " + actualFile);
 		
 		return new File(actualFile.getParent(), tempName + DOT_PART_EXTENSION);
@@ -27,7 +27,7 @@ class DotPartsImpl implements DotParts {
 
 
 	@Override
-	public File closeDotPart(File dotPartFile, File actualFile, long lastModified) throws IOException {
+	public File concludeDotPart(File dotPartFile, File actualFile, long lastModified) throws IOException {
 		my(Logger.class).log("Closing dotPart file: ", dotPartFile);
 		
 		if (lastModified != -1)

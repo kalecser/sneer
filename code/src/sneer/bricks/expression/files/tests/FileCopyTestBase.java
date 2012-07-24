@@ -9,9 +9,8 @@ import java.util.Random;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import basis.lang.Consumer;
-
 import sneer.bricks.expression.files.map.mapper.FileMapper;
+import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.expression.tuples.testsupport.BrickTestWithTuples;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
@@ -20,6 +19,7 @@ import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.software.code.classutils.ClassUtils;
+import basis.lang.Consumer;
 
 /** Abstract test class names must not end in "Test" or else Hudson will try to instantiate them and fail. :P */
 
@@ -45,22 +45,22 @@ public abstract class FileCopyTestBase extends BrickTestWithTuples {
 
 	@Test (timeout = 7000)
 	public void testWithLargeFile() throws Exception {
-		testWith(createLargeFile());
+		File largefile = newTmpFile();
+		writePseudoRandomBytesTo(largefile, 1000000);
+		testWith(largefile);
 	}
 
-	private File createLargeFile() throws IOException {
-		File result = newTmpFile();
-		my(IO.class).files().writeByteArrayToFile(result, randomBytes(1000000));
-		return result;
+	protected void writePseudoRandomBytesTo(File file, int size) throws IOException {
+		my(IO.class).files().writeByteArrayToFile(file, pseudoRandomBytes(size));
 	}
 	
-	private byte[] randomBytes(int size) {
+	private byte[] pseudoRandomBytes(int size) {
 		byte[] result = new byte[size];
-		new Random().nextBytes(result);
+		new Random(0).nextBytes(result);
 		return result;
 	}
 
-	private void testWith(File fileOrFolder) throws Exception {
+	protected void testWith(File fileOrFolder) throws Exception {
 		@SuppressWarnings("unused")	WeakContract refToAvoidGc =
 			my(BlinkingLights.class).lights().addReceiver(new Consumer<CollectionChange<Light>>(){@Override public void consume(CollectionChange<Light> deltas) {
 				if (!deltas.elementsAdded().isEmpty()) {
@@ -70,7 +70,7 @@ public abstract class FileCopyTestBase extends BrickTestWithTuples {
 			}});
 
 		File copy = newTmpFile();
-		Hash hash = _fileMapper.mapFileOrFolder(fileOrFolder);
+		Hash hash = hash(fileOrFolder);
 		if (fileOrFolder.isDirectory())
 			copyFolderFromFileMap(hash, copy);
 		else
@@ -79,6 +79,10 @@ public abstract class FileCopyTestBase extends BrickTestWithTuples {
 		assertNotNull(hash);
 
 		assertSameContents(fileOrFolder, copy);
+	}
+
+	protected Hash hash(File fileOrFolder) throws MappingStopped, IOException {
+		return _fileMapper.mapFileOrFolder(fileOrFolder);
 	}
 
 	abstract protected void copyFileFromFileMap(Hash hashOfContents, File destination) throws Exception;
