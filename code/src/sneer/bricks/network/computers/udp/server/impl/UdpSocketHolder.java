@@ -20,7 +20,8 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 class UdpSocketHolder {
 	
 	private static final Light openError = my(BlinkingLights.class).prepare(LightType.ERROR);
-	private final Light sendError = my(BlinkingLights.class).prepare(LightType.ERROR);
+	private static final Light sendError = my(BlinkingLights.class).prepare(LightType.ERROR);
+	
 	private final UdpSocket socket;
 	private final Contract receiverThread;
 
@@ -43,7 +44,7 @@ class UdpSocketHolder {
 	}
 	
 
-	public void send(DatagramPacket packet) {
+	void send(DatagramPacket packet) {
 		try {
 			socket.send(packet);
 			my(BlinkingLights.class).turnOffIfNecessary(sendError);
@@ -55,7 +56,7 @@ class UdpSocketHolder {
 	}
 
 
-	public void crash() {
+	void crash() {
 		socket.crash();
 		receiverThread.dispose();
 	}
