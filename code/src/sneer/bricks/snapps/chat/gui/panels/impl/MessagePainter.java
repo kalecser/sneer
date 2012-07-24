@@ -16,16 +16,17 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.snapps.chat.gui.panels.Message;
 import basis.lang.exceptions.NotImplementedYet;
 
-class ShoutPainter {
+class MessagePainter {
 	
 	private final DefaultStyledDocument _document;
 	
 	private Style _space;
 	private Style _time;
-	private Style _shout;
+	private Style _text;
 	private Style _nick;
 
-	ShoutPainter(DefaultStyledDocument styledDocument) {
+	
+	MessagePainter(DefaultStyledDocument styledDocument) {
 		_document = styledDocument;
 		Style def = StyleContext.getDefaultStyleContext().
         getStyle(StyleContext.DEFAULT_STYLE);
@@ -43,32 +44,34 @@ class ShoutPainter {
 		StyleConstants.setFontSize(_nick, 10);
 		StyleConstants.setBold(_nick, true);
 
-		_shout = _document.addStyle("shout", def);
-		StyleConstants.setFontFamily(_shout, "Verdana");
-		StyleConstants.setFontSize(_shout, 12);		
+		_text = _document.addStyle("message", def);
+		StyleConstants.setFontFamily(_text, "Verdana");
+		StyleConstants.setFontSize(_text, 12);		
 		
 		_document.addStyle("time", _time);
-		_document.addStyle("shout", _shout);
+		_document.addStyle("message", _text);
 	}
 
-	void repaintAllShouts(ListSignal<Message> messages) {
+	
+	void repaintAll(ListSignal<Message> messages) {
 		try {
 			_document.remove(0, _document.getLength());
 		} catch (BadLocationException e) {
-			throw new NotImplementedYet(e); // Fix Handle this exception.
+			throw new IllegalStateException(e);
 		}
 		for (Message message : messages) 
-			appendMessage(message);
+			append(message);
 	}
 	
-	void appendMessage(Message message) {
+	
+	void append(Message message) {
 		try {
 			Image avatar = message.avatar();
 			if (avatar != null)
 				_document.insertString(_document.getLength(), "avatar" , addStyleImage(avatar));
 			_document.insertString(_document.getLength(), " "+message.author() ,  _nick);
 			_document.insertString(_document.getLength(), header(message) ,  _time);
-			_document.insertString(_document.getLength(), message.text() ,  _shout);
+			_document.insertString(_document.getLength(), message.text() ,  _text);
 			_document.insertString(_document.getLength(), "\n\n" ,  _space);
 		} catch (BadLocationException e) {
 			throw new NotImplementedYet(e); // Fix Handle this exception.
@@ -77,12 +80,12 @@ class ShoutPainter {
 	
 	private String header(Message message){		
 		return new StringBuilder().append(" - ")
-			.append(getFormatedShoutTime(message)).append("\n").toString();
+			.append(getFormatedTime(message)).append("\n").toString();
 	}
 
 	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 	
-	static String getFormatedShoutTime(Message message) {
+	static String getFormatedTime(Message message) {
 		return FORMAT.format(new Date(message.time()));
 	}	
 	

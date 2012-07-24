@@ -26,7 +26,6 @@ class LogFilterImpl implements LogFilter {
 		_phrases.add("Endorsement");
 		_phrases.add("Brick");
 		_phrases.add("Enter");
-		_phrases.add("Shouting");
 		_phrases.add("Attribute");
 		_phrases.add("Stun");
 		_phrases.add("Packet");

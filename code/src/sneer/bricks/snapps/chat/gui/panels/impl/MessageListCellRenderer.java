@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -18,15 +19,16 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
+
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.snapps.chat.gui.panels.Message;
 
 class MessageListCellRenderer implements ListCellRenderer {
 
-	private static final int MIN_SHOUT_WIDTH = 200;
-	private static final String SHOUT = "shout";
-	private static final String SHOUTERS_NICK = "shoutersNick";
+	private static final int MIN_MESSAGE_WIDTH = 200;
+	private static final String MESSAGE = "message";
+	private static final String AUTHOR = "author";
 	private static final int SCROLL_WIDTH = 10;
 
 	private static final int SPACE_BETWEEN_LINES = 0;
@@ -38,34 +40,32 @@ class MessageListCellRenderer implements ListCellRenderer {
 	}
 
 	@Override
-	public Component getListCellRendererComponent(JList jList, Object element,
-			int ignored2, boolean isSelected, boolean cellHasFocus) {
-		Message shout = (Message) element;
-		JComponent nick = createNick(shout);
-		JComponent shoutTime = createShoutTime(shout, isSelected);
-		JComponent shoutText = createShoutText(shout);
-		JComponent root = createRootPanel(nick, shoutTime, shoutText,
-				isSelected, jList);
+	public Component getListCellRendererComponent(JList jList, Object element, int ignored2, boolean isSelected, boolean cellHasFocus) {
+		Message message = (Message) element;
+		JComponent nick = createNick(message);
+		JComponent messageTime = createTime(message, isSelected);
+		JComponent messageText = createText(message);
+		JComponent root = createRootPanel(nick, messageTime, messageText, isSelected, jList);
 
 		addLineSpace(root);
 		return root;
 	}
 
-	private JComponent createNick(Message shout) {
-		if (shout.avatar() != null)
-			return getNickAsIcon(shout);
-		return getNickAsText(shout);
+	private JComponent createNick(Message message) {
+		if (message.avatar() != null)
+			return getNickAsIcon(message);
+		return getNickAsText(message);
 	}
 
-	private JComponent getNickAsIcon(Message shout) {
-		JLabel icon = new JLabel(new ImageIcon(shout.avatar()),
+	private JComponent getNickAsIcon(Message message) {
+		JLabel icon = new JLabel(new ImageIcon(message.avatar()),
 				SwingConstants.LEFT);
 		icon.setOpaque(false);
 		return icon;
 	}
 
-	private JComponent getNickAsText(Message shout) {
-		String nick = shout.author();
+	private JComponent getNickAsText(Message message) {
+		String nick = message.author();
 		JLabel labelNick = new JLabel(nick, SwingConstants.LEFT);
 		labelNick.setFont(new Font(labelNick.getFont().getFontName(),
 				Font.BOLD, 11));
@@ -73,18 +73,18 @@ class MessageListCellRenderer implements ListCellRenderer {
 		return labelNick;
 	}
 
-	private JComponent createShoutTime(Message shout,
+	private JComponent createTime(Message message,
 			@SuppressWarnings("unused") boolean isSelected) {
-		JLabel label = new JLabel(ShoutPainter.getFormatedShoutTime(shout) + " ",
+		JLabel label = new JLabel(MessagePainter.getFormatedTime(message) + " ",
 				SwingConstants.RIGHT);
 		label.setFont(new Font(label.getFont().getFontName(), 0, 11));
 		label.setOpaque(false);
 		return label;
 	}
 
-	private JComponent createShoutText(Message shout) {
-		Signal<String> signalText = _labelProvider.textFor(shout);
-		return createTextComponent(signalText.currentValue(), SHOUT);
+	private JComponent createText(Message message) {
+		Signal<String> signalText = _labelProvider.textFor(message);
+		return createTextComponent(signalText.currentValue(), MESSAGE);
 	}
 
 	private JComponent createTextComponent(String msg, String style) {
@@ -101,9 +101,7 @@ class MessageListCellRenderer implements ListCellRenderer {
 		try {
 			doc.insertString(doc.getLength(), msg, doc.getStyle(style));
 		} catch (BadLocationException e) {
-			throw new basis.lang.exceptions.NotImplementedYet(e); // Fix Handle
-																	// this
-																	// exception.
+			throw new IllegalStateException(e);
 		}
 	}
 
@@ -111,15 +109,15 @@ class MessageListCellRenderer implements ListCellRenderer {
 		Style def = StyleContext.getDefaultStyleContext().getStyle(
 				StyleContext.DEFAULT_STYLE);
 
-		Style sender = doc.addStyle(SHOUTERS_NICK, def);
+		Style sender = doc.addStyle(AUTHOR, def);
 		StyleConstants.setFontSize(sender, 11);
 		StyleConstants.setBold(sender, true);
 
-		doc.addStyle(SHOUT, def);
+		doc.addStyle(MESSAGE, def);
 	}
 
 	private JComponent createRootPanel(JComponent nick, JComponent time,
-			JComponent shout, @SuppressWarnings("unused") boolean isSelected,
+			JComponent message, @SuppressWarnings("unused") boolean isSelected,
 			final JList list) {
 		JPanel root = new JPanel();
 		root.setLayout(new BorderLayout());
@@ -134,20 +132,20 @@ class MessageListCellRenderer implements ListCellRenderer {
 
 		JPanel horizontalLimit = new JPanel();
 		horizontalLimit.setLayout(new BorderLayout());
-		horizontalLimit.add(shout);
+		horizontalLimit.add(message);
 		horizontalLimit.setOpaque(false);
-		int width = getShoutLimitWidth(list);
+		int width = getLimitWidth(list);
 
-		Resizer.pack(shout, width - SCROLL_WIDTH, 0);
+		Resizer.pack(message, width - SCROLL_WIDTH, 0);
 		root.add(horizontalLimit, BorderLayout.CENTER);
 
 		return root;
 	}
 
-	private int getShoutLimitWidth(final JList list) {
+	private int getLimitWidth(final JList list) {
 		int width = list.getSize().width;
-		if (width < MIN_SHOUT_WIDTH)
-			width = MIN_SHOUT_WIDTH;
+		if (width < MIN_MESSAGE_WIDTH)
+			width = MIN_MESSAGE_WIDTH;
 		return width;
 	}
 
