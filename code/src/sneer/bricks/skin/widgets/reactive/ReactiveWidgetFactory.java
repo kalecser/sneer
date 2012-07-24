@@ -10,14 +10,13 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListModel;
 
-import basis.brickness.Brick;
-import basis.lang.Consumer;
-import basis.lang.PickyConsumer;
-
 import sneer.bricks.hardware.gui.nature.GUI;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.pulp.reactive.signalchooser.SignalChooser;
+import basis.brickness.Brick;
+import basis.lang.Consumer;
+import basis.lang.PickyConsumer;
 
 @Brick(GUI.class)
 public interface ReactiveWidgetFactory {
@@ -44,5 +43,5 @@ public interface ReactiveWidgetFactory {
 	<T> ListWidget<T> newList(ListSignal<T> source);
 	<T> ListWidget<T> newList(ListSignal<T> source, LabelProvider<T> labelProvider);
 	
-	<T> ListModel newListSignalModel(ListSignal<T> input, SignalChooser<T> chooser);
+	<T> ListModel<T> newListSignalModel(ListSignal<T> input, SignalChooser<T> chooser);
 }

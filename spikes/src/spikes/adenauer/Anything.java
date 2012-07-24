@@ -57,14 +57,14 @@ public class Anything extends JFrame {
 	}
 
 	
-	private JComboBox musicFolders() {
-		JComboBox folders = new JComboBox();
+	private JComboBox<String> musicFolders() {
+		JComboBox<String> folders = new JComboBox<String>();
 		File root = new File(ROOT);
 		loadFolders(root, folders);
 		return folders;
 	}
 
-	private void loadFolders(File root, JComboBox loadedFolders) {
+	private void loadFolders(File root, JComboBox<String> loadedFolders) {
 		if (root == null) return;
 		if (root.isFile()) return;
 		

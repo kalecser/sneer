@@ -10,14 +10,13 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import basis.brickness.Brickness;
-import basis.environments.Environments;
-import basis.lang.Closure;
-
 import sneer.bricks.skin.main.dashboard.Dashboard;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.Instrument;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
+import basis.brickness.Brickness;
+import basis.environments.Environments;
+import basis.lang.Closure;
 
 
 public class DashboardDemo  {
@@ -48,13 +47,13 @@ class Snapp1 implements Instrument{
 		Container container = window.contentPane();
 		container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
 		
-		DefaultComboBoxModel model = new DefaultComboBoxModel(
-			new Object[]{"Blue","Read", "Black", "White"}
+		DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>(
+			new String[]{"Blue","Read", "Black", "White"}
 		);
-		JComboBox combo = new JComboBox();
+		JComboBox<String> combo = new JComboBox<String>();
 		combo.setModel(model);
 		
-		JList list = new JList(model);
+		JList<String> list = new JList<String>(model);
 		
 		container.add(combo);
 		container.add(list);

@@ -17,7 +17,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 
-public abstract class ListAnimatorDecorator extends AbstractComponentDecorator {
+public abstract class ListAnimatorDecorator<T> extends AbstractComponentDecorator {
 
     private static final int INTERVAL = 1000 / 24;
     private static Timer timer = new Timer(true);
@@ -67,12 +67,12 @@ public abstract class ListAnimatorDecorator extends AbstractComponentDecorator {
     private Counter counter;
     private int insertionIndex = -1;
     private int draggedIndex = -1;
-    private JList _list;
+    private JList<T> _list;
     private Map<Integer, Rectangle> bounds = new TreeMap<Integer, Rectangle>();
     private GhostedDragImage dragImage;
     private Point _origin;
     
-    public ListAnimatorDecorator(final JList list) {
+    public ListAnimatorDecorator(final JList<T> list) {
         super(list);
         _list = list;
         counter = new Counter();
@@ -208,8 +208,8 @@ public abstract class ListAnimatorDecorator extends AbstractComponentDecorator {
             }
         }
         else if (insertionIndex != -1 && index > insertionIndex) {
-            ListCellRenderer rnd = _list.getCellRenderer();
-            Component c = rnd.getListCellRendererComponent(_list, getPlaceholder(), insertionIndex, false, false);
+            ListCellRenderer<? super T> rnd = _list.getCellRenderer();
+            Component c = rnd.getListCellRendererComponent(_list, (T)getPlaceholder(), insertionIndex, false, false);
             r.y += c.getHeight();
         }
         return r;

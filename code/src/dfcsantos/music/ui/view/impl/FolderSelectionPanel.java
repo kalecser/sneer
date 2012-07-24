@@ -19,11 +19,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.MutableComboBoxModel;
 
-import basis.lang.Consumer;
-
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.pulp.reactive.collections.ListChange;
 import sneer.bricks.skin.main.icons.Icons;
+import basis.lang.Consumer;
 import dfcsantos.music.ui.view.MusicViewListener;
 
 final class FolderSelectionPanel extends JPanel {
@@ -31,7 +30,7 @@ final class FolderSelectionPanel extends JPanel {
 	FolderSelectionPanel(MusicViewListener listener) {
 		_listener = listener;
 		_selector = newSelector();
-		_folderChoices = (MutableComboBoxModel) _selector.getModel();
+		_folderChoices = (MutableComboBoxModel<String>) _selector.getModel();
 		_trackDownloadedIcon = newTrackDownloadedIcon();
 
 		setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -43,8 +42,8 @@ final class FolderSelectionPanel extends JPanel {
 		initExternalEvents();
 	}
 
-	private JComboBox newSelector() {
-		JComboBox selector = new JComboBox();
+	private JComboBox<String> newSelector() {
+		JComboBox<String> selector = new JComboBox<String>();
 		selector.addActionListener(newSelectorActionListener());
 		return selector;
 	}
@@ -52,7 +51,7 @@ final class FolderSelectionPanel extends JPanel {
 	private ActionListener newSelectorActionListener() {
 		return new ActionListener() { @Override public void actionPerformed(ActionEvent e) {
 			if (isEventInternal) return;
-			String folderChosen = (String)((JComboBox) e.getSource()).getModel().getSelectedItem();
+			String folderChosen = (String)((JComboBox<String>) e.getSource()).getModel().getSelectedItem();
 			if (folderChosen == null) return;
 			_listener.playingFolderChosen(folderChosen);
 		}};
@@ -163,8 +162,8 @@ final class FolderSelectionPanel extends JPanel {
 	@SuppressWarnings("unused")	private WeakContract _refToAvoidGc, _refToAvoidGc2, _refToAvoidGc3;
 
 	private final MusicViewListener _listener;
-	private final JComboBox _selector;
-	private final MutableComboBoxModel _folderChoices;
+	private final JComboBox<String> _selector;
+	private final MutableComboBoxModel<String> _folderChoices;
 	private final JLabel _trackDownloadedIcon;
 	
 	private boolean isEventInternal;
