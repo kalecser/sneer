@@ -30,7 +30,7 @@ public class DnDListAnimatorDemo {
 	}
 
 	private static void addDnDListeners(final JList<String> lst) {
-		ListAnimatorDecorator smoother = new ListAnimatorDecorator(lst) {
+		ListAnimatorDecorator<String> smoother = new ListAnimatorDecorator<String>(lst) {
 			@Override
 			protected void move(int fromIndex, int toIndex) {
 				DefaultListModel<String> model = (DefaultListModel<String>)lst.getModel();

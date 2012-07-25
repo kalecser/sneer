@@ -12,9 +12,6 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListModel;
 
-import basis.lang.Consumer;
-import basis.lang.PickyConsumer;
-
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.Signals;
@@ -28,6 +25,8 @@ import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
 import sneer.bricks.skin.widgets.reactive.ToggleButtonWidget;
 import sneer.bricks.skin.widgets.reactive.Widget;
+import basis.lang.Consumer;
+import basis.lang.PickyConsumer;
 
 class ReactiveWidgetFactoryImpl implements ReactiveWidgetFactory {
 	
@@ -62,7 +61,7 @@ class ReactiveWidgetFactoryImpl implements ReactiveWidgetFactory {
 	
 	
 	@Override
-	public <T> ListModel newListSignalModel(ListSignal<T> input, SignalChooser<T> chooser) {
+	public <T> ListModel<T> newListSignalModel(ListSignal<T> input, SignalChooser<T> chooser) {
 		return new ListSignalModel<T>(input, chooser);
 	}
 	
