@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import basis.lang.Consumer;
-
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.kept.KeptTuples;
 
@@ -15,15 +13,6 @@ public class KeptTuplesImpl implements KeptTuples {
 	private List<Tuple> _tuples = Collections.synchronizedList(new ArrayList<Tuple>()); //When the Prevalent nature implements isolation between queries and transactions, this can be made a non-synchronized collection. Klaus Dec-2010.
 
 	
-	@SuppressWarnings("deprecation")
-	@Override
-	public Consumer<Tuple> adder() {
-		return new Consumer<Tuple>() { @Override public void consume(final Tuple tuple) {
-			add(tuple);
-		}};
-	}
-
-
 	@Override
 	public void add(Tuple tuple) {
 		_tuples.add(tuple);
