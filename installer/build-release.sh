@@ -1,3 +1,5 @@
+ant
+ant -f build.webstart.xml
 cd build/dist
 rm sneer.jar
 rm own.jar
