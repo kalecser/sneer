@@ -8,41 +8,18 @@
 	<property name="jnlp.mainClass" value="sneer.installer.Main" />
 	<property name="logo" value="logo16x16.png" />
 	
-	<target name="main" depends="init, compile, log, makeJars, makeJnlp, signJars" />
+	<target name="main" depends="compile, makeJars, makeJnlp, signJars" />
 
-	<target name="init">
-		<tstamp />
-	</target>
-
+	
 	<target name="compile">
 		<path id="classpath">
 			<pathelement path="./bin"/>
 		</path>
-		<javac srcdir="src"
-				destdir="${bin.dir}"
-				listfiles="true"
-				failonerror="true"
-				debug="on"
-				source="1.6"
-				target="1.6"
-				encoding="utf-8">
+		<javac srcdir="src" destdir="${bin.dir}" failonerror="true" debug="on" source="1.7" target="1.7" encoding="utf-8" includeAntRuntime="false">
 			<classpath refid="classpath"/>
 		</javac>
 	</target>
 
-
-	<target name="log">
-		<property environment="env" />
-		<record name="build/log.txt" action="start" />
-		<echo message="${env.BUILD_NUMBER}" />
-		<echo message="${env.BUILD_ID}" />
-		<echo message="${env.BUILD_TAG}" />
-		<echo message="${env.JOB_NAME}" />
-		<echo message="${env.EXECUTOR_NUMBER}" />
-		<echo message="${env.WORKSPACE}" />
-		<echo message="${env.HUDSON_URL}" />
-		<record name="build/dist/log.txt" action="stop" />
-	</target>
 
 	<target name="makeJars">
 		<mkdir dir="${own.build.dir}"/>
@@ -85,6 +62,7 @@
 		</jar>
 	</target>
 
+	
 	<target name="makeJnlp">
 	
 		<copy file="${logo}" 
@@ -111,7 +89,7 @@
 				
 				<resources>
 					<jar href="sneer-bootstrap.jar" />
-					<j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se" />
+					<j2se version="1.7+" href="http://java.sun.com/products/autodl/j2se" />
 				</resources>
 
 				<security>
@@ -125,8 +103,10 @@
 		</echoxml>
 	</target>
 
+	
 	<target name="signJars" depends="makeJars">
 		<signjar keystore="keystore" jar="./build/dist/sneer-bootstrap.jar" alias="mykey" storepass="amanda" />
 	</target>
 
+	
 </project>
