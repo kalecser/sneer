@@ -98,6 +98,9 @@ class FileDownload extends AbstractDownload {
 			finishWithSuccess();
 		} else {
 			_fileSizeInBlocks = (int) ((contents.fileSize - 1) / Protocol.FILE_BLOCK_SIZE) + 1;
+//			if (_path.exists())
+//				_nextBlockToWrite = (int) (_path.length() / Protocol.FILE_BLOCK_SIZE);
+//			_output = new FileOutputStream(_path, true);
 			_output = new FileOutputStream(_path);
 		}
 	}
