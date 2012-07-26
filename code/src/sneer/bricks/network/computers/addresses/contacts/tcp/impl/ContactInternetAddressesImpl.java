@@ -8,7 +8,7 @@ import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.contacts.tcp.ContactInternetAddresses;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
-import sneer.bricks.network.computers.tcp.connections.Sighting;
+import sneer.bricks.network.computers.tcp.connections.TcpSighting;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.CollectionSignals;
@@ -20,12 +20,12 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 	SetRegister<InternetAddress> _addresses = my(CollectionSignals.class).newSetRegister();
 	
 	{
-		my(TupleSpace.class).keep(Sighting.class);
+		my(TupleSpace.class).keep(TcpSighting.class);
 	}
 	
 	
 	@SuppressWarnings("unused")
-	private final WeakContract _refToAvoidGc = my(TupleSpace.class).addSubscription(Sighting.class, new Consumer<Sighting>() { @Override public void consume(Sighting sighting) {
+	private final WeakContract _refToAvoidGc = my(TupleSpace.class).addSubscription(TcpSighting.class, new Consumer<TcpSighting>() { @Override public void consume(TcpSighting sighting) {
 		handle(sighting);
 	}});
 
@@ -42,7 +42,7 @@ class ContactInternetAddressesImpl implements ContactInternetAddresses {
 	}
 
 	
-	private void handle(final Sighting sighting) {
+	private void handle(final TcpSighting sighting) {
 		final Contact contact = my(ContactSeals.class).contactGiven(sighting.peersSeal);
 		if (contact == null) return;
 		
