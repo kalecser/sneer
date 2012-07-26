@@ -12,8 +12,6 @@ import javax.swing.JList;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
-import basis.lang.Consumer;
-
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.network.computers.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
@@ -34,6 +32,7 @@ import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactTextProvider;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import sneer.bricks.snapps.contacts.gui.comparator.ContactComparator;
+import basis.lang.Consumer;
 
 class ContactsGuiImpl implements ContactsGui {
 
@@ -60,6 +59,7 @@ class ContactsGuiImpl implements ContactsGui {
 		my(InstrumentRegistry.class).registerInstrument(this);
 	} 
 
+	
 	@Override
 	public void init(InstrumentPanel window) {
 		_container = window.contentPane();
@@ -79,6 +79,7 @@ class ContactsGuiImpl implements ContactsGui {
 		new ListContactsPopUpSupport();
 	}
 
+	
 	private void addDefaultContactAction() {
 		contactList().addMouseListener(new MouseAdapter(){ @Override public void mouseReleased(MouseEvent e) {
 			if (e.getClickCount() > 1)
@@ -86,20 +87,24 @@ class ContactsGuiImpl implements ContactsGui {
 		}});
 	}
 
+	
 	@Override
 	public int defaultHeight() {
 		return 144;
 	}
+	
 	
 	@Override
 	public String title() {
 		return "My Contacts";
 	}
 	
+	
 	@Override
 	public Signal<Contact> selectedContact(){
 		return _contactList.selectedElement();
 	}
+	
 	
 	private void addContactActions(MenuGroup<? extends JComponent> menuGroup) {
 		menuGroup.addAction(-100, new Action() {
@@ -109,24 +114,27 @@ class ContactsGuiImpl implements ContactsGui {
 				}});
 	}
 	
+	
 	private Contact newContact() {
 		return my(Contacts.class).produceContact("<New Contact>");
 	}
 
-	private JList contactList() {
-		return (JList)_contactList.getComponent();
+	
+	private JList<Contact> contactList() {
+		return (JList<Contact>)_contactList.getComponent();
 	}	
 
+	
 	private final class ListContactsPopUpSupport {
 		private ListContactsPopUpSupport() {
-			final JList list = _contactList.getMainWidget();
+			final JList<Contact> list = _contactList.getMainWidget();
 			my(PopupTrigger.class).listen(list, new Consumer<MouseEvent>(){ @Override public void consume(MouseEvent e) {
 				tryToShowContactMenu(e);
 			}});
 		}
 		
 		private void tryToShowContactMenu(MouseEvent e) {
-			JList list = _contactList.getMainWidget();
+			JList<Contact> list = _contactList.getMainWidget();
 			int index = list.locationToIndex(e.getPoint());
 			list.getSelectionModel().setSelectionInterval(index, index);
 			if (!e.isPopupTrigger()) return;
@@ -141,6 +149,7 @@ class ContactsGuiImpl implements ContactsGui {
 		}
 	}
 
+	
 	@Override
 	public void registerContactTextProvider(ContactTextProvider textProvider) {
 		_labelProvider.register(textProvider);

@@ -49,7 +49,7 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 	private static final JToggleButton _selectButton = new JToggleButton(loadIcon("add.png"));
 	private static final JToggleButton _rejectButton = new JToggleButton(loadIcon("rejectedVersion.png"));
 	private final JTree _tree = new JTree();
-	private final JList _files = new JList();
+	private final JList<FileVersionWrapper> _files = new JList<FileVersionWrapper>();
 	private final TextDiffPanel _diffPanel = my(TextDiffPanels.class).newPanel();
 	
 	private final Integer _OFFSET_X = 20;
@@ -151,7 +151,7 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 		
 		Object selected = _tree.getSelectionPath().getLastPathComponent();
 		if(! (selected instanceof BrickVersionTreeNode)){
-			_files.setModel(new DefaultListModel());
+			_files.setModel(new DefaultListModel<FileVersionWrapper>());
 			return;
 		}
 		
@@ -161,7 +161,7 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 	}	
 	
 	private void tryCompare() {
-		FileVersionWrapper selectedWrapper = (FileVersionWrapper)_files.getSelectedValue();
+		FileVersionWrapper selectedWrapper = _files.getSelectedValue();
 		if(selectedWrapper==null) {
 			_diffPanel.compare("","");
 			return;			
@@ -259,6 +259,6 @@ class BricksGuiImpl extends JFrame implements BricksGui {
 //		RootTreeNode root = new RootTreeNode(FakeModel.bricks()); //Uncomment to see mock data.
 		
 		_tree.setModel(new DefaultTreeModel(root));
-		_files.setModel(new DefaultListModel());
+		_files.setModel(new DefaultListModel<FileVersionWrapper>());
 	}
 }

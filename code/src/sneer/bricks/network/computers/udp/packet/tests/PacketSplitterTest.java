@@ -2,8 +2,8 @@ package sneer.bricks.network.computers.udp.packet.tests;
 
 import static basis.environments.Environments.my;
 import static java.lang.String.format;
-import static java.util.Arrays.copyOfRange;
-import static sneer.bricks.network.computers.udp.packet.PacketSplitter.OpCode.Checksum;
+import static sneer.bricks.network.computers.udp.packet.PacketSplitter.OpCode.First;
+import static sneer.bricks.network.computers.udp.packet.PacketSplitter.OpCode.Unique;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -41,15 +41,15 @@ public class PacketSplitterTest extends BrickTestBase {
 	@Test(timeout = 1000)
 	public void splitSeveralPackets() {
 		sendSplittedBy(9, "Hey Neide");
-		assertJoinedMessage("Piece: Hey Neid", "Piece: e", "Checksum: 3394");
+		assertJoinedMessage("First(SEQ: 1 REMAINING: 1): Hey Ne", "Piece(SEQ: 1 ORDER: 1): ide");
 	}
 	
 
 	@Test(timeout = 1000)
 	public void splitSeveralPacketsForEachMessage() {
-		sendSplittedBy(9, "Hey Neide", "How are you?");
-		assertJoinedMessage("Piece: Hey Neid", "Piece: e", "Checksum: 3394",
-							"Piece: How are ", "Piece: you?", "Checksum: 6063");
+		sendSplittedBy(8, "Hey Neide", "How are you?");
+		assertJoinedMessage("First(SEQ: 1 REMAINING: 1): Hey N", "Piece(SEQ: 1 ORDER: 1): eide",
+							"First(SEQ: 2 REMAINING: 2): How a", "Piece(SEQ: 2 ORDER: 1): re yo", "Piece(SEQ: 2 ORDER: 2): u?");
 	}
 	
 
@@ -73,17 +73,20 @@ public class PacketSplitterTest extends BrickTestBase {
 
 
 	private String formatData(byte[] bytes) {
-		OpCode type = OpCode.search(bytes[0]);
+		ByteBuffer buffer = ByteBuffer.wrap(bytes);
+		OpCode type = OpCode.search(buffer.get());
+
+		if (type == Unique)
+			return format("Unique: %s", payload(buffer));
 		
-		Object data;
-		if (type == Checksum) {
-			ByteBuffer buffer = ByteBuffer.wrap(copyOfRange(bytes, 1, bytes.length));
-			data = buffer.getLong();
-		} else {
-			data = new String(copyOfRange(bytes, 1, bytes.length));
-		}
-		
-		return format("%s: %s", type, data);
+		return format("%s(SEQ: %s %s: %s): %s", type, buffer.get(), (type == First ? "REMAINING" : "ORDER"), buffer.get(), payload(buffer));
+	}
+
+
+	private String payload(ByteBuffer buffer) {
+		byte[] payload = new byte[buffer.remaining()];
+		buffer.get(payload);
+		return new String(payload);
 	}
 
 

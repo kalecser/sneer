@@ -62,27 +62,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		}});
 	}
 
-		//To do:
 	
-		//HAIL:
-		//First Hand Sightings - done
-		//Sneer Host & Port Own Attributes
-		//	Set in Settings Window
-		//Second Hand Sightings:
-		//	Stun response - done
-		//	Remote sighting
-	
-		//Direct Connect
-	
-		//Persist sightings
-		//Purge old sightings
-	
-		//Spread outgoing port. "Objective Solutions Curitiba" mode.
-	
-	
-
-	
-
 	@Test (timeout=2000)
 	public void onSighting_ShouldHail() throws Exception {
 		setOwnName("Wesley");

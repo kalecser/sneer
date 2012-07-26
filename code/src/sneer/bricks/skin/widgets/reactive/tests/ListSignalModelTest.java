@@ -25,14 +25,14 @@ public class ListSignalModelTest extends BrickTestBase {
 	private ListRegister<Register<String>> _listRegister = my(CollectionSignals.class).newListRegister();
 	private StringBuilder _events;
 
-	@Test
+	@Test(timeout=2000)
 	public void test() {
 		clearEvents();
 		
 		addElement("0");
 		assertEvents("");
 		
-		ListModel subject = _factory.newListSignalModel(_listRegister.output(), chooser());
+		ListModel<Register<String>> subject = _factory.newListSignalModel(_listRegister.output(), chooser());
 		subject.addListDataListener(eventRecorder());
 		
 		Register<String> r1 = addElement("1");

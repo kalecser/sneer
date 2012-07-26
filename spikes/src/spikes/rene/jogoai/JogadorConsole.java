@@ -12,7 +12,12 @@ class JogadorConsole implements Jogador {
 	@Override
 	public String answer(String msg) {
 		acknowledge(msg);
-		return new Scanner(System.in).nextLine();
+		Scanner scanner = new Scanner(System.in);
+		try {
+			return scanner.nextLine();
+		} finally {
+			scanner.close();
+		}
 	}
 
 	@Override

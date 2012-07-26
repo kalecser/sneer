@@ -6,7 +6,7 @@ package sneer.bricks.network.computers.addresses.contacts.tcp.impl;
 import static basis.environments.Environments.my;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.own.port.OwnPort;
-import sneer.bricks.network.computers.tcp.connections.Sighting;
+import sneer.bricks.network.computers.tcp.connections.TcpSighting;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Signal;
@@ -14,10 +14,10 @@ import sneer.bricks.pulp.reactive.Signal;
 final class InternetAddressImpl implements InternetAddress {
 
 	public final Contact _contact;
-	public final Sighting _sighting;
+	public final TcpSighting _sighting;
 
 	
-	InternetAddressImpl(Contact contact, Sighting sighting) {
+	InternetAddressImpl(Contact contact, TcpSighting sighting) {
 		_contact = contact;
 		_sighting = sighting;
 	}

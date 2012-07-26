@@ -12,7 +12,7 @@ import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.Call;
 import sneer.bricks.network.computers.tcp.ByteArraySocket;
 import sneer.bricks.network.computers.tcp.TcpNetwork;
-import sneer.bricks.network.computers.tcp.connections.Sighting;
+import sneer.bricks.network.computers.tcp.connections.TcpSighting;
 import sneer.bricks.network.computers.tcp.protocol.ProtocolTokens;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
@@ -51,7 +51,7 @@ class IncomingHandShaker {
 
 	private static void notifySighting(final Seal contactsSeal, ByteArraySocket socket) {
 		String ip = my(TcpNetwork.class).remoteIpFor(socket);
-		my(TupleSpace.class).add(new Sighting(contactsSeal, ip));
+		my(TupleSpace.class).add(new TcpSighting(contactsSeal, ip));
 	}
 
 

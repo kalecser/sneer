@@ -14,7 +14,7 @@ import basis.lang.CacheMap;
 import basis.lang.Producer;
 
 
-class RListCellRenderer<ELEMENT> implements ListCellRenderer {
+class RListCellRenderer<ELEMENT> implements ListCellRenderer<ELEMENT> {
 
 	private final DefaultListCellRenderer _renderer = new DefaultListCellRenderer();
 	private final LabelProvider<ELEMENT> _labelProvider;
@@ -28,8 +28,7 @@ class RListCellRenderer<ELEMENT> implements ListCellRenderer {
 	
 	
 	@Override
-	public Component getListCellRendererComponent(JList jList, Object elementObject, int index, boolean isSelected, boolean cellHasFocus) {
-		ELEMENT element = (ELEMENT)elementObject;
+	public Component getListCellRendererComponent(JList<? extends ELEMENT> jList, ELEMENT element, int index, boolean isSelected, boolean cellHasFocus) {
 		JLabel label = (JLabel)_renderer.getListCellRendererComponent(jList, element, index, isSelected, cellHasFocus);
 
 		ImageIcon icon = iconFor(element);
@@ -60,5 +59,6 @@ class RListCellRenderer<ELEMENT> implements ListCellRenderer {
 	private String textFor(ELEMENT element) {
 		return _labelProvider.textFor(element).currentValue();
 	}
+
 	
 }

@@ -15,7 +15,7 @@ import sneer.bricks.network.computers.addresses.contacts.tcp.ContactInternetAddr
 import sneer.bricks.network.computers.addresses.keeper.InternetAddress;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.addresses.own.port.OwnPort;
-import sneer.bricks.network.computers.tcp.connections.Sighting;
+import sneer.bricks.network.computers.tcp.connections.TcpSighting;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
@@ -60,7 +60,7 @@ public class ContactInternetAddressesTest extends BrickTestWithTuples {
 	
 	private void see(final String ip, final int port) {
 		Environments.runWith(remote(), new Closure() { @Override public void run() {
-			Sighting result = new Sighting(ownSeal(), ip);
+			TcpSighting result = new TcpSighting(ownSeal(), ip);
 			my(TupleSpace.class).add(result);
 		}});
 		waitForAllDispatchingToFinish();

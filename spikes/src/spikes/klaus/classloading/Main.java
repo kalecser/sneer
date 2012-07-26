@@ -11,7 +11,7 @@ public class Main extends ClassLoader {
 	public static void main(String[] args) throws Exception {
 //		ClassLoader cl = new TracingClassLoader(new File("bin"));
 		
-		ClassLoader cl = createGarbageCollectableClassLoader(new File("bin"));
+		URLClassLoader cl = createGarbageCollectableClassLoader(new File("bin"));
 		Class<?> clazz = cl.loadClass("spikes.klaus.classloading.HelloWorld");
 		clazz.newInstance();
 		
@@ -23,7 +23,7 @@ public class Main extends ClassLoader {
 
 	private static void checkIfResourcesAreFreed() throws IOException {
 		System.out.println("File deleted: " + new File("tmp.tmp").delete());
-		new ServerSocket(12345);
+		new ServerSocket(12345).close();
 	}
 
 	private static URLClassLoader createGarbageCollectableClassLoader(File binDirectory) throws Exception {

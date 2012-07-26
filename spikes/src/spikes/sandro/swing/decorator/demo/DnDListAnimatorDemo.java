@@ -14,13 +14,13 @@ public class DnDListAnimatorDemo {
 		JFrame f = new JFrame("Smooth List Drop");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		DefaultListModel model = new DefaultListModel();
+		DefaultListModel<String> model = new DefaultListModel<String>();
 		model.addElement("Klaus");
 		model.addElement("Bamboo");
 		model.addElement("Sandro");
 		model.addElement("Nell");
 		
-		final JList list = new JList(model);
+		final JList<String> list = new JList<String>(model);
 		
 		addDnDListeners(list);
 		
@@ -29,14 +29,14 @@ public class DnDListAnimatorDemo {
 		f.setVisible(true);
 	}
 
-	private static void addDnDListeners(final JList lst) {
-		ListAnimatorDecorator smoother = new ListAnimatorDecorator(lst) {
+	private static void addDnDListeners(final JList<String> lst) {
+		ListAnimatorDecorator<String> smoother = new ListAnimatorDecorator<String>(lst) {
 			@Override
 			protected void move(int fromIndex, int toIndex) {
-				DefaultListModel model = (DefaultListModel) lst.getModel();
-				Object tmp = model.getElementAt(fromIndex);
+				DefaultListModel<String> model = (DefaultListModel<String>)lst.getModel();
+				String tmp = model.getElementAt(fromIndex);
 				model.removeElementAt(fromIndex);
-				model. add(toIndex,tmp );
+				model.add(toIndex,tmp );
 				lst.revalidate();
 				lst.repaint();
 			}

@@ -7,11 +7,11 @@ import java.awt.event.MouseMotionListener;
 
 public class ListAnimatorMouseListener extends MouseAdapter implements MouseMotionListener {
 	
-	private ListAnimatorDecorator _animator;
+	private ListAnimatorDecorator<?> _animator;
 	private boolean _dragActive;
 	private Point _origin;
 
-	public ListAnimatorMouseListener(ListAnimatorDecorator animator) {
+	public ListAnimatorMouseListener(ListAnimatorDecorator<?> animator) {
 		this._animator = animator;
 	}
 

@@ -8,7 +8,7 @@ public interface PacketSplitter {
 	
 	public enum OpCode {
 		
-		Unique, Piece, Checksum;
+		Unique, First, Piece;
 
 		static public OpCode search(int ordinal) {
 			if (ordinal < 0) return null;

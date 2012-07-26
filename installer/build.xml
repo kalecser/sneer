@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="sneer" default="makejar">
+
+	<property name="build" location="build" />
+	<property name="bin" location="${build}/bin" />
+	<property name="dist" location="${build}/dist" />
+	
+	<property name="project" location="../code" />
+	<property name="src" location="${project}/src" />
+
+	
+	<target name="clean">
+		<delete dir="${build}"/>
+		<mkdir dir="${bin}"/>
+	</target>
+
+
+	<target name="copy-resources" depends="clean">
+		<copy todir="${bin}">
+			<fileset dir="${src}">
+				<include name='**/**'/>
+				<exclude name='**/*.java'/>
+			</fileset>
+		</copy>
+	</target>
+
+	
+	<target name="compile" depends="clean, copy-resources">
+		<path id="classpath">
+			<fileset dir="${src}">
+				<include name='**/*.jar' />
+			</fileset>
+		</path>
+		<javac srcdir="${src}" destdir="${bin}" failonerror="true" debug="on" source="1.7" target="1.7" encoding="utf-8" includeAntRuntime="false">
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+
+	
+	<target name="makejar" depends="compile">
+		<mkdir dir="${dist}"/>
+		
+		<jar destfile="${dist}/sneer.jar">
+			<fileset dir="${project}">
+				<include name='**/*.*' />
+				<exclude name='bin/' />
+			</fileset>
+			<fileset dir="${build}">
+				<include name='bin/**' />
+			</fileset>
+		</jar>
+	</target>
+	
+</project>

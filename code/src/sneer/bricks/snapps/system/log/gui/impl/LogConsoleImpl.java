@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.Icon;
@@ -31,9 +32,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import basis.lang.Closure;
-import basis.lang.Consumer;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.actions.Action;
@@ -56,6 +54,8 @@ import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
 import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.system.log.gui.LogConsole;
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 class LogConsoleImpl extends JFrame implements LogConsole {
 
@@ -179,6 +179,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		return filter;
 	}
 
+	
 	private void initAddFilterAction( final ListRegister<String> whiteListEntries, final JTextField newInclude, JButton addButton) {
 		addButton.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
 			String value = newInclude.getText();
@@ -188,16 +189,15 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		}});
 	}
 
-	private void initDeleteFilterAction(
-			final ListRegister<String> whiteListEntries,
-			final ListWidget<String> includes, JButton delButton) {
+	private void initDeleteFilterAction(final ListRegister<String> whiteListEntries, final ListWidget<String> includes, JButton delButton) {
 		delButton.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
-			Object[] values = includes.getMainWidget().getSelectedValues();
-			for (Object value : values) 
-				whiteListEntries.remove((String)value);
+			List<String> values = includes.getMainWidget().getSelectedValuesList();
+			for (String value : values) 
+				whiteListEntries.remove(value);
 		}});
 	}
 
+	
 	private void initClearLogAction() {
 		
 		_popupMenu.addAction(100, new Action(){
@@ -236,11 +236,11 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 	}
 
 	
-	private JButton newButton(final String iconName, final Insets mangin) {
+	private JButton newButton(final String iconName, final Insets margin) {
 		Icon icon = my(Icons.class).load(this.getClass(), iconName);
 		JButton button = new JButton(icon);
 		
-		button.setMargin(mangin);
+		button.setMargin(margin);
 		button.setBorder(new EmptyBorder(0, 0, 0, 0));
 		
 		return button;

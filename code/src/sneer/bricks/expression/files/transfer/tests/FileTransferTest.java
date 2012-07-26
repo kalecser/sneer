@@ -40,14 +40,6 @@ public class FileTransferTest extends BrickTestWithTuples {
 	@SuppressWarnings("unused")	private WeakContract ref;
 	
 
-		
-	/*
-	 * - Unrevert hash check of downloaded file.
-	 * - Download recovery on crash and startup.
-	 * - Folder per contact
-	 * - Performance: Request and block exchange is currently synchronous. Send block speculatively.
-	 * - Auto accept per contact
-	 */
 	@Test (timeout=4000)
 	public void singleFileTransfer() throws IOException, MappingStopped {
 		File file = createTmpFileWithFileNameAsContent("banana");

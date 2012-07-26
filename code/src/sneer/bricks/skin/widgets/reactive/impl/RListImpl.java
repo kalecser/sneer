@@ -23,7 +23,7 @@ import sneer.bricks.skin.widgets.reactive.LabelProvider;
 import sneer.bricks.skin.widgets.reactive.ListWidget;
 import basis.lang.Closure;
 
-class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
+class RListImpl<ELEMENT> extends JList<ELEMENT> implements ListWidget<ELEMENT> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -55,7 +55,7 @@ class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
 
 	
 	@Override
-	public JList getMainWidget() {
+	public JList<ELEMENT> getMainWidget() {
 		return this;
 	}
 
@@ -72,7 +72,7 @@ class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
 		addMouseListener(new MouseAdapter(){@Override public void mouseReleased(MouseEvent e) {
 			int index = locationToIndex(e.getPoint());
 			if (index == -1) return;
-			final ELEMENT element = (ELEMENT) getModel().getElementAt(index);
+			final ELEMENT element = getModel().getElementAt(index);
 			if(getSelectedValue()  != element)
 				setSelectedValue(element, true);
 			
@@ -80,7 +80,7 @@ class RListImpl<ELEMENT> extends JList implements ListWidget<ELEMENT> {
 		}});
 		
 		addKeyListener(new KeyAdapter(){ @Override public void keyReleased(KeyEvent e) {
-			ELEMENT element = (ELEMENT) getSelectedValue();
+			ELEMENT element = getSelectedValue();
 			changeSelectedElement(element);
 		}});
 

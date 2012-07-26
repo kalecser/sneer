@@ -31,7 +31,6 @@ public class UdpServerImpl implements UdpServer {
 	}
 	
 	
-	synchronized
 	private void handlePort(int port) {
 		closeSessionIfNecessary();
 		if (port < 1) return; 
@@ -41,9 +40,10 @@ public class UdpServerImpl implements UdpServer {
 	}
 
 
+	synchronized
 	private void send(DatagramPacket packet) {
-		if (portSession == null) return;
-		portSession.send(packet);
+		if (portSession != null)
+			portSession.send(packet);
 	}
 	
 	
@@ -54,6 +54,7 @@ public class UdpServerImpl implements UdpServer {
 	}
 
 
+	synchronized
 	private void closeSessionIfNecessary() {
 		if (portSession == null) return;
 		portSession.crash();

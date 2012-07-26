@@ -24,7 +24,7 @@ public class Navegacao extends JFrame implements MouseListener, MouseMotionListe
 	private static final long serialVersionUID = 1L;
 	private JLabel statusBar;
 	private JLabel foto;
-	private JComboBox imagesComboBox;
+	private JComboBox<String> imagesComboBox;
 	private String  cordenadas ;
 	private Properties _properties = new Properties();
 	public String _nome ;
@@ -140,8 +140,8 @@ public class Navegacao extends JFrame implements MouseListener, MouseMotionListe
 		
 		String names[] = { "Fotos relacionadas", imagemRelation};
 		final Icon icons[] = { new ImageIcon( names[ 0 ] ), new ImageIcon( names[ 1 ] ) };
-		imagesComboBox = new JComboBox( names );
-		imagesComboBox.setMaximumRowCount( 3 );
+		imagesComboBox = new JComboBox<String>(names);
+		imagesComboBox.setMaximumRowCount(3);
 		imagesComboBox.addItemListener(
         
 		     

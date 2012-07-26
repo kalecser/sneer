@@ -4,9 +4,9 @@ import javax.swing.JList;
 
 import sneer.bricks.pulp.reactive.Signal;
 
-public interface ListWidget<ELEMENT> extends ComponentWidget<JList>{
+public interface ListWidget<E> extends ComponentWidget<JList<E>>{
 
-	Signal<ELEMENT> selectedElement();
+	Signal<E> selectedElement();
 	void clearSelection();
 
 }

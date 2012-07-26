@@ -3,7 +3,7 @@ package sneer.bricks.network.computers.udp.packet.impl;
 import static java.lang.Math.ceil;
 import static java.lang.Math.min;
 import static java.util.Arrays.copyOfRange;
-import static sneer.bricks.network.computers.udp.packet.PacketSplitter.OpCode.Checksum;
+import static sneer.bricks.network.computers.udp.packet.PacketSplitter.OpCode.First;
 import static sneer.bricks.network.computers.udp.packet.PacketSplitter.OpCode.Piece;
 import static sneer.bricks.network.computers.udp.packet.PacketSplitter.OpCode.Unique;
 
@@ -16,69 +16,85 @@ import sneer.bricks.network.computers.udp.packet.PacketSplitter.OpCode;
 
 class SequenceScheduler implements PacketScheduler {
 	
+	private static final int HEADER_SIZE = 3;
+	
 	private final PacketScheduler scheduler;
 	private final Deque<byte[]> packetsToSend = new LinkedList<byte[]>();
 	private final int payloadSize;
+	private byte group = 0;
 	
 
 	SequenceScheduler(PacketScheduler scheduler, int maxPacketSize) {
-		if(maxPacketSize < 9)
-			throw new IllegalStateException("Packet size should be greater than 9 (8 bytes for long checksum + 1 for opcode)");
-		
 		this.scheduler = scheduler;
-		this.payloadSize = maxPacketSize - 1;
+		this.payloadSize = maxPacketSize;
 	}
 	
 
 	@Override
 	public byte[] highestPriorityPacketToSend() {
 		if(!packetsToSend.isEmpty()) return packetsToSend.peek();
-		splitHighestPackets();
+		splitHighestPacket();
 		return packetsToSend.peek();		
 	}
 	
 
-	private void splitHighestPackets() {
+	private void splitHighestPacket() {
 		byte[] packet = scheduler.highestPriorityPacketToSend();
-		double numberOfPackets = ceil(packet.length / (double) payloadSize);
 				
-		if (numberOfPackets == 1) {
-			packetsToSend.add(prepare(Unique, packet));
+		if (packet.length + 1 <= payloadSize) {
+			uniquePacket(packet);
 			return;
 		}
+		
+		multiplePackets(packet);
+	}
 
-		for (int i = 0; i < numberOfPackets; i++) {
-			int from = i * payloadSize;
-			int to = from + payloadSize;
-			byte[] payload = copyOfRange(packet, from, min(to, packet.length));
+
+	private void multiplePackets(byte[] packet) {
+		int numberOfPackets = (int) ceil(packet.length / (double)(payloadSize - HEADER_SIZE));
+		
+		group++;
+		
+		for (int piece = 0; piece < numberOfPackets; piece++)
+			cropPacket(packet, numberOfPackets, piece);
+	}
+
+
+	private void cropPacket(byte[] packet, int numberOfPackets, int piece) {
+		int from = piece * (payloadSize - HEADER_SIZE);
+		int to = from + payloadSize - HEADER_SIZE;
+		byte[] payload = copyOfRange(packet, from, min(to, packet.length));
+
+		OpCode opCode = piece == 0 ? First : Piece;
+
+		ByteBuffer buffer = prepare(opCode, payload.length + HEADER_SIZE);
+		buffer.put(group);
+		
+		if (opCode == First)
+			buffer.put((byte) (numberOfPackets - 1));
+		else
+			buffer.put((byte)piece);
 			
-			packetsToSend.add(prepare(Piece, payload));
-		}
-		
-		byte[] sum = checksum(packet);
-		packetsToSend.add(prepare(Checksum, sum));
-	}
-	
-
-	private byte[] prepare(OpCode type, byte[] payload) {
-		ByteBuffer buffer = ByteBuffer.allocate(payload.length + 1);
-		buffer.put((byte) type.ordinal());
 		buffer.put(payload);
-		return buffer.array();
+
+		packetsToSend.add(buffer.array());
 	}
 
-	
-	private byte[] checksum(byte[] packet) {
-		ByteBuffer buffer = ByteBuffer.allocate(8);
-		
-		long sum = 0;		
-		for(int i = 1 ; i < packet.length; i++) sum += packet[i] * i;
-		buffer.putLong(sum);
-		
-		return buffer.array();
+
+	private void uniquePacket(byte[] packet) {
+		ByteBuffer buffer = prepare(Unique, packet.length + 1);
+		buffer.put(packet);
+		packetsToSend.add(buffer.array());
 	}
 	
-
+	
+	private ByteBuffer prepare(OpCode type, int size) {
+		ByteBuffer buffer = ByteBuffer.allocate(size);
+		buffer.put((byte) type.ordinal());
+		return buffer;
+	}
+	
+	
 	@Override
 	public void previousPacketWasSent() {
 		if (!packetsToSend.isEmpty())

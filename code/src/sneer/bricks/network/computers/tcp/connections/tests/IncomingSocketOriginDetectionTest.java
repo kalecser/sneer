@@ -20,7 +20,7 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.tcp.ByteArraySocket;
 import sneer.bricks.network.computers.tcp.TcpNetwork;
-import sneer.bricks.network.computers.tcp.connections.Sighting;
+import sneer.bricks.network.computers.tcp.connections.TcpSighting;
 import sneer.bricks.network.computers.tcp.connections.TcpConnectionManager;
 import sneer.bricks.network.computers.tcp.protocol.ProtocolTokens;
 import sneer.bricks.network.social.Contact;
@@ -68,7 +68,7 @@ public class IncomingSocketOriginDetectionTest extends BrickTestBase {
 
 		final Latch sightingNotified = new Latch();
 		@SuppressWarnings("unused")
-		WeakContract refToAvoidGc = my(TupleSpace.class).addSubscription(Sighting.class, new Consumer<Sighting>() { @Override public void consume(Sighting sighting) {
+		WeakContract refToAvoidGc = my(TupleSpace.class).addSubscription(TcpSighting.class, new Consumer<TcpSighting>() { @Override public void consume(TcpSighting sighting) {
 			assertEquals(_otherSeal, sighting.peersSeal);
 			assertEquals("10.42.10.42", sighting.ip);
 			sightingNotified.open();
