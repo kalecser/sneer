@@ -36,9 +36,9 @@ class UdpPortSession {
 
 
 	private boolean tryToOpenSocket() {
-		my(BlinkingLights.class).turnOffIfNecessary(openError);
 		try {
 			socketHolder = new UdpSocketHolder(port, receiver);
+			my(BlinkingLights.class).turnOffIfNecessary(openError);
 		} catch (SocketException e) {
 			my(BlinkingLights.class).turnOnIfNecessary(openError, "Network Error", "Unable to open UDP socket on port " + port + " (trying every few seconds)...", e);
 			return false;
