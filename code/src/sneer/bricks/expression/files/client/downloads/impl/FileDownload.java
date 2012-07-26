@@ -93,6 +93,7 @@ class FileDownload extends AbstractDownload {
 		
 		if (contents.fileSize == 0) {
 			_fileSizeInBlocks = 0;
+			_path.delete();
 			_path.createNewFile();
 			finishWithSuccess();
 		} else {
