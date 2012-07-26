@@ -14,7 +14,10 @@ import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.name.OwnName;
+import sneer.bricks.network.computers.addresses.contacts.ContactAddresses;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
+import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
+import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.reactive.Register;
 import sneer.bricks.pulp.reactive.Signal;
@@ -26,21 +29,20 @@ class ConnectionMonitor {
 	
 	private static final Charset UTF8 = Charset.forName("UTF-8");
 	
+	private final Signal<InetSocketAddress> address;
+	private final SetSignal<InetSocketAddress> sightings;
 	private SocketAddress fastestPeerSighting = null;
 	private long lastPeerSightingTime = -UdpConnectionManager.IDLE_PERIOD;
 	private Register<Boolean> isConnected = my(Signals.class).newRegister(false);
 	private long fastestHailDelay = 0;
-	private final Signal<InetSocketAddress> address;
-	private final SetSignal<InetSocketAddress> sightings;
 	
 	@SuppressWarnings("unused") private WeakContract refToAvoidGC;	
 	@SuppressWarnings("unused")	private WeakContract refToAvoidGC2;
 
 	
-	
-	ConnectionMonitor(Signal<InetSocketAddress> address, SetSignal<InetSocketAddress> sightings) {
-		this.address = address;
-		this.sightings = sightings;
+	ConnectionMonitor(Contact contact) {
+		this.address = my(ContactAddresses.class).given(contact);
+		this.sightings = my(SightingKeeper.class).sightingsOf(contact);
 		startHailing();
 	}
 

@@ -10,7 +10,6 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.network.computers.addresses.contacts.ContactAddresses;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
@@ -24,16 +23,14 @@ import basis.lang.Consumer;
 
 class UdpByteConnection implements ByteConnection {
 	
-	private Consumer<? super byte[]> receiver;
 	private final Contact contact;
+	private Consumer<? super byte[]> receiver;
 	private final ConnectionMonitor monitor;
 	private final Light error = my(BlinkingLights.class).prepare(LightType.ERROR);
 
 	UdpByteConnection(Contact contact) {
 		this.contact = contact;
-		this.monitor = new ConnectionMonitor(
-			my(ContactAddresses.class).given(contact), 
-			my(SightingKeeper.class).sightingsOf(contact));
+		this.monitor = new ConnectionMonitor(contact);
 	}
 
 	@Override

@@ -25,7 +25,7 @@ public class ListSignalModelTest extends BrickTestBase {
 	private ListRegister<Register<String>> _listRegister = my(CollectionSignals.class).newListRegister();
 	private StringBuilder _events;
 
-	@Test
+	@Test(timeout=2000)
 	public void test() {
 		clearEvents();
 		

@@ -67,7 +67,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		//HAIL:
 		//First Hand Sightings - done
 		//Sneer Host & Port Own Attributes
-		//	Set in Settings Window
+		//  Use for connections - done
+		//	Improve Settings Window
 		//Second Hand Sightings:
 		//	Stun response - done
 		//	Remote sighting
