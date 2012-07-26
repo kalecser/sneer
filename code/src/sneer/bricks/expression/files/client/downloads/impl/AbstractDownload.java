@@ -33,7 +33,7 @@ abstract class AbstractDownload implements Download {
 	private static int DURATION_TIMEOUT = 30 * 60 * 1000;
 	private static boolean IGNORE_DURATION_TIMEOUT = true;
 
-	static final int REQUEST_INTERVAL = 15 * 1000;
+	static final int REQUEST_INTERVAL = 5 * 1000;
 	
 	private static final String DOT_PART = my(DotParts.class).dotPartExtention();
 	
