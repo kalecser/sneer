@@ -13,6 +13,7 @@ import basis.brickness.Nature;
 
 class ClassLoaderForBrickLibs extends ClassLoaderForBricks {
 
+	@SuppressWarnings("resource")
 	static ClassLoader newInstanceIfNecessary(Class<?> brick, File classpath, String implPackage, List<Nature> natures, ClassLoader apiClassLoader) {
 		URL[] jars = jars(classpath, implPackage);
 		return jars.length == 0

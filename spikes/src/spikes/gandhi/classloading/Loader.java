@@ -47,6 +47,7 @@ public class Loader {
 		URL[] urls = new URL[]{new File(externalClasspath).toURI().toURL()};
 		URLClassLoader ucl = new URLClassLoader(urls, ObjectInterface.class.getClassLoader());
 		Class<?> clazz = ucl.loadClass("spikes.gandhi.classloading.ObjectImplementation");
+		ucl.close();
 		return (ObjectInterface) clazz.newInstance();
 	}
 
