@@ -58,7 +58,7 @@ public class GraphFrame extends JFrame { private static final long serialVersion
 		float yReal = yMin + (scale * yPixel / _HEIGHT);
 
 		buffer[(_HEIGHT - yPixel) * _WIDTH + xPixel] = colorFor(xReal, yReal);
-		ops += 12;
+		ops += 9;
 	}
 
 
@@ -73,7 +73,7 @@ public class GraphFrame extends JFrame { private static final long serialVersion
 			x = temp;
 		}
 
-		ops += 11;
+		ops += 10;
 		
 		return blue == 255 ? 0 : blue;
 	}
