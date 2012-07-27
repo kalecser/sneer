@@ -5,7 +5,6 @@ import static basis.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.client.FileClient;
@@ -30,26 +29,24 @@ public class RemoteCopyTest extends FileCopyTestBase {
 	private final Environment remote = remote(my(Clock.class));
 
 
-	@Test (timeout = 4000)
-	public void testPartialDownloadRecoveryWithSizeDivisibleByBlock() throws Exception {
-		int size = Protocol.FILE_BLOCK_SIZE * 666;
+	@Test (timeout = 3000)
+	public void partialDownloadRecoveryWithSizeDivisibleByBlock() throws Exception {
+		int size = Protocol.FILE_BLOCK_SIZE * 5;
 		partialDownloadRecovery(size);
 	}
 
-	@Ignore
-	@Test (timeout = 4000)
-	public void testPartialDownloadRecoveryWithSizeNotDivisibleByBlock() throws Exception {
-		int size = Protocol.FILE_BLOCK_SIZE * 666 + 1;
+	@Test (timeout = 3000)
+	public void partialDownloadRecoveryWithSizeNotDivisibleByBlock() throws Exception {
+		int size = Protocol.FILE_BLOCK_SIZE * 5 + 1;
 		partialDownloadRecovery(size);
 	}
 
 
-	private void partialDownloadRecovery(int size) throws IOException,
-			Exception {
-		File largeFile = newTmpFile();
-		writePseudoRandomBytesTo(largeFile, 1000000);
-		File part = simulatePartialTransfer(largeFile, size);
-		testWith(largeFile);
+	private void partialDownloadRecovery(int size) throws Exception {
+		File file = newTmpFile();
+		writePseudoRandomBytesTo(file, Protocol.FILE_BLOCK_SIZE * 10);
+		File part = simulatePartialTransfer(file, size);
+		testWith(file);
 		assertFalse(part.exists());
 	}
 

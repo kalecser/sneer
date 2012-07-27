@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -105,13 +106,23 @@ class FileDownload extends AbstractDownload {
 	}
 
 
-	private void recoverDownloadIfPossible() {
+	private void recoverDownloadIfPossible() throws IOException {
 		if (!_path.exists()) return;
+
+		truncateFileToBlock();
 		_nextBlockToWrite = (int) (_path.length() / Protocol.FILE_BLOCK_SIZE);
 		publish(nextBlockRequest());
 	}
 
-	
+
+	private void truncateFileToBlock() throws IOException {
+		@SuppressWarnings("resource") //Channel delegates close to underlying stream
+		FileChannel channel = new FileOutputStream(_path, true).getChannel();
+		channel.truncate(_nextBlockToWrite * Protocol.FILE_BLOCK_SIZE);
+		channel.close();
+	}
+
+
 	private boolean firstBlockWasAlreadyReceived() {
 		return _fileSizeInBlocks != -1;
 	} 
