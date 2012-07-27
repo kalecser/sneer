@@ -45,7 +45,24 @@ class ChatFrame {
 	
 	static Message convert(final ChatMessage message) {
 		return new Message() {
-			
+			@Override
+			public Image avatar() {
+				return isByMe() 
+					? my(Images.class).getImage(getClass().getResource("me.png")) 
+					: null;
+			}
+
+			@Override
+			public String author() {
+				return isByMe() 
+					? ""
+					: my(ContactSeals.class).contactGiven(message.publisher).nickname().currentValue();
+			}
+			@Override
+			public boolean isByMe() {
+				return message.publisher.equals(my(OwnSeal.class).get().currentValue());
+			}
+
 			@Override
 			public long time() {
 				return message.publicationTime;
@@ -54,24 +71,6 @@ class ChatFrame {
 			@Override
 			public String text() {
 				return message.text;
-			}
-			
-			@Override
-			public Image avatar() {
-				return isMyOwn(message) 
-					? my(Images.class).getImage(getClass().getResource("me.png")) 
-					: null;
-			}
-
-			private boolean isMyOwn(final ChatMessage message) {
-				return message.publisher.equals(my(OwnSeal.class).get().currentValue());
-			}
-			
-			@Override
-			public String author() {
-				return isMyOwn(message) 
-					? ""
-					: my(ContactSeals.class).contactGiven(message.publisher).nickname().currentValue();
 			}
 		};
 	}

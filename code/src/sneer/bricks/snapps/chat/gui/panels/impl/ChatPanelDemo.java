@@ -81,6 +81,11 @@ class ChatPanelDemo {
 					public String author() {
 						return "Me";
 					}
+
+					@Override
+					public boolean isByMe() {
+						return true;
+					}
 				});
 			}
 		};

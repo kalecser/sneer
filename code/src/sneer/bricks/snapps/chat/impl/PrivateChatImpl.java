@@ -3,6 +3,8 @@ package sneer.bricks.snapps.chat.impl;
 import static basis.environments.Environments.my;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.Clock;
+import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.snapps.chat.ChatMessage;
@@ -47,9 +49,11 @@ class PrivateChatImpl implements PrivateChat {
 		refToAvoidGc = my(TupleSpace.class).addSubscription(ChatMessage.class, new Consumer<ChatMessage>() { @Override public void consume(ChatMessage message) {
 			if (isPublic(message)) return;
 			if (isOld(message)) return;
-			Contact contact = my(ContactSeals.class).contactGiven(message.publisher);
-			if (contact == null) return;
-			frameFor(contact).showMessage(convert(message));
+			
+			if (isByMe(message))
+				showMessage(message, message.addressee);
+			else 
+				showMessage(message, message.publisher);
 		}});
 	}
 	
@@ -71,5 +75,15 @@ class PrivateChatImpl implements PrivateChat {
 		return framesByContact.get(contact, new Producer<ChatFrame>() { @Override public ChatFrame produce() {
 			return new ChatFrame(contact);
 		}});
+	}
+
+	private void showMessage(ChatMessage message, Seal sealOfContact) {
+		Contact contact = my(ContactSeals.class).contactGiven(sealOfContact);
+		if (contact == null) return;
+		frameFor(contact).showMessage(convert(message));
+	}
+
+	private boolean isByMe(ChatMessage message) {
+		return message.publisher.equals(my(OwnSeal.class).get().currentValue());
 	}
 }
