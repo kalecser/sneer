@@ -7,8 +7,6 @@ import java.awt.Image;
 import javax.swing.JFrame;
 
 import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.hardware.clock.Clock;
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.images.Images;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
@@ -27,11 +25,8 @@ class ChatFrame {
 	private final Contact contact;
 	private ListRegister<Message> messages = my(CollectionSignals.class).newListRegister();
 	
-	@SuppressWarnings("unused")private final WeakContract refToAvoidGc;
 	private final JFrame delegate;
 	
-	private static final int TEN_MINUTES = 1000 * 60 * 10;
-
 	ChatFrame(Contact con) {
 		this.contact = con;
 		delegate = my(ReactiveWidgetFactory.class).newFrame(con.nickname()).getMainWidget();
@@ -41,35 +36,12 @@ class ChatFrame {
 			sendTo(to, message);
 		}}));
 		
-		refToAvoidGc = my(TupleSpace.class).addSubscription(ChatMessage.class, new Consumer<ChatMessage>() { @Override public void consume(ChatMessage message) {
-			if (isPublic(message)) return;
-			if (isOld(message)) return;
-			messages.add(convert(message));
-		}});
 		delegate.setBounds(100, 100, 400, 600);
 	}
 	
 	private void sendTo(Seal to, String text) {
 		my(TupleSpace.class).add(new ChatMessage(to, text));
 	}
-	
-	private boolean isPublic(ChatMessage message) {		
-		return message.addressee == null;
-	}
-
-	
-	private boolean isOld(ChatMessage message) {
-		return now() - message.publicationTime > TEN_MINUTES;
-	}
-
-	
-	private long now() {
-		return my(Clock.class).time().currentValue();
-	}
-	
-//	private String showInputDialog(String messagePrompt) {
-//		return JOptionPane.showInputDialog(messagePrompt);
-//	}
 	
 	static Message convert(final ChatMessage message) {
 		return new Message() {
@@ -104,7 +76,11 @@ class ChatFrame {
 		};
 	}
 
-	JFrame jFrame() {
-		return delegate;
+	void show() {
+		delegate.setVisible(true);
+	}
+
+	public void showMessage(Message message) {
+		messages.add(message);
 	}
 }
