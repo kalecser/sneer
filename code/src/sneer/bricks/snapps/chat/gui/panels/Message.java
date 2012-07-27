@@ -4,12 +4,13 @@ import java.awt.Image;
 
 public interface Message {
 
-	String author();
-	
 	Image avatar();
 	
-	String text();
+	String author();
+	boolean isByMe();
 	
 	long time();
+	
+	String text();
 
 }

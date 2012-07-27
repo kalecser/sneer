@@ -98,11 +98,16 @@ class FileDownload extends AbstractDownload {
 			finishWithSuccess();
 		} else {
 			_fileSizeInBlocks = (int) ((contents.fileSize - 1) / Protocol.FILE_BLOCK_SIZE) + 1;
-//			if (_path.exists())
-//				_nextBlockToWrite = (int) (_path.length() / Protocol.FILE_BLOCK_SIZE);
-//			_output = new FileOutputStream(_path, true);
-			_output = new FileOutputStream(_path);
+			recoverDownloadIfPossible();
+			_output = new FileOutputStream(_path, true);
 		}
+	}
+
+
+	private void recoverDownloadIfPossible() {
+		if (!_path.exists()) return;
+		_nextBlockToWrite = (int) (_path.length() / Protocol.FILE_BLOCK_SIZE);
+		publish(nextBlockRequest());
 	}
 
 	
@@ -131,6 +136,7 @@ class FileDownload extends AbstractDownload {
 	
 	private void writeBlock(byte[] bytes) throws IOException {
 		_output.write(bytes);
+		_output.flush();
 		++_nextBlockToWrite;
 		if (readyToFinish()) {
 			my(IO.class).crash(_output);

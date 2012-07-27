@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -132,11 +133,21 @@ class ChatPanelImpl extends JPanel {
 	
 	
 	private void alertUserIfNecessary(Collection<Message> newMessages) {
-		if (newMessages.isEmpty()) return;
+		Collection<Message> msgs = withoutMessagesByMe(newMessages);
+		
+		if (msgs.isEmpty()) return;
 		
 		Window window = SwingUtilities.windowForComponent(this);
 		if (window == null || !window.isActive())
-			alertUser(newMessages);
+			alertUser(msgs);
+	}
+
+
+	private Collection<Message> withoutMessagesByMe(Collection<Message> newMessages) {
+		Collection<Message> result = new ArrayList<Message>();
+		for (Message message : newMessages)
+			if (!message.isByMe()) result.add(message);
+		return result;
 	}
 
 	

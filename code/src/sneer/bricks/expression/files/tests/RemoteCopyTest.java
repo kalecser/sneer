@@ -11,6 +11,7 @@ import org.junit.Test;
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
+import sneer.bricks.expression.files.protocol.Protocol;
 import sneer.bricks.expression.files.server.FileServer;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.ticker.custom.CustomClockTicker;
@@ -29,12 +30,25 @@ public class RemoteCopyTest extends FileCopyTestBase {
 	private final Environment remote = remote(my(Clock.class));
 
 
+	@Test (timeout = 4000)
+	public void testPartialDownloadRecoveryWithSizeDivisibleByBlock() throws Exception {
+		int size = Protocol.FILE_BLOCK_SIZE * 666;
+		partialDownloadRecovery(size);
+	}
+
 	@Ignore
-	@Test (timeout = 7000)
-	public void partialDownloadRecovery() throws Exception {
+	@Test (timeout = 4000)
+	public void testPartialDownloadRecoveryWithSizeNotDivisibleByBlock() throws Exception {
+		int size = Protocol.FILE_BLOCK_SIZE * 666 + 1;
+		partialDownloadRecovery(size);
+	}
+
+
+	private void partialDownloadRecovery(int size) throws IOException,
+			Exception {
 		File largeFile = newTmpFile();
 		writePseudoRandomBytesTo(largeFile, 1000000);
-		File part = simulatePartialTransfer(largeFile);
+		File part = simulatePartialTransfer(largeFile, size);
 		testWith(largeFile);
 		assertFalse(part.exists());
 	}
@@ -49,10 +63,10 @@ public class RemoteCopyTest extends FileCopyTestBase {
 	}
 
 	
-	private File simulatePartialTransfer(File file) throws Exception {
+	private File simulatePartialTransfer(File file, int size) throws Exception {
 		Hash hash =	hash(file);
 		File ret = my(DotParts.class).newDotPartFor(newTmpFile(), "downloading-" + hex(hash));
-		writePseudoRandomBytesTo(ret, 1024 * 666);
+		writePseudoRandomBytesTo(ret, size);
 		return ret;
 	}
 	
