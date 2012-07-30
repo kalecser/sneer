@@ -3,6 +3,7 @@ package sneer.bricks.snapps.chat.impl;
 import static basis.environments.Environments.my;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.hardware.clock.Clock;
+import sneer.bricks.hardware.gui.trayicon.TrayIcons;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -14,6 +15,7 @@ import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import basis.lang.CacheMap;
+import basis.lang.Closure;
 import basis.lang.Consumer;
 import basis.lang.Producer;
 
@@ -25,10 +27,12 @@ class PrivateChatImpl implements PrivateChat {
 
 	@SuppressWarnings("unused") private Object refToAvoidGc;
 
+	private Contact lastContact = null;
+
 	{
 		my(ContactActionManager.class).addContactAction(new ContactAction() { @Override public void run() {
 			final Contact contact = my(ContactsGui.class).selectedContact().currentValue();
-			frameFor(contact).show();
+			showFrameFor(contact);
 		}
 
 		@Override public String caption() { return "Chat"; }
@@ -38,6 +42,7 @@ class PrivateChatImpl implements PrivateChat {
 		});
 		
 		handleReceivedMessages();
+		handleTrayIconBaloonAction();
 	}
 
 	@Override
@@ -57,6 +62,13 @@ class PrivateChatImpl implements PrivateChat {
 		}});
 	}
 	
+	private void handleTrayIconBaloonAction() {
+		my(TrayIcons.class).addActionListener(new Closure() {  @Override public void run() {
+			if (lastContact == null) return;
+			showFrameFor(lastContact);
+		}});
+	}
+
 	private boolean isPublic(ChatMessage message) {		
 		return message.addressee == null;
 	}
@@ -80,10 +92,15 @@ class PrivateChatImpl implements PrivateChat {
 	private void showMessage(ChatMessage message, Seal sealOfContact) {
 		Contact contact = my(ContactSeals.class).contactGiven(sealOfContact);
 		if (contact == null) return;
+		lastContact  = contact;
 		frameFor(contact).showMessage(convert(message));
 	}
 
 	private boolean isByMe(ChatMessage message) {
 		return message.publisher.equals(my(OwnSeal.class).get().currentValue());
+	}
+
+	private void showFrameFor(final Contact contact) {
+		frameFor(contact).show();
 	}
 }

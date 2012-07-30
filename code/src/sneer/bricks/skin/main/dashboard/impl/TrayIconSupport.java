@@ -22,7 +22,7 @@ class TrayIconSupport {
 		TrayIcon trayIcon = null;
 		try {
 			Signal<String> title = my(ProcessTitle.class).title();
-			trayIcon = my(TrayIcons.class).newTrayIcon(IconUtil.getLogoURL(), title);
+			trayIcon = my(TrayIcons.class).initTrayIcon(IconUtil.getLogoURL(), title);
 			addOpenWindowAction(trayIcon);
 			addExitAction(trayIcon);
 		} catch (SystemTrayNotSupported e1) {

@@ -17,9 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
-import basis.lang.Closure;
-import basis.lang.Consumer;
-
+import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
@@ -33,6 +31,8 @@ import sneer.bricks.skin.main.title.ProcessTitle;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.Widget;
 import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 class DashboardImpl implements Dashboard {
 
@@ -149,9 +149,16 @@ class DashboardImpl implements Dashboard {
 		
 		void open() {
 			_frame.setState(Frame.NORMAL);
+			overcomeScreenToFrontDeficiencyInLinux();
 			_frame.setVisible(true);
 			_frame.requestFocusInWindow();
 			my(WindowBoundsSetter.class).setDefaultBaseComponent(_rootPanel);
+		}
+
+
+		private void overcomeScreenToFrontDeficiencyInLinux() {
+			if (my(Lang.class).system().isOsLinux() && !_frame.isFocused())
+				_frame.setVisible(false);
 		}
 
 		private Signal<String> reactiveTitle() {
