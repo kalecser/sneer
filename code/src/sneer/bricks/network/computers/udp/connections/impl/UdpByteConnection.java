@@ -52,7 +52,7 @@ class UdpByteConnection implements ByteConnection {
 		ByteBuffer buf = prepare(Data);
 		
 		if (payload.length > buf.remaining()) {
-			my(BlinkingLights.class).turnOnIfNecessary(error, "Packet too long", "Trying to send packet bigger than " + buf.remaining());
+			my(BlinkingLights.class).turnOnIfNecessary(error, "Packet too long", "Trying to send packet of size: " + payload.length + ". Max is " + buf.remaining());
 			scheduler.previousPacketWasSent();
 			return;
 		}
