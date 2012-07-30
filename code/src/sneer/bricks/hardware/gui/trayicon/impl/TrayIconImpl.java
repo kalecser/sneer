@@ -62,15 +62,12 @@ class TrayIconImpl implements TrayIcon {
 		java.awt.TrayIcon result = new java.awt.TrayIcon(image, null,
 				new PopupMenu());
 		
-		result.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getButton() == 1){
-					if (_defaultAction != null)
-						_defaultAction.run();
-				}
-			}
-		});
+		result.addMouseListener(new MouseAdapter() { @Override public void mouseClicked(MouseEvent e) {
+			if (e.getButton() == 1)
+				if (_defaultAction != null)
+					_defaultAction.run();
+		}});
+
 		result.setImageAutoSize(true);
 		return result;
 	}
@@ -119,6 +116,12 @@ class TrayIconImpl implements TrayIcon {
 	@Override
 	public void dispose() {
 		SystemTray.getSystemTray().remove(_trayIcon);		
+	}
+
+	void addActionListener(final Closure closure) {
+		_trayIcon.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) {
+			closure.run();
+		}});
 	}
 
 }
