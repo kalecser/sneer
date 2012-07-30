@@ -111,9 +111,17 @@ class LangImpl implements Lang {
 		}
 
 	};
+	
+	private SystemUtils _systemUtils = new SystemUtils() {
+		@Override
+		public boolean isOsLinux() {
+			return org.apache.commons.lang.SystemUtils.IS_OS_LINUX;
+		}
+	};
 
-	@Override	public Arrays arrays() { return _arrays; }
+	@Override public Arrays arrays() { return _arrays; }
 	@Override public Serialization serialization() {	 return _serialization;}
 	@Override public Strings strings() { return _strings;}
+	@Override public SystemUtils system() { return _systemUtils; }
 
 }

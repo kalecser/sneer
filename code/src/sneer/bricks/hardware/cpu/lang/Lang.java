@@ -13,7 +13,8 @@ public interface Lang {
 	Arrays arrays(); 
 	Serialization serialization(); 
 	Strings strings();
-	
+	SystemUtils system();
+
 	interface Arrays { 
 		void reverse(Object[] array);
 		byte[] concat(byte[] a, byte[] b);
@@ -40,6 +41,10 @@ public interface Lang {
 		byte[] toByteArray(String string);
 		String[] splitRight(String line, char separator, int maxParts);
 		String substringAfterLast(String str, String separator);
+	}
+
+	public interface SystemUtils {
+		boolean isOsLinux();
 	}
 }
 
