@@ -56,6 +56,7 @@ class TuplePumpImpl implements TuplePump {
 	public void waitForAllDispatchingToFinish() {
 		waitForAllDispatchingToFinishIn(_well1);
 		waitForAllDispatchingToFinishIn(_well2);
+		waitForAllDispatchingToFinishIn(_well1); //Tuples that came from well2
 	}
 
 
