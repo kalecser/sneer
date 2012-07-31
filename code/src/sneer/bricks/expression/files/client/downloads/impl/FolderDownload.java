@@ -19,6 +19,7 @@ import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.seals.Seal;
 import basis.lang.Consumer;
+import basis.lang.arrays.ImmutableArray;
 
 class FolderDownload extends AbstractDownload {
 
@@ -90,7 +91,7 @@ class FolderDownload extends AbstractDownload {
 	protected Tuple requestToPublishIfNecessary() {
 		return _contentsReceived != null
 			? null
-			: new FileRequest(source(), _hash, 0, _path.getAbsolutePath());
+			: new FileRequest(source(), _hash, new ImmutableArray<>(0), _path.getAbsolutePath());
 	}
 
 

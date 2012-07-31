@@ -28,6 +28,7 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.identity.seals.Seal;
 import basis.lang.Consumer;
+import basis.lang.arrays.ImmutableArray;
 
 class FileDownload extends AbstractDownload {
 
@@ -190,7 +191,7 @@ class FileDownload extends AbstractDownload {
 	
 	private Tuple nextBlockRequest() {
 		_lastRequestTime = my(Clock.class).time().currentValue();
-		return new FileRequest(source(), _hash, _nextBlockToWrite, _path.getAbsolutePath());
+		return new FileRequest(source(), _hash, new ImmutableArray<Integer>(_nextBlockToWrite), _path.getAbsolutePath());
 	}
 
 

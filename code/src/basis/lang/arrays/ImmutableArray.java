@@ -13,7 +13,7 @@ public class ImmutableArray<T> implements Collection<T> {
 		_elements = (T[]) elements.toArray(new Object[elements.size()]);
 	}
 
-	public ImmutableArray(T[] elements) {
+	public ImmutableArray(T... elements) {
 		_elements = elements.clone();
 	}
 

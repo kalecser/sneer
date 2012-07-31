@@ -42,7 +42,7 @@ public class FileTransferImpl implements FileTransfer {
 
 	private static final int THREE_DAYS = 1000 * 60 * 60 * 24 * 3;
 	
-	private final Notifier<FileTransferSugestion> _sugestionHandlers = my(Notifiers.class).newInstance();
+	private final Notifier<FileTransferSugestion> _sugestionNotifier = my(Notifiers.class).newInstance();
 	@SuppressWarnings("unused")
 	private final Object ref1, ref2, ref3;
 	private final Collection<Object> refs = new ArrayList<Object>();
@@ -57,7 +57,7 @@ public class FileTransferImpl implements FileTransfer {
 		}});
 		
 		ref1 = my(RemoteTuples.class).addSubscription(FileTransferSugestion.class, new Consumer<FileTransferSugestion>(){  @Override public void consume(FileTransferSugestion sugestion) {
-			_sugestionHandlers.notifyReceivers(sugestion);
+			handleSugestion(sugestion);
 		}});
 		
 		ref2 = my(RemoteTuples.class).addSubscription(FileTransferAccept.class, new Consumer<FileTransferAccept>(){  @Override public void consume(FileTransferAccept accept) {
@@ -87,7 +87,7 @@ public class FileTransferImpl implements FileTransfer {
 	
 	@Override
 	public WeakContract registerHandler(Consumer<FileTransferSugestion> sugestionHandler) {
-		return _sugestionHandlers.output().addReceiver(sugestionHandler);
+		return _sugestionNotifier.output().addReceiver(sugestionHandler);
 	}
 
 	
@@ -95,6 +95,12 @@ public class FileTransferImpl implements FileTransfer {
 	public void accept(FileTransferSugestion sugestion) {
 		my(TupleSpace.class).add(new FileTransferAccept(sugestion));
 		turnOnWaitingLight(sugestion);
+	}
+
+
+	private void handleSugestion(FileTransferSugestion sugestion) {
+		if (!isRecent(sugestion)) return;
+		_sugestionNotifier.notifyReceivers(sugestion);
 	}
 
 
@@ -189,5 +195,6 @@ public class FileTransferImpl implements FileTransfer {
 	private boolean isRecent(FileTransferSugestion sug) {
 		return (my(Clock.class).time().currentValue() - sug.publicationTime) < THREE_DAYS;
 	}
+
 
 }

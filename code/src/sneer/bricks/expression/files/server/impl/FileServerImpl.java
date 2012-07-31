@@ -98,15 +98,16 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 	private FileContents newFileContents(File requestedFile, FileRequest request) throws IOException {
 		ImmutableByteArray bytes = null;
+		Integer blockNumber = request.blockNumbers.toArray()[0];
 		if (requestedFile.length() > 0)
-			bytes = getFileBlockBytes(requestedFile, request.blockNumber);
+			bytes = getFileBlockBytes(requestedFile, blockNumber);
 
 		String debugInfo = requestedFile.getName();
 		assertExists(requestedFile);
 		
-		FileContents fileContents = request.blockNumber == 0
+		FileContents fileContents = blockNumber == 0
 			? new FileContentsFirstBlock(request.publisher, request.hashOfContents, requestedFile.length(), bytes, debugInfo)
-			: new FileContents			(request.publisher, request.hashOfContents, request.blockNumber, 	bytes, debugInfo);
+			: new FileContents			(request.publisher, request.hashOfContents, blockNumber, bytes, debugInfo);
 		log(fileContents);
 		return fileContents;
 	}
