@@ -35,7 +35,7 @@ public class SightingKeeperTest extends BrickTestWithTuples {
 		waitForAllDispatchingToFinish();
 		
 		SetSignal<InetSocketAddress> sightings = subject.sightingsOf(neide);
-		assertTrue(sightings.size().currentValue() == 1);
+		assertSame(1, sightings.size().currentValue());
 		
 		InetSocketAddress addr = sightings.currentElements().iterator().next();
 		assertEquals("201.202.203.231", addr.getHostString());
