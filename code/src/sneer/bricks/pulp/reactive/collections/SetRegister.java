@@ -11,12 +11,12 @@ public interface SetRegister<T> extends CollectionRegister<T> {
 	@Override
 	SetSignal<T> output();
 
-	void add(T elementAdded);
+	boolean add(T elementAdded);
 	void addAll(Collection<? extends T> elements);
 	<U extends T> void addAll(U[] elements);
 	<U extends T> void remove(U elementRemoved);
 
-	void change(CollectionChange<T> change);
+	boolean change(CollectionChange<T> change);
 	void clear();
 
 }

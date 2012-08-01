@@ -87,8 +87,8 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 	}
 
 	@Override
-	public void add(T elementAdded) {
-		change(new CollectionChangeImpl<T>(elementAdded, null));
+	public boolean add(T elementAdded) {
+		return change(new CollectionChangeImpl<T>(elementAdded, null));
 	}
 
 	@Override
@@ -98,18 +98,20 @@ class SetRegisterImpl<T> implements SetRegister<T> {
 
 	
 	@Override
-	public void change(CollectionChange<T> change) {
+	public boolean change(CollectionChange<T> change) {
+		boolean ret = false;
 		synchronized (_contents) {
 			change = preserveOnlyActualChanges(change);
 			if (change.elementsAdded().isEmpty() && change.elementsRemoved().isEmpty())
-				return;
+				return false;
 			
-			_contents.addAll(change.elementsAdded());
-			_contents.removeAll(change.elementsRemoved());
+			ret = _contents.addAll(change.elementsAdded());
+			ret = _contents.removeAll(change.elementsRemoved()) || ret;
 			_output._notifier.notifyReceivers(change);
 			
 			updateSize();
 		}
+		return ret;
 	}
 
 	

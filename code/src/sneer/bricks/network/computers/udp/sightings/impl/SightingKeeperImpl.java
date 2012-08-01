@@ -26,7 +26,7 @@ class SightingKeeperImpl implements SightingKeeper {
 	}
 	
 	
-	private final CacheMap<Contact, SetRegister<InetSocketAddress>> addresses = CacheMap.newInstance();
+	private final CacheMap<Contact, SetRegister<InetSocketAddress>> sightingsByContact = CacheMap.newInstance();
 	private final static Producer<SetRegister<InetSocketAddress>> newSetRegister = new Producer<SetRegister<InetSocketAddress>>() {  @Override public SetRegister<InetSocketAddress> produce() {
 		return my(CollectionSignals.class).newSetRegister();
 	}};
@@ -36,29 +36,36 @@ class SightingKeeperImpl implements SightingKeeper {
 	private final WeakContract refToAvoidGC = my(RemoteTuples.class).addSubscription(UdpSighting.class, new Consumer<UdpSighting>() { @Override public void consume(UdpSighting sighting) {
 		Contact contact = my(ContactSeals.class).contactGiven(sighting.peerSeal);
 		if (contact == null) return;
-		keep(contact, new InetSocketAddress(sighting.host, sighting.port));
+		addSighting(contact, new InetSocketAddress(sighting.host, sighting.port));
 	}});
 	
 
 	@Override
 	public void keep(Contact contact, InetSocketAddress sighting) {
-		SetRegister<InetSocketAddress> addrs = getAddresses(contact);
-		if (!addrs.output().currentContains(sighting)) {
-			addrs.add(sighting);
-			Seal seal = my(ContactSeals.class).sealGiven(contact).currentValue();
-			my(TupleSpace.class).add(new UdpSighting(seal, sighting.getHostString(), sighting.getPort()));
-		}
+		if (addSighting(contact, sighting)) 
+			publishSighting(contact, sighting);
+	}
+
+
+	private void publishSighting(Contact contact, InetSocketAddress sighting) {
+		Seal seal = my(ContactSeals.class).sealGiven(contact).currentValue();
+		my(TupleSpace.class).add(new UdpSighting(seal, sighting.getHostString(), sighting.getPort()));
+	}
+	
+	
+	private boolean addSighting(Contact contact, InetSocketAddress sighting) {
+		return sightingsRegisterOf(contact).add(sighting);
 	}
 	
 
 	@Override
 	public SetSignal<InetSocketAddress> sightingsOf(Contact contact) {
-		return getAddresses(contact).output();
+		return sightingsRegisterOf(contact).output();
 	}
 	
 
-	private SetRegister<InetSocketAddress> getAddresses(Contact contact) {
-		return addresses.get(contact, newSetRegister);
+	private SetRegister<InetSocketAddress> sightingsRegisterOf(Contact contact) {
+		return sightingsByContact.get(contact, newSetRegister);
 	}
 	
 }
