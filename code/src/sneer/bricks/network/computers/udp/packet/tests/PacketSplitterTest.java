@@ -13,6 +13,7 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
 public class PacketSplitterTest extends BrickTestBase {
 
+	
 	private PacketSplitter subject = my(PacketSplitter.class);
 
 	
@@ -21,6 +22,14 @@ public class PacketSplitterTest extends BrickTestBase {
 		assertSplittedPackets(splittedBy(6, "Hey Neide"), "Hey Ne", "ide");
 		assertSplittedPackets(splittedBy(9, "Hey Neide"), "Hey Neide");
 		assertSplittedPackets(splittedBy(10, "Hey Neide"), "Hey Neide");
+	}
+	
+	
+	@Test
+	public void join() {
+		assertJoinedPackets(joined("Hey Neide"), "Hey Neide");
+		assertJoinedPackets(joined("Hey Ne", "ide"), "Hey Neide");
+		assertJoinedPackets(joined("Hey Ne", "ide! ", "How are you?"), "Hey Neide! How are you?");
 	}
 	
 
@@ -36,6 +45,22 @@ public class PacketSplitterTest extends BrickTestBase {
 			result.add(new String(packet.array()));
 
 		assertArrayEquals(expected, result.toArray());
+	}
+
+
+	private ByteBuffer[] joined(String... packets) {
+		ByteBuffer[] ret = new ByteBuffer[packets.length];
+		
+		for(int i = 0; i < packets.length; i++)
+			ret[i] = ByteBuffer.wrap(packets[i].getBytes());
+		
+		return ret;
+	}
+
+
+	private void assertJoinedPackets(ByteBuffer[] buffersToJoin, String expected) {
+		ByteBuffer joined = subject.join(buffersToJoin);
+		assertEquals(expected, new String(joined.array()));
 	}
 
 

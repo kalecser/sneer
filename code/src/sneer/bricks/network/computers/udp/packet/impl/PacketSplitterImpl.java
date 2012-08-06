@@ -4,6 +4,10 @@ import static java.lang.Math.ceil;
 import static java.lang.Math.min;
 
 import java.nio.ByteBuffer;
+
+import static basis.environments.Environments.my;
+
+import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.network.computers.udp.packet.PacketSplitter;
 
 class PacketSplitterImpl implements PacketSplitter {
@@ -23,6 +27,17 @@ class PacketSplitterImpl implements PacketSplitter {
 		}
 		
 		return ret;
+	}
+	
+	
+	@Override
+	public ByteBuffer join(ByteBuffer[] packets) {
+		byte[] ret = packets[0].array();
+		
+		for(int i = 1; i < packets.length; i++)
+			ret = my(Lang.class).arrays().concat(ret, packets[i].array());
+		
+		return ByteBuffer.wrap(ret);
 	}
 
 }

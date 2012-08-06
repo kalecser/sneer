@@ -7,5 +7,7 @@ import basis.brickness.Brick;
 public interface PacketSplitter {
 	
 	ByteBuffer[] splitBy(int size, ByteBuffer packet);
+	
+	ByteBuffer join(ByteBuffer[] packets);
 
 }
