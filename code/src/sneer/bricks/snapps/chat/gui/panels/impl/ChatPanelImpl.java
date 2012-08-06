@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultStyledDocument;
 
+import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.gui.trayicon.TrayIcons;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.reactive.Signals;
@@ -42,6 +43,8 @@ import sneer.bricks.snapps.chat.gui.panels.Message;
 import basis.lang.Consumer;
 
 class ChatPanelImpl extends JPanel {
+
+	private static final int TEN_MINUTES = 1000 * 60 * 10;
 
 	private final ListSignal<Message> _messages;
 
@@ -132,8 +135,8 @@ class ChatPanelImpl extends JPanel {
 	}
 	
 	
-	private void alertUserIfNecessary(Collection<Message> newMessages) {
-		Collection<Message> msgs = withoutMessagesByMe(newMessages);
+	private void alertUserIfNecessary(Collection<Message> _msgs) {
+		Collection<Message> msgs = filter(_msgs);
 		
 		if (msgs.isEmpty()) return;
 		
@@ -143,10 +146,13 @@ class ChatPanelImpl extends JPanel {
 	}
 
 
-	private Collection<Message> withoutMessagesByMe(Collection<Message> newMessages) {
+	private Collection<Message> filter(Collection<Message> msgs) {
 		Collection<Message> result = new ArrayList<Message>();
-		for (Message message : newMessages)
-			if (!message.isByMe()) result.add(message);
+		for (Message message : msgs) {
+			if (message.isByMe()) continue;
+			if (isOld(message)) continue;
+			result.add(message);
+		}
 		return result;
 	}
 
@@ -183,6 +189,16 @@ class ChatPanelImpl extends JPanel {
 			if (it.hasNext()) ret.append("\n\n");
 		}
 		return ret.toString();
+	}
+
+	
+	private boolean isOld(Message message) {
+		return now() - message.time() > TEN_MINUTES;
+	}
+
+	
+	private static long now() {
+		return my(Clock.class).time().currentValue();
 	}
 
 	

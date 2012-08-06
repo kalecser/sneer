@@ -2,14 +2,13 @@ package sneer.bricks.snapps.chat.impl;
 
 import static basis.environments.Environments.my;
 import sneer.bricks.expression.tuples.TupleSpace;
-import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.gui.trayicon.TrayIcons;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
-import sneer.bricks.snapps.chat.ChatMessage;
 import sneer.bricks.snapps.chat.Chat;
+import sneer.bricks.snapps.chat.ChatMessage;
 import sneer.bricks.snapps.chat.gui.panels.Message;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
@@ -21,7 +20,6 @@ import basis.lang.Producer;
 
 class ChatImpl implements Chat {
 
-	private static final int TEN_MINUTES = 1000 * 60 * 10;
 	
 	protected CacheMap<Contact, ChatFrame> framesByContact = CacheMap.newInstance();
 
@@ -53,7 +51,6 @@ class ChatImpl implements Chat {
 	private void handleReceivedMessages() {
 		refToAvoidGc = my(TupleSpace.class).addSubscription(ChatMessage.class, new Consumer<ChatMessage>() { @Override public void consume(ChatMessage message) {
 			if (isPublic(message)) return;
-			if (isOld(message)) return;
 			
 			if (isByMe(message))
 				showMessage(message, message.addressee);
@@ -62,6 +59,7 @@ class ChatImpl implements Chat {
 		}});
 	}
 	
+	
 	private void handleTrayIconBaloonAction() {
 		my(TrayIcons.class).addActionListener(new Closure() {  @Override public void run() {
 			if (lastContact == null) return;
@@ -69,19 +67,11 @@ class ChatImpl implements Chat {
 		}});
 	}
 
+	
 	private boolean isPublic(ChatMessage message) {		
 		return message.addressee == null;
 	}
 
-	
-	private boolean isOld(ChatMessage message) {
-		return now() - message.publicationTime > TEN_MINUTES;
-	}
-
-	
-	private long now() {
-		return my(Clock.class).time().currentValue();
-	}
 	
 	private ChatFrame frameFor(final Contact contact) {
 		return framesByContact.get(contact, new Producer<ChatFrame>() { @Override public ChatFrame produce() {
@@ -89,6 +79,7 @@ class ChatImpl implements Chat {
 		}});
 	}
 
+	
 	private void showMessage(ChatMessage message, Seal sealOfContact) {
 		Contact contact = my(ContactSeals.class).contactGiven(sealOfContact);
 		if (contact == null) return;
