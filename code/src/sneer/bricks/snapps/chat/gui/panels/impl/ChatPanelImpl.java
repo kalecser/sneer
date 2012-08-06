@@ -68,7 +68,7 @@ class ChatPanelImpl extends JPanel {
 		}});
 
 		_inputPane = my(ReactiveWidgetFactory.class).newTextPane(
-			my(Signals.class).newRegister("").output(), messageSender, NotificationPolicy.OnEnterPressed
+			my(Signals.class).constant(""), messageSender, NotificationPolicy.OnEnterPressed
 		);
 		
 		init();
