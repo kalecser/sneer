@@ -81,7 +81,7 @@ abstract class AbstractDownload implements Download {
 
 	
 	abstract protected void subscribeToContents();
-	abstract protected Tuple requestToPublishIfNecessary();
+	abstract protected Collection<Tuple> requestsToPublishIfNecessary();
 	abstract protected boolean isWaitingForActivity();
 
 	abstract protected Object mappedContentsBy(Hash hashOfContents) throws FileNotFoundException;
@@ -160,11 +160,10 @@ abstract class AbstractDownload implements Download {
 	}
 
 
-	private void publishRequestIfNecessary() {
+	private void publishRequestsIfNecessary() {
 		if (isFinished()) return;
-		Tuple request = requestToPublishIfNecessary();
-		if (request == null) return;
-		publish(request);
+		for (Tuple request : requestsToPublishIfNecessary())
+			publish(request);
 	}
 
 
@@ -211,7 +210,7 @@ abstract class AbstractDownload implements Download {
 		_timerContract = my(Timer.class).wakeUpNowAndEvery(REQUEST_INTERVAL, new Closure() { @Override public void run() {
 			checkForActivityTimeOut();
 			checkForDurationTimeOut();
-			publishRequestIfNecessary();
+			publishRequestsIfNecessary();
 		}});
 	}
 	

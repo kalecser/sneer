@@ -2,6 +2,7 @@ package sneer.bricks.expression.files.server.impl;
 
 import static basis.environments.Environments.my;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -97,14 +98,16 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 
 
 	private FileContents newFileContents(File requestedFile, FileRequest request) throws IOException {
+		assertExists(requestedFile);
+
 		ImmutableByteArray bytes = null;
 		Integer blockNumber = request.blockNumbers.toArray()[0];
-		if (requestedFile.length() > 0)
+		if (requestedFile.length() > 0) {
 			bytes = getFileBlockBytes(requestedFile, blockNumber);
+			if (bytes == null) return null;
+		}
 
 		String debugInfo = requestedFile.getName();
-		assertExists(requestedFile);
-		
 		FileContents fileContents = blockNumber == 0
 			? new FileContentsFirstBlock(request.publisher, request.hashOfContents, requestedFile.length(), bytes, debugInfo)
 			: new FileContents			(request.publisher, request.hashOfContents, blockNumber, bytes, debugInfo);
@@ -123,6 +126,9 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 		try {
 			byte[] result = my(IO.class).files().readBlock(file, blockNumber, Protocol.FILE_BLOCK_SIZE);
 			return new ImmutableByteArray(result);
+		} catch (EOFException eof) {	
+			//Client is drunk. Block requested beyond end of file.
+			return null;
 		} catch(IOException ioe) {
 			throw new IOException("Error trying to read block " + blockNumber + " from requested file: " + file, ioe);
 		}
