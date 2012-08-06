@@ -36,6 +36,7 @@ class RTextPaneImpl extends RAbstractField<JTextPane> {
 			insertLineBreak();
 			return;
 		}
+		e.consume();
 		commitTextChanges();
 	}
 
