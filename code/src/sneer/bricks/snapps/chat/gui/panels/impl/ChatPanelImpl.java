@@ -49,7 +49,7 @@ class ChatPanelImpl extends JPanel {
 	private final ListSignal<Message> _messages;
 
 	private final JScrollPane _listScrollPane;
-	private final JTextPane _messagesList = new JTextPane();
+	private final JTextPane _messagesList = new JTextPaneWithoutAutoScroll();
 	private final MessagePainter _painter = new MessagePainter((DefaultStyledDocument) _messagesList.getStyledDocument());
 	private final TextWidget<JTextPane> _inputPane;
 	private JSplitPane split;

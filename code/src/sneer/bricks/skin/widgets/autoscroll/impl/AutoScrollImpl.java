@@ -13,10 +13,8 @@ import sneer.bricks.skin.widgets.autoscroll.AutoScroll;
 public class AutoScrollImpl implements AutoScroll {
 
 	@Override
-	public void runWithAutoscroll(final JScrollPane scrollPane, Runnable runnable) {
+	public void scrollAfterRunning(final JScrollPane scrollPane, Runnable runnable) {
 		final boolean wasAtEnd = isAtEnd(scrollPane);
-//		System.out.println(wasAtEnd);
-		
 		runnable.run();
 		
 		my(GuiThread.class).invokeLater(new Closure() { @Override public void run() {

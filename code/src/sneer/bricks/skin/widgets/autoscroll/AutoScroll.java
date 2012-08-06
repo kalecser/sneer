@@ -8,6 +8,6 @@ import basis.brickness.Brick;
 @Brick
 public interface AutoScroll {
 	
-	void runWithAutoscroll(JScrollPane scrollPane, Runnable runnable);
+	void scrollAfterRunning(JScrollPane scrollPane, Runnable runnable);
 
 }

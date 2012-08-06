@@ -22,7 +22,7 @@ public class ReactiveAutoScrollImpl implements ReactiveAutoScroll {
 		final JScrollPane result = new JScrollPane();
 		
 		WeakContract reception = eventSource.addReceiver(new Consumer<T>() {  @Override public void consume(final T change) {
-			my(AutoScroll.class).runWithAutoscroll(result, new Closure() {  @Override public void run() {
+			my(AutoScroll.class).scrollAfterRunning(result, new Closure() {  @Override public void run() {
 				receiver.consume(change);
 			}});
 		}});
