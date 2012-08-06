@@ -9,7 +9,7 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.snapps.chat.ChatMessage;
-import sneer.bricks.snapps.chat.PrivateChat;
+import sneer.bricks.snapps.chat.Chat;
 import sneer.bricks.snapps.chat.gui.panels.Message;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
@@ -19,7 +19,7 @@ import basis.lang.Closure;
 import basis.lang.Consumer;
 import basis.lang.Producer;
 
-class PrivateChatImpl implements PrivateChat {
+class ChatImpl implements Chat {
 
 	private static final int TEN_MINUTES = 1000 * 60 * 10;
 	

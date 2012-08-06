@@ -12,7 +12,7 @@ import sneer.bricks.pulp.reactive.collections.ListSignal;
 import sneer.bricks.skin.main.dashboard.InstrumentPanel;
 import sneer.bricks.skin.main.instrumentregistry.InstrumentRegistry;
 import sneer.bricks.snapps.chat.ChatMessage;
-import sneer.bricks.snapps.chat.PrivateChat;
+import sneer.bricks.snapps.chat.Chat;
 import sneer.bricks.snapps.chat.gui.panels.ChatPanels;
 import sneer.bricks.snapps.chat.gui.panels.Message;
 import sneer.bricks.snapps.wind.Wind;
@@ -34,7 +34,7 @@ class WindGuiImpl implements WindGui {
 	
 	private ListSignal<Message> convert(ListSignal<ChatMessage> shoutsHeard) {
 		return my(CollectionSignals.class).adapt(shoutsHeard, new Functor<ChatMessage, Message>() { @Override public Message evaluate(ChatMessage message) {
-			return my(PrivateChat.class).convert(message);
+			return my(Chat.class).convert(message);
 		}});
 	}
 
