@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -171,16 +174,16 @@ class FileDownload extends AbstractDownload {
 
 	
 	@Override
-	protected Tuple requestToPublishIfNecessary() {
+	protected Collection<Tuple> requestsToPublishIfNecessary() {
 		if (isFirstRequest())
-			return nextBlockRequest();
+			return initialBlockRequests();
 
-		if (readyToFinish()) return null; //Might not have been finished yet.
+		if (readyToFinish()) return Collections.EMPTY_LIST; //Might not have been finished yet.
 
 		if (my(Clock.class).time().currentValue() - _lastRequestTime < REQUEST_INTERVAL)
-			return null;
+			return Collections.EMPTY_LIST;
 		
-		return nextBlockRequest();
+		return Arrays.asList(nextBlockRequest());
 	}
 
 	
@@ -189,9 +192,25 @@ class FileDownload extends AbstractDownload {
 	}
 
 	
+	private Collection<Tuple> initialBlockRequests() {
+		_lastRequestTime = my(Clock.class).time().currentValue();
+		List<Tuple> ret = new ArrayList<>(MAX_BLOCKS_DOWNLOADED_AHEAD);
+//		for (int i = 0; i < MAX_BLOCKS_DOWNLOADED_AHEAD; i++)
+//			ret.add(requestForBlock(i));
+		ret.add(requestForBlock(0));
+		return ret;
+	}
+
+
 	private Tuple nextBlockRequest() {
 		_lastRequestTime = my(Clock.class).time().currentValue();
-		return new FileRequest(source(), _hash, new ImmutableArray<Integer>(_nextBlockToWrite), _path.getAbsolutePath());
+//		return requestForBlock(_nextBlockToWrite + MAX_BLOCKS_DOWNLOADED_AHEAD);
+		return requestForBlock(_nextBlockToWrite);
+	}
+
+
+	private FileRequest requestForBlock(int number) {
+		return new FileRequest(source(), _hash, new ImmutableArray<Integer>(number), _path.getAbsolutePath());
 	}
 
 

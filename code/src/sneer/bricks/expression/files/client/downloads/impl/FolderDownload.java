@@ -4,6 +4,9 @@ import static basis.environments.Environments.my;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import sneer.bricks.expression.files.client.downloads.Download;
@@ -88,10 +91,10 @@ class FolderDownload extends AbstractDownload {
 
 
 	@Override
-	protected Tuple requestToPublishIfNecessary() {
+	protected Collection<Tuple> requestsToPublishIfNecessary() {
 		return _contentsReceived != null
-			? null
-			: new FileRequest(source(), _hash, new ImmutableArray<>(0), _path.getAbsolutePath());
+			? Collections.EMPTY_LIST 
+			: Arrays.asList(new FileRequest(source(), _hash, new ImmutableArray<>(0), _path.getAbsolutePath()));
 	}
 
 
