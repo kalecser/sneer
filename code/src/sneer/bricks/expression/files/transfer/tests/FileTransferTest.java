@@ -59,7 +59,7 @@ public class FileTransferTest extends BrickTestWithTuples {
 	private void transfer(final File fileOrFolder) throws MappingStopped, IOException {
 		final String fileOrFolderName = fileOrFolder.getName();
 		final boolean isFolder = fileOrFolder.isDirectory();
-		
+		final long size = fileOrFolder.length();
 		final long lastModified = fileOrFolder.lastModified();
 		final Hash hash = my(FileMapper.class).mapFileOrFolder(fileOrFolder);
 
@@ -71,7 +71,7 @@ public class FileTransferTest extends BrickTestWithTuples {
 		final Latch latch = new Latch();
 		checking(new Expectations(){{
 			oneOf(fileClient).startDownload(
-				new File(downloadFolder, fileOrFolderName), isFolder, lastModified, hash, remoteSeal());
+				new File(downloadFolder, fileOrFolderName), isFolder, size, lastModified, hash, remoteSeal());
 				will(new CustomAction("") {  @Override public Object invoke(Invocation invocation) throws Throwable {
 					latch.open();
 					return download;

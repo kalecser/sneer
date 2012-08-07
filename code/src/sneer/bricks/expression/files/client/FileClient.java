@@ -10,9 +10,9 @@ import basis.brickness.Brick;
 @Brick
 public interface FileClient {
 
-	Download startDownload(File file, boolean isFolder, long lastModified, Hash hashOfFile, Seal source);
+	Download startDownload(File file, boolean isFolder, long size, long lastModified, Hash hashOfFile, Seal source);
 
-	Download startFileDownload(File file, long lastModified, Hash hashOfFile, Seal source);
+	Download startFileDownload(File file, long size, long lastModified, Hash hashOfFile, Seal source);
 
 	Download startFolderDownload(File folder, Hash hashOfFolder, Seal source);
 

@@ -40,6 +40,7 @@ public interface IO {
 	
 	interface Files {
 		int fileSizeInBlocks(long fileSizeInBytes, int blockSize);
+		String asFriendlySize(long fileSize);
 		long sizeOfFolder(File Folder);
 
 		Collection<File> listFiles(File folder, String[] extensions, boolean recursive);

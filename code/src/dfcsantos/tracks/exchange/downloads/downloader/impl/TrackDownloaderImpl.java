@@ -81,7 +81,7 @@ class TrackDownloaderImpl implements TrackDownloader {
 		Float rating = prepareForDownload(endorsement);
 		if (rating == null) return;
 
-		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.lastModified, endorsement.hash, endorsement.publisher);
+		final Download download = my(FileClient.class).startFileDownload(fileToWrite(endorsement), endorsement.size, endorsement.lastModified, endorsement.hash, endorsement.publisher);
 		_downloadsAndMatchRatings.put(download, rating);
 
 		WeakContract weakContract = download.finished().addReceiver(new Consumer<Boolean>() { @Override public void consume(Boolean finished) {

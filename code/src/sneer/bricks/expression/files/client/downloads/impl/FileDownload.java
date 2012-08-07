@@ -37,6 +37,8 @@ class FileDownload extends AbstractDownload {
 
 	private static final int MAX_BLOCKS_DOWNLOADED_AHEAD = 100;
 
+	@SuppressWarnings("unused")
+	private final long size;
 	private OutputStream _output;
 	private final List<FileContents> _blocksToWrite = new ArrayList<FileContents>();
 	private int _nextBlockToWrite = 0;
@@ -47,8 +49,10 @@ class FileDownload extends AbstractDownload {
 	@SuppressWarnings("unused") private WeakContract _fileContentConsumerContract;
 
 
-	FileDownload(File file, long lastModified, Hash hashOfFile, Seal source, boolean copyLocalFiles) {
+
+	FileDownload(File file, long size, long lastModified, Hash hashOfFile, Seal source, boolean copyLocalFiles) {
 		super(file, lastModified, hashOfFile, source, copyLocalFiles);
+		this.size = size;
 
 		start();
 	}
@@ -164,7 +168,7 @@ class FileDownload extends AbstractDownload {
 
 	@Override
 	protected void updateFileMap() {
-		my(FileMap.class).putFile(_actualPath.getAbsolutePath(), _actualPath.lastModified(), _hash);
+		my(FileMap.class).putFile(_actualPath.getAbsolutePath(), _actualPath.length(), _actualPath.lastModified(), _hash);
 	}
 
 

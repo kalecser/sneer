@@ -19,7 +19,7 @@ public class FileMapTest extends BrickTestBase {
 	public void fileMapping() {
 		Hash hash = hash(42);
 		
-		_subject.putFile("hello.txt", 1234, hash);
+		_subject.putFile("hello.txt", 10234, 1234, hash);
 		assertEquals("hello.txt", _subject.getFiles(hash).get(0));
 		assertEquals(hash, _subject.getHash("hello.txt"));
 		assertEquals(1234, _subject.getLastModified("hello.txt"));
@@ -81,8 +81,8 @@ public class FileMapTest extends BrickTestBase {
 		
 		folder = _subject.getFolderContents(hash(11));
 		assertContents(folder.contents,
-			new FileOrFolder("7", 117, hash(117)),
-			new FileOrFolder("8", 118, hash(118)),
+			new FileOrFolder("7", 1017, 117, hash(117)),
+			new FileOrFolder("8", 1018, 118, hash(118)),
 			new FileOrFolder("9",      hash(119))
 		);
 		
@@ -100,20 +100,20 @@ public class FileMapTest extends BrickTestBase {
 	@Test
 	public void fileAndFolderWithSameHash() {
 		_subject.putFolder("emptyFolder", hash(1));
-		_subject.putFile("emptyFile", 42, hash(1));
+		_subject.putFile("emptyFile", 1042, 42, hash(1));
 		assertEquals("emptyFile", _subject.getFiles(hash(1)).get(0));
 		assertEquals("emptyFolder", _subject.getFolders(hash(1)).get(0));
 	}
 
 
 	private void populateSubject() {
-		_subject.putFile(  "1/1/7", 117, hash(117));
-		_subject.putFile(  "1/1/8", 118, hash(118));
+		_subject.putFile(  "1/1/7", 1017, 117, hash(117));
+		_subject.putFile(  "1/1/8", 1018, 118, hash(118));
 		_subject.putFolder("1/1/9",      hash(119));
 		_subject.putFolder("1/1"  ,      hash( 11));
 		_subject.putFolder("1"    ,      hash(  1));
-		_subject.putFile(  "1/2/1", 121, hash(121));
-		_subject.putFile(  "1/3/1", 131, hash(131));
+		_subject.putFile(  "1/2/1", 1021, 121, hash(121));
+		_subject.putFile(  "1/3/1", 1031, 131, hash(131));
 		
 		_subject.putFolder("AnotherFolderWithHash119", hash(119));
 	}

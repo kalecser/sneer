@@ -12,7 +12,7 @@ import basis.brickness.Brick;
 @Brick (Prevalent.class)
 public interface FileMap {
 
-	void putFile(String path, long lastModified, Hash hash);
+	void putFile(String path, long size, long lastModified, Hash hash);
 	void putFolder(String path, Hash hash);
 	
 	Hash getHash(String path);

@@ -74,7 +74,7 @@ public class FileTransferImpl implements FileTransfer {
 	
 	@Override
 	public void tryToSend(File fileOrFolder, Seal peer) {
-		FileTransferSugestion sugestion = new FileTransferSugestion(peer, fileOrFolder.getName(), fileOrFolder.isDirectory(), fileOrFolder.lastModified());
+		FileTransferSugestion sugestion = new FileTransferSugestion(peer, fileOrFolder.getName(), fileOrFolder.isDirectory(), fileOrFolder.length(), fileOrFolder.lastModified());
 		my(TupleSpace.class).add(sugestion);
 		filesBySugestion.put(sugestion, fileOrFolder);
 	}
@@ -129,7 +129,7 @@ public class FileTransferImpl implements FileTransfer {
 		
 		File destination = new File(downloadFolder(), sugestion.fileOrFolderName);
 		Download download = my(FileClient.class).startDownload(
-			destination, sugestion.isFolder, sugestion.fileLastModified, details.hash, details.publisher);
+			destination, sugestion.isFolder, sugestion.fileSize, sugestion.fileLastModified, details.hash, details.publisher);
 		
 		startDisplayingProgress(download);
 	}

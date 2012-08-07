@@ -10,8 +10,8 @@ import sneer.bricks.identity.seals.Seal;
 class DownloadsImpl implements Downloads {
 
 	@Override
-	public Download newFileDownload(File file, long lastModified, Hash hashOfFile, Seal source) {
-		return new FileDownload(file, lastModified, hashOfFile, source, true);
+	public Download newFileDownload(File file, long size, long lastModified, Hash hashOfFile, Seal source) {
+		return new FileDownload(file, size, lastModified, hashOfFile, source, true);
 	}
 
 	@Override

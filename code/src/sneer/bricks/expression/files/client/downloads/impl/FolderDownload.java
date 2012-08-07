@@ -79,7 +79,7 @@ class FolderDownload extends AbstractDownload {
 	private Download startSpinOffDownload(FileOrFolder entry) {
 		return entry.isFolder
 		? new FolderDownload(new File(_path, entry.name), entry.hashOfContents, _source, _copyLocalFiles)
-		: new FileDownload(new File(_path, entry.name), entry.lastModified, entry.hashOfContents, _source, _copyLocalFiles);	
+		: new FileDownload(new File(_path, entry.name), entry.size, entry.lastModified, entry.hashOfContents, _source, _copyLocalFiles);	
 	}
 
 

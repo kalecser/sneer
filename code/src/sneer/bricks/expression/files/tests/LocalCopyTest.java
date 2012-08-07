@@ -15,7 +15,7 @@ import sneer.bricks.hardware.io.IO;
 public class LocalCopyTest extends FileCopyTestBase {
 
 	@Override
-	protected void copyFileFromFileMap(Hash hashOfContents, File destination) throws IOException {
+	protected void copyFileFromFileMap(Hash hashOfContents, long size, long lastModified, File destination) throws IOException {
 		copyFromFileMap(hashOfContents, destination);
 	}
 

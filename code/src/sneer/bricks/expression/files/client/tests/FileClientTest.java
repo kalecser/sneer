@@ -46,7 +46,7 @@ public class FileClientTest extends BrickTestWithTuples {
 	public void fileAlreadyMappedIsNotDownloaded() throws IOException {
 		Hash hash = my(Crypto.class).digest(new byte[]{ 42 }); 
 		File file = anySmallFile();
-		my(FileMap.class).putFile(file.getAbsolutePath(), file.lastModified(), hash);
+		my(FileMap.class).putFile(file.getAbsolutePath(), file.length(), file.lastModified(), hash);
 
 		@SuppressWarnings("unused")
 		WeakContract contractToAvoidGc = my(RemoteTuples.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
@@ -54,7 +54,7 @@ public class FileClientTest extends BrickTestWithTuples {
 		}});
 
 		File tmpFile = newTmpFile();
-		_subject.startFileDownload(tmpFile, tmpFile.lastModified(), hash, remoteSeal());
+		_subject.startFileDownload(tmpFile, file.length(), file.lastModified(), hash, remoteSeal());
 
 		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
 		my(IO.class).files().assertSameContents(tmpFile, file);
@@ -87,7 +87,7 @@ public class FileClientTest extends BrickTestWithTuples {
 		}});
 
 		final File tmpFile = newTmpFile();
-		_subject.startFileDownload(tmpFile, tmpFile.lastModified(), fileHash, remoteSeal())
+		_subject.startFileDownload(tmpFile, smallFile.length(), smallFile.lastModified(), fileHash, remoteSeal())
 			.waitTillFinished();
 
 		my(IO.class).files().assertSameContents(tmpFile, smallFile);

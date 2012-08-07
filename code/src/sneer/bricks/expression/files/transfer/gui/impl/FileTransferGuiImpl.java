@@ -13,6 +13,7 @@ import sneer.bricks.expression.files.transfer.FileTransferSugestion;
 import sneer.bricks.expression.files.transfer.downloadfolder.DownloadFolder;
 import sneer.bricks.expression.files.transfer.gui.FileTransferGui;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.io.IO;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
@@ -41,7 +42,7 @@ public class FileTransferGuiImpl implements FileTransferGui {
 		});
 
 		ref = my(FileTransfer.class).registerHandler(new Consumer<FileTransferSugestion>() { @Override public void consume(FileTransferSugestion sugestion) {
-			if (JOptionPane.showConfirmDialog(null, "Do you want to download " + sugestion.fileOrFolderName + " from " + nick(sugestion) + "?", "Download",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) 
+			if (JOptionPane.showConfirmDialog(null, "Do you want to download " + sugestion.fileOrFolderName + " from " + nick(sugestion) + "?\nSize: " + my(IO.class).files().asFriendlySize(sugestion.fileSize), "Download",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) 
 				download(sugestion);
 		}});
 	}

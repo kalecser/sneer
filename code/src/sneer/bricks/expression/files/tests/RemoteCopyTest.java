@@ -52,9 +52,9 @@ public class RemoteCopyTest extends FileCopyTestBase {
 
 	
 	@Override
-	protected void copyFileFromFileMap(final Hash hashOfContents, final File destination) throws Exception {
+	protected void copyFileFromFileMap(final Hash hashOfContents, final long size, final long lastModified, final File destination) throws Exception {
 		copyFromFileMap(new ClosureX<Exception>() { @Override public void run() throws IOException, TimeoutException {
-			Download download = my(FileClient.class).startFileDownload(destination, -1, hashOfContents, _localSeal);
+			Download download = my(FileClient.class).startFileDownload(destination, size, lastModified, hashOfContents, _localSeal);
 			download.waitTillFinished();
 		}});
 	}

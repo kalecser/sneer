@@ -180,12 +180,13 @@ class MapperWorker {
 		}
 		
 		Hash hash = mapFile(fileOrFolder);
-		return new FileOrFolder(name, fileOrFolder.lastModified(), hash);
+		return new FileOrFolder(name, fileOrFolder.length(), fileOrFolder.lastModified(), hash);
 	}
 
 
 	private Hash mapFile(File file) {
 		String path = file.getAbsolutePath();
+		long size = file.length();
 		long lastModified = file.lastModified();
 
 		Hash cached = FileMap.getHash(path);
@@ -199,7 +200,7 @@ class MapperWorker {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "File Mapping Error", "This can happen if your file has weird characters in the name or if your disk is failing.", e);
 			return my(Crypto.class).digest(new byte[0]);
 		}
-		FileMap.putFile(path, lastModified, result);
+		FileMap.putFile(path, size, lastModified, result);
 		return result;
 	}
 

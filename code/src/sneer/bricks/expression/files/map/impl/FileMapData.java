@@ -15,10 +15,11 @@ class FileMapData {
 
 	static class Entry {
 		final Hash hash;
+		final long size;
 		final long lastModified;
 		final boolean isFolder;
-		Entry(Hash hash_, long lastModified_, boolean isFolder_)
-		{ hash = hash_; lastModified = lastModified_; isFolder = isFolder_; }
+		Entry(Hash hash_, long size_, long lastModified_, boolean isFolder_)
+		{ hash = hash_; size = size_; lastModified = lastModified_; isFolder = isFolder_; }
 	}
 
 
@@ -27,13 +28,13 @@ class FileMapData {
 
 
 	synchronized
-	void put(String path, long lastModified, Hash hash, boolean isFolder) {
+	void put(String path, long size, long lastModified, Hash hash, boolean isFolder) {
 		if (_entriesByPath.containsKey(path))
 			remove(path);
 		
 		Object wrapping = _pathsByHash.get(hash);
 		_pathsByHash.put(hash, addToWrapping(wrapping, path));
-		_entriesByPath.put(path, new Entry(hash, lastModified, isFolder));
+		_entriesByPath.put(path, new Entry(hash, size, lastModified, isFolder));
 	}
 
 
@@ -52,6 +53,12 @@ class FileMapData {
 	synchronized
 	long getLastModified(String path) {
 		return _entriesByPath.get(path).lastModified;
+	}
+
+	
+	synchronized
+	long getSize(String path) {
+		return _entriesByPath.get(path).size;
 	}
 
 
@@ -124,6 +131,7 @@ class FileMapData {
 					result.add(path);
 			
 		return result;
-	}	
+	}
+
 }
 

@@ -72,7 +72,7 @@ public abstract class FileCopyTestBase extends BrickTestWithTuples {
 		if (fileOrFolder.isDirectory())
 			copyFolderFromFileMap(hash, copy);
 		else
-			copyFileFromFileMap(hash, copy);
+			copyFileFromFileMap(hash, fileOrFolder.length(), fileOrFolder.lastModified(), copy);
 
 		assertNotNull(hash);
 
@@ -83,7 +83,7 @@ public abstract class FileCopyTestBase extends BrickTestWithTuples {
 		return _fileMapper.mapFileOrFolder(fileOrFolder);
 	}
 
-	abstract protected void copyFileFromFileMap(Hash hashOfContents, File destination) throws Exception;
+	abstract protected void copyFileFromFileMap(Hash hashOfContents, long size, long lastModified, File destination) throws Exception;
 
 	abstract protected void copyFolderFromFileMap(Hash hashOfContents, File destination) throws Exception;
 

@@ -107,7 +107,7 @@ class SnackupImpl implements Snackup {
 		FileMap fileMap = my(FileMap.class);
 		String lentFolder = lentFolderFor(value.publisher).getAbsolutePath();
 		for (FileOrFolder entry : fileMap.dir(lentFolder))
-			my(TupleSpace.class).add(new FileToRestore(entry.hashOfContents, entry.lastModified, entry.name));
+			my(TupleSpace.class).add(new FileToRestore(entry.hashOfContents, entry.size, entry.lastModified, entry.name));
 	}
 
 	protected void tryToDownload(final FileEvent value, File folder) {
@@ -119,7 +119,7 @@ class SnackupImpl implements Snackup {
 			return;
 		}
 		
-		final Download download = my(FileClient.class).startFileDownload(file, value.lastModified, value.hash, value.publisher);
+		final Download download = my(FileClient.class).startFileDownload(file, value.size, value.lastModified, value.hash, value.publisher);
 		download.onFinished(new Closure() {  @Override public void run() {
 			if (!download.hasFinishedSuccessfully())
 				return;
@@ -175,7 +175,7 @@ class SnackupImpl implements Snackup {
 			turnOnBlinkingLightFor(e, "Error reading file");
 			return;
 		}
-		my(TupleSpace.class).add(new FileToSync(hash, file.lastModified(), relativeName));
+		my(TupleSpace.class).add(new FileToSync(hash, file.length(), file.lastModified(), relativeName));
 	}
 
 	private void turnOnBlinkingLightFor(Exception e, String caption) {

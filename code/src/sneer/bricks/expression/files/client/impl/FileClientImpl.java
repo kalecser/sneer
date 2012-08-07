@@ -21,17 +21,17 @@ class FileClientImpl implements FileClient {
 
 	
 	@Override
-	public Download startDownload(File file, boolean isFolder, long lastModified, Hash hashOfFile, Seal source) {
+	public Download startDownload(File file, boolean isFolder, long size, long lastModified, Hash hashOfFile, Seal source) {
 		return isFolder
 			? startFolderDownload(file, hashOfFile, source)
-			: startFileDownload(file, lastModified, hashOfFile, source);
+			: startFileDownload(file, size, lastModified, hashOfFile, source);
 	}
 
 	
 	@Override
-	public Download startFileDownload(final File file, final long lastModified, final Hash hashOfFile, final Seal source) {
+	public Download startFileDownload(final File file, final long size, final long lastModified, final Hash hashOfFile, final Seal source) {
 		return startDownload(hashOfFile, new Producer<Download>() { @Override public Download produce() {
-			return cleaningOnFinished(my(Downloads.class).newFileDownload(file, lastModified, hashOfFile, source), hashOfFile);
+			return cleaningOnFinished(my(Downloads.class).newFileDownload(file, size, lastModified, hashOfFile, source), hashOfFile);
 		}});
 	}
 

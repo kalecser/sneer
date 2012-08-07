@@ -29,7 +29,7 @@ public class FileMappingStopTest extends BrickTestBase {
 
 		checking(new Expectations() {{
 			allowing(_fileMap).getHash(with(any(String.class)));
-			oneOf(_fileMap).putFile(with(any(String.class)), with(any(Long.class)), with(any(Hash.class)));
+			oneOf(_fileMap).putFile(with(any(String.class)), with(any(Long.class)), with(any(Long.class)), with(any(Hash.class)));
 				will(new CustomAction("Call stopFolderMapping") { @Override public Object invoke(Invocation invocation) throws Throwable {
 					_subject.stopMapping(fixturesFolder);
 					return null;

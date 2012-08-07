@@ -70,9 +70,11 @@ class FolderContentsGetter {
 		
 		Hash hash = data.getHash(candidate);
 		long lastModified = data.getLastModified(candidate);
+		long size = data.getSize(candidate);
 		result.add(lastModified == -1
 			? new FileOrFolder(name, hash)
-			: new FileOrFolder(name, lastModified, hash) 
+			: new FileOrFolder(name, size, lastModified, hash) 
+			
 		);
 	}
 

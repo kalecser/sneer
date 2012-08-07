@@ -27,15 +27,15 @@ class NormalizedFileMap implements FileMap {
 	private final FileMapData _data = new FileMapData();
 
 	@Override
-	public void putFile(String file, long lastModified, Hash hash) {
+	public void putFile(String file, long size, long lastModified, Hash hash) {
 		if (lastModified < 0) throw new IllegalArgumentException("File '" + file + "' cannot be mapped with lastModified date smaller than zero: " + lastModified);
-		putPath(file, lastModified, hash, false);
+		putPath(file, size, lastModified, hash, false);
 	}
 
 
 	@Override
 	public void putFolder(String path, Hash hash) {
-		putPath(path, -1, hash, true);
+		putPath(path, -1, -1, hash, true);
 //		checkHash(path, hash);
 	}
 
@@ -52,9 +52,9 @@ class NormalizedFileMap implements FileMap {
 //	}
 
 	
-	private void putPath(String path, long lastModified, Hash hash, boolean isFolder) {
+	private void putPath(String path, long size, long lastModified, Hash hash, boolean isFolder) {
 		my(Logger.class).log("Mapping ", path);
-		_data.put(path, lastModified, hash, isFolder);
+		_data.put(path, size, lastModified, hash, isFolder);
 	}
 	
 	
@@ -111,7 +111,7 @@ class NormalizedFileMap implements FileMap {
 		Entry entry = _data.remove(from);
 		
 		if (to != null)
-			putPath(to, entry.lastModified, entry.hash, entry.isFolder);
+			putPath(to, entry.size, entry.lastModified, entry.hash, entry.isFolder);
 		
 		return entry.hash;
 	}
