@@ -6,8 +6,8 @@ import basis.brickness.Brick;
 @Brick
 public interface PacketSplitter {
 	
-	ByteBuffer[] splitBy(int size, ByteBuffer packet);
+	ByteBuffer[] splitBy(ByteBuffer whole, int pieceSize);
 	
-	ByteBuffer join(ByteBuffer[] packets);
+	ByteBuffer join(ByteBuffer[] pieces);
 
 }

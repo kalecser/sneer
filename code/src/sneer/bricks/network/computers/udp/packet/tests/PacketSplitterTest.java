@@ -19,9 +19,14 @@ public class PacketSplitterTest extends BrickTestBase {
 	
 	@Test
 	public void split() {
-		assertSplittedPackets(splittedBy(6, "Hey Neide"), "Hey Ne", "ide");
-		assertSplittedPackets(splittedBy(9, "Hey Neide"), "Hey Neide");
-		assertSplittedPackets(splittedBy(10, "Hey Neide"), "Hey Neide");
+		assertSplitPackets(splitBy(3, ""), "");
+		assertSplitPackets(splitBy(3, "Hey Neide"), "Hey", " Ne", "ide");
+		assertSplitPackets(splitBy(4, "Hey Neide"), "Hey", " Ne", "ide");
+		assertSplitPackets(splitBy(5, "Hey Neide"), "Hey N", "eide");
+		assertSplitPackets(splitBy(6, "Hey Neide"), "Hey N", "eide");
+		assertSplitPackets(splitBy(8, "Hey Neide"), "Hey N", "eide");
+		assertSplitPackets(splitBy(9, "Hey Neide"), "Hey Neide");
+		assertSplitPackets(splitBy(10, "Hey Neide"), "Hey Neide");
 	}
 	
 	
@@ -33,18 +38,25 @@ public class PacketSplitterTest extends BrickTestBase {
 	}
 	
 
-	private ByteBuffer[] splittedBy(int payloadSize, String packet) {
-		return subject.splitBy(payloadSize, ByteBuffer.wrap(packet.getBytes()));
+	private ByteBuffer[] splitBy(int payloadSize, String packet) {
+		ByteBuffer buff = ByteBuffer.allocate(100);
+		buff.put(packet.getBytes());
+		buff.flip();
+		
+		return subject.splitBy(buff, payloadSize);
 	}
 	
 	
-	private void assertSplittedPackets(ByteBuffer[] splitted, String... expected) {
-		List<String> result = new ArrayList<String>();
+	private void assertSplitPackets(ByteBuffer[] pieces, String... expected) {
+		List<String> actual = new ArrayList<String>();
 		
-		for (ByteBuffer packet : splitted)
-			result.add(new String(packet.array()));
+		for (ByteBuffer piece : pieces) {
+			byte[] bytes = new byte[piece.remaining()];
+			piece.get(bytes);
+			actual.add(new String(bytes));
+		}
 
-		assertArrayEquals(expected, result.toArray());
+		assertArrayEquals(expected, actual.toArray());
 	}
 
 
@@ -60,7 +72,10 @@ public class PacketSplitterTest extends BrickTestBase {
 
 	private void assertJoinedPackets(ByteBuffer[] buffersToJoin, String expected) {
 		ByteBuffer joined = subject.join(buffersToJoin);
-		assertEquals(expected, new String(joined.array()));
+		byte[] bytes = new byte[joined.remaining()];
+		joined.get(bytes);
+		
+		assertEquals(expected, new String(bytes));
 	}
 
 
