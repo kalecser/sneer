@@ -73,4 +73,9 @@ public class ImmutableArray<T> implements Collection<T> {
 	@Override public boolean removeAll(Collection<?> c) { throw new UnsupportedOperationException(); }
 	@Override public boolean retainAll(Collection<?> c) { throw new UnsupportedOperationException(); }
 
+	@Override
+	public String toString() {
+		return "Immutable" + Arrays.toString(_elements);
+	}
+	
 }
