@@ -168,6 +168,7 @@ abstract class AbstractDownload implements Download {
 
 
 	protected void publish(Tuple request) {
+		if (request == null) return;
 		my(TupleSpace.class).add(request);
 	}
 

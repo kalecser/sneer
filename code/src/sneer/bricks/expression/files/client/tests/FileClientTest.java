@@ -11,16 +11,10 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import basis.environments.Environments;
-import basis.lang.ClosureX;
-import basis.lang.Consumer;
-import basis.lang.arrays.ImmutableByteArray;
-
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.TimeoutException;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.protocol.FileContents;
-import sneer.bricks.expression.files.protocol.FileContentsFirstBlock;
 import sneer.bricks.expression.files.protocol.FileRequest;
 import sneer.bricks.expression.files.protocol.Protocol;
 import sneer.bricks.expression.tuples.TupleSpace;
@@ -35,6 +29,10 @@ import sneer.bricks.hardware.io.IO;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.software.code.classutils.ClassUtils;
+import basis.environments.Environments;
+import basis.lang.ClosureX;
+import basis.lang.Consumer;
+import basis.lang.arrays.ImmutableByteArray;
 
 public class FileClientTest extends BrickTestWithTuples {
 
@@ -101,7 +99,7 @@ public class FileClientTest extends BrickTestWithTuples {
 		List<FileContents> blocks = new ArrayList<FileContents>();
 
 		blocks.add(new FileContents(addressee, fileHash, 1, getFileBlock(file, 1), file.getName())); // 2nd block
-		blocks.add(new FileContentsFirstBlock(addressee, fileHash, file.length(), getFileBlock(file, 0), file.getName())); // 1st block
+		blocks.add(new FileContents(addressee, fileHash, 0, getFileBlock(file, 0), file.getName())); // 1st block
 		blocks.add(new FileContents(addressee, fileHash, 2, getFileBlock(file, 2), file.getName())); // 3rd block
 
 		return blocks;

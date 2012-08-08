@@ -10,7 +10,6 @@ import java.io.IOException;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.protocol.FileContents;
-import sneer.bricks.expression.files.protocol.FileContentsFirstBlock;
 import sneer.bricks.expression.files.protocol.FileOrFolder;
 import sneer.bricks.expression.files.protocol.FileRequest;
 import sneer.bricks.expression.files.protocol.FolderContents;
@@ -108,11 +107,9 @@ public class FileServerImpl implements FileServer, Consumer<FileRequest> {
 		}
 
 		String debugInfo = requestedFile.getName();
-		FileContents fileContents = blockNumber == 0
-			? new FileContentsFirstBlock(request.publisher, request.hashOfContents, requestedFile.length(), bytes, debugInfo)
-			: new FileContents			(request.publisher, request.hashOfContents, blockNumber, bytes, debugInfo);
-		log(fileContents);
-		return fileContents;
+		FileContents ret = new FileContents(request.publisher, request.hashOfContents, blockNumber, bytes, debugInfo);
+		log(ret);
+		return ret;
 	}
 
 

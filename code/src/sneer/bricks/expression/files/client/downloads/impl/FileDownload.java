@@ -18,7 +18,6 @@ import java.util.List;
 import sneer.bricks.expression.files.map.FileMap;
 import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.protocol.FileContents;
-import sneer.bricks.expression.files.protocol.FileContentsFirstBlock;
 import sneer.bricks.expression.files.protocol.FileRequest;
 import sneer.bricks.expression.files.protocol.Protocol;
 import sneer.bricks.expression.tuples.Tuple;
@@ -37,13 +36,11 @@ class FileDownload extends AbstractDownload {
 
 	private static final int MAX_BLOCKS_DOWNLOADED_AHEAD = 100;
 
-	@SuppressWarnings("unused")
-	private final long size;
-	private OutputStream _output;
+	private final int _fileSizeInBlocks;
+	private final OutputStream _output;
+
 	private final List<FileContents> _blocksToWrite = new ArrayList<FileContents>();
 	private int _nextBlockToWrite = 0;
-	private int _fileSizeInBlocks = -1;
-
 	private long _lastRequestTime = -1;
 
 	@SuppressWarnings("unused") private WeakContract _fileContentConsumerContract;
@@ -52,9 +49,39 @@ class FileDownload extends AbstractDownload {
 
 	FileDownload(File file, long size, long lastModified, Hash hashOfFile, Seal source, boolean copyLocalFiles) {
 		super(file, lastModified, hashOfFile, source, copyLocalFiles);
-		this.size = size;
 
+		if (size == 0) {
+			_fileSizeInBlocks = 0;
+			_output = null;
+			finishEmptyFile();
+		} else {
+			_fileSizeInBlocks = (int) ((size - 1) / Protocol.FILE_BLOCK_SIZE) + 1;
+			_output = openOutputStream();
+		}
+		
 		start();
+	}
+
+
+	private FileOutputStream openOutputStream() {
+		try {
+			recoverDownloadIfPossible();
+			return new FileOutputStream(_path, true);
+		} catch (IOException ioe) {
+			finishWith(ioe);
+			return null;
+		}
+	}
+
+
+	private void finishEmptyFile() {
+		try {
+			if (!_path.exists())
+				_path.createNewFile();
+			finishCheckingHash();
+		} catch (IOException ioe) {
+			finishWith(ioe);
+		}
 	}
 
 
@@ -82,44 +109,23 @@ class FileDownload extends AbstractDownload {
 	private void tryToReceiveFileBlock(FileContents contents) throws IOException {
 		if (!contents.hashOfFile.equals(_hash)) return;
 
-		if (contents instanceof FileContentsFirstBlock) {
-			receiveFirstBlock((FileContentsFirstBlock) contents);
-			if (isFinished()) return;  // Empty file case.
-		}
-
 		if (contents.blockNumber < _nextBlockToWrite) return;
 		if (contents.blockNumber - _nextBlockToWrite > MAX_BLOCKS_DOWNLOADED_AHEAD) return; 
 
 		my(Logger.class).log("File block received. File: {}, Block: ", contents.debugInfo, contents.blockNumber);
 
 		_blocksToWrite.add(contents);
-		setProgress((float) _nextBlockToWrite / _fileSizeInBlocks);
 		tryToWriteBlocksInSequence();
+		
+		setProgress((float) _nextBlockToWrite / _fileSizeInBlocks);
 	}
 
 	
-	private void receiveFirstBlock(FileContentsFirstBlock contents) throws IOException {
-		if (firstBlockWasAlreadyReceived()) return;
-		
-		if (contents.fileSize == 0) {
-			_fileSizeInBlocks = 0;
-			_path.delete();
-			_path.createNewFile();
-			finishWithSuccess();
-		} else {
-			_fileSizeInBlocks = (int) ((contents.fileSize - 1) / Protocol.FILE_BLOCK_SIZE) + 1;
-			recoverDownloadIfPossible();
-			_output = new FileOutputStream(_path, true);
-		}
-	}
-
-
 	private void recoverDownloadIfPossible() throws IOException {
 		if (!_path.exists()) return;
 
 		truncateFileToBlock();
 		_nextBlockToWrite = (int) (_path.length() / Protocol.FILE_BLOCK_SIZE);
-		publish(nextBlockRequest());
 	}
 
 
@@ -131,11 +137,6 @@ class FileDownload extends AbstractDownload {
 	}
 
 
-	private boolean firstBlockWasAlreadyReceived() {
-		return _fileSizeInBlocks != -1;
-	} 
-
-	
 	private void tryToWriteBlocksInSequence() throws IOException {
 		boolean written;
 		do {
@@ -160,9 +161,16 @@ class FileDownload extends AbstractDownload {
 		++_nextBlockToWrite;
 		if (readyToFinish()) {
 			my(IO.class).crash(_output);
-			if (_hash.equals(my(Crypto.class).digest(_path))) finishWithSuccess();
-			else throw new IOException("Downloaded file did not match its expected hash");
+			finishCheckingHash();
 		}
+	}
+
+
+	private void finishCheckingHash() throws IOException {
+		if (!_hash.equals(my(Crypto.class).digest(_path)))
+			throw new IOException("Downloaded file did not match its expected hash");
+
+		finishWithSuccess();
 	}
 
 
@@ -199,17 +207,17 @@ class FileDownload extends AbstractDownload {
 	private Collection<Tuple> initialBlockRequests() {
 		_lastRequestTime = my(Clock.class).time().currentValue();
 		List<Tuple> ret = new ArrayList<>(MAX_BLOCKS_DOWNLOADED_AHEAD);
-//		for (int i = 0; i < MAX_BLOCKS_DOWNLOADED_AHEAD; i++)
-//			ret.add(requestForBlock(i));
-		ret.add(requestForBlock(0));
+		for (int i = 0; i <= MAX_BLOCKS_DOWNLOADED_AHEAD && i < _fileSizeInBlocks; i++)
+			ret.add(requestForBlock(_nextBlockToWrite + i));
 		return ret;
 	}
 
 
 	private Tuple nextBlockRequest() {
 		_lastRequestTime = my(Clock.class).time().currentValue();
-//		return requestForBlock(_nextBlockToWrite + MAX_BLOCKS_DOWNLOADED_AHEAD);
-		return requestForBlock(_nextBlockToWrite);
+		int nextBlockRequest = _nextBlockToWrite + MAX_BLOCKS_DOWNLOADED_AHEAD;
+		if (nextBlockRequest >= _fileSizeInBlocks) return null;
+		return requestForBlock(nextBlockRequest);
 	}
 
 
