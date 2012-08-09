@@ -18,7 +18,7 @@ public class PacketSplitterTest extends BrickTestBase {
 	
 	private final PacketSplitter subject = my(PacketSplitters.class).newInstance();
 
-	
+	//TODO test a packet greater than 127 pieces
 	@Test(timeout=1000)
 	public void splitAndJoinPackets() {
 		splitAndJoin("", 2);

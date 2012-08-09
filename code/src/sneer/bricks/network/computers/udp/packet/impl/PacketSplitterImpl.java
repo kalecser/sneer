@@ -14,19 +14,21 @@ import sneer.bricks.pulp.notifiers.Source;
 
 class PacketSplitterImpl implements PacketSplitter {
 	
+	private static final int BYTES_FOR_REMAINING_PIECES = 1;
+	
 	private final Notifier<ByteBuffer> lastPacketJoined = my(Notifiers.class).newInstance();
 	private final List<ByteBuffer> piecesToJoin = new ArrayList<>();
 	private int piecesRemaining = 0;
 	
 	@Override
 	public ByteBuffer[] split(ByteBuffer whole, int maxPieceSize) {
-		int numberOfBuffers = (whole.remaining() / maxPieceSize) + 1;
-		int bytesPerPiece = (whole.remaining() / numberOfBuffers) + 1;
+		int numberOfPieces = (whole.remaining() + BYTES_FOR_REMAINING_PIECES - 1) / maxPieceSize + 1;
+		int bytesPerPiece = (whole.remaining() + BYTES_FOR_REMAINING_PIECES - 1) / numberOfPieces + 1;
 		
-		ByteBuffer[] ret = new ByteBuffer[numberOfBuffers];
-		ret[0] = firstPiece(whole, numberOfBuffers, bytesPerPiece);
+		ByteBuffer[] ret = new ByteBuffer[numberOfPieces];
+		ret[0] = firstPiece(whole, numberOfPieces, bytesPerPiece);
 
-		for (int i = 1; i < numberOfBuffers; i++)
+		for (int i = 1; i < numberOfPieces; i++)
 			ret[i] = piece(whole, bytesPerPiece);
 		
 		return ret;
@@ -34,12 +36,17 @@ class PacketSplitterImpl implements PacketSplitter {
 
 
 	private ByteBuffer firstPiece(ByteBuffer whole, int numberOfPieces, int bytesPerPiece) {
-		int size = min(whole.remaining() + 1, bytesPerPiece);
-		byte[] piece = new byte[size];
-		piece[0] = (byte) (numberOfPieces - 1);
-		whole.get(piece, 1, size - 1);
+		//Optimize: use whole.slice()
+		ByteBuffer ret = ByteBuffer.allocate(bytesPerPiece);
+		ret.put((byte) (numberOfPieces - 1));
 		
-		return ByteBuffer.wrap(piece);
+		byte[] piece = new byte[bytesPerPiece - BYTES_FOR_REMAINING_PIECES];
+		whole.get(piece);
+
+		ret.put(piece);
+		ret.flip();
+		
+		return ret;
 	}
 
 
