@@ -1,13 +1,15 @@
 package sneer.bricks.network.computers.udp.packet;
 
 import java.nio.ByteBuffer;
-import basis.brickness.Brick;
 
-@Brick
+import sneer.bricks.pulp.notifiers.Source;
+
 public interface PacketSplitter {
 	
-	ByteBuffer[] splitBy(ByteBuffer whole, int pieceSize);
+	ByteBuffer[] split(ByteBuffer whole, int maxPieceSize);
 	
-	ByteBuffer join(ByteBuffer[] pieces);
+	void join(ByteBuffer piece);
+	
+	Source<ByteBuffer> lastJoinedPacket();
 
 }
