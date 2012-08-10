@@ -1,33 +1,31 @@
-package sneer.bricks.skin.widgets.reactive.autoscroll.impl;
+package sneer.bricks.skin.widgets.autoscroll.impl;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.JScrollPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-class AutoScroll{ 
-	boolean atEnd = false;
-	int value;
+class AutoScrollWorker { 
+	boolean wasAtEnd = false;
+	int position;
 	
-	AutoScroll(final JScrollPane subject) {
+	AutoScrollWorker(final JScrollPane subject) {
 		subject.getVerticalScrollBar().getModel().addChangeListener(new ChangeListener() { @Override public void stateChanged(ChangeEvent e) {
-			int newValue = model(subject).getValue();
-			
-			if (newValue == 0 && atEnd) { //Ignore silly swing event that sets scroll model value to zero when showing component.
-				placeAtEnd(subject);
-				return;
-			}
+			int newPosition = model(subject).getValue();
 			
 			if (isAtEnd(subject)) {
-				atEnd = true;
-				value = newValue;
+				wasAtEnd = true;
+				position = newPosition;
 				return;
 			}
-			
-			if (value == newValue)
-				placeAtEnd(subject);
+
+			if (!wasAtEnd) return;
+
+			boolean userHasScrolled = newPosition != position && newPosition != 0; //For some obscure reason, swing sets the scroll model value to zero when showing the component for the first time. Klaus 2012
+			if (userHasScrolled)
+				wasAtEnd = false;
 			else
-				atEnd = false;
+				placeAtEnd(subject);
 		}});
 
 		placeAtEnd(subject);	

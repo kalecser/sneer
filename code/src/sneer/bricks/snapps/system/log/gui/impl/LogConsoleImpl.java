@@ -33,7 +33,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.actions.Action;
 import sneer.bricks.hardware.gui.guithread.GuiThread;
 import sneer.bricks.hardware.io.log.filter.LogFilter;
@@ -49,9 +48,9 @@ import sneer.bricks.skin.main.title.ProcessTitle;
 import sneer.bricks.skin.menu.MenuFactory;
 import sneer.bricks.skin.menu.MenuGroup;
 import sneer.bricks.skin.popuptrigger.PopupTrigger;
+import sneer.bricks.skin.widgets.autoscroll.AutoScroll;
 import sneer.bricks.skin.widgets.reactive.ListWidget;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
-import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
 import sneer.bricks.skin.windowboundssetter.WindowBoundsSetter;
 import sneer.bricks.snapps.system.log.gui.LogConsole;
 import basis.lang.Closure;
@@ -75,8 +74,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 	
 	private final JScrollPane _autoScroll = autoScroll();
 	
-	@SuppressWarnings("unused")
-	private WeakContract refToAvoidGc;
+	@SuppressWarnings("unused") private Object ref1, ref2;
 
 	
 	LogConsoleImpl(){
@@ -89,7 +87,7 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		}});
 		
 		Signal<String> processTitle = my(ProcessTitle.class).title();
-		refToAvoidGc = processTitle.addPulseReceiver(new Closure() {	@Override	public void run() {
+		ref1 = processTitle.addPulseReceiver(new Closure() {	@Override	public void run() {
 				updateTitle();
 		}});
 		
@@ -213,12 +211,16 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 	
 	private JScrollPane autoScroll() {
 		Source<String> loggedMessages = my(AssynchronousBuffers.class).createFor(my(LogNotifier.class).loggedMessages(), "LogConsole buffer");
-		JScrollPane scroll = my(ReactiveAutoScroll.class).create(loggedMessages, new Consumer<String>() { @Override public void consume(String message) {
+		
+		ref2 = loggedMessages.addReceiver(new Consumer<String>() { @Override public void consume(String message) {
 			if (_txtLog.getLineCount() > CONSOLE_LINE_LIMIT)
 				_txtLog.setText(message);
 			else
 				_txtLog.append(message);
 		}});
+
+		JScrollPane scroll = new JScrollPane();
+		my(AutoScroll.class).autoscroll(scroll);
 		scroll.getViewport().add(_txtLog);
 		return scroll;
 	}

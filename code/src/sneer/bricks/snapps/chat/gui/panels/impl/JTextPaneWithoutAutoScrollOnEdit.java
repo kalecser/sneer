@@ -9,13 +9,13 @@ import javax.swing.text.DefaultCaret;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 
-class JTextPaneWithoutAutoScroll extends JTextPane {
+class JTextPaneWithoutAutoScrollOnEdit extends JTextPane {
 	
-	JTextPaneWithoutAutoScroll(){
-		preventAutoScrolling();
+	JTextPaneWithoutAutoScrollOnEdit(){
+		preventAutoScrollingOnEdit();
 	}
 
-	private void preventAutoScrolling() {
+	private void preventAutoScrollingOnEdit() {
 		Caret caret = this.getCaret();
 		if (!(caret instanceof DefaultCaret)) {
 			my(BlinkingLights.class).turnOn(LightType.WARNING, 

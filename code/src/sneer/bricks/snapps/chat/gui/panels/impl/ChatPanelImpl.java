@@ -35,10 +35,10 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.pulp.reactive.collections.ListSignal;
+import sneer.bricks.skin.widgets.autoscroll.AutoScroll;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
-import sneer.bricks.skin.widgets.reactive.autoscroll.ReactiveAutoScroll;
 import sneer.bricks.snapps.chat.gui.panels.Message;
 import basis.lang.Consumer;
 
@@ -49,7 +49,7 @@ class ChatPanelImpl extends JPanel {
 	private final ListSignal<Message> _messages;
 
 	private final JScrollPane _listScrollPane;
-	private final JTextPane _messagesList = new JTextPaneWithoutAutoScroll();
+	private final JTextPane _messagesList = new JTextPaneWithoutAutoScrollOnEdit();
 	private final MessagePainter _painter = new MessagePainter((DefaultStyledDocument) _messagesList.getStyledDocument());
 	private final TextWidget<JTextPane> _inputPane;
 	private JSplitPane split;
@@ -60,15 +60,10 @@ class ChatPanelImpl extends JPanel {
 
 	ChatPanelImpl(ListSignal<Message> messages, Consumer<String> messageSender) {
 		_messages = messages;
-		_listScrollPane = my(ReactiveAutoScroll.class).create(_messages, new Consumer<CollectionChange<Message>>() { @Override public void consume(CollectionChange<Message> change) {
-			if (!change.elementsRemoved().isEmpty()) {
-				_painter.repaintAll(_messages);
-				return;
-			}
-			for (Message msg : change.elementsAdded())
-				_painter.append(msg);
-
-		}});
+		
+		_listScrollPane =  new JScrollPane();
+		
+		my(AutoScroll.class).autoscroll(_listScrollPane);
 
 		_inputPane = my(ReactiveWidgetFactory.class).newTextPane(
 			my(Signals.class).constant(""), messageSender, NotificationPolicy.OnEnterPressed
@@ -80,7 +75,7 @@ class ChatPanelImpl extends JPanel {
 	
 	private void init() {
 		initGui();
-		initUserAlerts();
+		initMessageConsumers();
 		new ChatClipboardSupport();
 	}
 
@@ -128,9 +123,17 @@ class ChatPanelImpl extends JPanel {
 	}
 
 
-	private void initUserAlerts() {
+	private void initMessageConsumers() {
 		_refToAvoidGc = _messages.addReceiver(new Consumer<CollectionChange<Message>>() { @Override public void consume(CollectionChange<Message> msgs) {
 			alertUserIfNecessary(msgs.elementsAdded());
+			
+			if (!msgs.elementsRemoved().isEmpty()) {
+				_painter.repaintAll(_messages);
+				return;
+			}
+			for (Message msg : msgs.elementsAdded())
+				_painter.append(msg);
+
 		}});
 	}
 	
