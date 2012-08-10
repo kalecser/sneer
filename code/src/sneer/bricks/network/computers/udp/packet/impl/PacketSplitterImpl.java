@@ -36,15 +36,11 @@ class PacketSplitterImpl implements PacketSplitter {
 
 
 	private ByteBuffer firstPiece(ByteBuffer whole, int numberOfPieces, int bytesPerPiece) {
-		byte[] piece = new byte[bytesPerPiece - BYTES_FOR_REMAINING_PIECES];
-		whole.get(piece);
+		byte[] piece = new byte[bytesPerPiece];
+		piece[0] = (byte) (numberOfPieces - 1);
+		whole.get(piece, BYTES_FOR_REMAINING_PIECES, bytesPerPiece - BYTES_FOR_REMAINING_PIECES);
 
-		ByteBuffer ret = ByteBuffer.allocate(bytesPerPiece); //Optimize: use whole.slice()
-		ret.put((byte) (numberOfPieces - 1));
-		ret.put(piece);
-		ret.flip();
-		
-		return ret;
+		return ByteBuffer.wrap(piece);
 	}
 
 
