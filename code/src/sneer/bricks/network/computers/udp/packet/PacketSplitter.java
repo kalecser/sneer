@@ -9,7 +9,6 @@ public interface PacketSplitter {
 	ByteBuffer[] split(ByteBuffer whole, int maxPieceSize);
 	
 	void join(ByteBuffer piece);
-	
 	Source<ByteBuffer> lastJoinedPacket();
 
 }
