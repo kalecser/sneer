@@ -18,7 +18,6 @@ public class PacketSplitterTest extends BrickTestBase {
 	
 	private final PacketSplitter subject = my(PacketSplitters.class).newInstance();
 
-	//TODO test a packet greater than 127 pieces
 	@Test(timeout=1000)
 	public void splitAndJoinPackets() {
 		splitAndJoin("", 2);
@@ -26,8 +25,14 @@ public class PacketSplitterTest extends BrickTestBase {
 		splitAndJoin("How are you!?", 6);
 		splitAndJoin("Hey Neide", 10);
 		splitAndJoin("How are you?", 15);
+		
+		// 255 pieces
+		splitAndJoin("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh " +
+					"euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad " +
+					"minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut " +
+					"aliquip ex eax.", 1);
 	}
-
+	
 
 	private void splitAndJoin(String packet, int pieceSize) {
 		ByteBuffer[] pieces = assertSplit(packet, pieceSize);

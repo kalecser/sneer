@@ -68,7 +68,7 @@ class PacketSplitterImpl implements PacketSplitter {
 
 	private void accumulatePiece(ByteBuffer piece) {
 		if (piecesToJoin.isEmpty()) {
-			piecesRemaining = piece.get();
+			piecesRemaining = piece.get() & 0xFF;
 			piecesToJoin.ensureCapacity(piecesRemaining + 1); 
 			piecesToJoin.add(piece.slice());
 			return;
