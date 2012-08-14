@@ -5,7 +5,6 @@ import static java.lang.Math.min;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.List;
 
 import sneer.bricks.network.computers.udp.packet.PacketSplitter;
 import sneer.bricks.pulp.notifiers.Notifier;
@@ -17,7 +16,7 @@ class PacketSplitterImpl implements PacketSplitter {
 	private static final int BYTES_FOR_REMAINING_PIECES = 1;
 	
 	private final Notifier<ByteBuffer> lastPacketJoined = my(Notifiers.class).newInstance();
-	private final List<ByteBuffer> piecesToJoin = new ArrayList<>();
+	private final ArrayList<ByteBuffer> piecesToJoin = new ArrayList<>();
 	private int piecesRemaining = 0;
 	
 	@Override
@@ -70,6 +69,7 @@ class PacketSplitterImpl implements PacketSplitter {
 	private void accumulatePiece(ByteBuffer piece) {
 		if (piecesToJoin.isEmpty()) {
 			piecesRemaining = piece.get();
+			piecesToJoin.ensureCapacity(piecesRemaining + 1); 
 			piecesToJoin.add(piece.slice());
 			return;
 		}
