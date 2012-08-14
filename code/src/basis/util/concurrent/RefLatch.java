@@ -23,8 +23,14 @@ public class RefLatch<T> implements Consumer<T>{
 	
 	@Override
 	public void consume(T value) {
+		if (isOpen()) return;
 		delegate.countDown();
 		this.value = value;
+	}
+
+
+	private boolean isOpen() {
+		return delegate.getCount() == 0;
 	}
 
 }
