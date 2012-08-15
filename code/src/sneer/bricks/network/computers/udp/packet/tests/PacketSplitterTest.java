@@ -15,8 +15,7 @@ import basis.util.concurrent.RefLatch;
 
 public class PacketSplitterTest extends BrickTestBase {
 
-	
-	private final PacketSplitter subject = my(PacketSplitters.class).newInstance();
+	private final PacketSplitters subject = my(PacketSplitters.class);
 
 	@Test(timeout=1000)
 	public void splitAndJoinPackets() {
@@ -33,15 +32,29 @@ public class PacketSplitterTest extends BrickTestBase {
 					"aliquip ex eax.", 1);
 	}
 	
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void packetTooBig() {
+		splitAndJoin("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh " +
+				"euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad " +
+				"minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut " +
+				"aliquip ex eax..", 1);
+	}
+	
 
-	private void splitAndJoin(String packet, int pieceSize) {
-		ByteBuffer[] pieces = assertSplit(packet, pieceSize);
-		assertJoin(packet, pieces);
+	private void splitAndJoin(String packet, int maxPieceSize) {
+		PacketSplitter splitter = subject.newInstance(maxPieceSize);
+		
+		ByteBuffer[] pieces = assertSplit(splitter, packet, maxPieceSize);
+		assertJoin(splitter, packet, pieces);
+		
+		for (ByteBuffer piece : pieces) piece.flip();
+		assertJoin(splitter, packet, pieces);
 	}
 
 
-	private ByteBuffer[] assertSplit(String expected, int maxPieceSize) {
-		ByteBuffer[] ret = subject.split(ByteBuffer.wrap(expected.getBytes()), maxPieceSize);
+	private ByteBuffer[] assertSplit(PacketSplitter splitter, String expected, int maxPieceSize) {
+		ByteBuffer[] ret = splitter.split(ByteBuffer.wrap(expected.getBytes()));
 		
 		for (ByteBuffer piece : ret) {
 			assertTrue(format("Packet \"%s\" should have less than %s bytes", new String(piece.array()), maxPieceSize), 
@@ -52,12 +65,12 @@ public class PacketSplitterTest extends BrickTestBase {
 	}
 
 
-	private void assertJoin(String expected, ByteBuffer[] pieces) {
+	private void assertJoin(PacketSplitter splitter, String expected, ByteBuffer[] pieces) {
 		RefLatch<ByteBuffer> latch = new RefLatch<>();
-		@SuppressWarnings("unused")	WeakContract refToAvoidGC = subject.lastJoinedPacket().addReceiver(latch);
+		@SuppressWarnings("unused")	WeakContract refToAvoidGC = splitter.lastJoinedPacket().addReceiver(latch);
 		
 		for (ByteBuffer piece : pieces) 
-			subject.join(piece);
+			splitter.join(piece);
 		
 		ByteBuffer joinedPacket = latch.waitAndGet();
 		byte[] bytes = new byte[joinedPacket.remaining()];

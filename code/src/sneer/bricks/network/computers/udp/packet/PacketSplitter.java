@@ -6,7 +6,7 @@ import sneer.bricks.pulp.notifiers.Source;
 
 public interface PacketSplitter {
 	
-	ByteBuffer[] split(ByteBuffer whole, int maxPieceSize);
+	ByteBuffer[] split(ByteBuffer whole);
 	
 	void join(ByteBuffer piece);
 	Source<ByteBuffer> lastJoinedPacket();

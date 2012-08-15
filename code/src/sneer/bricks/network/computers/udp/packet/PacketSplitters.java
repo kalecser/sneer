@@ -5,6 +5,6 @@ import basis.brickness.Brick;
 @Brick
 public interface PacketSplitters {
 	
-	PacketSplitter newInstance();
+	PacketSplitter newInstance(int maxPieceSize);
 
 }
