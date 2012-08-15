@@ -25,6 +25,7 @@ class Splitter implements Producer<ByteBuffer> {
 	
 
 	@Override 
+	synchronized
 	public ByteBuffer produce() {
 		ByteBuffer nextPiece = nextPiece();
 		return nextPiece == null ? firstPiece() : nextPiece;
