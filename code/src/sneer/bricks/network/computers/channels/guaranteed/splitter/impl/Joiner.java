@@ -1,5 +1,7 @@
 package sneer.bricks.network.computers.channels.guaranteed.splitter.impl;
 
+import static sneer.bricks.network.computers.channels.guaranteed.splitter.impl.Splitter.BYTES_FOR_REMAINING_PIECES;
+
 import java.nio.ByteBuffer;
 
 import basis.lang.Consumer;
@@ -31,7 +33,7 @@ class Joiner implements Consumer<ByteBuffer> {
 		if (whole == null) {
 			int pieceSize = piece.remaining();
 			piecesToJoin = piece.get() & 0xFF;
-			whole = ByteBuffer.allocate((1 + piecesToJoin) * pieceSize - Splitter.BYTES_FOR_REMAINING_PIECES);
+			whole = ByteBuffer.allocate((1 + piecesToJoin) * pieceSize - BYTES_FOR_REMAINING_PIECES);
 		} else {
 			piecesToJoin--;
 		}
