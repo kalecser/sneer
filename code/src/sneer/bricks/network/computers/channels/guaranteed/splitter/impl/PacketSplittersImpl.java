@@ -1,13 +1,24 @@
 package sneer.bricks.network.computers.channels.guaranteed.splitter.impl;
 
-import sneer.bricks.network.computers.channels.guaranteed.splitter.PacketSplitter;
+
+import java.nio.ByteBuffer;
+
 import sneer.bricks.network.computers.channels.guaranteed.splitter.PacketSplitters;
+import basis.lang.Consumer;
+import basis.lang.Producer;
 
 class PacketSplittersImpl implements PacketSplitters {
+	
 
 	@Override
-	public PacketSplitter newInstance(int maxPieceSize) {
-		return new PacketSplitterImpl(maxPieceSize);
+	public Producer<ByteBuffer> newSplitter(final Producer<ByteBuffer> largePacketSender, final int maxPieceSize) {
+		return new Splitter(largePacketSender, maxPieceSize);
+	}
+	
+	
+	@Override
+	public Consumer<ByteBuffer> newJoiner(final Consumer<ByteBuffer> largePacketReceiver) {
+		return new Joiner(largePacketReceiver); 
 	}
 
 }
