@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.udp.packet.tests;
+package sneer.bricks.network.computers.channels.guaranteed.splitter.tests;
 
 import static basis.environments.Environments.my;
 import static java.lang.String.format;
@@ -8,8 +8,8 @@ import java.nio.ByteBuffer;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.network.computers.udp.packet.PacketSplitter;
-import sneer.bricks.network.computers.udp.packet.PacketSplitters;
+import sneer.bricks.network.computers.channels.guaranteed.splitter.PacketSplitter;
+import sneer.bricks.network.computers.channels.guaranteed.splitter.PacketSplitters;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import basis.util.concurrent.RefLatch;
 

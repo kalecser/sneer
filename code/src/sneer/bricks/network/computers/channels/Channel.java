@@ -12,5 +12,7 @@ public interface Channel {
 	Hash id();
 	
 	void open(Producer<ByteBuffer> sender, Consumer<ByteBuffer> receiver);
+	
+	int maxPacketSize();
 
 }

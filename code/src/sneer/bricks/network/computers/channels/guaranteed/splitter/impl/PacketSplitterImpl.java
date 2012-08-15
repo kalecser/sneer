@@ -1,19 +1,18 @@
-package sneer.bricks.network.computers.udp.packet.impl;
+package sneer.bricks.network.computers.channels.guaranteed.splitter.impl;
 
 import static basis.environments.Environments.my;
 import static java.lang.Math.min;
 
 import java.nio.ByteBuffer;
 
-import sneer.bricks.network.computers.udp.packet.PacketSplitter;
+import sneer.bricks.network.computers.channels.guaranteed.splitter.PacketSplitter;
 import sneer.bricks.pulp.notifiers.Notifier;
 import sneer.bricks.pulp.notifiers.Notifiers;
 import sneer.bricks.pulp.notifiers.Source;
 
 class PacketSplitterImpl implements PacketSplitter {
 	
-	private static final int MAX_PIECES = 256;
-	private static final int BYTES_FOR_REMAINING_PIECES = 1;
+	private static final int BYTES_FOR_REMAINING_PIECES = 1; //Representing up to PacketSplitter.MAX_PIECES
 	
 	private final Notifier<ByteBuffer> lastPacketJoined = my(Notifiers.class).newInstance();
 	private final int maxPieceSize;

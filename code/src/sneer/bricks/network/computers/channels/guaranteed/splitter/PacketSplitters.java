@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.udp.packet;
+package sneer.bricks.network.computers.channels.guaranteed.splitter;
 
 import basis.brickness.Brick;
 
