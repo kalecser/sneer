@@ -1,32 +1,19 @@
 package sneer.bricks.network.computers.channels.guaranteed.impl;
 
-import static basis.environments.Environments.my;
-
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
 
 import sneer.bricks.hardware.cpu.crypto.Hash;
-import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.network.computers.channels.Channel;
 import sneer.bricks.network.computers.channels.guaranteed.GuaranteedChannel;
-import sneer.bricks.network.computers.channels.guaranteed.splitter.PacketSplitter;
-import sneer.bricks.network.computers.channels.guaranteed.splitter.PacketSplitters;
 import basis.lang.Consumer;
 import basis.lang.Producer;
 
-class GuaranteedChannelImpl implements GuaranteedChannel, Producer<ByteBuffer>, Consumer<ByteBuffer> {
+class GuaranteedChannelImpl implements GuaranteedChannel {
 
 	private final Channel delegate;
-	private final PacketSplitter splitter;
-	private Producer<ByteBuffer> sender;
-	private Iterator<ByteBuffer> piecesToSend = Collections.EMPTY_LIST.iterator();
-	@SuppressWarnings("unused") private WeakContract ref;
 
 	GuaranteedChannelImpl(Channel delegate) {
 		this.delegate = delegate;
-		splitter = my(PacketSplitters.class).newInstance(this.delegate.maxPacketSize());
 	}
 
 	@Override
@@ -36,29 +23,12 @@ class GuaranteedChannelImpl implements GuaranteedChannel, Producer<ByteBuffer>, 
 
 	@Override
 	public void open(Producer<ByteBuffer> sender, Consumer<ByteBuffer> receiver) {
-		this.sender = sender;
-		ref = splitter.lastJoinedPacket().addReceiver(receiver);
-		delegate.open(this, this);
+		delegate.open(sender, receiver);
 	}
 
 	@Override
 	public int maxPacketSize() {
-		return delegate.maxPacketSize() * PacketSplitter.MAX_PIECES;
-	}
-
-	@Override
-	public ByteBuffer produce() {
-		if (!piecesToSend.hasNext()) {
-			ByteBuffer[] pieces = splitter.split(sender.produce());
-			piecesToSend = Arrays.asList(pieces).iterator();
-		}
-		
-		return piecesToSend.next();
-	}
-
-	@Override
-	public void consume(ByteBuffer piece) {
-		splitter.join(piece);
+		return delegate.maxPacketSize();
 	}
 
 }
