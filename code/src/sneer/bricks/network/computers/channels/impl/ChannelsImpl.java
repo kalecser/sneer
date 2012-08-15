@@ -1,14 +1,15 @@
 package sneer.bricks.network.computers.channels.impl;
 
-import sneer.bricks.hardware.cpu.crypto.Hash;
+import static basis.environments.Environments.my;
 import sneer.bricks.network.computers.channels.Channel;
 import sneer.bricks.network.computers.channels.Channels;
+import sneer.bricks.network.computers.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
 
 class ChannelsImpl implements Channels {
 
 	@Override
-	public Channel accept(Hash id) {
+	public Channel accept(long id) {
 		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
@@ -19,7 +20,7 @@ class ChannelsImpl implements Channels {
 
 	@Override
 	public Channel createControl(Contact contact) {
-		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
+		return new ChannelImpl(my(ConnectionManager.class).connectionFor(contact));
 	}
 
 }

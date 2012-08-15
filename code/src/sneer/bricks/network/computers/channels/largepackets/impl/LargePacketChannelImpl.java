@@ -4,7 +4,6 @@ import static basis.environments.Environments.my;
 
 import java.nio.ByteBuffer;
 
-import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.network.computers.channels.Channel;
 import sneer.bricks.network.computers.channels.guaranteed.splitter.PacketSplitters;
 import sneer.bricks.network.computers.channels.largepackets.LargePacketChannel;
@@ -21,7 +20,7 @@ class LargePacketChannelImpl implements LargePacketChannel {
 	
 
 	@Override
-	public Hash id() {
+	public long id() {
 		return delegate.id();
 	}
 	

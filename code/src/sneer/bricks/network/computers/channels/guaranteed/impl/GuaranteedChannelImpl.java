@@ -2,7 +2,6 @@ package sneer.bricks.network.computers.channels.guaranteed.impl;
 
 import java.nio.ByteBuffer;
 
-import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.network.computers.channels.Channel;
 import sneer.bricks.network.computers.channels.guaranteed.GuaranteedChannel;
 import basis.lang.Consumer;
@@ -17,7 +16,7 @@ class GuaranteedChannelImpl implements GuaranteedChannel {
 	}
 
 	@Override
-	public Hash id() {
+	public long id() {
 		return delegate.id();
 	}
 
