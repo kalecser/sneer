@@ -35,9 +35,9 @@ public abstract class AssertUtils extends Assert {
 		for (T element : actual) collection.add(element);
 		
 		for (T expected : expectedInAnyOrder)
-			assertTrue("Expected element not found: " + expected, collection.contains(expected));
+			assertTrue("Expected element not found: " + expected, collection.remove(expected));
 		
-		assertEquals("Collections not same size", expectedInAnyOrder.length, collection.size());
+		assertTrue("More elements than expected: "+ collection, collection.isEmpty());
 	}
 
 	
