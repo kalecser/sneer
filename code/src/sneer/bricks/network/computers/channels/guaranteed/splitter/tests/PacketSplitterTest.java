@@ -4,23 +4,24 @@ import static basis.environments.Environments.my;
 import static java.lang.String.format;
 
 import java.nio.ByteBuffer;
+import java.util.concurrent.CountDownLatch;
 
 import org.junit.Test;
 
+import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.network.computers.channels.guaranteed.splitter.PacketSplitters;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import basis.lang.Closure;
 import basis.lang.Consumer;
 import basis.lang.Producer;
-import basis.util.concurrent.RefLatch;
 
 public class PacketSplitterTest extends BrickTestBase {
 
 	private final PacketSplitters subject = my(PacketSplitters.class);
 
 	@Test(timeout=1000)
-	public void splitAndJoinPackets() {
+	public void splitAndJoinPackets() throws InterruptedException {
 		splitAndJoin("", 2);
 		splitAndJoin("Hey Neide", 3);
 		splitAndJoin("How are you!?", 6);
@@ -42,7 +43,7 @@ public class PacketSplitterTest extends BrickTestBase {
 				"minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut " +
 				"aliquip ex eax..";
 		
-		Producer<ByteBuffer> splitter = subject.newSplitter(new Producer<ByteBuffer>() {  @Override public ByteBuffer produce() {
+		Producer<ByteBuffer> splitter = subject.newSplitter(new Producer<ByteBuffer>() { @Override public ByteBuffer produce() {
 			return ByteBuffer.wrap(largeText.getBytes());
 		}}, 1);
 		
@@ -50,27 +51,29 @@ public class PacketSplitterTest extends BrickTestBase {
 	}
 	
 
-	private void splitAndJoin(final String expected, final int maxPieceSize) {
+	private void splitAndJoin(final String expected, final int maxPieceSize) throws InterruptedException {
 		Producer<ByteBuffer> sender = new Producer<ByteBuffer>() { @Override public ByteBuffer produce() {
 			return ByteBuffer.wrap(expected.getBytes());
 		}};
 		
-		RefLatch<ByteBuffer> receiver = new RefLatch<>();
+		final CountDownLatch latch = new CountDownLatch(2);
 		
 		final Producer<ByteBuffer> splitter = subject.newSplitter(sender, maxPieceSize);
-		final Consumer<ByteBuffer> joiner = subject.newJoiner(receiver);
+		final Consumer<ByteBuffer> joiner = subject.newJoiner(new Consumer<ByteBuffer>() { @Override public void consume(ByteBuffer actual) {
+			byte[] bytes = new byte[actual.remaining()];
+			actual.get(bytes);
+			assertEquals(expected, new String(bytes));
+			latch.countDown();
+		}});
 		
-		my(Threads.class).startStepping("Pipe", new Closure() { @Override public void run() {
+		Contract pipe = my(Threads.class).startStepping("Pipe", new Closure() { @Override public void run() {
 			ByteBuffer piece = splitter.produce();
 			assertTrue(format("Packet \"%s\" should have less than %s bytes", new String(piece.array()), maxPieceSize), piece.remaining() <= maxPieceSize);
 			joiner.consume(piece);
 		}});
 		
-		ByteBuffer actual = receiver.waitAndGet();
-		byte[] bytes = new byte[actual.remaining()];
-		actual.get(bytes);
-
-		assertEquals(expected, new String(bytes));
+		latch.await();
+		pipe.dispose();
 	}
 	
 }
