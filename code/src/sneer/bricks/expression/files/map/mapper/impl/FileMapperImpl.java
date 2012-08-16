@@ -34,7 +34,7 @@ class FileMapperImpl implements FileMapper {
 
 	private MapperWorker workerFor(final File fileOrFolder, final String... acceptedFileExtensions) {
 		return _workersByFileOrFolder.get(fileOrFolder, new Producer<MapperWorker>() { @Override public MapperWorker produce() {
-			return new MapperWorker(fileOrFolder, acceptedFileExtensions);
+			return new MapperWorker(fileOrFolder.toPath(), acceptedFileExtensions);
 		}});
 	}
 

@@ -5,9 +5,11 @@ package sneer.bricks.expression.files.map.mapper.impl;
 
 import static basis.environments.Environments.my;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,9 +17,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import basis.lang.Closure;
-import basis.lang.arrays.ImmutableArray;
 
 import sneer.bricks.expression.files.hasher.FolderContentsHasher;
 import sneer.bricks.expression.files.map.FileMap;
@@ -27,18 +26,20 @@ import sneer.bricks.expression.files.protocol.FolderContents;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
-import sneer.bricks.hardware.io.IO;
 import sneer.bricks.hardware.io.log.stacktrace.StackTraceLogger;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import basis.lang.Closure;
+import basis.lang.arrays.ImmutableArray;
+import basis.lang.exceptions.NotImplementedYet;
 
 class MapperWorker {
 
 	private final static FileMap FileMap = my(FileMap.class);
 
 
-	private final File _fileOrFolder;
-	private final FileFilter _extensionsFilter;
+	private final Path _fileOrFolder;
+	private final PathMatcher extensionsMatcher;
 
 	private Hash _result;
 	private Exception _exception;
@@ -46,9 +47,9 @@ class MapperWorker {
 	private final AtomicBoolean _stop = new AtomicBoolean(false);
 
 
-	MapperWorker(File fileOrFolder, String... acceptedFileExtensions) {
+	MapperWorker(Path fileOrFolder, String... acceptedFileExtensions) {
 		_fileOrFolder = fileOrFolder;
-		_extensionsFilter = filterFor(acceptedFileExtensions);
+		extensionsMatcher = matcherFor(acceptedFileExtensions);
 	}
 
 
@@ -63,7 +64,7 @@ class MapperWorker {
 	private void run() {
 		my(CpuThrottle.class).limitMaxCpuUsage(20, new Closure() { @Override public void run() {
 			try {
-				_result = _fileOrFolder.isDirectory()
+				_result = Files.isDirectory(_fileOrFolder)
 					? mapFolder(_fileOrFolder)
 					: mapFile(_fileOrFolder);
 			} catch (Exception e) {
@@ -78,8 +79,8 @@ class MapperWorker {
 	}
 
 
-	private Hash mapFolder(File folder) throws MappingStopped, IOException {
-		String folderPath = folder.getAbsolutePath();
+	private Hash mapFolder(Path folder) throws MappingStopped, IOException {
+		String folderPath = absolute(folder);
 		Hash mappedHash = FileMap.getHash(folderPath);
 		FolderContents mappedContents = null;
 		if (mappedHash != null)
@@ -111,7 +112,7 @@ class MapperWorker {
 	}
 
 
-	private void checkPutHasWorked(File folder, FolderContents expected, Hash hash) {
+	private void checkPutHasWorked(Path folder, FolderContents expected, Hash hash) {
 		FolderContents actual = FileMap.getFolderContents(hash);
 		if (actual != null && actual.contents.size() == expected.contents.size()) return;
 
@@ -150,10 +151,10 @@ class MapperWorker {
 	}
 
 
-	private Hash putFolderHash(File folder, FolderContents newContents) {
+	private Hash putFolderHash(Path folder, FolderContents newContents) {
 		Hash hash = my(FolderContentsHasher.class).hash(newContents);
 		try {
-			FileMap.putFolder(folder.getAbsolutePath(), hash);
+			FileMap.putFolder(absolute(folder), hash);
 		} catch (RuntimeException e) {
 			throw withDetails(folder,	newContents, e);
 		}
@@ -161,33 +162,33 @@ class MapperWorker {
 	}
 
 
-	private List<FileOrFolder> mapFolderEntries(File folder) throws MappingStopped, IOException {
+	private List<FileOrFolder> mapFolderEntries(Path folder) throws MappingStopped, IOException {
 		List<FileOrFolder> result = new ArrayList<FileOrFolder>();
-		for (File entry : sortedFiles(folder))
+		for (Path entry : sortedEntries(folder))
 			result.add(mapFolderEntry(entry));
 		return result;
 	}
 
 
-	private FileOrFolder mapFolderEntry(File fileOrFolder) throws IOException, MappingStopped {
+	private FileOrFolder mapFolderEntry(Path fileOrFolder) throws IOException, MappingStopped {
 		if (_stop.get()) throw new MappingStopped();
 
-		String name = fileOrFolder.getName();
+		String name = fileOrFolder.getFileName().toString();
 		
-		if (fileOrFolder.isDirectory()) {
+		if (Files.isDirectory(fileOrFolder)) {
 			Hash hash = mapFolder(fileOrFolder);
 			return new FileOrFolder(name, hash);
 		}
 		
 		Hash hash = mapFile(fileOrFolder);
-		return new FileOrFolder(name, fileOrFolder.length(), fileOrFolder.lastModified(), hash);
+		return new FileOrFolder(name, Files.size(fileOrFolder), lastModified(fileOrFolder), hash);
 	}
 
 
-	private Hash mapFile(File file) {
-		String path = file.getAbsolutePath();
-		long size = file.length();
-		long lastModified = file.lastModified();
+	private Hash mapFile(Path file) throws IOException {
+		String path = absolute(file);
+		long size = Files.size(file);
+		long lastModified = lastModified(file);
 
 		Hash cached = FileMap.getHash(path);
 		if (cached != null && lastModified == FileMap.getLastModified(path))
@@ -195,7 +196,7 @@ class MapperWorker {
 
 		Hash result;
 		try {
-			result = my(Crypto.class).digest(file);
+			result = my(Crypto.class).digest(file.toFile());
 		} catch (IOException e) {
 			my(BlinkingLights.class).turnOn(LightType.ERROR, "File Mapping Error", "This can happen if your file has weird characters in the name or if your disk is failing.", e);
 			return my(Crypto.class).digest(new byte[0]);
@@ -205,24 +206,30 @@ class MapperWorker {
 	}
 
 	
-	private File[] sortedFiles(File folder) {
-		File[] result = folder.listFiles(_extensionsFilter);
-		if (result == null)	return new File[0];
-		Arrays.sort(result, new Comparator<File>() { @Override public int compare(File file1, File file2) {
-			return file1.getName().compareTo(file2.getName());
+	private Path[] sortedEntries(Path folder) throws IOException {
+		ArrayList<Path> list = new ArrayList<Path>();
+		for (Path path : Files.newDirectoryStream(folder)) 
+			if (Files.isDirectory(path) || extensionsMatcher.matches(path.getFileName()))
+				list.add(path);
+		
+		Path[] result = list.toArray(new Path[0]);
+		Arrays.sort(result, new Comparator<Path>() { @Override public int compare(Path path1, Path path2) {
+			return path1.getFileName().compareTo(path2.getFileName());
 		}});
 		return result;
 	}
 	
 	
-	static private FileFilter filterFor(String... acceptedFileExtensions) {
-		return acceptedFileExtensions.length > 0
-		? my(IO.class).fileFilters().foldersAndExtensions(acceptedFileExtensions)
-				: my(IO.class).fileFilters().any();
+	static private PathMatcher matcherFor(String... fileExtensions) {
+		if(fileExtensions.length > 1) 
+			throw new NotImplementedYet();
+		
+		String glob = fileExtensions.length == 0 ? "*"	: "*."+fileExtensions[0];
+		return FileSystems.getDefault().getPathMatcher("glob:"+glob);
 	}
 
 	
-	static private IllegalStateException withDetails(File folder,	FolderContents contents, RuntimeException e) {
+	static private IllegalStateException withDetails(Path folder,	FolderContents contents, RuntimeException e) {
 		String entries = "";
 		for (FileOrFolder entry : contents.contents)
 			entries += "\n" + entry.toString();
@@ -241,6 +248,15 @@ class MapperWorker {
 		return new ImmutableArray<FileOrFolder>(entries);
 	}
 
+	
+	static private String absolute(Path path) {
+		return path.toAbsolutePath().toString();
+	}
+	
+	
+	static private long lastModified(Path file) throws IOException {
+		return Files.getLastModifiedTime(file).toMillis();
+	}
 }
 
 
