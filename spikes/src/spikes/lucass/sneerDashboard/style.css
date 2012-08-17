@@ -7,18 +7,6 @@ body,html {
 	background:#99c;
 }
 
-#widgetColumn0 {
-	width:30%;
-}
-
-#widgetColumn1 {
-	width:30%;
-}
-
-#widgetColumn2 {
-	width:30%;
-}
-
 .col {
 	float:left;
 	margin:5px;

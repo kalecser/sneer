@@ -4,6 +4,12 @@ function loadWidgets(state){
 	}
 }
 
+function createColumns(state){
+	for (var i in state['columnSizes']){
+		appendColumn(state.columnSizes[i],i);
+	}
+}
+
 function appendWidget(widget){
 	$("#widgetColumn"+widget['column']).append(
 		'<div class="widget">'+
@@ -11,4 +17,8 @@ function appendWidget(widget){
 		'<iframe src="'+widget['url']+'" height="'+widget['height']+'""></iframe><br>'+
 		'</div>'
 		);
+}
+
+function appendColumn(size,index){
+	$("#widgets").append('<div id="widgetColumn'+index+'" class="col" style="width:'+size+'"></div>');
 }

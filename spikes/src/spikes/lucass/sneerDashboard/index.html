@@ -8,6 +8,7 @@
 		<script type="text/javascript">
 		$(document).ready(function(){
 				var state = {
+					"columnSizes":['10%','30%','40%'],
 					"widgets":[
 						{
 							"height":"200px",
@@ -30,6 +31,7 @@
 						
 					]
 				};
+				createColumns(state);
 				loadWidgets(state);
 		});
 		</script>
@@ -38,14 +40,7 @@
 	<body>
 	<h1>Sneer dashboard</h1>
 	<hr>
-	<div id="widgets">
-		<div id="widgetColumn0" class="col">
-		</div>
-		<div id="widgetColumn1" class="col">
-	        </div>
-		<div id="widgetColumn2" class="col">
-		</div>
-	</div>
+	<div id="widgets"></div>
 	<div style="clear:both">
 		<br>
 		<hr>
