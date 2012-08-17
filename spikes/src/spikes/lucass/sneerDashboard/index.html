@@ -1,22 +1,36 @@
 <html>
 	<head>
 		<title>Sneer dashboard</title>
+		<link rel="stylesheet" type="text/css" href="./style.css" />
+		<script src="./scripts/jquery-1.7.2.min.js"></script>
+		<script src="./scripts/dashboard.js"></script>
+		<script type="text/javascript">
+		  $(document).ready(setupWindows);
+		  dontpadWidget = {
+		  	  "height":"200px",
+		  	  "url":"http://dontpad.com/sneer_dashboard"
+		  }
+		</script>
+		
 	</head>
 	<body>
 	<h1>Sneer dashboard</h1>
 	<hr>
-	<div style="width:100%">
-		<div style="float:left">
+	<div id="Testing" class="window" title="About" style="background:#FFFFFF;left: 6px; top: 377px;" data-x="6px" data-y="377px">
+		<iframe src="http://dontpad.com/sneer_dashboard_about" height="400"></iframe><br>
+	</div>
+	<div id="widgets">
+		<div id="widgetColumn1" class="col">
 			Column 1<br>
-			<iframe src="http://dontpad.com/sneer_dashboard" height="400"></iframe><br>
+			<iframe src="http://dontpad.com/sneer_dashboard"></iframe><br>
 			<button type="button">Add Widget</button>
 		</div>
-		<div style="float:left">
+		<div id="widgetColumn2" class="col">
 	                Column 2<br>
-	                <iframe src="http://dontpad.com/sneer_dashboard" height="200"></iframe><br>
+	                <iframe src="http://dontpad.com/sneer_dashboard"></iframe><br>
 			<button type="button">Add Widget</button>
 	        </div>
-		<div style="float:left">
+		<div id="widgetColumn3" class="col">
 			<button type="button">Add Column</button>
 		</div>
 	</div>

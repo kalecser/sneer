@@ -1,0 +1,25 @@
+body,html {
+	color:#000;
+	background:#EEEEEE;
+}
+
+#widgets {
+	background:#99c;
+}
+
+#widgetColumn1 {
+	width:33%;
+	background:#FF0000;
+}
+#widgetColumn2 {
+	width:33%;
+	background:#00FF00;
+}
+#widgetColumn3 {
+	width:33%;
+	background:#0000FF;
+}
+
+.col {
+	float:left;
+}
