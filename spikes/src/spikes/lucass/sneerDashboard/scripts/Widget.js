@@ -11,14 +11,16 @@ function createColumns(state){
 }
 
 function appendWidget(widget){
-	$("#widgetColumn"+widget['column']).append(
+	$("#widgetColumnWrap"+widget['column']).append(
 		'<div class="widget">'+
 		widget['title']+'<br>'+
 		'<iframe src="'+widget['url']+'" height="'+widget['height']+'""></iframe><br>'+
 		'</div>'
-		);
+	);
 }
 
 function appendColumn(size,index){
-	$("#widgets").append('<div id="widgetColumn'+index+'" class="col" style="width:'+size+'"></div>');
+	var c = $('#widgetTable tr:first td').length;
+	$('#widgetTable tr:first').append('<td  style="width:'+size+'">'+index+'</td>');
+	$('#widgetTable tr:gt(0)').append('<td class="widgetColumn"> <div id="widgetColumnWrap'+index+'" class="col"></div> </td>');
 }

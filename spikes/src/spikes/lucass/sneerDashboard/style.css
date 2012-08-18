@@ -3,18 +3,18 @@ body,html {
 	background:#ffffff;
 }
 
-#widgets {
-	background:#99c;
+.col {
+	width:100%;
+	height:100%;
 }
 
-.col {
-	float:left;
-	margin:5px;
+.widgetColumn{
+	vertical-align:text-top;
 }
 
 .widget {
 	width:100%;
-	margin:10px;
+	margin-bottom:10px;
 	border: 1px black solid;
 }
 
