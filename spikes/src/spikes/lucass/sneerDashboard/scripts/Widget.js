@@ -22,7 +22,10 @@ function getWidgetCode(widget){
 }
 
 function appendWidget(widget){
-	$('#'+widgetColumnWrap+widget['column']).prepend(getWidgetCode(widget));
+	var columnIndex = widget['column'];
+	console.log('#'+addWidgetLink+columnIndex);
+	$('#'+addWidgetLink+widget['column']).replaceWith(getWidgetCode(widget));
+	addWidgetAddLink(columnIndex);
 }
 
 function getTitleDiv(title){
@@ -32,13 +35,14 @@ function getTitleDiv(title){
 addWidgetLink = 'addWidgetLink';
 
 function addNewWidgetForButton(button){
-	var dummyWidget = {};
+	var widget = {};
 	var widgetBody = $(button).parent()
-	widgetBody.children("input:text").each(function() {
-			dummyWidget[$(this).attr("name")]=$(this).val();
+	widgetBody.children("input").each(function() {
+			widget[$(this).attr("name")]=$(this).val();
 	});
   
-	widgetBody.parent().replaceWith(getWidgetCode(dummyWidget));
+	widgetBody.parent().remove();
+	appendWidget(widget);
 }
 
 function appendBlankWidget(columnIndex){
@@ -57,7 +61,7 @@ function appendBlankWidget(columnIndex){
 			'</div>'+
 		'</div>'
 	);
-	addWidgetAddLink(columnIndex)
+	addWidgetAddLink(columnIndex);
 }
 
 function addWidgetAddLink(columnIndex){
