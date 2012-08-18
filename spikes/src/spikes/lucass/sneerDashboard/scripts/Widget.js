@@ -20,7 +20,5 @@ function appendWidget(widget){
 }
 
 function appendColumn(size,index){
-	var c = $('#widgetTable tr:first td').length;
-	$('#widgetTable tr:first').append('<td  style="width:'+size+'">'+index+'</td>');
-	$('#widgetTable tr:gt(0)').append('<td class="widgetColumn"> <div id="widgetColumnWrap'+index+'" class="col"></div> </td>');
+	$('#widgetTable tr').append('<td class="widgetColumn" style="width:'+size+';"> <div id="widgetColumnWrap'+index+'" class="col"></div> </td>');
 }
