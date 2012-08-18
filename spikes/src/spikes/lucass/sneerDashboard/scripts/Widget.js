@@ -12,15 +12,17 @@ function createColumns(state){
 
 widgetColumnWrap = 'widgetColumnWrap';
 
-function appendWidget(widget){
-	$('#'+widgetColumnWrap+widget['column']).prepend(
-		'<div class="widget">'+
+function getWidgetCode(widget){
+	return '<div class="widget">'+
 			getTitleDiv(widget['title'])+
 			'<div class="widgetBody">'+
 				'<iframe src="'+widget['url']+'" height="'+widget['height']+'""></iframe><br>'+
 			'</div>'+
-		'</div>'
-	);
+		'</div>';
+}
+
+function appendWidget(widget){
+	$('#'+widgetColumnWrap+widget['column']).prepend(getWidgetCode(widget));
 }
 
 function getTitleDiv(title){
@@ -29,18 +31,27 @@ function getTitleDiv(title){
 
 addWidgetLink = 'addWidgetLink';
 
+function addNewWidgetForButton(button){
+	var dummyWidget = {
+		"height":"200px",
+		"title":"Dontpad/sneer_dashboard",
+		"url":"http://dontpad.com/sneer_dashboard"
+	};
+	$(button).parent().parent().replaceWith(getWidgetCode(dummyWidget));
+}
+
 function appendBlankWidget(columnIndex){
 	$('#'+addWidgetLink+columnIndex).replaceWith(
 		'<div class="widget">'+
 		getTitleDiv('New Widget')+
 			'<div class="widgetBody">'+
 				'Title:<br>'+
-				'<input type="text"/><br>'+
+				'<input type="text" style="width:100%;"/><br>'+
 				'Url:<br>'+
-				'<input type="text"/><br>'+
+				'<input type="text" style="width:100%;"/><br>'+
 				'Height:<br>'+
-				'<input type="text"/><br>'+
-				'<input type="button" value="Add"/><br>'+
+				'<input type="text" style="width:100%;"/><br>'+
+				'<input type="button" value="Add" onclick="addNewWidgetForButton(this)"/><br>'+
 			'</div>'+
 		'</div>'
 	);
