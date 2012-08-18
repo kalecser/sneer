@@ -23,13 +23,16 @@ function getWidgetCode(widget){
 
 function appendWidget(widget){
 	var columnIndex = widget['column'];
-	console.log('#'+addWidgetLink+columnIndex);
 	$('#'+addWidgetLink+widget['column']).replaceWith(getWidgetCode(widget));
 	addWidgetAddLink(columnIndex);
 }
 
+function closeWidget(closeButton){
+	$(closeButton).parent().parent().remove();
+}
+
 function getTitleDiv(title){
-	return '<div class="widgetTitle">'+title+'</div>';
+	return '<div class="widgetTitle">'+title+' <img class="closeButton" onclick="closeWidget(this)" src="./images/closeButton.png"/></div>';
 }
 
 addWidgetLink = 'addWidgetLink';

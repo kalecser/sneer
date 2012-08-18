@@ -42,8 +42,6 @@ line-height: 1.1;
 .widget {
 	width:100%;
 	margin-bottom:10px;
-	
-	
 }
 
 .widgetBody {
@@ -102,4 +100,14 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2e2e2', end
 	color: black;
 	text-decoration: none;
 	font-weight:bold;
+}
+
+.closeButton{
+	float:right;
+	font:15px arial,sans-serif;
+	color: black;
+	text-decoration: none;
+	font-weight:bold;
+	margin:0px;
+	padding:0px;
 }
