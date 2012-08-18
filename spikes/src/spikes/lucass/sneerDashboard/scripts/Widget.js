@@ -10,8 +10,10 @@ function createColumns(state){
 	}
 }
 
+widgetColumnWrap = 'widgetColumnWrap';
+
 function appendWidget(widget){
-	$("#widgetColumnWrap"+widget['column']).prepend(
+	$('#'+widgetColumnWrap+widget['column']).prepend(
 		'<div class="widget">'+
 			getTitleDiv(widget['title'])+
 			'<div class="widgetBody">'+
@@ -25,8 +27,10 @@ function getTitleDiv(title){
 	return '<div class="widgetTitle">'+title+'</div>';
 }
 
+addWidgetLink = 'addWidgetLink';
+
 function appendBlankWidget(columnIndex){
-	$('#addWidgetLink'+columnIndex).replaceWith(
+	$('#'+addWidgetLink+columnIndex).replaceWith(
 		'<div class="widget">'+
 		getTitleDiv('New Widget')+
 			'<div class="widgetBody">'+
@@ -44,10 +48,10 @@ function appendBlankWidget(columnIndex){
 }
 
 function addWidgetAddLink(columnIndex){
-	$('#widgetColumnWrap'+columnIndex).append('<div id="addWidgetLink'+columnIndex+'" class="addWidgetLink" style="width:100%;"> <a href="javascript:appendBlankWidget('+columnIndex+');" >+</a> </div>');
+	$('#'+widgetColumnWrap+columnIndex).append('<div id="'+addWidgetLink+columnIndex+'" class="'+addWidgetLink+'" style="width:100%;"> <a href="javascript:appendBlankWidget('+columnIndex+');" >+</a> </div>');
 }
 
 function appendColumn(size,columnIndex){
-	$('#widgetTable tr:first').append('<td class="widgetColumn" style="width:'+size+';"> <div id="widgetColumnWrap'+columnIndex+'" class="col"></div> </td>');
+	$('#widgetTable tr:first').append('<td class="widgetColumn" style="width:'+size+';"> <div id="'+widgetColumnWrap+columnIndex+'" class="col"></div> </td>');
 	addWidgetAddLink(columnIndex);
 }
