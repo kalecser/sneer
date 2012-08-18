@@ -32,12 +32,13 @@ function getTitleDiv(title){
 addWidgetLink = 'addWidgetLink';
 
 function addNewWidgetForButton(button){
-	var dummyWidget = {
-		"height":"200px",
-		"title":"Dontpad/sneer_dashboard",
-		"url":"http://dontpad.com/sneer_dashboard"
-	};
-	$(button).parent().parent().replaceWith(getWidgetCode(dummyWidget));
+	var dummyWidget = {};
+	var widgetBody = $(button).parent()
+	widgetBody.children("input:text").each(function() {
+			dummyWidget[$(this).attr("name")]=$(this).val();
+	});
+  
+	widgetBody.parent().replaceWith(getWidgetCode(dummyWidget));
 }
 
 function appendBlankWidget(columnIndex){
@@ -46,11 +47,12 @@ function appendBlankWidget(columnIndex){
 		getTitleDiv('New Widget')+
 			'<div class="widgetBody">'+
 				'Title:<br>'+
-				'<input type="text" style="width:100%;"/><br>'+
+				'<input type="text" name="title" value="Dontpad/sneer_dashboard" style="width:100%;"/><br>'+
 				'Url:<br>'+
-				'<input type="text" style="width:100%;"/><br>'+
+				'<input type="text" name="url" value="http://dontpad.com/sneer_dashboard" style="width:100%;"/><br>'+
 				'Height:<br>'+
-				'<input type="text" style="width:100%;"/><br>'+
+				'<input type="text" name="height" value="200px" style="width:100%;"/><br>'+
+				'<input type="hidden" name="column" value="'+columnIndex+'"/><br>'+
 				'<input type="button" value="Add" onclick="addNewWidgetForButton(this)"/><br>'+
 			'</div>'+
 		'</div>'
