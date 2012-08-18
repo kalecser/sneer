@@ -42,6 +42,8 @@ line-height: 1.1;
 .widget {
 	width:100%;
 	margin-bottom:10px;
+	
+	
 }
 
 .widgetBody {
@@ -52,6 +54,10 @@ line-height: 1.1;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
+	
+	-moz-box-shadow:    1px 1px 3px 3px #ccc;
+	-webkit-box-shadow: 1px 1px 3px 3px #ccc;
+	box-shadow:         1px 1px 3px 3px #ccc;
 }
 
 .widgetTitle{
