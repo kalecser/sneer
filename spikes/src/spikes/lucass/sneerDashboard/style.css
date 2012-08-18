@@ -61,8 +61,12 @@ line-height: 1.1;
 	border-top-left-radius:10px 5px;
 	border-top-right-radius:10px;
 	border: 1px #999999 solid;
-	var bottomCollor = "d2d2d2";
-	var topCollor = "dcdcdc";
+	
+	font:15px arial,sans-serif;
+	font-weight:bold;
+	line-height: 24px;
+	padding: 3px;
+	
 	/*from http://www.colorzilla.com/gradient-editor/*/
 background: #e2e2e2; /* Old browsers */
 background: -moz-linear-gradient(top,  #e2e2e2 0%, #dbdbdb 50%, #d1d1d1 51%, #fefefe 100%); /* FF3.6+ */
@@ -81,3 +85,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2e2e2', end
 	border: 0px transparent solid;
 }
 
+.addWidgetLink{
+	text-align:right;
+	line-height: 24px;
+	padding: 3px;
+}
+
+.addWidgetLink a{
+	font:30px arial,sans-serif;
+	color: black;
+	text-decoration: none;
+	font-weight:bold;
+}

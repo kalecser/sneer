@@ -11,9 +11,9 @@ function createColumns(state){
 }
 
 function appendWidget(widget){
-	$("#widgetColumnWrap"+widget['column']).append(
+	$("#widgetColumnWrap"+widget['column']).prepend(
 		'<div class="widget">'+
-			'<div class="widgetTitle">'+widget['title']+'</div>'+
+			getTitleDiv(widget['title'])+
 			'<div class="widgetBody">'+
 				'<iframe src="'+widget['url']+'" height="'+widget['height']+'""></iframe><br>'+
 			'</div>'+
@@ -21,10 +21,14 @@ function appendWidget(widget){
 	);
 }
 
-function appendBlankWidget(column){
-	$("#widgetColumnWrap"+column).append(
+function getTitleDiv(title){
+	return '<div class="widgetTitle">'+title+'</div>';
+}
+
+function appendBlankWidget(columnIndex){
+	$('#addWidgetLink'+columnIndex).replaceWith(
 		'<div class="widget">'+
-			'<div class="widgetTitle">New Widget</div>'+
+		getTitleDiv('New Widget')+
 			'<div class="widgetBody">'+
 				'Title:<br>'+
 				'<input type="text"/><br>'+
@@ -36,9 +40,14 @@ function appendBlankWidget(column){
 			'</div>'+
 		'</div>'
 	);
+	addWidgetAddLink(columnIndex)
 }
 
-function appendColumn(size,index){
-	$('#widgetTable tr:first').append('<td  style="width:'+size+'"> <a href="javascript:appendBlankWidget('+index+');" >Add widget</a> </td>');
-	$('#widgetTable tr:gt(0)').append('<td class="widgetColumn" style="width:'+size+';"> <div id="widgetColumnWrap'+index+'" class="col"></div> </td>');
+function addWidgetAddLink(columnIndex){
+	$('#widgetColumnWrap'+columnIndex).append('<div id="addWidgetLink'+columnIndex+'" class="addWidgetLink" style="width:100%;"> <a href="javascript:appendBlankWidget('+columnIndex+');" >+</a> </div>');
+}
+
+function appendColumn(size,columnIndex){
+	$('#widgetTable tr:first').append('<td class="widgetColumn" style="width:'+size+';"> <div id="widgetColumnWrap'+columnIndex+'" class="col"></div> </td>');
+	addWidgetAddLink(columnIndex);
 }
