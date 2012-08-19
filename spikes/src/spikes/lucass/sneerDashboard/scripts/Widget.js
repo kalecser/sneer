@@ -27,6 +27,10 @@ function getWidgetCode(widget){
 		'</div>';
 }
 
+function replaceWidget(widgetDescriptor, widgetToReplace){
+	widgetToReplace.replaceWith(getWidgetCode(widgetDescriptor));
+}
+
 function appendWidget(widget){
 	var columnIndex = widget['column'];
 	$('#'+addWidgetLink+widget['column']).replaceWith(getWidgetCode(widget));
@@ -68,9 +72,7 @@ function addNewWidgetForButton(button){
 	widgetBody.children("input").each(function() {
 			widget[$(this).attr("name")]=$(this).val();
 	});
-  
-	widgetBody.parent().remove();
-	appendWidget(widget);
+	replaceWidget(widget, widgetBody.parent());
 }
 
 function getConfigWidget(title,url,height,column){
