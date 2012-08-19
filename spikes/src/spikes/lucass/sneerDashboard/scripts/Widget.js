@@ -16,6 +16,12 @@ function getWidgetCode(widget){
 	return '<div class="widget">'+
 			getTitleDiv(widget['title'])+
 			'<div class="widgetBody">'+
+				
+				'<input class="widgetConfig" type="hidden" name="title" value="'+widget['title']+'"/>'+
+				'<input class="widgetConfig" type="hidden" name="url" value="'+widget['url']+'"/>'+
+				'<input class="widgetConfig" type="hidden" name="height" value="'+widget['height']+'"/>'+
+				'<input class="widgetConfig" type="hidden" name="column" value="'+widget['column']+'"/>'+
+				
 				'<iframe src="'+widget['url']+'" height="'+widget['height']+'""></iframe><br>'+
 			'</div>'+
 		'</div>';
@@ -31,8 +37,27 @@ function closeWidget(closeButton){
 	$(closeButton).parent().parent().remove();
 }
 
+function configWidget(configButton){
+	var widget = {};
+	var widgetElement = $(configButton).parent().parent();
+	widgetElement.children(".widgetBody:first").children(".widgetConfig").each(function() {
+			console.log($(this).attr("name")+':'+$(this).val());
+			widget[$(this).attr("name")]=$(this).val();
+	});
+	var title = widget['title'];
+	var url = widget['url'];
+	var height = widget['height'];
+	var column = widget['column'];
+	var configWidget = getConfigWidget(title,url,height,column);
+	widgetElement.replaceWith(configWidget);
+	
+}
+
 function getTitleDiv(title){
-	return '<div class="widgetTitle">'+title+' <img class="closeButton" onclick="closeWidget(this)" src="./images/closeButton.png"/></div>';
+	return '<div class="widgetTitle">'+title+
+			'<img class="closeButton" onclick="closeWidget(this)" src="./images/closeButton.png"/>'+
+			'<img class="closeButton" onclick="configWidget(this)" src="./images/configButton.png"/>'+
+		'</div>';
 }
 
 addWidgetLink = 'addWidgetLink';
@@ -48,22 +73,27 @@ function addNewWidgetForButton(button){
 	appendWidget(widget);
 }
 
-function appendBlankWidget(columnIndex){
-	$('#'+addWidgetLink+columnIndex).replaceWith(
-		'<div class="widget">'+
-		getTitleDiv('New Widget')+
+function getConfigWidget(title,url,height,column){
+	return '<div class="widget">'+
+		getTitleDiv(title)+
 			'<div class="widgetBody">'+
 				'Title:<br>'+
-				'<input type="text" name="title" value="Dontpad/sneer_dashboard" style="width:100%;"/><br>'+
+				'<input type="text" name="title" value="'+title+'" style="width:100%;"/><br>'+
 				'Url:<br>'+
-				'<input type="text" name="url" value="http://dontpad.com/sneer_dashboard" style="width:100%;"/><br>'+
+				'<input type="text" name="url" value="'+url+'" style="width:100%;"/><br>'+
 				'Height:<br>'+
-				'<input type="text" name="height" value="200px" style="width:100%;"/><br>'+
-				'<input type="hidden" name="column" value="'+columnIndex+'"/><br>'+
+				'<input type="text" name="height" value="'+height+'" style="width:100%;"/><br>'+
+				'<input type="hidden" name="column" value="'+column+'"/><br>'+
 				'<input type="button" value="Add" onclick="addNewWidgetForButton(this)"/><br>'+
 			'</div>'+
-		'</div>'
-	);
+		'</div>';
+}
+
+function appendBlankWidget(columnIndex){
+	var title = "Dontpad/sneer_dashboard";
+	var url = "http://dontpad.com/sneer_dashboard";
+	var height = "200px";
+	$('#'+addWidgetLink+columnIndex).replaceWith(getConfigWidget(title,url,height,columnIndex));
 	addWidgetAddLink(columnIndex);
 }
 
