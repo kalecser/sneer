@@ -45,7 +45,6 @@ function configWidget(configButton){
 	var widget = {};
 	var widgetElement = $(configButton).parent().parent();
 	widgetElement.children(".widgetBody:first").children(".widgetConfig").each(function() {
-			console.log($(this).attr("name")+':'+$(this).val());
 			widget[$(this).attr("name")]=$(this).val();
 	});
 	var title = widget['title'];
@@ -59,10 +58,18 @@ function configWidget(configButton){
 
 function getTitleDiv(title){
 	return '<div class="widgetTitle">'+title+
-			'<img class="closeButton" onclick="closeWidget(this)" src="./images/closeButton.png"/>'+
-			'<img class="closeButton" onclick="configWidget(this)" src="./images/configButton.png"/>'+
+			'<img class="titleBarButton" onclick="closeWidget(this)" src="./images/closeButton.png"/>'+
+			'<img class="titleBarButton" onclick="configWidget(this)" src="./images/configButton.png"/>'+
 		'</div>';
 }
+
+function getTitleDivWithoutConfigButton(title){
+	return '<div class="widgetTitle">'+title+
+			'<img class="titleBarButton" onclick="closeWidget(this)" src="./images/closeButton.png"/>'+
+		'</div>';
+}
+
+
 
 addWidgetLink = 'addWidgetLink';
 
@@ -77,7 +84,7 @@ function addNewWidgetForButton(button){
 
 function getConfigWidget(title,url,height,column){
 	return '<div class="widget">'+
-		getTitleDiv(title)+
+		getTitleDivWithoutConfigButton(title)+
 			'<div class="widgetBody">'+
 				'Title:<br>'+
 				'<input type="text" name="title" value="'+title+'" style="width:100%;"/><br>'+
@@ -86,7 +93,7 @@ function getConfigWidget(title,url,height,column){
 				'Height:<br>'+
 				'<input type="text" name="height" value="'+height+'" style="width:100%;"/><br>'+
 				'<input type="hidden" name="column" value="'+column+'"/><br>'+
-				'<input type="button" value="Add" onclick="addNewWidgetForButton(this)"/><br>'+
+				'<input type="button" value="Ok" onclick="addNewWidgetForButton(this)"/><br>'+
 			'</div>'+
 		'</div>';
 }

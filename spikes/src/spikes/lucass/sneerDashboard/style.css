@@ -102,7 +102,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2e2e2', end
 	font-weight:bold;
 }
 
-.closeButton{
+.titleBarButton{
 	float:right;
 	font:15px arial,sans-serif;
 	color: black;
