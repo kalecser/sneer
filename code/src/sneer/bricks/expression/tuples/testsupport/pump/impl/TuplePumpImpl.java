@@ -7,26 +7,24 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import basis.environments.Environment;
-import basis.environments.EnvironmentUtils;
-import basis.environments.Environments;
-import basis.lang.Closure;
-import basis.lang.Consumer;
-import basis.lang.Producer;
-
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.expression.tuples.testsupport.pump.TuplePump;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import basis.environments.Environment;
+import basis.environments.EnvironmentUtils;
+import basis.lang.Closure;
+import basis.lang.Consumer;
+import basis.lang.Producer;
 
 class TuplePumpImpl implements TuplePump {
 
 	private final Environment _well1;
 	private final Environment _well2;
 
-	private final WeakContract _pipe1;
-	private final WeakContract _pipe2;
+	private final WeakContract pumpingContract1;
+	private final WeakContract pumpingContract2;
 
 	private final Set<Tuple> _tuplesThatWillEcho = Collections.synchronizedSet(new HashSet<Tuple>());
 
@@ -34,12 +32,12 @@ class TuplePumpImpl implements TuplePump {
 		_well1 = aTupleWell;
 		_well2 = anotherTupleWell;
 
-		_pipe1 = pipe(_well1, _well2); // Connects well1 to well2 so that tuples received by the first are pumped to the second
-		_pipe2 = pipe(_well2, _well1); // Connects well2 to well1 to form a two-way connection
+		pumpingContract1 = startPumping(_well1, _well2);
+		pumpingContract2 = startPumping(_well2, _well1);
 	}
 
 
-	private WeakContract pipe(Environment from, final Environment to) {
+	private WeakContract startPumping(Environment from, final Environment to) {
 		return EnvironmentUtils.produceIn(from, new Producer<WeakContract>() { @Override public WeakContract produce() {
 			return my(TupleSpace.class).addSubscription(Tuple.class, new Consumer<Tuple>() { @Override public void consume(final Tuple tuple) {
 				if (_tuplesThatWillEcho.remove(tuple)) return; //Tuple that was sent and is returning.
@@ -54,23 +52,25 @@ class TuplePumpImpl implements TuplePump {
 
 	@Override
 	public void waitForAllDispatchingToFinish() {
-		waitForAllDispatchingToFinishIn(_well1);
-		waitForAllDispatchingToFinishIn(_well2);
-		waitForAllDispatchingToFinishIn(_well1); //Tuples that came from well2
+		boolean hasDispatchingToDo;
+		do {
+			hasDispatchingToDo =
+					waitForAllDispatchingToFinishIn(_well1) || waitForAllDispatchingToFinishIn(_well2);
+		} while (hasDispatchingToDo);
 	}
 
 
-	private void waitForAllDispatchingToFinishIn(Environment env) {
-		Environments.runWith(env, new Closure() { @Override public void run() {
-			my(TupleDispatcher.class).waitForAllDispatchingToFinish();
+	private boolean waitForAllDispatchingToFinishIn(Environment env) {
+		return EnvironmentUtils.produceIn(env, new Producer<Boolean>() { @Override public Boolean produce() {
+			return my(TupleDispatcher.class).waitForAllDispatchingToFinish();
 		}});
 	}
 
 
 	@Override
 	public void dispose() {
-		_pipe1.dispose();
-		_pipe2.dispose();
+		pumpingContract1.dispose();
+		pumpingContract2.dispose();
 	}
 
 }

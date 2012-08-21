@@ -4,15 +4,14 @@ import static basis.environments.Environments.my;
 import java.util.HashSet;
 import java.util.Set;
 
-import basis.environments.Environment;
-import basis.environments.Environments;
-import basis.lang.Closure;
-import basis.lang.Consumer;
-
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.pulp.exceptionhandling.ExceptionHandler;
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.lang.Consumer;
 
 class TupleDispatcherImpl implements TupleDispatcher {
 
@@ -43,13 +42,15 @@ class TupleDispatcherImpl implements TupleDispatcher {
 
 	
 	@Override	
-	public void waitForAllDispatchingToFinish() {
+	public boolean waitForAllDispatchingToFinish() {
 		if (_dispatchingThreads.contains(Thread.currentThread())) throw new IllegalStateException("Dispatching thread cannot wait for dispatching to finish.");
 		
 		synchronized (_dispatchCounterMonitor ) {
+			if (_dispatchCounter == 0) return false;
 			while (_dispatchCounter != 0)
 				Threads.waitWithoutInterruptions(_dispatchCounterMonitor);
 		}
+		return true;
 	}
 
 
