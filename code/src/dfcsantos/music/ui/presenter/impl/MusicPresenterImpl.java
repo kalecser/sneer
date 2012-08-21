@@ -3,7 +3,6 @@ package dfcsantos.music.ui.presenter.impl;
 import static basis.environments.Environments.my;
 
 import java.io.File;
-import java.util.List;
 
 import javax.swing.JFileChooser;
 
@@ -232,7 +231,7 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 		clearChoices();
 		addChoice(inboxChoice());
 		addChoice(ALL_TRACKS);
-		addSubFolders();
+		addSubFoldersIfNecessary();
 		my(Logger.class).log("Choices refreshed: ", INBOX, " ", ALL_TRACKS, " sub folders.");
 	}
 
@@ -248,11 +247,10 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	}
 
 	
-	private void addSubFolders() {
-		FolderChoicesPoll poll = new FolderChoicesPoll(currentSharedTracksFolder());
-		List<String> allChoices = poll.result();
-		if (allChoices == null) return;
-		for (String choice : allChoices)
+	private void addSubFoldersIfNecessary() {
+		File root = currentSharedTracksFolder();
+		if (root == null) return;
+		for (String choice : new FolderChoicesPoll(root.toPath()).result())
 			addChoice(choice);
 	}
 

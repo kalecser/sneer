@@ -15,6 +15,7 @@ import basis.brickness.Brickness;
 import basis.environments.Environments;
 import basis.lang.Closure;
 
+import sneer.bricks.hardware.clock.ticker.ClockTicker;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.hardware.gui.timebox.TimeboxedEventQueue;
@@ -76,7 +77,9 @@ class MusicViewDemo {
 			@SuppressWarnings("unused")
 			private WeakContract refToAvoidGc = my(Timer.class).wakeUpNowAndEvery(1000 * 5, new Runnable() {  @Override public void run() {
 				System.out.println("added");
-				playingFolderChoices.add("pasta" + System.currentTimeMillis());
+				for (int i = 0; i < 50; i++)
+					playingFolderChoices.add("pasta" + i + System.currentTimeMillis());
+				playingFolderChoices.removeAt(1);
 			}});
 			
 			@Override public void chooseTracksFolder() {}
@@ -114,5 +117,7 @@ class MusicViewDemo {
 		jFrame.setBounds(100, 100, 200, my(MusicView.class).defaultHeight());
 		jFrame.pack();
 		jFrame.setVisible(true);
+		
+		my(ClockTicker.class);
 	}
 }
