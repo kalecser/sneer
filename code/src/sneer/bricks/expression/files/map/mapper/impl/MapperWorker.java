@@ -214,7 +214,7 @@ class MapperWorker {
 		
 		Path[] result = list.toArray(new Path[0]);
 		Arrays.sort(result, new Comparator<Path>() { @Override public int compare(Path path1, Path path2) {
-			return path1.getFileName().compareTo(path2.getFileName());
+			return path1.getFileName().toString().compareTo(path2.getFileName().toString());
 		}});
 		return result;
 	}
