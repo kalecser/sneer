@@ -49,7 +49,7 @@ public class FolderChoicesPoll {
 
 	
 	private void accumulateWithSubFolders(Path entry, List<String> result) {
-		 result.add(rootFolder.relativize(entry.toAbsolutePath()).toString());
+		 result.add(rootFolder.relativize(entry).toString());
 		 accumulateSubFolders(entry, result);
 	}
 

@@ -203,7 +203,7 @@ class MusicPresenterImpl implements MusicPresenter, MusicViewListener {
 	
 	private void changeToOwnModeAndPlayTracksOf(String folderChosen) {
 		my(Music.class).setOperatingMode(Music.OperatingMode.OWN);
-		File folderChosenToPlay = whatFolderChosen(folderChosen); //
+		File folderChosenToPlay = whatFolderChosen(folderChosen);
 		my(Music.class).setPlayingFolder(folderChosenToPlay);
 		_meTooEnable.setter().consume(false);
 	}

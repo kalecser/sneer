@@ -221,7 +221,7 @@ class MapperWorker {
 	
 	
 	static private PathMatcher matcherFor(String... fileExtensions) {
-		if(fileExtensions.length > 1) 
+		if (fileExtensions.length > 1) 
 			throw new NotImplementedYet();
 		
 		String glob = fileExtensions.length == 0 ? "*"	: "*."+fileExtensions[0];
