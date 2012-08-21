@@ -1,11 +1,9 @@
-/**
- * 
- */
 package sneer.bricks.expression.files.map.mapper.impl;
 
 import static basis.environments.Environments.my;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -208,9 +206,11 @@ class MapperWorker {
 	
 	private Path[] sortedEntries(Path folder) throws IOException {
 		ArrayList<Path> list = new ArrayList<Path>();
-		for (Path path : Files.newDirectoryStream(folder)) 
+		try (DirectoryStream<Path> entries = Files.newDirectoryStream(folder)) {
+		for (Path path : entries) 
 			if (Files.isDirectory(path) || extensionsMatcher.matches(path.getFileName()))
 				list.add(path);
+		}
 		
 		Path[] result = list.toArray(new Path[0]);
 		Arrays.sort(result, new Comparator<Path>() { @Override public int compare(Path path1, Path path2) {
