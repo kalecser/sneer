@@ -2,14 +2,16 @@ package spikes.neo.crypto;
 
 import static java.lang.String.format;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
 
+import org.bouncycastle.crypto.BufferedBlockCipher;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.DataLengthException;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.engines.AESEngine;
-import org.bouncycastle.crypto.modes.CBCBlockCipher;
 import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
+import org.bouncycastle.crypto.paddings.X923Padding;
 import org.bouncycastle.crypto.params.KeyParameter;
 
 public class CBCCrypto {
@@ -17,6 +19,7 @@ public class CBCCrypto {
 	public static void main(String[] args) throws DataLengthException, IllegalStateException, InvalidCipherTextException {
 		byte[] key = new byte[32];
 		
+		//byte[] message = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
 		byte[] message = "Hey Neide".getBytes();
 		print("Original", message);
 		
@@ -32,29 +35,32 @@ public class CBCCrypto {
 	}
 
 	private static byte[] encrypt(byte[] key, byte[] message) throws InvalidCipherTextException {
-		PaddedBufferedBlockCipher cipher = newCipher(key, true);
-		return cipher(cipher, message);
+		BufferedBlockCipher cipher = newCipher(key, true);
+		return process(cipher, message);
 	}
 
 	private static byte[] decrypt(byte[] key, byte[] data) throws InvalidCipherTextException {
-		PaddedBufferedBlockCipher cipher = newCipher(key, false);
-		return cipher(cipher, data);
+		BufferedBlockCipher cipher = newCipher(key, false);
+		return process(cipher, data);
 	}
 	
-	private static PaddedBufferedBlockCipher newCipher(byte[] key, boolean encrypt) {
-		PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()));
+	private static BufferedBlockCipher newCipher(byte[] key, boolean encrypt) {
+		X923Padding padding = new X923Padding();
+		padding.init(new SecureRandom());
+		
+		BufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new AESEngine(), padding);
 		CipherParameters cipherKey = new KeyParameter(key);
 		cipher.init(encrypt, cipherKey);
 		
 		return cipher;
 	}
 
-	private static byte[] cipher(PaddedBufferedBlockCipher cipher, byte[] data) throws InvalidCipherTextException {
-		byte[] output = new byte[cipher.getOutputSize(data.length)];
-		int cipherSize = cipher.processBytes(data, 0, data.length, output, 0);
-		cipher.doFinal(output, cipherSize);
+	private static byte[] process(BufferedBlockCipher cipher, byte[] data) throws InvalidCipherTextException {
+		byte[] ret = new byte[cipher.getOutputSize(data.length)];
+		int retSize = cipher.processBytes(data, 0, data.length, ret, 0);
+		retSize += cipher.doFinal(ret, retSize);
 		
-		return output;
+		return Arrays.copyOf(ret, retSize);
 	}
 
 }
