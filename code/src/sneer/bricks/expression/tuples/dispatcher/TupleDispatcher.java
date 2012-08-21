@@ -12,7 +12,7 @@ public interface TupleDispatcher {
 	void dispatchCounterIncrement();
 	void dispatchCounterDecrement();
 
-	void waitForAllDispatchingToFinish();
+	boolean waitForAllDispatchingToFinish();
 
 	void dispatch(Tuple tuple, Consumer<? super Tuple> subscriber, Environment environment);
 
