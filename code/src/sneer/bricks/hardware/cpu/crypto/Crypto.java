@@ -20,5 +20,6 @@ public interface Crypto {
 	
 	Signature getSHA512WithECDSA();
 	KeyPair newECDSAKeyPair(byte[] seed);
-
+	
+	ECBCipher newAES256Cipher(byte[] key);
 }

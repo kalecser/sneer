@@ -18,6 +18,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Digester;
+import sneer.bricks.hardware.cpu.crypto.ECBCipher;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.threads.throttle.CpuThrottle;
 import basis.lang.ProducerX;
@@ -110,5 +111,10 @@ class CryptoImpl implements Crypto {
 			throw new IllegalStateException(e);
 		}
 
+	}
+
+	@Override
+	public ECBCipher newAES256Cipher(byte[] key) {
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
 }

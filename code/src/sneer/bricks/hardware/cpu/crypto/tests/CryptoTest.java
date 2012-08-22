@@ -19,8 +19,6 @@ public class CryptoTest extends BrickTestBase {
 
 	/** See http://en.wikipedia.org/wiki/SHA1 and http://en.wikipedia.org/wiki/WHIRLPOOL */
 	private static final String SHA512    = "07e547d9586f6a73f73fbac0435ed76951218fb7d0c8d788a309d785436bbb642e93a252a954f23912547d1e8a3b5ed6e1bfd7097821233fa0538f3db854fee6";
-//	private static final String WHIRLPOOL = "b97de512e91e3828b40d2b0fdce9ceb3c4a71f9bea8d88e75c4fa854df36725fd2b52eb6544edcacd6f8beddfea403cb55ae31f03ad62a5ef54e42ee82c3fb35";
-
 	static private Charset UTF8 = Charset.forName("UTF-8");
 	
 
@@ -32,7 +30,6 @@ public class CryptoTest extends BrickTestBase {
 
 		Hash hashOfString = _subject.digest(INPUT.getBytes(UTF8));
 		assertEquals(512, hashOfString.bytes.copy().length * 8);
-//		assertHexa(SHA512 + WHIRLPOOL, hashOfString.bytes());
 		assertHexa(SHA512, hashOfString.bytes.copy());
 
 		File file = createFileWithContent(INPUT.getBytes(UTF8));
@@ -42,7 +39,7 @@ public class CryptoTest extends BrickTestBase {
 
 	@Test
 	public void testDigestWithLargeArray() throws Exception {
-		final byte[] INPUT = new byte[30720]; // 20 KB
+		final byte[] INPUT = new byte[30720];
 		new Random().nextBytes(INPUT);
 		Hash hashOfArray = _subject.digest(INPUT);
 
