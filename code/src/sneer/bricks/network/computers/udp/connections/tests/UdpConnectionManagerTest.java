@@ -19,6 +19,8 @@ import org.jmock.lib.action.CustomAction;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
+import sneer.bricks.hardware.cpu.crypto.Crypto;
+import sneer.bricks.hardware.cpu.crypto.tests.NullCrypto;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.name.OwnName;
@@ -52,6 +54,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	@Bind private final LoggingSender sender = new LoggingSender();
 	@Bind private final StunClient stunClient = mock(StunClient.class);
 	@Bind private final ContactAddresses contactAddresses = mock(ContactAddresses.class);
+	@Bind private final Crypto crypto = new NullCrypto(); 
+			
 	private InetSocketAddress contactAddress = null;
 	{
 		checking(new Expectations(){{

@@ -23,20 +23,26 @@ import basis.lang.Consumer;
 
 class UdpByteConnection implements ByteConnection {
 	
-	private final Contact contact;
-	private Consumer<? super byte[]> receiver;
-	private final ConnectionMonitor monitor;
-	private final Light error = my(BlinkingLights.class).prepare(LightType.ERROR);
 
+	private final Light error = my(BlinkingLights.class).prepare(LightType.ERROR);
+	private final Contact contact;
+	private final ConnectionMonitor monitor;
+	//private ECBCipher cipher;
+	private Consumer<? super byte[]> receiver;
+
+	
 	UdpByteConnection(Contact contact) {
 		this.contact = contact;
 		this.monitor = new ConnectionMonitor(contact);
+		//this.cipher = cipherFor(contact);
 	}
+
 
 	@Override
 	public Signal<Boolean> isConnected() {
 		return monitor.isConnected();
 	}
+
 	
 	@Override
 	public void initCommunications(final PacketScheduler scheduler, Consumer<? super byte[]> receiver) {
@@ -47,6 +53,7 @@ class UdpByteConnection implements ByteConnection {
 		}});
 	}
 	
+	
 	private void tryToSendPacketFor(PacketScheduler scheduler) {
 		byte[] payload = scheduler.highestPriorityPacketToSend();
 		ByteBuffer buf = prepare(Data);
@@ -56,7 +63,8 @@ class UdpByteConnection implements ByteConnection {
 			scheduler.previousPacketWasSent();
 			return;
 		}
-			
+		
+		//buf.put(cipher().encrypt(payload));
 		buf.put(payload);
 		if (send(buf, monitor.lastSighting()))
 			scheduler.previousPacketWasSent();
@@ -74,7 +82,16 @@ class UdpByteConnection implements ByteConnection {
 		if (receiver == null) return;
 		byte[] payload = new byte[data.remaining()];
 		data.get(payload);
+		//receiver.consume(cipher().decrypt(payload));
 		receiver.consume(payload);
 	}
+	
+	
+//	private ECBCipher cipher() {
+//		byte[] sealBytes = my(ContactSeals.class).sealGiven(contact).currentValue().bytes.copy();
+//		byte[] key = Arrays.copyOf(sealBytes, 256 / 8);
+//		return my(Crypto.class).newAES256Cipher(key);
+//	}
+	
 	
 }
