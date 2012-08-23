@@ -6,11 +6,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Random;
 
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.codec.Codec;
+import sneer.bricks.hardware.cpu.codec.DecodeException;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.ECBCipher;
 import sneer.bricks.hardware.cpu.crypto.Hash;
@@ -64,6 +66,24 @@ public class CryptoTest extends BrickTestBase {
 				"Nulla facilisi. Praesent vitae turpis nibh, sed pharetra nisi. Nullam ac urna in sapien aliquam convallis eu quis orci. " +
 				"In in eros ultrices eros gravida dictum. Morbi facilisis lorem id dui accumsan a dapibus justo vulputate.");
 	}
+	
+	
+	@Test
+	public void AESTestVector() throws DecodeException {
+		byte[] key = fromHex("c47b0294dbbbee0fec4757f22ffeee3587ca4730c3d33b691df38bab076bc558");
+		byte[] plainText = fromHex("00000000000000000000000000000000");
+		byte[] cipherText = fromHex("46f2fb342d6f0ab477476fc501242c5f");
+		
+		ECBCipher cipher = subject.newAES256Cipher(key);
+		byte[] actualWithoutPadding = Arrays.copyOf(cipher.encrypt(plainText), 16);
+		
+		assertArrayEquals(cipherText, actualWithoutPadding);
+	}
+
+
+	private byte[] fromHex(String hexString) throws DecodeException {
+		return my(Codec.class).hex().decode(hexString);
+	}
 
 
 	private File createFileWithContent(byte[] content) throws IOException {
@@ -85,7 +105,7 @@ public class CryptoTest extends BrickTestBase {
 		byte[] cipherText = cipher.encrypt(message.getBytes(UTF8));
 		byte[] plainText = cipher.decrypt(cipherText);
 		
-		assertEquals(message, new String(plainText));
+		assertEquals(message, new String(plainText, UTF8));
 	}
 
 }
