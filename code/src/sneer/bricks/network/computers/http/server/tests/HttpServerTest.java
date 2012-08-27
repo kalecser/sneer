@@ -1,30 +1,40 @@
 package sneer.bricks.network.computers.http.server.tests;
 
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
+import static basis.environments.Environments.my;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
+import java.net.Socket;
 
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.junit.Test;
 
-public class HttpServerTest {
+import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.hardware.io.IO;
+import sneer.bricks.network.computers.http.server.HttpHandler;
+import sneer.bricks.network.computers.http.server.HttpServer;
+import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
-	public static void main(String[] args) throws Exception {
-		String host = "127.0.0.1";
-		int port = 8082;
-		Server server = new Server(port);
-		server.setHandler(new AbstractHandler() {  @Override public void handle(String target, Request request, HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
-			ServletOutputStream out = response.getOutputStream();
-			out.write("<h1>It works!</h1>".getBytes());
-			out.flush();
-		}});
-		server.start();
-		Desktop.getDesktop().browse(new URI("http://" + host + ":" + port));
-	}
+public class HttpServerTest extends BrickTestBase{
 	
+	private final HttpServer subject = my(HttpServer.class);
+
+	@Test (timeout = 2000)
+	public void httpServer() throws Exception{
+		WeakContract contract = subject.start(8088, new HttpHandler(){ @Override public String replyFor(String target){
+			return "reply for: " + target;
+		}});
+		
+		String actual = replyFor(8088, "/foobar&baz");
+		assertTrue(actual.contains("reply for: /foobar&baz"));
+		
+		contract.dispose();
+	}
+
+	private String replyFor(int port, String target) throws Exception {
+		try (Socket socket = new Socket("localhost", port)) {
+			OutputStream out = socket.getOutputStream();
+			out.write(("GET "+ target + " HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n").getBytes());
+			out.flush();
+			return my(IO.class).streams().toString(socket.getInputStream());
+		}
+	}	
 }
