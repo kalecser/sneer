@@ -1,4 +1,4 @@
-package sneer.bricks.network.computers.httpgateway.impl;
+package sneer.bricks.network.computers.http.gateway.impl;
 
 import static basis.environments.Environments.my;
 
@@ -10,7 +10,7 @@ import basis.lang.Consumer;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.hardware.io.IO;
-import sneer.bricks.network.computers.httpgateway.HttpGateway;
+import sneer.bricks.network.computers.http.gateway.HttpGateway;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 

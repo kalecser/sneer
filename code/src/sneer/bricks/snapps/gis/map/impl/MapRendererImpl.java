@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 
 import basis.lang.Consumer;
 
-import sneer.bricks.network.computers.httpgateway.HttpGateway;
+import sneer.bricks.network.computers.http.gateway.HttpGateway;
 import sneer.bricks.snapps.gis.location.Location;
 import sneer.bricks.snapps.gis.map.MapRenderer;
 
