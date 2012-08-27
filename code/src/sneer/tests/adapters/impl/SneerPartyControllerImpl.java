@@ -583,4 +583,19 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	public void startStunServer() {
 		my(StunServerListener.class);
 	}
+
+	@Override
+	public void commitToGit(String commitMessage) {
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
+	}
+
+	@Override
+	public void fetchFrom(String contactNick) {
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
+	}
+
+	@Override
+	public void hasCommit(String commitMessage) {
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
+	}
 }

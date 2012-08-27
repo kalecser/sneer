@@ -38,4 +38,10 @@ public interface SovereignParty {
 	void stageBricksForInstallation(String... brickNames) throws IOException, CompilerException;
 	void copyToSourceFolder(File folderWithBricks) throws IOException;
 	void loadUnsharedBrick(String brickName);
+
+	//Freedom7 Git
+	void commitToGit(String commitMessage);
+	void fetchFrom(String contactNick);
+	void hasCommit(String commitMessage);
+
 }
