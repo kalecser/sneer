@@ -1,7 +1,5 @@
 package sneer.bricks.hardware.cpu.crypto.impl;
 
-import static basis.environments.Environments.my;
-
 import java.util.Arrays;
 
 import org.bouncycastle.crypto.BufferedBlockCipher;
@@ -10,7 +8,6 @@ import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.bouncycastle.crypto.params.KeyParameter;
 
 import sneer.bricks.hardware.cpu.crypto.ECBCipher;
-import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 
 class ECBCipherImpl implements ECBCipher {
 	
@@ -49,8 +46,7 @@ class ECBCipherImpl implements ECBCipher {
 		try {
 			return tryToProcess(cipher, data);
 		} catch (Exception e) {
-			my(ExceptionLogger.class).log(e);
-			return null;
+			throw new IllegalArgumentException(e);
 		}
 	}
 
@@ -59,7 +55,7 @@ class ECBCipherImpl implements ECBCipher {
 		int retSize = cipher.processBytes(data, 0, data.length, ret, 0);
 		retSize += cipher.doFinal(ret, retSize);
 		
-		return Arrays.copyOf(ret, retSize);
+		return ret.length == retSize ? ret : Arrays.copyOf(ret, retSize);
 	}
 
 }

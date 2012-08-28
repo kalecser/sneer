@@ -72,7 +72,7 @@ public class CryptoTest extends BrickTestBase {
 	public void AESTestVector() throws DecodeException {
 		byte[] key = fromHex("c47b0294dbbbee0fec4757f22ffeee3587ca4730c3d33b691df38bab076bc558");
 		byte[] plainText = fromHex("00000000000000000000000000000000");
-		byte[] cipherText = fromHex("46f2fb342d6f0ab477476fc501242c5f");
+		byte[] cipherText = fromHex("46f2fb342d6f0ab477476fc501242c5f"); // from NIST
 		
 		ECBCipher cipher = subject.newAES256Cipher(key);
 		byte[] actualWithoutPadding = Arrays.copyOf(cipher.encrypt(plainText), 16);
