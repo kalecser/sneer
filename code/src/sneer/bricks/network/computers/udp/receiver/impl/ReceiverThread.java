@@ -27,11 +27,11 @@ class ReceiverThread implements Contract {
 	private boolean wasDisposed = false;
 
 
-	ReceiverThread(UdpSocket socket, Consumer<DatagramPacket> receiver) {
+	ReceiverThread(String threadName, UdpSocket socket, Consumer<DatagramPacket> receiver) {
 		this.socket = socket;
 		this.receiver = receiver;
 	
-		receptionContract = my(Threads.class).startStepping(new Closure() { @Override public void run() {
+		receptionContract = my(Threads.class).startStepping(threadName, new Closure() { @Override public void run() {
 			receivePacket();
 		}});
 	}

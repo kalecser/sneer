@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
+import sneer.bricks.network.computers.channels.Channel;
 import sneer.bricks.software.code.compilers.CompilerException;
 
 public interface SovereignParty {
@@ -24,6 +25,7 @@ public interface SovereignParty {
 	//Freedom5
 	void shout(String string);
 	void waitForShouts(String shoutsExpected);
+	Channel openControlChannel(String contactNick);
 
 	//Freedom6
 	void setFolderToSync(File folder);

@@ -26,9 +26,10 @@ class UdpSocketHolder {
 	
 	UdpSocketHolder(int port, Consumer<DatagramPacket> receiver) throws SocketException {
 		socket = my(UdpNetwork.class).openSocket(port);
-		receiverThread = my(ReceiverThreads.class).start(socket, receiver);
+		receiverThread = my(ReceiverThreads.class).start(threadName(port), socket, receiver);
 	}
-	
+
+
 
 	void send(DatagramPacket packet) {
 		try {
@@ -47,5 +48,9 @@ class UdpSocketHolder {
 		receiverThread.dispose();
 	}
 	
+	private static String threadName(int port) {
+		return UdpSocketHolder.class.getSimpleName() + " on port " + port;
+	}
 
 }
+

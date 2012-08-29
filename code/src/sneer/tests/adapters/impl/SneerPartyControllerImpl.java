@@ -28,6 +28,8 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.addresses.own.port.OwnPort;
+import sneer.bricks.network.computers.channels.Channel;
+import sneer.bricks.network.computers.channels.Channels;
 import sneer.bricks.network.computers.connections.ConnectionManager;
 import sneer.bricks.network.computers.udp.holepuncher.server.listener.StunServerListener;
 import sneer.bricks.network.computers.udp.server.UdpServer;
@@ -582,5 +584,11 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	@Override
 	public void startStunServer() {
 		my(StunServerListener.class);
+	}
+
+	@Override
+	public Channel openControlChannel(String contactNick) {
+		Contact contact = contactGiven(contactNick);
+		return my(Channels.class).createControl(contact);
 	}
 }

@@ -35,7 +35,7 @@ public class UdpNetworkTest extends BrickTestBase {
 
 		final Latch latch = new Latch();
 		final StringBuffer replies = new StringBuffer();
-		my(ReceiverThreads.class).start(s2, new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
+		my(ReceiverThreads.class).start("Test", s2, new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
 			replies.append(unmarshal(packet));
 			if (replies.toString().equals("HI THERE MY FRIENDS "))
 				latch.open();
@@ -64,7 +64,7 @@ public class UdpNetworkTest extends BrickTestBase {
 
 	
 	private void startUppercaseEchoOn(final UdpSocket socket) {
-		my(ReceiverThreads.class).start(socket, new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
+		my(ReceiverThreads.class).start("Test", socket, new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
 			convertToUppercase(packet);
 			try {
 				socket.send(packet);

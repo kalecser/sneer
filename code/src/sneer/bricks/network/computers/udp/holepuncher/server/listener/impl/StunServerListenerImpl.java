@@ -30,7 +30,7 @@ class StunServerListenerImpl implements StunServerListener {
 		}
 		my(Logger.class).log("Stun Server port open.");
 		
-		my(ReceiverThreads.class).start(socket, new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
+		my(ReceiverThreads.class).start("Stun Server", socket, new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
 			handle(packet);
 		}});
 	}

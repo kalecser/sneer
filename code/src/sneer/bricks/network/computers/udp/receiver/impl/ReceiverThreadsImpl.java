@@ -11,8 +11,8 @@ import basis.lang.Consumer;
 class ReceiverThreadsImpl implements ReceiverThreads {
 
 	@Override
-	public Contract start(UdpSocket socket, Consumer<DatagramPacket> receiver) {
-		return new ReceiverThread(socket, receiver);
+	public Contract start(String threadName, UdpSocket socket, Consumer<DatagramPacket> receiver) {
+		return new ReceiverThread(threadName, socket, receiver);
 	}
 
 }

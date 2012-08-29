@@ -10,6 +10,6 @@ import basis.lang.Consumer;
 @Brick
 public interface ReceiverThreads {
 
-	Contract start(UdpSocket socket, Consumer<DatagramPacket> receiver);
+	Contract start(String threadName, UdpSocket socket, Consumer<DatagramPacket> receiver);
 
 }
