@@ -591,4 +591,19 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		Contact contact = contactGiven(contactNick);
 		return my(Channels.class).createControl(contact);
 	}
+	
+	@Override
+	public void commitToGit(String commitMessage) {
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
+	}
+
+	@Override
+	public void fetchFrom(String contactNick) {
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
+	}
+
+	@Override
+	public void hasCommit(String commitMessage) {
+		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
+	}
 }

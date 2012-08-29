@@ -115,6 +115,6 @@ class CryptoImpl implements Crypto {
 
 	@Override
 	public ECBCipher newAES256Cipher(byte[] key) {
-		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
+		return new ECBCipherImpl(key);
 	}
 }

@@ -8,7 +8,7 @@ import java.net.URLEncoder;
 import basis.lang.Consumer;
 
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
-import sneer.bricks.network.computers.httpgateway.HttpGateway;
+import sneer.bricks.network.computers.http.gateway.HttpGateway;
 import sneer.bricks.snapps.gis.location.Location;
 
 class LocationImpl implements Location {

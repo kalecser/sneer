@@ -27,5 +27,11 @@
 	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/upnp/impl/lib/sbbi-upnplib-1.0.4.jar"/>
 	<classpathentry kind="lib" path="src/dfcsantos/tracks/execution/player/impl/lib/jl1.0.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/http/server/impl/lib/jetty-server-8.1.5.v20120716.jar"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/http/server/impl/lib/jetty-util-8.1.5.v20120716.jar"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/http/server/impl/lib/servlet-api-3.0.jar"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/http/server/impl/lib/jetty-http-8.1.5.v20120716.jar"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/http/server/impl/lib/jetty-io-8.1.5.v20120716.jar"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/http/server/impl/lib/jetty-continuation-8.1.5.v20120716.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

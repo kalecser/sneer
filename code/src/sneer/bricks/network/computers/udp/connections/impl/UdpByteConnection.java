@@ -8,8 +8,14 @@ import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnect
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
+import sneer.bricks.hardware.cpu.crypto.Crypto;
+import sneer.bricks.hardware.cpu.crypto.ECBCipher;
 import sneer.bricks.hardware.cpu.threads.Threads;
+import sneer.bricks.identity.seals.OwnSeal;
+import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
@@ -23,20 +29,26 @@ import basis.lang.Consumer;
 
 class UdpByteConnection implements ByteConnection {
 	
-	private final Contact contact;
-	private Consumer<? super byte[]> receiver;
-	private final ConnectionMonitor monitor;
-	private final Light error = my(BlinkingLights.class).prepare(LightType.ERROR);
 
+	private final Light error = my(BlinkingLights.class).prepare(LightType.ERROR);
+	private final Contact contact;
+	private final ConnectionMonitor monitor;
+	private ECBCipher encrypter;
+	private ECBCipher decrypter = decrypter();
+	private Consumer<? super byte[]> receiver;
+
+	
 	UdpByteConnection(Contact contact) {
 		this.contact = contact;
 		this.monitor = new ConnectionMonitor(contact);
 	}
 
+
 	@Override
 	public Signal<Boolean> isConnected() {
 		return monitor.isConnected();
 	}
+
 	
 	@Override
 	public void initCommunications(final PacketScheduler scheduler, Consumer<? super byte[]> receiver) {
@@ -47,8 +59,11 @@ class UdpByteConnection implements ByteConnection {
 		}});
 	}
 	
+	
 	private void tryToSendPacketFor(PacketScheduler scheduler) {
-		byte[] payload = scheduler.highestPriorityPacketToSend();
+		if (encrypter() == null) return;
+		
+		byte[] payload = encrypter().encrypt(scheduler.highestPriorityPacketToSend());
 		ByteBuffer buf = prepare(Data);
 		
 		if (payload.length > buf.remaining()) {
@@ -56,7 +71,7 @@ class UdpByteConnection implements ByteConnection {
 			scheduler.previousPacketWasSent();
 			return;
 		}
-			
+		
 		buf.put(payload);
 		if (send(buf, monitor.lastSighting()))
 			scheduler.previousPacketWasSent();
@@ -74,7 +89,27 @@ class UdpByteConnection implements ByteConnection {
 		if (receiver == null) return;
 		byte[] payload = new byte[data.remaining()];
 		data.get(payload);
-		receiver.consume(payload);
+		receiver.consume(decrypter.decrypt(payload));
 	}
+	
+	
+	private ECBCipher encrypter() {
+		if (encrypter != null) return encrypter;
+
+		Seal seal = my(ContactSeals.class).sealGiven(contact).currentValue();
+		if (seal == null) return null;
+		
+		byte[] sealBytes = seal.bytes.copy();
+		byte[] key = Arrays.copyOf(sealBytes, 256 / 8);
+		encrypter = my(Crypto.class).newAES256Cipher(key);
+		return encrypter;
+	}
+	
+	
+	private ECBCipher decrypter() {
+		byte[] key = Arrays.copyOf(my(OwnSeal.class).get().currentValue().bytes.copy(), 256/8);
+		return my(Crypto.class).newAES256Cipher(key);
+	}	
+	
 	
 }

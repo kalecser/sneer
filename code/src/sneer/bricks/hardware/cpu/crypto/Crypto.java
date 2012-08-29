@@ -22,4 +22,5 @@ public interface Crypto {
 	KeyPair newECDSAKeyPair(byte[] seed);
 	
 	ECBCipher newAES256Cipher(byte[] key);
+
 }
