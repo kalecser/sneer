@@ -13,6 +13,7 @@ import java.nio.charset.Charset;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.network.computers.addresses.contacts.ContactAddresses;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
@@ -92,6 +93,7 @@ class ConnectionMonitor {
 	private void hail() {
 		long now = my(Clock.class).preciseTime();
 		ByteBuffer buf = prepare(Hail).putLong(now);
+		buf.put(ownPublicKey());
 		buf.put(ownNameBytes());
 		send(buf, address.currentValue());
 		for (SocketAddress addr : sightings)
@@ -101,6 +103,13 @@ class ConnectionMonitor {
 	
 	private byte[] ownNameBytes() {
 		return my(Attributes.class).myAttributeValue(OwnName.class).currentValue().getBytes(UTF8);
+	}
+	
+	
+	private byte[] ownPublicKey() {
+		byte[] ret = my(OwnKeys.class).ownPublicKey().currentValue().getEncoded();
+		if (ret.length != OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES) throw new IllegalStateException("Public key length is expected to be "+ OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES +" bytes, was " + ret.length);
+		return ret;
 	}
 
 

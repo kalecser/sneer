@@ -16,13 +16,15 @@ import java.util.Arrays;
 import org.jmock.Expectations;
 import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
+import org.junit.Before;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
-import sneer.bricks.hardware.cpu.crypto.Crypto;
-import sneer.bricks.hardware.cpu.crypto.tests.NullCrypto;
+import sneer.bricks.hardware.cpu.crypto.ecb.ECBCiphers;
+import sneer.bricks.hardware.cpu.crypto.ecb.tests.NullECBCiphers;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
+import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -30,6 +32,7 @@ import sneer.bricks.network.computers.addresses.contacts.ContactAddresses;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
 import sneer.bricks.network.computers.connections.Call;
+import sneer.bricks.network.computers.udp.UdpNetwork;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
 import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.holepuncher.client.StunClient;
@@ -54,7 +57,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	@Bind private final LoggingSender sender = new LoggingSender();
 	@Bind private final StunClient stunClient = mock(StunClient.class);
 	@Bind private final ContactAddresses contactAddresses = mock(ContactAddresses.class);
-	@Bind private final Crypto crypto = new NullCrypto(); 
+	@Bind private final ECBCiphers ciphers = new NullECBCiphers(); 
 			
 	private InetSocketAddress contactAddress = null;
 	{
@@ -65,6 +68,12 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 			}});
 		}});
 	}
+	
+	
+	@Before
+	public void beforeUdpConnectionManagerTest() {
+		my(OwnKeys.class).generateKeyPair("Seed".getBytes());
+	}
 
 	
 	@Test (timeout=2000)
@@ -72,7 +81,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		setOwnName("Wesley");
 		subject.handle(packetFrom("Neide", Data, bytes("Hello")));
 		
-		my(SignalUtils.class).waitForValue(sender.history(), "| Hail 0 Wesley,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForValue(sender.history(), "| Hail 0 PK:4889 Wesley,to:200.201.202.203,port:123");
 	}
 	
 	
@@ -140,8 +149,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		seeNeideIn(new InetSocketAddress("192.168.1.100", 7777));
 		
 		connectionFor("Neide");
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| Hail 0 ,to:200.201.202.203,port:1234");
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| Hail 0 ,to:192.168.1.100,port:7777");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| Hail 0 PK:4889 ,to:200.201.202.203,port:1234");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| Hail 0 PK:4889 ,to:192.168.1.100,port:7777");
 	}
 	
 
@@ -150,7 +159,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		mockContactAddressAttributes("200.211.222.233", 1234);
 		
 		connectionFor("Neide");
-		my(SignalUtils.class).waitForValue(sender.history(), "| Hail 0 ,to:200.211.222.233,port:1234");
+		my(SignalUtils.class).waitForValue(sender.history(), "| Hail 0 PK:4889 ,to:200.211.222.233,port:1234");
 	}
 	
 
@@ -198,14 +207,14 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SightingKeeper.class).keep(produceContact("Neide"), new InetSocketAddress("200.201.202.203", 123));
 		connectionFor("Neide");
 		
-		my(SignalUtils.class).waitForValue(sender.history(), "| Hail 0 ,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForValue(sender.history(), "| Hail 0 PK:4889 ,to:200.201.202.203,port:123");
 		
 		my(Clock.class).advanceTime(UdpConnectionManager.KEEP_ALIVE_PERIOD - 1);
-		my(SignalUtils.class).waitForValue(sender.history(), "| Hail 0 ,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForValue(sender.history(), "| Hail 0 PK:4889 ,to:200.201.202.203,port:123");
 		
 		my(Clock.class).advanceTime(1);
 		
-		my(SignalUtils.class).waitForElement(sender.historySet(), "| Hail 10000 ,to:200.201.202.203,port:123");
+		my(SignalUtils.class).waitForElement(sender.historySet(), "| Hail 10000 PK:4889 ,to:200.201.202.203,port:123");
 	}
 	
 	
@@ -239,8 +248,15 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	private DatagramPacket hailPacketFrom(byte[] seal, String senderName) throws Exception {
 		byte[] timestamp = asBytes(41);
-		byte[] data = my(Lang.class).arrays().concat(timestamp, senderName.getBytes("UTF-8"));
-		return packetFrom(Hail, seal, data, "200.42.0.35", 4567);
+		ByteBuffer data = ByteBuffer.allocate(UdpNetwork.MAX_PACKET_PAYLOAD_SIZE);
+		data.put(timestamp);
+		
+		byte[] key = new byte[OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES];
+		data.put(key);
+		data.put(senderName.getBytes("UTF-8"));
+		data.flip();
+		
+		return packetFrom(Hail, seal, Arrays.copyOf(data.array(), data.limit()), "200.42.0.35", 4567);
 	}
 	
 	

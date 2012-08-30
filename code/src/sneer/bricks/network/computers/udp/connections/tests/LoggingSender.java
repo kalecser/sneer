@@ -6,6 +6,7 @@ import static org.junit.Assert.assertArrayEquals;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 
+import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.udp.connections.UdpPacketType;
@@ -27,8 +28,12 @@ public final class LoggingSender implements UdpSender {
 		UdpPacketType packetType = UdpPacketType.search(type);
 		String ret = packetType.name() + " ";
 
-		if (packetType == UdpPacketType.Hail)			
+		if (packetType == UdpPacketType.Hail) {			
 			ret += buf.getLong() + " ";
+			byte[] key = new byte[OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES];
+			buf.get(key);
+			ret += "PK:" + key[0] + key[1] + " ";
+		}
 		
 		byte[] payload = new byte[buf.remaining()];
 		buf.get(payload);

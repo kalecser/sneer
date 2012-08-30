@@ -71,7 +71,7 @@ public class ECDH {
 		return ka.generateSecret("ECDH");
 	}
 
-	static KeyPair getKeyPair() throws Exception {
+	static KeyPair getKeyPair2() throws Exception {
 		Security.addProvider(new BouncyCastleProvider());
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance("ECDSA", "BC");
 
@@ -88,6 +88,21 @@ public class ECDH {
 		if (length != 214) throw new RuntimeException();
 		
 		return pair;
+	}
+	
+	static KeyPair getKeyPair() throws Exception {
+		Security.addProvider(new BouncyCastleProvider());
+		
+		KeyPairGenerator generator = KeyPairGenerator.getInstance("ECDSA", "BC");
+		generator.initialize(256, new SecureRandom());
+		KeyPair ret = generator.generateKeyPair();
+		
+		int length = ret.getPublic().getEncoded().length;
+		System.out.println("length:" + length);
+		
+		if (length != 91) throw new RuntimeException();
+		
+		return ret;
 	}
 
 }

@@ -10,8 +10,8 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.ECBCipher;
+import sneer.bricks.hardware.cpu.crypto.ecb.ECBCiphers;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
@@ -101,14 +101,14 @@ class UdpByteConnection implements ByteConnection {
 		
 		byte[] sealBytes = seal.bytes.copy();
 		byte[] key = Arrays.copyOf(sealBytes, 256 / 8);
-		encrypter = my(Crypto.class).newAES256Cipher(key);
+		encrypter = my(ECBCiphers.class).newAES256(key);
 		return encrypter;
 	}
 	
 	
 	private ECBCipher decrypter() {
 		byte[] key = Arrays.copyOf(my(OwnSeal.class).get().currentValue().bytes.copy(), 256/8);
-		return my(Crypto.class).newAES256Cipher(key);
+		return my(ECBCiphers.class).newAES256(key);
 	}	
 	
 	

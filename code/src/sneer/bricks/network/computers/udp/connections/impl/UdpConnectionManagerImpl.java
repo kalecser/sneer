@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 import sneer.bricks.hardware.io.log.Logger;
+import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.Call;
@@ -84,7 +85,7 @@ class UdpConnectionManagerImpl implements UdpConnectionManager {
 
 			private String callerName(ByteBuffer buf) {
 				buf.getLong(); //Skip the timestamp;
-				
+				buf.position(buf.position() + OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES); // Skip the public key
 				byte[] ret = new byte[buf.remaining()];
 				buf.get(ret);
 				return new String(ret, ENCODING);
