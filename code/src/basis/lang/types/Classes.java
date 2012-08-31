@@ -1,8 +1,6 @@
 package basis.lang.types;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -33,25 +31,13 @@ public class Classes {
 
 	
 	public static File fileFor(Class<?> clazz) {
-		final String fileName = clazz.getCanonicalName().replace('.', '/') + ".class";
-		String resourceName = "/" + fileName;
-		final URL url = clazz.getResource(resourceName);
+		URL url = clazz.getResource(clazz.getSimpleName() + ".class");
 		if (url == null)
-			throw new IllegalStateException("Resource " + resourceName + " not found");
-		
-		return new File(Classes.toURI(url));
+			throw new IllegalStateException("Class file for " + clazz + " not found");
+		return new File(url.getFile());
 	}
 	
 	
-	private static URI toURI(final URL url) {
-		try {
-			return url.toURI();
-		} catch (URISyntaxException e) {
-			throw new IllegalStateException();
-		}
-	}
-
-
 	public static String className(String classpathRoot, String classFilePath) {
 		if (!classFilePath.startsWith(classpathRoot)) throw new IllegalStateException("Class file: " + classFilePath + " should be inside subfolder of: " + classpathRoot);
 		int afterRoot = classpathRoot.length() + 1;

@@ -42,8 +42,9 @@ public interface SovereignParty {
 	void loadUnsharedBrick(String brickName);
 
 	//Freedom7 Git
-	void commitToGit(String commitMessage);
-	void fetchFrom(String contactNick);
-	void hasCommit(String commitMessage);
+	void gitPrepareEmptyRepo();
+	void gitPrepareRepoWithOneCommit();
+	void gitPullFrom(String contactNickname);
+	boolean gitHasOneCommit();
 
 }

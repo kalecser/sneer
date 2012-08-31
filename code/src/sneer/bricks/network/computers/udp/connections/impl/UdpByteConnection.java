@@ -62,9 +62,9 @@ class UdpByteConnection implements ByteConnection {
 	
 	
 	private void tryToSendPacketFor(Producer<? extends ByteBuffer> sender) {
-		if (encrypter() == null) return;
-		
 		ByteBuffer byteBuffer = sender.produce();
+		
+		if (encrypter() == null) return;
 		byte[] bytes = new byte[byteBuffer.remaining()]; 
 		byteBuffer.get(bytes);
 		

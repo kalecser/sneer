@@ -12,9 +12,10 @@ public class Freedom7TestGit extends SovereignFunctionalTestBase {
 	public void meToo() throws Exception {
 		//LoggerMocks.showLog = true;
 
-		a().commitToGit("Commit message");
-		b().fetchFrom(a().ownName());
-		b().hasCommit("Commit message");
+		a().gitPrepareEmptyRepo();
+		b().gitPrepareRepoWithOneCommit();
+		a().gitPullFrom(b().ownName());
+		assertTrue(a().gitHasOneCommit());
 	}
 
 }

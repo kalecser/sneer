@@ -63,6 +63,7 @@ public class SneerCommunity implements SovereignCommunity {
 		File privateBin        = makeFolder(sneerHome, "code/current/bin");
 		File privateSrc        = makeFolder(sneerHome, "code/current/src");
 		File stageFolder       = new File  (sneerHome, "code/stage");
+		File gitFolder         = new File  (sneerHome, ".git");
 		File sharedBin = my(ClassUtils.class).classpathRootFor(SneerCommunity.class);
 		
 		Environment container = Brickness.newBrickContainer(_udpNetwork, _tcpNetwork, newLogger(name));
@@ -71,7 +72,7 @@ public class SneerCommunity implements SovereignCommunity {
 		SneerParty partyImpl = (SneerParty)EnvironmentUtils.retrieveFrom(container, loadControllerUsing(apiClassLoader));
 		final SneerParty ret = ProxyInEnvironment.newInstance(container, partyImpl);
 		
-		ret.configDirectories(dataFolder, tmpFolder, currentCodeFolder, privateSrc, privateBin, stageFolder);
+		ret.configDirectories(dataFolder, tmpFolder, currentCodeFolder, privateSrc, privateBin, stageFolder, gitFolder);
 		_allParties.add(ret);
 
 		ret.start(name, port);

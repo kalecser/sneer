@@ -17,6 +17,7 @@ public class FolderConfigImpl implements FolderConfig {
 	private final ImmutableReference<File> _srcFolder = immutable();
 	private final ImmutableReference<File> _binFolder = immutable();
 	private final ImmutableReference<File> _stageFolder = immutable();
+	private final ImmutableReference<File> _gitFolder = immutable();
 
 	private final ImmutableReference<File> _storageFolder = immutable();
 	private final ImmutableReference<File> _tmpFolder = immutable();
@@ -74,6 +75,11 @@ public class FolderConfigImpl implements FolderConfig {
 	@Override
 	public ImmutableReference<File> stageFolder() {
 		return _stageFolder;
+	}
+
+	@Override
+	public ImmutableReference<File> gitFolder() {
+		return _gitFolder;
 	}
 	
 }

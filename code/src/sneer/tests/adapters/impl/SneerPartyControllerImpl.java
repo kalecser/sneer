@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -67,6 +69,7 @@ import basis.lang.Producer;
 import basis.lang.arrays.ImmutableByteArray;
 import basis.lang.exceptions.NotImplementedYet;
 import basis.lang.exceptions.Refusal;
+import basis.lang.types.Classes;
 import basis.util.concurrent.Latch;
 import basis.util.concurrent.RefLatch;
 
@@ -250,13 +253,15 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	@Override
-	public void configDirectories(File dataFolder, File tmpFolder, File codeFolder, File srcFolder, File binFolder, File stageFolder) {
+	public void configDirectories(File dataFolder, File tmpFolder, File codeFolder, File srcFolder, File binFolder, File stageFolder, File gitFolder) {
 		my(FolderConfig.class).storageFolder().set(dataFolder);
 		my(FolderConfig.class).tmpFolder().set(tmpFolder);
 		my(FolderConfig.class).srcFolder().set(srcFolder);
 		my(FolderConfig.class).binFolder().set(binFolder);
 		
 		my(FolderConfig.class).stageFolder().set(stageFolder);
+
+		my(FolderConfig.class).gitFolder().set(stageFolder);
 		_codeFolder = codeFolder;
 	}
 
@@ -590,17 +595,25 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	}
 
 	@Override
-	public void commitToGit(String commitMessage) {
+	public void gitPrepareEmptyRepo() {
+		gitPrepareRepo(".git-empty-repo");
+	}
+
+	
+	@Override
+	public void gitPrepareRepoWithOneCommit() {
+		gitPrepareRepo(".git-repo-with-one-commit");
+	}
+
+	
+	@Override
+	public void gitPullFrom(String contactNickname) {
 		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
+	
 	@Override
-	public void fetchFrom(String contactNick) {
-		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
-	}
-
-	@Override
-	public void hasCommit(String commitMessage) {
+	public boolean gitHasOneCommit() {
 		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
@@ -629,6 +642,16 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	Channel controlChannelFor(String contactNick) {
 		Contact contact = contactGiven(contactNick);
 		return my(Channels.class).createControl(contact);
+	}	
+
+	private void gitPrepareRepo(String repo) {
+		Path fixture = new File(Classes.fileFor(getClass()).getParentFile(), "gitfixtures/" + repo).toPath();
+		Path gitPath = my(FolderConfig.class).gitFolder().get().toPath();
+		try {
+			Files.copy(fixture, gitPath);
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 }
