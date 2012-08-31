@@ -62,8 +62,8 @@ class UdpByteConnection implements ByteConnection {
 	
 	private void tryToSendPacketFor(PacketScheduler scheduler) {
 		byte[] packet = scheduler.highestPriorityPacketToSend();
-		if (encrypter() == null) return;
 		
+		if (encrypter() == null) return;
 		byte[] payload = encrypter().encrypt(packet);
 		ByteBuffer buf = prepare(Data);
 		
