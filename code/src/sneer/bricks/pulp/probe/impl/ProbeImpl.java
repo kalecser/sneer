@@ -22,7 +22,7 @@ final class ProbeImpl implements Consumer<Tuple> {
 	
 	private final Object _isConnectedMonitor = new Object();
 	private boolean _isConnected = false;
-	final SchedulerImpl _scheduler = new SchedulerImpl();
+	final PacketProducer packetProducer = new PacketProducer();
 
 	@SuppressWarnings("unused") private final Object _referenceToAvoidGc;
 	private WeakContract _tupleSpaceContract;
@@ -43,7 +43,7 @@ final class ProbeImpl implements Consumer<Tuple> {
 				_tupleSpaceContract = _tuples.addSubscription(Tuple.class, this);
 			} else if (wasConnected) {
 				_tupleSpaceContract.dispose();
-				_scheduler.drain();
+				packetProducer.drain();
 			}
 		}
 	}
@@ -55,7 +55,7 @@ final class ProbeImpl implements Consumer<Tuple> {
 		
 		synchronized (_isConnectedMonitor) {
 			if (!_isConnected) return;
-			_scheduler.add(tuple);
+			packetProducer.add(tuple);
 		}
 	}
 

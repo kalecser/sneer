@@ -11,8 +11,8 @@ public interface PacketSplitters {
 	
 	static final int MAX_PIECES = 256;
 	
-	Producer<ByteBuffer> newSplitter(Producer<ByteBuffer> largePacketSender, int maxPieceSize);
+	Producer<ByteBuffer> newSplitter(Producer<? extends ByteBuffer> largePacketSender, int maxPieceSize);
 	
-	Consumer<ByteBuffer> newJoiner(Consumer<ByteBuffer> largePacketReceiver);
+	Consumer<ByteBuffer> newJoiner(Consumer<? super ByteBuffer> largePacketReceiver);
 	
 }

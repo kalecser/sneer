@@ -2,28 +2,36 @@ package sneer.bricks.network.computers.udp.connections.tests;
 
 import static basis.environments.Environments.my;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
+import basis.lang.Producer;
 
-final class PacketSchedulerMock implements PacketScheduler {
+final class PacketProducerMock implements Producer<ByteBuffer> {
 	
 	private static final Charset UTF8 = Charset.forName("UTF-8");
 	
 	final String[] messages;
 	int next = 0;
 
-	public PacketSchedulerMock(String... messages){
+	public PacketProducerMock(String... messages){
 		this.messages = messages;
 	}
 	
 	@Override
+	public ByteBuffer produce() {
+		try {
+			return ByteBuffer.wrap(highestPriorityPacketToSend());
+		} finally {
+			previousPacketWasSent();
+		}
+	}
+
 	public void previousPacketWasSent() {
 		next++;
 	}
 
-	@Override
 	public synchronized byte[] highestPriorityPacketToSend() {
 		blockIfFinished();
 		return messages[next].getBytes(UTF8);
@@ -32,4 +40,5 @@ final class PacketSchedulerMock implements PacketScheduler {
 	private void blockIfFinished() {
 		if (next == messages.length) my(Threads.class).waitWithoutInterruptions(this);
 	}
+
 }

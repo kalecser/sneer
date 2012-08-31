@@ -26,12 +26,11 @@ class UdpByteConnectionUtils {
 	}
 	
 	
-	static boolean send(ByteBuffer data, SocketAddress peerAddress) {
+	static void send(ByteBuffer data, SocketAddress peerAddress) {
 		DatagramPacket packet = packetFor(data, peerAddress);
-		if (packet == null) return false;
+		if (packet == null) return;
 		
 		sender.send(packet);
-		return true;
 	}
 
 	

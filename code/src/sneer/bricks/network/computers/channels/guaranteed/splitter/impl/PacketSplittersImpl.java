@@ -11,13 +11,13 @@ class PacketSplittersImpl implements PacketSplitters {
 	
 
 	@Override
-	public Producer<ByteBuffer> newSplitter(final Producer<ByteBuffer> largePacketSender, final int maxPieceSize) {
+	public Producer<ByteBuffer> newSplitter(final Producer<? extends ByteBuffer> largePacketSender, final int maxPieceSize) {
 		return new Splitter(largePacketSender, maxPieceSize);
 	}
 	
 	
 	@Override
-	public Consumer<ByteBuffer> newJoiner(final Consumer<ByteBuffer> largePacketReceiver) {
+	public Consumer<ByteBuffer> newJoiner(final Consumer<? super ByteBuffer> largePacketReceiver) {
 		return new Joiner(largePacketReceiver); 
 	}
 

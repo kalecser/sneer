@@ -2,17 +2,18 @@ package sneer.bricks.pulp.probe.impl;
 
 import static basis.environments.Environments.my;
 
+import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
 import sneer.bricks.expression.tuples.Tuple;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.serialization.Serializer;
+import basis.lang.Producer;
 
-class SchedulerImpl implements PacketScheduler {
+class PacketProducer implements Producer<ByteBuffer> {
 
 	private final Serializer _serializer = my(Serializer.class);
 
@@ -21,7 +22,15 @@ class SchedulerImpl implements PacketScheduler {
 	private int _lastTupleSent;
 
 	@Override
-	public byte[] highestPriorityPacketToSend() {
+	public ByteBuffer produce() {
+		try {
+			return ByteBuffer.wrap(highestPriorityPacketToSend());
+		} finally {
+			previousPacketWasSent();
+		}
+	}
+
+	byte[] highestPriorityPacketToSend() {
 		while (true) {
 			Tuple tuple = highestPriorityTupleToSend();
 			try {
@@ -41,8 +50,7 @@ class SchedulerImpl implements PacketScheduler {
 		return _toSend.get(_lastTupleSent);
 	}
 
-	@Override
-	public synchronized void previousPacketWasSent() {
+	synchronized void previousPacketWasSent() {
 		if (_wasDrained) return;
 		_toSend.remove(_lastTupleSent);
 	}
@@ -57,4 +65,5 @@ class SchedulerImpl implements PacketScheduler {
 		_toSend.add(tuple);
 		notify();
 	}
+
 }

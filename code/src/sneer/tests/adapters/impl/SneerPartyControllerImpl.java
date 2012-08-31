@@ -5,6 +5,7 @@ import static basis.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -62,10 +63,12 @@ import sneer.tests.adapters.SneerPartyController;
 import basis.lang.Closure;
 import basis.lang.Consumer;
 import basis.lang.Functor;
+import basis.lang.Producer;
 import basis.lang.arrays.ImmutableByteArray;
 import basis.lang.exceptions.NotImplementedYet;
 import basis.lang.exceptions.Refusal;
 import basis.util.concurrent.Latch;
+import basis.util.concurrent.RefLatch;
 
 class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
@@ -587,12 +590,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	}
 
 	@Override
-	public Channel openControlChannel(String contactNick) {
-		Contact contact = contactGiven(contactNick);
-		return my(Channels.class).createControl(contact);
-	}
-	
-	@Override
 	public void commitToGit(String commitMessage) {
 		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
@@ -606,4 +603,33 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	public void hasCommit(String commitMessage) {
 		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
+
+	@Override
+	public void keepSendingMessageInControlChannel(String contactNick, final byte[] message) {
+		controlChannelFor(contactNick).open(new Producer<ByteBuffer>() { @Override public ByteBuffer produce() {
+			return ByteBuffer.wrap(message);
+		}}, null);
+		
+		
 }
+
+	@Override
+	public byte[] waitForMessageInControlChannel(String contactNick) {
+		RefLatch<ByteBuffer> latch = new RefLatch<>();
+		controlChannelFor(contactNick).open(new Producer<ByteBuffer>() { @Override public ByteBuffer produce() {
+			my(Threads.class).waitUntilCrash(); return null;
+		}}, latch);
+		ByteBuffer received = latch.waitAndGet();
+		byte[] ret = new byte[received.remaining()];
+		received.get(ret);
+		return ret;
+	}
+
+	
+	Channel controlChannelFor(String contactNick) {
+		Contact contact = contactGiven(contactNick);
+		return my(Channels.class).createControl(contact);
+	}
+
+}
+

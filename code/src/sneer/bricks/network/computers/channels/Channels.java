@@ -8,6 +8,8 @@ public interface Channels {
 
 	public enum Priority { LOWEST, LOW, NORMAL, HIGH, HIGHEST };
 
+	boolean READY_FOR_PRODUCTION = false;
+
 	Channel accept(long id);
 	
 	Channel create(Contact contact, Priority priority);

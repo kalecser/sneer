@@ -8,11 +8,11 @@ import basis.lang.Consumer;
 
 class Joiner implements Consumer<ByteBuffer> {
 	
-	private final Consumer<ByteBuffer> largePacketReceiver;
+	private final Consumer<? super ByteBuffer> largePacketReceiver;
 	private ByteBuffer whole;
 	private int piecesToJoin = 0;
 
-	Joiner(Consumer<ByteBuffer> largePacketReceiver) {
+	Joiner(Consumer<? super ByteBuffer> largePacketReceiver) {
 		this.largePacketReceiver = largePacketReceiver;
 	}
 

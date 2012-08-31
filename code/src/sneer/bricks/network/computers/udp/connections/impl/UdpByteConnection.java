@@ -26,6 +26,7 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.pulp.reactive.Signal;
 import basis.lang.Closure;
 import basis.lang.Consumer;
+import basis.lang.Producer;
 
 class UdpByteConnection implements ByteConnection {
 	
@@ -35,7 +36,7 @@ class UdpByteConnection implements ByteConnection {
 	private final ConnectionMonitor monitor;
 	private ECBCipher encrypter;
 	private ECBCipher decrypter = decrypter();
-	private Consumer<? super byte[]> receiver;
+	private Consumer<? super ByteBuffer> receiver;
 
 	
 	UdpByteConnection(Contact contact) {
@@ -51,30 +52,32 @@ class UdpByteConnection implements ByteConnection {
 
 	
 	@Override
-	public void initCommunications(final PacketScheduler scheduler, Consumer<? super byte[]> receiver) {
+	public void initCommunications(final Producer<? extends ByteBuffer> sender, Consumer<? super ByteBuffer> receiver) {
 		if (this.receiver != null) throw new IllegalStateException();
 		this.receiver = receiver;
 		my(Threads.class).startStepping("ByteConnection", new Closure() { @Override public void run() {
-			tryToSendPacketFor(scheduler);
+			tryToSendPacketFor(sender);
 		}});
 	}
 	
 	
-	private void tryToSendPacketFor(PacketScheduler scheduler) {
+	private void tryToSendPacketFor(Producer<? extends ByteBuffer> sender) {
 		if (encrypter() == null) return;
 		
-		byte[] payload = encrypter().encrypt(scheduler.highestPriorityPacketToSend());
+		ByteBuffer byteBuffer = sender.produce();
+		byte[] bytes = new byte[byteBuffer.remaining()]; 
+		byteBuffer.get(bytes);
+		
+		byte[] payload = encrypter().encrypt(bytes);
 		ByteBuffer buf = prepare(Data);
 		
 		if (payload.length > buf.remaining()) {
 			my(BlinkingLights.class).turnOnIfNecessary(error, "Packet too long", "Trying to send packet of size: " + payload.length + ". Max is " + buf.remaining());
-			scheduler.previousPacketWasSent();
 			return;
 		}
 		
 		buf.put(payload);
-		if (send(buf, monitor.lastSighting()))
-			scheduler.previousPacketWasSent();
+		send(buf, monitor.lastSighting());
 	}
 	
 	void handle(UdpPacketType type, InetSocketAddress origin, ByteBuffer data) {
@@ -89,7 +92,7 @@ class UdpByteConnection implements ByteConnection {
 		if (receiver == null) return;
 		byte[] payload = new byte[data.remaining()];
 		data.get(payload);
-		receiver.consume(decrypter.decrypt(payload));
+		receiver.consume(ByteBuffer.wrap(decrypter.decrypt(payload)));
 	}
 	
 	

@@ -3,6 +3,7 @@ package sneer.bricks.network.computers.tcp.connections.impl;
 import static basis.environments.Environments.my;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import sneer.bricks.hardware.cpu.lang.contracts.Contract;
 import sneer.bricks.hardware.cpu.threads.Threads;
@@ -12,6 +13,7 @@ import sneer.bricks.pulp.bandwidth.BandwidthCounter;
 import sneer.bricks.pulp.reactive.Signal;
 import basis.lang.Closure;
 import basis.lang.Consumer;
+import basis.lang.Producer;
 
 class ByteConnectionImpl implements ByteConnection {
 
@@ -21,8 +23,8 @@ class ByteConnectionImpl implements ByteConnection {
 
 	private final SocketHolder _socketHolder = new SocketHolder();
 	
-	private PacketScheduler _scheduler;
-	private Consumer<? super byte[]> _receiver;
+	private Producer<? extends ByteBuffer> _sender;
+	private Consumer<? super ByteBuffer> _receiver;
 	
 	private Contract _contractToSend;
 	private Contract _contractToReceive;
@@ -35,9 +37,9 @@ class ByteConnectionImpl implements ByteConnection {
 
 
 	@Override
-	public void initCommunications(PacketScheduler sender, Consumer<? super byte[]> receiver) {
-		if (_scheduler != null) throw new IllegalStateException();
-		_scheduler = sender;
+	public void initCommunications(Producer<? extends ByteBuffer> sender, Consumer<? super ByteBuffer> receiver) {
+		if (_sender != null) throw new IllegalStateException();
+		_sender = sender;
 		_receiver = receiver;
 
 		startSending();
@@ -61,21 +63,18 @@ class ByteConnectionImpl implements ByteConnection {
 	
 	private void send(ByteArraySocket socket) {
 		throttleUpload();
-		if (tryToSend(_scheduler.highestPriorityPacketToSend(), socket))
-			_scheduler.previousPacketWasSent();
-	}
 
-
-	private boolean tryToSend(byte[] array, ByteArraySocket mySocket) {
+		ByteBuffer byteBuffer = _sender.produce();
+		byte[] bytes = new byte[byteBuffer.remaining()]; 
+		byteBuffer.get(bytes);
 		try {
-			mySocket.write(array);
+			socket.write(bytes);
 		} catch (IOException iox) {
-			_socketHolder.close(mySocket, "Error trying to send packet.", iox);
-			return false;
+			_socketHolder.close(socket, "Error trying to send packet.", iox);
+			return;
 		}
 
-		_bandwidthCounter.sent(array.length);
-		return true;
+		_bandwidthCounter.sent(bytes.length);
 	}
 
 
@@ -89,7 +88,7 @@ class ByteConnectionImpl implements ByteConnection {
 		}
 
 		_bandwidthCounter.received(array.length);
-		_receiver.consume(array);
+		_receiver.consume(ByteBuffer.wrap(array));
 	}
 
 	

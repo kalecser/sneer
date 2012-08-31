@@ -11,14 +11,14 @@ class Splitter implements Producer<ByteBuffer> {
 	
 	static final int BYTES_FOR_REMAINING_PIECES = 1; //Representing up to PacketSplitters.MAX_PIECES
 	
-	private final Producer<ByteBuffer> largePacketSender;
+	private final Producer<? extends ByteBuffer> largePacketSender;
 	private final int maxPieceSize;
 
 	private ByteBuffer whole = ByteBuffer.allocate(0);
 	private int bytesPerPiece;
 
 	
-	Splitter(Producer<ByteBuffer> largePacketSender, int maxPieceSize) {
+	Splitter(Producer<? extends ByteBuffer> largePacketSender, int maxPieceSize) {
 		this.largePacketSender = largePacketSender;
 		this.maxPieceSize = maxPieceSize;
 	}

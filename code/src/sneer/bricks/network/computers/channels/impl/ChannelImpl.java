@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import sneer.bricks.network.computers.channels.Channel;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.udp.UdpNetwork;
+import sneer.bricks.pulp.reactive.Signal;
 import basis.lang.Consumer;
 import basis.lang.Producer;
 
@@ -26,23 +27,17 @@ class ChannelImpl implements Channel {
 	}
 
 	@Override
-	public void open(final Producer<ByteBuffer> sender, final Consumer<ByteBuffer> receiver) {
-		connection.initCommunications(new ByteConnection.PacketScheduler() {
-			
-			@Override
-			public void previousPacketWasSent() {				
-			}
-			
-			@Override
-			public byte[] highestPriorityPacketToSend() {
-				ByteBuffer packet = sender.produce();
-				byte[] ret = new byte[BYTES_TO_REPRESENT_ID + packet.remaining()];
-				putIdIn(ret);
-				packet.get(ret, BYTES_TO_REPRESENT_ID, packet.remaining());
+	public void open(final Producer<? extends ByteBuffer> sender, final Consumer<? super ByteBuffer> receiver) {
+		connection.initCommunications(new Producer<ByteBuffer>() { @Override public ByteBuffer produce() {
+				ByteBuffer payload = sender.produce();
+				ByteBuffer ret = ByteBuffer.allocate(BYTES_TO_REPRESENT_ID + payload.remaining());
+				ret.putLong(id);
+				ret.put(payload);
 				return ret;
 			}
-		}, new Consumer<byte[]>() { @Override public void consume(byte[] value) {
-			receiver.consume(ByteBuffer.wrap(value, BYTES_TO_REPRESENT_ID, value.length - BYTES_TO_REPRESENT_ID));
+		}, new Consumer<ByteBuffer>() { @Override public void consume(ByteBuffer packet) {
+			checkId(packet.getLong());
+			receiver.consume(packet);
 		}});
 	}
 
@@ -53,8 +48,15 @@ class ChannelImpl implements Channel {
 	}
 
 	
-	void putIdIn(byte[] array) {
-		ByteBuffer.wrap(array).putLong(id);
+	@Override
+	public Signal<Boolean> isUp() {
+		return connection.isConnected();
+	}
+
+	
+	void checkId(long actual) {
+		if (id != actual)
+			throw new IllegalStateException("Channel ID should be " + id + " but was " + actual);
 	}
 
 }

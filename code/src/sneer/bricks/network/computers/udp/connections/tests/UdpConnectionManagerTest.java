@@ -30,7 +30,6 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.contacts.ContactAddresses;
 import sneer.bricks.network.computers.connections.ByteConnection;
-import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
 import sneer.bricks.network.computers.connections.Call;
 import sneer.bricks.network.computers.udp.UdpNetwork;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
@@ -45,6 +44,7 @@ import sneer.bricks.pulp.reactive.Signals;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import basis.brickness.testsupport.Bind;
 import basis.lang.Consumer;
+import basis.lang.Producer;
 import basis.util.concurrent.Latch;
 import basis.util.concurrent.RefLatch;
 
@@ -110,8 +110,10 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	@Test (timeout=2000)
 	public void receiveData() throws Exception {
 		final Latch latch = new Latch();
-		connectionFor("Neide").initCommunications(new PacketSchedulerMock(), new Consumer<byte[]>() { @Override public void consume(byte[] value) {
-			assertEquals("Hello", new String(value));
+		connectionFor("Neide").initCommunications(new PacketProducerMock(), new Consumer<ByteBuffer>() { @Override public void consume(ByteBuffer packet) {
+			byte[] bytes = new byte[packet.remaining()];
+			packet.get(bytes);
+			assertEquals("Hello", new String(bytes));
 			latch.open();
 		}});
 		
@@ -129,8 +131,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	public void sendData_ShouldUseReceivedHailSighting() throws Exception {
 		subject.handle(hailPacketFrom("Neide"));
 		
-		PacketScheduler scheduler = new PacketSchedulerMock("foo", "bar");
-		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
+		Producer<ByteBuffer> producer = new PacketProducerMock("foo", "bar");
+		connectionFor("Neide").initCommunications(producer, my(Signals.class).sink());
 
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data foo,to:200.201.202.203,port:123");
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data bar,to:200.201.202.203,port:123");
@@ -195,8 +197,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		subject.handle(packetFrom("Neide", Hail, asBytes(50), "100.101.102.103", 456));
 		my(SignalUtils.class).waitForValue(connection.isConnected(), true);
 		
-		PacketScheduler scheduler = new PacketSchedulerMock("foo");
-		connection.initCommunications(scheduler, my(Signals.class).sink());
+		Producer<ByteBuffer> producer = new PacketProducerMock("foo");
+		connection.initCommunications(producer, my(Signals.class).sink());
 		
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data foo,to:100.101.102.103,port:456");
 	}
@@ -223,8 +225,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		subject.handle(packetFrom("Neide", Hail, asBytes(41), "200.201.202.203", 123));
 		subject.handle(packetFrom("Neide", Hail, asBytes(42), "192.168.10.10", 7777));
 		
-		PacketScheduler scheduler = new PacketSchedulerMock("foo");
-		connectionFor("Neide").initCommunications(scheduler, my(Signals.class).sink());
+		Producer<ByteBuffer> producer = new PacketProducerMock("foo");
+		connectionFor("Neide").initCommunications(producer, my(Signals.class).sink());
 		
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data foo,to:192.168.10.10,port:7777");
 	}

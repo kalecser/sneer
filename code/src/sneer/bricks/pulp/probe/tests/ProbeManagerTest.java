@@ -2,6 +2,8 @@ package sneer.bricks.pulp.probe.tests;
 
 import static basis.environments.Environments.my;
 
+import java.nio.ByteBuffer;
+
 import org.jmock.Expectations;
 import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
@@ -12,7 +14,6 @@ import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.ByteConnection;
-import sneer.bricks.network.computers.connections.ByteConnection.PacketScheduler;
 import sneer.bricks.network.computers.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
@@ -23,6 +24,7 @@ import sneer.bricks.pulp.serialization.Serializer;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import basis.brickness.testsupport.Bind;
 import basis.lang.Consumer;
+import basis.lang.Producer;
 import basis.lang.arrays.ImmutableByteArray;
 
 public class ProbeManagerTest extends BrickTestBase {
@@ -35,7 +37,7 @@ public class ProbeManagerTest extends BrickTestBase {
 	private final TupleSpace _tuples = my(TupleSpace.class);
 	
 	private final ByteConnection _connection = mock(ByteConnection.class);
-	private PacketScheduler _scheduler;
+	private Producer<ByteBuffer> packetProducer;
 	@SuppressWarnings("unused")
 	private Consumer<byte[]> _packetReceiver;
 
@@ -44,9 +46,9 @@ public class ProbeManagerTest extends BrickTestBase {
 		checking(new Expectations(){{
 			one(_connectionManager).connectionFor(with(aNonNull(Contact.class))); will(returnValue(_connection));
 			one(_connection).isConnected(); will(returnValue(my(Signals.class).constant(true)));
-			one(_connection).initCommunications(with(aNonNull(PacketScheduler.class)), with(aNonNull(Consumer.class)));
+			one(_connection).initCommunications(with(aNonNull(Producer.class)), with(aNonNull(Consumer.class)));
 				will(new CustomAction("capturing scheduler") { @Override public Object invoke(Invocation invocation) throws Throwable {
-					_scheduler = (PacketScheduler) invocation.getParameter(0);
+					packetProducer = (Producer<ByteBuffer>) invocation.getParameter(0);
 					return null;
 				}});
 		}});
@@ -71,10 +73,11 @@ public class ProbeManagerTest extends BrickTestBase {
 
 	private void assertPacketToSend(int id) throws Exception {
 		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
-		byte[] packet = _scheduler.highestPriorityPacketToSend();
-		_scheduler.previousPacketWasSent();
+		ByteBuffer byteBuffer = packetProducer.produce();
+		byte[] bytes = new byte[byteBuffer.remaining()];
+		byteBuffer.get(bytes);
 		
-		assertEquals(id, desserialize(packet).id);
+		assertEquals(id, desserialize(bytes).id);
 	}
 
 
