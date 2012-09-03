@@ -11,7 +11,7 @@ import basis.lang.Producer;
 
 class ChannelImpl implements Channel {
 
-	private static final int BYTES_TO_REPRESENT_ID = 4;
+	private static final int BYTES_TO_REPRESENT_ID = 8;
 	
 	private final long id;
 	private final ByteConnection connection;
@@ -33,6 +33,7 @@ class ChannelImpl implements Channel {
 				ByteBuffer ret = ByteBuffer.allocate(BYTES_TO_REPRESENT_ID + payload.remaining());
 				ret.putLong(id);
 				ret.put(payload);
+				ret.flip();
 				return ret;
 			}
 		}, new Consumer<ByteBuffer>() { @Override public void consume(ByteBuffer packet) {
