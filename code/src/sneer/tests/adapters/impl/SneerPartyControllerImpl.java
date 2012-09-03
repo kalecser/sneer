@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,6 +54,7 @@ import sneer.bricks.software.folderconfig.FolderConfig;
 import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
+import sneer.bricks.softwaresharing.git.tests.GitTest;
 import sneer.bricks.softwaresharing.stager.BrickStager;
 import sneer.bricks.softwaresharing.stager.tests.BrickStagerTest;
 import sneer.main.SneerVersionUpdater;
@@ -69,7 +69,6 @@ import basis.lang.Producer;
 import basis.lang.arrays.ImmutableByteArray;
 import basis.lang.exceptions.NotImplementedYet;
 import basis.lang.exceptions.Refusal;
-import basis.lang.types.Classes;
 import basis.util.concurrent.Latch;
 import basis.util.concurrent.RefLatch;
 
@@ -253,7 +252,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	@Override
-	public void configDirectories(File dataFolder, File tmpFolder, File codeFolder, File srcFolder, File binFolder, File stageFolder, File gitFolder) {
+	public void configDirectories(File dataFolder, File tmpFolder, File codeFolder, File srcFolder, File binFolder, File stageFolder, Path gitFolder) {
 		my(FolderConfig.class).storageFolder().set(dataFolder);
 		my(FolderConfig.class).tmpFolder().set(tmpFolder);
 		my(FolderConfig.class).srcFolder().set(srcFolder);
@@ -261,7 +260,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		
 		my(FolderConfig.class).stageFolder().set(stageFolder);
 
-		my(FolderConfig.class).gitFolder().set(stageFolder);
+		my(FolderConfig.class).gitFolder().set(gitFolder);
 		_codeFolder = codeFolder;
 	}
 
@@ -596,13 +595,21 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	@Override
 	public void gitPrepareEmptyRepo() {
-		gitPrepareRepo(".git-empty-repo");
+		try {
+			GitTest.prepareEmptyRepo(my(FolderConfig.class).gitFolder().get());
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	
 	@Override
 	public void gitPrepareRepoWithOneCommit() {
-		gitPrepareRepo(".git-repo-with-one-commit");
+		try {
+			GitTest.prepareRepoWithOneCommit(my(FolderConfig.class).gitFolder().get());
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	
@@ -642,16 +649,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	Channel controlChannelFor(String contactNick) {
 		Contact contact = contactGiven(contactNick);
 		return my(Channels.class).createControl(contact);
-	}	
-
-	private void gitPrepareRepo(String repo) {
-		Path fixture = new File(Classes.fileFor(getClass()).getParentFile(), "gitfixtures/" + repo).toPath();
-		Path gitPath = my(FolderConfig.class).gitFolder().get().toPath();
-		try {
-			Files.copy(fixture, gitPath);
-		} catch (IOException e) {
-			throw new IllegalStateException(e);
-		}
 	}
 
 }

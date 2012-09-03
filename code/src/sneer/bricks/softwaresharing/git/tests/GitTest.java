@@ -20,20 +20,30 @@ public class GitTest extends BrickTestBase {
 	@Test
 	public void pull() throws Exception {
 		Path fromRepo = newTmpFile("repo1").toPath();
-		prepare(".git-repo-with-one-commit", fromRepo);
+		prepareRepoWithOneCommit(fromRepo);
 
 		Path toRepo = newTmpFile("repo2").toPath();
-		prepare(".git-empty-repo", toRepo);
+		prepareEmptyRepo(toRepo);
 		
 		assertFalse(Files.exists(toRepo.resolve("readme.txt")));
 		subject.pull(fromRepo, toRepo);
 		assertTrue(Files.exists(toRepo.resolve("readme.txt")));
 	}
 
+
+	public static void prepareEmptyRepo(Path path) throws IOException {
+		prepare(".git-empty-repo", path);
+	}
+
+
+	public static void prepareRepoWithOneCommit(Path path) throws IOException {
+		prepare(".git-repo-with-one-commit", path);
+	}
+
 	
-	private void prepare(String repoFixture, Path repo) throws IOException {
+	private static void prepare(String repoFixture, Path repo) throws IOException {
 		Files.createDirectory(repo);
-		Path fixture = Classes.fileFor(getClass()).getParentFile().toPath().resolve("gitfixtures/" + repoFixture);
+		Path fixture = Classes.fileFor(GitTest.class).getParentFile().toPath().resolve("gitfixtures/" + repoFixture);
 		my(IO.class).files().copyFolder(fixture.toFile(), repo.resolve(".git").toFile());
 	}
 	
