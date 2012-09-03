@@ -26,7 +26,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/sneer"/>
 	<classpathentry kind="lib" path="src/spikes/adenauer/lookandfeel/lib/jgoodies-common-1.2.0.jar"/>
 	<classpathentry kind="lib" path="src/spikes/adenauer/lookandfeel/lib/jgoodies-looks-2.4.1.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.jgit-2.0.0.201206130900-r-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.jgit-2.0.0.201206130900-r.jar"/>
 	<classpathentry kind="lib" path="lib/jsch-0.1.48.jar"/>
 	<classpathentry kind="output" path="bin"/>
