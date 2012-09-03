@@ -22,9 +22,6 @@ public class Git {
 
 	public static void main(String[] args) throws IOException, WrongRepositoryStateException, InvalidConfigurationException, DetachedHeadException, InvalidRemoteException, CanceledException, RefNotFoundException, NoHeadException, TransportException, GitAPIException {
 		
-		
-		
-		
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 		Repository repository = builder.setGitDir(new File("/tmp/empty/.git"))
 		  .readEnvironment()
