@@ -22,8 +22,15 @@ public class Git {
 
 	public static void main(String[] args) throws IOException, WrongRepositoryStateException, InvalidConfigurationException, DetachedHeadException, InvalidRemoteException, CanceledException, RefNotFoundException, NoHeadException, TransportException, GitAPIException {
 		
+		doPull("/tmp/onecommit/", "/tmp/empty/");
+	}
+
+	private static void doPull(String fromRepoPath, String toRepoPath) throws IOException, GitAPIException,
+			WrongRepositoryStateException, InvalidConfigurationException,
+			DetachedHeadException, InvalidRemoteException, CanceledException,
+			RefNotFoundException, NoHeadException, TransportException {
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
-		Repository repository = builder.setGitDir(new File("/tmp/empty/.git"))
+		Repository repository = builder.setGitDir(new File(toRepoPath + ".git"))
 		  .readEnvironment()
 		  .findGitDir()
 		  .build();
@@ -31,11 +38,11 @@ public class Git {
 		
 		StoredConfig config = repository.getConfig();
 		config.setString("remote", "origin", "fetch", "+refs/heads/*:refs/remotes/origin/*");
-		config.setString("remote", "origin", "url", "/tmp/onecommit/");
+		config.setString("remote", "origin", "url", fromRepoPath);
 		config.setString("branch", "master", "remote", "origin");
 		config.setString("branch", "master", "merge", "refs/heads/master");
 		
-		config.save();
+		//config.save();
 		
 		
 		org.eclipse.jgit.api.Git git = new org.eclipse.jgit.api.Git(repository);
