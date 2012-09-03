@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
@@ -18,7 +17,6 @@ public class GitTest extends BrickTestBase {
 
 	private final Git subject = my(Git.class);
 	
-	@Ignore
 	@Test
 	public void pull() throws Exception {
 		Path fromRepo = newTmpFile("repo1").toPath();
@@ -27,7 +25,9 @@ public class GitTest extends BrickTestBase {
 		Path toRepo = newTmpFile("repo2").toPath();
 		prepare(".git-empty-repo", toRepo);
 		
+		assertFalse(Files.exists(toRepo.resolve("readme.txt")));
 		subject.pull(fromRepo, toRepo);
+		assertTrue(Files.exists(toRepo.resolve("readme.txt")));
 	}
 
 	
