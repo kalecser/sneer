@@ -3,7 +3,6 @@ package sneer.bricks.pulp.probe.impl;
 import static basis.environments.Environments.my;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
