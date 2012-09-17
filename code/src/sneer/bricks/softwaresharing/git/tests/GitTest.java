@@ -3,10 +3,8 @@ package sneer.bricks.softwaresharing.git.tests;
 import static basis.environments.Environments.my;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -55,7 +53,6 @@ public class GitTest extends BrickTestBase {
 	public static void prepareEmptyRepo(Path path) throws IOException {
 		prepare(".git-empty-repo", path);
 	}
-
 
 	public static void prepareRepoWithOneCommit(Path path) throws IOException {
 		prepare(".git-repo-with-one-commit", path);
