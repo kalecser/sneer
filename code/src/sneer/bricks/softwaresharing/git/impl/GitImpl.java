@@ -30,6 +30,8 @@ class GitImpl implements Git {
 
 		PullCommand a = git.pull();
 		a.call();
+		
+		repository.close();
 	}
 
 }
