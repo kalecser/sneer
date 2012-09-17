@@ -13,6 +13,7 @@ import org.junit.Test;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.bricks.softwaresharing.git.Git;
+import sneer.bricks.softwaresharing.git.MergeRequired;
 import basis.lang.types.Classes;
 
 public class GitTest extends BrickTestBase {
@@ -46,19 +47,10 @@ public class GitTest extends BrickTestBase {
 		subject.pull(fromRepo, emptyRepo);
 	}
 	
-	@Test
+	@Test(expected = MergeRequired.class)
 	public void pullWithConflict() throws Exception {
 		subject.pull(fromRepo, conflictingRepo);
-		Path file = conflictingRepo.resolve("readme.txt");
-		assertEquals("<<<<<<< HEAD", firstLine(file));
 	}
-
-	private String firstLine(Path file) throws IOException {
-		List<String> lines = Files.readAllLines(file, Charset.forName("UTF-8"));
-		String firstLine = lines.get(0);
-		return firstLine;
-	}
-
 
 	public static void prepareEmptyRepo(Path path) throws IOException {
 		prepare(".git-empty-repo", path);
