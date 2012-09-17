@@ -24,10 +24,10 @@ public class ContactNavigatorImpl implements ContactNavigator {
 		ref2 = my(RemoteTuples.class).addSubscription(ContactsRequest.class, new Consumer<ContactsRequest>(){
 
 			@Override
-			public void consume(ContactsRequest value) {
+			public void consume(ContactsRequest request) {
 				SetSignal<Contact> contacts = my(Contacts.class).contacts();
 				for (Contact each : contacts.currentElements()){
-					ContactOfContact tuple = new ContactOfContact(nick(each), seal(each), value.publisher);
+					ContactOfContact tuple = new ContactOfContact(nick(each), seal(each), request.publisher);
 					my(TupleSpace.class).add(tuple);
 				}
 			}
@@ -43,14 +43,13 @@ public class ContactNavigatorImpl implements ContactNavigator {
 
 	@Override
 	public void searchContactsOf(final Seal adressee, final Consumer<ContactOfContact> consumer) {
-		
 		TupleSpace tuplespace = my(TupleSpace.class);
-		tuplespace.add(new ContactsRequest(adressee));
 		if (ref != null) ref.dispose();
 		ref = tuplespace.addSubscription(ContactOfContact.class, new Consumer<ContactOfContact>(){  @Override public void consume(ContactOfContact value) {
 			if (value.publisher.equals(adressee)) 
 				consumer.consume(value);
 		}});
+		tuplespace.add(new ContactsRequest(adressee));
 	}
 
 }

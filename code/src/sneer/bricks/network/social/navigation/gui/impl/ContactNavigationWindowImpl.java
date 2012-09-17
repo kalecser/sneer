@@ -113,10 +113,9 @@ import basis.lang.exceptions.Refusal;
 
 	private void requestContactsOfContact() {
 		clearContactsOfContact();
-		Consumer<ContactOfContact> consumer = new Consumer<ContactOfContact>() { @Override public void consume(ContactOfContact value) {
+		my(ContactNavigator.class).searchContactsOf(selectedSeal(), new Consumer<ContactOfContact>() { @Override public void consume(ContactOfContact value) {
 			_contactsOfContact.add(value);
-		}};
-		my(ContactNavigator.class).searchContactsOf(selectedSeal(), consumer );		
+		}} );		
 	}
 
 	private Seal selectedSeal() {
