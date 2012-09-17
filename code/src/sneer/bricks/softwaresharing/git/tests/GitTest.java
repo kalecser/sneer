@@ -3,8 +3,10 @@ package sneer.bricks.softwaresharing.git.tests;
 import static basis.environments.Environments.my;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -17,12 +19,14 @@ public class GitTest extends BrickTestBase {
 
 	private final Git subject = my(Git.class);
 	private final Path fromRepo = newTmpFile("repo1").toPath();
-	private final Path toRepo = newTmpFile("repo2").toPath();
+	private final Path emptyRepo = newTmpFile("repo2").toPath();
+	private final Path conflictingRepo = newTmpFile("repo3").toPath();
 
 	{
 		try {
 			prepareRepoWithOneCommit(fromRepo);
-			prepareEmptyRepo(toRepo);
+			prepareEmptyRepo(emptyRepo);
+			prepareConflictingRepo(conflictingRepo);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
@@ -31,16 +35,28 @@ public class GitTest extends BrickTestBase {
 	
 	@Test
 	public void pull() throws Exception {
-		assertFalse(Files.exists(toRepo.resolve("readme.txt")));
-		subject.pull(fromRepo, toRepo);
-		assertTrue(Files.exists(toRepo.resolve("readme.txt")));
+		assertFalse(Files.exists(emptyRepo.resolve("readme.txt")));
+		subject.pull(fromRepo, emptyRepo);
+		assertTrue(Files.exists(emptyRepo.resolve("readme.txt")));
 	}
 
-	
 	@Test(expected = Exception.class)
 	public void pullWithError_UntrackedEmptyFileSameAsFileBeingPulled() throws Exception {
-		Files.createFile(toRepo.resolve("readme.txt"));
-		subject.pull(fromRepo, toRepo);
+		Files.createFile(emptyRepo.resolve("readme.txt"));
+		subject.pull(fromRepo, emptyRepo);
+	}
+	
+	@Test
+	public void pullWithConflict() throws Exception {
+		subject.pull(fromRepo, conflictingRepo);
+		Path file = conflictingRepo.resolve("readme.txt");
+		assertEquals("<<<<<<< HEAD", firstLine(file));
+	}
+
+	private String firstLine(Path file) throws IOException {
+		List<String> lines = Files.readAllLines(file, Charset.forName("UTF-8"));
+		String firstLine = lines.get(0);
+		return firstLine;
 	}
 
 
@@ -53,11 +69,13 @@ public class GitTest extends BrickTestBase {
 		prepare(".git-repo-with-one-commit", path);
 	}
 
+	private void prepareConflictingRepo(Path path) throws IOException {
+		prepare(".git-repo-with-conflicting-commit", path);
+	}
 	
 	private static void prepare(String repoFixture, Path repo) throws IOException {
 		Files.createDirectory(repo);
 		Path fixture = Classes.fileFor(GitTest.class).getParentFile().toPath().resolve("gitfixtures/" + repoFixture);
 		my(IO.class).files().copyFolder(fixture.toFile(), repo.resolve(".git").toFile());
 	}
-	
 }
