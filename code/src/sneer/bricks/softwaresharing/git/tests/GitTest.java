@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
@@ -17,19 +16,31 @@ import basis.lang.types.Classes;
 public class GitTest extends BrickTestBase {
 
 	private final Git subject = my(Git.class);
+	private final Path fromRepo = newTmpFile("repo1").toPath();
+	private final Path toRepo = newTmpFile("repo2").toPath();
+
+	{
+		try {
+			prepareRepoWithOneCommit(fromRepo);
+			prepareEmptyRepo(toRepo);
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+	}
 	
-	@Ignore
+	
 	@Test
 	public void pull() throws Exception {
-		Path fromRepo = newTmpFile("repo1").toPath();
-		prepareRepoWithOneCommit(fromRepo);
-
-		Path toRepo = newTmpFile("repo2").toPath();
-		prepareEmptyRepo(toRepo);
-		
 		assertFalse(Files.exists(toRepo.resolve("readme.txt")));
 		subject.pull(fromRepo, toRepo);
 		assertTrue(Files.exists(toRepo.resolve("readme.txt")));
+	}
+
+	
+	@Test(expected = Exception.class)
+	public void pullWithError_UntrackedEmptyFileSameAsFileBeingPulled() throws Exception {
+		Files.createFile(toRepo.resolve("readme.txt"));
+		subject.pull(fromRepo, toRepo);
 	}
 
 
