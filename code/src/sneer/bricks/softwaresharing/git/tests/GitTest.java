@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.io.IO;
@@ -13,6 +14,7 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.bricks.softwaresharing.git.Git;
 import basis.lang.types.Classes;
 
+@Ignore
 public class GitTest extends BrickTestBase {
 
 	private final Git subject = my(Git.class);
