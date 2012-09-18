@@ -9,12 +9,7 @@ public class Freedom5TestChannels extends SovereignFunctionalTestBase {
 
 	@Test// (timeout = 13000)
 	public void openControlChannel() {
-		if (!Channels.READY_FOR_PRODUCTION) return;
-		
-		b().keepSendingMessageInControlChannel(a().ownName(), "Hello".getBytes());
-		byte[] actual = a().waitForMessageInControlChannel(b().ownName());
-		assertArrayEquals("Hello".getBytes(), actual);
-
+		if (Channels.READY_FOR_PRODUCTION) fail("Test Channels");
 	}
 
 }
