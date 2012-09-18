@@ -10,11 +10,13 @@ import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
 import java.util.Arrays;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.jce.provider.JDKKeyFactory;
 
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Digester;
@@ -116,5 +118,12 @@ class CryptoImpl implements Crypto {
 	@Override
 	public ECBCipher newAES256Cipher(byte[] key) {
 		return new ECBCipherImpl(key);
+	}
+
+	@Override
+	public PublicKey retrievePublicKey(final byte[] keyBytes) {
+		return safelyProduce(new ProducerX<PublicKey, Exception>() { @Override public PublicKey produce() throws IOException {
+			return JDKKeyFactory.createPublicKeyFromDERStream(keyBytes);
+		}});
 	}
 }

@@ -3,6 +3,7 @@ package sneer.bricks.hardware.cpu.crypto;
 import java.io.File;
 import java.io.IOException;
 import java.security.KeyPair;
+import java.security.PublicKey;
 import java.security.Signature;
 
 import basis.brickness.Brick;
@@ -22,5 +23,7 @@ public interface Crypto {
 	KeyPair newECDSAKeyPair(byte[] seed);
 	
 	ECBCipher newAES256Cipher(byte[] key);
+	
+	PublicKey retrievePublicKey(byte[] keyBytes);
 
 }

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -79,8 +80,18 @@ public class CryptoTest extends BrickTestBase {
 		
 		assertArrayEquals(cipherText, actualWithoutPadding);
 	}
-
-
+	
+	
+	@Test
+	public void retrievePublicKeyFromKeyBytes() throws DecodeException {
+		//ECDSA PublicKey using "42" as seed
+		byte[] keyBytes = fromHex("3059301306072a8648ce3d020106082a8648ce3d03010703420004d647ab7e67b1e0f58aece6d386c5fb8fc8c16e2566539678df82984c8c642c60bbda8f6abed26f279d13858613ff83cc80d9cb95e0dd261dcc7e12f1ffe2a922");
+		
+		PublicKey publicKey = subject.retrievePublicKey(keyBytes);
+		assertArrayEquals(keyBytes, publicKey.getEncoded());
+	}
+	
+	
 	private byte[] fromHex(String hexString) throws DecodeException {
 		return my(Codec.class).hex().decode(hexString);
 	}
