@@ -17,7 +17,6 @@ import basis.brickness.Brick;
 public interface Crypto {
 
 	Hash digest(byte[] input);
-	@Deprecated
 	Hash digest(File file) throws IOException;	
 	Hash digest(Path file) throws IOException;
 
