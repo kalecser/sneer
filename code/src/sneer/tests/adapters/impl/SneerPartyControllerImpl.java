@@ -55,6 +55,7 @@ import sneer.bricks.softwaresharing.BrickHistory;
 import sneer.bricks.softwaresharing.BrickSpace;
 import sneer.bricks.softwaresharing.BrickVersion;
 import sneer.bricks.softwaresharing.git.tests.GitTest;
+import sneer.bricks.softwaresharing.mapper.RepositoryMapper;
 import sneer.bricks.softwaresharing.stager.BrickStager;
 import sneer.bricks.softwaresharing.stager.tests.BrickStagerTest;
 import sneer.main.SneerVersionUpdater;
@@ -610,6 +611,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
+		startAndKeep(RepositoryMapper.class);
 	}
 
 	
