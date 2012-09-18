@@ -5,6 +5,9 @@ import static basis.environments.Environments.my;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -78,6 +81,21 @@ class CryptoImpl implements Crypto {
 		return digester.digest();
 	}
 
+	@Override
+	public Hash digest(Path file) throws IOException {
+		if (Files.isDirectory(file)) throw new IllegalArgumentException("The parameter cannot be a directory");
+
+		Digester digester = newDigester();
+		try (InputStream input = Files.newInputStream(file)) {
+			byte[] block = new byte[FILE_BLOCK_SIZE];
+			for (int numOfBytes = input.read(block); numOfBytes != -1; numOfBytes = input.read(block)) {
+				my(CpuThrottle.class).yield();
+				digester.update(block, 0, numOfBytes);
+			}
+		} 
+
+		return digester.digest();
+	}
 
 	@Override
 	public Hash unmarshallHash(byte[] bytes) {
@@ -145,4 +163,5 @@ class CryptoImpl implements Crypto {
 			return keyAgreement.generateSecret("ECDH");
 		}});
 	}
+
 }
