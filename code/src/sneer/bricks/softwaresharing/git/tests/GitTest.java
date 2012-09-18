@@ -11,7 +11,6 @@ import org.junit.Test;
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.bricks.softwaresharing.git.Git;
-import sneer.bricks.softwaresharing.git.MergeRequired;
 import basis.lang.types.Classes;
 
 public class GitTest extends BrickTestBase {
@@ -45,9 +44,10 @@ public class GitTest extends BrickTestBase {
 		subject.pull(fromRepo, emptyRepo);
 	}
 	
-	@Test(expected = MergeRequired.class)
+	@Test
 	public void pullWithConflict() throws Exception {
 		subject.pull(fromRepo, conflictingRepo);
+		assertTrue(subject.isMergeRequired(conflictingRepo));
 	}
 
 	public static void prepareEmptyRepo(Path path) throws IOException {
