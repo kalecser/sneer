@@ -2,6 +2,7 @@ package sneer.main;
 
 import static basis.environments.Environments.my;
 import static sneer.main.SneerCodeFolders.BIN;
+import static sneer.main.SneerCodeFolders.SNEER_HOME;
 import static sneer.main.SneerCodeFolders.SRC;
 import static sneer.main.SneerCodeFolders.STAGE;
 import static sneer.main.SneerFolders.DATA;
@@ -10,6 +11,9 @@ import static sneer.main.SneerFolders.OWN_BIN;
 import static sneer.main.SneerFolders.TMP;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import sneer.bricks.hardware.clock.ticker.ClockTicker;
 import sneer.bricks.hardware.cpu.threads.Threads;
@@ -63,19 +67,32 @@ public abstract class SneerSessionBase {
 
 	
 	private static void configure(FolderConfig dirs) {
-		createAndSet(dirs.storageFolder(), DATA);
-		createAndSet(dirs.tmpFolder(), TMP);
-		createAndSet(dirs.ownBinFolder(), OWN_BIN);
-		createAndSet(dirs.srcFolder(), SRC);
-		createAndSet(dirs.binFolder(), BIN);
+		prepare(dirs.storageFolder(), DATA);
+		prepare(dirs.tmpFolder(), TMP);
+		prepare(dirs.ownBinFolder(), OWN_BIN);
+		prepare(dirs.srcFolder(), SRC);
+		prepare(dirs.binFolder(), BIN);
+		prepare(dirs.gitFolder(), SNEER_HOME.toPath());
 	
 		dirs.stageFolder().set(STAGE);
 	}
 
 	
-	private static void createAndSet(ImmutableReference<File> property, File folder) {
+	private static void prepare(ImmutableReference<File> property, File folder) {
 		if (!folder.exists() && !folder.mkdirs()) throw new IllegalStateException("Unable to create folder " + property);
 		property.set(folder);
+	}
+
+	
+	private static void prepare(ImmutableReference<Path> property, Path folder) {
+		property.set(folder);
+		if (Files.exists(folder)) return;
+		
+		try {
+			Files.createDirectories(folder);
+		} catch (IOException e) {
+			 throw new IllegalStateException("Unable to create folder " + folder, e);
+		}
 	}
 
 }

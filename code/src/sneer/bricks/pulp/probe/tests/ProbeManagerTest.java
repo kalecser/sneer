@@ -13,6 +13,7 @@ import sneer.bricks.expression.tuples.TupleSpace;
 import sneer.bricks.expression.tuples.dispatcher.TupleDispatcher;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
+import sneer.bricks.network.computers.channels.Channels;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.connections.ConnectionManager;
 import sneer.bricks.network.social.Contact;
@@ -38,11 +39,11 @@ public class ProbeManagerTest extends BrickTestBase {
 	
 	private final ByteConnection _connection = mock(ByteConnection.class);
 	private Producer<ByteBuffer> packetProducer;
-	@SuppressWarnings("unused")
-	private Consumer<byte[]> _packetReceiver;
 
 	@Test (timeout = 1000)
 	public void testTupleBlocking() throws Exception {
+		if (Channels.READY_FOR_PRODUCTION) fail("Mock Channels instead of ConnectionManager.");
+		
 		checking(new Expectations(){{
 			one(_connectionManager).connectionFor(with(aNonNull(Contact.class))); will(returnValue(_connection));
 			one(_connection).isConnected(); will(returnValue(my(Signals.class).constant(true)));

@@ -2,15 +2,9 @@ package sneer.tests.adapters.impl;
 
 import static basis.environments.Environments.my;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.file.Files;
+import java.io.*;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import sneer.bricks.expression.files.server.FileServer;
 import sneer.bricks.expression.tuples.logger.TupleLogger;
@@ -31,8 +25,6 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.addresses.own.port.OwnPort;
-import sneer.bricks.network.computers.channels.Channel;
-import sneer.bricks.network.computers.channels.Channels;
 import sneer.bricks.network.computers.connections.ConnectionManager;
 import sneer.bricks.network.computers.udp.holepuncher.server.listener.StunServerListener;
 import sneer.bricks.network.computers.udp.server.UdpServer;
@@ -40,9 +32,7 @@ import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
 import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.network.social.rendezvous.Rendezvous;
-import sneer.bricks.pulp.blinkinglights.BlinkingLights;
-import sneer.bricks.pulp.blinkinglights.Light;
-import sneer.bricks.pulp.blinkinglights.LightType;
+import sneer.bricks.pulp.blinkinglights.*;
 import sneer.bricks.pulp.probe.ProbeManager;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
@@ -52,26 +42,19 @@ import sneer.bricks.snapps.wind.Wind;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.folderconfig.FolderConfig;
-import sneer.bricks.softwaresharing.BrickHistory;
-import sneer.bricks.softwaresharing.BrickSpace;
-import sneer.bricks.softwaresharing.BrickVersion;
+import sneer.bricks.softwaresharing.*;
+import sneer.bricks.softwaresharing.git.tests.GitTest;
+import sneer.bricks.softwaresharing.mapper.RepositoryMapper;
 import sneer.bricks.softwaresharing.stager.BrickStager;
 import sneer.bricks.softwaresharing.stager.tests.BrickStagerTest;
 import sneer.main.SneerVersionUpdater;
 import sneer.tests.SovereignParty;
-import sneer.tests.adapters.SneerParty;
-import sneer.tests.adapters.SneerPartyApiClassLoader;
-import sneer.tests.adapters.SneerPartyController;
-import basis.lang.Closure;
-import basis.lang.Consumer;
-import basis.lang.Functor;
-import basis.lang.Producer;
+import sneer.tests.adapters.*;
+import basis.lang.*;
 import basis.lang.arrays.ImmutableByteArray;
 import basis.lang.exceptions.NotImplementedYet;
 import basis.lang.exceptions.Refusal;
-import basis.lang.types.Classes;
 import basis.util.concurrent.Latch;
-import basis.util.concurrent.RefLatch;
 
 class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
@@ -253,7 +236,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	
 	@Override
-	public void configDirectories(File dataFolder, File tmpFolder, File codeFolder, File srcFolder, File binFolder, File stageFolder, File gitFolder) {
+	public void configDirectories(File dataFolder, File tmpFolder, File codeFolder, File srcFolder, File binFolder, File stageFolder, Path gitFolder) {
 		my(FolderConfig.class).storageFolder().set(dataFolder);
 		my(FolderConfig.class).tmpFolder().set(tmpFolder);
 		my(FolderConfig.class).srcFolder().set(srcFolder);
@@ -261,7 +244,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		
 		my(FolderConfig.class).stageFolder().set(stageFolder);
 
-		my(FolderConfig.class).gitFolder().set(stageFolder);
+		my(FolderConfig.class).gitFolder().set(gitFolder);
 		_codeFolder = codeFolder;
 	}
 
@@ -596,13 +579,22 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 
 	@Override
 	public void gitPrepareEmptyRepo() {
-		gitPrepareRepo(".git-empty-repo");
+		try {
+			GitTest.prepareEmptyRepo(my(FolderConfig.class).gitFolder().get());
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	
 	@Override
 	public void gitPrepareRepoWithOneCommit() {
-		gitPrepareRepo(".git-repo-with-one-commit");
+		try {
+			GitTest.prepareRepoWithOneCommit(my(FolderConfig.class).gitFolder().get());
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
+		startAndKeep(RepositoryMapper.class);
 	}
 
 	
@@ -617,42 +609,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
-	@Override
-	public void keepSendingMessageInControlChannel(String contactNick, final byte[] message) {
-		controlChannelFor(contactNick).open(new Producer<ByteBuffer>() { @Override public ByteBuffer produce() {
-			return ByteBuffer.wrap(message);
-		}}, null);
-		
-		
-}
-
-	@Override
-	public byte[] waitForMessageInControlChannel(String contactNick) {
-		RefLatch<ByteBuffer> latch = new RefLatch<>();
-		controlChannelFor(contactNick).open(new Producer<ByteBuffer>() { @Override public ByteBuffer produce() {
-			my(Threads.class).waitUntilCrash(); return null;
-		}}, latch);
-		ByteBuffer received = latch.waitAndGet();
-		byte[] ret = new byte[received.remaining()];
-		received.get(ret);
-		return ret;
-	}
-
-	
-	Channel controlChannelFor(String contactNick) {
-		Contact contact = contactGiven(contactNick);
-		return my(Channels.class).createControl(contact);
-	}	
-
-	private void gitPrepareRepo(String repo) {
-		Path fixture = new File(Classes.fileFor(getClass()).getParentFile(), "gitfixtures/" + repo).toPath();
-		Path gitPath = my(FolderConfig.class).gitFolder().get().toPath();
-		try {
-			Files.copy(fixture, gitPath);
-		} catch (IOException e) {
-			throw new IllegalStateException(e);
-		}
-	}
 
 }
 

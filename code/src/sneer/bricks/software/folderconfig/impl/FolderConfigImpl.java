@@ -3,6 +3,7 @@ package sneer.bricks.software.folderconfig.impl;
 import static basis.environments.Environments.my;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReferences;
@@ -17,7 +18,7 @@ public class FolderConfigImpl implements FolderConfig {
 	private final ImmutableReference<File> _srcFolder = immutable();
 	private final ImmutableReference<File> _binFolder = immutable();
 	private final ImmutableReference<File> _stageFolder = immutable();
-	private final ImmutableReference<File> _gitFolder = immutable();
+	private final ImmutableReference<Path> _gitFolder = immutable();
 
 	private final ImmutableReference<File> _storageFolder = immutable();
 	private final ImmutableReference<File> _tmpFolder = immutable();
@@ -78,7 +79,7 @@ public class FolderConfigImpl implements FolderConfig {
 	}
 
 	@Override
-	public ImmutableReference<File> gitFolder() {
+	public ImmutableReference<Path> gitFolder() {
 		return _gitFolder;
 	}
 	

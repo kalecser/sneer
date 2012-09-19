@@ -24,8 +24,6 @@ public interface SovereignParty {
 	//Freedom5
 	void shout(String string);
 	void waitForShouts(String shoutsExpected);
-	void keepSendingMessageInControlChannel(String contactNick, byte[] message);
-	byte[] waitForMessageInControlChannel(String contactNick);
 
 	//Freedom6
 	void setFolderToSync(File folder);

@@ -6,9 +6,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.security.KeyPair;
+import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.Random;
 
+import javax.crypto.SecretKey;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.codec.Codec;
@@ -79,8 +84,29 @@ public class CryptoTest extends BrickTestBase {
 		
 		assertArrayEquals(cipherText, actualWithoutPadding);
 	}
-
-
+	
+	
+	@Test
+	public void retrievePublicKeyFromKeyBytes() {
+		KeyPair keyPair = subject.newECDSAKeyPair("42".getBytes(UTF8));
+		byte[] publicKeyBytes = keyPair.getPublic().getEncoded();
+		
+		PublicKey publicKey = subject.retrievePublicKey(publicKeyBytes);
+		assertArrayEquals(publicKeyBytes, publicKey.getEncoded());
+	}
+	
+	
+	@Test
+	@Ignore
+	public void ECDHSecret() {
+		KeyPair pair1 = subject.newECDSAKeyPair("seed 1".getBytes(UTF8));
+		KeyPair pair2 = subject.newECDSAKeyPair("seed 2".getBytes(UTF8));
+		
+		SecretKey secret = subject.secretKeyFrom(pair1.getPublic(), pair2.getPrivate());
+		assertArrayEquals(new byte[0], secret.getEncoded());
+	}
+	
+	
 	private byte[] fromHex(String hexString) throws DecodeException {
 		return my(Codec.class).hex().decode(hexString);
 	}

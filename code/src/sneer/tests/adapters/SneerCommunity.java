@@ -6,6 +6,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +64,7 @@ public class SneerCommunity implements SovereignCommunity {
 		File privateBin        = makeFolder(sneerHome, "code/current/bin");
 		File privateSrc        = makeFolder(sneerHome, "code/current/src");
 		File stageFolder       = new File  (sneerHome, "code/stage");
-		File gitFolder         = new File  (sneerHome, ".git");
+		Path gitFolder         = sneerHome.toPath().resolve(".git");
 		File sharedBin = my(ClassUtils.class).classpathRootFor(SneerCommunity.class);
 		
 		Environment container = Brickness.newBrickContainer(_udpNetwork, _tcpNetwork, newLogger(name));

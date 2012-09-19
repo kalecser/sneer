@@ -1,6 +1,7 @@
 package sneer.bricks.software.folderconfig;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import sneer.bricks.hardware.ram.ref.immutable.ImmutableReference;
 import basis.brickness.Brick;
@@ -22,6 +23,6 @@ public interface FolderConfig {
 
 	ImmutableReference<File> stageFolder();
 	
-	ImmutableReference<File> gitFolder();
+	ImmutableReference<Path> gitFolder();
 
 }

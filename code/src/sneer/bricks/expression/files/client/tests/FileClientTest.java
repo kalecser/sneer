@@ -5,10 +5,10 @@ import static basis.environments.Environments.my;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.expression.files.client.FileClient;
@@ -43,71 +43,60 @@ public class FileClientTest extends BrickTestWithTuples {
 	@Test (timeout = 3000)
 	public void fileAlreadyMappedIsNotDownloaded() throws IOException {
 		Hash hash = my(Crypto.class).digest(new byte[]{ 42 }); 
-		File file = anySmallFile();
-		my(FileMap.class).putFile(file.getAbsolutePath(), file.length(), file.lastModified(), hash);
+		File expected = anySmallFile();
+		my(FileMap.class).putFile(expected.getAbsolutePath(), expected.length(), expected.lastModified(), hash);
 
 		@SuppressWarnings("unused")
 		WeakContract contractToAvoidGc = my(RemoteTuples.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
 			throw new IllegalStateException();
 		}});
 
-		File tmpFile = newTmpFile();
-		_subject.startFileDownload(tmpFile, file.length(), file.lastModified(), hash, remoteSeal());
+		File actual = newTmpFile();
+		_subject.startFileDownload(actual, expected.length(), expected.lastModified(), hash, remoteSeal());
 
 		my(TupleDispatcher.class).waitForAllDispatchingToFinish();
-		my(IO.class).files().assertSameContents(tmpFile, file);
+		my(IO.class).files().assertSameContents(actual, expected);
 	}
 
-	
+
+	@Ignore
 	@Test (timeout = 4000, expected = IOException.class)
 	public void receiveFileThatDoesntMatchExpectedHash() throws IOException, TimeoutException {
+		fail("Move to test hat uses server and simply map the file with a different hash.");
 		final Hash wrongHash = new Hash(new ImmutableByteArray(new byte[]{ 42 }));
 		final File smallFile = createTmpFileWithRandomContent(3 * Protocol.FILE_BLOCK_SIZE);
 
-		receiveInRandomOrder(wrongHash, smallFile);
-	}
-
-	
-	@Test (timeout = 4000)
-	public void receiveFileContentBlocksOutOfSequence() throws IOException, TimeoutException {
-		final File smallFile = createTmpFileWithRandomContent(3 * Protocol.FILE_BLOCK_SIZE);
-		final Hash fileHash = my(Crypto.class).digest(smallFile);
-
-		receiveInRandomOrder(fileHash, smallFile);
-	}
-
-	
-	private void receiveInRandomOrder(final Hash fileHash, final File smallFile)	throws IOException, TimeoutException {
 		final Seal addressee = my(OwnSeal.class).get().currentValue();
 		Environments.runWith(remote(my(Clock.class)), new ClosureX<IOException>() { @Override public void run() throws IOException {
-			final Iterator<FileContents> blocksOutOfSequence = createFileContentBlocks(addressee, smallFile, fileHash).iterator();
-			sendFileContentBlocksUponRequest(blocksOutOfSequence);
+			final List<FileContents> blocks = createFileContentBlocks(addressee, smallFile, wrongHash);
+			sendFileContentBlocksUponRequest(blocks);
 		}});
-
+		
 		final File tmpFile = newTmpFile();
-		_subject.startFileDownload(tmpFile, smallFile.length(), smallFile.lastModified(), fileHash, remoteSeal())
+		_subject.startFileDownload(tmpFile, smallFile.length(), smallFile.lastModified(), wrongHash, remoteSeal())
 			.waitTillFinished();
-
+		
 		my(IO.class).files().assertSameContents(tmpFile, smallFile);
 	}
 
+	
 	private File anySmallFile() {
 		return my(ClassUtils.class).classFile(getClass());
 	}
 
 	private List<FileContents> createFileContentBlocks(Seal addressee, File file, Hash fileHash) throws IOException {
-		List<FileContents> blocks = new ArrayList<FileContents>();
+		List<FileContents> ret = new ArrayList<FileContents>();
 
-		blocks.add(new FileContents(addressee, fileHash, 1, getFileBlock(file, 1), file.getName())); // 2nd block
-		blocks.add(new FileContents(addressee, fileHash, 0, getFileBlock(file, 0), file.getName())); // 1st block
-		blocks.add(new FileContents(addressee, fileHash, 2, getFileBlock(file, 2), file.getName())); // 3rd block
+		ret.add(new FileContents(addressee, fileHash, 0, getFileBlock(file, 0), file.getName()));
+		ret.add(new FileContents(addressee, fileHash, 1, getFileBlock(file, 1), file.getName()));
+		ret.add(new FileContents(addressee, fileHash, 2, getFileBlock(file, 2), file.getName()));
 
-		return blocks;
+		return ret;
 	}
 
-	private void sendFileContentBlocksUponRequest(final Iterator<FileContents> blocks) {
+	private void sendFileContentBlocksUponRequest(final List<FileContents> blocks) {
 		_toAvoidGC = my(RemoteTuples.class).addSubscription(FileRequest.class, new Consumer<FileRequest>() { @Override public void consume(FileRequest request) {
-			my(TupleSpace.class).add(blocks.next());
+			my(TupleSpace.class).add(blocks.get(request.blockNumbers.iterator().next()));
 			my(Clock.class).advanceTime(1); // To avoid duplicated tuples
 		}});
 	}

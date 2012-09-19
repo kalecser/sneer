@@ -5,16 +5,26 @@ import static basis.environments.Environments.my;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
 import java.util.Arrays;
 
+import javax.crypto.KeyAgreement;
+import javax.crypto.SecretKey;
+
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.jce.provider.JDKKeyFactory;
 
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Digester;
@@ -71,6 +81,21 @@ class CryptoImpl implements Crypto {
 		return digester.digest();
 	}
 
+	@Override
+	public Hash digest(Path file) throws IOException {
+		if (Files.isDirectory(file)) throw new IllegalArgumentException("The parameter cannot be a directory");
+
+		Digester digester = newDigester();
+		try (InputStream input = Files.newInputStream(file)) {
+			byte[] block = new byte[FILE_BLOCK_SIZE];
+			for (int numOfBytes = input.read(block); numOfBytes != -1; numOfBytes = input.read(block)) {
+				my(CpuThrottle.class).yield();
+				digester.update(block, 0, numOfBytes);
+			}
+		} 
+
+		return digester.digest();
+	}
 
 	@Override
 	public Hash unmarshallHash(byte[] bytes) {
@@ -112,9 +137,31 @@ class CryptoImpl implements Crypto {
 		}
 
 	}
+	
 
 	@Override
 	public ECBCipher newAES256Cipher(byte[] key) {
 		return new ECBCipherImpl(key);
 	}
+	
+
+	@Override
+	public PublicKey retrievePublicKey(final byte[] keyBytes) {
+		return safelyProduce(new ProducerX<PublicKey, Exception>() { @Override public PublicKey produce() throws IOException {
+			return JDKKeyFactory.createPublicKeyFromDERStream(keyBytes);
+		}});
+	}
+	
+
+	@Override
+	public SecretKey secretKeyFrom(final PublicKey publicKey, final PrivateKey privateKey) {
+		return safelyProduce(new ProducerX<SecretKey, Exception>() { @Override public SecretKey produce() throws NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException {
+			KeyAgreement keyAgreement = KeyAgreement.getInstance("ECDH", BOUNCY_CASTLE);
+			keyAgreement.init(privateKey);
+			keyAgreement.doPhase(publicKey, true);
+			
+			return keyAgreement.generateSecret("ECDH");
+		}});
+	}
+
 }

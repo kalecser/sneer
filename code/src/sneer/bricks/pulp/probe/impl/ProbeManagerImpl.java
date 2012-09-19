@@ -43,13 +43,14 @@ class ProbeManagerImpl implements ProbeManager {
 
 	
 	private void startProbeFor(Contact contact) {
+		ProbeImpl probe;
 		if (Channels.READY_FOR_PRODUCTION) {
 			Channel ch = my(Channels.class).createControl(contact);
-			ProbeImpl probe = createProbe(contact, ch.isUp());
-			
+			probe = createProbe(contact, ch.isUp());
+			ch.open(probe.packetProducer, createReceiver(contact));
 		} else {
 			ByteConnection connection = ConnectionManager.connectionFor(contact);
-			ProbeImpl probe = createProbe(contact, connection.isConnected());
+			probe = createProbe(contact, connection.isConnected());
 			connection.initCommunications(probe.packetProducer, createReceiver(contact));
 		}
 	}

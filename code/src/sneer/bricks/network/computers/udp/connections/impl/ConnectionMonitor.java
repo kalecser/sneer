@@ -95,6 +95,7 @@ class ConnectionMonitor {
 		ByteBuffer buf = prepare(Hail).putLong(now);
 		buf.put(ownPublicKey());
 		buf.put(ownNameBytes());
+		buf.flip();
 		send(buf, address.currentValue());
 		for (SocketAddress addr : sightings)
 			send(buf, addr);

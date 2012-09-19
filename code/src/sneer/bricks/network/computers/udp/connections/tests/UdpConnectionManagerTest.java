@@ -56,9 +56,9 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	private final UdpConnectionManager subject = my(UdpConnectionManager.class);
 	@Bind private final LoggingSender sender = new LoggingSender();
 	@Bind private final StunClient stunClient = mock(StunClient.class);
-	@Bind private final ContactAddresses contactAddresses = mock(ContactAddresses.class);
 	@Bind private final ECBCiphers ciphers = new NullECBCiphers(); 
 			
+	@Bind private final ContactAddresses contactAddresses = mock(ContactAddresses.class);
 	private InetSocketAddress contactAddress = null;
 	{
 		checking(new Expectations(){{
@@ -72,7 +72,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	@Before
 	public void beforeUdpConnectionManagerTest() {
-		my(OwnKeys.class).generateKeyPair("Seed".getBytes());
+		my(OwnKeys.class).generateKeyPair(bytes("Seed"));
 	}
 
 	
@@ -97,8 +97,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	@Test(timeout=2000)
 	public void onUnknownCaller_ShouldNotify() throws Exception {
 		RefLatch<Call> latch = new RefLatch<Call>();
-		@SuppressWarnings("unused") WeakContract ref =
-		subject.unknownCallers().addReceiver(latch);
+		@SuppressWarnings("unused") WeakContract ref = subject.unknownCallers().addReceiver(latch);
 		byte[] seal = fill(123);
 		subject.handle(hailPacketFrom(seal, "Neide"));
 		Call call = latch.waitAndGet();
@@ -119,11 +118,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		
 		subject.handle(packetFrom("Neide", Data, bytes("Hello")));
 		latch.waitTillOpen();
-	}
-
-
-	private byte[] bytes(String message) {
-		return message.getBytes(UTF8);
 	}
 
 	
@@ -163,13 +157,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		connectionFor("Neide");
 		my(SignalUtils.class).waitForValue(sender.history(), "| Hail 0 PK:4889 ,to:200.211.222.233,port:1234");
 	}
+
 	
-
-	private void mockContactAddressAttributes(final String host, final int port) {
-		contactAddress = new InetSocketAddress(host, port);
-	}
-
-
 	@Test (timeout=2000)
 	public void onStunPacketReceived_ShouldDelegateToStunClient() throws Exception {
 		final Latch latch = new Latch();
@@ -178,7 +167,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 				latch.open(); return null;
 			}});
 		}});
-		subject.handle(packetFrom("Neide", Stun, "Whatever".getBytes(UTF8)));
+		subject.handle(packetFrom("Neide", Stun, bytes("Whatever")));
 		
 		latch.waitTillOpen();
 	}
@@ -186,7 +175,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	@Test(timeout = 2000)
 	public void onIdleRecognizeNewSighting() throws Exception {
-	
 		subject.handle(hailPacketFrom("Neide"));
 		
 		ByteConnection connection = connectionFor("Neide");
@@ -230,6 +218,16 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data foo,to:192.168.10.10,port:7777");
 	}
+	
+	
+	private void mockContactAddressAttributes(final String host, final int port) {
+		contactAddress = new InetSocketAddress(host, port);
+	}
+	
+	
+	private byte[] bytes(String message) {
+		return message.getBytes(UTF8);
+	}
 
 
 	private byte[] asBytes(int value) {
@@ -249,13 +247,12 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 	
 	private DatagramPacket hailPacketFrom(byte[] seal, String senderName) throws Exception {
-		byte[] timestamp = asBytes(41);
 		ByteBuffer data = ByteBuffer.allocate(UdpNetwork.MAX_PACKET_PAYLOAD_SIZE);
-		data.put(timestamp);
+		data.putLong(41);
 		
 		byte[] key = new byte[OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES];
 		data.put(key);
-		data.put(senderName.getBytes("UTF-8"));
+		data.put(bytes(senderName));
 		data.flip();
 		
 		return packetFrom(Hail, seal, Arrays.copyOf(data.array(), data.limit()), "200.42.0.35", 4567);

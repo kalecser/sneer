@@ -37,7 +37,7 @@ class UdpByteConnectionUtils {
 	private static DatagramPacket packetFor(ByteBuffer data, SocketAddress peerAddress) {
 		if (peerAddress == null) return null;
 		try {
-			return new DatagramPacket(data.array(), data.position(), peerAddress); //Optimize: reuse DatagramPacket
+			return new DatagramPacket(data.array(), data.limit(), peerAddress); //Optimize: reuse DatagramPacket
 		} catch (SocketException e) {
 			my(ExceptionLogger.class).log(e);
 			return null;

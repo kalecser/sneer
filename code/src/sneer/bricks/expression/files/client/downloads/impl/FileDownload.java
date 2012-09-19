@@ -34,7 +34,7 @@ import basis.lang.arrays.ImmutableArray;
 
 class FileDownload extends AbstractDownload {
 
-	private static final int MAX_BLOCKS_DOWNLOADED_AHEAD = 100;
+	private static final int MAX_BLOCKS_DOWNLOADED_AHEAD = 1;
 
 	private final int _fileSizeInBlocks;
 	private final OutputStream _output;
@@ -215,7 +215,7 @@ class FileDownload extends AbstractDownload {
 
 	private Tuple nextBlockRequest() {
 		_lastRequestTime = my(Clock.class).time().currentValue();
-		int nextBlockRequest = _nextBlockToWrite + MAX_BLOCKS_DOWNLOADED_AHEAD;
+		int nextBlockRequest = _nextBlockToWrite;
 		if (nextBlockRequest >= _fileSizeInBlocks) return null;
 		return requestForBlock(nextBlockRequest);
 	}

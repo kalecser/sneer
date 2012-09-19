@@ -77,6 +77,7 @@ class UdpByteConnection implements ByteConnection {
 		}
 		
 		buf.put(payload);
+		buf.flip();
 		send(buf, monitor.lastSighting());
 	}
 	
