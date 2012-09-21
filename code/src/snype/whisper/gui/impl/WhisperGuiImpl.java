@@ -29,8 +29,8 @@ class WhisperGuiImpl implements WhisperGui {
 	private final InstrumentRegistry _instrumentManager = my(InstrumentRegistry.class);
 	private final Mic _mic = my(Mic.class);
 
-	private final JToggleButton _whisperButton = new JToggleButton();
-	private final JToggleButton _loopBackButton = new JToggleButton();
+	private final JToggleButton _whisperButton = new JToggleButton("whisper");
+	private final JToggleButton _loopBackButton = new JToggleButton("loopback");
 
 	private TextWidget<JTextField> _roomField;
 
