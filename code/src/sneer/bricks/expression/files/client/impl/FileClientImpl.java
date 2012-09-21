@@ -10,15 +10,17 @@ import java.util.Map;
 import sneer.bricks.expression.files.client.FileClient;
 import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.client.downloads.Downloads;
+import sneer.bricks.expression.files.client.downloads.old.DownloadsOld;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.identity.seals.Seal;
+import sneer.bricks.network.computers.channels.Channels;
 import basis.lang.Closure;
 import basis.lang.Producer;
 
 class FileClientImpl implements FileClient {
 
 	private final Map<Hash, WeakReference<Download>> _downloadsByHash = new HashMap<Hash, WeakReference<Download>>();
-
+	private final Downloads business = Channels.READY_FOR_PRODUCTION ? my(Downloads.class) : my(DownloadsOld.class);
 	
 	@Override
 	public Download startDownload(File file, boolean isFolder, long size, long lastModified, Hash hashOfFile, Seal source) {
@@ -31,7 +33,7 @@ class FileClientImpl implements FileClient {
 	@Override
 	public Download startFileDownload(final File file, final long size, final long lastModified, final Hash hashOfFile, final Seal source) {
 		return startDownload(hashOfFile, new Producer<Download>() { @Override public Download produce() {
-			return cleaningOnFinished(my(Downloads.class).newFileDownload(file, size, lastModified, hashOfFile, source), hashOfFile);
+			return cleaningOnFinished(business.newFileDownload(file, size, lastModified, hashOfFile, source), hashOfFile);
 		}});
 	}
 
@@ -41,13 +43,13 @@ class FileClientImpl implements FileClient {
 	}
 
 	@Override
-	public Download startFolderNoveltiesDownload(File folder, Hash hashOfFolder, Seal source) {
+	public Download startFolderDeltasDownload(File folder, Hash hashOfFolder, Seal source) {
 		return startFolderDownload(folder, hashOfFolder, source, false);
 	}
 	
 	private Download startFolderDownload(final File folder, final Hash hashOfFolder, final Seal source, final boolean copyLocalFiles) {
 		return startDownload(hashOfFolder, new Producer<Download>() { @Override public Download produce() {
-			return cleaningOnFinished(my(Downloads.class).newFolderDownload(folder, hashOfFolder, source, copyLocalFiles), hashOfFolder);
+			return cleaningOnFinished(business.newFolderDownload(folder, hashOfFolder, source, copyLocalFiles), hashOfFolder);
 		}});
 	}
 
