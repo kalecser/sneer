@@ -12,7 +12,7 @@ import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.tasks.TaskList;
 import basis.lang.Consumer;
 
-class TaskListImpl implements TaskList {
+public class TaskListImpl implements TaskList {
 
 	
 	@SuppressWarnings("unused")
@@ -49,7 +49,6 @@ class TaskListImpl implements TaskList {
 	@Override
 	public void addTask(String description) {
 		_toDos.add(new Task(description));
-		System.out.println("#################################"+description);
 	}
 
 	@Override
