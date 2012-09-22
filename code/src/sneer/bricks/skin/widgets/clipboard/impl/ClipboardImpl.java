@@ -8,7 +8,7 @@ import java.awt.datatransfer.Transferable;
 
 import sneer.bricks.skin.widgets.clipboard.Clipboard;
 
-public class ClipboardImpl implements Clipboard {
+class ClipboardImpl implements Clipboard {
 
 	java.awt.datatransfer.Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
@@ -21,7 +21,8 @@ public class ClipboardImpl implements Clipboard {
 
 	@Override
 	public String getContent() {
-		Transferable contents = systemClipboard.getContents(null);
+		Object requestor = null;
+		Transferable contents = systemClipboard.getContents(requestor);
 		return readStringContent(contents);
 	}
 

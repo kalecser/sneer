@@ -41,6 +41,7 @@ import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccount;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccountKeeper;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.main.menu.MainMenu;
+import sneer.bricks.skin.widgets.clipboard.Clipboard;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
@@ -124,7 +125,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		
 		_sneerPort = newTextField(ownPort(), ownPortSetter());
 
-		JScrollPane sealScroll = createOwnSealPane();
+		JPanel sealScroll = createOwnSealPane();
 
 		pnl.setLayout(new GridBagLayout());
 		
@@ -154,15 +155,16 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 	}
 
 
-	private JScrollPane createOwnSealPane() {
+	private JPanel createOwnSealPane() {
 		JPanel panel = new JPanel(new BorderLayout());
 		JScrollPane sealScroll = createOwnSealScrollPane();
 		JButton copyToClipboard = new JButton("Copy");
 		copyToClipboard.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent arg0) {
-			
+			copySealToClipboard();
 		}});
 		panel.add(sealScroll, BorderLayout.CENTER);
-		return sealScroll;
+		panel.add(copyToClipboard, BorderLayout.EAST);
+		return panel;
 	}
 
 
@@ -241,6 +243,11 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		_mainMenu.menu().addAction(10, "Own Info...", new Closure() { @Override public void run() {
 			open();
 		}});
+	}
+
+
+	private void copySealToClipboard() {
+		my(Clipboard.class).setContent(_ownSeal.getText());
 	}
 
 }
