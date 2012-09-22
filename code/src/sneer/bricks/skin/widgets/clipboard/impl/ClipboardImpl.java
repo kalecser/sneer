@@ -21,7 +21,6 @@ public class ClipboardImpl implements Clipboard {
 
 	@Override
 	public String getContent() {
-		// odd: the Object param of getContents is not currently used
 		Transferable contents = systemClipboard.getContents(null);
 		return readStringContent(contents);
 	}
