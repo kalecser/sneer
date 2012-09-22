@@ -21,7 +21,7 @@ public class WebImpl implements Web {
 					return "<h1>It works!!</h1>";
 			}});
 		} catch (IOException e) {
-			throw new UnhandledException(e);
+			throw new IllegalStateException(e);
 		}
 	}
 	
