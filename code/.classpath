@@ -35,5 +35,6 @@
 	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/http/server/impl/lib/jetty-http-8.1.5.v20120716.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/http/server/impl/lib/jetty-io-8.1.5.v20120716.jar"/>
 	<classpathentry kind="lib" path="src/sneer/bricks/network/computers/http/server/impl/lib/jetty-continuation-8.1.5.v20120716.jar"/>
+	<classpathentry kind="lib" path="src/sneer/bricks/software/bricks/repl/impl/lib/groovy-all-2.0.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
