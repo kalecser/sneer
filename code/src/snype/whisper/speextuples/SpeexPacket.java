@@ -1,7 +1,8 @@
 package snype.whisper.speextuples;
 
-import basis.lang.arrays.ImmutableByteArray2D;
 import sneer.bricks.expression.tuples.Tuple;
+import sneer.bricks.identity.seals.Seal;
+import basis.lang.arrays.ImmutableByteArray2D;
 
 public class SpeexPacket extends Tuple {
 	
@@ -14,5 +15,12 @@ public class SpeexPacket extends Tuple {
 		room = room_;
 		sequence = sequence_;
 	}
+	public SpeexPacket(Seal to_, ImmutableByteArray2D frames_, String room_, short sequence_) {
+		super(to_);
+		frames = frames_;
+		room = room_;
+		sequence = sequence_;
+	}
+	
 
 }

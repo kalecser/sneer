@@ -2,6 +2,7 @@ package sneer.bricks.snapps.owninfo.impl;
 
 import static basis.environments.Environments.my;
 
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -40,6 +41,7 @@ import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccount;
 import sneer.bricks.pulp.dyndns.ownaccount.DynDnsAccountKeeper;
 import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.skin.main.menu.MainMenu;
+import sneer.bricks.skin.widgets.clipboard.Clipboard;
 import sneer.bricks.skin.widgets.reactive.NotificationPolicy;
 import sneer.bricks.skin.widgets.reactive.ReactiveWidgetFactory;
 import sneer.bricks.skin.widgets.reactive.TextWidget;
@@ -123,13 +125,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		
 		_sneerPort = newTextField(ownPort(), ownPortSetter());
 
-		String formattedHexString = my(SealCodec.class).formattedHexEncode(my(OwnSeal.class).get().currentValue());
-		_ownSeal = new JTextArea(formattedHexString);
-		_ownSeal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-		_ownSeal.setEditable(false);
-		_ownSeal.setTabSize(3);
-		_ownSeal.setWrapStyleWord(true);
-		JScrollPane sealScroll = new JScrollPane(_ownSeal, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JPanel sealScroll = createOwnSealPane();
 
 		pnl.setLayout(new GridBagLayout());
 		
@@ -141,9 +137,6 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		pnlDynDns.setLayout(new GridBagLayout());
 
 		pnlDynDns.setBorder(new TitledBorder("Own DynDns [Optional]"));
-//		getContentPane().add(pnlDynDns,
-//				new GridBagConstraints(0, 2, 2, 1, 1.0, 0.0,
-//						GridBagConstraints.CENTER,	GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5),0, 0));
 		
 		addWidget(pnlDynDns, _dynDnsHost, "Host:", 0);
 		addWidget(pnlDynDns, _dynDnsUser, "User:", 1);
@@ -159,6 +152,31 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 			setVisible(false);
 		}});
 		pack();
+	}
+
+
+	private JPanel createOwnSealPane() {
+		JPanel panel = new JPanel(new BorderLayout());
+		JScrollPane sealScroll = createOwnSealScrollPane();
+		JButton copyToClipboard = new JButton("Copy");
+		copyToClipboard.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent arg0) {
+			copySealToClipboard();
+		}});
+		panel.add(sealScroll, BorderLayout.CENTER);
+		panel.add(copyToClipboard, BorderLayout.EAST);
+		return panel;
+	}
+
+
+	private JScrollPane createOwnSealScrollPane() {
+		String formattedHexString = my(SealCodec.class).formattedHexEncode(my(OwnSeal.class).get().currentValue());
+		_ownSeal = new JTextArea(formattedHexString);
+		_ownSeal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+		_ownSeal.setEditable(false);
+		_ownSeal.setTabSize(3);
+		_ownSeal.setWrapStyleWord(true);
+		JScrollPane sealScroll = new JScrollPane(_ownSeal, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		return sealScroll;
 	}
 
 	private Consumer<String> ownNameSetter() {
@@ -225,6 +243,11 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		_mainMenu.menu().addAction(10, "Own Info...", new Closure() { @Override public void run() {
 			open();
 		}});
+	}
+
+
+	private void copySealToClipboard() {
+		my(Clipboard.class).setContent(_ownSeal.getText());
 	}
 
 }

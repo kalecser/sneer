@@ -15,9 +15,11 @@ import sneer.bricks.expression.files.client.downloads.Download;
 import sneer.bricks.expression.files.map.mapper.FileMapper;
 import sneer.bricks.expression.files.map.mapper.MappingStopped;
 import sneer.bricks.expression.files.server.FileServer;
+import sneer.bricks.expression.files.transfer.FileTransferUploads;
 import sneer.bricks.expression.files.transfer.FileTransfer;
 import sneer.bricks.expression.files.transfer.FileTransferAccept;
 import sneer.bricks.expression.files.transfer.FileTransferDetails;
+import sneer.bricks.expression.files.transfer.FileTransferStatus;
 import sneer.bricks.expression.files.transfer.FileTransferSugestion;
 import sneer.bricks.expression.files.transfer.downloadfolder.DownloadFolder;
 import sneer.bricks.expression.tuples.Tuple;
@@ -32,8 +34,6 @@ import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.Light;
 import sneer.bricks.pulp.blinkinglights.LightType;
-import sneer.bricks.pulp.notifiers.Notifier;
-import sneer.bricks.pulp.notifiers.Notifiers;
 import basis.lang.Closure;
 import basis.lang.Consumer;
 import basis.lang.Predicate;
@@ -42,30 +42,31 @@ public class FileTransferImpl implements FileTransfer {
 
 	private static final int THREE_DAYS = 1000 * 60 * 60 * 24 * 3;
 	
-	private final Notifier<FileTransferSugestion> _sugestionNotifier = my(Notifiers.class).newInstance();
 	@SuppressWarnings("unused")
-	private final Object ref1, ref2, ref3;
+	private final Object ref2, ref3, ref4;
 	private final Collection<Object> refs = new ArrayList<Object>();
 
 	private final Map<FileTransferSugestion, File> filesBySugestion = new ConcurrentHashMap<FileTransferSugestion, File>();
 	private final Map<FileTransferSugestion, Light> waitingLightsBySuggestion = new ConcurrentHashMap<FileTransferSugestion, Light>();
+
+	private FileTransferUploads uploads = new FileTransferUploads();
 
 	
 	{
 		my(TupleSpace.class).keepChosen(FileTransferSugestion.class, new Predicate<FileTransferSugestion>() {  @Override public boolean evaluate(FileTransferSugestion sug) {
 			return isRecent(sug);
 		}});
-		
-		ref1 = my(RemoteTuples.class).addSubscription(FileTransferSugestion.class, new Consumer<FileTransferSugestion>(){  @Override public void consume(FileTransferSugestion sugestion) {
-			handleSugestion(sugestion);
-		}});
-		
+			
 		ref2 = my(RemoteTuples.class).addSubscription(FileTransferAccept.class, new Consumer<FileTransferAccept>(){  @Override public void consume(FileTransferAccept accept) {
 			handleAccept(accept);
 		}});
 		
 		ref3 = my(RemoteTuples.class).addSubscription(FileTransferDetails.class, new Consumer<FileTransferDetails>(){  @Override public void consume(FileTransferDetails details) {
 			handleDetails(details);
+		}});
+		
+		ref4 = my(RemoteTuples.class).addSubscription(FileTransferStatus.class, new Consumer<FileTransferStatus>(){  @Override public void consume(FileTransferStatus status) {
+			handleStatus(status);
 		}});
 
 		my(FileServer.class);
@@ -86,8 +87,20 @@ public class FileTransferImpl implements FileTransfer {
 
 	
 	@Override
-	public WeakContract registerHandler(Consumer<FileTransferSugestion> sugestionHandler) {
-		return _sugestionNotifier.output().addReceiver(sugestionHandler);
+	public WeakContract registerSugestionHandler(final Consumer<FileTransferSugestion> sugestionHandler) {
+		return my(RemoteTuples.class).addSubscription(FileTransferSugestion.class, new Consumer<FileTransferSugestion>(){  @Override public void consume(FileTransferSugestion sugestion) {
+			if (!isRecent(sugestion)) return;
+			sugestionHandler.consume(sugestion);
+		}});
+	}
+
+	
+	@Override
+	public WeakContract registerStatusHandler(final Consumer<FileTransferStatus> statusHandler) {
+		return my(RemoteTuples.class).addSubscription(FileTransferStatus.class, new Consumer<FileTransferStatus>(){  @Override public void consume(FileTransferStatus sugestion) {
+			if (!isRecent(sugestion)) return;
+			statusHandler.consume(sugestion);
+		}});
 	}
 
 	
@@ -97,13 +110,7 @@ public class FileTransferImpl implements FileTransfer {
 		turnOnWaitingLight(sugestion);
 	}
 
-
-	private void handleSugestion(FileTransferSugestion sugestion) {
-		if (!isRecent(sugestion)) return;
-		_sugestionNotifier.notifyReceivers(sugestion);
-	}
-
-
+	
 	private void handleAccept(FileTransferAccept accept) {
 		if (!isValid(accept)) return;
 		File file = getFile(accept);
@@ -113,6 +120,9 @@ public class FileTransferImpl implements FileTransfer {
 		my(TupleSpace.class).add(new FileTransferDetails(accept, hash));
 	}
 	
+	private void handleStatus(FileTransferStatus status) {
+		uploads.handleStatus(status);
+	}
 	
 	private boolean isValid(FileTransferAccept accept) {
 		Tuple sugestion = accept.sugestion;
@@ -163,6 +173,7 @@ public class FileTransferImpl implements FileTransfer {
 		final Object progressContract = download.progress().addReceiver(new Consumer<Integer>() {  @Override public void consume(Integer value) {
 			turnOff(progressLight);
 			my(BlinkingLights.class).turnOnIfNecessary(progressLight, value + "% " + download.file().getName(), "Download in progress:\n\n " + download.file().getAbsolutePath());
+			sendProgressToSender(value, download.file().getName(), download.source());
 		}});
 		refs.add(progressContract);
 		
@@ -173,11 +184,15 @@ public class FileTransferImpl implements FileTransfer {
 			refs.remove(progressContract);
 		}});
 	}
+	
+	private void sendProgressToSender(Integer value, String name, Seal sender) {
+		FileTransferStatus status = new FileTransferStatus(name, value, sender);
+		my(TupleSpace.class).add(status);
+	}
 
 	private void turnOff(final Light light) {
 		my(BlinkingLights.class).turnOffIfNecessary(light);
 	}
-	
 	
 	private Hash map(File file) {
 		try {
@@ -192,7 +207,7 @@ public class FileTransferImpl implements FileTransfer {
 	}
 	
 
-	private boolean isRecent(FileTransferSugestion sug) {
+	private boolean isRecent(Tuple sug) {
 		return (my(Clock.class).time().currentValue() - sug.publicationTime) < THREE_DAYS;
 	}
 

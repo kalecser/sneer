@@ -20,7 +20,7 @@ public class PublicKeyInitDialogImpl implements PublicKeyInitDialog {
 	
 	private void initPublicKey() {
 		String seed = "true".equals(System.getProperty("sneer.dummy"))
-			? "Dummy"
+			? "Dummy" + System.currentTimeMillis()
 			: promptForPassphrase();
 			
 		my(OwnKeys.class).generateKeyPair(utf8(seed));

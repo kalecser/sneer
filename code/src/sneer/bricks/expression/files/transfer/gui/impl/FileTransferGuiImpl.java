@@ -9,6 +9,7 @@ import java.io.File;
 import javax.swing.JOptionPane;
 
 import sneer.bricks.expression.files.transfer.FileTransfer;
+import sneer.bricks.expression.files.transfer.FileTransferStatus;
 import sneer.bricks.expression.files.transfer.FileTransferSugestion;
 import sneer.bricks.expression.files.transfer.downloadfolder.DownloadFolder;
 import sneer.bricks.expression.files.transfer.gui.FileTransferGui;
@@ -27,7 +28,7 @@ import basis.lang.Consumer;
 public class FileTransferGuiImpl implements FileTransferGui {
 
 	@SuppressWarnings("unused")
-	private WeakContract ref;
+	private WeakContract ref1, ref2;
 
 	{
 		my(ContactActionManager.class).addContactAction(new ContactAction(){
@@ -41,9 +42,13 @@ public class FileTransferGuiImpl implements FileTransferGui {
 			@Override public int positionInMenu() { return 200; }
 		});
 
-		ref = my(FileTransfer.class).registerHandler(new Consumer<FileTransferSugestion>() { @Override public void consume(FileTransferSugestion sugestion) {
+		ref1 = my(FileTransfer.class).registerSugestionHandler(new Consumer<FileTransferSugestion>() { @Override public void consume(FileTransferSugestion sugestion) {
 			if (JOptionPane.showConfirmDialog(null, "Do you want to download " + sugestion.fileOrFolderName + " from " + nick(sugestion) + "?\nSize: " + my(IO.class).files().asFriendlySize(sugestion.fileSize), "Download",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) 
 				download(sugestion);
+		}});
+		
+		ref2 = my(FileTransfer.class).registerStatusHandler(new Consumer<FileTransferStatus>() { @Override public void consume(FileTransferStatus status) {
+			
 		}});
 	}
 
