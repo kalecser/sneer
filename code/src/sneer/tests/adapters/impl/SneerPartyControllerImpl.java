@@ -26,6 +26,7 @@ import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.addresses.own.port.OwnPort;
 import sneer.bricks.network.computers.connections.ConnectionManager;
+import sneer.bricks.network.computers.http.server.tests.HttpServerTest;
 import sneer.bricks.network.computers.udp.holepuncher.server.listener.StunServerListener;
 import sneer.bricks.network.computers.udp.server.UdpServer;
 import sneer.bricks.network.social.Contact;
@@ -38,6 +39,7 @@ import sneer.bricks.pulp.reactive.Signal;
 import sneer.bricks.pulp.reactive.SignalUtils;
 import sneer.bricks.pulp.reactive.collections.CollectionChange;
 import sneer.bricks.snapps.chat.ChatMessage;
+import sneer.bricks.snapps.web.Web;
 import sneer.bricks.snapps.wind.Wind;
 import sneer.bricks.software.code.classutils.ClassUtils;
 import sneer.bricks.software.code.compilers.java.JavaCompiler;
@@ -63,6 +65,8 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	private Collection<Object> _refToAvoidGc = new ArrayList<Object>();
 	private File _codeFolder;	
 	private String _nameOfExpectedCaller;
+
+	private Web web;
 	
 	private void createDefaultImportantFolder() {
 		File folder = new File(my(FolderConfig.class).tmpFolder().get(), "ImportantFolder");
@@ -427,6 +431,10 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	@Override
 	public	void crash() {
+
+		if (web != null) {
+			web.crash();
+		}
 		my(UdpServer.class).crash();
 		my(Threads.class).crashAllThreads();
 	}
@@ -609,6 +617,25 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
 	}
 
+	@Override
+	public void startHomePage() {
+		web = my(Web.class);
+	}
+
+	@Override
+	public String wgetOrCry(String url) {
+		try {
+			return HttpServerTest.replyFor(Web.PORT, url);
+		} catch (Exception e) {
+			throw new basis.lang.exceptions.NotImplementedYet(e);
+		}
+	}
+
+	@Override
+	public void startHomePage(int port) {
+		System.setProperty("sneer.web.port", ""+port);
+		my(Web.class);
+	}
 
 }
 
