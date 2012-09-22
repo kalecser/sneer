@@ -28,7 +28,7 @@ public class ReplWindowImpl extends JFrame implements ReplWindow {
 	public ReplWindowImpl() {
 		
 		setLayout(new BorderLayout());
-		add (_title , BorderLayout.NORTH);
+		add(_title , BorderLayout.NORTH);
 	
 		super.add(textArea);
 		super.setSize(300, 300);
@@ -36,7 +36,7 @@ public class ReplWindowImpl extends JFrame implements ReplWindow {
 		textArea.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_ENTER) {
+				if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_ENTER) {
 					executeAndShowResult();
 				}
 			}
@@ -58,7 +58,7 @@ public class ReplWindowImpl extends JFrame implements ReplWindow {
 	private void executeAndShowResult() {
 		String selectedText = textArea.getSelectedText();
 		if (selectedText != null && !selectedText.isEmpty()) {
-			Object result = my(Repl.class).evaluate(ReplLang.groovy, selectedText);
+			Object result = my(Repl.class).newEvaluatorFor(ReplLang.groovy).eval(selectedText);
 			String resultString = "\n --> " + (result == null ? "null" : result.toString());
 			textArea.append(resultString);
 		}
