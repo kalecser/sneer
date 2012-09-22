@@ -63,7 +63,7 @@ public class FileTransferTest extends BrickTestWithTuples {
 		final long lastModified = fileOrFolder.lastModified();
 		final Hash hash = my(FileMapper.class).mapFileOrFolder(fileOrFolder);
 
-		ref = subject.registerHandler(new Consumer<FileTransferSugestion>(){  @Override public void consume(FileTransferSugestion sugestion) {
+		ref = subject.registerSugestionHandler(new Consumer<FileTransferSugestion>(){  @Override public void consume(FileTransferSugestion sugestion) {
 			subject.accept(sugestion);
 		}});
 		
