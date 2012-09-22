@@ -58,7 +58,7 @@ public class ReplWindowImpl extends JFrame implements ReplWindow {
 	private void executeAndShowResult() {
 		String selectedText = textArea.getSelectedText();
 		if (selectedText != null && !selectedText.isEmpty()) {
-			Object result = my(Repl.class).createConsole(ReplLang.groovy).evaluate(selectedText);
+			Object result = my(Repl.class).newEvaluatorFor(ReplLang.groovy).eval(selectedText);
 			String resultString = "\n --> " + (result == null ? "null" : result.toString());
 			textArea.append(resultString);
 		}
