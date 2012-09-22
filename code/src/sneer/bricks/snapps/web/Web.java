@@ -5,4 +5,7 @@ import basis.brickness.Brick;
 
 @Brick
 @Snapp
-public interface Web {}
+public interface Web {
+	public static int PORT = 27135;
+	void crash();
+}

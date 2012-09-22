@@ -24,6 +24,9 @@ public interface SovereignParty {
 	//Freedom5
 	void shout(String string);
 	void waitForShouts(String shoutsExpected);
+	void startHomePage();
+	String wgetOrCry(String string);
+	void startHomePage(int port);
 
 	//Freedom6
 	void setFolderToSync(File folder);
