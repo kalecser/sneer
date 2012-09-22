@@ -163,6 +163,9 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 		filter.add(scroll2, new GridBagConstraints(0,0,1,2,1.0,1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0,2,0,0), 0,0));
 
 		final JTextField newInclude = new JTextField();
+		newInclude.addActionListener(new ActionListener() {  @Override public void actionPerformed(ActionEvent arg0) {
+			addFilter(whiteListEntries, newInclude);
+		}});
 		newInclude.setBorder(new TitledBorder(titledBorder, ""));
 		filter.add(newInclude, new GridBagConstraints(0,2,1,1,1.0,0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(0,4,2,2), 0,0));
 		
@@ -180,11 +183,16 @@ class LogConsoleImpl extends JFrame implements LogConsole {
 	
 	private void initAddFilterAction( final ListRegister<String> whiteListEntries, final JTextField newInclude, JButton addButton) {
 		addButton.addActionListener(new ActionListener(){ @Override public void actionPerformed(ActionEvent e) {
-			String value = newInclude.getText();
-			newInclude.setText("");
-			if(value.length()==0) return;
-			whiteListEntries.add(value);
+			addFilter(whiteListEntries, newInclude);
 		}});
+	}
+
+	private void addFilter(final ListRegister<String> whiteListEntries,
+			final JTextField newInclude) {
+		String value = newInclude.getText();
+		newInclude.setText("");
+		if(value.length()==0) return;
+		whiteListEntries.add(value);
 	}
 
 	private void initDeleteFilterAction(final ListRegister<String> whiteListEntries, final ListWidget<String> includes, JButton delButton) {

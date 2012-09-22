@@ -19,6 +19,9 @@ import sneer.bricks.network.computers.http.server.HttpHandler;
 import sneer.bricks.network.computers.http.server.HttpServer;
 import sneer.bricks.pulp.blinkinglights.BlinkingLights;
 import sneer.bricks.pulp.blinkinglights.LightType;
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.lang.Closure;
 
 public class HttpServerImpl implements HttpServer {
 
@@ -50,10 +53,17 @@ public class HttpServerImpl implements HttpServer {
 	}
 
 	private AbstractHandler wrapped(final HttpHandler httpHandler) {
-		return new AbstractHandler() { @Override public void handle(String target, Request request, HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
-			ServletOutputStream out = response.getOutputStream();
-			String encoding = request.getCharacterEncoding();
-			out.write(httpHandler.replyFor(target).getBytes(encoding == null ? "UTF-8" : encoding));
+		final Environment env = my(Environment.class);
+		return new AbstractHandler() { @Override public void handle(final String target, Request request, HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
+			final ServletOutputStream out = response.getOutputStream();
+			final String encoding = request.getCharacterEncoding();
+			Environments.runWith(env, new Closure() {  @Override public void run() {
+				try {
+					out.write(httpHandler.replyFor(target).getBytes(encoding == null ? "UTF-8" : encoding));
+				} catch (Exception e){
+					throw new IllegalStateException(e);
+				}				
+			}});
 			out.flush();
 		}};
 	}

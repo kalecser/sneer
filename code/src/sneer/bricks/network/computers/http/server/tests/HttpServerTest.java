@@ -15,11 +15,12 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
 public class HttpServerTest extends BrickTestBase{
 	
+	private static final int HTTP_PORT = 8088;
 	private final HttpServer subject = my(HttpServer.class);
 
 	@Test (timeout = 2000)
 	public void httpServer() throws Exception{
-		WeakContract contract = subject.start(8088, new HttpHandler(){ @Override public String replyFor(String target){
+		WeakContract contract = subject.start(HTTP_PORT, new HttpHandler(){ @Override public String replyFor(String target){
 			return "reply for: " + target;
 		}});
 		
@@ -29,7 +30,7 @@ public class HttpServerTest extends BrickTestBase{
 		contract.dispose();
 	}
 
-	private String replyFor(int port, String target) throws Exception {
+	public static String replyFor(int port, String target) throws Exception {
 		try (Socket socket = new Socket("localhost", port)) {
 			OutputStream out = socket.getOutputStream();
 			out.write(("GET "+ target + " HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n").getBytes());
