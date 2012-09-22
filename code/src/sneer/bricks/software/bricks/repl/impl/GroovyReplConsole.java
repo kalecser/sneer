@@ -5,9 +5,11 @@ import sneer.bricks.software.bricks.repl.ReplConsole;
 
 public class GroovyReplConsole implements ReplConsole {
 
+	private final GroovyShell shell = new GroovyShell();
+
 	@Override
 	public Object evaluate(String code) {
-		return new GroovyShell().evaluate(code);
+		return shell.evaluate(code);
 	}
 
 }
