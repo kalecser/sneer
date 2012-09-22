@@ -41,7 +41,7 @@ public class WebImpl implements Web {
 				Seal sealForUrl = sealForUrlOrNull;
 				my(TupleSpace.class).add(new WebRequest(sealForUrl));
 				String lastContentBroadcasted = lastContents.get();
-				if(!lastContentBroadcasted.isEmpty()){
+				if(lastContentBroadcasted != null && !lastContentBroadcasted.isEmpty()){
 					lastContents.set("");
 					return lastContentBroadcasted;
 				}

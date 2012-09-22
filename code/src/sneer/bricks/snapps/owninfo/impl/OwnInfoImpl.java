@@ -2,6 +2,7 @@ package sneer.bricks.snapps.owninfo.impl;
 
 import static basis.environments.Environments.my;
 
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -123,13 +124,7 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		
 		_sneerPort = newTextField(ownPort(), ownPortSetter());
 
-		String formattedHexString = my(SealCodec.class).formattedHexEncode(my(OwnSeal.class).get().currentValue());
-		_ownSeal = new JTextArea(formattedHexString);
-		_ownSeal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-		_ownSeal.setEditable(false);
-		_ownSeal.setTabSize(3);
-		_ownSeal.setWrapStyleWord(true);
-		JScrollPane sealScroll = new JScrollPane(_ownSeal, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane sealScroll = createOwnSealPane();
 
 		pnl.setLayout(new GridBagLayout());
 		
@@ -141,9 +136,6 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 		pnlDynDns.setLayout(new GridBagLayout());
 
 		pnlDynDns.setBorder(new TitledBorder("Own DynDns [Optional]"));
-//		getContentPane().add(pnlDynDns,
-//				new GridBagConstraints(0, 2, 2, 1, 1.0, 0.0,
-//						GridBagConstraints.CENTER,	GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5),0, 0));
 		
 		addWidget(pnlDynDns, _dynDnsHost, "Host:", 0);
 		addWidget(pnlDynDns, _dynDnsUser, "User:", 1);
@@ -159,6 +151,30 @@ class OwnInfoImpl extends JFrame implements OwnInfo {
 			setVisible(false);
 		}});
 		pack();
+	}
+
+
+	private JScrollPane createOwnSealPane() {
+		JPanel panel = new JPanel(new BorderLayout());
+		JScrollPane sealScroll = createOwnSealScrollPane();
+		JButton copyToClipboard = new JButton("Copy");
+		copyToClipboard.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent arg0) {
+			
+		}});
+		panel.add(sealScroll, BorderLayout.CENTER);
+		return sealScroll;
+	}
+
+
+	private JScrollPane createOwnSealScrollPane() {
+		String formattedHexString = my(SealCodec.class).formattedHexEncode(my(OwnSeal.class).get().currentValue());
+		_ownSeal = new JTextArea(formattedHexString);
+		_ownSeal.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+		_ownSeal.setEditable(false);
+		_ownSeal.setTabSize(3);
+		_ownSeal.setWrapStyleWord(true);
+		JScrollPane sealScroll = new JScrollPane(_ownSeal, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		return sealScroll;
 	}
 
 	private Consumer<String> ownNameSetter() {
