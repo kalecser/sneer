@@ -13,7 +13,6 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.http.server.HttpHandler;
 import sneer.bricks.network.computers.http.server.HttpServer;
 import sneer.bricks.network.social.attributes.Attributes;
-import sneer.bricks.snapps.owninfo.OwnInfo;
 import sneer.bricks.snapps.web.Web;
 import basis.lang.Consumer;
 
@@ -42,7 +41,7 @@ public class WebImpl implements Web {
 				my(TupleSpace.class).add(new WebRequest(sealForUrl));
 				String lastContentReceived = lastContents.get();
 				lastContentReceived = (lastContentReceived == null)?"":lastContentReceived;
-				if(!lastContentReceived.isEmpty()){
+				if(lastContentReceived != null && !lastContentReceived.isEmpty()){
 					lastContents.set("");
 					return lastContentReceived;
 				}
