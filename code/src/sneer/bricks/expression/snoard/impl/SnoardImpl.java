@@ -29,6 +29,7 @@ import sneer.bricks.snapps.contacts.gui.ContactsGui;
 import basis.lang.Consumer;
 
 public class SnoardImpl implements Snoard, ClipboardOwner {
+	@SuppressWarnings("unused")
 	private WeakContract subscription;
 	private ArrayBlockingQueue<Light> lights = new ArrayBlockingQueue<>(10);
 	
