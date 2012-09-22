@@ -33,7 +33,7 @@ import basis.lang.Consumer;
 import basis.lang.Functor;
 import basis.lang.exceptions.Refusal;
 
-	public class ContactNavigationWindowImpl extends JFrame implements ContactNavigationWindow {
+public class ContactNavigationWindowImpl extends JFrame implements ContactNavigationWindow {
 	private JLabel _title = new JLabel("? Contacts");
 	private boolean wasInit;
 	private ListRegister<ContactOfContact> _contactsOfContact;
@@ -102,13 +102,17 @@ import basis.lang.exceptions.Refusal;
 	}
 
 	private void open() {
+		initIfNecessary();
+		updateTitle();
+		requestContactsOfContact();
+		setVisible(true);
+	}
+
+	private void initIfNecessary() {
 		if (!wasInit) {
 			init();
 			wasInit = true;
 		}
-		updateTitle();
-		requestContactsOfContact();
-		setVisible(true);
 	}
 
 	private void requestContactsOfContact() {
