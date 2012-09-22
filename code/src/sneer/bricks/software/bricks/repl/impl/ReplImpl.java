@@ -9,12 +9,12 @@ public class ReplImpl implements Repl {
 
 	@Override
 	public Evaluator newEvaluatorFor(ReplLang language) {
-		return new GroovyReplConsole();
+		return new GroovyEvaluator();
 	}
 
 	@Override
 	public ReplConsole newConsoleFor(Evaluator evaluator) {
-		throw new basis.lang.exceptions.NotImplementedYet(); // Implement
+		return new ReplConsoleImpl(evaluator);
 	}
 
 }
