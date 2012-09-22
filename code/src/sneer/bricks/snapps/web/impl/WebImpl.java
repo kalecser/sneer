@@ -5,10 +5,9 @@ import static basis.environments.Environments.my;
 import java.io.IOException;
 
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.identity.name.OwnName;
+import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.network.computers.http.server.HttpHandler;
 import sneer.bricks.network.computers.http.server.HttpServer;
-import sneer.bricks.network.social.attributes.Attributes;
 import sneer.bricks.snapps.web.Web;
 
 public class WebImpl implements Web {
@@ -16,10 +15,12 @@ public class WebImpl implements Web {
 	WeakContract ref;
 	
 	{
+		final SealForUrl sealForUrl = new SealForUrl(new ContactProviderImpl());
 		try {
 			ref = my(HttpServer.class).start(getPort(), new HttpHandler() {@Override public String replyFor(String target) {
-				String ownName = my(Attributes.class).myAttributeValue(OwnName.class).currentValue();
-				return "<h1>It works!! from+"+ ownName + "</h1>";
+				Seal sealForUrlOrNull = sealForUrl.getSealForUrlOrNull(target);
+				
+				return "<h1>It works!! </h1><br>requestFor: "+sealForUrlOrNull;
 			}});
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
