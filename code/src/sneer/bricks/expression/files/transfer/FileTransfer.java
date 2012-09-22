@@ -12,7 +12,10 @@ public interface FileTransfer {
 
 	void tryToSend(File file, Seal peer);
 
-	WeakContract registerHandler(Consumer<FileTransferSugestion> sugestionHandler);
+	WeakContract registerSugestionHandler(Consumer<FileTransferSugestion> sugestionHandler);
 	void accept(FileTransferSugestion sugestion);
+	
+	WeakContract registerStatusHandler(Consumer<FileTransferStatus> statusHandler);
+
 
 }
