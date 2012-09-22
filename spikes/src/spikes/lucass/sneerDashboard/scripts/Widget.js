@@ -1,4 +1,5 @@
 function loadWidgets(state){
+	//folder config brick
 	for (var i in state['widgets']){
 		appendWidget(state.widgets[i]);
 	}
@@ -56,16 +57,18 @@ function configWidget(configButton){
 	
 }
 
+closeButtonHtml = '<img class="titleBarButton" onclick="closeWidget(this)" src="./images/closeButton.png"/>';
+
 function getTitleDiv(title){
 	return '<div class="widgetTitle">'+title+
-			'<img class="titleBarButton" onclick="closeWidget(this)" src="./images/closeButton.png"/>'+
+			closeButtonHtml+
 			'<img class="titleBarButton" onclick="configWidget(this)" src="./images/configButton.png"/>'+
 		'</div>';
 }
 
 function getTitleDivWithoutConfigButton(title){
 	return '<div class="widgetTitle">'+title+
-			'<img class="titleBarButton" onclick="closeWidget(this)" src="./images/closeButton.png"/>'+
+			closeButtonHtml+
 		'</div>';
 }
 
