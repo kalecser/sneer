@@ -37,37 +37,28 @@ public class SnypeGUIImpl implements SnypeGUI {
 		}
 	});
 
-	private WeakContract stopSubscription = my(RemoteTuples.class).addSubscription(SnypeStopTuple.class, new Consumer<SnypeStopTuple>() {
-
-		@Override
-		public void consume(SnypeStopTuple tuple) {
+	@SuppressWarnings("unused")
+	private WeakContract ref1 = my(RemoteTuples.class).addSubscription(SnypeStopTuple.class, new Consumer<SnypeStopTuple>() {  @Override public void consume(SnypeStopTuple tuple) {
 			Contact contact = my(ContactSeals.class).contactGiven(tuple.publisher);
 			Light light = lightsByContact.get(contact);
-			if(light!=null) {
+			if (light != null)
 				my(BlinkingLights.class).turnOffIfNecessary(light);
-			}
 			tearDownConnection(tuple.publisher);
 	}});
 	
-	private WeakContract startSubscription = my(RemoteTuples.class).addSubscription(SnypeStartTuple.class, new Consumer<SnypeStartTuple>() {
-
-		@Override
-		public void consume(final SnypeStartTuple tuple) {
+	@SuppressWarnings("unused")
+	private WeakContract ref2 = my(RemoteTuples.class).addSubscription(SnypeStartTuple.class, new Consumer<SnypeStartTuple>() {  @Override public void consume(final SnypeStartTuple tuple) {
 			Contact contact = my(ContactSeals.class).contactGiven(tuple.publisher);
 			final Light light = my(BlinkingLights.class).turnOn(LightType.INFO, "Call from " + contact.nickname().currentValue(), "Awaiting acceptance");
 			light.addAction(new Action() {
-				
-				@Override
-				public void run() {
+				@Override public String caption() { return "Accept"; }
+				@Override public void run() {
 					my(BlinkingLights.class).turnOffIfNecessary(light);
 					my(TupleSpace.class).add(new SnypeAcceptTuple(tuple.publisher));
 					Contact contact = my(ContactSeals.class).contactGiven(tuple.publisher);
 					createCallLightIfNeeded(contact, "Snype with " + contact.nickname().currentValue(), "Press stop to terminate the call");
 					setupConnection(tuple.publisher);
 				}
-				
-
-				@Override public String caption() { return "Accept"; }
 			});
 			
 			light.addAction(new Action() {
