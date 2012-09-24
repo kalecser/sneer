@@ -8,12 +8,13 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.KeyPair;
 import java.security.PublicKey;
+import java.security.Security;
 import java.util.Arrays;
 import java.util.Random;
 
 import javax.crypto.SecretKey;
 
-import org.junit.Ignore;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.codec.Codec;
@@ -23,7 +24,11 @@ import sneer.bricks.hardware.cpu.crypto.ECBCipher;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
-public class CryptoTest extends BrickTestBase { 
+public class CryptoTest extends BrickTestBase {
+	
+	static {
+		Security.addProvider(new BouncyCastleProvider()); //Optimize: remove this static dependency. Use Bouncycastle classes directly
+	}
 
 	/** See http://en.wikipedia.org/wiki/SHA1 and http://en.wikipedia.org/wiki/WHIRLPOOL */
 	private static final String SHA512 = "07e547d9586f6a73f73fbac0435ed76951218fb7d0c8d788a309d785436bbb642e93a252a954f23912547d1e8a3b5ed6e1bfd7097821233fa0538f3db854fee6";
@@ -87,23 +92,20 @@ public class CryptoTest extends BrickTestBase {
 	
 	
 	@Test
-	public void retrievePublicKeyFromKeyBytes() {
-		KeyPair keyPair = subject.newECDSAKeyPair("42".getBytes(UTF8));
-		byte[] publicKeyBytes = keyPair.getPublic().getEncoded();
-		
-		PublicKey publicKey = subject.retrievePublicKey(publicKeyBytes);
-		assertArrayEquals(publicKeyBytes, publicKey.getEncoded());
+	public void retrievePublicKeyFromKeyBytes() throws DecodeException {
+		byte[] ecdsaPublicKey = fromHex("3059301306072a8648ce3d020106082a8648ce3d03010703420004d647ab7e67b1e0f58aece6d386c5fb8fc8c16e2566539678df82984c8c642c60bbda8f6abed26f279d13858613ff83cc80d9cb95e0dd261dcc7e12f1ffe2a922");
+		PublicKey publicKey = subject.retrievePublicKey(ecdsaPublicKey);
+		assertArrayEquals(ecdsaPublicKey, publicKey.getEncoded());
 	}
 	
 	
 	@Test
-	@Ignore
-	public void ECDHSecret() {
+	public void ECDHSecret() throws DecodeException {
 		KeyPair pair1 = subject.newECDSAKeyPair("seed 1".getBytes(UTF8));
 		KeyPair pair2 = subject.newECDSAKeyPair("seed 2".getBytes(UTF8));
 		
 		SecretKey secret = subject.secretKeyFrom(pair1.getPublic(), pair2.getPrivate());
-		assertArrayEquals(new byte[0], secret.getEncoded());
+		assertArrayEquals(fromHex("3215d8694f6aec8b674f486e39290c0baa1a05aaaedc433561c0ed52262137f1"), secret.getEncoded());
 	}
 	
 	
