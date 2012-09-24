@@ -37,6 +37,7 @@ public class SnypeGUIImpl implements SnypeGUI {
 		}
 	});
 
+	@SuppressWarnings("unused")
 	private WeakContract stopSubscription = my(RemoteTuples.class).addSubscription(SnypeStopTuple.class, new Consumer<SnypeStopTuple>() {
 
 		@Override
@@ -49,6 +50,7 @@ public class SnypeGUIImpl implements SnypeGUI {
 			tearDownConnection(tuple.publisher);
 	}});
 	
+	@SuppressWarnings("unused")
 	private WeakContract startSubscription = my(RemoteTuples.class).addSubscription(SnypeStartTuple.class, new Consumer<SnypeStartTuple>() {
 
 		@Override

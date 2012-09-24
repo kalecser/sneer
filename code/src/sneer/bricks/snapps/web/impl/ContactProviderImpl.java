@@ -6,7 +6,6 @@ import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
-import sneer.bricks.network.social.attributes.Attributes;
 
 public class ContactProviderImpl implements ContactProvider {
 
