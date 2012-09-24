@@ -10,21 +10,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.Security;
 import java.security.Signature;
 import java.util.Arrays;
 
-import javax.crypto.KeyAgreement;
 import javax.crypto.SecretKey;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.provider.JDKKeyFactory;
+import org.bouncycastle.jce.provider.JDKMessageDigest;
+import org.bouncycastle.jce.provider.asymmetric.ec.KeyAgreement;
+import org.bouncycastle.jce.provider.asymmetric.ec.KeyPairGenerator;
 
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.Digester;
@@ -36,32 +34,21 @@ import basis.lang.arrays.ImmutableByteArray;
 
 class CryptoImpl implements Crypto {
 
-	private static final String BOUNCY_CASTLE = "BC";
+	private static final String ECDH = "ECDH";
 	private static final int FILE_BLOCK_SIZE = 1024 * 100;
-
-	static {
-		Security.addProvider(new BouncyCastleProvider()); //Optimize: remove this static dependency. Use Bouncycastle classes directly
-	}
-
+	
 	@Override
 	public Hash digest(byte[] input) {
 		return newDigester().digest(input);
 	}
 
+
 	@Override
 	public Digester newDigester() {
-		return new DigesterImpl(messageDigest("SHA-512", BOUNCY_CASTLE));
+		return new DigesterImpl(new JDKMessageDigest.SHA512());
 	}
 
-	private MessageDigest messageDigest(String algorithm, String provider) {
-		try {
-			return MessageDigest.getInstance(algorithm, provider);
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-	}
 
-	
 	@Override
 	public Hash digest(File file) throws IOException {
 		if (file.isDirectory()) throw new IllegalArgumentException("The parameter cannot be a directory");
@@ -80,6 +67,7 @@ class CryptoImpl implements Crypto {
 
 		return digester.digest();
 	}
+	
 
 	@Override
 	public Hash digest(Path file) throws IOException {
@@ -96,6 +84,7 @@ class CryptoImpl implements Crypto {
 
 		return digester.digest();
 	}
+	
 
 	@Override
 	public Hash unmarshallHash(byte[] bytes) {
@@ -115,11 +104,9 @@ class CryptoImpl implements Crypto {
 	
 	@Override
 	public KeyPair newECDSAKeyPair(final byte[] seed) {
-		return safelyProduce(new ProducerX<KeyPair, Exception>() { @Override public KeyPair produce() throws NoSuchAlgorithmException, NoSuchProviderException {
-			KeyPairGenerator generator = KeyPairGenerator.getInstance("ECDSA", BOUNCY_CASTLE);
-			generator.initialize(256, new RandomWrapper(mix256bits(seed)));
-			return generator.generateKeyPair();
-		}});
+		KeyPairGenerator generator = new KeyPairGenerator.ECDSA(); 
+		generator.initialize(256, new RandomWrapper(mix256bits(seed)));
+		return generator.generateKeyPair();
 	}
 		
 
@@ -129,16 +116,6 @@ class CryptoImpl implements Crypto {
 	}
 	
 	
-	private <T> T safelyProduce(ProducerX<T, Exception> producer) {
-		try {
-			return producer.produce();
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-
-	}
-	
-
 	@Override
 	public ECBCipher newAES256Cipher(byte[] key) {
 		return new ECBCipherImpl(key);
@@ -155,13 +132,23 @@ class CryptoImpl implements Crypto {
 
 	@Override
 	public SecretKey secretKeyFrom(final PublicKey publicKey, final PrivateKey privateKey) {
-		return safelyProduce(new ProducerX<SecretKey, Exception>() { @Override public SecretKey produce() throws NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException {
-			KeyAgreement keyAgreement = KeyAgreement.getInstance("ECDH", BOUNCY_CASTLE);
+		return safelyProduce(new ProducerX<SecretKey, Exception>() { @Override public SecretKey produce() throws NoSuchAlgorithmException, InvalidKeyException {
+			KeyAgreementWrapper keyAgreement = new KeyAgreementWrapper(new KeyAgreement.DH(), new BouncyCastleProvider(), ECDH);
 			keyAgreement.init(privateKey);
 			keyAgreement.doPhase(publicKey, true);
 			
-			return keyAgreement.generateSecret("ECDH");
+			return keyAgreement.generateSecret(ECDH);
 		}});
+	}
+	
+	
+	private <T> T safelyProduce(ProducerX<T, Exception> producer) {
+		try {
+			return producer.produce();
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+
 	}
 
 }
