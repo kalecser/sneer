@@ -8,14 +8,14 @@ import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnect
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
+
+import javax.crypto.SecretKey;
 
 import sneer.bricks.hardware.cpu.crypto.ECBCipher;
 import sneer.bricks.hardware.cpu.crypto.ecb.ECBCiphers;
+import sneer.bricks.hardware.cpu.crypto.ecdh.ECDHKeyAgreement;
 import sneer.bricks.hardware.cpu.threads.Threads;
-import sneer.bricks.identity.seals.OwnSeal;
-import sneer.bricks.identity.seals.Seal;
-import sneer.bricks.identity.seals.contacts.ContactSeals;
+import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
@@ -34,9 +34,9 @@ class UdpByteConnection implements ByteConnection {
 	private final Light error = my(BlinkingLights.class).prepare(LightType.ERROR);
 	private final Contact contact;
 	private final ConnectionMonitor monitor;
-	private ECBCipher encrypter;
-	private ECBCipher decrypter = decrypter();
+	private final Object handshakeMonitor = new Object();
 	private Consumer<? super ByteBuffer> receiver;
+	private ECBCipher cipher;
 
 	
 	UdpByteConnection(Contact contact) {
@@ -62,13 +62,13 @@ class UdpByteConnection implements ByteConnection {
 	
 	
 	private void tryToSendPacketFor(Producer<? extends ByteBuffer> sender) {
-		ByteBuffer byteBuffer = sender.produce();
+		waitUntilHandshake();
 		
-		if (encrypter() == null) return;
+		ByteBuffer byteBuffer = sender.produce();
 		byte[] bytes = new byte[byteBuffer.remaining()]; 
 		byteBuffer.get(bytes);
 		
-		byte[] payload = encrypter().encrypt(bytes);
+		byte[] payload = cipher.encrypt(bytes);
 		ByteBuffer buf = prepare(Data);
 		
 		if (payload.length > buf.remaining()) {
@@ -80,6 +80,15 @@ class UdpByteConnection implements ByteConnection {
 		buf.flip();
 		send(buf, monitor.lastSighting());
 	}
+
+
+	private void waitUntilHandshake() {
+		synchronized (handshakeMonitor) {
+			if (cipher == null) 
+				my(Threads.class).waitWithoutInterruptions(handshakeMonitor);
+		}
+	}
+	
 	
 	void handle(UdpPacketType type, InetSocketAddress origin, ByteBuffer data) {
 		my(SightingKeeper.class).keep(contact, origin);
@@ -87,33 +96,32 @@ class UdpByteConnection implements ByteConnection {
 		if(type == Hail) {
 			long hailTimestamp = data.getLong();
 			monitor.handleHail(origin, hailTimestamp);
+			initializeCipherIfNecessary(data);
 			return;
 		}
 		
-		if (receiver == null) return;
+		if (receiver == null || cipher == null) return;
 		byte[] payload = new byte[data.remaining()];
 		data.get(payload);
-		receiver.consume(ByteBuffer.wrap(decrypter.decrypt(payload)));
+		receiver.consume(ByteBuffer.wrap(cipher.decrypt(payload)));
 	}
 	
 	
-	private ECBCipher encrypter() {
-		if (encrypter != null) return encrypter;
+	private void initializeCipherIfNecessary(ByteBuffer data) {
+		synchronized (handshakeMonitor) {
+			if (cipher != null) return;
+			SecretKey secret = my(ECDHKeyAgreement.class).generateSecret(publicKeyFrom(data));
+			cipher = my(ECBCiphers.class).newAES256(secret.getEncoded());
+			handshakeMonitor.notify();
+		}
+	}
 
-		Seal seal = my(ContactSeals.class).sealGiven(contact).currentValue();
-		if (seal == null) return null;
-		
-		byte[] sealBytes = seal.bytes.copy();
-		byte[] key = Arrays.copyOf(sealBytes, 256 / 8);
-		encrypter = my(ECBCiphers.class).newAES256(key);
-		return encrypter;
+
+	private byte[] publicKeyFrom(ByteBuffer data) {
+		byte[] otherPeerPublicKey = new byte[OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES];
+		data.get(otherPeerPublicKey);
+
+		return otherPeerPublicKey;
 	}
-	
-	
-	private ECBCipher decrypter() {
-		byte[] key = Arrays.copyOf(my(OwnSeal.class).get().currentValue().bytes.copy(), 256/8);
-		return my(ECBCiphers.class).newAES256(key);
-	}	
-	
 	
 }

@@ -1,6 +1,7 @@
 package sneer.bricks.network.computers.udp.connections.tests;
 
 import static basis.environments.Environments.my;
+import static java.util.Arrays.copyOf;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Data;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Hail;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Stun;
@@ -22,6 +23,8 @@ import org.junit.Test;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.cpu.crypto.ecb.ECBCiphers;
 import sneer.bricks.hardware.cpu.crypto.ecb.tests.NullECBCiphers;
+import sneer.bricks.hardware.cpu.crypto.ecdh.ECDHKeyAgreement;
+import sneer.bricks.hardware.cpu.crypto.ecdh.test.NullECDHKeyAgreemnent;
 import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.keys.own.OwnKeys;
@@ -52,14 +55,15 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 
 	private static final Charset UTF8 = Charset.forName("UTF-8");
 	
-	
 	private final UdpConnectionManager subject = my(UdpConnectionManager.class);
 	@Bind private final LoggingSender sender = new LoggingSender();
 	@Bind private final StunClient stunClient = mock(StunClient.class);
-	@Bind private final ECBCiphers ciphers = new NullECBCiphers(); 
+	@Bind private final ECBCiphers ciphers = new NullECBCiphers();
+	@Bind private final ECDHKeyAgreement keyAgreement = new NullECDHKeyAgreemnent();
 			
 	@Bind private final ContactAddresses contactAddresses = mock(ContactAddresses.class);
 	private InetSocketAddress contactAddress = null;
+
 	{
 		checking(new Expectations(){{
 			allowing(contactAddresses).given(with(any(Contact.class)));
@@ -108,6 +112,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	@Test (timeout=2000)
 	public void receiveData() throws Exception {
+		subject.handle(hailPacketFrom("Neide"));
+		
 		final Latch latch = new Latch();
 		connectionFor("Neide").initCommunications(new PacketProducerMock(), new Consumer<ByteBuffer>() { @Override public void consume(ByteBuffer packet) {
 			byte[] bytes = new byte[packet.remaining()];
@@ -182,7 +188,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(Clock.class).advanceTime(UdpConnectionManager.IDLE_PERIOD);
 		my(SignalUtils.class).waitForValue(connection.isConnected(), false);
 		
-		subject.handle(packetFrom("Neide", Hail, asBytes(50), "100.101.102.103", 456));
+		subject.handle(hailPacketFrom("Neide", asBytes(50), "100.101.102.103", 456));
 		my(SignalUtils.class).waitForValue(connection.isConnected(), true);
 		
 		Producer<ByteBuffer> producer = new PacketProducerMock("foo");
@@ -191,6 +197,16 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data foo,to:100.101.102.103,port:456");
 	}
 	
+
+	private DatagramPacket hailPacketFrom(String nick, byte[] payload, String ip, int port) throws Exception {
+		ByteBuffer buf = ByteBuffer.allocate(UdpNetwork.MAX_PACKET_PAYLOAD_SIZE);
+		buf.put(payload);
+		buf.put(new byte[OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES]);
+		buf.flip();
+		
+		return packetFrom(nick, Hail, copyOf(buf.array(), buf.limit()), ip, port);
+	}
+
 
 	@Test(timeout = 2000)
 	public void keepAlive() {
@@ -210,8 +226,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	@Test(timeout = 2000)
 	public void onSighting_ShouldUseFastestAddress() throws Exception {
-		subject.handle(packetFrom("Neide", Hail, asBytes(41), "200.201.202.203", 123));
-		subject.handle(packetFrom("Neide", Hail, asBytes(42), "192.168.10.10", 7777));
+		subject.handle(hailPacketFrom("Neide", asBytes(41), "200.201.202.203", 123));
+		subject.handle(hailPacketFrom("Neide", asBytes(42), "192.168.10.10", 7777));
 		
 		Producer<ByteBuffer> producer = new PacketProducerMock("foo");
 		connectionFor("Neide").initCommunications(producer, my(Signals.class).sink());
@@ -228,7 +244,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	private byte[] bytes(String message) {
 		return message.getBytes(UTF8);
 	}
-
+	
 
 	private byte[] asBytes(int value) {
 		return ByteBuffer.allocate(8).putLong(value).array();
@@ -241,8 +257,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	
 	private DatagramPacket hailPacketFrom(String nick) throws Exception {
-		byte[] timestamp = asBytes(41);
-		return packetFrom(nick, Hail, timestamp);
+		return hailPacketFrom(nick, asBytes(41), "200.201.202.203", 123);
 	}
 
 	
@@ -255,7 +270,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		data.put(bytes(senderName));
 		data.flip();
 		
-		return packetFrom(Hail, seal, Arrays.copyOf(data.array(), data.limit()), "200.42.0.35", 4567);
+		return packetFrom(Hail, seal, copyOf(data.array(), data.limit()), "200.42.0.35", 4567);
 	}
 	
 	

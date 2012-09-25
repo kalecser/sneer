@@ -15,23 +15,29 @@ import sneer.bricks.pulp.reactive.Signals;
 class OwnKeysImpl implements OwnKeys {
 	
 	private final Register<PublicKey> _ownPublicKey = my(Signals.class).newRegister(null);
-	private PrivateKey _ownPrivateKey;
+	private final Register<PrivateKey> _ownPrivateKey = my(Signals.class).newRegister(null);
 
 	
 	@Override
 	public void generateKeyPair(byte[] seed) {
-		if(_ownPrivateKey != null) throw new IllegalStateException("Private key has already been generated.");
+		if(_ownPrivateKey.output().currentValue() != null) throw new IllegalStateException("Private key has already been generated.");
 		
 		KeyPair newPair = my(Crypto.class).newECDSAKeyPair(seed);
 		
 		_ownPublicKey.setter().consume(newPair.getPublic());
-		_ownPrivateKey = newPair.getPrivate();
+		_ownPrivateKey.setter().consume(newPair.getPrivate());
 	}
 
 	
 	@Override
 	public Signal<PublicKey> ownPublicKey() {
 		return _ownPublicKey.output();
+	}
+
+
+	@Override
+	public Signal<PrivateKey> ownPrivateKey() {
+		return _ownPrivateKey.output();
 	}
 
 }

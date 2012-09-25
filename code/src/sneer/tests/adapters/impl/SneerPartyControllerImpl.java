@@ -226,7 +226,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	}
 
 	
-	private void openLatchIfShoutsHeard( String shoutsExpected, Latch latch) {
+	private void openLatchIfShoutsHeard(String shoutsExpected, Latch latch) {
 		String shoutsHeard = concat(my(Wind.class).shoutsHeard());
 		if (shoutsHeard.equals(shoutsExpected))
 			latch.open();
