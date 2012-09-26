@@ -1,7 +1,6 @@
 package sneer.bricks.network.computers.udp.connections.tests;
 
 import static basis.environments.Environments.my;
-import static java.util.Arrays.copyOf;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Data;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Hail;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Stun;
@@ -25,7 +24,6 @@ import sneer.bricks.hardware.cpu.crypto.ecb.ECBCiphers;
 import sneer.bricks.hardware.cpu.crypto.ecb.tests.NullECBCiphers;
 import sneer.bricks.hardware.cpu.crypto.ecdh.ECDHKeyAgreement;
 import sneer.bricks.hardware.cpu.crypto.ecdh.test.NullECDHKeyAgreemnent;
-import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.identity.name.OwnName;
@@ -48,6 +46,7 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import basis.brickness.testsupport.Bind;
 import basis.lang.Consumer;
 import basis.lang.Producer;
+import basis.lang.exceptions.Refusal;
 import basis.util.concurrent.Latch;
 import basis.util.concurrent.RefLatch;
 
@@ -83,7 +82,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	@Test (timeout=2000)
 	public void onSighting_ShouldHail() throws Exception {
 		setOwnName("Wesley");
-		subject.handle(packetFrom("Neide", Data, bytes("Hello")));
+		subject.handle(dataFrom("Neide", bytes("Hello")));
 		
 		my(SignalUtils.class).waitForValue(sender.history(), "| Hail 0 PK:4889 Wesley,to:200.201.202.203,port:123");
 	}
@@ -92,7 +91,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	@Test(timeout=2000)
 	public void onFirstPacket_ShouldConnect() throws Exception {
 		assertFalse(isConnected("Neide"));
-		subject.handle(hailPacketFrom("Neide"));
+		subject.handle(hailFrom("Neide"));
 		my(SignalUtils.class).waitForValue(connectionFor("Neide").isConnected(), true);
 		assertFalse(isConnected("Maicon"));
 	}
@@ -102,8 +101,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	public void onUnknownCaller_ShouldNotify() throws Exception {
 		RefLatch<Call> latch = new RefLatch<Call>();
 		@SuppressWarnings("unused") WeakContract ref = subject.unknownCallers().addReceiver(latch);
-		byte[] seal = fill(123);
-		subject.handle(hailPacketFrom(seal, "Neide"));
+		byte[] seal = seal(123);
+		subject.handle(unknownHailFrom("Neide", seal));
 		Call call = latch.waitAndGet();
 		assertEquals(new Seal(seal), call.callerSeal());
 		assertEquals("Neide", call.callerName());
@@ -112,7 +111,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	@Test (timeout=2000)
 	public void receiveData() throws Exception {
-		subject.handle(hailPacketFrom("Neide"));
+		subject.handle(hailFrom("Neide"));
 		
 		final Latch latch = new Latch();
 		connectionFor("Neide").initCommunications(new PacketProducerMock(), new Consumer<ByteBuffer>() { @Override public void consume(ByteBuffer packet) {
@@ -122,14 +121,14 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 			latch.open();
 		}});
 		
-		subject.handle(packetFrom("Neide", Data, bytes("Hello")));
+		subject.handle(dataFrom("Neide", bytes("Hello")));
 		latch.waitTillOpen();
 	}
 
 	
 	@Test(timeout=2000)
 	public void sendData_ShouldUseReceivedHailSighting() throws Exception {
-		subject.handle(hailPacketFrom("Neide"));
+		subject.handle(hailFrom("Neide"));
 		
 		Producer<ByteBuffer> producer = new PacketProducerMock("foo", "bar");
 		connectionFor("Neide").initCommunications(producer, my(Signals.class).sink());
@@ -173,7 +172,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 				latch.open(); return null;
 			}});
 		}});
-		subject.handle(packetFrom("Neide", Stun, bytes("Whatever")));
+		subject.handle(stunFrom("Neide"));
 		
 		latch.waitTillOpen();
 	}
@@ -181,14 +180,14 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	@Test(timeout = 2000)
 	public void onIdleRecognizeNewSighting() throws Exception {
-		subject.handle(hailPacketFrom("Neide"));
+		subject.handle(hailFrom("Neide"));
 		
 		ByteConnection connection = connectionFor("Neide");
 		
 		my(Clock.class).advanceTime(UdpConnectionManager.IDLE_PERIOD);
 		my(SignalUtils.class).waitForValue(connection.isConnected(), false);
 		
-		subject.handle(hailPacketFrom("Neide", asBytes(50), "100.101.102.103", 456));
+		subject.handle(hailFrom("Neide", 50, "100.101.102.103", 456));
 		my(SignalUtils.class).waitForValue(connection.isConnected(), true);
 		
 		Producer<ByteBuffer> producer = new PacketProducerMock("foo");
@@ -197,16 +196,6 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data foo,to:100.101.102.103,port:456");
 	}
 	
-
-	private DatagramPacket hailPacketFrom(String nick, byte[] payload, String ip, int port) throws Exception {
-		ByteBuffer buf = ByteBuffer.allocate(UdpNetwork.MAX_PACKET_PAYLOAD_SIZE);
-		buf.put(payload);
-		buf.put(new byte[OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES]);
-		buf.flip();
-		
-		return packetFrom(nick, Hail, copyOf(buf.array(), buf.limit()), ip, port);
-	}
-
 
 	@Test(timeout = 2000)
 	public void keepAlive() {
@@ -226,8 +215,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	@Test(timeout = 2000)
 	public void onSighting_ShouldUseFastestAddress() throws Exception {
-		subject.handle(hailPacketFrom("Neide", asBytes(41), "200.201.202.203", 123));
-		subject.handle(hailPacketFrom("Neide", asBytes(42), "192.168.10.10", 7777));
+		subject.handle(hailFrom("Neide", 41, "200.201.202.203", 123));
+		subject.handle(hailFrom("Neide", 42, "192.168.10.10", 7777));
 		
 		Producer<ByteBuffer> producer = new PacketProducerMock("foo");
 		connectionFor("Neide").initCommunications(producer, my(Signals.class).sink());
@@ -246,54 +235,71 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 
-	private byte[] asBytes(int value) {
-		return ByteBuffer.allocate(8).putLong(value).array();
-	}
-	
-	
 	private void seeNeideIn(InetSocketAddress sighting) {
 		my(SightingKeeper.class).keep(produceContact("Neide"), sighting);
 	}
 	
 	
-	private DatagramPacket hailPacketFrom(String nick) throws Exception {
-		return hailPacketFrom(nick, asBytes(41), "200.201.202.203", 123);
+	private DatagramPacket hailFrom(String nick) throws Exception {
+		return hailFrom(nick, produceSeal(nick, 42), 0, "200.201.202.203", 123);
+	}
+
+
+	private DatagramPacket unknownHailFrom(String nick, byte[] seal) throws Exception {
+		return hailFrom(nick, seal, 0, "200.42.0.35", 4557);
+	}
+	
+	
+	private DatagramPacket hailFrom(String nick, int timestamp, String ip, int port) throws Exception {
+		return hailFrom(nick, produceSeal(nick, 42), timestamp, ip, port);
+	}
+	
+	
+	private DatagramPacket hailFrom(String nick, byte[] seal, int timestamp, String ip, int port) throws UnknownHostException {
+		byte[] publicKey = my(OwnKeys.class).ownPublicKey().currentValue().getEncoded();
+		
+		ByteBuffer buf = preparePacket(Hail, seal);
+		buf.putLong(timestamp);
+		buf.put(publicKey);
+		buf.put(bytes(nick));
+		buf.flip();
+		
+		return datagramPacketFor(buf, ip, port);
+	}
+	
+	
+	private DatagramPacket dataFrom(String nick, byte[] payload) throws Exception {
+		ByteBuffer buf = preparePacket(Data, produceSeal(nick, 42));
+		buf.put(payload);
+		buf.flip();
+		
+		return datagramPacketFor(buf, "200.201.202.203", 123);
+	}
+
+
+	private DatagramPacket stunFrom(String nick) throws UnknownHostException, Refusal {
+		byte[] seal = produceSeal(nick, 42);
+		
+		ByteBuffer buf = ByteBuffer.allocate(UdpNetwork.MAX_PACKET_PAYLOAD_SIZE);
+		buf.put((byte)Stun.ordinal());
+		buf.put(seal);
+		buf.flip();
+		
+		return datagramPacketFor(buf, "200.201.202.203", 123);
+	}
+
+
+	private ByteBuffer preparePacket(UdpPacketType type, byte[] seal) {
+		ByteBuffer buf = ByteBuffer.allocate(UdpNetwork.MAX_PACKET_PAYLOAD_SIZE);
+		buf.put((byte)type.ordinal());
+		buf.put(seal);
+		
+		return buf;
 	}
 
 	
-	private DatagramPacket hailPacketFrom(byte[] seal, String senderName) throws Exception {
-		ByteBuffer data = ByteBuffer.allocate(UdpNetwork.MAX_PACKET_PAYLOAD_SIZE);
-		data.putLong(41);
-		
-		byte[] key = new byte[OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES];
-		data.put(key);
-		data.put(bytes(senderName));
-		data.flip();
-		
-		return packetFrom(Hail, seal, copyOf(data.array(), data.limit()), "200.42.0.35", 4567);
-	}
-	
-	
-	private DatagramPacket packetFrom(String nick, UdpPacketType type, byte[] payload) throws Exception {
-		return packetFrom(nick, type, payload, "200.201.202.203", 123);
-	}
-
-	
-	private DatagramPacket packetFrom(String nick, UdpPacketType type, byte[] data, String ip, int port) throws Exception {
-		produceContact(nick);
-		byte[] sealBytes = fill(42);
-		my(ContactSeals.class).put(nick, new Seal(sealBytes));
-		
-		return packetFrom(type, sealBytes, data, ip, port);
-	}
-
-	
-	private DatagramPacket packetFrom(UdpPacketType type, byte[] seal, byte[] data, String ip, int port) throws UnknownHostException {
-		byte[] bytes = new byte[] { (byte)type.ordinal() };
-		bytes = my(Lang.class).arrays().concat(bytes, seal);
-		bytes = my(Lang.class).arrays().concat(bytes, data);
-		
-		DatagramPacket ret = new DatagramPacket(bytes, bytes.length);
+	private DatagramPacket datagramPacketFor(ByteBuffer buf, String ip, int port) throws UnknownHostException {
+		DatagramPacket ret = new DatagramPacket(buf.array(), buf.limit());
 		ret.setAddress(InetAddress.getByName(ip));
 		ret.setPort(port);
 		
@@ -301,7 +307,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 
 	
-	private byte[] fill(int id) {
+	private byte[] seal(int id) {
 		byte[] ret = new byte[Seal.SIZE_IN_BYTES];
 		Arrays.fill(ret, (byte)id);
 		return ret;
@@ -322,11 +328,20 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	private Contact produceContact(String nick) {
 		return my(Contacts.class).produceContact(nick);
 	}
+	
+	
+	private byte[] produceSeal(String nick, int seal) throws Refusal {
+		produceContact(nick);
+		byte[] ret = seal(seal);
+		my(ContactSeals.class).put(nick, new Seal(ret));
+		
+		return ret;
+	}
 
 	
 	private void setOwnName(String name) {
 		my(Attributes.class).myAttributeSetter(OwnName.class).consume(name);
 	}
-
+	
 }
 

@@ -34,6 +34,7 @@ import basis.lang.arrays.ImmutableByteArray;
 
 class CryptoImpl implements Crypto {
 
+	private static final BouncyCastleProvider BOUNCY_CASTLE = new BouncyCastleProvider();
 	private static final String ECDH = "ECDH";
 	private static final int FILE_BLOCK_SIZE = 1024 * 100;
 	
@@ -133,7 +134,7 @@ class CryptoImpl implements Crypto {
 	@Override
 	public SecretKey secretKeyFrom(final PublicKey publicKey, final PrivateKey privateKey) {
 		return safelyProduce(new ProducerX<SecretKey, Exception>() { @Override public SecretKey produce() throws NoSuchAlgorithmException, InvalidKeyException {
-			KeyAgreementWrapper keyAgreement = new KeyAgreementWrapper(new KeyAgreement.DH(), new BouncyCastleProvider(), ECDH);
+			KeyAgreementWrapper keyAgreement = new KeyAgreementWrapper(new KeyAgreement.DH(), BOUNCY_CASTLE, ECDH);
 			keyAgreement.init(privateKey);
 			keyAgreement.doPhase(publicKey, true);
 			

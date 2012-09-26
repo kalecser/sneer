@@ -84,8 +84,8 @@ class UdpByteConnection implements ByteConnection {
 
 	private void waitUntilHandshake() {
 		synchronized (handshakeMonitor) {
-			if (cipher == null) 
-				my(Threads.class).waitWithoutInterruptions(handshakeMonitor);
+			if (cipher != null) return; 
+			my(Threads.class).waitWithoutInterruptions(handshakeMonitor);
 		}
 	}
 	
