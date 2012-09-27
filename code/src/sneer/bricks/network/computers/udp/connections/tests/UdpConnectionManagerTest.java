@@ -17,6 +17,7 @@ import org.jmock.Expectations;
 import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
@@ -222,6 +223,12 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		connectionFor("Neide").initCommunications(producer, my(Signals.class).sink());
 		
 		my(SignalUtils.class).waitForElement(sender.historySet(), "| Data foo,to:192.168.10.10,port:7777");
+	}
+	
+	
+	@Ignore
+	@Test(timeout = 2000)
+	public void onHail_ShouldCheckPublicKey() {
 	}
 	
 	

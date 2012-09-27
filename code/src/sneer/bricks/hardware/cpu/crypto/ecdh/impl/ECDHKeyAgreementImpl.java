@@ -15,7 +15,7 @@ class ECDHKeyAgreementImpl implements ECDHKeyAgreement {
 
 	@Override
 	public SecretKey generateSecret(byte[] key) {
-		PublicKey otherPeerPublicKey = my(Crypto.class).retrievePublicKey(key);
+		PublicKey otherPeerPublicKey = my(Crypto.class).unmarshalPublicKey(key);
 		PrivateKey ownPrivateKey = my(OwnKeys.class).ownPrivateKey().currentValue();
 		return my(Crypto.class).secretKeyFrom(otherPeerPublicKey, ownPrivateKey);
 	}

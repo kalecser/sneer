@@ -96,7 +96,7 @@ class CryptoImpl implements Crypto {
 	@Override
 	public Signature getSHA512WithECDSA() {
 		try {
-			return Signature.getInstance("SHA512WITHECDSA", "BC");
+			return Signature.getInstance("SHA512WITHECDSA", "BC"); //Use concrete class instead of provider
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
@@ -124,7 +124,7 @@ class CryptoImpl implements Crypto {
 	
 
 	@Override
-	public PublicKey retrievePublicKey(final byte[] keyBytes) {
+	public PublicKey unmarshalPublicKey(final byte[] keyBytes) {
 		return safelyProduce(new ProducerX<PublicKey, Exception>() { @Override public PublicKey produce() throws IOException {
 			return JDKKeyFactory.createPublicKeyFromDERStream(keyBytes);
 		}});
