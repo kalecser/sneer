@@ -1,5 +1,9 @@
 package spikes.neo.crypto;
 
+import static basis.brickness.Brickness.newBrickContainer;
+import static basis.environments.Environments.my;
+import static basis.environments.Environments.runWith;
+
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
@@ -16,9 +20,22 @@ import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECParameterSpec;
 
+import sneer.bricks.hardware.cpu.crypto.Crypto;
+import basis.lang.ClosureX;
+
 public class ECDH {
+	
+	static {
+		Security.addProvider(new BouncyCastleProvider());
+	}
 
 	public static void main(String[] args) throws Exception {
+		runWith(newBrickContainer(), new ClosureX<Exception>() { @Override public void run() throws Exception { 
+			runTest();
+		}});
+	}
+
+	private static void runTest() throws Exception {
 		for(int i = 0; i < 1000; i++) getKeyPair();
 		
 		KeyPair alice = getKeyPair();
@@ -62,9 +79,8 @@ public class ECDH {
 		System.out.println(Arrays.toString(aliceCarlosSecret.getEncoded()));
 	}
 
-	private static SecretKey getSecret(PublicKey publicKey,
-			PrivateKey privateKey) throws Exception {
-		KeyAgreement ka = KeyAgreement.getInstance("ECDH");
+	private static SecretKey getSecret(PublicKey publicKey, PrivateKey privateKey) throws Exception {
+		KeyAgreement ka = KeyAgreement.getInstance("ECDH", "BC");
 		ka.init(privateKey);
 		ka.doPhase(publicKey, true);
 
@@ -72,7 +88,6 @@ public class ECDH {
 	}
 
 	static KeyPair getKeyPair2() throws Exception {
-		Security.addProvider(new BouncyCastleProvider());
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance("ECDSA", "BC");
 
 		X9ECParameters paramsA = SECNamedCurves.getByName("secp160r1");
@@ -90,13 +105,21 @@ public class ECDH {
 		return pair;
 	}
 	
-	static KeyPair getKeyPair() throws Exception {
-		Security.addProvider(new BouncyCastleProvider());
-		
+	static KeyPair getKeyPair3() throws Exception {
 		KeyPairGenerator generator = KeyPairGenerator.getInstance("ECDSA", "BC");
 		generator.initialize(256, new SecureRandom());
 		KeyPair ret = generator.generateKeyPair();
 		
+		int length = ret.getPublic().getEncoded().length;
+		System.out.println("length:" + length);
+		
+		if (length != 91) throw new RuntimeException();
+		
+		return ret;
+	}
+	
+	static KeyPair getKeyPair() throws Exception {
+		KeyPair ret = my(Crypto.class).newECDSAKeyPair("MY SEED".getBytes());
 		int length = ret.getPublic().getEncoded().length;
 		System.out.println("length:" + length);
 		

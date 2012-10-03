@@ -29,7 +29,7 @@ public interface Crypto {
 	
 	ECBCipher newAES256Cipher(byte[] key);
 	
-	PublicKey retrievePublicKey(byte[] keyBytes);
+	PublicKey unmarshalPublicKey(byte[] keyBytes);
 	SecretKey secretKeyFrom(PublicKey publicKey, PrivateKey privateKey);
 
 }

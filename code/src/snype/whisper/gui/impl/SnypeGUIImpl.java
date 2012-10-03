@@ -17,9 +17,9 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.bricks.snapps.contacts.gui.ContactsGui;
-import snype.whisper.gui.SnypeCallAccept;
+import snype.whisper.gui.SnypeAcceptTuple;
 import snype.whisper.gui.SnypeGUI;
-import snype.whisper.gui.SnypeCall;
+import snype.whisper.gui.SnypeStartTuple;
 import snype.whisper.gui.SnypeStopTuple;
 import snype.whisper.skin.audio.mic.Mic;
 import snype.whisper.speextuples.SpeexTuples2;
@@ -27,43 +27,60 @@ import basis.lang.Consumer;
 
 public class SnypeGUIImpl implements SnypeGUI {
 
-	@SuppressWarnings("unused") private WeakContract ref1 =
-	my(RemoteTuples.class).addSubscription(SnypeCallAccept.class, new Consumer<SnypeCallAccept>() {  @Override public void consume(SnypeCallAccept tuple) {
+	@SuppressWarnings("unused") private WeakContract acceptSubscription = my(RemoteTuples.class).addSubscription(SnypeAcceptTuple.class, new Consumer<SnypeAcceptTuple>() {
+
+		@Override
+		public void consume(SnypeAcceptTuple tuple) {
 			Contact contact = my(ContactSeals.class).contactGiven(tuple.publisher);
 			createCallLightIfNeeded(contact, "Snype with " + contact.nickname().currentValue(), "Press stop to terminate the call");
 			setupConnection(tuple.publisher);
-	}});
+		}
+	});
 
-	@SuppressWarnings("unused") private WeakContract ref2 =
-	my(RemoteTuples.class).addSubscription(SnypeStopTuple.class, new Consumer<SnypeStopTuple>() {  @Override public void consume(SnypeStopTuple tuple) {
+	@SuppressWarnings("unused")
+	private WeakContract stopSubscription = my(RemoteTuples.class).addSubscription(SnypeStopTuple.class, new Consumer<SnypeStopTuple>() {
+
+		@Override
+		public void consume(SnypeStopTuple tuple) {
 			Contact contact = my(ContactSeals.class).contactGiven(tuple.publisher);
 			Light light = lightsByContact.get(contact);
-			if (light != null)
+			if(light!=null) {
 				my(BlinkingLights.class).turnOffIfNecessary(light);
+			}
 			tearDownConnection(tuple.publisher);
 	}});
 	
-	@SuppressWarnings("unused") private WeakContract ref3 =
-	my(RemoteTuples.class).addSubscription(SnypeCall.class, new Consumer<SnypeCall>() {  @Override public void consume(final SnypeCall call) {
-			Contact contact = my(ContactSeals.class).contactGiven(call.publisher);
+	@SuppressWarnings("unused")
+	private WeakContract startSubscription = my(RemoteTuples.class).addSubscription(SnypeStartTuple.class, new Consumer<SnypeStartTuple>() {
+
+		@Override
+		public void consume(final SnypeStartTuple tuple) {
+			Contact contact = my(ContactSeals.class).contactGiven(tuple.publisher);
 			final Light light = my(BlinkingLights.class).turnOn(LightType.INFO, "Call from " + contact.nickname().currentValue(), "Awaiting acceptance");
 			light.addAction(new Action() {
-				@Override public String caption() { return "Accept"; }
-				@Override public void run() {
+				
+				@Override
+				public void run() {
 					my(BlinkingLights.class).turnOffIfNecessary(light);
-					my(TupleSpace.class).add(new SnypeCallAccept(call.publisher));
-					Contact contact = my(ContactSeals.class).contactGiven(call.publisher);
+					my(TupleSpace.class).add(new SnypeAcceptTuple(tuple.publisher));
+					Contact contact = my(ContactSeals.class).contactGiven(tuple.publisher);
 					createCallLightIfNeeded(contact, "Snype with " + contact.nickname().currentValue(), "Press stop to terminate the call");
-					setupConnection(call.publisher);
+					setupConnection(tuple.publisher);
 				}
+				
+
+				@Override public String caption() { return "Accept"; }
 			});
 			
 			light.addAction(new Action() {
-				@Override public String caption() { return "Reject"; }
-				@Override public void run() {
+				
+				@Override
+				public void run() {
 					my(BlinkingLights.class).turnOffIfNecessary(light);
-					my(TupleSpace.class).add(new SnypeStopTuple(call.publisher));
+					my(TupleSpace.class).add(new SnypeStopTuple(tuple.publisher));
 				}
+				
+				@Override public String caption() { return "Reject"; }
 			});
 		}});
 
@@ -90,7 +107,7 @@ public class SnypeGUIImpl implements SnypeGUI {
 	protected void startCall() {
 		Contact contact = my(ContactsGui.class).selectedContact().currentValue();
 		Seal seal = my(ContactSeals.class).sealGiven(contact).currentValue();
-		my(TupleSpace.class).add(new SnypeCall(seal));
+		my(TupleSpace.class).add(new SnypeStartTuple(seal));
 		createCallLightIfNeeded(contact, "Calling to " + contact.nickname().currentValue(), "Awaiting acceptance");
 	}
 

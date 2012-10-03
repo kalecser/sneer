@@ -1,5 +1,6 @@
 package sneer.bricks.identity.keys.own;
 
+import java.security.PrivateKey;
 import java.security.PublicKey;
 
 import basis.brickness.Brick;
@@ -15,5 +16,6 @@ public interface OwnKeys {
 	void generateKeyPair(byte[] seed);
 	
 	Signal<PublicKey> ownPublicKey();
+	Signal<PrivateKey> ownPrivateKey();
 
 }
