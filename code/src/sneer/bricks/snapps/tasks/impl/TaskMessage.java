@@ -4,10 +4,18 @@ import sneer.bricks.expression.tuples.Tuple;
 
 public class TaskMessage extends Tuple {
 	
-	public TaskMessage(String task) {
-		_task = task;
+	private Task _task;
+	
+	public TaskMessage(Task task) {
+		setTask(task);
 	}
 
-	public String _task;
+	public Task getTask() {
+		return _task;
+	}
+
+	public void setTask(Task _task) {
+		this._task = _task;
+	}
 
 }
