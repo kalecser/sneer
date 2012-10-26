@@ -15,8 +15,6 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 
-import sneer.bricks.hardware.cpu.codec.DecodeException;
-import sneer.bricks.hardware.cpu.lang.Lang;
 import sneer.bricks.identity.seals.Seal;
 import sneer.bricks.identity.seals.codec.SealCodec;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
@@ -129,18 +127,8 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 		}};
 	}
 
-	
 	private Seal decode(String sealString) throws Refusal {
-		if (sealString == null) return null;
-
-		String cleanedSealString = my(Lang.class).strings().deleteWhitespace(sealString);
-		if (cleanedSealString.isEmpty()) return null;
-
-		try {
-			return my(SealCodec.class).hexDecode(cleanedSealString);
-		} catch (DecodeException de) {
-			throw new Refusal(de.getMessage());
-		}
+		return my(ContactSeals.class).unmarshal(sealString);
 	}
 
 	
