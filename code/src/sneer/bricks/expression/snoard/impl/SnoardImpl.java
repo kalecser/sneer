@@ -80,34 +80,17 @@ public class SnoardImpl implements Snoard, ClipboardOwner {
 		my(TupleSpace.class).add(t);
 	}
 
-	public String getClipboardContents() {
-		String result = "";
+	public Transferable getClipboardContents() {
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		// odd: the Object param of getContents is not currently used
 		Transferable contents = clipboard.getContents(null);
-			
-		boolean hasTransferableText = (contents != null)
-				&& contents.isDataFlavorSupported(DataFlavor.stringFlavor);
-		if (hasTransferableText) {
-			try {
-				result = (String) contents
-						.getTransferData(DataFlavor.stringFlavor);
-			} catch (UnsupportedFlavorException ex) {
-				// highly unlikely since we are using a standard DataFlavor
-				System.out.println(ex);
-				ex.printStackTrace();
-			} catch (IOException ex) {
-				System.out.println(ex);
-				ex.printStackTrace();
-			}
-		}
-		return result;
+		
+		return contents;
 	}
 
-	public void setClipboardContents(String aString) {
-		StringSelection stringSelection = new StringSelection(aString);
+	public void setClipboardContents(Transferable contents) {
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		clipboard.setContents(stringSelection, this);
+		clipboard.setContents(contents, this);
 	}
 	
 	private void receiveClipboard(final SnoardTuple value) {
@@ -129,7 +112,7 @@ public class SnoardImpl implements Snoard, ClipboardOwner {
 			
 			@Override
 			public void run() {
-				setClipboardContents((String) value.clipValue);
+				setClipboardContents((Transferable) value.clipValue);
 				my(BlinkingLights.class).turnOffIfNecessary(blinkingLight);
 			}
 			

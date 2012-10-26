@@ -11,7 +11,7 @@ import basis.brickness.Brick;
 @Brick
 public interface UdpNetwork {
 
-	static final int MAX_PACKET_PAYLOAD_SIZE = 1024 * 2; //2k max. 1k is ideal for UDP Packets
+	static final int MAX_PACKET_PAYLOAD_SIZE = 1024 * 20; //2k max. 1k is ideal for UDP Packets
 
 	UdpSocket openSocket(int portNumber) throws SocketException;
 
