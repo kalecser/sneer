@@ -15,4 +15,6 @@ public interface ContactsGui extends Instrument {
 
 	void registerContactTextProvider(ContactTextProvider textProvider);
 
+	void setSelectedContact(Contact contact);
+
 }

@@ -104,6 +104,11 @@ class ContactsGuiImpl implements ContactsGui {
 	public Signal<Contact> selectedContact(){
 		return _contactList.selectedElement();
 	}
+
+	@Override
+	public void setSelectedContact(Contact contact) {
+		_contactList.setSelectedElement(contact);
+	}
 	
 	
 	private void addContactActions(MenuGroup<? extends JComponent> menuGroup) {
