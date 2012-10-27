@@ -4,7 +4,6 @@ import static basis.environments.Environments.my;
 
 import java.io.File;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.software.code.compilers.CompilationError;
@@ -14,7 +13,6 @@ import sneer.bricks.software.code.compilers.Result;
 import sneer.bricks.software.code.compilers.scala.ScalaCompiler;
 import sneer.bricks.software.code.compilers.tests.LanguageCompilerTestBase;
 
-@Ignore
 public class ScalaCompilerTest extends LanguageCompilerTestBase {
 
 	@Override
