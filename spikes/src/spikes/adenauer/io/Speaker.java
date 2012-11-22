@@ -81,10 +81,12 @@ public class Speaker implements Runnable {
         // play back the captured audio data
 
         //int frameSizeInBytes = format.getFrameSize();
-        int bufferLengthInFrames = line.getBufferSize() / 8;
+        @SuppressWarnings("unused")
+		int bufferLengthInFrames = line.getBufferSize() / 8;
         //int bufferLengthInBytes = bufferLengthInFrames * frameSizeInBytes;
         //byte[] data = new byte[bufferLengthInBytes];
-        int numBytesRead = 0;
+        @SuppressWarnings("unused")
+		int numBytesRead = 0;
 
         // start the source data line
         line.start();

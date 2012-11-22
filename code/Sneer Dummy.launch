@@ -11,4 +11,5 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="spikes.runner.SneerGit"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="sneer"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dsneer.dummy=true"/>
 </launchConfiguration>
