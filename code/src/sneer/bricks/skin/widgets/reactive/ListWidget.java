@@ -8,5 +8,6 @@ public interface ListWidget<E> extends ComponentWidget<JList<E>>{
 
 	Signal<E> selectedElement();
 	void clearSelection();
+	void setSelectedElement(E element);
 
 }

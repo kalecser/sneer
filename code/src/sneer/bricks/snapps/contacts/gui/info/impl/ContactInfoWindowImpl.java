@@ -59,7 +59,8 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 		}, true);
 	}
 	
-	private void open() {
+	@Override
+	public void open() {
 		if(!_isGuiInitialized) {
 			_isGuiInitialized = true;
 			initGui();
@@ -123,15 +124,11 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 	private PickyConsumer<String> contactsSealSetter() {
 		return new PickyConsumer<String>() { @Override public void consume(String sealString) throws Refusal {
 			String nick = contact().nickname().currentValue();
-			my(ContactSeals.class).put(nick, decode(sealString));
+			ContactSeals contactSeals = my(ContactSeals.class);
+			contactSeals.put(nick, contactSeals.unmarshal(sealString));
 		}};
 	}
 
-	private Seal decode(String sealString) throws Refusal {
-		return my(ContactSeals.class).unmarshal(sealString);
-	}
-
-	
 	private void setGridBagLayout() {
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new GridBagLayout());
@@ -148,7 +145,6 @@ class ContactInfoWindowImpl extends JFrame implements ContactInfoWindow {
 		contentPane.add(_sealScroll,  new GridBagConstraints(0, 2, 5, 1, 0.5, 0.5, 
 				GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 0, 0) );
 	}
-	
 	
 	private Contact contact() {
 		return my(ContactsGui.class).selectedContact().currentValue();

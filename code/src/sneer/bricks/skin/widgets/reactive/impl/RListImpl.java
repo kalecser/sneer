@@ -116,5 +116,11 @@ class RListImpl<ELEMENT> extends JList<ELEMENT> implements ListWidget<ELEMENT> {
 			getSelectionModel().clearSelection();
 			changeSelectedElement(null);
 		}});
+	}
+
+
+	@Override
+	public void setSelectedElement(ELEMENT element) {
+		changeSelectedElement(element);
 	}	
 }
