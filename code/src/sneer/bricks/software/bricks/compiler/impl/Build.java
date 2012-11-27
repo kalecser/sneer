@@ -105,7 +105,7 @@ class Build {
 			File brickFolder, String subfolder) {
 		File testsFolder = new File(brickFolder, subfolder);
 		if (testsFolder.exists())
-			testFiles.addAll(listLanguageFiles(testsFolder, fileFilters().any()));
+			testFiles.addAll(listJavaFiles(testsFolder, fileFilters().any()));
 	}
 
 	
@@ -218,7 +218,7 @@ class Build {
 
 	
 	private Collection<File> brickApiFiles() {
-		return listLanguageFiles(
+		return listJavaFiles(
 			_srcFolder,
 			fileFilters().not(fileFilters().or(new Filter[] {
 				fileFilters().name("impl"),
@@ -229,10 +229,10 @@ class Build {
 	}
 
 	
-	private Collection<File> listLanguageFiles(File srcFolder, Filter filterForSubfolders) {
+	private Collection<File> listJavaFiles(File srcFolder, Filter filterForSubfolders) {
 		return fileFilters().listFiles(
 			srcFolder,
-			fileFilters().suffix(_language.fileExtension()),
+			fileFilters().suffix(".java"),
 			filterForSubfolders);
 	}
 
