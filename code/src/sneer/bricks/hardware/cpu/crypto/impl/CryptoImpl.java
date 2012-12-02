@@ -1,27 +1,27 @@
 package sneer.bricks.hardware.cpu.crypto.impl;
 
 import static basis.environments.Environments.my;
+import static org.bouncycastle.jce.provider.asymmetric.ec.ECUtil.generatePrivateKeyParameter;
+import static org.bouncycastle.jce.provider.asymmetric.ec.ECUtil.generatePublicKeyParameter;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
+import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.util.Arrays;
 
-import javax.crypto.SecretKey;
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.crypto.agreement.ECDHBasicAgreement;
 import org.bouncycastle.jce.provider.JDKKeyFactory;
 import org.bouncycastle.jce.provider.JDKMessageDigest;
-import org.bouncycastle.jce.provider.asymmetric.ec.KeyAgreement;
 import org.bouncycastle.jce.provider.asymmetric.ec.KeyPairGenerator;
 
 import sneer.bricks.hardware.cpu.crypto.Crypto;
@@ -34,19 +34,27 @@ import basis.lang.arrays.ImmutableByteArray;
 
 class CryptoImpl implements Crypto {
 
-	private static final BouncyCastleProvider BOUNCY_CASTLE = new BouncyCastleProvider();
-	private static final String ECDH = "ECDH";
 	private static final int FILE_BLOCK_SIZE = 1024 * 100;
 	
 	@Override
 	public Hash digest(byte[] input) {
-		return newDigester().digest(input);
+		return digest(input, new JDKMessageDigest.SHA512());
+	}
+	
+	
+	private Hash digest(byte[] input, MessageDigest messageDigest) {
+		return newDigester(messageDigest).digest(input);
 	}
 
 
 	@Override
 	public Digester newDigester() {
-		return new DigesterImpl(new JDKMessageDigest.SHA512());
+		return newDigester(new JDKMessageDigest.SHA512());
+	}
+
+
+	private Digester newDigester(MessageDigest messageDigest) {
+		return new DigesterImpl(messageDigest);
 	}
 
 
@@ -105,7 +113,7 @@ class CryptoImpl implements Crypto {
 	
 	@Override
 	public KeyPair newECDSAKeyPair(final byte[] seed) {
-		KeyPairGenerator generator = new KeyPairGenerator.ECDSA(); 
+		KeyPairGenerator.EC generator = new KeyPairGenerator.ECDSA();
 		generator.initialize(256, new RandomWrapper(mix256bits(seed)));
 		return generator.generateKeyPair();
 	}
@@ -132,13 +140,13 @@ class CryptoImpl implements Crypto {
 	
 
 	@Override
-	public SecretKey secretKeyFrom(final PublicKey publicKey, final PrivateKey privateKey) {
-		return safelyProduce(new ProducerX<SecretKey, Exception>() { @Override public SecretKey produce() throws NoSuchAlgorithmException, InvalidKeyException {
-			KeyAgreementWrapper keyAgreement = new KeyAgreementWrapper(new KeyAgreement.DH(), BOUNCY_CASTLE, ECDH);
-			keyAgreement.init(privateKey);
-			keyAgreement.doPhase(publicKey, true);
+	public Hash secretKeyFrom(final PublicKey publicKey, final PrivateKey privateKey) {
+		return safelyProduce(new ProducerX<Hash, Exception>() { @Override public Hash produce() throws InvalidKeyException {
+			ECDHBasicAgreement agreement = new ECDHBasicAgreement();
+			agreement.init(generatePrivateKeyParameter(privateKey));
+			BigInteger ret = agreement.calculateAgreement(generatePublicKeyParameter(publicKey));
 			
-			return keyAgreement.generateSecret(ECDH);
+			return digest(ret.toByteArray(), new JDKMessageDigest.SHA256());
 		}});
 	}
 	

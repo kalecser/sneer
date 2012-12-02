@@ -9,9 +9,8 @@ import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnect
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
-import javax.crypto.SecretKey;
-
 import sneer.bricks.hardware.cpu.crypto.ECBCipher;
+import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.crypto.ecb.ECBCiphers;
 import sneer.bricks.hardware.cpu.crypto.ecdh.ECDHKeyAgreement;
 import sneer.bricks.hardware.cpu.threads.Threads;
@@ -110,8 +109,8 @@ class UdpByteConnection implements ByteConnection {
 	private void initializeCipherIfNecessary(ByteBuffer data) {
 		synchronized (handshakeMonitor) {
 			if (cipher != null) return;
-			SecretKey secret = my(ECDHKeyAgreement.class).generateSecret(publicKeyFrom(data));
-			cipher = my(ECBCiphers.class).newAES256(secret.getEncoded());
+			Hash secret = my(ECDHKeyAgreement.class).generateSecret(publicKeyFrom(data));
+			cipher = my(ECBCiphers.class).newAES256(secret.bytes.copy());
 			handshakeMonitor.notify();
 		}
 	}

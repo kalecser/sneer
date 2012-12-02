@@ -11,8 +11,6 @@ import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.Random;
 
-import javax.crypto.SecretKey;
-
 import org.junit.Test;
 
 import sneer.bricks.hardware.cpu.codec.Codec;
@@ -98,8 +96,11 @@ public class CryptoTest extends BrickTestBase {
 		KeyPair pair1 = subject.newECDSAKeyPair("seed 1".getBytes(UTF8));
 		KeyPair pair2 = subject.newECDSAKeyPair("seed 2".getBytes(UTF8));
 		
-		SecretKey secret = subject.secretKeyFrom(pair1.getPublic(), pair2.getPrivate());
-		assertArrayEquals(fromHex("3215d8694f6aec8b674f486e39290c0baa1a05aaaedc433561c0ed52262137f1"), secret.getEncoded());
+		Hash secretFromPair1 = subject.secretKeyFrom(pair1.getPublic(), pair2.getPrivate());
+		assertArrayEquals(fromHex("feeab8700cc0a59696972adf72212ae0f7559f17ce93ee50730662bf323c97d4"), secretFromPair1.bytes.copy());
+		
+		Hash secretFromPair2 = subject.secretKeyFrom(pair2.getPublic(), pair1.getPrivate());
+		assertEquals(secretFromPair2, secretFromPair1);
 	}
 	
 	

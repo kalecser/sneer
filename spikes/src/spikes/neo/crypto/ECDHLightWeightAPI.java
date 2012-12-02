@@ -33,8 +33,8 @@ public class ECDHLightWeightAPI {
 		BigInteger neideSecret = secretGiven(neide.getPrivate(), john.getPublic());
 		BigInteger johnSecret = secretGiven(john.getPrivate(), neide.getPublic());
 		
-		System.out.println("SECRET FROM NEIDE'S SIDE: " + neideSecret);
-		System.out.println("SECRET FROM  JOHN'S SIDE: " + johnSecret);
+		System.out.println("SECRET FROM NEIDE'S SIDE: " + neideSecret + " Size: " + neideSecret.toByteArray().length);
+		System.out.println("SECRET FROM  JOHN'S SIDE: " + johnSecret + " Size: " + johnSecret.toByteArray().length);
 		System.out.println("SAME SECRET: " + neideSecret.equals(johnSecret));
 		
 		throw new NotImplementedYet("1) Generate keys given seed, like Sneer does. 2) Use a hash of the BigInteger in the end to minimize information leak about the private keys.");

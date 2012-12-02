@@ -8,7 +8,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
 
-import javax.crypto.SecretKey;
 
 import basis.brickness.Brick;
 
@@ -30,6 +29,6 @@ public interface Crypto {
 	ECBCipher newAES256Cipher(byte[] key);
 	
 	PublicKey unmarshalPublicKey(byte[] keyBytes);
-	SecretKey secretKeyFrom(PublicKey publicKey, PrivateKey privateKey);
+	Hash secretKeyFrom(PublicKey publicKey, PrivateKey privateKey);
 
 }
