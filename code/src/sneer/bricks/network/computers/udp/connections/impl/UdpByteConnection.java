@@ -8,13 +8,16 @@ import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnect
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
+import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.ECBCipher;
 import sneer.bricks.hardware.cpu.crypto.Hash;
 import sneer.bricks.hardware.cpu.crypto.ecb.ECBCiphers;
 import sneer.bricks.hardware.cpu.crypto.ecdh.ECDHKeyAgreement;
 import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.keys.own.OwnKeys;
+import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.computers.connections.ByteConnection;
 import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.sightings.SightingKeeper;
@@ -109,10 +112,23 @@ class UdpByteConnection implements ByteConnection {
 	private void initializeCipherIfNecessary(ByteBuffer data) {
 		synchronized (handshakeMonitor) {
 			if (cipher != null) return;
-			Hash secret = my(ECDHKeyAgreement.class).generateSecret(publicKeyFrom(data));
+			
+			byte[] receivedPublicKey = publicKeyFrom(data);
+			checkReceivedPublicKey(receivedPublicKey);
+						
+			Hash secret = my(ECDHKeyAgreement.class).generateSecret(receivedPublicKey);
 			cipher = my(ECBCiphers.class).newAES256(secret.bytes.copy());
 			handshakeMonitor.notify();
 		}
+	}
+
+
+	private void checkReceivedPublicKey(byte[] publicKey) {
+		byte[] sealFromPublicKey = my(Crypto.class).digest(publicKey).bytes.copy();
+		byte[] knowSeal = my(ContactSeals.class).sealGiven(contact).currentValue().bytes.copy();
+		
+		if (!Arrays.equals(knowSeal, sealFromPublicKey)) 
+			throw new IllegalStateException("Public key from " + contact + " seems to be corrupted");
 	}
 
 
