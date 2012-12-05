@@ -17,10 +17,10 @@ import org.jmock.Expectations;
 import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
+import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.ecb.ECBCiphers;
 import sneer.bricks.hardware.cpu.crypto.ecb.tests.NullECBCiphers;
 import sneer.bricks.hardware.cpu.crypto.ecdh.ECDHKeyAgreement;
@@ -102,9 +102,11 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	public void onUnknownCaller_ShouldNotify() throws Exception {
 		RefLatch<Call> latch = new RefLatch<Call>();
 		@SuppressWarnings("unused") WeakContract ref = subject.unknownCallers().addReceiver(latch);
-		byte[] seal = seal(123);
-		subject.handle(unknownHailFrom("Neide", seal));
+		
+		subject.handle(unknownHailFrom("Neide", 123));
 		Call call = latch.waitAndGet();
+		
+		byte[] seal = hash(publicKey(123));
 		assertEquals(new Seal(seal), call.callerSeal());
 		assertEquals("Neide", call.callerName());
 	}
@@ -226,9 +228,10 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	@Ignore
-	@Test(timeout = 2000)
-	public void onHail_ShouldCheckPublicKey() {
+	@Test(timeout = 2000, expected=IllegalStateException.class)
+	public void onHail_ShouldCheckPublicKey() throws Refusal, UnknownHostException {
+		byte[] seal = produceSeal("Neide", 42);
+		subject.handle(hailFrom("Neide", seal, publicKey(123), 0, "200.201.202.203", 123));
 	}
 	
 	
@@ -248,23 +251,21 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	
 	private DatagramPacket hailFrom(String nick) throws Exception {
-		return hailFrom(nick, produceSeal(nick, 42), 0, "200.201.202.203", 123);
+		return hailFrom(nick, produceSeal(nick, 42), publicKey(42), 0, "200.201.202.203", 123);
 	}
 
 
-	private DatagramPacket unknownHailFrom(String nick, byte[] seal) throws Exception {
-		return hailFrom(nick, seal, 0, "200.42.0.35", 4557);
+	private DatagramPacket unknownHailFrom(String nick, int seal) throws Exception {
+		return hailFrom(nick, hash(publicKey(seal)), publicKey(seal), 0, "200.42.0.35", 4557);
 	}
 	
 	
 	private DatagramPacket hailFrom(String nick, int timestamp, String ip, int port) throws Exception {
-		return hailFrom(nick, produceSeal(nick, 42), timestamp, ip, port);
+		return hailFrom(nick, produceSeal(nick, 42), publicKey(42), timestamp, ip, port);
 	}
 	
 	
-	private DatagramPacket hailFrom(String nick, byte[] seal, int timestamp, String ip, int port) throws UnknownHostException {
-		byte[] publicKey = my(OwnKeys.class).ownPublicKey().currentValue().getEncoded();
-		
+	private DatagramPacket hailFrom(String nick, byte[] seal, byte[] publicKey, int timestamp, String ip, int port) throws UnknownHostException {
 		ByteBuffer buf = preparePacket(Hail, seal);
 		buf.putLong(timestamp);
 		buf.put(publicKey);
@@ -314,8 +315,8 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 
 	
-	private byte[] seal(int id) {
-		byte[] ret = new byte[Seal.SIZE_IN_BYTES];
+	private byte[] publicKey(int id) {
+		byte[] ret = new byte[OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES];
 		Arrays.fill(ret, (byte)id);
 		return ret;
 	}
@@ -337,15 +338,20 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	private byte[] produceSeal(String nick, int seal) throws Refusal {
+	private byte[] produceSeal(String nick, int seed) throws Refusal {
 		produceContact(nick);
-		byte[] ret = seal(seal);
+		byte[] ret = hash(publicKey(seed));
 		my(ContactSeals.class).put(nick, new Seal(ret));
 		
 		return ret;
 	}
 
 	
+	private byte[] hash(byte[] key) {
+		return my(Crypto.class).digest(key).bytes.copy();
+	}
+
+
 	private void setOwnName(String name) {
 		my(Attributes.class).myAttributeSetter(OwnName.class).consume(name);
 	}
