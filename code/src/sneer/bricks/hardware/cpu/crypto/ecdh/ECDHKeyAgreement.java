@@ -7,6 +7,6 @@ import basis.brickness.Brick;
 @Brick
 public interface ECDHKeyAgreement {
 
-	Hash generateSecret(byte[] key);
+	Hash generateSecret(byte[] peerPublicKey);
 	
 }

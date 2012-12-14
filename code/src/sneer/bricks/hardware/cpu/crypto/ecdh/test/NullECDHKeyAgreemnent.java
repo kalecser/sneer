@@ -6,7 +6,7 @@ import sneer.bricks.hardware.cpu.crypto.ecdh.ECDHKeyAgreement;
 public class NullECDHKeyAgreemnent implements ECDHKeyAgreement {
 
 	@Override
-	public Hash generateSecret(byte[] key) {
+	public Hash generateSecret(byte[] peerPublicKey) {
 		return new Hash(new byte[] { 42 });
 	}
 
