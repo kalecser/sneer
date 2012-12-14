@@ -2,20 +2,6 @@
 	1) To ENABLE users to develop and share bricks.
 	2) To MOTIVATE users to develop bricks by fostering a growing user-base through interesting snapps such as media sharing (Wusic, Movies, etc). Better ideas of cool easy-kill snapps are welcome.
 
-Swarm ===================================================
-
-	Music
-	
-	Connectivity - Continue OutgoingAttempts if no direct connections exist (dont stop just because contact is online (due to indirect heartbeat routing))
-
-	Backup
-	
-	Udp
-		Study Probe and TupleSpace to do new transport implementation.
-
-	Brick Sharing
-
-Adenauer ================================================
 
 Volunteers ==============================================
 	- Chat: instead of using JOptionPanes, extract from Wind a separate "ChatGui" brick, so that Wind and ` can both use the same Gui.

@@ -113,7 +113,7 @@ build.xml - If you don't use Eclipse, you can use the ANT build file to compile 
 SHARING YOUR CODE
 =====================
 
-Brick sharing is not quite ready (will be soon). For now, to share your code just zip your "own" folder (see above) and send it to us on the mailing list (see below).
+P2P brick sharing is not ready. For now, to share your code just zip your "own" folder (see above) and send it to us on the mailing list (see below).
 
 If you become a frequent contributor, we can give you commit rights to our GIT repository.
 
