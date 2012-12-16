@@ -30,16 +30,16 @@ class SecurityProtocol {
 	private final ConnectionMonitor monitor;
 	private Hash sessionKey;
 	private ECBCipher cipher;
+	private WeakContract handshakeTimer;
 
-	private WeakContract refToAvoidGC;
-	@SuppressWarnings("unused") private WeakContract refToAvoidGC2;
+	@SuppressWarnings("unused") private final WeakContract refToAvoidGC;
 
 	
 	SecurityProtocol(Contact contact, ConnectionMonitor monitor) {
 		this.contact = contact;
 		this.monitor = monitor;
 		
-		refToAvoidGC2 = monitor.isConnected().addReceiver(new Consumer<Boolean>() {  @Override public void consume(Boolean isConnected) {
+		refToAvoidGC = monitor.isConnected().addReceiver(new Consumer<Boolean>() {  @Override public void consume(Boolean isConnected) {
 			if (isConnected) startHandshaking();
 			else resetHandshake();
 		}});
@@ -47,8 +47,8 @@ class SecurityProtocol {
 
 
 	private void startHandshaking() {
-		if (refToAvoidGC != null) return;
-		refToAvoidGC = my(Timer.class).wakeUpNowAndEvery(KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
+		if (handshakeTimer != null) return;
+		handshakeTimer = my(Timer.class).wakeUpNowAndEvery(KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
 			handshake();
 		}});
 	}
@@ -86,9 +86,9 @@ class SecurityProtocol {
 
 
 	private void stopHandshake() {
-		if (refToAvoidGC == null) return;
-		refToAvoidGC.dispose();
-		refToAvoidGC = null;
+		if (handshakeTimer == null) return;
+		handshakeTimer.dispose();
+		handshakeTimer = null;
 	}
 
 
@@ -102,7 +102,7 @@ class SecurityProtocol {
 	
 	void handleHandshake(ByteBuffer data) {
 		synchronized (handshakeMonitor) {
-			if (isHandshakeComplete()) {
+			if (isHandshakeComplete()) { // TODO: Improve this to avoid loop
 				handshake();
 				return;
 			}
@@ -124,7 +124,7 @@ class SecurityProtocol {
 	private byte[] publicKeyFrom(ByteBuffer data) {
 		byte[] otherPeerPublicKey = new byte[OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES];
 		data.get(otherPeerPublicKey);
-
+		
 		return otherPeerPublicKey;
 	}
 

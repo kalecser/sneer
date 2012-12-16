@@ -91,7 +91,9 @@ class UdpByteConnection implements ByteConnection {
 			return;
 		}
 		
-		if (receiver == null || !security.isHandshakeComplete()) return;
+		if (receiver == null || !security.isHandshakeComplete()) 
+			return;
+		
 		byte[] payload = new byte[data.remaining()];
 		data.get(payload);
 		receiver.consume(ByteBuffer.wrap(security.decrypt(payload)));

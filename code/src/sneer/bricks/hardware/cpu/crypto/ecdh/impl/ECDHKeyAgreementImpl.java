@@ -15,6 +15,8 @@ import sneer.bricks.identity.keys.own.OwnKeys;
 
 class ECDHKeyAgreementImpl implements ECDHKeyAgreement {
 
+	private final SecureRandom random = new SecureRandom();
+	
 	@Override
 	public Hash generateSecret(byte[] peerPublicKey) {
 		PublicKey otherPeerPublicKey = my(Crypto.class).unmarshalPublicKey(peerPublicKey);
@@ -24,7 +26,7 @@ class ECDHKeyAgreementImpl implements ECDHKeyAgreement {
 
 	@Override
 	public Hash generateSessionKey() {
-		BigInteger sessionKey = new BigInteger(256, new SecureRandom());
+		BigInteger sessionKey = new BigInteger(256, random);
 		return my(Crypto.class).digest(sessionKey.toByteArray());
 	}
 
