@@ -2,8 +2,10 @@ package sneer.bricks.hardware.cpu.crypto.ecdh.impl;
 
 import static basis.environments.Environments.my;
 
+import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 
 
 import sneer.bricks.hardware.cpu.crypto.Crypto;
@@ -22,7 +24,8 @@ class ECDHKeyAgreementImpl implements ECDHKeyAgreement {
 
 	@Override
 	public Hash generateSessionKey() {
-		return null;
+		BigInteger sessionKey = new BigInteger(256, new SecureRandom());
+		return my(Crypto.class).digest(sessionKey.toByteArray());
 	}
 
 }
