@@ -53,20 +53,7 @@ class SecurityProtocol {
 		}});
 	}
 	
-	
-	private void resetHandshake() {
-		stopHandshake();
-		sessionKey = null;
-	}
 
-
-	private void stopHandshake() {
-		if (refToAvoidGC == null) return;
-		refToAvoidGC.dispose();
-		refToAvoidGC = null;
-	}
-	
-	
 	private void handshake() {
 		ByteBuffer buf = prepare(Handshake);
 		buf.put(ownPublicKey());
@@ -75,8 +62,8 @@ class SecurityProtocol {
 		
 		send(buf, monitor.lastSighting());
 	}
-
-
+	
+	
 	private byte[] ownPublicKey() {
 		byte[] ret = my(OwnKeys.class).ownPublicKey().currentValue().getEncoded();
 		if (ret.length != OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES) throw new IllegalStateException("Public key length is expected to be "+ OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES +" bytes, was " + ret.length);
@@ -89,6 +76,19 @@ class SecurityProtocol {
 			sessionKey = my(ECDHKeyAgreement.class).generateSessionKey();
 		
 		return sessionKey.bytes.copy();
+	}
+	
+	
+	private void resetHandshake() {
+		stopHandshake();
+		sessionKey = null;
+	}
+
+
+	private void stopHandshake() {
+		if (refToAvoidGC == null) return;
+		refToAvoidGC.dispose();
+		refToAvoidGC = null;
 	}
 
 
