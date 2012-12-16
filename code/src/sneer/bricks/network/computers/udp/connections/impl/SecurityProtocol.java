@@ -41,7 +41,7 @@ class SecurityProtocol {
 		
 		refToAvoidGC2 = monitor.isConnected().addReceiver(new Consumer<Boolean>() {  @Override public void consume(Boolean isConnected) {
 			if (isConnected) startHandshaking();
-			else stopHandshaking();
+			else resetHandshake();
 		}});
 	}
 
@@ -54,12 +54,16 @@ class SecurityProtocol {
 	}
 	
 	
-	private void stopHandshaking() {
-		if (refToAvoidGC != null)
-			refToAvoidGC.dispose();
-		
-		refToAvoidGC = null;
+	private void resetHandshake() {
+		stopHandshake();
 		sessionKey = null;
+	}
+
+
+	private void stopHandshake() {
+		if (refToAvoidGC == null) return;
+		refToAvoidGC.dispose();
+		refToAvoidGC = null;
 	}
 	
 	
@@ -98,7 +102,7 @@ class SecurityProtocol {
 	
 	void handleHandshake(ByteBuffer data) {
 		synchronized (handshakeMonitor) {
-			if (cipher != null) {
+			if (isHandshakeComplete()) {
 				handshake();
 				return;
 			}
@@ -111,7 +115,7 @@ class SecurityProtocol {
 			secret.bytes.copyTo(secret256bits, 256/8);
 			cipher = my(ECBCiphers.class).newAES256(secret256bits);
 			
-			stopHandshaking();
+			stopHandshake();
 			handshakeMonitor.notify();
 		}
 	}
