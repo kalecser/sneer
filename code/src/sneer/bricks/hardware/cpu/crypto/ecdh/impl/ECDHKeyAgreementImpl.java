@@ -20,4 +20,9 @@ class ECDHKeyAgreementImpl implements ECDHKeyAgreement {
 		return my(Crypto.class).secretKeyFrom(otherPeerPublicKey, ownPrivateKey);
 	}
 
+	@Override
+	public Hash generateSessionKey() {
+		return null;
+	}
+
 }

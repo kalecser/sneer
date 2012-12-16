@@ -8,5 +8,7 @@ import basis.brickness.Brick;
 public interface ECDHKeyAgreement {
 
 	Hash generateSecret(byte[] peerPublicKey);
+
+	Hash generateSessionKey();
 	
 }

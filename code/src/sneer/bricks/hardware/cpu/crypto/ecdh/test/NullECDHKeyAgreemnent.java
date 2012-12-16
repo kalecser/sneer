@@ -9,6 +9,15 @@ public class NullECDHKeyAgreemnent implements ECDHKeyAgreement {
 
 	@Override
 	public Hash generateSecret(byte[] peerPublicKey) {
+		return hash();
+	}
+
+	@Override
+	public Hash generateSessionKey() {
+		return hash(); 
+	}
+	
+	private Hash hash() {
 		byte[] ret = new byte[512/8];
 		Arrays.fill(ret, (byte)42);
 		return new Hash(ret);

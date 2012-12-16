@@ -1,6 +1,7 @@
 package sneer.bricks.network.computers.udp.connections.impl;
 
 import static basis.environments.Environments.my;
+import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.KEEP_ALIVE_PERIOD;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Hail;
 import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.prepare;
 import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.send;
@@ -13,7 +14,6 @@ import java.nio.charset.Charset;
 import sneer.bricks.hardware.clock.Clock;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
-import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.identity.name.OwnName;
 import sneer.bricks.network.computers.addresses.contacts.ContactAddresses;
 import sneer.bricks.network.computers.udp.connections.UdpConnectionManager;
@@ -74,7 +74,7 @@ class ConnectionMonitor {
 	
 	
 	private void startHailing() {
-		refToAvoidGC = my(Timer.class).wakeUpEvery(UdpConnectionManager.KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
+		refToAvoidGC = my(Timer.class).wakeUpEvery(KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
 			keepAlive();
 		}});
 		
@@ -93,7 +93,6 @@ class ConnectionMonitor {
 	private void hail() {
 		long now = my(Clock.class).preciseTime();
 		ByteBuffer buf = prepare(Hail).putLong(now);
-		buf.put(ownPublicKey());
 		buf.put(ownNameBytes());
 		buf.flip();
 		send(buf, address.currentValue());
@@ -107,13 +106,6 @@ class ConnectionMonitor {
 	}
 	
 	
-	private byte[] ownPublicKey() {
-		byte[] ret = my(OwnKeys.class).ownPublicKey().currentValue().getEncoded();
-		if (ret.length != OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES) throw new IllegalStateException("Public key length is expected to be "+ OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES +" bytes, was " + ret.length);
-		return ret;
-	}
-
-
 	private void disconnectIfIdle() {
 		long now = my(Clock.class).time().currentValue();
 		if (now - lastPeerSightingTime >= UdpConnectionManager.IDLE_PERIOD)

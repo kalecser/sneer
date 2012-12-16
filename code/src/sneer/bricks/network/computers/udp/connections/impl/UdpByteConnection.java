@@ -3,6 +3,7 @@ package sneer.bricks.network.computers.udp.connections.impl;
 import static basis.environments.Environments.my;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Data;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Hail;
+import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Handshake;
 import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.prepare;
 import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.send;
 
@@ -34,8 +35,8 @@ class UdpByteConnection implements ByteConnection {
 	
 	UdpByteConnection(Contact contact) {
 		this.contact = contact;
-		this.security = new SecurityProtocol(contact);
 		this.monitor = new ConnectionMonitor(contact);
+		this.security = new SecurityProtocol(contact, monitor);
 	}
 
 
@@ -79,10 +80,14 @@ class UdpByteConnection implements ByteConnection {
 	void handle(UdpPacketType type, InetSocketAddress origin, ByteBuffer data) {
 		my(SightingKeeper.class).keep(contact, origin);
 		
+		if (type == Handshake) {
+			security.handleHandshake(data);
+			return;
+		}
+		
 		if(type == Hail) {
 			long hailTimestamp = data.getLong();
 			monitor.handleHail(origin, hailTimestamp);
-			security.handleHandshake(data);
 			return;
 		}
 		
