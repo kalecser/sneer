@@ -26,6 +26,10 @@ public class ImmutableByteArray {
 		return result;
 	}
 
+	public void copyTo(byte[] dest, int length) {
+		System.arraycopy(_payload, 0, dest, 0, length);
+	}
+
 	public byte[] copy() {
 		return _payload.clone();
 	}

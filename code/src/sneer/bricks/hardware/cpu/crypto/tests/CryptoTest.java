@@ -97,7 +97,7 @@ public class CryptoTest extends BrickTestBase {
 		KeyPair pair2 = subject.newECDSAKeyPair("seed 2".getBytes(UTF8));
 		
 		Hash secretFromPair1 = subject.secretKeyFrom(pair1.getPublic(), pair2.getPrivate());
-		assertArrayEquals(fromHex("feeab8700cc0a59696972adf72212ae0f7559f17ce93ee50730662bf323c97d4"), secretFromPair1.bytes.copy());
+		assertArrayEquals(fromHex("21c68a64ec9ab787dc3b8472b8403dd16d05fa503233cc062e4e2ee2c283cdc20b2a66c74ccfd189297d4a426c1f59f0ae277fd41acf537c850615eb7b20bc0c"), secretFromPair1.bytes.copy());
 		
 		Hash secretFromPair2 = subject.secretKeyFrom(pair2.getPublic(), pair1.getPrivate());
 		assertEquals(secretFromPair2, secretFromPair1);

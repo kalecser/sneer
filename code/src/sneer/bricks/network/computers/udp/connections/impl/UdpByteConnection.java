@@ -117,7 +117,9 @@ class UdpByteConnection implements ByteConnection {
 			checkReceivedPublicKey(receivedPublicKey);
 						
 			Hash secret = my(ECDHKeyAgreement.class).generateSecret(receivedPublicKey);
-			cipher = my(ECBCiphers.class).newAES256(secret.bytes.copy());
+			byte[] secret256bits = new byte[256/8];
+			secret.bytes.copyTo(secret256bits, 256/8);
+			cipher = my(ECBCiphers.class).newAES256(secret256bits);
 			handshakeMonitor.notify();
 		}
 	}

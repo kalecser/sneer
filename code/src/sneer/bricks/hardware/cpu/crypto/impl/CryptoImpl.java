@@ -13,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
-import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
@@ -38,23 +37,13 @@ class CryptoImpl implements Crypto {
 	
 	@Override
 	public Hash digest(byte[] input) {
-		return digest(input, new JDKMessageDigest.SHA512());
-	}
-	
-	
-	private Hash digest(byte[] input, MessageDigest messageDigest) {
-		return newDigester(messageDigest).digest(input);
+		return newDigester().digest(input);
 	}
 
 
 	@Override
 	public Digester newDigester() {
-		return newDigester(new JDKMessageDigest.SHA512());
-	}
-
-
-	private Digester newDigester(MessageDigest messageDigest) {
-		return new DigesterImpl(messageDigest);
+		return new DigesterImpl(new JDKMessageDigest.SHA512());
 	}
 
 
@@ -146,7 +135,7 @@ class CryptoImpl implements Crypto {
 			agreement.init(generatePrivateKeyParameter(privateKey));
 			BigInteger ret = agreement.calculateAgreement(generatePublicKeyParameter(publicKey));
 			
-			return digest(ret.toByteArray(), new JDKMessageDigest.SHA256());
+			return digest(ret.toByteArray());
 		}});
 	}
 	
