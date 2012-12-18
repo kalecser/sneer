@@ -77,22 +77,18 @@ class UdpByteConnection implements ByteConnection {
 	}
 
 
-	void handle(UdpPacketType type, InetSocketAddress origin, ByteBuffer data) {
+	void handle(UdpPacketType type, InetSocketAddress origin, ByteBuffer packet) {
+		if (type == Hail) monitor.handleHailTimestamp(origin, packet.getLong());
+		if (type == Handshake) security.handleHandshake(packet);
+		if (type == Data) handleData(packet, origin);
+	}
+
+
+	private void handleData(ByteBuffer data, InetSocketAddress origin) {
 		my(SightingKeeper.class).keep(contact, origin);
-		
-		if (type == Handshake) {
-			security.handleHandshake(data);
-			return;
-		}
-		
-		if(type == Hail) {
-			long hailTimestamp = data.getLong();
-			monitor.handleHail(origin, hailTimestamp);
-			return;
-		}
-		
-		if (receiver == null || !security.isHandshakeComplete()) 
-			return;
+
+		if (receiver == null) return;
+		if (!security.isHandshakeComplete()) return;
 		
 		byte[] payload = new byte[data.remaining()];
 		data.get(payload);

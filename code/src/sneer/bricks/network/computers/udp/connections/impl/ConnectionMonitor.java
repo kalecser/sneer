@@ -58,7 +58,7 @@ class ConnectionMonitor {
 	}	
 	
 	
-	void handleHail(SocketAddress sighting, long timestamp) {
+	void handleHailTimestamp(SocketAddress sighting, long timestamp) {
 		Long now = my(Clock.class).preciseTime();
 		long hailDelay = now - timestamp;
 		
