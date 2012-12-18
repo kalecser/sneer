@@ -43,18 +43,23 @@ class Guardian {
 		
 		refToAvoidGC = monitor.isConnected().addReceiver(new Consumer<Boolean>() {  @Override public void consume(Boolean isConnected) {
 			if (isConnected)
-				startHandshaking();
+				handleConnect();
 			else
-				resetHandshake();
+				handleDisconnect();
 		}});
 	}
 
 
-	private void startHandshaking() {
-		if (handshakeTimer != null) return;
+	private void handleConnect() {
 		handshakeTimer = my(Timer.class).wakeUpNowAndEvery(KEEP_ALIVE_PERIOD, new Runnable() { @Override public void run() {
 			handshake();
 		}});
+	}
+
+	
+	private void handleDisconnect() {
+		stopHandshake();
+		sessionKey = null;
 	}
 	
 
@@ -80,12 +85,6 @@ class Guardian {
 			sessionKey = randomBytes();
 		
 		return sessionKey;
-	}
-
-
-	private void resetHandshake() {
-		stopHandshake();
-		sessionKey = null;
 	}
 
 
