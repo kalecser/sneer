@@ -56,6 +56,7 @@ class SecurityProtocol {
 
 	private void handshake() {
 		ByteBuffer buf = prepare(Handshake);
+		buf.put((byte)(isHandshakeComplete() ? 1 : 0));
 		buf.put(ownPublicKey());
 		buf.put(sessionKeyBytes());
 		buf.flip();
@@ -102,7 +103,7 @@ class SecurityProtocol {
 	
 	void handleHandshake(ByteBuffer data) {
 		synchronized (handshakeMonitor) {
-			if (isHandshakeComplete()) { // TODO: Improve this to avoid loop
+			if (shouldReplySecurityInfo(data)) {
 				handshake();
 				return;
 			}
@@ -118,6 +119,12 @@ class SecurityProtocol {
 			stopHandshake();
 			handshakeMonitor.notify();
 		}
+	}
+
+
+	private boolean shouldReplySecurityInfo(ByteBuffer data) {
+		boolean isCompletedFromOtherSide = data.get() == 1 ? true : false;
+		return isHandshakeComplete() && !isCompletedFromOtherSide;
 	}
 
 
@@ -149,7 +156,7 @@ class SecurityProtocol {
 		return cipher.decrypt(payload);
 	}
 
-
+	
 	boolean isHandshakeComplete() {
 		return cipher != null;
 	}
