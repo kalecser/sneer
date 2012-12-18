@@ -23,7 +23,9 @@ import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
 import basis.lang.Consumer;
 
-class SecurityProtocol {
+class Guardian {
+
+	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
 	private final Object handshakeMonitor = new Object();
 	private final Contact contact;
@@ -35,13 +37,15 @@ class SecurityProtocol {
 	@SuppressWarnings("unused") private final WeakContract refToAvoidGC;
 
 	
-	SecurityProtocol(Contact contact, ConnectionMonitor monitor) {
+	Guardian(Contact contact, ConnectionMonitor monitor) {
 		this.contact = contact;
 		this.monitor = monitor;
 		
 		refToAvoidGC = monitor.isConnected().addReceiver(new Consumer<Boolean>() {  @Override public void consume(Boolean isConnected) {
-			if (isConnected) startHandshaking();
-			else resetHandshake();
+			if (isConnected)
+				startHandshaking();
+			else
+				resetHandshake();
 		}});
 	}
 
@@ -79,13 +83,6 @@ class SecurityProtocol {
 	}
 
 
-	private static byte[] randomBytes() {
-		byte[] bytes = new byte[256/8];
-		new SecureRandom().nextBytes(bytes);
-		return bytes;
-	}
-	
-	
 	private void resetHandshake() {
 		stopHandshake();
 		sessionKey = null;
@@ -161,4 +158,11 @@ class SecurityProtocol {
 		return cipher != null;
 	}
 
+	private static byte[] randomBytes() {
+		byte[] bytes = new byte[256/8];
+		SECURE_RANDOM.nextBytes(bytes);
+		return bytes;
+	}
 }
+
+

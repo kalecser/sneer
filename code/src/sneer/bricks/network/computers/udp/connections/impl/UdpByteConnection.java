@@ -28,7 +28,7 @@ class UdpByteConnection implements ByteConnection {
 
 	private final Light error = my(BlinkingLights.class).prepare(LightType.ERROR);
 	private final Contact contact;
-	private final SecurityProtocol security;
+	private final Guardian guardian;
 	private final ConnectionMonitor monitor;
 	private Consumer<? super ByteBuffer> receiver;
 
@@ -36,7 +36,7 @@ class UdpByteConnection implements ByteConnection {
 	UdpByteConnection(Contact contact) {
 		this.contact = contact;
 		this.monitor = new ConnectionMonitor(contact);
-		this.security = new SecurityProtocol(contact, monitor);
+		this.guardian = new Guardian(contact, monitor);
 	}
 
 
@@ -57,13 +57,13 @@ class UdpByteConnection implements ByteConnection {
 	
 	
 	private void tryToSendPacketFor(Producer<? extends ByteBuffer> sender) {
-		security.waitUntilHandshake();
+		guardian.waitUntilHandshake();
 		
 		ByteBuffer byteBuffer = sender.produce();
 		byte[] bytes = new byte[byteBuffer.remaining()]; 
 		byteBuffer.get(bytes);
 		
-		byte[] payload = security.encrypt(bytes);
+		byte[] payload = guardian.encrypt(bytes);
 		ByteBuffer buf = prepare(Data);
 		
 		if (payload.length > buf.remaining()) {
@@ -79,7 +79,7 @@ class UdpByteConnection implements ByteConnection {
 
 	void handle(UdpPacketType type, InetSocketAddress origin, ByteBuffer packet) {
 		if (type == Hail) monitor.handleHailTimestamp(origin, packet.getLong());
-		if (type == Handshake) security.handleHandshake(packet);
+		if (type == Handshake) guardian.handleHandshake(packet);
 		if (type == Data) handleData(packet, origin);
 	}
 
@@ -88,11 +88,11 @@ class UdpByteConnection implements ByteConnection {
 		my(SightingKeeper.class).keep(contact, origin);
 
 		if (receiver == null) return;
-		if (!security.isHandshakeComplete()) return;
+		if (!guardian.isHandshakeComplete()) return;
 		
 		byte[] payload = new byte[data.remaining()];
 		data.get(payload);
-		receiver.consume(ByteBuffer.wrap(security.decrypt(payload)));
+		receiver.consume(ByteBuffer.wrap(guardian.decrypt(payload)));
 	}
 	
 }
