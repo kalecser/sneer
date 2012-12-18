@@ -7,9 +7,8 @@ import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnect
 import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.send;
 
 import java.nio.ByteBuffer;
+import java.security.SecureRandom;
 import java.util.Arrays;
-
-import basis.lang.Consumer;
 
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
@@ -22,13 +21,14 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
+import basis.lang.Consumer;
 
 class SecurityProtocol {
 
 	private final Object handshakeMonitor = new Object();
 	private final Contact contact;
 	private final ConnectionMonitor monitor;
-	private Hash sessionKey;
+	private byte[] sessionKey;
 	private ECBCipher cipher;
 	private WeakContract handshakeTimer;
 
@@ -73,9 +73,16 @@ class SecurityProtocol {
 	
 	private byte[] sessionKeyBytes() {
 		if (sessionKey == null)
-			sessionKey = my(ECDHKeyAgreement.class).generateSessionKey();
+			sessionKey = randomBytes();
 		
-		return sessionKey.bytes.copy();
+		return sessionKey;
+	}
+
+
+	private static byte[] randomBytes() {
+		byte[] bytes = new byte[256/8];
+		new SecureRandom().nextBytes(bytes);
+		return bytes;
 	}
 	
 	

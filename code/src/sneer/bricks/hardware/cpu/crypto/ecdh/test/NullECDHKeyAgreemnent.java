@@ -12,11 +12,6 @@ public class NullECDHKeyAgreemnent implements ECDHKeyAgreement {
 		return hash();
 	}
 
-	@Override
-	public Hash generateSessionKey() {
-		return hash(); 
-	}
-	
 	private Hash hash() {
 		byte[] ret = new byte[512/8];
 		Arrays.fill(ret, (byte)42);
