@@ -41,10 +41,10 @@ public abstract class FileCopyTestBase extends BrickTestWithTuples {
 		testWith(folderWithAFewFiles());
 	}
 
-	@Test (timeout = 7000)
+	@Test (timeout = 4000)
 	public void testWithLargeFile() throws Exception {
 		File largefile = newTmpFile();
-		writePseudoRandomBytesTo(largefile, 1000000);
+		writePseudoRandomBytesTo(largefile, 100000);
 		testWith(largefile);
 	}
 
