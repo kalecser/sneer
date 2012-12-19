@@ -2,6 +2,8 @@ package sneer.bricks.network.computers.udp.connections.tests;
 
 import static basis.environments.Environments.my;
 import static sneer.bricks.network.computers.udp.UdpNetwork.MAX_PACKET_PAYLOAD_SIZE;
+import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.IDLE_PERIOD;
+import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.KEEP_ALIVE_PERIOD;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Data;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Hail;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Handshake;
@@ -19,6 +21,7 @@ import org.jmock.Expectations;
 import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
@@ -234,11 +237,87 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
+	@Test(timeout = 2000)
+	public void onConnect_ShouldHandshake() throws Exception {
+		subject.handle(hailFrom("Neide"));
+		assertTrue(isConnected("Neide"));
+		my(SignalUtils.class).waitForValue(sender.history(), "| Handshake ,to:200.201.202.203,port:123");
+		
+		my(Clock.class).advanceTime(KEEP_ALIVE_PERIOD - 1);
+		my(SignalUtils.class).waitForValue(sender.history(), "| Handshake ,to:200.201.202.203,port:123");
+		
+		my(Clock.class).advanceTime(1);
+		my(SignalUtils.class).waitForValue(sender.history(), "| Handshake ,to:200.201.202.203,port:123| Handshake ,to:200.201.202.203,port:123");
+	}
+	
+	
+	@Test(timeout = 2000)
+	public void onHandshakeComplete_ShouldStopSendPackets() throws Exception {
+		subject.handle(hailFrom("Neide"));
+		my(SignalUtils.class).waitForValue(sender.history(), "| Handshake ,to:200.201.202.203,port:123");
+		
+		subject.handle(handshakeFrom("Neide"));
+		my(SignalUtils.class).waitForValue(sender.history(), "| Handshake ,to:200.201.202.203,port:123");
+		
+		my(Clock.class).advanceTime(KEEP_ALIVE_PERIOD + 1);
+		my(SignalUtils.class).waitForValue(sender.history(), "| Handshake ,to:200.201.202.203,port:123");
+	}
+	
+	
+	@Test(timeout = 2000)
+	public void onDisconnect_ShouldStopSendPackets() throws Exception {
+		subject.handle(hailFrom("Neide"));		
+		assertTrue(isConnected("Neide"));
+		my(SignalUtils.class).waitForValue(sender.history(), "| Handshake ,to:200.201.202.203,port:123");
+		
+		my(Clock.class).advanceTime(IDLE_PERIOD + 1);
+		assertFalse(isConnected("Neide"));
+		my(SignalUtils.class).waitForValue(sender.history(), "| Handshake ,to:200.201.202.203,port:123| Handshake ,to:200.201.202.203,port:123");
+		
+		my(Clock.class).advanceTime(KEEP_ALIVE_PERIOD + 1);
+		my(SignalUtils.class).waitForValue(sender.history(), "| Handshake ,to:200.201.202.203,port:123| Handshake ,to:200.201.202.203,port:123");
+	}
+	
+	
+	@Test(timeout = 2000)
+	public void shouldNotHandleDataPacket_UntilHandshakeIsCompleted() throws Exception {
+		final RefLatch<String> latch = new RefLatch<>();
+		connectionFor("Neide").initCommunications(new PacketProducerMock(), new Consumer<ByteBuffer>() {  @Override public void consume(ByteBuffer packet) {
+			byte[] bytes = new byte[packet.remaining()];
+			packet.get(bytes);
+			latch.consume(new String(bytes));
+		}});
+		
+		subject.handle(dataFrom("Neide", "Fist Packet".getBytes()));
+		
+		subject.handle(handshakeFrom("Neide"));
+		subject.handle(dataFrom("Neide", "Second Packet".getBytes()));
+		
+		assertEquals("Second Packet", latch.waitAndGet());
+	}
+	
+	
+	@Test(timeout = 2000)
+	public void shouldNotSendPacket_UntilHandshakeIsCompleted() throws Exception {
+		connectionFor("Neide").initCommunications(new PacketProducerMock("Hello Neide"), my(Signals.class).sink());
+		my(SignalUtils.class).waitForValue(sender.history(), "");
+		
+		subject.handle(hailFrom("Neide"));
+		subject.handle(handshakeFrom("Neide"));
+		my(SignalUtils.class).waitForValue(sender.history(), "| Handshake ,to:200.201.202.203,port:123| Data Hello Neide,to:200.201.202.203,port:123");
+	}
+	
+	
 	@Test(timeout = 2000, expected=IllegalStateException.class)
 	public void onHandshake_ShouldCheckPublicKey() throws Exception {
 		subject.handle(hailFrom("Neide"));
 		subject.handle(handshakeFrom("Neide", publicKey(0)));
 	}
+	
+	
+	@Test
+	@Ignore
+	public void onDisconnect_ShouldChangeSessionKey() {}
 	
 	
 	private void mockContactAddressAttributes(final String host, final int port) {

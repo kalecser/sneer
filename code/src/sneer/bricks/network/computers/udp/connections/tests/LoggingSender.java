@@ -2,6 +2,8 @@ package sneer.bricks.network.computers.udp.connections.tests;
 
 import static basis.environments.Environments.my;
 import static org.junit.Assert.assertArrayEquals;
+import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Hail;
+import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Handshake;
 
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
@@ -27,7 +29,10 @@ public final class LoggingSender implements UdpSender {
 		UdpPacketType packetType = UdpPacketType.search(type);
 		String ret = packetType.name() + " ";
 
-		if (packetType == UdpPacketType.Hail) {			
+		if (packetType == Handshake) 
+			return ret;
+		
+		if (packetType == Hail) {			
 			ret += buf.getLong() + " ";
 		}
 		
