@@ -21,7 +21,6 @@ import org.jmock.Expectations;
 import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import sneer.bricks.hardware.clock.Clock;
@@ -315,9 +314,23 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	@Test
-	@Ignore
-	public void onDisconnect_ShouldChangeSessionKey() {}
+	@Test(timeout = 2000)
+	public void onDisconnect_ShouldChangeSessionKey() throws Exception {
+		subject.handle(hailFrom("Neide"));
+		
+		assertTrue(isConnected("Neide"));
+		my(SignalUtils.class).waitForValue(sender.history(), "| Handshake ,to:200.201.202.203,port:123");
+		
+		byte[] firstSessionKey = sender.lastSessionKey(); 
+		
+		my(Clock.class).advanceTime(IDLE_PERIOD + 1);
+		assertFalse(isConnected("Neide"));
+		
+		subject.handle(hailFrom("Neide"));
+		
+		my(SignalUtils.class).waitForValue(sender.history(), "| Handshake ,to:200.201.202.203,port:123| Handshake ,to:200.201.202.203,port:123");
+		assertFalse(Arrays.equals(firstSessionKey, sender.lastSessionKey()));
+	}
 	
 	
 	private void mockContactAddressAttributes(final String host, final int port) {

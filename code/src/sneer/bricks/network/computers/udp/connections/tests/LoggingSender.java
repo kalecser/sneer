@@ -2,11 +2,13 @@ package sneer.bricks.network.computers.udp.connections.tests;
 
 import static basis.environments.Environments.my;
 import static org.junit.Assert.assertArrayEquals;
+import static sneer.bricks.identity.keys.own.OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Hail;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Handshake;
 
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import sneer.bricks.identity.seals.OwnSeal;
 import sneer.bricks.identity.seals.Seal;
@@ -24,13 +26,16 @@ public final class LoggingSender implements UdpSender {
 	
 	private Register<String> packetHistory = my(Signals.class).newRegister("");
 	private SetRegister<String> packetHistorySet = my(CollectionSignals.class).newSetRegister();
+	private byte[] lastSessionKey = new byte[256/8];
 
 	private String toString(byte type, ByteBuffer buf) {
 		UdpPacketType packetType = UdpPacketType.search(type);
 		String ret = packetType.name() + " ";
 
-		if (packetType == Handshake) 
+		if (packetType == Handshake) {
+			setLastSessionKey(buf);
 			return ret;
+		}
 		
 		if (packetType == Hail) {			
 			ret += buf.getLong() + " ";
@@ -39,6 +44,12 @@ public final class LoggingSender implements UdpSender {
 		byte[] payload = new byte[buf.remaining()];
 		buf.get(payload);
 		return ret + new String(payload);
+	}
+
+	private void setLastSessionKey(ByteBuffer buf) {
+		buf.get();
+		buf.get(new byte[PUBLIC_KEY_SIZE_IN_BYTES]);
+		buf.get(lastSessionKey);
 	}
 
 	public Signal<String> history() {
@@ -68,6 +79,10 @@ public final class LoggingSender implements UdpSender {
 	@Override
 	public void init(Consumer<DatagramPacket> sender) {
 		
+	}
+
+	public byte[] lastSessionKey() {
+		return Arrays.copyOf(lastSessionKey, lastSessionKey.length);
 	}
 
 }
