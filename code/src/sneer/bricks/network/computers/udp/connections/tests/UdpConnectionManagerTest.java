@@ -309,6 +309,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	
 	private DatagramPacket handshakeFrom(String nick, byte[] publicKey) throws UnknownHostException, Refusal {
 		ByteBuffer buf = preparePacket(Handshake, produceSeal(nick, 42));
+		buf.put((byte)0);
 		buf.put(publicKey);
 		buf.flip();
 		

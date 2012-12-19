@@ -65,6 +65,7 @@ class Guardian {
 
 	private void handshake() {
 		ByteBuffer buf = prepare(Handshake);
+		buf.put((byte)(isHandshakeComplete() ? 1 : 0));
 		buf.put(ownPublicKey());
 		buf.put(sessionKeyBytes());
 		buf.flip();
@@ -105,7 +106,7 @@ class Guardian {
 	
 	void handleHandshake(ByteBuffer data) {
 		synchronized (handshakeMonitor) {
-			if (isHandshakeComplete()) { // TODO: Improve this to avoid loop
+			if (shouldReplySecurityInfo(data)) {
 				handshake();
 				return;
 			}
@@ -121,6 +122,12 @@ class Guardian {
 			stopHandshake();
 			handshakeMonitor.notify();
 		}
+	}
+
+
+	private boolean shouldReplySecurityInfo(ByteBuffer data) {
+		boolean isCompletedFromOtherSide = data.get() == 1 ? true : false;
+		return isHandshakeComplete() && !isCompletedFromOtherSide;
 	}
 
 
@@ -152,7 +159,7 @@ class Guardian {
 		return cipher.decrypt(payload);
 	}
 
-
+	
 	boolean isHandshakeComplete() {
 		return cipher != null;
 	}
