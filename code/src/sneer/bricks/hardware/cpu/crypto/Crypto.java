@@ -26,7 +26,7 @@ public interface Crypto {
 	Signature getSHA512WithECDSA();
 	KeyPair newECDSAKeyPair(byte[] seed);
 	
-	ECBCipher newAES256Cipher(byte[] key);
+	ECBCipher newAES256Cipher(byte[] encryptKey, byte[] decryptKey);
 	
 	PublicKey unmarshalPublicKey(byte[] keyBytes);
 	Hash secretKeyFrom(PublicKey publicKey, PrivateKey privateKey, byte[] sessionKey);

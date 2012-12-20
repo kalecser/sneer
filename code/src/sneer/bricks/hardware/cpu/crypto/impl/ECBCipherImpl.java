@@ -14,9 +14,9 @@ class ECBCipherImpl implements ECBCipher {
 	private final BufferedBlockCipher encryptor;
 	private final BufferedBlockCipher decrypter;
 	
-	ECBCipherImpl(byte[] key) {
-		encryptor = newCipher(key, true);
-		decrypter = newCipher(key, false);
+	ECBCipherImpl(byte[] encryptKey, byte[] decryptKey) {
+		encryptor = newCipher(encryptKey, true);
+		decrypter = newCipher(decryptKey, false);
 	}
 	
 	@Override

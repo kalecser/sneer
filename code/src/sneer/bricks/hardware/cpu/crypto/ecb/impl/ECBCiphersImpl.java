@@ -9,8 +9,8 @@ public class ECBCiphersImpl implements ECBCiphers {
 
 	
 	@Override
-	public ECBCipher newAES256(byte[] key) {
-		return my(Crypto.class).newAES256Cipher(key);
+	public ECBCipher newAES256(byte[] encryptKey, byte[] decryptKey) {
+		return my(Crypto.class).newAES256Cipher(encryptKey, decryptKey);
 	}
 
 	

@@ -59,7 +59,7 @@ public class CryptoTest extends BrickTestBase {
 	
 	@Test
 	public void testECBCipher() {
-		ECBCipher cipher = subject.newAES256Cipher(new byte[32]);
+		ECBCipher cipher = subject.newAES256Cipher(new byte[32], new byte[32]);
 		assertECB(cipher, "Hey Neide!");
 		
 		assertECB(cipher, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in lorem sapien. Ut interdum porta odio, " +
@@ -77,7 +77,7 @@ public class CryptoTest extends BrickTestBase {
 		byte[] plainText = fromHex("00000000000000000000000000000000");
 		byte[] cipherText = fromHex("46f2fb342d6f0ab477476fc501242c5f"); // from NIST
 		
-		ECBCipher cipher = subject.newAES256Cipher(key);
+		ECBCipher cipher = subject.newAES256Cipher(key, key);
 		byte[] actualWithoutPadding = Arrays.copyOf(cipher.encrypt(plainText), 16);
 		
 		assertArrayEquals(cipherText, actualWithoutPadding);

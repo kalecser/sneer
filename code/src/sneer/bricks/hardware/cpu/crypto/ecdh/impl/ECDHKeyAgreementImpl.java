@@ -13,10 +13,10 @@ import sneer.bricks.identity.keys.own.OwnKeys;
 class ECDHKeyAgreementImpl implements ECDHKeyAgreement {
 	
 	@Override
-	public Hash generateSecret(byte[] peerPublicKey) {
+	public Hash generateSecret(byte[] peerPublicKey, byte[] sessionKey) {
 		PublicKey otherPeerPublicKey = my(Crypto.class).unmarshalPublicKey(peerPublicKey);
 		PrivateKey ownPrivateKey = my(OwnKeys.class).ownPrivateKey().currentValue();
-		return my(Crypto.class).secretKeyFrom(otherPeerPublicKey, ownPrivateKey);
+		return my(Crypto.class).secretKeyFrom(otherPeerPublicKey, ownPrivateKey, sessionKey);
 	}
 
 }

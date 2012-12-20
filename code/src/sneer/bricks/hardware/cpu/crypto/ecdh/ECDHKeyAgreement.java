@@ -5,7 +5,9 @@ import basis.brickness.Brick;
 
 @Brick
 public interface ECDHKeyAgreement {
+	
+	static final int SESSION_KEY_SIZE = 256/8;
 
-	Hash generateSecret(byte[] peerPublicKey);
+	Hash generateSecret(byte[] peerPublicKey, byte[] sessionKey);
 
 }

@@ -1,6 +1,7 @@
 package sneer.bricks.network.computers.udp.connections.tests;
 
 import static basis.environments.Environments.my;
+import static sneer.bricks.hardware.cpu.crypto.ecdh.ECDHKeyAgreement.SESSION_KEY_SIZE;
 import static sneer.bricks.network.computers.udp.UdpNetwork.MAX_PACKET_PAYLOAD_SIZE;
 import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.IDLE_PERIOD;
 import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.KEEP_ALIVE_PERIOD;
@@ -403,6 +404,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		ByteBuffer buf = preparePacket(Handshake, produceSeal(nick, 42));
 		buf.put((byte)0);
 		buf.put(publicKey);
+		buf.put(new byte[SESSION_KEY_SIZE]);
 		buf.flip();
 		
 		return datagramPacketFor(buf, "200.201.202.203", 123);

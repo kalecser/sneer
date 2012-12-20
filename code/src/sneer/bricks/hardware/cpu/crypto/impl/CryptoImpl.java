@@ -115,8 +115,8 @@ class CryptoImpl implements Crypto {
 	
 	
 	@Override
-	public ECBCipher newAES256Cipher(byte[] key) {
-		return new ECBCipherImpl(key);
+	public ECBCipher newAES256Cipher(byte[] encryptKey, byte[] decryptKey) {
+		return new ECBCipherImpl(encryptKey, decryptKey);
 	}
 	
 

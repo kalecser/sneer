@@ -6,6 +6,6 @@ import basis.brickness.Brick;
 @Brick
 public interface ECBCiphers {
 
-	ECBCipher newAES256(byte[] key);
+	ECBCipher newAES256(byte[] encryptKey, byte[] decryptKey);
 	
 }

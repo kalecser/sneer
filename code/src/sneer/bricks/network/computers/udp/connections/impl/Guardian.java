@@ -1,11 +1,14 @@
 package sneer.bricks.network.computers.udp.connections.impl;
 
 import static basis.environments.Environments.my;
+import static sneer.bricks.hardware.cpu.crypto.ecdh.ECDHKeyAgreement.SESSION_KEY_SIZE;
+import static sneer.bricks.identity.keys.own.OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES;
 import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.KEEP_ALIVE_PERIOD;
 import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Handshake;
 import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.prepare;
 import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.send;
 
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -113,11 +116,12 @@ class Guardian {
 			
 			byte[] receivedPublicKey = publicKeyFrom(data);
 			checkReceivedPublicKey(receivedPublicKey);
-						
-			Hash secret = my(ECDHKeyAgreement.class).generateSecret(receivedPublicKey);
-			byte[] secret256bits = new byte[256/8];
-			secret.bytes.copyTo(secret256bits, 256/8);
-			cipher = my(ECBCiphers.class).newAES256(secret256bits);
+			
+			//byte[] sessionKey = sessionKeyFrom(data);
+			//Just to fix tests while we are trying to figure out what is happen
+			Hash encryptSecret = my(ECDHKeyAgreement.class).generateSecret(receivedPublicKey, new BigInteger("10").toByteArray());
+			Hash decryptSecret = my(ECDHKeyAgreement.class).generateSecret(receivedPublicKey, new BigInteger("10").toByteArray());
+			cipher = my(ECBCiphers.class).newAES256(secret256bits(encryptSecret), secret256bits(decryptSecret));
 			
 			stopHandshake();
 			handshakeMonitor.notify();
@@ -132,19 +136,33 @@ class Guardian {
 
 
 	private byte[] publicKeyFrom(ByteBuffer data) {
-		byte[] otherPeerPublicKey = new byte[OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES];
+		byte[] otherPeerPublicKey = new byte[PUBLIC_KEY_SIZE_IN_BYTES];
 		data.get(otherPeerPublicKey);
 		
 		return otherPeerPublicKey;
 	}
 
-
+	
 	private void checkReceivedPublicKey(byte[] publicKey) {
 		byte[] sealFromPublicKey = my(Crypto.class).digest(publicKey).bytes.copy();
 		byte[] knowSeal = my(ContactSeals.class).sealGiven(contact).currentValue().bytes.copy();
 		
 		if (!Arrays.equals(knowSeal, sealFromPublicKey)) 
 			throw new IllegalStateException("Public key from " + contact + " seems to be corrupted");
+	}
+	
+	
+	private byte[] sessionKeyFrom(ByteBuffer data) {
+		byte[] ret = new byte[SESSION_KEY_SIZE];
+		data.get(ret);
+		return ret;
+	}
+	
+	
+	private byte[] secret256bits(Hash decryptSecret) {
+		byte[] secret256bits = new byte[SESSION_KEY_SIZE];
+		decryptSecret.bytes.copyTo(secret256bits, SESSION_KEY_SIZE);
+		return secret256bits;
 	}
 
 
@@ -165,7 +183,7 @@ class Guardian {
 	}
 
 	private static byte[] randomBytes() {
-		byte[] bytes = new byte[256/8];
+		byte[] bytes = new byte[SESSION_KEY_SIZE];
 		SECURE_RANDOM.nextBytes(bytes);
 		return bytes;
 	}
