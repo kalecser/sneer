@@ -29,6 +29,6 @@ public interface Crypto {
 	ECBCipher newAES256Cipher(byte[] key);
 	
 	PublicKey unmarshalPublicKey(byte[] keyBytes);
-	Hash secretKeyFrom(PublicKey publicKey, PrivateKey privateKey);
+	Hash secretKeyFrom(PublicKey publicKey, PrivateKey privateKey, byte[] sessionKey);
 
 }

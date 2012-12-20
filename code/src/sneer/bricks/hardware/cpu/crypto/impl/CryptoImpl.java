@@ -129,11 +129,12 @@ class CryptoImpl implements Crypto {
 	
 
 	@Override
-	public Hash secretKeyFrom(final PublicKey publicKey, final PrivateKey privateKey) {
+	public Hash secretKeyFrom(final PublicKey publicKey, final PrivateKey privateKey, final byte[] sessionKey) {
 		return safelyProduce(new ProducerX<Hash, Exception>() { @Override public Hash produce() throws InvalidKeyException {
 			ECDHBasicAgreement agreement = new ECDHBasicAgreement();
 			agreement.init(generatePrivateKeyParameter(privateKey));
 			BigInteger ret = agreement.calculateAgreement(generatePublicKeyParameter(publicKey));
+			ret = ret.add(new BigInteger(sessionKey));
 			
 			return digest(ret.toByteArray());
 		}});

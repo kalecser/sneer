@@ -5,6 +5,7 @@ import static basis.environments.Environments.my;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.KeyPair;
 import java.security.PublicKey;
@@ -95,12 +96,16 @@ public class CryptoTest extends BrickTestBase {
 	public void ECDHSecret() throws DecodeException {
 		KeyPair pair1 = subject.newECDSAKeyPair("seed 1".getBytes(UTF8));
 		KeyPair pair2 = subject.newECDSAKeyPair("seed 2".getBytes(UTF8));
+		byte[] sessionKey = new BigInteger("1000000").toByteArray();
 		
-		Hash secretFromPair1 = subject.secretKeyFrom(pair1.getPublic(), pair2.getPrivate());
-		assertArrayEquals(fromHex("21c68a64ec9ab787dc3b8472b8403dd16d05fa503233cc062e4e2ee2c283cdc20b2a66c74ccfd189297d4a426c1f59f0ae277fd41acf537c850615eb7b20bc0c"), secretFromPair1.bytes.copy());
+		Hash secretFromPair1 = subject.secretKeyFrom(pair1.getPublic(), pair2.getPrivate(), sessionKey);
+		assertArrayEquals(fromHex("5a8fe80f4ec554e3876fb3271594b6d046ed22dca7770c730f633183007119d1543730c53cfa7ac03326fa5f2379d4b92aaa8d7a9c80fb309a2ecc8401b93ffd"), secretFromPair1.bytes.copy());
 		
-		Hash secretFromPair2 = subject.secretKeyFrom(pair2.getPublic(), pair1.getPrivate());
+		Hash secretFromPair2 = subject.secretKeyFrom(pair2.getPublic(), pair1.getPrivate(), sessionKey);
 		assertEquals(secretFromPair2, secretFromPair1);
+		
+		Hash secretWithAnotherSessionKey = subject.secretKeyFrom(pair1.getPublic(), pair2.getPrivate(), new BigInteger("2000000").toByteArray());
+		assertArrayEquals(fromHex("654a6a3e0d5b9e0253893a2e8fd7d972bd5e76d8a588ea3d6e7fb8aafb41a1b61ea438f802c6d94f851ee03df61d0e1649b4307b343ba8514c127706299f5371"), secretWithAnotherSessionKey.bytes.copy());
 	}
 	
 	
