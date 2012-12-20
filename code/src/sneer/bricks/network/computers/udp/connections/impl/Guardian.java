@@ -152,11 +152,11 @@ class Guardian {
 	}
 	
 	
-	private byte[] sessionKeyFrom(ByteBuffer data) {
-		byte[] ret = new byte[SESSION_KEY_SIZE];
-		data.get(ret);
-		return ret;
-	}
+//	private byte[] sessionKeyFrom(ByteBuffer data) {
+//		byte[] ret = new byte[SESSION_KEY_SIZE];
+//		data.get(ret);
+//		return ret;
+//	}
 	
 	
 	private byte[] secret256bits(Hash decryptSecret) {
