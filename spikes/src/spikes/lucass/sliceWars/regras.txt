@@ -1,0 +1,61 @@
+Vitória
+Ganha quem conquistar mais territórios 
+ou 
+quem tiver mais territórios quando todos os territórios tiverem o máximo de dados permitido - 6 dados.
+
+Jogo
+
+-Preparação
+
+-- Distribuição de territórios
+Jogadores jogam os dados para decidir quem começa. O maior dado começa.
+O jogador que começa coloca um dado seu em qualquer território, 
+depois o segundo jogador coloca um dado seu e assim até todos os territórios estarem com um dado.
+
+-- Distribuição de dados
+Na próxima rodada cada jogador recebe um dado para cada território que ele tem. 
+Se um jogador tem mais territorios esse é o número de dados que todos receberão.
+O primeiro jogador distribui todos seus dados, sendo que em cada território só pode haver no máximo seis dados.
+O jogador é obrigado a colocar todos os dados recebidos.
+Depois do primeiro jogador colocar todos os dados é a vez do segundo jogador, até todos terem distribuído
+seus dados.
+
+-Jogadas
+
+--Primeira rodada
+
+Depois da distribuição dos dados é a vez do primeiro jogador novamente. Ele pode escolher atacar outros 
+territórios ou passar a vez. Um ataque é feito de um território dominado pelo jogador para um território adjacente. Um jogador pode atacar de qualquer território que tenha mais de um dado. 
+
+--Ataque
+Um ataque acontece partindo de um território com dois ou mais dados para qualquer território inimigo adjacente 
+ao território atacante.
+No ataque, o atacante e a defes rolam os dados de cada território e somam seus valores. Existem três possibilidades:
+
+Valor de ataque maior que valor de defesa:
+O ataque ganha. O jogador atacante obrigatóriamente passa todos os dados, menos um, para o território conquistado. Assim, se o ataque foi feito com seis dados, ele passa cinco dados para o território conquistado.
+O jogador não pode passar menos dados, nem escolher deixar mais que um dado no território de origem do ataque.
+
+Valor de ataque igual ao de defesa:
+A defesa ganha, veja "Valor de defesa maior que o valor de ataque".
+
+Valor de defesa maior que o valor de ataque:
+A defesa ganha. O território atacante perde todos os dados menos um. Por exemplo, se atacando com tres dados a 
+soma deu 4 e a soma dos dados de defesa deram 5, o território atacante perde 2 dados, ficando com apenas um e 
+impossibilitado de atacar novamente.
+
+--Fim da jogada
+A jogada acaba quando o jogador passa a vez ou não tem mais possibilidade de atacar por ter somente territórios 
+com um dado nas fronteiras.
+
+--Segunda rodada
+
+Da segunda rodada em diante, no começo da jogada o jogador recebe a quantidade de dados equivalente ao maior número de
+ territórios adjacentes que possue. Por exemplo, se o jogador tem 9 territórios, mas tem somente 3 deles interligados 
+pelas bordas, ele recebe somente 3 dados.
+O jogador é obrigado a colocar todos os dados que recebeu. Se todos seus territórios já estão com a capacidade máxima 
+os dados que sobraram são descartados, ou seja, não acumulam para a próxima jogada. Depois de distribuir os dados, o jogador
+ continua atacando ou pode passar a vez.
+
+O jogo continua até que todos os territórios sejam conquistado por um jogador ou todos os territórios tenham 6 dados, ganhando 
+o jogador com mais territórios.
