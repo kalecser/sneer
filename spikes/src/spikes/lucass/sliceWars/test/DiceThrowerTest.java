@@ -6,22 +6,22 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import spikes.lucass.sliceWars.src.Dice;
-import spikes.lucass.sliceWars.src.DiceThrower;
+import spikes.lucass.sliceWars.src.DiceThrowerImpl;
 import spikes.lucass.sliceWars.src.LoadedDice;
-import spikes.lucass.sliceWars.src.PlayOutcome;
+import spikes.lucass.sliceWars.src.DiceThrowOutcome;
 
 
-public class DiceCompareTest {
+public class DiceThrowerTest {
 	
 	
 	@Test
-	public void outcomeOfDie(){
+	public void diceOutcome(){
 		Dice atacker = new  LoadedDice(3);
 		Dice defense = new  LoadedDice(1);
-		DiceThrower subject = new DiceThrower(atacker,defense);
-		PlayOutcome playOutcome = subject.throwDieAndReturnOutcome(3,3);
-		assertArrayEquals(new int[]{3,3,3}, playOutcome.attackDie);
-		assertArrayEquals(new int[]{1,1,1}, playOutcome.defenseDie);
+		DiceThrowerImpl subject = new DiceThrowerImpl(atacker,defense);
+		DiceThrowOutcome playOutcome = subject.throwDiceAndReturnOutcome(3,3);
+		assertArrayEquals(new int[]{3,3,3}, playOutcome.attackDice);
+		assertArrayEquals(new int[]{1,1,1}, playOutcome.defenseDice);
 		assertEquals(playOutcome.attackSum, 9);
 		assertEquals(playOutcome.defenseSum, 3);
 	}
@@ -30,8 +30,8 @@ public class DiceCompareTest {
 	public void atackWins(){
 		Dice atacker = new  LoadedDice(3);
 		Dice defense = new  LoadedDice(1);
-		DiceThrower subject = new DiceThrower(atacker,defense);
-		PlayOutcome playOutcome = subject.throwDieAndReturnOutcome(3,3);
+		DiceThrowerImpl subject = new DiceThrowerImpl(atacker,defense);
+		DiceThrowOutcome playOutcome = subject.throwDiceAndReturnOutcome(3,3);
 		assertEquals(playOutcome.attackWins(), true);
 	}
 	
@@ -39,8 +39,8 @@ public class DiceCompareTest {
 	public void onDraw_DefenseWins(){
 		Dice atacker = new  LoadedDice(3);
 		Dice defense = new  LoadedDice(3);
-		DiceThrower subject = new DiceThrower(atacker,defense);
-		PlayOutcome playOutcome = subject.throwDieAndReturnOutcome(3,3);
+		DiceThrowerImpl subject = new DiceThrowerImpl(atacker,defense);
+		DiceThrowOutcome playOutcome = subject.throwDiceAndReturnOutcome(3,3);
 		assertEquals(playOutcome.attackWins(), false);
 	}
 	
@@ -48,8 +48,8 @@ public class DiceCompareTest {
 	public void defenseWins(){
 		Dice atacker = new  LoadedDice(1);
 		Dice defense = new  LoadedDice(3);
-		DiceThrower subject = new DiceThrower(atacker,defense);
-		PlayOutcome playOutcome = subject.throwDieAndReturnOutcome(3,3);
+		DiceThrowerImpl subject = new DiceThrowerImpl(atacker,defense);
+		DiceThrowOutcome playOutcome = subject.throwDiceAndReturnOutcome(3,3);
 		assertEquals(playOutcome.attackWins(), false);
 	}
 }

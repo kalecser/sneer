@@ -1,17 +1,17 @@
 package spikes.lucass.sliceWars.src;
 
 
-public class PlayOutcome {
+public class DiceThrowOutcome {
 
 	public final int attackSum;
 	public final int defenseSum;
-	public final int[] attackDie;
-	public final int[] defenseDie;
+	public final int[] attackDice;
+	public final int[] defenseDice;
 	
-	public PlayOutcome(final int[] attackResults,final int[] defenseResults) {
-		this.attackDie = attackResults;		
+	public DiceThrowOutcome(final int[] attackResults,final int[] defenseResults) {
+		this.attackDice = attackResults;		
 		attackSum = sum(attackResults);
-		this.defenseDie = defenseResults;
+		this.defenseDice = defenseResults;
 		defenseSum = sum(defenseResults);
 	}
 
