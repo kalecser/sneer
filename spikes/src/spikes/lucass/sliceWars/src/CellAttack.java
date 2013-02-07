@@ -14,14 +14,12 @@ public class CellAttack {
 		DiceThrowOutcome diceOutcome = _diceThrower.throwDiceAndReturnOutcome(attacker.diceCount, defender.diceCount);
 		Cell resultingAttackCell = new Cell();
 		Cell resultingDefenseCell = new Cell();
+		resultingAttackCell.diceCount = 1;
+		resultingAttackCell.owner = attacker.owner;
 		if(diceOutcome.attackWins()){
-			resultingAttackCell.diceCount = 1;
-			resultingAttackCell.owner = attacker.owner;
 			resultingDefenseCell.diceCount = attacker.diceCount - 1;
 			resultingDefenseCell.owner = attacker.owner;
 		}else{
-			resultingAttackCell.diceCount = 1;
-			resultingAttackCell.owner = attacker.owner;
 			resultingDefenseCell = defender;
 		}
 		AttackOutcome attackOutcome = new AttackOutcome(resultingAttackCell,resultingDefenseCell,diceOutcome);

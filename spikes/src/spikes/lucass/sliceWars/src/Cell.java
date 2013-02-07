@@ -9,7 +9,4 @@ public class Cell {
 	public int diceCount = 0;
 	public int owner = EMPTY;
 
-	public void connectTo(Cell other, int position) {
-	}
-
 }
