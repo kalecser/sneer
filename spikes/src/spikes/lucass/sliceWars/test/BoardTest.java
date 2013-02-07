@@ -3,29 +3,60 @@ package spikes.lucass.sliceWars.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.awt.Polygon;
+
 import org.junit.Test;
 
-import spikes.lucass.sliceWars.src.Cell;
 import spikes.lucass.sliceWars.src.Board;
 
 
 public class BoardTest {
 
 	@Test
-	public void testHexagonBoard(){
+	public void testBoard(){
 		Board subject = new Board();
-		Cell left = new Cell();
-		Cell middle = new Cell();
-		Cell right = new Cell();
-		subject.addCell(left);
-		subject.addCell(middle);
-		subject.addCell(right);
-		subject.link(left,middle);
-		subject.link(middle,right);
-		assertTrue(subject.areLinked(left,middle));
-		assertTrue(subject.areLinked(middle,left));
-		assertTrue(subject.areLinked(middle,right));
-		assertFalse(subject.areLinked(left,right));
+		
+		Polygon square1 = getSquare1();
+		subject.addCell(square1);
+		
+		Polygon square2 = getSquare2();
+		subject.addCell(square2);
+		
+		Polygon square3 = getSquare3();
+		subject.addCell(square3);
+		
+		subject.addCell(square1);
+		subject.addCell(square2);
+		subject.addCell(square3);
+		subject.link(square1,square2);
+		subject.link(square2,square3);
+		assertTrue(subject.areLinked(square1,square2));
+		assertTrue(subject.areLinked(square2,square1));
+		assertTrue(subject.areLinked(square2,square3));
+		assertFalse(subject.areLinked(square1,square3));
+	}
+
+	private Polygon getSquare1() {
+		int[] squareXPoints = new int[]{ 0,10,10, 0};
+		int[] squareYPoints = new int[]{ 0, 0,10,10};
+		int squareNPoints = 4;
+		Polygon square = new Polygon(squareXPoints, squareYPoints, squareNPoints);
+		return square;
 	}
 	
+	private Polygon getSquare2() {
+		int[] squareXPoints = new int[]{10,20,20,10};
+		int[] squareYPoints = new int[]{ 0, 0,10,10};
+		int squareNPoints = 4;
+		Polygon square = new Polygon(squareXPoints, squareYPoints, squareNPoints);
+		return square;
+	}
+	
+	private Polygon getSquare3() {
+		int[] squareXPoints = new int[]{20,30,30,20};
+		int[] squareYPoints = new int[]{ 0, 0,10,10};
+		int squareNPoints = 4;
+		Polygon square = new Polygon(squareXPoints, squareYPoints, squareNPoints);
+		return square;
+	}
 }
