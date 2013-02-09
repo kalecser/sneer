@@ -51,21 +51,22 @@ public class BoardPanel extends JPanel {
 
 	private static Board createBoard() {
 		Board board = new Board();
-		Polygon hex1 = drawHexagon(0,0,100);
-		board.addCell(hex1);
 		
-		Polygon hex2 = drawHexagon(0,100,100);
-		board.addCell(hex2);
+		for (int x = 0; x < 5; x++) {
+			for (int y = 0; y < 10; y++) {				
+				board.addCell(createHexagonOnPosition(x,y));
+			}
+		}
 		
-		Polygon hex3 = drawHexagon((100/4)*3,100-(100/2),100);
-		board.addCell(hex3);
-		
-		board.addCell(hex1);
-		board.addCell(hex2);
-		board.addCell(hex3);
-		board.link(hex1,hex2);
-		board.link(hex2,hex3);
 		return board;
+	}
+	
+	public static Polygon createHexagonOnPosition(int x, int y){
+		int size = 100;
+		int xOffset = (y%2==0)?0:(size/4)*3;
+		int xMoved = (x*size) + (x*(size/2)) + xOffset;
+		int yMoved = (y*size) - (y*(size/2));
+		return drawHexagon(xMoved,yMoved,size);
 	}
 	
 	private static Polygon drawHexagon(int x, int y, int sideLenght) {
