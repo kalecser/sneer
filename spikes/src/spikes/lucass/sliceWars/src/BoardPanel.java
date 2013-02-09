@@ -69,24 +69,30 @@ public class BoardPanel extends JPanel {
 	}
 	
 	private static Polygon getSquare1() {
-		int[] squareXPoints = new int[]{ 0,10,10, 0};
-		int[] squareYPoints = new int[]{ 0, 0,10,10};
-		int squareNPoints = 4;
+		int sideLenght = 100;
+		int quarter = sideLenght/4;
+		int half = sideLenght/2;
+		int x = 0;
+		int y = 0;
+		
+		int[] squareXPoints = new int[]{x     ,x+quarter,x+(quarter*3),x+sideLenght,x+(quarter*3),x+quarter   };
+		int[] squareYPoints = new int[]{y+half,y        ,y            ,y+half      ,y+sideLenght ,y+sideLenght};
+		int squareNPoints = 6;
 		Polygon square = new Polygon(squareXPoints, squareYPoints, squareNPoints);
 		return square;
 	}
 	
 	private static Polygon getSquare2() {
-		int[] squareXPoints = new int[]{10,20,20,10};
-		int[] squareYPoints = new int[]{ 0, 0,10,10};
+		int[] squareXPoints = new int[]{100,200,200,100};
+		int[] squareYPoints = new int[]{ 0, 0,100,100};
 		int squareNPoints = 4;
 		Polygon square = new Polygon(squareXPoints, squareYPoints, squareNPoints);
 		return square;
 	}
 	
 	private static Polygon getSquare3() {
-		int[] squareXPoints = new int[]{20,30,30,20};
-		int[] squareYPoints = new int[]{ 0, 0,10,10};
+		int[] squareXPoints = new int[]{200,300,300,200};
+		int[] squareYPoints = new int[]{ 0, 0,100,100};
 		int squareNPoints = 4;
 		Polygon square = new Polygon(squareXPoints, squareYPoints, squareNPoints);
 		return square;
