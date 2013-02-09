@@ -51,49 +51,30 @@ public class BoardPanel extends JPanel {
 
 	private static Board createBoard() {
 		Board board = new Board();
-		Polygon square1 = getSquare1();
-		board.addCell(square1);
+		Polygon hex1 = drawHexagon(0,0,100);
+		board.addCell(hex1);
 		
-		Polygon square2 = getSquare2();
-		board.addCell(square2);
+		Polygon hex2 = drawHexagon(0,100,100);
+		board.addCell(hex2);
 		
-		Polygon square3 = getSquare3();
-		board.addCell(square3);
+		Polygon hex3 = drawHexagon((100/4)*3,100-(100/2),100);
+		board.addCell(hex3);
 		
-		board.addCell(square1);
-		board.addCell(square2);
-		board.addCell(square3);
-		board.link(square1,square2);
-		board.link(square2,square3);
+		board.addCell(hex1);
+		board.addCell(hex2);
+		board.addCell(hex3);
+		board.link(hex1,hex2);
+		board.link(hex2,hex3);
 		return board;
 	}
 	
-	private static Polygon getSquare1() {
-		int sideLenght = 100;
+	private static Polygon drawHexagon(int x, int y, int sideLenght) {
 		int quarter = sideLenght/4;
 		int half = sideLenght/2;
-		int x = 0;
-		int y = 0;
 		
 		int[] squareXPoints = new int[]{x     ,x+quarter,x+(quarter*3),x+sideLenght,x+(quarter*3),x+quarter   };
 		int[] squareYPoints = new int[]{y+half,y        ,y            ,y+half      ,y+sideLenght ,y+sideLenght};
 		int squareNPoints = 6;
-		Polygon square = new Polygon(squareXPoints, squareYPoints, squareNPoints);
-		return square;
-	}
-	
-	private static Polygon getSquare2() {
-		int[] squareXPoints = new int[]{100,200,200,100};
-		int[] squareYPoints = new int[]{ 0, 0,100,100};
-		int squareNPoints = 4;
-		Polygon square = new Polygon(squareXPoints, squareYPoints, squareNPoints);
-		return square;
-	}
-	
-	private static Polygon getSquare3() {
-		int[] squareXPoints = new int[]{200,300,300,200};
-		int[] squareYPoints = new int[]{ 0, 0,100,100};
-		int squareNPoints = 4;
 		Polygon square = new Polygon(squareXPoints, squareYPoints, squareNPoints);
 		return square;
 	}
