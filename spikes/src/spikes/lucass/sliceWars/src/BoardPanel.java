@@ -52,9 +52,19 @@ public class BoardPanel extends JPanel {
 	private static Board createBoard() {
 		Board board = new Board();
 		
-		for (int x = 0; x < 5; x++) {
-			for (int y = 0; y < 10; y++) {				
-				board.addCell(createHexagonOnPosition(x,y));
+		Polygon[][] poligons;
+		int width = 5;
+		int height = 10;
+		poligons = new Polygon[width][height];
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				poligons[x][y] = createHexagonOnPosition(x,y);
+			}
+		}
+		
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				board.addCell(poligons[x][y]);
 			}
 		}
 		
