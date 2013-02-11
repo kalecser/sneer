@@ -12,8 +12,9 @@ public class Board {
 
 	private Map<BoardCell, List<BoardCell>> linkedBoardCells = new LinkedHashMap<BoardCell, List<BoardCell>>();
 	
-	public void addCell(Polygon polygon) {
-		linkedBoardCells.put(new BoardCell(polygon), new ArrayList<BoardCell>());
+	public void createAndAddToBoardCellForPolygon(Polygon polygon) {
+		BoardCell cell = new BoardCell(polygon);
+		linkedBoardCells.put(cell, new ArrayList<BoardCell>());
 	}
 	
 	public void addCell(BoardCell boardCell) {
@@ -56,6 +57,15 @@ public class Board {
 			}
 		}
 		return false;
+	}
+
+	public Polygon getPolygonAt(int x, int y) {
+		Set<BoardCell> keySet = linkedBoardCells.keySet();
+		for (BoardCell boardCell : keySet) {
+			if(boardCell.polygon.contains(x,y))
+				return boardCell.polygon;
+		}
+		return null;
 	}
 
 

@@ -17,17 +17,17 @@ public class BoardTest {
 		Board subject = new Board();
 		
 		Polygon square1 = getSquare1();
-		subject.addCell(square1);
+		subject.createAndAddToBoardCellForPolygon(square1);
 		
 		Polygon square2 = getSquare2();
-		subject.addCell(square2);
+		subject.createAndAddToBoardCellForPolygon(square2);
 		
 		Polygon square3 = getSquare3();
-		subject.addCell(square3);
+		subject.createAndAddToBoardCellForPolygon(square3);
 		
-		subject.addCell(square1);
-		subject.addCell(square2);
-		subject.addCell(square3);
+		subject.createAndAddToBoardCellForPolygon(square1);
+		subject.createAndAddToBoardCellForPolygon(square2);
+		subject.createAndAddToBoardCellForPolygon(square3);
 		subject.link(square1,square2);
 		subject.link(square2,square3);
 		assertTrue(subject.areLinked(square1,square2));
