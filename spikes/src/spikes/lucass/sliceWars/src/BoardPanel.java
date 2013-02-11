@@ -29,6 +29,10 @@ public class BoardPanel extends JPanel {
 				Polygon polygonAt = _board.getPolygonAt(e.getX(),e.getY());
 				if(polygonAt != null)
 					polygonsClicked.add(polygonAt);
+				Set<BoardCell> polygonsLinked = _board.getLinked(polygonAt);
+				for (BoardCell boardCell : polygonsLinked) {
+					polygonsClicked.add(boardCell.polygon);
+				}
 				System.out.println(polygonAt);
 			}
 		});
@@ -98,13 +102,25 @@ public class BoardPanel extends JPanel {
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				board.createAndAddToBoardCellForPolygon(poligons[x][y]);
-				
-				if(x-1 >= 0 && y-1 >=0)
-					board.link(poligons[x][y], poligons[x-1][y-1]);
+			}
+		}
+		
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
 				if(y-2 >=0)
 					board.link(poligons[x][y], poligons[x][y-2]);
-				if(y-1 >=0)
-					board.link(poligons[x][y], poligons[x][y-1]);
+				
+				if(y%2==0){
+					if(x-1 >= 0 && y-1 >=0)
+						board.link(poligons[x][y], poligons[x-1][y-1]);
+					if( y-1 >=0)
+						board.link(poligons[x][y], poligons[x][y-1]);
+				}else{
+					if( y-1 >=0)
+						board.link(poligons[x][y], poligons[x][y-1]);
+					if(x+1 < poligons.length && y-1 >=0)
+						board.link(poligons[x][y], poligons[x+1][y-1]);	
+				}
 			}
 		}
 		

@@ -3,6 +3,7 @@ package spikes.lucass.sliceWars.src;
 import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,15 +11,15 @@ import java.util.Set;
 
 public class Board {
 
-	private Map<BoardCell, List<BoardCell>> linkedBoardCells = new LinkedHashMap<BoardCell, List<BoardCell>>();
+	private Map<BoardCell, Set<BoardCell>> linkedBoardCells = new LinkedHashMap<BoardCell, Set<BoardCell>>();
 	
 	public void createAndAddToBoardCellForPolygon(Polygon polygon) {
 		BoardCell cell = new BoardCell(polygon);
-		linkedBoardCells.put(cell, new ArrayList<BoardCell>());
+		linkedBoardCells.put(cell, new LinkedHashSet<BoardCell>());
 	}
 	
 	public void addCell(BoardCell boardCell) {
-		linkedBoardCells.put(boardCell, new ArrayList<BoardCell>());
+		linkedBoardCells.put(boardCell, new LinkedHashSet<BoardCell>());
 	}
 
 	public Set<BoardCell> getBoardCells(){
@@ -28,9 +29,9 @@ public class Board {
 	public void link(Polygon polygon1, Polygon polygon2) {
 		BoardCell boardCell1 = getForPolygon(polygon1);
 		BoardCell boardCell2 = getForPolygon(polygon2);
-		List<BoardCell> polygon1LinkedCells = linkedBoardCells.get(boardCell1);
+		Set<BoardCell> polygon1LinkedCells = linkedBoardCells.get(boardCell1);
 		polygon1LinkedCells.add(boardCell2);
-		List<BoardCell> polygon2LinkedCells = linkedBoardCells.get(boardCell2);
+		Set<BoardCell> polygon2LinkedCells = linkedBoardCells.get(boardCell2);
 		polygon2LinkedCells.add(boardCell1);
 	}
 	
@@ -45,18 +46,26 @@ public class Board {
 	}
 
 	public boolean areLinked(Polygon polygon1, Polygon polygon2) {
-		Set<BoardCell> keySet = linkedBoardCells.keySet();
-		for (BoardCell boardCell : keySet) {
-			if(boardCell.polygon.equals(polygon1)){
-				List<BoardCell> list = linkedBoardCells.get(boardCell);
-				for (BoardCell boardCell2 : list) {
-					if(boardCell2.polygon.equals(polygon2))
-						return true;
-				}
-				return false;
-			}
+		
+		Set<BoardCell> list = getLinked(polygon1);
+		if(list == null){
+			return false;
+		}
+		for (BoardCell boardCell2 : list) {
+			if(boardCell2.polygon.equals(polygon2))
+				return true;
 		}
 		return false;
+	}
+
+	public Set<BoardCell> getLinked(Polygon polygon) {
+		Set<BoardCell> keySet = linkedBoardCells.keySet();
+		for (BoardCell boardCell : keySet) {
+			if(boardCell.polygon.equals(polygon)){
+				return linkedBoardCells.get(boardCell);
+			}
+		}
+		return null;
 	}
 
 	public Polygon getPolygonAt(int x, int y) {
@@ -67,6 +76,7 @@ public class Board {
 		}
 		return null;
 	}
+
 
 
 }
