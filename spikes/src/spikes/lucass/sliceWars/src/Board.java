@@ -75,6 +75,15 @@ public class Board {
 		return null;
 	}
 
+	public BoardCell getCellAtOrNull(int x, int y) {
+		Set<BoardCell> keySet = linkedBoardCells.keySet();
+		for (BoardCell boardCell : keySet) {
+			if(boardCell.polygon.contains(x,y))
+				return boardCell;
+		}
+		return null;
+	}
+
 
 
 }

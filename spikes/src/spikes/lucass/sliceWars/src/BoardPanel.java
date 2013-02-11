@@ -3,37 +3,29 @@ package spikes.lucass.sliceWars.src;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import spikes.lucass.sliceWars.src.gameStates.FillAllCellPhase;
+
 public class BoardPanel extends JPanel {
 
 	private Board _board;
-	private List<Polygon> polygonsClicked = new ArrayList<Polygon>();
+	private FillAllCellPhase _phase;
 	
 	public BoardPanel(Board board) {
 		_board = board;
-		
+		_phase = new FillAllCellPhase(board);		
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Polygon polygonAt = _board.getPolygonAt(e.getX(),e.getY());
-				if(polygonAt != null)
-					polygonsClicked.add(polygonAt);
-				Set<BoardCell> polygonsLinked = _board.getLinked(polygonAt);
-				for (BoardCell boardCell : polygonsLinked) {
-					polygonsClicked.add(boardCell.polygon);
-				}
-				System.out.println(polygonAt);
+				_phase.play(e.getX(), e.getY());
 			}
 		});
 		
@@ -68,9 +60,7 @@ public class BoardPanel extends JPanel {
 		Set<BoardCell> boardCells = _board.getBoardCells();
 		for (BoardCell boardCell : boardCells) {
 			g2.draw(boardCell.polygon);
-			if(polygonsClicked.contains(boardCell.polygon))
-				g2.fill(boardCell.polygon);
-			g2.drawString("d:"+boardCell.cell.diceCount, boardCell.polygon.xpoints[0], boardCell.polygon.ypoints[0]);
+			g2.drawString("d:"+boardCell.cell.diceCount+" owner: "+boardCell.cell.owner, boardCell.polygon.xpoints[0], boardCell.polygon.ypoints[0]);
 		}
 	}
 	

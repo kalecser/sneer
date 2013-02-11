@@ -9,6 +9,7 @@ import spikes.lucass.sliceWars.src.AttackOutcome;
 import spikes.lucass.sliceWars.src.Cell;
 import spikes.lucass.sliceWars.src.CellAttack;
 import spikes.lucass.sliceWars.src.DiceThrowOutcome;
+import spikes.lucass.sliceWars.src.Player;
 
 
 
@@ -19,10 +20,10 @@ public class CellAttackTest {
 		Cell attacker = new Cell();
 		Cell defender = new Cell();
 		attacker.diceCount = 4;
-		int playerAttacking = Cell.PLAYER1;
+		Player playerAttacking = Player.Player1;
 		attacker.owner = playerAttacking;
 		defender.diceCount = 3;
-		int playerDefending = Cell.PLAYER2;
+		Player playerDefending = Player.Player2;
 		defender.owner = playerDefending;
 		int attackDiceResultForAllDice = 3;
 		int defenseDiceResultForAllDice = 1;
@@ -44,10 +45,10 @@ public class CellAttackTest {
 		Cell attacker = new Cell();
 		Cell defender = new Cell();
 		attacker.diceCount = 4;
-		int playerAttacking = Cell.PLAYER1;
+		Player playerAttacking = Player.Player1;
 		attacker.owner = playerAttacking;
 		defender.diceCount = 3;
-		int playerDefending = Cell.PLAYER2;
+		Player playerDefending = Player.Player2;
 		defender.owner = playerDefending;
 		int attackDiceResultForAllDice = 1;
 		int defenseDiceResultForAllDice = 4;
@@ -67,10 +68,10 @@ public class CellAttackTest {
 		Cell attacker = new Cell();
 		Cell defender = new Cell();
 		attacker.diceCount = 4;
-		int playerAttacking = Cell.PLAYER1;
+		Player playerAttacking = Player.Player1;
 		attacker.owner = playerAttacking;
 		defender.diceCount = 4;
-		int playerDefending = Cell.PLAYER2;
+		Player playerDefending = Player.Player2;
 		defender.owner = playerDefending;
 		int attackDiceResultForAllDice = 1;
 		int defenseDiceResultForAllDice = 1;
