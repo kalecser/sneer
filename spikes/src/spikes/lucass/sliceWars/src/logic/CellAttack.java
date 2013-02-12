@@ -1,4 +1,4 @@
-package spikes.lucass.sliceWars.src;
+package spikes.lucass.sliceWars.src.logic;
 
 
 
@@ -11,13 +11,13 @@ public class CellAttack {
 	}
 
 	public AttackOutcome doAttack(Cell attacker, Cell defender) {
-		DiceThrowOutcome diceOutcome = _diceThrower.throwDiceAndReturnOutcome(attacker.diceCount, defender.diceCount);
+		DiceThrowOutcome diceOutcome = _diceThrower.throwDiceAndReturnOutcome(attacker.getDiceCount(), defender.getDiceCount());
 		Cell resultingAttackCell = new Cell();
 		Cell resultingDefenseCell = new Cell();
-		resultingAttackCell.diceCount = 1;
+		resultingAttackCell.setDiceCount(1);
 		resultingAttackCell.owner = attacker.owner;
 		if(diceOutcome.attackWins()){
-			resultingDefenseCell.diceCount = attacker.diceCount - 1;
+			resultingDefenseCell.setDiceCount(attacker.getDiceCount() - 1);
 			resultingDefenseCell.owner = attacker.owner;
 		}else{
 			resultingDefenseCell = defender;

@@ -2,9 +2,9 @@ package spikes.lucass.sliceWars.src.gameStates;
 
 import java.util.Set;
 
-import spikes.lucass.sliceWars.src.Board;
-import spikes.lucass.sliceWars.src.BoardCell;
-import spikes.lucass.sliceWars.src.Player;
+import spikes.lucass.sliceWars.src.logic.Board;
+import spikes.lucass.sliceWars.src.logic.BoardCell;
+import spikes.lucass.sliceWars.src.logic.Player;
 
 
 public class FillAllCellPhase implements GameState {
@@ -22,6 +22,7 @@ public class FillAllCellPhase implements GameState {
 		if(cellAtOrNull == null) return this;
 		if(!cellAtOrNull.cell.owner.equals(Player.Empty)) return this;
 		cellAtOrNull.cell.owner = currentPlaying;
+		cellAtOrNull.cell.setDiceCount(1);
 		if(currentPlaying.equals(Player.Player1))
 			currentPlaying = Player.Player2;
 		else
@@ -32,7 +33,7 @@ public class FillAllCellPhase implements GameState {
 			if(boardCell.cell.owner.equals(Player.Empty))
 				return this;
 		}
-		return new FirstDiceBatchDistribution();
+		return new FirstDiceBatchDistribution(_board);
 	}
 
 }

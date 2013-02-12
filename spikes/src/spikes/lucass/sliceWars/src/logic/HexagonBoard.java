@@ -1,11 +1,11 @@
-package spikes.lucass.sliceWars.src;
+package spikes.lucass.sliceWars.src.logic;
 
 import java.awt.Polygon;
 
 
 public class HexagonBoard {
 
-	static Board createBoard(int width,int height) {
+	public static Board createBoard(int width,int height) {
 		Board board = new Board();
 		
 		Polygon[][] poligons = new Polygon[width][height];

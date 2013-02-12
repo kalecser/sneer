@@ -5,10 +5,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import spikes.lucass.sliceWars.src.Dice;
-import spikes.lucass.sliceWars.src.DiceThrowerImpl;
-import spikes.lucass.sliceWars.src.LoadedDice;
-import spikes.lucass.sliceWars.src.DiceThrowOutcome;
+import spikes.lucass.sliceWars.src.logic.Dice;
+import spikes.lucass.sliceWars.src.logic.DiceThrowOutcome;
+import spikes.lucass.sliceWars.src.logic.DiceThrowerImpl;
+import spikes.lucass.sliceWars.src.logic.LoadedDice;
 
 
 public class DiceThrowerTest {

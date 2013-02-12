@@ -1,7 +1,7 @@
 package spikes.lucass.sliceWars.test;
 
-import spikes.lucass.sliceWars.src.DiceThrower;
-import spikes.lucass.sliceWars.src.DiceThrowOutcome;
+import spikes.lucass.sliceWars.src.logic.DiceThrowOutcome;
+import spikes.lucass.sliceWars.src.logic.DiceThrower;
 
 
 public class DiceThrowerMock  implements DiceThrower{

@@ -1,4 +1,4 @@
-package spikes.lucass.sliceWars.src;
+package spikes.lucass.sliceWars.src.logic;
 
 import java.awt.Polygon;
 

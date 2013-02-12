@@ -7,7 +7,7 @@ import java.awt.Polygon;
 
 import org.junit.Test;
 
-import spikes.lucass.sliceWars.src.Board;
+import spikes.lucass.sliceWars.src.logic.Board;
 
 
 public class BoardTest {

@@ -1,4 +1,4 @@
-package spikes.lucass.sliceWars.src;
+package spikes.lucass.sliceWars.src.gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -14,6 +14,10 @@ import javax.swing.WindowConstants;
 
 import spikes.lucass.sliceWars.src.gameStates.FillAllCellPhase;
 import spikes.lucass.sliceWars.src.gameStates.GameState;
+import spikes.lucass.sliceWars.src.logic.Board;
+import spikes.lucass.sliceWars.src.logic.BoardCell;
+import spikes.lucass.sliceWars.src.logic.HexagonBoard;
+import spikes.lucass.sliceWars.src.logic.Player;
 
 public class BoardPanel extends JPanel {
 
@@ -60,8 +64,18 @@ public class BoardPanel extends JPanel {
 		g2.setColor(Color.BLACK);
 		Set<BoardCell> boardCells = _board.getBoardCells();
 		for (BoardCell boardCell : boardCells) {
+			if(boardCell.cell.owner.equals(Player.Player1)){
+				g2.setColor(Color.BLUE);
+				g2.fill(boardCell.polygon);
+			}
+			if(boardCell.cell.owner.equals(Player.Player2)){
+				g2.setColor(Color.RED);
+				g2.fill(boardCell.polygon);
+			}
+			g2.setColor(Color.BLACK);
 			g2.draw(boardCell.polygon);
-			g2.drawString("d:"+boardCell.cell.diceCount+" owner: "+boardCell.cell.owner, boardCell.polygon.xpoints[0], boardCell.polygon.ypoints[0]);
+			g2.setColor(Color.WHITE);
+			g2.drawString("d:"+boardCell.cell.getDiceCount(), boardCell.polygon.xpoints[0], boardCell.polygon.ypoints[0]);
 		}
 	}
 	
@@ -70,7 +84,7 @@ public class BoardPanel extends JPanel {
 	public static void main(String[] args) {
 		
 //		Board board = HexagonBoard.createBoard(5,10);
-		Board board = HexagonBoard.createBoard(2,2);
+		Board board = HexagonBoard.createBoard(5,5);
 		
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
