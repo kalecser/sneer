@@ -5,11 +5,9 @@ import java.awt.Polygon;
 
 public class HexagonBoard {
 
-	static Board createBoard() {
+	static Board createBoard(int width,int height) {
 		Board board = new Board();
 		
-		int width = 5;
-		int height = 10;
 		Polygon[][] poligons = new Polygon[width][height];
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {

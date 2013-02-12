@@ -13,11 +13,12 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import spikes.lucass.sliceWars.src.gameStates.FillAllCellPhase;
+import spikes.lucass.sliceWars.src.gameStates.GameState;
 
 public class BoardPanel extends JPanel {
 
 	private Board _board;
-	private FillAllCellPhase _phase;
+	private GameState _phase;
 	
 	public BoardPanel(Board board) {
 		_board = board;
@@ -25,7 +26,7 @@ public class BoardPanel extends JPanel {
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				_phase.play(e.getX(), e.getY());
+				_phase = _phase.play(e.getX(), e.getY());
 			}
 		});
 		
@@ -68,7 +69,8 @@ public class BoardPanel extends JPanel {
 	
 	public static void main(String[] args) {
 		
-		Board board = HexagonBoard.createBoard();
+//		Board board = HexagonBoard.createBoard(5,10);
+		Board board = HexagonBoard.createBoard(2,2);
 		
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
