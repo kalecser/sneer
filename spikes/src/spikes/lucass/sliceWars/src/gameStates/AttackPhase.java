@@ -13,4 +13,14 @@ public class AttackPhase implements GameState {
 		return this;
 	}
 
+	@Override
+	public String getPhaseName() {
+		return "Attack phase";
+	}
+
+	@Override
+	public String getWhoIsPlaying() {
+		return "No one";
+	}
+
 }

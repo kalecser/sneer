@@ -36,4 +36,14 @@ public class FillAllCellPhase implements GameState {
 		return new FirstDiceBatchDistribution(_board);
 	}
 
+	@Override
+	public String getPhaseName() {
+		return "Fill all cells phase";
+	}
+
+	@Override
+	public String getWhoIsPlaying() {
+		return currentPlaying.name();
+	}
+
 }

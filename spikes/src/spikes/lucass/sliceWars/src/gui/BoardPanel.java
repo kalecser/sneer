@@ -1,5 +1,6 @@
 package spikes.lucass.sliceWars.src.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -9,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.util.Set;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
@@ -23,6 +25,7 @@ public class BoardPanel extends JPanel {
 
 	private Board _board;
 	private GameState _phase;
+	private static JLabel phase;
 	
 	public BoardPanel(Board board) {
 		_board = board;
@@ -31,6 +34,7 @@ public class BoardPanel extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				_phase = _phase.play(e.getX(), e.getY());
+				phase.setText(_phase.getPhaseName() + " Turn: "+_phase.getWhoIsPlaying());
 			}
 		});
 		
@@ -82,14 +86,20 @@ public class BoardPanel extends JPanel {
 	//-------------------------------------------------------
 	
 	public static void main(String[] args) {
-		
+		HexagonBoard hexagonBoard = new HexagonBoard(10, 10, 5, 5);
 //		Board board = HexagonBoard.createBoard(5,10);
-		Board board = HexagonBoard.createBoard(5,5);
+		Board board = hexagonBoard.createBoard();
 		
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		frame.add(new BoardPanel(board));
+		frame.setLayout(new BorderLayout());
+		phase = new JLabel();
+		phase.setText("Fill all cells");
+		frame.add(phase, BorderLayout.NORTH);
+		BoardPanel comp = new BoardPanel(board);
+		frame.add(comp, BorderLayout.CENTER);
 		frame.setSize(800, 600);
+		frame.pack();
 		frame.setVisible(true);
 	}
 }

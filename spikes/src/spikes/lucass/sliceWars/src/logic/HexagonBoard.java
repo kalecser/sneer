@@ -5,24 +5,36 @@ import java.awt.Polygon;
 
 public class HexagonBoard {
 
-	public static Board createBoard(int width,int height) {
+	private int _xStart;
+	private int _yStart;
+	private int _width;
+	private int _height;
+
+	public HexagonBoard(int xStart,int yStart,int width,int height) {
+		_xStart = xStart;
+		_yStart = yStart;
+		_width = width;
+		_height = height;
+	}
+	
+	public Board createBoard() {
 		Board board = new Board();
 		
-		Polygon[][] poligons = new Polygon[width][height];
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
+		Polygon[][] poligons = new Polygon[_width][_height];
+		for (int x = 0; x < _width; x++) {
+			for (int y = 0; y < _height; y++) {
 				poligons[x][y] = createHexagonOnPosition(x,y);
 			}
 		}
 		
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
+		for (int x = 0; x < _width; x++) {
+			for (int y = 0; y < _height; y++) {
 				board.createAndAddToBoardCellForPolygon(poligons[x][y]);
 			}
 		}
 		
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
+		for (int x = 0; x < _width; x++) {
+			for (int y = 0; y < _height; y++) {
 				if(y-2 >=0)
 					board.link(poligons[x][y], poligons[x][y-2]);
 				
@@ -43,15 +55,15 @@ public class HexagonBoard {
 		return board;
 	}
 
-	public static Polygon createHexagonOnPosition(int x, int y){
+	public Polygon createHexagonOnPosition(int x, int y){
 		int size = 100;
 		int xOffset = (y%2==0)?0:(size/4)*3;
 		int xMoved = (x*size) + (x*(size/2)) + xOffset;
 		int yMoved = (y*size) - (y*(size/2));
-		return drawHexagon(xMoved,yMoved,size);
+		return drawHexagon(_xStart+xMoved,_yStart+ yMoved,size);
 	}
 
-	static Polygon drawHexagon(int x, int y, int sideLenght) {
+	private Polygon drawHexagon(int x, int y, int sideLenght) {
 		int quarter = sideLenght/4;
 		int half = sideLenght/2;
 		

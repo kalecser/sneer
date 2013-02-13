@@ -31,12 +31,22 @@ public class FirstDiceBatchDistribution implements GameState {
 		cellAtOrNull.cell.addDie();
 		if(diceCount == 0){
 			if(currentPlaying.isLastPlayer()){
-				new AttackPhase(_board);
+				return new AttackPhase(_board);
 			}
 			currentPlaying = currentPlaying.next();
 			diceCount = _diceToAdd;
 		}
 		return this;
+	}
+	
+	@Override
+	public String getPhaseName() {
+		return "First round, add dice";
+	}
+	
+	@Override
+	public String getWhoIsPlaying() {
+		return currentPlaying.name();
 	}
 
 }

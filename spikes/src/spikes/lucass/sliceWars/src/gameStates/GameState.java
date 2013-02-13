@@ -3,6 +3,8 @@ package spikes.lucass.sliceWars.src.gameStates;
 
 public interface GameState {
 
-	public abstract GameState play(int x, int y);
+	public GameState play(int x, int y);
+	public String getPhaseName();
+	public String getWhoIsPlaying();
 
 }
