@@ -15,7 +15,7 @@ public class DiceThrowerTest {
 	
 	
 	@Test
-	public void diceOutcome(){
+	public void throwSomeLoadedDice_diceOutcomeShouldCheck(){
 		Dice atacker = new  LoadedDice(3);
 		Dice defense = new  LoadedDice(1);
 		DiceThrowerImpl subject = new DiceThrowerImpl(atacker,defense);
@@ -27,7 +27,7 @@ public class DiceThrowerTest {
 	}
 	
 	@Test
-	public void atackWins(){
+	public void attackDiceSumIsBigger_AtackWins(){
 		Dice atacker = new  LoadedDice(3);
 		Dice defense = new  LoadedDice(1);
 		DiceThrowerImpl subject = new DiceThrowerImpl(atacker,defense);
@@ -36,7 +36,7 @@ public class DiceThrowerTest {
 	}
 	
 	@Test
-	public void onDraw_DefenseWins(){
+	public void diceSumDraw_DefenseWins(){
 		Dice atacker = new  LoadedDice(3);
 		Dice defense = new  LoadedDice(3);
 		DiceThrowerImpl subject = new DiceThrowerImpl(atacker,defense);
@@ -45,7 +45,7 @@ public class DiceThrowerTest {
 	}
 	
 	@Test
-	public void defenseWins(){
+	public void defenseDiceSumIsBigger_DefenseWins(){
 		Dice atacker = new  LoadedDice(1);
 		Dice defense = new  LoadedDice(3);
 		DiceThrowerImpl subject = new DiceThrowerImpl(atacker,defense);

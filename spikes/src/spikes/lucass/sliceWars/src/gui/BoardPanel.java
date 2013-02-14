@@ -19,7 +19,7 @@ import javax.swing.WindowConstants;
 
 import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
-import spikes.lucass.sliceWars.src.logic.HexagonBoard;
+import spikes.lucass.sliceWars.src.logic.HexagonBoardFactory;
 import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.FillAllCellPhase;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
@@ -91,12 +91,11 @@ public class BoardPanel extends JPanel {
 	//-------------------------------------------------------
 	
 	public static void main(String[] args) {
-		int xStart = 10;
-		int yStart = 10;
-		int width = 3;
-		int height = 3;
-		HexagonBoard hexagonBoard = new HexagonBoard(xStart, yStart, width, height);
-//		Board board = HexagonBoard.createBoard(5,10);
+		int x = 10;
+		int y = 10;
+		int lines = 3;
+		int columns = 3;
+		HexagonBoardFactory hexagonBoard = new HexagonBoardFactory(x, y, lines, columns);
 		Board board = hexagonBoard.createBoard();
 		
 		JFrame frame = new JFrame();

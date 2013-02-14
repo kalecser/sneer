@@ -13,7 +13,7 @@ import spikes.lucass.sliceWars.src.logic.Board;
 public class BoardTest {
 
 	@Test
-	public void testBoard(){
+	public void addSomeCellsAndLinkThem_CheckIfOk(){
 		Board subject = new Board();
 		
 		Polygon square1 = getSquare1();

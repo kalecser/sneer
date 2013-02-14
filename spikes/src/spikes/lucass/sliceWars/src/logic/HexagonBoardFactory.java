@@ -3,38 +3,38 @@ package spikes.lucass.sliceWars.src.logic;
 import java.awt.Polygon;
 
 
-public class HexagonBoard {
+public class HexagonBoardFactory {
 
-	private int _xStart;
-	private int _yStart;
-	private int _width;
-	private int _height;
+	private int _x;
+	private int _y;
+	private int _columns;
+	private int _lines;
 
-	public HexagonBoard(int xStart,int yStart,int width,int height) {
-		_xStart = xStart;
-		_yStart = yStart;
-		_width = width;
-		_height = height;
+	public HexagonBoardFactory(int x,int y,int lines,int columns) {
+		_x = x;
+		_y = y;
+		_columns = columns;
+		_lines = lines;
 	}
 	
 	public Board createBoard() {
 		Board board = new Board();
 		
-		Polygon[][] poligons = new Polygon[_width][_height];
-		for (int x = 0; x < _width; x++) {
-			for (int y = 0; y < _height; y++) {
+		Polygon[][] poligons = new Polygon[_columns][_lines];
+		for (int x = 0; x < _columns; x++) {
+			for (int y = 0; y < _lines; y++) {
 				poligons[x][y] = createHexagonOnPosition(x,y);
 			}
 		}
 		
-		for (int x = 0; x < _width; x++) {
-			for (int y = 0; y < _height; y++) {
+		for (int x = 0; x < _columns; x++) {
+			for (int y = 0; y < _lines; y++) {
 				board.createAndAddToBoardCellForPolygon(poligons[x][y]);
 			}
 		}
 		
-		for (int x = 0; x < _width; x++) {
-			for (int y = 0; y < _height; y++) {
+		for (int x = 0; x < _columns; x++) {
+			for (int y = 0; y < _lines; y++) {
 				if(y-2 >=0)
 					board.link(poligons[x][y], poligons[x][y-2]);
 				
@@ -60,7 +60,7 @@ public class HexagonBoard {
 		int xOffset = (y%2==0)?0:(size/4)*3;
 		int xMoved = (x*size) + (x*(size/2)) + xOffset;
 		int yMoved = (y*size) - (y*(size/2));
-		return drawHexagon(_xStart+xMoved,_yStart+ yMoved,size);
+		return drawHexagon(_x+xMoved,_y+ yMoved,size);
 	}
 
 	private Polygon drawHexagon(int x, int y, int sideLenght) {
