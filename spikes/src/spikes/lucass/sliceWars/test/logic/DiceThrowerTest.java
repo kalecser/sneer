@@ -1,4 +1,4 @@
-package spikes.lucass.sliceWars.test;
+package spikes.lucass.sliceWars.test.logic;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;

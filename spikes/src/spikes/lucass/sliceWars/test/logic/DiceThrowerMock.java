@@ -1,4 +1,4 @@
-package spikes.lucass.sliceWars.test;
+package spikes.lucass.sliceWars.test.logic;
 
 import spikes.lucass.sliceWars.src.logic.DiceThrowOutcome;
 import spikes.lucass.sliceWars.src.logic.DiceThrower;
