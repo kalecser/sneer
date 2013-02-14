@@ -17,12 +17,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import spikes.lucass.sliceWars.src.gameStates.FillAllCellPhase;
-import spikes.lucass.sliceWars.src.gameStates.GameState;
 import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.HexagonBoard;
 import spikes.lucass.sliceWars.src.logic.Player;
+import spikes.lucass.sliceWars.src.logic.gameStates.FillAllCellPhase;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
 
 public class BoardPanel extends JPanel {
 

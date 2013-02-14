@@ -1,4 +1,4 @@
-package spikes.lucass.sliceWars.src.gameStates;
+package spikes.lucass.sliceWars.src.logic.gameStates;
 
 import java.util.Set;
 

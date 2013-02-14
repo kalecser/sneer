@@ -1,4 +1,4 @@
-package spikes.lucass.sliceWars.src.gameStates;
+package spikes.lucass.sliceWars.src.logic.gameStates;
 
 import spikes.lucass.sliceWars.src.logic.Player;
 
