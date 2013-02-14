@@ -10,7 +10,10 @@ public class CellAttack {
 		_diceThrower = diceThrower;
 	}
 
-	public AttackOutcome doAttack(Cell attacker, Cell defender) {
+	public AttackOutcome doAttackReturnOutcomeOrNull(Cell attacker, Cell defender) {
+		if(attacker.getDiceCount() <= 1) return null;
+		if(attacker.equals(defender)) return null;
+		if(attacker.owner.equals(defender.owner)) return null;
 		DiceThrowOutcome diceOutcome = _diceThrower.throwDiceAndReturnOutcome(attacker.getDiceCount(), defender.getDiceCount());
 		Cell resultingAttackCell = new Cell();
 		Cell resultingDefenseCell = new Cell();

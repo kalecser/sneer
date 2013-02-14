@@ -5,11 +5,11 @@ public class AttackOutcome {
 
 	public DiceThrowOutcome diceThrowOutcome;
 	public Cell attackCellAfterAttack;
-	public Cell attackCellAfterDefense;
+	public Cell defenseCellAfterAttack;
 
-	public AttackOutcome(Cell newAttackCellAfterAttack, Cell newAttackCellAfterDefense, DiceThrowOutcome diceOutcome) {
+	public AttackOutcome(Cell newAttackCellAfterAttack, Cell newDefenseCellAfterAttack, DiceThrowOutcome diceOutcome) {
 		attackCellAfterAttack = newAttackCellAfterAttack;
-		attackCellAfterDefense = newAttackCellAfterDefense;
+		defenseCellAfterAttack = newDefenseCellAfterAttack;
 		diceThrowOutcome = diceOutcome;
 	}
 

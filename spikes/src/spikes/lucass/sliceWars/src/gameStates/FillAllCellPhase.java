@@ -42,8 +42,16 @@ public class FillAllCellPhase implements GameState {
 	}
 
 	@Override
-	public String getWhoIsPlaying() {
-		return currentPlaying.name();
+	public Player getWhoIsPlaying() {
+		return currentPlaying;
 	}
 
+	@Override
+	public boolean canPass() {
+		return false;
+	}
+
+	@Override
+	public void pass() {
+	}
 }

@@ -29,13 +29,13 @@ public class CellAttackTest {
 		int defenseDiceResultForAllDice = 1;
 		DiceThrowerMock diceThrowerMock = new DiceThrowerMock(attackDiceResultForAllDice,defenseDiceResultForAllDice);
 		CellAttack cellAttack = new CellAttack(diceThrowerMock);
-		AttackOutcome attackOutcome = cellAttack.doAttack(attacker,defender);
+		AttackOutcome attackOutcome = cellAttack.doAttackReturnOutcomeOrNull(attacker,defender);
 		DiceThrowOutcome diceThrowOutcome = attackOutcome.diceThrowOutcome;
 		assertDiceThrowResults(diceThrowOutcome);
 		Cell newAttackCell = attackOutcome.attackCellAfterAttack;
 		assertEquals(newAttackCell.getDiceCount(), 1);
 		assertEquals(newAttackCell.owner, playerAttacking);
-		Cell newDefenseCell = attackOutcome.attackCellAfterDefense;
+		Cell newDefenseCell = attackOutcome.defenseCellAfterAttack;
 		assertEquals(newDefenseCell.getDiceCount(), 3);
 		assertEquals(newDefenseCell.owner, playerAttacking);		
 	}
@@ -54,11 +54,11 @@ public class CellAttackTest {
 		int defenseDiceResultForAllDice = 4;
 		DiceThrowerMock diceThrowerMock = new DiceThrowerMock(attackDiceResultForAllDice,defenseDiceResultForAllDice);
 		CellAttack cellAttack = new CellAttack(diceThrowerMock);
-		AttackOutcome attackOutcome = cellAttack.doAttack(attacker,defender);
+		AttackOutcome attackOutcome = cellAttack.doAttackReturnOutcomeOrNull(attacker,defender);
 		Cell newAttackCell = attackOutcome.attackCellAfterAttack;
 		assertEquals(newAttackCell.getDiceCount(), 1);
 		assertEquals(newAttackCell.owner, playerAttacking);
-		Cell newDefenseCell = attackOutcome.attackCellAfterDefense;
+		Cell newDefenseCell = attackOutcome.defenseCellAfterAttack;
 		assertEquals(newDefenseCell.getDiceCount(), 3);
 		assertEquals(newDefenseCell.owner, playerDefending);
 	}
@@ -77,11 +77,11 @@ public class CellAttackTest {
 		int defenseDiceResultForAllDice = 1;
 		DiceThrowerMock diceThrowerMock = new DiceThrowerMock(attackDiceResultForAllDice,defenseDiceResultForAllDice);
 		CellAttack cellAttack = new CellAttack(diceThrowerMock);
-		AttackOutcome attackOutcome = cellAttack.doAttack(attacker,defender);
+		AttackOutcome attackOutcome = cellAttack.doAttackReturnOutcomeOrNull(attacker,defender);
 		Cell newAttackCell = attackOutcome.attackCellAfterAttack;
 		assertEquals(newAttackCell.getDiceCount(), 1);
 		assertEquals(newAttackCell.owner, playerAttacking);
-		Cell newDefenseCell = attackOutcome.attackCellAfterDefense;
+		Cell newDefenseCell = attackOutcome.defenseCellAfterAttack;
 		assertEquals(newDefenseCell.getDiceCount(), 4);
 		assertEquals(newDefenseCell.owner, playerDefending);
 	}
