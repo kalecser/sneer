@@ -42,7 +42,9 @@ public class BoardPanel extends JPanel {
 		pass = new JButton("Pass");
 		pass.setEnabled(false);
 		pass.addActionListener(new ActionListener(){@Override public void actionPerformed(ActionEvent e) {
-			_phase.pass();
+			_phase = _phase.pass();
+			phaseLabel.setText(_phase.getPhaseName() + " Turn: "+_phase.getWhoIsPlaying().name());
+			pass.setEnabled(_phase.canPass());
 		}});
 		
 		new Thread(){@Override public void run() {

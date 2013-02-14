@@ -52,6 +52,7 @@ public class FillAllCellPhase implements GameState {
 	}
 
 	@Override
-	public void pass() {
+	public GameState pass() {
+		return this;
 	}
 }

@@ -8,15 +8,15 @@ import spikes.lucass.sliceWars.src.logic.DiceImpl;
 import spikes.lucass.sliceWars.src.logic.DiceThrowerImpl;
 import spikes.lucass.sliceWars.src.logic.Player;
 
-
 public class AttackPhase implements GameState {
 
-	private Board _board;
-	private Player currentPlaying = Player.Player1;
+	private final Board _board;
+	private final Player currentPlaying;
 	private BoardCell c1;
 	private CellAttack _cellAttack;
 
-	public AttackPhase(Board board) {
+	public AttackPhase(Player playerAttacking,Board board) {
+		currentPlaying = playerAttacking;
 		_board = board;
 		_cellAttack = new CellAttack(new DiceThrowerImpl(new DiceImpl(), new DiceImpl()));
 	}
@@ -26,6 +26,7 @@ public class AttackPhase implements GameState {
 		BoardCell cellAtOrNull = _board.getCellAtOrNull(x,y);
 		if(cellAtOrNull == null) return this;
 		if(c1 == null){
+			if(!cellAtOrNull.cell.owner.equals(currentPlaying)) return this;
 			c1 = cellAtOrNull;
 			return this;
 		}
@@ -56,8 +57,8 @@ public class AttackPhase implements GameState {
 	}
 
 	@Override
-	public void pass() {
-		currentPlaying = currentPlaying.next();
+	public GameState pass() {
+		return new DistributeDiePhase(_board,currentPlaying.next());
 	}
 
 }

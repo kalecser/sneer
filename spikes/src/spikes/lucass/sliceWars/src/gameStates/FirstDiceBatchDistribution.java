@@ -31,7 +31,7 @@ public class FirstDiceBatchDistribution implements GameState {
 		cellAtOrNull.cell.addDie();
 		if(diceCount == 0){
 			if(currentPlaying.isLastPlayer()){
-				return new AttackPhase(_board);
+				return new FirstAttackPhase(_board);
 			}
 			currentPlaying = currentPlaying.next();
 			diceCount = _diceToAdd;
@@ -55,6 +55,7 @@ public class FirstDiceBatchDistribution implements GameState {
 	}
 
 	@Override
-	public void pass() {
+	public GameState pass() {
+		return this;
 	}
 }

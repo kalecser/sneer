@@ -9,5 +9,5 @@ public interface GameState {
 	public String getPhaseName();
 	public Player getWhoIsPlaying();
 	public boolean canPass();
-	public void pass();
+	public GameState pass();
 }
