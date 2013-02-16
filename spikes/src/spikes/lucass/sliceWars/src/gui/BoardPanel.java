@@ -81,14 +81,15 @@ public class BoardPanel extends JPanel {
 		g2.setColor(Color.BLACK);
 		Set<BoardCell> boardCells = _board.getBoardCells();
 		for (BoardCell boardCell : boardCells) {
+			Color fillColor = Color.GRAY;
 			if(boardCell.getOwner().equals(Player.PLAYER1)){
-				g2.setColor(Color.BLUE);
-				g2.fill(boardCell.getPolygon());
+				fillColor = Color.BLUE;
 			}
 			if(boardCell.getOwner().equals(Player.PLAYER2)){
-				g2.setColor(Color.RED);
-				g2.fill(boardCell.getPolygon());
+				fillColor = Color.RED;
 			}
+			g2.setColor(fillColor);
+			g2.fill(boardCell.getPolygon());
 			g2.setColor(Color.BLACK);
 			g2.draw(boardCell.getPolygon());
 			g2.setColor(Color.WHITE);
@@ -101,9 +102,10 @@ public class BoardPanel extends JPanel {
 	public static void main(String[] args) {
 		int x = 10;
 		int y = 10;
-		int lines = 3;
-		int columns = 3;
-		HexagonBoardFactory hexagonBoard = new HexagonBoardFactory(x, y, lines, columns);
+		int lines = 6;
+		int columns = 6;
+		int randomlyRemoveCount = 9;
+		HexagonBoardFactory hexagonBoard = new HexagonBoardFactory(x, y, lines, columns, randomlyRemoveCount);
 		Board board = hexagonBoard.createBoard();
 		
 		JFrame frame = new JFrame();

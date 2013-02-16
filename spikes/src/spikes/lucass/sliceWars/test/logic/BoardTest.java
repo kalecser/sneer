@@ -35,6 +35,21 @@ public class BoardTest {
 	}
 	
 	@Test
+	public void addSomeCells_ThenRmoveOne(){
+		BoardImpl subject = new BoardImpl();
+		
+		Polygon irrelevant = new Polygon();
+		
+		BoardCell cell1 = subject.createAndAddToBoardCellForPolygon(irrelevant);
+		BoardCell cell2 = subject.createAndAddToBoardCellForPolygon(irrelevant);
+		subject.link(cell1,cell2);
+		
+		subject.remove(cell1);
+		assertTrue(!subject.getBoardCells().contains(cell1));
+		assertFalse(subject.areLinked(cell1,cell2));
+	}
+	
+	@Test
 	public void addSomeCellsAndSetOwners_ShouldSayBoardIsFull(){
 		BoardImpl subject = new BoardImpl();
 		

@@ -11,5 +11,6 @@ public interface Board {
 	public int getBiggestLinkedCellCountForPlayer(Player player);
 	public abstract boolean areLinked(BoardCell c1, BoardCell c2);
 	public boolean areaAllCellsFilled(Player currentPlaying);
+	public abstract void remove(BoardCell cell);
 
 }

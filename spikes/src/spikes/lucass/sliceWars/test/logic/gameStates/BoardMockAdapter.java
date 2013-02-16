@@ -43,4 +43,8 @@ public class BoardMockAdapter implements Board{
 	public boolean areaAllCellsFilled(Player currentPlaying) {
 		return false;
 	}
+
+	@Override
+	public void remove(BoardCell cell) {
+	}
 }

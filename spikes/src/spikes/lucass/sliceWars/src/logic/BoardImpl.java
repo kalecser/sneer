@@ -51,7 +51,9 @@ public class BoardImpl implements Board{
 
 	@Override
 	public boolean areLinked(BoardCell c1, BoardCell c2) {
-		return linkedBoardCells.get(c1).contains(c2);
+		Set<BoardCell> set = linkedBoardCells.get(c1);
+		if(set == null) return false;
+		return set.contains(c2);
 	}
 
 	public Polygon getPolygonAt(int x, int y) {
@@ -131,6 +133,15 @@ public class BoardImpl implements Board{
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public void remove(BoardCell cell) {
+		Set<BoardCell> boardCells = getBoardCells();
+		for (BoardCell boardCell : boardCells) {
+			linkedBoardCells.get(boardCell).remove(cell);
+		}
+		linkedBoardCells.remove(cell);
 	}
 
 

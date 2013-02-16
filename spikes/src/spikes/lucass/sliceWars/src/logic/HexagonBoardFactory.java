@@ -1,6 +1,7 @@
 package spikes.lucass.sliceWars.src.logic;
 
 import java.awt.Polygon;
+import java.util.Random;
 
 
 public class HexagonBoardFactory {
@@ -9,15 +10,38 @@ public class HexagonBoardFactory {
 	private int _y;
 	private int _columns;
 	private int _lines;
+	private BoardCell[][] _boardCells;
+	private int _randomlyRemoveCount;
 
-	public HexagonBoardFactory(int x,int y,int lines,int columns) {
+	public HexagonBoardFactory(int x,int y,int lines,int columns,int randomlyRemoveCount) {
+		if(randomlyRemoveCount >= lines * columns){
+			throw new RuntimeException("Invalid randomlyRemoveCount "+ randomlyRemoveCount);
+		}
 		_x = x;
 		_y = y;
 		_columns = columns;
 		_lines = lines;
+		_randomlyRemoveCount = randomlyRemoveCount;
 	}
 	
 	public Board createBoard() {
+		_boardCells = new BoardCell[_columns][_lines];
+		Board board = internalCreateBoard();
+		Random random = new Random();
+		for (int i = 0; i < _randomlyRemoveCount; i++) {
+			int col = random.nextInt(_columns);
+			int line = random.nextInt(_lines);
+			while(_boardCells[col][line] == null){
+				col = random.nextInt(_columns);
+				line = random.nextInt(_lines);
+			}
+			board.remove(_boardCells[col][line]);
+			_boardCells[col][line] = null;
+		}
+		return board;
+	}
+
+	private Board internalCreateBoard() {
 		BoardImpl board = new BoardImpl();
 		
 		Polygon[][] poligons = new Polygon[_columns][_lines];
@@ -29,7 +53,7 @@ public class HexagonBoardFactory {
 		
 		for (int x = 0; x < _columns; x++) {
 			for (int y = 0; y < _lines; y++) {
-				board.createAndAddToBoardCellForPolygon(poligons[x][y]);
+				_boardCells[x][y] = board.createAndAddToBoardCellForPolygon(poligons[x][y]);
 			}
 		}
 		
@@ -51,7 +75,6 @@ public class HexagonBoardFactory {
 				}
 			}
 		}
-		
 		return board;
 	}
 
