@@ -60,6 +60,9 @@ public class AttackPhase implements GameState {
 	@Override
 	public GameState pass() {
 		Player nextPlayer = currentPlaying.next();
+		if(_board.areaAllCellsFilled(nextPlayer)){
+			return new AttackPhase(nextPlayer, _board);
+		}
 		return new DistributeDiePhase(nextPlayer,_board);
 	}
 

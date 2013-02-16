@@ -1,5 +1,6 @@
 package spikes.lucass.sliceWars.test.logic.gameStates;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -50,6 +51,28 @@ public class AttackPhaseTest {
 		
 		GameState nextPhase = subject.pass();
 		assertTrue(nextPhase instanceof DistributeDiePhase);
+	}
+	
+	@Test
+	public void allCellsFilled_ShouldSkipDistributeDie(){
+		final BoardCellMock defender = new BoardCellMock(Player.PLAYER1);
+		
+		AttackPhase subject = new AttackPhase(new Player(1, 2),new BoardMockAdapter() {
+			
+			@Override
+			public BoardCell getCellAtOrNull(int x, int y) {
+				return defender;
+			}
+			
+			@Override
+			public boolean areaAllCellsFilled(Player currentPlaying) {
+				return true;
+			}
+		});
+		assertEquals(Player.PLAYER1, subject.getWhoIsPlaying());
+		GameState nextPhase = subject.pass();
+		assertTrue(nextPhase instanceof AttackPhase);
+		assertEquals(Player.PLAYER2, subject.getWhoIsPlaying());
 	}
 	
 }
