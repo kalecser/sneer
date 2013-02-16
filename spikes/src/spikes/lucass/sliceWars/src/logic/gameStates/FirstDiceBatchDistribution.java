@@ -24,7 +24,7 @@ public class FirstDiceBatchDistribution implements GameState {
 		if(nextPhase.equals(_distributeDiePhase))
 			return this;
 		if(_currentPlaying.isLastPlayer()){
-			return new FirstAttackPhase(_currentPlaying, _board);
+			return new FirstAttackPhase(_currentPlaying.next(), _board);
 		}
 		Player nextPlayer = _currentPlaying.next();
 		_currentPlaying = nextPlayer;

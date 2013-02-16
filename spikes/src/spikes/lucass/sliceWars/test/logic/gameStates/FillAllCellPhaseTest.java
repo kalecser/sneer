@@ -1,5 +1,6 @@
 package spikes.lucass.sliceWars.test.logic.gameStates;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -19,28 +20,45 @@ public class FillAllCellPhaseTest {
 	
 	@Test
 	public void testState(){
-		final BoardCellImpl boardCell = new BoardCellImpl(new Polygon());
-		assertTrue(Player.EMPTY.equals(boardCell.getOwner()));
-		FillAllCellPhase subject = new FillAllCellPhase(new Player(1, 1), new BoardMockAdapter() {
+		
+		Polygon irrelevant = new Polygon();
+		final BoardCell p1Cell = new BoardCellImpl(irrelevant);
+		final BoardCell p2Cell = new BoardCellImpl(irrelevant);
+		final BoardCell p3Cell = new BoardCellImpl(irrelevant);
+		
+		final int boardCellCount = 3;
+		assertTrue(Player.EMPTY.equals(p1Cell.getOwner()));
+		assertTrue(Player.EMPTY.equals(p2Cell.getOwner()));
+		FillAllCellPhase subject = new FillAllCellPhase(new Player(1, 2), new BoardMockAdapter() {
 			
 			@Override
 			public boolean isFilled() {
-				return true;
+				boolean cell1Filled = !Player.EMPTY.equals(p1Cell.getOwner());
+				boolean cell2Filled = !Player.EMPTY.equals(p2Cell.getOwner());
+				boolean cell3Filled = !Player.EMPTY.equals(p3Cell.getOwner());
+				return cell1Filled  && cell2Filled && cell3Filled;
 			}
 			
 			@Override
 			public BoardCell getCellAtOrNull(int x, int y) {
-				return boardCell;
+				if(x == 0) return p1Cell;
+				if(x == 1) return p2Cell;
+				return p3Cell;
 			}
 
 			@Override
 			public int getCellCount() {
-				return 0;
+				return boardCellCount;
 			}
 		});
-		GameState play = subject.play(0, 0);
-		assertFalse(Player.EMPTY.equals(boardCell.getOwner()));
+		subject.play(0, 0);
+		assertFalse(Player.EMPTY.equals(p1Cell.getOwner()));
+		subject.play(1, 0);
+		assertFalse(Player.EMPTY.equals(p2Cell.getOwner()));
+		GameState play = subject.play(2, 0);
+		assertFalse(Player.EMPTY.equals(p2Cell.getOwner()));
 		assertTrue(play instanceof FirstDiceBatchDistribution);
+		assertEquals(Player.PLAYER1, play.getWhoIsPlaying());
 	}
 
 }

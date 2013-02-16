@@ -48,7 +48,7 @@ public class BoardCellMock implements BoardCell {
 
 	@Override
 	public boolean canAddDie() {
-		return false;
+		return true;
 	}
 
 	@Override

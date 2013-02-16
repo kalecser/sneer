@@ -26,8 +26,8 @@ public class FillAllCellPhase implements GameState {
 		_currentPlaying = _currentPlaying.next();
 		
 		if(!_board.isFilled()) return this;
-		
-		return new FirstDiceBatchDistribution(_currentPlaying,_board);
+		Player firstPlayer = new Player(1, _currentPlaying.getPlayersCount());
+		return new FirstDiceBatchDistribution(firstPlayer,_board);
 	}
 
 	@Override

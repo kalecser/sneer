@@ -15,12 +15,7 @@ public class DistributeDiePhaseTest {
 
 	@Test
 	public void testState(){
-		final BoardCellMock boardCellMock = new BoardCellMock(Player.PLAYER1){
-			@Override
-			public boolean canAddDie() {
-				return true;
-			}
-		};
+		final BoardCellMock boardCellMock = new BoardCellMock(Player.PLAYER1);
 		assertEquals(0, boardCellMock.getDiceCount());
 		
 		final int boardCellCount = 2;

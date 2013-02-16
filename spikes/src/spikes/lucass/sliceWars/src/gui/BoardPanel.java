@@ -36,14 +36,14 @@ public class BoardPanel extends JPanel {
 		_phase = new FillAllCellPhase(new Player(1, 2), board);		
 		addMouseListener(new MouseAdapter(){@Override public void mouseClicked(MouseEvent e) {
 				_phase = _phase.play(e.getX(), e.getY());
-				phaseLabel.setText(_phase.getPhaseName() + " Turn: player "+_phase.getWhoIsPlaying());
+				phaseLabel.setText(_phase.getPhaseName() + " Turn: player "+_phase.getWhoIsPlaying().getPlayerNumber());
 				pass.setEnabled(_phase.canPass());
 		}});
 		pass = new JButton("Pass");
 		pass.setEnabled(false);
 		pass.addActionListener(new ActionListener(){@Override public void actionPerformed(ActionEvent e) {
 			_phase = _phase.pass();
-			phaseLabel.setText(_phase.getPhaseName() + " Turn: player "+_phase.getWhoIsPlaying());
+			phaseLabel.setText(_phase.getPhaseName() + " Turn: player "+_phase.getWhoIsPlaying().getPlayerNumber());
 			pass.setEnabled(_phase.canPass());
 		}});
 		
