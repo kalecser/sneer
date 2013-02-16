@@ -34,7 +34,7 @@ public class BoardPanel extends JPanel {
 	private static JLabel phaseLabel;
 	private static JButton pass;
 	private final static AtomicBoolean _gameRunning = new AtomicBoolean();
-	private final static Color[] colors = new Color[]{Color.GRAY, Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW};
+	private final static Color[] colors = new Color[]{Color.GRAY, Color.BLUE, Color.RED, Color.ORANGE, Color.DARK_GRAY};
 	
 	
 	public BoardPanel(Board board) {
