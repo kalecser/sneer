@@ -22,7 +22,8 @@ public class AttackPhase implements GameState {
 		BoardCell cellAtOrNull = _board.getCellAtOrNull(x,y);
 		if(cellAtOrNull == null) return this;
 		if(c1 == null){
-			if(!cellAtOrNull.getOwner().equals(currentPlaying)) return this;
+			Player owner = cellAtOrNull.getOwner();
+			if(!owner.equals(currentPlaying)) return this;
 			c1 = cellAtOrNull;
 			return this;
 		}
