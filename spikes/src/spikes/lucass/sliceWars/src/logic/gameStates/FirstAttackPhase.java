@@ -38,7 +38,7 @@ public class FirstAttackPhase implements GameState {
 	@Override
 	public GameState pass() {
 		if(_attackPhase.getWhoIsPlaying().isLastPlayer()){
-			return new DistributeDiePhase(_board,_attackPhase.getWhoIsPlaying().next());
+			return new DistributeDiePhase(_attackPhase.getWhoIsPlaying().next(),_board);
 		}
 		_attackPhase = new AttackPhase(_attackPhase.getWhoIsPlaying().next(),_board);
 		return this;

@@ -8,7 +8,7 @@ public interface BoardCell {
 	public AttackOutcome attack(BoardCell other);
 	public void setCell(Cell attackCellAfterAttack);
 	public Cell getCell();
-	public void setOwner(Player player1);
+	public void setOwner(Player player);
 	public void setDiceCount(int newDiceCount);
 	public boolean canAddDie();
 	public void addDie();

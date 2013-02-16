@@ -6,7 +6,7 @@ import spikes.lucass.sliceWars.src.logic.Player;
 
 public class DistributeDiePhase implements GameState{
 
-	public DistributeDiePhase(Board board, Player currentPlayer) {
+	public DistributeDiePhase(Player currentPlaying,Board board) {
 	}
 
 	@Override

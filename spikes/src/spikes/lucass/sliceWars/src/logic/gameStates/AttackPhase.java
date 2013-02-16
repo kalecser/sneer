@@ -55,7 +55,7 @@ public class AttackPhase implements GameState {
 
 	@Override
 	public GameState pass() {
-		return new DistributeDiePhase(_board,currentPlaying.next());
+		return new DistributeDiePhase(currentPlaying.next(),_board);
 	}
 
 }
