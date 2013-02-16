@@ -1,7 +1,6 @@
 package spikes.lucass.sliceWars.test.logic.gameStates;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Polygon;
@@ -25,7 +24,7 @@ public class FirstDiceBatchDistributionTest {
 		final BoardCell boardCell = new BoardCell(new Polygon());
 		boardCell.setOwner(Player.PLAYER1);
 		boardCell.setDiceCount(1);
-		final int boardCellCount = 4;
+		final int boardCellCount = 1;
 		FirstDiceBatchDistribution subject = new  FirstDiceBatchDistribution(new Player(1, 1),new Board() {
 			
 			@Override
@@ -49,11 +48,8 @@ public class FirstDiceBatchDistributionTest {
 			}
 		});
 		GameState play = subject.play(0, 0);
-		assertTrue(play instanceof FirstDiceBatchDistribution);
 		assertEquals(2, boardCell.getDiceCount());
-		
 		assertTrue(play instanceof FirstAttackPhase);
-		
 	}
 
 	

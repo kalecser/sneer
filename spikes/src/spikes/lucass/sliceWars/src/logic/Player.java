@@ -41,4 +41,8 @@ public class Player{
 	public int getPlayerNumber() {
 		return currentPlayer;
 	}
+
+	public int getPlayersCount() {
+		return _playerCount;
+	}
 }

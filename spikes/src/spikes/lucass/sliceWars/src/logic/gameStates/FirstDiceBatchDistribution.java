@@ -15,8 +15,7 @@ public class FirstDiceBatchDistribution implements GameState {
 	public FirstDiceBatchDistribution(Player currentPlaying, Board board) {
 		_currentPlaying = currentPlaying;
 		_board = board;
-		int playersCount = 2;
-		_diceToAdd = board.getCellCount()/playersCount;
+		_diceToAdd = board.getCellCount()/currentPlaying.getPlayersCount();
 		diceCount = _diceToAdd;
 	}
 
