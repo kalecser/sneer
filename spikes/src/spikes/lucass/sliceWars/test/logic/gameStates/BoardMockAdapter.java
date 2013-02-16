@@ -33,4 +33,14 @@ public class BoardMockAdapter implements Board{
 	public int getBiggestLinkedCellCountForPlayer(Player player) {
 		return 0;
 	}
+
+	@Override
+	public boolean areLinked(BoardCell c1, BoardCell c2) {
+		return true;
+	}
+
+	@Override
+	public boolean areaAllCellsFilled(Player currentPlaying) {
+		return false;
+	}
 }

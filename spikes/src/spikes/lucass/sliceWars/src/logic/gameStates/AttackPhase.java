@@ -27,6 +27,10 @@ public class AttackPhase implements GameState {
 			c1 = cellAtOrNull;
 			return this;
 		}
+		if(!_board.areLinked(c1, cellAtOrNull)){
+			c1 = null;
+			return this;
+		}
 		AttackOutcome attackOutcome = c1.attack(cellAtOrNull);
 		if(attackOutcome == null){
 			c1 = null;

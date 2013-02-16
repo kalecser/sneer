@@ -44,4 +44,40 @@ public class DistributeDiePhaseTest {
 		AttackPhase attackPhase = (AttackPhase) nextPhase;
 		assertTrue(attackPhase.getWhoIsPlaying().equals(Player.PLAYER1));
 	}
+	
+	@Test
+	public void ifAlreadMaxedAllCells_GoToNextPhase(){
+		final BoardCellMock boardCellMock = new BoardCellMock(Player.PLAYER1){
+			@Override
+			public boolean canAddDie() {
+				return false;
+			}
+		};
+		
+		final int boardCellCount = 2;
+		DistributeDiePhase subject = new DistributeDiePhase(new Player(1, 1),new BoardMockAdapter() {
+			
+			@Override
+			public BoardCell getCellAtOrNull(int x, int y) {
+				return boardCellMock;
+			}
+
+			@Override
+			public int getCellCount() {
+				return boardCellCount;
+			}
+			
+			@Override
+			public int getBiggestLinkedCellCountForPlayer(Player player) {
+				return 10;
+			}
+			
+			@Override
+			public boolean areaAllCellsFilled(Player currentPlaying) {
+				return true;
+			}
+		});
+		GameState nextPhase = subject.play(0, 0);
+		assertTrue(nextPhase instanceof AttackPhase);
+	}
 }

@@ -9,7 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,8 +20,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
-import spikes.lucass.sliceWars.src.logic.BoardImpl;
 import spikes.lucass.sliceWars.src.logic.HexagonBoardFactory;
 import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.FillAllCellPhase;
@@ -26,12 +29,14 @@ import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
 
 public class BoardPanel extends JPanel {
 
-	private BoardImpl _board;
+	private Board _board;
 	private GameState _phase;
 	private static JLabel phaseLabel;
 	private static JButton pass;
+	private final static AtomicBoolean _gameRunning = new AtomicBoolean();
 	
-	public BoardPanel(BoardImpl board) {
+	
+	public BoardPanel(Board board) {
 		_board = board;
 		_phase = new FillAllCellPhase(new Player(1, 2), board);		
 		addMouseListener(new MouseAdapter(){@Override public void mouseClicked(MouseEvent e) {
@@ -47,8 +52,11 @@ public class BoardPanel extends JPanel {
 			pass.setEnabled(_phase.canPass());
 		}});
 		
-		new Thread(){@Override public void run() {
-			while(true){
+
+		new Thread(){
+		@Override public void run() {
+			_gameRunning.set(true);
+			while(_gameRunning.get()){
 				repaint();
 				try {
 					sleep(100);
@@ -96,10 +104,42 @@ public class BoardPanel extends JPanel {
 		int lines = 3;
 		int columns = 3;
 		HexagonBoardFactory hexagonBoard = new HexagonBoardFactory(x, y, lines, columns);
-		BoardImpl board = hexagonBoard.createBoard();
+		Board board = hexagonBoard.createBoard();
 		
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		frame.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				_gameRunning.set(false);
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {
+			}
+		});
+		
 		frame.setLayout(new BorderLayout());
 		phaseLabel = new JLabel();
 		phaseLabel.setText("Fill all cells");

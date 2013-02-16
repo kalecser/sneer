@@ -9,5 +9,7 @@ public interface Board {
 	public Set<BoardCell> getBoardCells();
 	public int getCellCount();
 	public int getBiggestLinkedCellCountForPlayer(Player player);
+	public abstract boolean areLinked(BoardCell c1, BoardCell c2);
+	public boolean areaAllCellsFilled(Player currentPlaying);
 
 }

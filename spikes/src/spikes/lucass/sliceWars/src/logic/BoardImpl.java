@@ -49,27 +49,9 @@ public class BoardImpl implements Board{
 		return null;
 	}
 
-	public boolean areLinked(Polygon polygon1, Polygon polygon2) {
-		
-		Set<BoardCell> list = getLinked(polygon1);
-		if(list == null){
-			return false;
-		}
-		for (BoardCell boardCell2 : list) {
-			if(boardCell2.getPolygon().equals(polygon2))
-				return true;
-		}
-		return false;
-	}
-
-	private Set<BoardCell> getLinked(Polygon polygon) {
-		Set<BoardCell> keySet = linkedBoardCells.keySet();
-		for (BoardCell boardCell : keySet) {
-			if(boardCell.getPolygon().equals(polygon)){
-				return linkedBoardCells.get(boardCell);
-			}
-		}
-		return null;
+	@Override
+	public boolean areLinked(BoardCell c1, BoardCell c2) {
+		return linkedBoardCells.get(c1).contains(c2);
 	}
 
 	public Polygon getPolygonAt(int x, int y) {
@@ -137,6 +119,18 @@ public class BoardImpl implements Board{
 			}
 		}
 		return sum;
+	}
+
+	@Override
+	public boolean areaAllCellsFilled(Player player) {
+		Set<BoardCell> boardCells = getBoardCells();
+		for (BoardCell boardCell : boardCells) {
+			if(boardCell.getOwner().equals(player)){				
+				if(boardCell.getDiceCount()<Cell.MAX_DICE)
+					return false;
+			}
+		}
+		return true;
 	}
 
 

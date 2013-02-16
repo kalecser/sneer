@@ -28,10 +28,13 @@ public class DistributeDiePhase implements GameState{
 		BoardCell cellAtOrNull = _board.getCellAtOrNull(x,y);
 		if(cellAtOrNull == null) return this;
 		if(!cellAtOrNull.getOwner().equals(_currentPlaying)) return this;
+		if(_board.areaAllCellsFilled(_currentPlaying)){
+			return new AttackPhase(_currentPlaying, _board);
+		}
 		if(!cellAtOrNull.canAddDie()) return this;
 		diceCount --;
 		cellAtOrNull.addDie();
-		if(diceCount == 0){
+		if(diceCount == 0 || _board.areaAllCellsFilled(_currentPlaying)){
 			return new AttackPhase(_currentPlaying, _board);
 		}
 		return this;
@@ -39,12 +42,12 @@ public class DistributeDiePhase implements GameState{
 
 	@Override
 	public String getPhaseName() {
-		return null;
+		return "DistributeDiePhase";
 	}
 
 	@Override
 	public Player getWhoIsPlaying() {
-		return null;
+		return _currentPlaying;
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.BoardImpl;
+import spikes.lucass.sliceWars.src.logic.Cell;
 import spikes.lucass.sliceWars.src.logic.Player;
 
 
@@ -19,23 +20,18 @@ public class BoardTest {
 	public void addSomeCellsAndLinkThem_CheckIfOk(){
 		BoardImpl subject = new BoardImpl();
 		
-		Polygon square1 = getSquare1();
-		Polygon square2 = getSquare2();
-		Polygon square3 = getSquare3();
+		Polygon irrelevant = new Polygon();
 		
-		subject.createAndAddToBoardCellForPolygon(square1);
-		subject.createAndAddToBoardCellForPolygon(square2);
-		subject.createAndAddToBoardCellForPolygon(square3);
+		BoardCell cell1 = subject.createAndAddToBoardCellForPolygon(irrelevant);
+		BoardCell cell2 = subject.createAndAddToBoardCellForPolygon(irrelevant);
+		BoardCell cell3 = subject.createAndAddToBoardCellForPolygon(irrelevant);
 		
-		subject.createAndAddToBoardCellForPolygon(square1);
-		subject.createAndAddToBoardCellForPolygon(square2);
-		subject.createAndAddToBoardCellForPolygon(square3);
-		subject.link(square1,square2);
-		subject.link(square2,square3);
-		assertTrue(subject.areLinked(square1,square2));
-		assertTrue(subject.areLinked(square2,square1));
-		assertTrue(subject.areLinked(square2,square3));
-		assertFalse(subject.areLinked(square1,square3));
+		subject.link(cell1,cell2);
+		subject.link(cell2,cell3);
+		assertTrue(subject.areLinked(cell1,cell2));
+		assertTrue(subject.areLinked(cell2,cell1));
+		assertTrue(subject.areLinked(cell2,cell3));
+		assertFalse(subject.areLinked(cell1,cell3));
 	}
 	
 	@Test
@@ -48,6 +44,24 @@ public class BoardTest {
 		subject.createAndAddToBoardCellForPolygon(irrelevant).setOwner(Player.PLAYER1);
 		subject.createAndAddToBoardCellForPolygon(irrelevant).setOwner(Player.PLAYER1);
 		assertTrue(subject.isFilled());
+	}
+	
+	@Test
+	public void addSomeCellsAndSetOwnersAndFillThem_ShouldSayPlayerCantPlay(){
+		BoardImpl subject = new BoardImpl();
+		
+		Polygon irrelevant = new Polygon();
+		
+		BoardCell cell1 = subject.createAndAddToBoardCellForPolygon(irrelevant);
+		cell1.setOwner(Player.PLAYER1);
+		BoardCell cell2 = subject.createAndAddToBoardCellForPolygon(irrelevant);
+		cell2.setOwner(Player.PLAYER1);
+		cell1.setDiceCount(1);
+		cell2.setDiceCount(1);
+		assertTrue(!subject.areaAllCellsFilled(Player.PLAYER1));
+		cell1.setDiceCount(Cell.MAX_DICE);
+		cell2.setDiceCount(Cell.MAX_DICE);
+		assertTrue(subject.areaAllCellsFilled(Player.PLAYER1));
 	}
 	
 	@Test
@@ -108,29 +122,5 @@ public class BoardTest {
 		
 		int linkedCount = subject.getBiggestLinkedCellCountForPlayer(Player.PLAYER1);
 		assertEquals(4, linkedCount);
-	}
-
-	private Polygon getSquare1() {
-		int[] squareXPoints = new int[]{ 0,10,10, 0};
-		int[] squareYPoints = new int[]{ 0, 0,10,10};
-		int squareNPoints = 4;
-		Polygon square = new Polygon(squareXPoints, squareYPoints, squareNPoints);
-		return square;
-	}
-	
-	private Polygon getSquare2() {
-		int[] squareXPoints = new int[]{10,20,20,10};
-		int[] squareYPoints = new int[]{ 0, 0,10,10};
-		int squareNPoints = 4;
-		Polygon square = new Polygon(squareXPoints, squareYPoints, squareNPoints);
-		return square;
-	}
-	
-	private Polygon getSquare3() {
-		int[] squareXPoints = new int[]{20,30,30,20};
-		int[] squareYPoints = new int[]{ 0, 0,10,10};
-		int squareNPoints = 4;
-		Polygon square = new Polygon(squareXPoints, squareYPoints, squareNPoints);
-		return square;
 	}
 }
