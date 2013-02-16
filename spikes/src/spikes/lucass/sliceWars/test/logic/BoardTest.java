@@ -7,8 +7,8 @@ import java.awt.Polygon;
 
 import org.junit.Test;
 
-import spikes.lucass.sliceWars.src.logic.BoardImpl;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
+import spikes.lucass.sliceWars.src.logic.BoardImpl;
 import spikes.lucass.sliceWars.src.logic.Player;
 
 

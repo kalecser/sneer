@@ -17,8 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import spikes.lucass.sliceWars.src.logic.BoardImpl;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
+import spikes.lucass.sliceWars.src.logic.BoardImpl;
 import spikes.lucass.sliceWars.src.logic.HexagonBoardFactory;
 import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.FillAllCellPhase;
@@ -75,16 +75,16 @@ public class BoardPanel extends JPanel {
 		for (BoardCell boardCell : boardCells) {
 			if(boardCell.getOwner().equals(Player.PLAYER1)){
 				g2.setColor(Color.BLUE);
-				g2.fill(boardCell.polygon);
+				g2.fill(boardCell.getPolygon());
 			}
 			if(boardCell.getOwner().equals(Player.PLAYER2)){
 				g2.setColor(Color.RED);
-				g2.fill(boardCell.polygon);
+				g2.fill(boardCell.getPolygon());
 			}
 			g2.setColor(Color.BLACK);
-			g2.draw(boardCell.polygon);
+			g2.draw(boardCell.getPolygon());
 			g2.setColor(Color.WHITE);
-			g2.drawString("d:"+boardCell.getDiceCount(), boardCell.polygon.xpoints[0], boardCell.polygon.ypoints[0]);
+			g2.drawString("d:"+boardCell.getDiceCount(), boardCell.getPolygon().xpoints[0], boardCell.getPolygon().ypoints[0]);
 		}
 	}
 	

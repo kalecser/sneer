@@ -12,11 +12,11 @@ public class BoardImpl implements Board{
 	private Map<BoardCell, Set<BoardCell>> linkedBoardCells = new LinkedHashMap<BoardCell, Set<BoardCell>>();
 	
 	public void createAndAddToBoardCellForPolygon(Polygon polygon) {
-		BoardCell cell = new BoardCell(polygon);
+		BoardCell cell = new BoardCellImpl(polygon);
 		linkedBoardCells.put(cell, new LinkedHashSet<BoardCell>());
 	}
 	
-	public void addCell(BoardCell boardCell) {
+	public void addCell(BoardCellImpl boardCell) {
 		linkedBoardCells.put(boardCell, new LinkedHashSet<BoardCell>());
 	}
 
@@ -37,7 +37,7 @@ public class BoardImpl implements Board{
 	private BoardCell getForPolygon(Polygon p){
 		Set<BoardCell> keySet = linkedBoardCells.keySet();
 		for (BoardCell boardCell : keySet) {
-			if(boardCell.polygon.equals(p)){
+			if(boardCell.getPolygon().equals(p)){
 				return boardCell;
 			}
 		}
@@ -51,7 +51,7 @@ public class BoardImpl implements Board{
 			return false;
 		}
 		for (BoardCell boardCell2 : list) {
-			if(boardCell2.polygon.equals(polygon2))
+			if(boardCell2.getPolygon().equals(polygon2))
 				return true;
 		}
 		return false;
@@ -60,7 +60,7 @@ public class BoardImpl implements Board{
 	public Set<BoardCell> getLinked(Polygon polygon) {
 		Set<BoardCell> keySet = linkedBoardCells.keySet();
 		for (BoardCell boardCell : keySet) {
-			if(boardCell.polygon.equals(polygon)){
+			if(boardCell.getPolygon().equals(polygon)){
 				return linkedBoardCells.get(boardCell);
 			}
 		}
@@ -70,8 +70,8 @@ public class BoardImpl implements Board{
 	public Polygon getPolygonAt(int x, int y) {
 		Set<BoardCell> keySet = linkedBoardCells.keySet();
 		for (BoardCell boardCell : keySet) {
-			if(boardCell.polygon.contains(x,y))
-				return boardCell.polygon;
+			if(boardCell.getPolygon().contains(x,y))
+				return boardCell.getPolygon();
 		}
 		return null;
 	}
@@ -80,7 +80,7 @@ public class BoardImpl implements Board{
 	public BoardCell getCellAtOrNull(int x, int y) {
 		Set<BoardCell> keySet = linkedBoardCells.keySet();
 		for (BoardCell boardCell : keySet) {
-			if(boardCell.polygon.contains(x,y))
+			if(boardCell.getPolygon().contains(x,y))
 				return boardCell;
 		}
 		return null;
