@@ -9,9 +9,9 @@ public class FirstAttackPhase implements GameState {
 	private Board _board;
 	private AttackPhase _attackPhase;
 
-	public FirstAttackPhase(Board board) {
+	public FirstAttackPhase(Player currentPlayer, Board board) {
 		_board = board;
-		_attackPhase = new AttackPhase(Player.Player1,board);
+		_attackPhase = new AttackPhase(currentPlayer,board);
 	}
 
 	@Override

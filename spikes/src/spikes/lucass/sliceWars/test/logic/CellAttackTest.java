@@ -20,10 +20,10 @@ public class CellAttackTest {
 		Cell attacker = new Cell();
 		Cell defender = new Cell();
 		attacker.setDiceCount(4);
-		Player playerAttacking = Player.Player1;
+		Player playerAttacking = Player.PLAYER1;
 		attacker.owner = playerAttacking;
 		defender.setDiceCount(3);
-		Player playerDefending = Player.Player2;
+		Player playerDefending = Player.PLAYER2;
 		defender.owner = playerDefending;
 		int attackDiceResultForAllDice = 3;
 		int defenseDiceResultForAllDice = 1;
@@ -45,10 +45,10 @@ public class CellAttackTest {
 		Cell attacker = new Cell();
 		Cell defender = new Cell();
 		attacker.setDiceCount(4);
-		Player playerAttacking = Player.Player1;
+		Player playerAttacking = Player.PLAYER1;
 		attacker.owner = playerAttacking;
 		defender.setDiceCount(3);
-		Player playerDefending = Player.Player2;
+		Player playerDefending = Player.PLAYER2;
 		defender.owner = playerDefending;
 		int attackDiceResultForAllDice = 1;
 		int defenseDiceResultForAllDice = 4;
@@ -68,10 +68,10 @@ public class CellAttackTest {
 		Cell attacker = new Cell();
 		Cell defender = new Cell();
 		attacker.setDiceCount(4);
-		Player playerAttacking = Player.Player1;
+		Player playerAttacking = Player.PLAYER1;
 		attacker.owner = playerAttacking;
 		defender.setDiceCount(4);
-		Player playerDefending = Player.Player2;
+		Player playerDefending = Player.PLAYER2;
 		defender.owner = playerDefending;
 		int attackDiceResultForAllDice = 1;
 		int defenseDiceResultForAllDice = 1;

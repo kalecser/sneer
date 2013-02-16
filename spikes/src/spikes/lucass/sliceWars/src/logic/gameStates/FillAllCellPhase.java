@@ -8,25 +8,26 @@ import spikes.lucass.sliceWars.src.logic.Player;
 public class FillAllCellPhase implements GameState {
 	
 	private Board _board;
-	private Player currentPlaying = Player.Player1;
+	private Player _currentPlaying;
 
-	public FillAllCellPhase(Board board) {
+	public FillAllCellPhase(Player currentPlaying,Board board) {
 		_board = board;
+		_currentPlaying = currentPlaying;
 	}
 	
 	@Override
 	public GameState play(int x, int y){
 		BoardCell cellAtOrNull = _board.getCellAtOrNull(x,y);
 		if(cellAtOrNull == null) return this;
-		if(!cellAtOrNull.getOwner().equals(Player.Empty)) return this;
+		if(!cellAtOrNull.getOwner().equals(Player.EMPTY)) return this;
 		
-		cellAtOrNull.setOwner(currentPlaying);
+		cellAtOrNull.setOwner(_currentPlaying);
 		cellAtOrNull.setDiceCount(1);
-		currentPlaying = currentPlaying.next();
+		_currentPlaying = _currentPlaying.next();
 		
 		if(!_board.isFilled()) return this;
 		
-		return new FirstDiceBatchDistribution(_board);
+		return new FirstDiceBatchDistribution(_currentPlaying,_board);
 	}
 
 	@Override
@@ -36,7 +37,7 @@ public class FillAllCellPhase implements GameState {
 
 	@Override
 	public Player getWhoIsPlaying() {
-		return currentPlaying;
+		return _currentPlaying;
 	}
 
 	@Override

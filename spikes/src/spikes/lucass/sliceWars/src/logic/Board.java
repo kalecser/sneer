@@ -7,5 +7,6 @@ public interface Board {
 	BoardCell getCellAtOrNull(int x, int y);
 	boolean isFilled();
 	Set<BoardCell> getBoardCells();
+	int getCellCount();
 
 }

@@ -1,16 +1,44 @@
 package spikes.lucass.sliceWars.src.logic;
 
-public enum Player{
-	Empty, Player1, Player2;
+public class Player{
+	public static final Player EMPTY = new Player(0);
+	public static final Player PLAYER1  =  new Player(1);
+	public static final Player PLAYER2  =  new Player(2);
+	public static final Player PLAYER3  =  new Player(3);
+	public static final Player PLAYER4  =  new Player(4);
+	public static final Player PLAYER5  =  new Player(5);
+	private int _playerCount;
+	private int currentPlayer;
+	
+	private Player(int player) {
+		currentPlayer = player;
+	}
+	
+	public Player(int player, int playerCount) {
+		_playerCount = playerCount;
+		currentPlayer = player;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Player)) return false;
+		Player other = (Player)obj;
+		return currentPlayer == other.currentPlayer;
+	}
+	
 	
 	public boolean isLastPlayer(){
-		if(this.equals(Player2)) return true;
-		return false;
+		return currentPlayer == _playerCount;
 	}
 	
 	public Player next(){
-		if(this.equals(Player1)) return Player2;
-		if(this.equals(Player2)) return Player1;
-		return null;
+		currentPlayer++;
+		if(currentPlayer > _playerCount)
+			currentPlayer = 1;
+		return new Player(currentPlayer, _playerCount);
+	}
+
+	public int getPlayerNumber() {
+		return currentPlayer;
 	}
 }

@@ -50,11 +50,11 @@ public class BoardTest {
 		subject.createAndAddToBoardCellForPolygon(square3);
 		
 		BoardCell cell1 = subject.getCellAtOrNull(square1.xpoints[0]+1, square1.ypoints[0]+1);
-		cell1.setOwner(Player.Player1);
+		cell1.setOwner(Player.PLAYER1);
 		BoardCell cell2 = subject.getCellAtOrNull(square2.xpoints[0]+1, square2.ypoints[0]+1);
-		cell2.setOwner(Player.Player1);
+		cell2.setOwner(Player.PLAYER1);
 		BoardCell cell3 = subject.getCellAtOrNull(square3.xpoints[0]+1, square3.ypoints[0]+1);
-		cell3.setOwner(Player.Player1);
+		cell3.setOwner(Player.PLAYER1);
 		
 		assertTrue(subject.isFilled());
 	}

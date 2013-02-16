@@ -33,17 +33,17 @@ public class BoardPanel extends JPanel {
 	
 	public BoardPanel(BoardImpl board) {
 		_board = board;
-		_phase = new FillAllCellPhase(board);		
+		_phase = new FillAllCellPhase(new Player(1, 2), board);		
 		addMouseListener(new MouseAdapter(){@Override public void mouseClicked(MouseEvent e) {
 				_phase = _phase.play(e.getX(), e.getY());
-				phaseLabel.setText(_phase.getPhaseName() + " Turn: "+_phase.getWhoIsPlaying().name());
+				phaseLabel.setText(_phase.getPhaseName() + " Turn: player "+_phase.getWhoIsPlaying());
 				pass.setEnabled(_phase.canPass());
 		}});
 		pass = new JButton("Pass");
 		pass.setEnabled(false);
 		pass.addActionListener(new ActionListener(){@Override public void actionPerformed(ActionEvent e) {
 			_phase = _phase.pass();
-			phaseLabel.setText(_phase.getPhaseName() + " Turn: "+_phase.getWhoIsPlaying().name());
+			phaseLabel.setText(_phase.getPhaseName() + " Turn: player "+_phase.getWhoIsPlaying());
 			pass.setEnabled(_phase.canPass());
 		}});
 		
@@ -73,11 +73,11 @@ public class BoardPanel extends JPanel {
 		g2.setColor(Color.BLACK);
 		Set<BoardCell> boardCells = _board.getBoardCells();
 		for (BoardCell boardCell : boardCells) {
-			if(boardCell.getOwner().equals(Player.Player1)){
+			if(boardCell.getOwner().equals(Player.PLAYER1)){
 				g2.setColor(Color.BLUE);
 				g2.fill(boardCell.polygon);
 			}
-			if(boardCell.getOwner().equals(Player.Player2)){
+			if(boardCell.getOwner().equals(Player.PLAYER2)){
 				g2.setColor(Color.RED);
 				g2.fill(boardCell.polygon);
 			}

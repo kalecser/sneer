@@ -4,7 +4,7 @@ package spikes.lucass.sliceWars.src.logic;
 public class Cell {
 	private static final int MAX_DICE = 6;
 	private int diceCount = 0;
-	public Player owner = Player.Empty;
+	public Player owner = Player.EMPTY;
 	public int getDiceCount() {
 		return diceCount;
 	}

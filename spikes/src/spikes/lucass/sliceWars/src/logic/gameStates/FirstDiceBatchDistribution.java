@@ -1,7 +1,5 @@
 package spikes.lucass.sliceWars.src.logic.gameStates;
 
-import java.util.Set;
-
 import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
@@ -11,13 +9,14 @@ public class FirstDiceBatchDistribution implements GameState {
 
 	private Board _board;
 	private final  int _diceToAdd;
-	private Player currentPlaying = Player.Player1;
+	private Player _currentPlaying;
 	private int diceCount;
 	
-	public FirstDiceBatchDistribution(Board board) {
+	public FirstDiceBatchDistribution(Player currentPlaying, Board board) {
+		_currentPlaying = currentPlaying;
 		_board = board;
-		Set<BoardCell> boardCells = _board.getBoardCells();
-		_diceToAdd = boardCells.size()/2;
+		int playersCount = 2;
+		_diceToAdd = board.getCellCount()/playersCount;
 		diceCount = _diceToAdd;
 	}
 
@@ -25,15 +24,15 @@ public class FirstDiceBatchDistribution implements GameState {
 	public GameState play(int x, int y) {
 		BoardCell cellAtOrNull = _board.getCellAtOrNull(x,y);
 		if(cellAtOrNull == null) return this;
-		if(!cellAtOrNull.getOwner().equals(currentPlaying)) return this;
+		if(!cellAtOrNull.getOwner().equals(_currentPlaying)) return this;
 		if(!cellAtOrNull.canAddDie()) return this;
 		diceCount --;
 		cellAtOrNull.addDie();
 		if(diceCount == 0){
-			if(currentPlaying.isLastPlayer()){
-				return new FirstAttackPhase(_board);
+			if(_currentPlaying.isLastPlayer()){
+				return new FirstAttackPhase(_currentPlaying, _board);
 			}
-			currentPlaying = currentPlaying.next();
+			_currentPlaying = _currentPlaying.next();
 			diceCount = _diceToAdd;
 		}
 		return this;
@@ -46,7 +45,7 @@ public class FirstDiceBatchDistribution implements GameState {
 	
 	@Override
 	public Player getWhoIsPlaying() {
-		return currentPlaying;
+		return _currentPlaying;
 	}
 
 	@Override

@@ -90,12 +90,15 @@ public class BoardImpl implements Board{
 	public boolean isFilled() {
 		Set<BoardCell> boardCells = getBoardCells();
 		for (BoardCell boardCell : boardCells) {
-			if(boardCell.getOwner().equals(Player.Empty))
+			if(boardCell.getOwner().equals(Player.EMPTY))
 				return false;
 		}
 		return true;
 	}
 
-
+	@Override
+	public int getCellCount() {
+		return linkedBoardCells.size();
+	}
 
 }
