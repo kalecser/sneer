@@ -17,7 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import spikes.lucass.sliceWars.src.logic.Board;
+import spikes.lucass.sliceWars.src.logic.BoardImpl;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.HexagonBoardFactory;
 import spikes.lucass.sliceWars.src.logic.Player;
@@ -26,12 +26,12 @@ import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
 
 public class BoardPanel extends JPanel {
 
-	private Board _board;
+	private BoardImpl _board;
 	private GameState _phase;
 	private static JLabel phaseLabel;
 	private static JButton pass;
 	
-	public BoardPanel(Board board) {
+	public BoardPanel(BoardImpl board) {
 		_board = board;
 		_phase = new FillAllCellPhase(board);		
 		addMouseListener(new MouseAdapter(){@Override public void mouseClicked(MouseEvent e) {
@@ -73,18 +73,18 @@ public class BoardPanel extends JPanel {
 		g2.setColor(Color.BLACK);
 		Set<BoardCell> boardCells = _board.getBoardCells();
 		for (BoardCell boardCell : boardCells) {
-			if(boardCell.cell.owner.equals(Player.Player1)){
+			if(boardCell.getOwner().equals(Player.Player1)){
 				g2.setColor(Color.BLUE);
 				g2.fill(boardCell.polygon);
 			}
-			if(boardCell.cell.owner.equals(Player.Player2)){
+			if(boardCell.getOwner().equals(Player.Player2)){
 				g2.setColor(Color.RED);
 				g2.fill(boardCell.polygon);
 			}
 			g2.setColor(Color.BLACK);
 			g2.draw(boardCell.polygon);
 			g2.setColor(Color.WHITE);
-			g2.drawString("d:"+boardCell.cell.getDiceCount(), boardCell.polygon.xpoints[0], boardCell.polygon.ypoints[0]);
+			g2.drawString("d:"+boardCell.getDiceCount(), boardCell.polygon.xpoints[0], boardCell.polygon.ypoints[0]);
 		}
 	}
 	
@@ -96,7 +96,7 @@ public class BoardPanel extends JPanel {
 		int lines = 3;
 		int columns = 3;
 		HexagonBoardFactory hexagonBoard = new HexagonBoardFactory(x, y, lines, columns);
-		Board board = hexagonBoard.createBoard();
+		BoardImpl board = hexagonBoard.createBoard();
 		
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

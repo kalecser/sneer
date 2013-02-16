@@ -25,10 +25,10 @@ public class FirstDiceBatchDistribution implements GameState {
 	public GameState play(int x, int y) {
 		BoardCell cellAtOrNull = _board.getCellAtOrNull(x,y);
 		if(cellAtOrNull == null) return this;
-		if(!cellAtOrNull.cell.owner.equals(currentPlaying)) return this;
-		if(!cellAtOrNull.cell.canAddDie()) return this;
+		if(!cellAtOrNull.getOwner().equals(currentPlaying)) return this;
+		if(!cellAtOrNull.canAddDie()) return this;
 		diceCount --;
-		cellAtOrNull.cell.addDie();
+		cellAtOrNull.addDie();
 		if(diceCount == 0){
 			if(currentPlaying.isLastPlayer()){
 				return new FirstAttackPhase(_board);

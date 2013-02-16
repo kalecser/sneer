@@ -17,8 +17,8 @@ public class HexagonBoardFactory {
 		_lines = lines;
 	}
 	
-	public Board createBoard() {
-		Board board = new Board();
+	public BoardImpl createBoard() {
+		BoardImpl board = new BoardImpl();
 		
 		Polygon[][] poligons = new Polygon[_columns][_lines];
 		for (int x = 0; x < _columns; x++) {
