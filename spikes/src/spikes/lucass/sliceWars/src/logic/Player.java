@@ -7,11 +7,11 @@ public class Player{
 	public static final Player PLAYER3  =  new Player(3);
 	public static final Player PLAYER4  =  new Player(4);
 	public static final Player PLAYER5  =  new Player(5);
-	private int _playerCount;
-	private int currentPlayer;
+	private final int _playerCount;
+	private final int currentPlayer;
 	
 	private Player(int player) {
-		currentPlayer = player;
+		this(player,0);
 	}
 	
 	public Player(int player, int playerCount) {
@@ -32,10 +32,9 @@ public class Player{
 	}
 	
 	public Player next(){
-		currentPlayer++;
-		if(currentPlayer > _playerCount)
-			currentPlayer = 1;
-		return new Player(currentPlayer, _playerCount);
+		if(currentPlayer + 1 > _playerCount)
+			return new Player(1, _playerCount);
+		return new Player(currentPlayer + 1, _playerCount);
 	}
 
 	public int getPlayerNumber() {

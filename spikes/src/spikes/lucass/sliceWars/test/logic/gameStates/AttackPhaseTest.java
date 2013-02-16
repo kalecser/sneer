@@ -72,7 +72,7 @@ public class AttackPhaseTest {
 		assertEquals(Player.PLAYER1, subject.getWhoIsPlaying());
 		GameState nextPhase = subject.pass();
 		assertTrue(nextPhase instanceof AttackPhase);
-		assertEquals(Player.PLAYER2, subject.getWhoIsPlaying());
+		assertEquals(Player.PLAYER2, nextPhase.getWhoIsPlaying());
 	}
 	
 }

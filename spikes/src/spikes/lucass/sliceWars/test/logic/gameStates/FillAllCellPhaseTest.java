@@ -52,11 +52,11 @@ public class FillAllCellPhaseTest {
 			}
 		});
 		subject.play(0, 0);
-		assertFalse(Player.EMPTY.equals(p1Cell.getOwner()));
+		assertTrue(Player.PLAYER1.equals(p1Cell.getOwner()));
 		subject.play(1, 0);
-		assertFalse(Player.EMPTY.equals(p2Cell.getOwner()));
+		assertTrue(Player.PLAYER2.equals(p2Cell.getOwner()));
 		GameState play = subject.play(2, 0);
-		assertFalse(Player.EMPTY.equals(p2Cell.getOwner()));
+		assertFalse(Player.PLAYER3.equals(p2Cell.getOwner()));
 		assertTrue(play instanceof FirstDiceBatchDistribution);
 		assertEquals(Player.PLAYER1, play.getWhoIsPlaying());
 	}

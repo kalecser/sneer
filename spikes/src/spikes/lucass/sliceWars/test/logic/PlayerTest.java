@@ -14,6 +14,7 @@ public class PlayerTest {
 		Player subject = new Player(1,playerCount);
 		assertEquals(1,subject.getPlayerNumber());
 		assertEquals(2,subject.next().getPlayerNumber());
+		assertEquals(1,subject.getPlayerNumber());
 	}
 	
 	@Test

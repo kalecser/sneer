@@ -34,11 +34,14 @@ public class BoardPanel extends JPanel {
 	private static JLabel phaseLabel;
 	private static JButton pass;
 	private final static AtomicBoolean _gameRunning = new AtomicBoolean();
+	private final static Color[] colors = new Color[]{Color.GRAY, Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW};
 	
 	
 	public BoardPanel(Board board) {
 		_board = board;
-		_phase = new FillAllCellPhase(new Player(1, 2), board);		
+		int player = 1;
+		_phase = new FillAllCellPhase(new Player(player, 3), board);		
+		phaseLabel.setText(_phase.getPhaseName() + " Turn: player "+_phase.getWhoIsPlaying().getPlayerNumber());
 		addMouseListener(new MouseAdapter(){@Override public void mouseClicked(MouseEvent e) {
 				_phase = _phase.play(e.getX(), e.getY());
 				phaseLabel.setText(_phase.getPhaseName() + " Turn: player "+_phase.getWhoIsPlaying().getPlayerNumber());
@@ -81,19 +84,13 @@ public class BoardPanel extends JPanel {
 		g2.setColor(Color.BLACK);
 		Set<BoardCell> boardCells = _board.getBoardCells();
 		for (BoardCell boardCell : boardCells) {
-			Color fillColor = Color.GRAY;
-			if(boardCell.getOwner().equals(Player.PLAYER1)){
-				fillColor = Color.BLUE;
-			}
-			if(boardCell.getOwner().equals(Player.PLAYER2)){
-				fillColor = Color.RED;
-			}
-			g2.setColor(fillColor);
+			int playerNumber = boardCell.getOwner().getPlayerNumber();
+			g2.setColor(colors[playerNumber]);
 			g2.fill(boardCell.getPolygon());
 			g2.setColor(Color.BLACK);
 			g2.draw(boardCell.getPolygon());
 			g2.setColor(Color.WHITE);
-			g2.drawString("d:"+boardCell.getDiceCount(), boardCell.getPolygon().xpoints[0], boardCell.getPolygon().ypoints[0]);
+			g2.drawString(playerNumber+" dados:"+boardCell.getDiceCount(), boardCell.getPolygon().xpoints[0] + 10, boardCell.getPolygon().ypoints[0]);
 		}
 	}
 	
