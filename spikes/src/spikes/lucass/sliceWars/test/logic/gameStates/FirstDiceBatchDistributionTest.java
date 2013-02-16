@@ -4,12 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Polygon;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 import org.junit.Test;
 
-import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.BoardCellImpl;
 import spikes.lucass.sliceWars.src.logic.Player;
@@ -26,21 +23,11 @@ public class FirstDiceBatchDistributionTest {
 		boardCell.setOwner(Player.PLAYER1);
 		boardCell.setDiceCount(1);
 		final int boardCellCount = 1;
-		FirstDiceBatchDistribution subject = new  FirstDiceBatchDistribution(new Player(1, 1),new Board() {
-			
-			@Override
-			public boolean isFilled() {
-				return true;
-			}
+		FirstDiceBatchDistribution subject = new  FirstDiceBatchDistribution(new Player(1, 1),new BoardMockAdapter() {
 			
 			@Override
 			public BoardCell getCellAtOrNull(int x, int y) {
 				return boardCell;
-			}
-			
-			@Override
-			public Set<BoardCell> getBoardCells() {
-				return new LinkedHashSet<BoardCell>();
 			}
 
 			@Override

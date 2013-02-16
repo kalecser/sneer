@@ -1,48 +1,52 @@
 package spikes.lucass.sliceWars.test.logic.gameStates;
 
-import static org.junit.Assert.fail;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
+import spikes.lucass.sliceWars.src.logic.gameStates.AttackPhase;
 import spikes.lucass.sliceWars.src.logic.gameStates.DistributeDiePhase;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
 
 public class DistributeDiePhaseTest {
 
 	@Test
 	public void testState(){
-		final BoardCellMock attacker = new BoardCellMock(Player.PLAYER1);
-		final BoardCellMock defender = new BoardCellMock(Player.PLAYER2);
-		
-		final int boardCellCount = 2;
-		DistributeDiePhase subject = new DistributeDiePhase(new Player(1, 2),new Board() {
-			
+		final BoardCellMock boardCellMock = new BoardCellMock(Player.PLAYER1){
 			@Override
-			public boolean isFilled() {
+			public boolean canAddDie() {
 				return true;
 			}
+		};
+		assertEquals(0, boardCellMock.getDiceCount());
+		
+		final int boardCellCount = 2;
+		DistributeDiePhase subject = new DistributeDiePhase(new Player(1, 2),new BoardMockAdapter() {
 			
 			@Override
 			public BoardCell getCellAtOrNull(int x, int y) {
-				if(x == 0) return attacker;
-				return defender;
-			}
-			
-			@Override
-			public Set<BoardCell> getBoardCells() {
-				return new LinkedHashSet<BoardCell>();
+				return boardCellMock;
 			}
 
 			@Override
 			public int getCellCount() {
 				return boardCellCount;
 			}
+			
+			@Override
+			public int getBiggestLinkedCellCountForPlayer(Player player) {
+				return 2;
+			}
 		});
-		fail(subject.toString());
+		subject.play(0, 0);
+		assertEquals(1, boardCellMock.getDiceCount());
+		GameState nextPhase = subject.play(0, 0);
+		assertEquals(2, boardCellMock.getDiceCount());
+		assertTrue(nextPhase instanceof AttackPhase);
+		AttackPhase attackPhase = (AttackPhase) nextPhase;
+		assertTrue(attackPhase.getWhoIsPlaying().equals(Player.PLAYER1));
 	}
 }

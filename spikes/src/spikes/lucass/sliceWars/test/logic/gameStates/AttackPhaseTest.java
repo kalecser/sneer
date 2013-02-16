@@ -2,12 +2,8 @@ package spikes.lucass.sliceWars.test.logic.gameStates;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import org.junit.Test;
 
-import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.AttackPhase;
@@ -22,22 +18,12 @@ public class AttackPhaseTest {
 		final BoardCellMock defender = new BoardCellMock(Player.PLAYER2);
 		
 		final int boardCellCount = 2;
-		AttackPhase subject = new AttackPhase(new Player(1, 2),new Board() {
-			
-			@Override
-			public boolean isFilled() {
-				return true;
-			}
+		AttackPhase subject = new AttackPhase(new Player(1, 2),new BoardMockAdapter() {
 			
 			@Override
 			public BoardCell getCellAtOrNull(int x, int y) {
 				if(x == 0) return attacker;
 				return defender;
-			}
-			
-			@Override
-			public Set<BoardCell> getBoardCells() {
-				return new LinkedHashSet<BoardCell>();
 			}
 
 			@Override

@@ -106,6 +106,7 @@ public class BoardImpl implements Board{
 		return linkedBoardCells.size();
 	}
 
+	@Override
 	public int getBiggestLinkedCellCountForPlayer(Player player) {
 		Set<BoardCell> boardCells = getBoardCells();
 		int count = 0;

@@ -4,12 +4,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Polygon;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 import org.junit.Test;
 
-import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.BoardCellImpl;
 import spikes.lucass.sliceWars.src.logic.Player;
@@ -24,7 +21,7 @@ public class FillAllCellPhaseTest {
 	public void testState(){
 		final BoardCellImpl boardCell = new BoardCellImpl(new Polygon());
 		assertTrue(Player.EMPTY.equals(boardCell.getOwner()));
-		FillAllCellPhase subject = new FillAllCellPhase(new Player(1, 1), new Board() {
+		FillAllCellPhase subject = new FillAllCellPhase(new Player(1, 1), new BoardMockAdapter() {
 			
 			@Override
 			public boolean isFilled() {
@@ -34,11 +31,6 @@ public class FillAllCellPhaseTest {
 			@Override
 			public BoardCell getCellAtOrNull(int x, int y) {
 				return boardCell;
-			}
-			
-			@Override
-			public Set<BoardCell> getBoardCells() {
-				return new LinkedHashSet<BoardCell>();
 			}
 
 			@Override

@@ -11,6 +11,7 @@ public class BoardCellMock implements BoardCell {
 
 	private boolean wasAttacked = false;
 	private Player _player;
+	private int diceCount = 0;
 	
 	public BoardCellMock(Player player) {
 		_player = player;
@@ -52,6 +53,7 @@ public class BoardCellMock implements BoardCell {
 
 	@Override
 	public void addDie() {
+		diceCount++;
 	}
 
 	@Override
@@ -61,7 +63,7 @@ public class BoardCellMock implements BoardCell {
 
 	@Override
 	public int getDiceCount() {
-		return 0;
+		return diceCount;
 	}
 
 	public boolean wasAttacked() {
