@@ -130,13 +130,17 @@ public class BoardImpl implements Board{
 	@Override
 	public boolean areaAllCellsFilled(Player player) {
 		Collection<BoardCell> boardCells = getBoardCells();
+		int cellCount = 0;
 		for (BoardCell boardCell : boardCells) {
-			if(boardCell.getOwner().equals(player)){				
+			if(boardCell.getOwner().equals(player)){
+				cellCount++;
 				if(boardCell.getDiceCount()<Cell.MAX_DICE)
 					return false;
 			}
 		}
-		return true;
+		if(cellCount > 0)
+			return true;
+		return false;
 	}
 
 	@Override

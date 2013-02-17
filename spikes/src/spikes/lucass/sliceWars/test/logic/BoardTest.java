@@ -77,6 +77,7 @@ public class BoardTest {
 		cell1.setDiceCount(Cell.MAX_DICE);
 		cell2.setDiceCount(Cell.MAX_DICE);
 		assertTrue(subject.areaAllCellsFilled(Player.PLAYER1));
+		assertFalse(subject.areaAllCellsFilled(Player.PLAYER3));
 	}
 	
 	@Test
@@ -137,6 +138,9 @@ public class BoardTest {
 		
 		int linkedCount = subject.getBiggestLinkedCellCountForPlayer(Player.PLAYER1);
 		assertEquals(4, linkedCount);
+		
+		int noLinkedCount = subject.getBiggestLinkedCellCountForPlayer(Player.PLAYER3);
+		assertEquals(0, noLinkedCount);
 	}
 	
 	@Test

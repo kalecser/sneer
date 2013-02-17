@@ -39,6 +39,8 @@ public class AttackPhase implements GameState {
 		c1.setCell(attackOutcome.attackCellAfterAttack);
 		cellAtOrNull.setCell(attackOutcome.defenseCellAfterAttack);
 		c1 = null;
+		if(checkIfWon())
+			return new GameEnded(currentPlaying);
 		return this;
 	}
 
@@ -57,11 +59,28 @@ public class AttackPhase implements GameState {
 		return true;
 	}
 
+	private boolean checkIfWon(){
+		Player nextPlayer = currentPlaying.next();
+		while(_board.getBiggestLinkedCellCountForPlayer(nextPlayer) == 0){
+			nextPlayer = nextPlayer.next();
+			if(nextPlayer.equals(currentPlaying)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	@Override
 	public GameState pass() {
 		Player nextPlayer = currentPlaying.next();
 		if(_board.areaAllCellsFilled(nextPlayer)){
 			return new AttackPhase(nextPlayer, _board);
+		}
+		while(_board.getBiggestLinkedCellCountForPlayer(nextPlayer) == 0){
+			nextPlayer = nextPlayer.next();
+			if(nextPlayer.equals(currentPlaying)){
+				throw new RuntimeException("This shouldn't happen because if a play leads to a winner, the game state changes");
+			}
 		}
 		return new DistributeDiePhase(nextPlayer,_board);
 	}

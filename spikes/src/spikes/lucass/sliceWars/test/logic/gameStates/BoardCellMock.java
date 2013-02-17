@@ -5,6 +5,7 @@ import java.awt.Polygon;
 import spikes.lucass.sliceWars.src.logic.AttackOutcome;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Cell;
+import spikes.lucass.sliceWars.src.logic.DiceThrowOutcome;
 import spikes.lucass.sliceWars.src.logic.Player;
 
 public class BoardCellMock implements BoardCell {
@@ -26,7 +27,7 @@ public class BoardCellMock implements BoardCell {
 	public AttackOutcome attack(BoardCell other) {
 		BoardCellMock otherMock = (BoardCellMock) other;
 		otherMock.wasAttacked = true;
-		return null;
+		return new AttackOutcome(other.getCell(), this.getCell(), new DiceThrowOutcome(new int[]{}, new int[]{}));
 	}
 
 	@Override
