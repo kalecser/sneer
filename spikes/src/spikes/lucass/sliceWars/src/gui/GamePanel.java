@@ -6,9 +6,13 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import spikes.lucass.sliceWars.src.gui.drawers.PassButtonDrawer;
@@ -31,6 +35,7 @@ public class GamePanel extends JPanel {
 	private PassButtonDrawer passButtonDrawer = new PassButtonDrawer(500,18);
 	
 	private AtomicBoolean _gameRunning = new AtomicBoolean(true);
+	private BufferedImage _background;
 	
 	public GamePanel() {
 		int x = 10;
@@ -41,6 +46,12 @@ public class GamePanel extends JPanel {
 		HexagonBoardFactory hexagonBoard = new HexagonBoardFactory(x, y, lines, columns, randomlyRemoveCount);
 		Board board = hexagonBoard.createBoard();
 		
+		InputStream resourceAsStream = GamePanel.class.getResourceAsStream("pw_maze_white.png");
+		try {
+			_background = ImageIO.read(resourceAsStream);
+		} catch (IOException e1) {
+			throw new RuntimeException("Background not found");
+		}
 		
 		_board = board;
 		int player = 1;
@@ -92,9 +103,20 @@ public class GamePanel extends JPanel {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		g2.setColor(Color.BLACK);
+		drawBackground(g2);
 		drawCells(g2);
 		phaseLabel.draw(g2);
 		passButtonDrawer.draw(g2);
+	}
+
+	private void drawBackground(Graphics2D g2) {
+		for (int x=0; x<= getWidth() / _background.getWidth(); x++)
+	    {
+	            for (int y=0; y<= getHeight() / _background.getHeight() ; y++)
+	            {
+	                    g2.drawImage(_background, x * _background.getWidth(), y * _background.getHeight(), this);
+	            }
+	    }
 	}
 
 	private void drawCells(Graphics2D g2) {
