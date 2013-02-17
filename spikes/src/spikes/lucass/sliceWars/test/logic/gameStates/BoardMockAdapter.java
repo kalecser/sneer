@@ -47,4 +47,9 @@ public class BoardMockAdapter implements Board{
 	@Override
 	public void remove(BoardCell cell) {
 	}
+
+	@Override
+	public boolean removingCellWillLeaveOrphans(BoardCell cell) {
+		return false;
+	}
 }

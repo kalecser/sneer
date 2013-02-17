@@ -1,6 +1,8 @@
 package spikes.lucass.sliceWars.src.logic;
 
 import java.awt.Polygon;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -22,8 +24,8 @@ public class BoardImpl implements Board{
 	}
 
 	@Override
-	public Set<BoardCell> getBoardCells(){
-		return linkedBoardCells.keySet();
+	public Collection<BoardCell> getBoardCells(){
+		return Collections.unmodifiableCollection(linkedBoardCells.keySet());
 	}
 	
 	public void link(BoardCell boardCell1,BoardCell boardCell2) {
@@ -77,7 +79,7 @@ public class BoardImpl implements Board{
 
 	@Override
 	public boolean isFilled() {
-		Set<BoardCell> boardCells = getBoardCells();
+		Collection<BoardCell> boardCells = getBoardCells();
 		for (BoardCell boardCell : boardCells) {
 			if(boardCell.getOwner().equals(Player.EMPTY))
 				return false;
@@ -92,7 +94,7 @@ public class BoardImpl implements Board{
 
 	@Override
 	public int getBiggestLinkedCellCountForPlayer(Player player) {
-		Set<BoardCell> boardCells = getBoardCells();
+		Collection<BoardCell> boardCells = getBoardCells();
 		int count = 0;
 		for (BoardCell boardCell : boardCells) {
 			if(boardCell.getOwner().equals(player)){
@@ -105,19 +107,21 @@ public class BoardImpl implements Board{
 
 	private int getLinkedCellCount(BoardCell boardCell) {
 		Set<BoardCell> alreadyCounted = new LinkedHashSet<BoardCell>();
-		return getLinkedCellCount(boardCell,alreadyCounted);
+		return getLinkedCellCount(boardCell,alreadyCounted, false, null);
 	}
 	
-	private int getLinkedCellCount(BoardCell boardCell,Set<BoardCell> alreadyCounted) {
+	private int getLinkedCellCount(BoardCell boardCell,Set<BoardCell> alreadyCounted, boolean ignoreOwner,BoardCell skipCell) {
 		if(alreadyCounted.contains(boardCell)) return 0;
+		if(boardCell.equals(skipCell)) return 0;
 		alreadyCounted.add(boardCell);
 		Set<BoardCell> linked = linkedBoardCells.get(boardCell);
 		
 		int sum = 1;
 		
 		for (BoardCell boardCellLinked : linked) {
-			if(boardCellLinked.getOwner().equals(boardCell.getOwner())){				
-				sum += getLinkedCellCount(boardCellLinked,alreadyCounted);
+			boolean hasSameOwnerSame = boardCellLinked.getOwner().equals(boardCell.getOwner());
+			if(hasSameOwnerSame || ignoreOwner){
+				sum += getLinkedCellCount(boardCellLinked,alreadyCounted, ignoreOwner, skipCell);
 			}
 		}
 		return sum;
@@ -125,7 +129,7 @@ public class BoardImpl implements Board{
 
 	@Override
 	public boolean areaAllCellsFilled(Player player) {
-		Set<BoardCell> boardCells = getBoardCells();
+		Collection<BoardCell> boardCells = getBoardCells();
 		for (BoardCell boardCell : boardCells) {
 			if(boardCell.getOwner().equals(player)){				
 				if(boardCell.getDiceCount()<Cell.MAX_DICE)
@@ -137,12 +141,33 @@ public class BoardImpl implements Board{
 
 	@Override
 	public void remove(BoardCell cell) {
-		Set<BoardCell> boardCells = getBoardCells();
-		for (BoardCell boardCell : boardCells) {
-			linkedBoardCells.get(boardCell).remove(cell);
-		}
-		linkedBoardCells.remove(cell);
+		internalRemove(cell, linkedBoardCells);
 	}
 
+	private void internalRemove(BoardCell cell, Map<BoardCell, Set<BoardCell>> boardCellsMap) {
+		Set<BoardCell> boardCells = boardCellsMap.keySet();
+		for (BoardCell boardCell : boardCells) {
+			Set<BoardCell> linked = boardCellsMap.get(boardCell);
+			linked.remove(cell);
+		}
+		boardCellsMap.remove(cell);
+	}
+
+	@Override
+	public boolean removingCellWillLeaveOrphans(BoardCell cell) {
+		Collection<BoardCell> boardCells = getBoardCells();
+		int originalSize = boardCells.size()-1;
+		BoardCell anyCell = getCellDifferentFromThisCellOrNull(cell, boardCells);
+		int linkedCellCount = getLinkedCellCount(anyCell,new LinkedHashSet<BoardCell>(), true, cell);
+		return linkedCellCount != originalSize;
+	}
+
+	private BoardCell getCellDifferentFromThisCellOrNull(BoardCell cell, Collection<BoardCell> boardCells) {
+		for (BoardCell boardCell : boardCells) {
+			if(!boardCell.equals(cell))
+				return boardCell;
+		}
+		return null;
+	}
 
 }

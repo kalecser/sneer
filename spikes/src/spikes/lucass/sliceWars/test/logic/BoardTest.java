@@ -35,7 +35,7 @@ public class BoardTest {
 	}
 	
 	@Test
-	public void addSomeCells_ThenRmoveOne(){
+	public void addSomeCells_ThenRemoveOne(){
 		BoardImpl subject = new BoardImpl();
 		
 		Polygon irrelevant = new Polygon();
@@ -137,5 +137,26 @@ public class BoardTest {
 		
 		int linkedCount = subject.getBiggestLinkedCellCountForPlayer(Player.PLAYER1);
 		assertEquals(4, linkedCount);
+	}
+	
+	@Test
+	public void askIfRemovingCellWillLeaveOrphanCells(){
+		BoardImpl subject = new BoardImpl();
+		
+		Polygon irrelevant = new Polygon();
+		
+		BoardCell cellLeft = subject.createAndAddToBoardCellForPolygon(irrelevant);
+		BoardCell cellMiddle = subject.createAndAddToBoardCellForPolygon(irrelevant);
+		BoardCell cellRight = subject.createAndAddToBoardCellForPolygon(irrelevant);
+		
+		cellLeft.setDiceCount(1);
+		cellMiddle.setDiceCount(2);
+		cellRight.setDiceCount(3);
+		
+		subject.link(cellLeft,cellMiddle);
+		subject.link(cellMiddle,cellRight);
+
+		assertTrue(subject.removingCellWillLeaveOrphans(cellMiddle));
+		assertFalse(subject.removingCellWillLeaveOrphans(cellLeft));
 	}
 }

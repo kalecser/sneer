@@ -31,7 +31,7 @@ public class HexagonBoardFactory {
 		for (int i = 0; i < _randomlyRemoveCount; i++) {
 			int col = random.nextInt(_columns);
 			int line = random.nextInt(_lines);
-			while(_boardCells[col][line] == null){
+			while(_boardCells[col][line] == null || board.removingCellWillLeaveOrphans(_boardCells[col][line] )){
 				col = random.nextInt(_columns);
 				line = random.nextInt(_lines);
 			}

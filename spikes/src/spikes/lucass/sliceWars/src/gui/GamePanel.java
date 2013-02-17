@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Set;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.imageio.ImageIO;
@@ -59,22 +59,20 @@ public class GamePanel extends JPanel {
 		phaseLabel.setPhase(_phase);
 		
 		addMouseListener(new MouseAdapter(){@Override public void mouseClicked(MouseEvent e) {
-				_phase = _phase.play(e.getX(), e.getY());
-				phaseLabel.setPhase(_phase);
-				passButtonDrawer.click(e.getX(), e.getY());
-				passButtonDrawer.setVisible(_phase.canPass());
+			_phase = _phase.play(e.getX(), e.getY());
+			phaseLabel.setPhase(_phase);
+			passButtonDrawer.click(e.getX(), e.getY());
+			passButtonDrawer.setVisible(_phase.canPass());
 		}});
 		passButtonDrawer.setVisible(false);
 		passButtonDrawer.addClickListener(new Runnable() {@Override	public void run() {
-				_phase = _phase.pass();
-				phaseLabel.setPhase(_phase);
-				passButtonDrawer.setVisible(_phase.canPass());
+			_phase = _phase.pass();
+			phaseLabel.setPhase(_phase);
+			passButtonDrawer.setVisible(_phase.canPass());
 		}});
 		
 
-		new Thread(){
-
-		@Override public void run() {
+		new Thread(){@Override public void run() {
 			_gameRunning.set(true);
 			while(_gameRunning.get()){
 				repaint();
@@ -110,17 +108,15 @@ public class GamePanel extends JPanel {
 	}
 
 	private void drawBackground(Graphics2D g2) {
-		for (int x=0; x<= getWidth() / _background.getWidth(); x++)
-	    {
-	            for (int y=0; y<= getHeight() / _background.getHeight() ; y++)
-	            {
-	                    g2.drawImage(_background, x * _background.getWidth(), y * _background.getHeight(), this);
-	            }
+		for (int x=0; x<= getWidth()/_background.getWidth(); x++){
+			for (int y=0; y<= getHeight()/_background.getHeight(); y++){
+				g2.drawImage(_background, x * _background.getWidth(), y * _background.getHeight(), this);
+	        }
 	    }
 	}
 
 	private void drawCells(Graphics2D g2) {
-		Set<BoardCell> boardCells = _board.getBoardCells();
+		Collection<BoardCell> boardCells = _board.getBoardCells();
 		for (BoardCell boardCell : boardCells) {
 			simpleCellDrawer.draw(boardCell,g2);
 		}
