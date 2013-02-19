@@ -37,12 +37,13 @@ public class Attack implements GameState {
 			c1 = null;
 			return this;
 		}
+		ShowDiceOutcome showDiceOutcome = new ShowDiceOutcome(this, attackOutcome);
 		c1.setCell(attackOutcome.attackCellAfterAttack);
 		cellAtOrNull.setCell(attackOutcome.defenseCellAfterAttack);
 		c1 = null;
 		if(checkIfWon())
 			return new GameEnded(currentPlaying);
-		return this;
+		return showDiceOutcome;
 	}
 
 	@Override

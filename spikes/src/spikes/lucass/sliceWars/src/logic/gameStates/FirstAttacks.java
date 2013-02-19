@@ -17,7 +17,10 @@ public class FirstAttacks implements GameState {
 
 	@Override
 	public GameState play(int x, int y) {
-		_attackPhase.play(x, y);
+		GameState play = _attackPhase.play(x, y);
+		if(play.getPhase().equals(Phase.ATTACK_OUTCOME)){
+			return new ShowDiceOutcome(this, ((ShowDiceOutcome)play).getAttackOutcome());
+		}
 		return this;
 	}
 

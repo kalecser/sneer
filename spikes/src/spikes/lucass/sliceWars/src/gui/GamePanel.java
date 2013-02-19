@@ -58,7 +58,7 @@ public class GamePanel extends JPanel {
 		drawers.add(new BackgroundDrawer());
 		drawers.add(new CellsDrawer(_gameContext));
 		drawers.add(new PhaseDescriptionDrawer(10,25, _gameContext));
-		drawers.add(new AttackOutcomeDrawer(10,100, _gameContext));
+		drawers.add(new AttackOutcomeDrawer(10,500, _gameContext));
 		final PassButtonDrawer passButtonDrawer = new PassButtonDrawer(500,18);
 		drawers.add(passButtonDrawer);
 		

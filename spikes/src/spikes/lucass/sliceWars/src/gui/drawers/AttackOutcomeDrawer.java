@@ -27,7 +27,7 @@ public class AttackOutcomeDrawer implements Drawer{
 		AttackOutcome attackOutcomeOrNull = _phase.getAttackOutcomeOrNull();
 		if(attackOutcomeOrNull == null) return;
 		DiceThrowOutcome diceThrowOutcome = attackOutcomeOrNull.diceThrowOutcome;
-		String text = ""+diceThrowOutcome.attackDice[0];
+		String text = "ATK "+diceThrowOutcome.attackDice[0];
 		
 		for (int i = 1; i < diceThrowOutcome.attackDice.length; i++) {
 			text += "+ "+diceThrowOutcome.attackDice[i];
@@ -35,7 +35,7 @@ public class AttackOutcomeDrawer implements Drawer{
 		
 		text += " = " + diceThrowOutcome.attackSum+" | ";
 		
-		text += ""+diceThrowOutcome.defenseDice[0];
+		text += "DEF "+diceThrowOutcome.defenseDice[0];
 		
 		for (int i = 1; i < diceThrowOutcome.defenseDice.length; i++) {
 			text += "+ "+diceThrowOutcome.defenseDice[i];
