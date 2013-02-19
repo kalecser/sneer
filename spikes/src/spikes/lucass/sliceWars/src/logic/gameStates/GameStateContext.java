@@ -2,6 +2,7 @@ package spikes.lucass.sliceWars.src.logic.gameStates;
 
 import java.util.Collection;
 
+import spikes.lucass.sliceWars.src.logic.AttackOutcome;
 import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
@@ -17,8 +18,12 @@ public class GameStateContext {
 	};
 	
 	public GameStateContext(int numberOfPlayers, Board board) {
+		this(board, new FillAllCell(new Player(1, numberOfPlayers), board));
+	}
+
+	public GameStateContext(Board board,GameState gameState) {
 		_board = board;
-		_state = new FillAllCell(new Player(1, numberOfPlayers), board);
+		_state = gameState;
 	}
 
 	public void play(int x, int y){
@@ -47,6 +52,12 @@ public class GameStateContext {
 
 	public Collection<BoardCell> getBoardCells() {
 		return _board.getBoardCells();
+	}
+
+	public AttackOutcome getAttackOutcomeOrNull() {
+		if(!_state.getPhase().equals(Phase.ATTACK_OUTCOME)) return null;
+		ShowDiceOutcome outcome = (ShowDiceOutcome) _state;
+		return outcome.getAttackOutcome();
 	}
 
 }

@@ -24,9 +24,6 @@ import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext;
 public class GamePanel extends JPanel {
 
 	private GameStateContext _gameContext;
-	
-	
-	
 	private List<Drawer> drawers = new ArrayList<Drawer>();
 	
 	private AtomicBoolean _gameRunning = new AtomicBoolean(true);
@@ -58,16 +55,11 @@ public class GamePanel extends JPanel {
 	}
 
 	private void createAndWireDrawers() {
-		PhaseDescriptionDrawer  phaseLabel = new PhaseDescriptionDrawer(10,25, _gameContext);
-		drawers.add(phaseLabel);
+		drawers.add(new PhaseDescriptionDrawer(10,25, _gameContext));
 		final PassButtonDrawer passButtonDrawer = new PassButtonDrawer(500,18);
 		drawers.add(passButtonDrawer);
-		CellsDrawer  cellsDrawer = new CellsDrawer(_gameContext);
-		drawers.add(cellsDrawer);
-		BackgroundDrawer _background = new BackgroundDrawer();
-		drawers.add(_background);
-		
-		
+		drawers.add(new CellsDrawer(_gameContext));
+		drawers.add(new BackgroundDrawer());
 		
 		addMouseListener(new MouseAdapter(){@Override public void mouseClicked(MouseEvent e) {
 			_gameContext.play(e.getX(), e.getY());

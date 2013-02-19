@@ -45,4 +45,8 @@ public class ShowDiceOutcome implements GameState {
 		return Phase.ATTACK_OUTCOME;
 	}
 
+	public AttackOutcome getAttackOutcome() {
+		return _attackOutcome;
+	}
+
 }

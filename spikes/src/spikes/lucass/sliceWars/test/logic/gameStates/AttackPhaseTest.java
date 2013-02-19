@@ -70,7 +70,7 @@ public class AttackPhaseTest {
 			}
 			
 			@Override
-			public boolean areaAllCellsFilled(Player currentPlaying) {
+			public boolean areaAllCellsFilledByPlayer(Player currentPlaying) {
 				return true;
 			}
 		});
@@ -92,7 +92,7 @@ public class AttackPhaseTest {
 			}
 			
 			@Override
-			public boolean areaAllCellsFilled(Player currentPlaying) {
+			public boolean areaAllCellsFilledByPlayer(Player currentPlaying) {
 				return false;
 			}
 			
@@ -122,7 +122,7 @@ public class AttackPhaseTest {
 			}
 			
 			@Override
-			public boolean areaAllCellsFilled(Player currentPlaying) {
+			public boolean areaAllCellsFilledByPlayer(Player currentPlaying) {
 				return false;
 			}
 			

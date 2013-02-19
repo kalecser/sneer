@@ -29,13 +29,13 @@ public class DiceDistribution implements GameState{
 		BoardCell cellAtOrNull = _board.getCellAtOrNull(x,y);
 		if(cellAtOrNull == null) return this;
 		if(!cellAtOrNull.getOwner().equals(_currentPlaying)) return this;
-		if(_board.areaAllCellsFilled(_currentPlaying)){
+		if(_board.areaAllCellsFilledByPlayer(_currentPlaying)){
 			return new Attack(_currentPlaying, _board);
 		}
 		if(!cellAtOrNull.canAddDie()) return this;
 		diceCount --;
 		cellAtOrNull.addDie();
-		if(diceCount == 0 || _board.areaAllCellsFilled(_currentPlaying)){
+		if(diceCount == 0 || _board.areaAllCellsFilledByPlayer(_currentPlaying)){
 			return new Attack(_currentPlaying, _board);
 		}
 		return this;

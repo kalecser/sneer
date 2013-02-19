@@ -128,7 +128,7 @@ public class BoardImpl implements Board{
 	}
 
 	@Override
-	public boolean areaAllCellsFilled(Player player) {
+	public boolean areaAllCellsFilledByPlayer(Player player) {
 		Collection<BoardCell> boardCells = getBoardCells();
 		int cellCount = 0;
 		for (BoardCell boardCell : boardCells) {

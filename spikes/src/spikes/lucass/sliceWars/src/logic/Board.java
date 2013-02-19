@@ -10,7 +10,7 @@ public interface Board {
 	public int getCellCount();
 	public int getBiggestLinkedCellCountForPlayer(Player player);
 	public abstract boolean areLinked(BoardCell c1, BoardCell c2);
-	public boolean areaAllCellsFilled(Player currentPlaying);
+	public boolean areaAllCellsFilledByPlayer(Player currentPlaying);
 	public abstract void remove(BoardCell cell);
 	public abstract boolean removingCellWillLeaveOrphans(BoardCell cell);
 

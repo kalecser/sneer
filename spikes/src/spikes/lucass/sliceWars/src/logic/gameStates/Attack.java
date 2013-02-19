@@ -74,7 +74,7 @@ public class Attack implements GameState {
 	@Override
 	public GameState pass() {
 		Player nextPlayer = currentPlaying.next();
-		if(_board.areaAllCellsFilled(nextPlayer)){
+		if(_board.areaAllCellsFilledByPlayer(nextPlayer)){
 			return new Attack(nextPlayer, _board);
 		}
 		while(_board.getBiggestLinkedCellCountForPlayer(nextPlayer) == 0){

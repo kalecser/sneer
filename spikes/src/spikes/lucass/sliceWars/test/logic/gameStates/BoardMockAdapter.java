@@ -40,7 +40,7 @@ public class BoardMockAdapter implements Board{
 	}
 
 	@Override
-	public boolean areaAllCellsFilled(Player currentPlaying) {
+	public boolean areaAllCellsFilledByPlayer(Player currentPlaying) {
 		return false;
 	}
 

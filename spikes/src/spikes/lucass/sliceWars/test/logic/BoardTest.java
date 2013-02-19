@@ -73,11 +73,11 @@ public class BoardTest {
 		cell2.setOwner(Player.PLAYER1);
 		cell1.setDiceCount(1);
 		cell2.setDiceCount(1);
-		assertTrue(!subject.areaAllCellsFilled(Player.PLAYER1));
+		assertTrue(!subject.areaAllCellsFilledByPlayer(Player.PLAYER1));
 		cell1.setDiceCount(Cell.MAX_DICE);
 		cell2.setDiceCount(Cell.MAX_DICE);
-		assertTrue(subject.areaAllCellsFilled(Player.PLAYER1));
-		assertFalse(subject.areaAllCellsFilled(Player.PLAYER3));
+		assertTrue(subject.areaAllCellsFilledByPlayer(Player.PLAYER1));
+		assertFalse(subject.areaAllCellsFilledByPlayer(Player.PLAYER3));
 	}
 	
 	@Test
