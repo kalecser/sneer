@@ -1,6 +1,6 @@
 package spikes.lucass.sliceWars.test.logic.gameStates;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.awt.Polygon;
 
@@ -9,7 +9,6 @@ import org.junit.Test;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.BoardCellImpl;
 import spikes.lucass.sliceWars.src.logic.Player;
-import spikes.lucass.sliceWars.src.logic.gameStates.DistributeDiePhase;
 import spikes.lucass.sliceWars.src.logic.gameStates.FirstAttackPhase;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
 
@@ -33,13 +32,13 @@ public class FirstAttackPhaseTest {
 				return boardCellCount;
 			}
 		});
-		GameState play = subject.play(0, 0);
-		assertTrue(play instanceof FirstAttackPhase);
+		GameState nextPhase = subject.play(0, 0);
+		assertEquals(GameState.Phase.FIRST_ATTACK,nextPhase.getPhase());
 		subject.pass();
-		play = subject.play(0, 0);
-		assertTrue(play instanceof FirstAttackPhase);
+		nextPhase = subject.play(0, 0);
+		assertEquals(GameState.Phase.FIRST_ATTACK,nextPhase.getPhase());
 		GameState afterPass = subject.pass();
-		assertTrue(afterPass instanceof DistributeDiePhase);
+		assertEquals(GameState.Phase.DICE_DISTRIBUTION,afterPass.getPhase());
 	}
 	
 }

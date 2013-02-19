@@ -51,4 +51,9 @@ public class FirstDiceBatchDistribution implements GameState {
 	public GameState pass() {
 		return this;
 	}
+
+	@Override
+	public GameState.Phase getPhase(){
+		return GameState.Phase.FIRST_DICE_DISTRIBUTION;
+	}
 }

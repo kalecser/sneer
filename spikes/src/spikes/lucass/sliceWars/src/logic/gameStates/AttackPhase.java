@@ -85,4 +85,9 @@ public class AttackPhase implements GameState {
 		return new DistributeDiePhase(nextPlayer,_board);
 	}
 
+	@Override
+	public GameState.Phase getPhase(){
+		return GameState.Phase.ATTACK;
+	}
+
 }

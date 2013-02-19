@@ -40,9 +40,9 @@ public class GamePanel extends JPanel {
 	public GamePanel() {
 		int x = 10;
 		int y = 50;
-		int lines = 6;
-		int columns = 6;
-		int randomlyRemoveCount = 9;
+		int lines = 3;
+		int columns = 3;
+		int randomlyRemoveCount = 1;
 		HexagonBoardFactory hexagonBoard = new HexagonBoardFactory(x, y, lines, columns, randomlyRemoveCount);
 		Board board = hexagonBoard.createBoard();
 		

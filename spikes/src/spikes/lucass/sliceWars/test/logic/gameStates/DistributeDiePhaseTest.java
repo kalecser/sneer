@@ -40,7 +40,7 @@ public class DistributeDiePhaseTest {
 		assertEquals(1, boardCellMock.getDiceCount());
 		GameState nextPhase = subject.play(0, 0);
 		assertEquals(2, boardCellMock.getDiceCount());
-		assertTrue(nextPhase instanceof AttackPhase);
+		assertEquals(GameState.Phase.ATTACK,nextPhase.getPhase());
 		AttackPhase attackPhase = (AttackPhase) nextPhase;
 		assertTrue(attackPhase.getWhoIsPlaying().equals(Player.PLAYER1));
 	}
@@ -78,6 +78,6 @@ public class DistributeDiePhaseTest {
 			}
 		});
 		GameState nextPhase = subject.play(0, 0);
-		assertTrue(nextPhase instanceof AttackPhase);
+		assertEquals(GameState.Phase.ATTACK,nextPhase.getPhase());
 	}
 }

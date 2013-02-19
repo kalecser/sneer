@@ -10,8 +10,6 @@ import org.junit.Test;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.AttackPhase;
-import spikes.lucass.sliceWars.src.logic.gameStates.DistributeDiePhase;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameEnded;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
 
 public class AttackPhaseTest {
@@ -56,7 +54,7 @@ public class AttackPhaseTest {
 		assertTrue(defender.wasAttacked());
 		
 		GameState nextPhase = subject.pass();
-		assertTrue(nextPhase instanceof DistributeDiePhase);
+		assertEquals(GameState.Phase.DICE_DISTRIBUTION,nextPhase.getPhase());
 	}
 	
 	@Test
@@ -77,7 +75,7 @@ public class AttackPhaseTest {
 		});
 		assertEquals(Player.PLAYER1, subject.getWhoIsPlaying());
 		GameState nextPhase = subject.pass();
-		assertTrue(nextPhase instanceof AttackPhase);
+		assertEquals(GameState.Phase.ATTACK,nextPhase.getPhase());
 		assertEquals(Player.PLAYER2, nextPhase.getWhoIsPlaying());
 	}
 	
@@ -106,7 +104,7 @@ public class AttackPhaseTest {
 		});
 		assertEquals(Player.PLAYER1, subject.getWhoIsPlaying());
 		GameState nextPhase = subject.pass();
-		assertTrue(nextPhase instanceof DistributeDiePhase);
+		assertEquals(GameState.Phase.DICE_DISTRIBUTION,nextPhase.getPhase());
 		assertEquals(Player.PLAYER3, nextPhase.getWhoIsPlaying());
 	}
 	
@@ -135,7 +133,7 @@ public class AttackPhaseTest {
 		});
 		subject.play(0, 0);
 		GameState nextPhase = subject.play(1, 0);
-		assertTrue(nextPhase instanceof GameEnded);
+		assertEquals(GameState.Phase.GAME_ENDED,nextPhase.getPhase());
 		assertEquals(Player.PLAYER1, nextPhase.getWhoIsPlaying());
 	}
 	

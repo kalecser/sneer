@@ -44,4 +44,8 @@ public class FirstAttackPhase implements GameState {
 		return this;
 	}
 
+	@Override
+	public GameState.Phase getPhase(){
+		return GameState.Phase.FIRST_ATTACK;
+	}
 }

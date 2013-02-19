@@ -35,4 +35,9 @@ public class GameEnded implements GameState {
 		return this;
 	}
 
+	@Override
+	public GameState.Phase getPhase(){
+		return GameState.Phase.GAME_ENDED;
+	}
+
 }

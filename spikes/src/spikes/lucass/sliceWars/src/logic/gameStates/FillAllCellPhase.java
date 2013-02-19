@@ -49,4 +49,9 @@ public class FillAllCellPhase implements GameState {
 	public GameState pass() {
 		return this;
 	}
+	
+	@Override
+	public GameState.Phase getPhase(){
+		return GameState.Phase.FILL_ALL_CELLS;
+	}
 }

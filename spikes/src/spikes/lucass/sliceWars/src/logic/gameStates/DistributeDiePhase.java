@@ -60,4 +60,9 @@ public class DistributeDiePhase implements GameState{
 		return null;
 	}
 
+	@Override
+	public GameState.Phase getPhase(){
+		return GameState.Phase.DICE_DISTRIBUTION;
+	}
+
 }
