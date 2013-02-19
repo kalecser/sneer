@@ -11,7 +11,7 @@ import org.junit.Test;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.BoardCellImpl;
 import spikes.lucass.sliceWars.src.logic.Player;
-import spikes.lucass.sliceWars.src.logic.gameStates.FillAllCellPhase;
+import spikes.lucass.sliceWars.src.logic.gameStates.FillAllCell;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
 
 
@@ -28,7 +28,7 @@ public class FillAllCellPhaseTest {
 		final int boardCellCount = 3;
 		assertTrue(Player.EMPTY.equals(p1Cell.getOwner()));
 		assertTrue(Player.EMPTY.equals(p2Cell.getOwner()));
-		GameState subject = new FillAllCellPhase(new Player(1, 2), new BoardMockAdapter() {
+		GameState subject = new FillAllCell(new Player(1, 2), new BoardMockAdapter() {
 			
 			@Override
 			public boolean isFilled() {

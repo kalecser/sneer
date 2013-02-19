@@ -22,7 +22,7 @@ import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.HexagonBoardFactory;
 import spikes.lucass.sliceWars.src.logic.Player;
-import spikes.lucass.sliceWars.src.logic.gameStates.FillAllCellPhase;
+import spikes.lucass.sliceWars.src.logic.gameStates.FillAllCell;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
 
 public class GamePanel extends JPanel {
@@ -55,7 +55,7 @@ public class GamePanel extends JPanel {
 		
 		_board = board;
 		int player = 1;
-		_phase = new FillAllCellPhase(new Player(player, 3), board);	
+		_phase = new FillAllCell(new Player(player, 3), board);	
 		phaseLabel.setPhase(_phase);
 		
 		addMouseListener(new MouseAdapter(){@Override public void mouseClicked(MouseEvent e) {

@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
-import spikes.lucass.sliceWars.src.logic.gameStates.AttackPhase;
+import spikes.lucass.sliceWars.src.logic.gameStates.Attack;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
 
 public class AttackPhaseTest {
@@ -22,7 +22,7 @@ public class AttackPhaseTest {
 		final AtomicBoolean linked = new AtomicBoolean(false);
 		
 		final int boardCellCount = 2;
-		AttackPhase subject = new AttackPhase(new Player(1, 2),new BoardMockAdapter() {
+		Attack subject = new Attack(new Player(1, 2),new BoardMockAdapter() {
 			
 			@Override
 			public BoardCell getCellAtOrNull(int x, int y) {
@@ -61,7 +61,7 @@ public class AttackPhaseTest {
 	public void allCellsFilled_ShouldSkipDistributeDie(){
 		final BoardCellMock defender = new BoardCellMock(Player.PLAYER1);
 		
-		AttackPhase subject = new AttackPhase(new Player(1, 2),new BoardMockAdapter() {
+		Attack subject = new Attack(new Player(1, 2),new BoardMockAdapter() {
 			
 			@Override
 			public BoardCell getCellAtOrNull(int x, int y) {
@@ -83,7 +83,7 @@ public class AttackPhaseTest {
 	public void nextPlayerHasNoCells_ShouldSkipPlayerOnDistributeDie(){
 		final BoardCellMock defender = new BoardCellMock(Player.PLAYER1);
 		
-		AttackPhase subject = new AttackPhase(new Player(1, 3),new BoardMockAdapter() {
+		Attack subject = new Attack(new Player(1, 3),new BoardMockAdapter() {
 			
 			@Override
 			public BoardCell getCellAtOrNull(int x, int y) {
@@ -113,7 +113,7 @@ public class AttackPhaseTest {
 		final BoardCellMock attacker = new BoardCellMock(Player.PLAYER1);
 		final BoardCellMock defender = new BoardCellMock(Player.PLAYER2);
 		
-		AttackPhase subject = new AttackPhase(new Player(1, 2),new BoardMockAdapter() {
+		Attack subject = new Attack(new Player(1, 2),new BoardMockAdapter() {
 			@Override
 			public BoardCell getCellAtOrNull(int x, int y) {
 				if(x == 0) return attacker;

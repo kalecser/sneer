@@ -5,14 +5,14 @@ import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
 
-public class AttackPhase implements GameState {
+public class Attack implements GameState {
 
 	private final Board _board;
 	private final Player currentPlaying;
 	private BoardCell c1;
 	
 
-	public AttackPhase(Player playerAttacking,Board board) {
+	public Attack(Player playerAttacking,Board board) {
 		currentPlaying = playerAttacking;
 		_board = board;
 	}
@@ -74,7 +74,7 @@ public class AttackPhase implements GameState {
 	public GameState pass() {
 		Player nextPlayer = currentPlaying.next();
 		if(_board.areaAllCellsFilled(nextPlayer)){
-			return new AttackPhase(nextPlayer, _board);
+			return new Attack(nextPlayer, _board);
 		}
 		while(_board.getBiggestLinkedCellCountForPlayer(nextPlayer) == 0){
 			nextPlayer = nextPlayer.next();
@@ -82,7 +82,7 @@ public class AttackPhase implements GameState {
 				throw new RuntimeException("This shouldn't happen because if a play leads to a winner, the game state changes");
 			}
 		}
-		return new DistributeDiePhase(nextPlayer,_board);
+		return new DiceDistribution(nextPlayer,_board);
 	}
 
 	@Override

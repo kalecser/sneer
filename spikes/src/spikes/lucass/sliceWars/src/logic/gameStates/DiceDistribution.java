@@ -5,21 +5,21 @@ import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
 
 
-public class DistributeDiePhase implements GameState{
+public class DiceDistribution implements GameState{
 	
 	private Board _board;
 	private final  int _diceToAdd;
 	private Player _currentPlaying;
 	private int diceCount;
 	
-	public DistributeDiePhase(Player currentPlaying,Board board, int diceToAdd) {
+	public DiceDistribution(Player currentPlaying,Board board, int diceToAdd) {
 		_currentPlaying = currentPlaying;
 		_board = board;
 		_diceToAdd = diceToAdd;
 		diceCount = _diceToAdd;
 	}
 
-	public DistributeDiePhase(Player currentPlaying, Board board) {
+	public DiceDistribution(Player currentPlaying, Board board) {
 		this(currentPlaying,board,board.getBiggestLinkedCellCountForPlayer(currentPlaying));
 	}
 
@@ -29,13 +29,13 @@ public class DistributeDiePhase implements GameState{
 		if(cellAtOrNull == null) return this;
 		if(!cellAtOrNull.getOwner().equals(_currentPlaying)) return this;
 		if(_board.areaAllCellsFilled(_currentPlaying)){
-			return new AttackPhase(_currentPlaying, _board);
+			return new Attack(_currentPlaying, _board);
 		}
 		if(!cellAtOrNull.canAddDie()) return this;
 		diceCount --;
 		cellAtOrNull.addDie();
 		if(diceCount == 0 || _board.areaAllCellsFilled(_currentPlaying)){
-			return new AttackPhase(_currentPlaying, _board);
+			return new Attack(_currentPlaying, _board);
 		}
 		return this;
 	}

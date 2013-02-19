@@ -7,8 +7,8 @@ import org.junit.Test;
 
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
-import spikes.lucass.sliceWars.src.logic.gameStates.AttackPhase;
-import spikes.lucass.sliceWars.src.logic.gameStates.DistributeDiePhase;
+import spikes.lucass.sliceWars.src.logic.gameStates.Attack;
+import spikes.lucass.sliceWars.src.logic.gameStates.DiceDistribution;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
 
 public class DistributeDiePhaseTest {
@@ -19,7 +19,7 @@ public class DistributeDiePhaseTest {
 		assertEquals(0, boardCellMock.getDiceCount());
 		
 		final int boardCellCount = 2;
-		DistributeDiePhase subject = new DistributeDiePhase(new Player(1, 2),new BoardMockAdapter() {
+		DiceDistribution subject = new DiceDistribution(new Player(1, 2),new BoardMockAdapter() {
 			
 			@Override
 			public BoardCell getCellAtOrNull(int x, int y) {
@@ -41,7 +41,7 @@ public class DistributeDiePhaseTest {
 		GameState nextPhase = subject.play(0, 0);
 		assertEquals(2, boardCellMock.getDiceCount());
 		assertEquals(GameState.Phase.ATTACK,nextPhase.getPhase());
-		AttackPhase attackPhase = (AttackPhase) nextPhase;
+		Attack attackPhase = (Attack) nextPhase;
 		assertTrue(attackPhase.getWhoIsPlaying().equals(Player.PLAYER1));
 	}
 	
@@ -55,7 +55,7 @@ public class DistributeDiePhaseTest {
 		};
 		
 		final int boardCellCount = 2;
-		DistributeDiePhase subject = new DistributeDiePhase(new Player(1, 1),new BoardMockAdapter() {
+		DiceDistribution subject = new DiceDistribution(new Player(1, 1),new BoardMockAdapter() {
 			
 			@Override
 			public BoardCell getCellAtOrNull(int x, int y) {

@@ -4,14 +4,14 @@ import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.Player;
 
 
-public class FirstAttackPhase implements GameState {
+public class FirstAttacks implements GameState {
 
 	private Board _board;
-	private AttackPhase _attackPhase;
+	private Attack _attackPhase;
 
-	public FirstAttackPhase(Player currentPlayer, Board board) {
+	public FirstAttacks(Player currentPlayer, Board board) {
 		_board = board;
-		_attackPhase = new AttackPhase(currentPlayer,board);
+		_attackPhase = new Attack(currentPlayer,board);
 	}
 
 	@Override
@@ -38,14 +38,14 @@ public class FirstAttackPhase implements GameState {
 	@Override
 	public GameState pass() {
 		if(_attackPhase.getWhoIsPlaying().isLastPlayer()){
-			return new DistributeDiePhase(_attackPhase.getWhoIsPlaying().next(),_board);
+			return new DiceDistribution(_attackPhase.getWhoIsPlaying().next(),_board);
 		}
-		_attackPhase = new AttackPhase(_attackPhase.getWhoIsPlaying().next(),_board);
+		_attackPhase = new Attack(_attackPhase.getWhoIsPlaying().next(),_board);
 		return this;
 	}
 
 	@Override
 	public GameState.Phase getPhase(){
-		return GameState.Phase.FIRST_ATTACK;
+		return GameState.Phase.FIRST_ATTACKS;
 	}
 }

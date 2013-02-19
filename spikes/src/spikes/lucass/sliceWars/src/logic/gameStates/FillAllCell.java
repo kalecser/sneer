@@ -5,12 +5,12 @@ import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
 
 
-public class FillAllCellPhase implements GameState {
+public class FillAllCell implements GameState {
 	
 	private Board _board;
 	private Player _currentPlaying;
 
-	public FillAllCellPhase(Player currentPlaying,Board board) {
+	public FillAllCell(Player currentPlaying,Board board) {
 		_board = board;
 		_currentPlaying = currentPlaying;
 	}
@@ -27,7 +27,7 @@ public class FillAllCellPhase implements GameState {
 		
 		if(!_board.isFilled()) return this;
 		Player firstPlayer = new Player(1, _currentPlaying.getPlayersCount());
-		return new FirstDiceBatchDistribution(firstPlayer,_board);
+		return new FirstDiceDistribution(firstPlayer,_board);
 	}
 
 	@Override
