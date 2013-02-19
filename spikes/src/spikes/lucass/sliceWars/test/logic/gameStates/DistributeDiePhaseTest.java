@@ -10,6 +10,7 @@ import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.Attack;
 import spikes.lucass.sliceWars.src.logic.gameStates.DiceDistribution;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
 
 public class DistributeDiePhaseTest {
 
@@ -40,7 +41,7 @@ public class DistributeDiePhaseTest {
 		assertEquals(1, boardCellMock.getDiceCount());
 		GameState nextPhase = subject.play(0, 0);
 		assertEquals(2, boardCellMock.getDiceCount());
-		assertEquals(GameState.Phase.ATTACK,nextPhase.getPhase());
+		assertEquals(Phase.ATTACK,nextPhase.getPhase());
 		Attack attackPhase = (Attack) nextPhase;
 		assertTrue(attackPhase.getWhoIsPlaying().equals(Player.PLAYER1));
 	}
@@ -78,6 +79,6 @@ public class DistributeDiePhaseTest {
 			}
 		});
 		GameState nextPhase = subject.play(0, 0);
-		assertEquals(GameState.Phase.ATTACK,nextPhase.getPhase());
+		assertEquals(Phase.ATTACK,nextPhase.getPhase());
 	}
 }

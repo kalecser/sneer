@@ -13,6 +13,7 @@ import spikes.lucass.sliceWars.src.logic.BoardCellImpl;
 import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.FillAllCell;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
 
 
 public class FillAllCellPhaseTest {
@@ -56,7 +57,7 @@ public class FillAllCellPhaseTest {
 		assertTrue(Player.PLAYER2.equals(p2Cell.getOwner()));
 		GameState nextPhase = subject.play(2, 0);
 		assertFalse(Player.PLAYER3.equals(p2Cell.getOwner()));
-		assertEquals(GameState.Phase.FIRST_DICE_DISTRIBUTION,nextPhase.getPhase());
+		assertEquals(Phase.FIRST_DICE_DISTRIBUTION,nextPhase.getPhase());
 		assertEquals(Player.PLAYER1, nextPhase.getWhoIsPlaying());
 	}
 

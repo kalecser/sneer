@@ -4,6 +4,7 @@ import spikes.lucass.sliceWars.src.logic.AttackOutcome;
 import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
 
 public class Attack implements GameState {
 
@@ -86,8 +87,8 @@ public class Attack implements GameState {
 	}
 
 	@Override
-	public GameState.Phase getPhase(){
-		return GameState.Phase.ATTACK;
+	public Phase getPhase(){
+		return Phase.ATTACK;
 	}
 
 }

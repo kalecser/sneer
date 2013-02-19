@@ -1,6 +1,7 @@
 package spikes.lucass.sliceWars.src.logic.gameStates;
 
 import spikes.lucass.sliceWars.src.logic.Player;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
 
 public class GameEnded implements GameState {
 
@@ -36,8 +37,8 @@ public class GameEnded implements GameState {
 	}
 
 	@Override
-	public GameState.Phase getPhase(){
-		return GameState.Phase.GAME_ENDED;
+	public Phase getPhase(){
+		return Phase.GAME_ENDED;
 	}
 
 }

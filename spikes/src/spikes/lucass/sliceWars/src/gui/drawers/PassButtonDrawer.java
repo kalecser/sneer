@@ -6,7 +6,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-public class PassButtonDrawer {
+public class PassButtonDrawer implements Drawer{
 
 	private static final int BORDER = 10;
 	private static final String PASS = "Pass";
@@ -34,6 +34,7 @@ public class PassButtonDrawer {
 		_onClick = onClick;
 	}
 
+	@Override
 	public void draw(Graphics2D g2) {
 		if(_visible){
 			g2.setFont(_font);

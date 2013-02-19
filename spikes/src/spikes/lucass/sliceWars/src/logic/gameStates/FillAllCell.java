@@ -3,6 +3,7 @@ package spikes.lucass.sliceWars.src.logic.gameStates;
 import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
 
 
 public class FillAllCell implements GameState {
@@ -51,7 +52,7 @@ public class FillAllCell implements GameState {
 	}
 	
 	@Override
-	public GameState.Phase getPhase(){
-		return GameState.Phase.FILL_ALL_CELLS;
+	public Phase getPhase(){
+		return Phase.FILL_ALL_CELLS;
 	}
 }

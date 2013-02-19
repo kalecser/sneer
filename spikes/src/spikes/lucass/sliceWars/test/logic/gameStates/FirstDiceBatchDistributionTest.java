@@ -8,6 +8,7 @@ import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.FirstDiceDistribution;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
 
 
 public class FirstDiceBatchDistributionTest {
@@ -41,7 +42,7 @@ public class FirstDiceBatchDistributionTest {
 		assertEquals(1, p2Cell.getDiceCount());
 		GameState phase = subject.play(1, 0);
 		assertEquals(2, p2Cell.getDiceCount());
-		assertEquals(GameState.Phase.FIRST_ATTACKS,phase.getPhase());
+		assertEquals(Phase.FIRST_ATTACKS,phase.getPhase());
 		assertEquals(phase.getWhoIsPlaying(), Player.PLAYER1);
 	}
 

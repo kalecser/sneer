@@ -3,6 +3,7 @@ package spikes.lucass.sliceWars.src.logic.gameStates;
 import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
 
 
 public class DiceDistribution implements GameState{
@@ -61,8 +62,8 @@ public class DiceDistribution implements GameState{
 	}
 
 	@Override
-	public GameState.Phase getPhase(){
-		return GameState.Phase.DICE_DISTRIBUTION;
+	public Phase getPhase(){
+		return Phase.DICE_DISTRIBUTION;
 	}
 
 }

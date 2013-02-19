@@ -10,12 +10,12 @@ import java.awt.geom.Rectangle2D;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 
 
-public class SimpleCellDrawer {
+public class CellDrawer {
 	
 	private final static Color[] colors = new Color[]{Color.GRAY, Color.BLUE, Color.RED, Color.ORANGE, Color.DARK_GRAY};
 	private Font _font;
 
-	public SimpleCellDrawer() {
+	public CellDrawer() {
 		_font = new Font("Serif", Font.BOLD, 24);
 	}
 	

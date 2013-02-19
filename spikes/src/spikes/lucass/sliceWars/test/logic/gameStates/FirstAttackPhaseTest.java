@@ -11,6 +11,7 @@ import spikes.lucass.sliceWars.src.logic.BoardCellImpl;
 import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.FirstAttacks;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
 
 public class FirstAttackPhaseTest {
 
@@ -33,12 +34,12 @@ public class FirstAttackPhaseTest {
 			}
 		});
 		GameState nextPhase = subject.play(0, 0);
-		assertEquals(GameState.Phase.FIRST_ATTACKS,nextPhase.getPhase());
+		assertEquals(Phase.FIRST_ATTACKS,nextPhase.getPhase());
 		subject.pass();
 		nextPhase = subject.play(0, 0);
-		assertEquals(GameState.Phase.FIRST_ATTACKS,nextPhase.getPhase());
+		assertEquals(Phase.FIRST_ATTACKS,nextPhase.getPhase());
 		GameState afterPass = subject.pass();
-		assertEquals(GameState.Phase.DICE_DISTRIBUTION,afterPass.getPhase());
+		assertEquals(Phase.DICE_DISTRIBUTION,afterPass.getPhase());
 	}
 	
 }

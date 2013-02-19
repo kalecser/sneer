@@ -4,25 +4,23 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
-import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext;
 
-public class PhaseDescriptionDrawer {
+public class PhaseDescriptionDrawer implements Drawer{
 
 	private int _x;
 	private int _y;
-	private GameState _phase;
+	private GameStateContext _phase;
 	private Font _font;
 
-	public PhaseDescriptionDrawer(int x, int y) {
+	public PhaseDescriptionDrawer(int x, int y, GameStateContext phase) {
 		_x = x;
 		_y = y;
 		_font = new Font("Serif", Font.BOLD, 14);
-	}
-
-	public void setPhase(GameState phase) {
 		_phase = phase;
 	}
 
+	@Override
 	public void draw(Graphics2D g2) {
 		String text = _phase.getPhaseName() + " Turn: player "+_phase.getWhoIsPlaying().getPlayerNumber();
 		g2.setFont(_font);

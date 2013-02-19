@@ -2,6 +2,7 @@ package spikes.lucass.sliceWars.src.logic.gameStates;
 
 import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.Player;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
 
 
 public class FirstAttacks implements GameState {
@@ -45,7 +46,7 @@ public class FirstAttacks implements GameState {
 	}
 
 	@Override
-	public GameState.Phase getPhase(){
-		return GameState.Phase.FIRST_ATTACKS;
+	public Phase getPhase(){
+		return Phase.FIRST_ATTACKS;
 	}
 }
