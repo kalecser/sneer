@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JPanel;
 
+import spikes.lucass.sliceWars.src.gui.drawers.AttackOutcomeDrawer;
 import spikes.lucass.sliceWars.src.gui.drawers.BackgroundDrawer;
 import spikes.lucass.sliceWars.src.gui.drawers.CellsDrawer;
 import spikes.lucass.sliceWars.src.gui.drawers.Drawer;
@@ -23,7 +24,6 @@ import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext;
 
 public class GamePanel extends JPanel {
 
-	private GameStateContext _gameContext;
 	private List<Drawer> drawers = new ArrayList<Drawer>();
 	
 	private AtomicBoolean _gameRunning = new AtomicBoolean(true);
@@ -38,9 +38,9 @@ public class GamePanel extends JPanel {
 		Board board = hexagonBoard.createBoard();
 		
 		int numberOfPlayers = 3;
-		_gameContext = new GameStateContext(numberOfPlayers,board);
+		GameStateContext _gameContext = new GameStateContext(numberOfPlayers,board);
 		
-		createAndWireDrawers();
+		createAndWireDrawers(_gameContext);
 		
 
 		new Thread(){@Override public void run() {
@@ -54,12 +54,13 @@ public class GamePanel extends JPanel {
 		}}.start();
 	}
 
-	private void createAndWireDrawers() {
+	private void createAndWireDrawers(final GameStateContext _gameContext) {
+		drawers.add(new BackgroundDrawer());
+		drawers.add(new CellsDrawer(_gameContext));
 		drawers.add(new PhaseDescriptionDrawer(10,25, _gameContext));
+		drawers.add(new AttackOutcomeDrawer(10,100, _gameContext));
 		final PassButtonDrawer passButtonDrawer = new PassButtonDrawer(500,18);
 		drawers.add(passButtonDrawer);
-		drawers.add(new CellsDrawer(_gameContext));
-		drawers.add(new BackgroundDrawer());
 		
 		addMouseListener(new MouseAdapter(){@Override public void mouseClicked(MouseEvent e) {
 			_gameContext.play(e.getX(), e.getY());
@@ -92,7 +93,9 @@ public class GamePanel extends JPanel {
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		g2.setColor(Color.BLACK);
 		
-		for (Drawer drawer : drawers) drawer.draw(g2);
+		for (Drawer drawer : drawers){
+			drawer.draw(g2);
+		}
 	}
 
 	
