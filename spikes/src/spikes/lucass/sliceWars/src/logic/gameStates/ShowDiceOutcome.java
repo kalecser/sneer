@@ -17,7 +17,7 @@ public class ShowDiceOutcome implements GameState {
 
 	@Override
 	public GameState play(int x, int y) {
-		return _nextGameState;
+		return _nextGameState.play(x, y);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class ShowDiceOutcome implements GameState {
 
 	@Override
 	public GameState pass() {
-		return _nextGameState;
+		return _nextGameState.pass();
 	}
 
 	@Override

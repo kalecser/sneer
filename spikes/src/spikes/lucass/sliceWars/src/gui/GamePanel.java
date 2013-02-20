@@ -31,13 +31,18 @@ public class GamePanel extends JPanel {
 	public GamePanel() {
 		int x = 10;
 		int y = 50;
-		int lines = 3;
-		int columns = 3;
-		int randomlyRemoveCount = 1;
+		int lines = 5;
+		int columns = 5;
+		int randomlyRemoveCount = 8;
+		int numberOfPlayers = 2;
+		
+		
 		HexagonBoardFactory hexagonBoard = new HexagonBoardFactory(x, y, lines, columns, randomlyRemoveCount);
 		Board board = hexagonBoard.createBoard();
 		
-		int numberOfPlayers = 3;
+		int remainder = ((lines*columns)-randomlyRemoveCount) % numberOfPlayers;
+		hexagonBoard.removeCellsRandomly(board, remainder);
+		
 		GameStateContext _gameContext = new GameStateContext(numberOfPlayers,board);
 		
 		createAndWireDrawers(_gameContext);

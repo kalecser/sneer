@@ -27,8 +27,13 @@ public class HexagonBoardFactory {
 	public Board createBoard() {
 		_boardCells = new BoardCell[_columns][_lines];
 		Board board = internalCreateBoard();
+		int cellsToRemove = _randomlyRemoveCount;
+		return removeCellsRandomly(board, cellsToRemove);
+	}
+
+	public Board removeCellsRandomly(Board board, int cellsToRemove) {
 		Random random = new Random();
-		for (int i = 0; i < _randomlyRemoveCount; i++) {
+		for (int i = 0; i < cellsToRemove; i++) {
 			int col = random.nextInt(_columns);
 			int line = random.nextInt(_lines);
 			while(_boardCells[col][line] == null || board.removingCellWillLeaveOrphans(_boardCells[col][line] )){
