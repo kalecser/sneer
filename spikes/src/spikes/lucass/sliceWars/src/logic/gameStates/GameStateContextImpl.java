@@ -1,6 +1,8 @@
 package spikes.lucass.sliceWars.src.logic.gameStates;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
@@ -14,7 +16,8 @@ public class GameStateContextImpl implements GameStateContext {
 	private Board _board;
 	private AttackCallback _attackCallback;
 	private DiceLeftCallback _diceLeftCallback;
-	private PlayCallback _playCallback;
+	private List<PlayListener> _playListeners = new ArrayList<PlayListener>();
+	private SelectedCallback _selectedCellCall;
 
 	public enum Phase{
 		FILL_ALL_CELLS, FIRST_DICE_DISTRIBUTION, FIRST_ATTACKS, DICE_DISTRIBUTION, ATTACK, ATTACK_OUTCOME, GAME_ENDED
@@ -31,14 +34,20 @@ public class GameStateContextImpl implements GameStateContext {
 
 	@Override
 	public void play(int x, int y){
-		_playCallback.played();
+		callPlayListeners();
 		callCallbacks(_state.play(x, y,this));
 	}
 	
 	@Override
 	public void pass(){
-		_playCallback.played();
+		callPlayListeners();
 		callCallbacks(_state.pass(this));
+	}
+
+	private void callPlayListeners() {
+		for (PlayListener playListener : _playListeners) {
+			playListener.played();			
+		}
 	}
 	
 	@Override
@@ -58,6 +67,8 @@ public class GameStateContextImpl implements GameStateContext {
 
 	private void callCallbacks(PlayOutcome playOutcome) {
 		if(playOutcome == null) return;
+		if(_selectedCellCall != null)
+			_selectedCellCall.selectedOrNull(playOutcome.getSelectedCellOrNull());
 		if(_diceLeftCallback != null)
 			_diceLeftCallback.diceLeft(playOutcome.getDiceLeft());
 		if(playOutcome.isAttackOutcome())
@@ -90,8 +101,13 @@ public class GameStateContextImpl implements GameStateContext {
 	}
 
 	@Override
-	public void setPlayCallback(PlayCallback playCallback) {
-		_playCallback = playCallback;
+	public void addPlayListener(PlayListener playListener) {
+		_playListeners.add(playListener);
+	}
+
+	@Override
+	public void setSelectedCellCallback(SelectedCallback selectedCellCall) {
+		_selectedCellCall = selectedCellCall;
 	}
 
 }

@@ -25,7 +25,15 @@ public class Attack implements GameState {
 		if(cellAtOrNull == null) return null;
 		if(c1 == null){
 			Player owner = cellAtOrNull.getOwner();
-			if(!owner.equals(currentPlaying)) return null;
+			if(!owner.equals(currentPlaying)){
+				return new PlayOutcome();
+			}
+			c1 = cellAtOrNull;
+			PlayOutcome playOutcome = new PlayOutcome();
+			playOutcome.selectedACell(c1);
+			return playOutcome;
+		}
+		if(cellAtOrNull.getOwner().equals(currentPlaying)){
 			c1 = cellAtOrNull;
 			PlayOutcome playOutcome = new PlayOutcome();
 			playOutcome.selectedACell(c1);
@@ -33,12 +41,12 @@ public class Attack implements GameState {
 		}
 		if(!_board.areLinked(c1, cellAtOrNull)){
 			c1 = null;
-			return null;
+			return new PlayOutcome();
 		}
 		AttackOutcome attackOutcome = c1.attack(cellAtOrNull);
 		if(attackOutcome == null){
 			c1 = null;
-			return null;
+			return new PlayOutcome();
 		}
 		c1.setCell(attackOutcome.attackCellAfterAttack);
 		cellAtOrNull.setCell(attackOutcome.defenseCellAfterAttack);

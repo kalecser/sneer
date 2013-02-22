@@ -9,7 +9,8 @@ import spikes.lucass.sliceWars.src.logic.gameStates.DiceLeftCallback;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl.Phase;
-import spikes.lucass.sliceWars.src.logic.gameStates.PlayCallback;
+import spikes.lucass.sliceWars.src.logic.gameStates.PlayListener;
+import spikes.lucass.sliceWars.src.logic.gameStates.SelectedCallback;
 
 public class GameStateContextMock implements GameStateContext {
 
@@ -62,7 +63,11 @@ public class GameStateContextMock implements GameStateContext {
 	}
 
 	@Override
-	public void setPlayCallback(PlayCallback playCallback) {
+	public void addPlayListener(PlayListener playCallback) {
+	}
+
+	@Override
+	public void setSelectedCellCallback(SelectedCallback selectedCellCall) {
 	}
 
 }

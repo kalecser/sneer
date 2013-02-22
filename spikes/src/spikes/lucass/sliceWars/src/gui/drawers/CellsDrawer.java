@@ -12,9 +12,9 @@ public class CellsDrawer implements Drawer {
 	private CellDrawer simpleCellDrawer;
 	private GameStateContext _gameContext;
 	
-	public CellsDrawer(GameStateContext gameContext) {
+	public CellsDrawer(GameStateContext gameContext,CellDrawer cellDrawer) {
 		_gameContext = gameContext;
-		simpleCellDrawer = new CellDrawer();
+		simpleCellDrawer = cellDrawer;
 	}
 	
 	@Override

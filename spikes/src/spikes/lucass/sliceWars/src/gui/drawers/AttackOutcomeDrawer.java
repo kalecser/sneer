@@ -7,9 +7,9 @@ import java.awt.Graphics2D;
 import spikes.lucass.sliceWars.src.logic.AttackOutcome;
 import spikes.lucass.sliceWars.src.logic.DiceThrowOutcome;
 import spikes.lucass.sliceWars.src.logic.gameStates.AttackCallback;
-import spikes.lucass.sliceWars.src.logic.gameStates.PlayCallback;
+import spikes.lucass.sliceWars.src.logic.gameStates.PlayListener;
 
-public class AttackOutcomeDrawer implements Drawer,AttackCallback,PlayCallback{
+public class AttackOutcomeDrawer implements Drawer,AttackCallback,PlayListener{
 
 	private int _x;
 	private int _y;

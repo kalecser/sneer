@@ -11,9 +11,10 @@ public interface GameStateContext {
 	public abstract Phase getPhase();
 	public abstract Player getWhoIsPlaying();
 	public abstract String getPhaseName();
-	public abstract void setPlayCallback(PlayCallback playCallback);
+	public abstract void addPlayListener(PlayListener playListener);
 	public abstract void setAttackCallback(AttackCallback attackCallback);
 	public abstract void setDiceLeftCallback(DiceLeftCallback diceLeftCallback);
+	public abstract void setSelectedCellCallback(SelectedCallback selectedCellCall);
 	public abstract Collection<BoardCell> getBoardCells();
 	public abstract void pass();
 	public abstract boolean canPass();

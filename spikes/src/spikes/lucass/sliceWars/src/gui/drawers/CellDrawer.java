@@ -8,12 +8,15 @@ import java.awt.Polygon;
 import java.awt.geom.Rectangle2D;
 
 import spikes.lucass.sliceWars.src.logic.BoardCell;
+import spikes.lucass.sliceWars.src.logic.gameStates.PlayListener;
+import spikes.lucass.sliceWars.src.logic.gameStates.SelectedCallback;
 
 
-public class CellDrawer {
+public class CellDrawer implements SelectedCallback,PlayListener{
 	
 	private final static Color[] colors = new Color[]{Color.GRAY, Color.BLUE, Color.RED, Color.ORANGE, Color.DARK_GRAY};
 	private Font _font;
+	private BoardCell _selectedCellOrNull;
 
 	public CellDrawer() {
 		_font = new Font("Serif", Font.BOLD, 24);
@@ -33,6 +36,20 @@ public class CellDrawer {
 		String text = boardCell.getDiceCount()+"";
 		int stringHalfWidth = metrics.stringWidth(text)/2;
 		g2.drawString(text, (int)bounds2d.getCenterX()-stringHalfWidth, (int)bounds2d.getCenterY());
+		if(boardCell.equals(_selectedCellOrNull)){
+			g2.setColor(new Color(255,255,255,100));
+			g2.fill(boardCell.getPolygon());
+		}
+	}
+
+	@Override
+	public void selectedOrNull(BoardCell selectedCellOrNull) {
+		_selectedCellOrNull = selectedCellOrNull;
+	}
+
+	@Override
+	public void played() {
+		_selectedCellOrNull = null;
 	}
 
 }

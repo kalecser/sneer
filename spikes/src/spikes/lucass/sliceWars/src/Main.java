@@ -22,7 +22,11 @@ public class Main {
 		}});
 		
 		frame.setLayout(new BorderLayout());
-		gamePanel = new GamePanel();
+		int numberOfPlayers = 2;
+		int lines = 8;
+		int columns = 5;
+		int randomlyRemoveCells = 12;
+		gamePanel = new GamePanel(numberOfPlayers,lines,columns,randomlyRemoveCells);
 		frame.add(gamePanel, BorderLayout.CENTER);
 		
 		frame.setSize(1000, 500);

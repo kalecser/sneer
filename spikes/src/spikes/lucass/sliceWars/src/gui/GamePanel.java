@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 
 import spikes.lucass.sliceWars.src.gui.drawers.AttackOutcomeDrawer;
 import spikes.lucass.sliceWars.src.gui.drawers.BackgroundDrawer;
+import spikes.lucass.sliceWars.src.gui.drawers.CellDrawer;
 import spikes.lucass.sliceWars.src.gui.drawers.CellsDrawer;
 import spikes.lucass.sliceWars.src.gui.drawers.DiceLeftDrawer;
 import spikes.lucass.sliceWars.src.gui.drawers.Drawer;
@@ -30,19 +31,14 @@ public class GamePanel extends JPanel {
 	
 	private AtomicBoolean _gameRunning = new AtomicBoolean(true);
 	
-	public GamePanel() {
+	public GamePanel(final int numberOfPlayers,final int lines,final int columns,final int randomlyRemoveCellCount) {
 		int x = 10;
-		int y = 50;
-		int lines = 2;
-		int columns = 2;
-		int randomlyRemoveCount = 0;
-		int numberOfPlayers = 2;
+		int y = 50;		
 		
-		
-		HexagonBoardFactory hexagonBoard = new HexagonBoardFactory(x, y, lines, columns, randomlyRemoveCount);
+		HexagonBoardFactory hexagonBoard = new HexagonBoardFactory(x, y, lines, columns, randomlyRemoveCellCount);
 		Board board = hexagonBoard.createBoard();
 		
-		int remainder = ((lines*columns)-randomlyRemoveCount) % numberOfPlayers;
+		int remainder = ((lines*columns)-randomlyRemoveCellCount) % numberOfPlayers;
 		hexagonBoard.removeCellsRandomly(board, remainder);
 		
 		GameStateContext _gameContext = new GameStateContextImpl(numberOfPlayers,board);
@@ -63,12 +59,15 @@ public class GamePanel extends JPanel {
 
 	private void createAndWireDrawers(final GameStateContext _gameContext) {
 		drawers.add(new BackgroundDrawer());
-		drawers.add(new CellsDrawer(_gameContext));
+		CellDrawer cellDrawer = new CellDrawer();
+		_gameContext.setSelectedCellCallback(cellDrawer);
+		_gameContext.addPlayListener(cellDrawer);
+		drawers.add(new CellsDrawer(_gameContext,cellDrawer));
 		drawers.add(new PhaseDescriptionDrawer(10,25, _gameContext));
 		AttackOutcomeDrawer attackOutcomeDrawer = new AttackOutcomeDrawer(10,500);
 		drawers.add(attackOutcomeDrawer);
 		_gameContext.setAttackCallback(attackOutcomeDrawer);
-		_gameContext.setPlayCallback(attackOutcomeDrawer);
+		_gameContext.addPlayListener(attackOutcomeDrawer);
 		DiceLeftDrawer diceLeftDrawer = new DiceLeftDrawer(300, 500);
 		_gameContext.setDiceLeftCallback(diceLeftDrawer);
 		drawers.add(diceLeftDrawer);
