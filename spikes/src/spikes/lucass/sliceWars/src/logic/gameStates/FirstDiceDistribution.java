@@ -8,12 +8,12 @@ import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl.Phase;
 
 public class FirstDiceDistribution implements GameState {
 
-	private Board _board;
+	private final Board _board;
 	private final  int _diceToAdd;
-	private Player _currentPlaying;
 	private DiceDistribution _distributeDiePhase;
+	private Player _currentPlaying;
 
-	public FirstDiceDistribution(Player currentPlaying, Board board) {
+	public FirstDiceDistribution(final Player currentPlaying,final Board board) {
 		_currentPlaying = currentPlaying;
 		_board = board;
 		_diceToAdd = board.getCellCount()/currentPlaying.getPlayersCount();
@@ -21,21 +21,21 @@ public class FirstDiceDistribution implements GameState {
 	}
 
 	@Override
-	public PlayOutcome play(int x, int y, GameStateContext gameStateContext){
-		_distributeDiePhase.play(x, y, gameStateContext);
+	public PlayOutcome play(final int x,final int y,final GameStateContext gameStateContext){
+		PlayOutcome playOutcome = _distributeDiePhase.play(x, y, gameStateContext);
 		if(gameStateContext.getPhase().equals(Phase.FIRST_DICE_DISTRIBUTION)){
-			return null;
+			return playOutcome;
 		}
 		if(_currentPlaying.isLastPlayer()){
 			gameStateContext.setState(new FirstAttacks(_currentPlaying.next(), _board));
-			return null;
+			return new PlayOutcome(0);
 		}
 			
 		gameStateContext.setState(this);
 		Player nextPlayer = _currentPlaying.next();
 		_currentPlaying = nextPlayer;
 		_distributeDiePhase = new DiceDistribution(nextPlayer, _board, _diceToAdd);
-		return null;
+		return new PlayOutcome(_diceToAdd);
 	}
 	
 	@Override
@@ -54,12 +54,16 @@ public class FirstDiceDistribution implements GameState {
 	}
 
 	@Override
-	public PlayOutcome pass(GameStateContext gameStateContext){
+	public PlayOutcome pass(final GameStateContext gameStateContext){
 		return null;
 	}
 
 	@Override
 	public Phase getPhase(){
 		return Phase.FIRST_DICE_DISTRIBUTION;
+	}
+
+	public int getDiceToAdd() {
+		return _diceToAdd;
 	}
 }

@@ -4,9 +4,14 @@ public class PlayOutcome {
 
 	private AttackOutcome _attackOutcome;
 	private BoardCell _cell;
+	private int _diceLeft;
 
 	public PlayOutcome(AttackOutcome attackOutcome) {
 		_attackOutcome = attackOutcome;
+	}
+
+	public PlayOutcome(int diceLeft) {
+		_diceLeft = diceLeft;
 	}
 
 	public PlayOutcome() {
@@ -26,6 +31,10 @@ public class PlayOutcome {
 
 	public BoardCell getSelectedCellOrNull() {
 		return _cell;
+	}
+
+	public int getDiceLeft() {
+		return _diceLeft;
 	}
 
 }

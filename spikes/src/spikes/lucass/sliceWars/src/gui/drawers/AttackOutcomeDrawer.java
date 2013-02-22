@@ -7,8 +7,9 @@ import java.awt.Graphics2D;
 import spikes.lucass.sliceWars.src.logic.AttackOutcome;
 import spikes.lucass.sliceWars.src.logic.DiceThrowOutcome;
 import spikes.lucass.sliceWars.src.logic.gameStates.AttackCallback;
+import spikes.lucass.sliceWars.src.logic.gameStates.PlayCallback;
 
-public class AttackOutcomeDrawer implements Drawer,AttackCallback{
+public class AttackOutcomeDrawer implements Drawer,AttackCallback,PlayCallback{
 
 	private int _x;
 	private int _y;
@@ -48,6 +49,11 @@ public class AttackOutcomeDrawer implements Drawer,AttackCallback{
 		text += " = " + diceThrowOutcome.defenseSum;
 		
 		_text = text;
+	}
+
+	@Override
+	public void played() {
+		_text = "";
 	}
 
 }

@@ -13,6 +13,8 @@ public class GameStateContextImpl implements GameStateContext {
 	private GameState _state;
 	private Board _board;
 	private AttackCallback _attackCallback;
+	private DiceLeftCallback _diceLeftCallback;
+	private PlayCallback _playCallback;
 
 	public enum Phase{
 		FILL_ALL_CELLS, FIRST_DICE_DISTRIBUTION, FIRST_ATTACKS, DICE_DISTRIBUTION, ATTACK, ATTACK_OUTCOME, GAME_ENDED
@@ -29,7 +31,14 @@ public class GameStateContextImpl implements GameStateContext {
 
 	@Override
 	public void play(int x, int y){
+		_playCallback.played();
 		callCallbacks(_state.play(x, y,this));
+	}
+	
+	@Override
+	public void pass(){
+		_playCallback.played();
+		callCallbacks(_state.pass(this));
 	}
 	
 	@Override
@@ -46,14 +55,12 @@ public class GameStateContextImpl implements GameStateContext {
 	public boolean canPass(){
 		return _state.canPass();
 	}
-	
-	@Override
-	public void pass(){
-		callCallbacks(_state.pass(this));
-	}
 
 	private void callCallbacks(PlayOutcome playOutcome) {
-		if(playOutcome != null && playOutcome.isAttackOutcome())
+		if(playOutcome == null) return;
+		if(_diceLeftCallback != null)
+			_diceLeftCallback.diceLeft(playOutcome.getDiceLeft());
+		if(playOutcome.isAttackOutcome())
 			_attackCallback.attackedWithOutcome(playOutcome.getAttackOutcome());
 	}
 	
@@ -75,6 +82,16 @@ public class GameStateContextImpl implements GameStateContext {
 	@Override
 	public void setAttackCallback(AttackCallback attackCallback) {
 		_attackCallback = attackCallback;
+	}
+
+	@Override
+	public void setDiceLeftCallback(DiceLeftCallback diceLeftCallback) {
+		_diceLeftCallback = diceLeftCallback;
+	}
+
+	@Override
+	public void setPlayCallback(PlayCallback playCallback) {
+		_playCallback = playCallback;
 	}
 
 }

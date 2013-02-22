@@ -41,8 +41,9 @@ public class FirstAttacks implements GameState {
 	@Override
 	public PlayOutcome pass(GameStateContext gameStateContext){
 		if(_attackPhase.getWhoIsPlaying().isLastPlayer()){
-			gameStateContext.setState(new DiceDistribution(_attackPhase.getWhoIsPlaying().next(),_board));
-			return null;
+			DiceDistribution diceDistribution = new DiceDistribution(_attackPhase.getWhoIsPlaying().next(),_board);
+			gameStateContext.setState(diceDistribution);
+			return new PlayOutcome(diceDistribution.getDiceToAdd());
 		}
 		_attackPhase = new Attack(_attackPhase.getWhoIsPlaying().next(),_board);
 		return null;

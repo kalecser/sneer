@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import spikes.lucass.sliceWars.src.gui.drawers.AttackOutcomeDrawer;
 import spikes.lucass.sliceWars.src.gui.drawers.BackgroundDrawer;
 import spikes.lucass.sliceWars.src.gui.drawers.CellsDrawer;
+import spikes.lucass.sliceWars.src.gui.drawers.DiceLeftDrawer;
 import spikes.lucass.sliceWars.src.gui.drawers.Drawer;
 import spikes.lucass.sliceWars.src.gui.drawers.PassButtonDrawer;
 import spikes.lucass.sliceWars.src.gui.drawers.PhaseDescriptionDrawer;
@@ -32,9 +33,9 @@ public class GamePanel extends JPanel {
 	public GamePanel() {
 		int x = 10;
 		int y = 50;
-		int lines = 5;
-		int columns = 5;
-		int randomlyRemoveCount = 8;
+		int lines = 2;
+		int columns = 2;
+		int randomlyRemoveCount = 0;
 		int numberOfPlayers = 2;
 		
 		
@@ -67,6 +68,10 @@ public class GamePanel extends JPanel {
 		AttackOutcomeDrawer attackOutcomeDrawer = new AttackOutcomeDrawer(10,500);
 		drawers.add(attackOutcomeDrawer);
 		_gameContext.setAttackCallback(attackOutcomeDrawer);
+		_gameContext.setPlayCallback(attackOutcomeDrawer);
+		DiceLeftDrawer diceLeftDrawer = new DiceLeftDrawer(300, 500);
+		_gameContext.setDiceLeftCallback(diceLeftDrawer);
+		drawers.add(diceLeftDrawer);
 		final PassButtonDrawer passButtonDrawer = new PassButtonDrawer(500,18);
 		drawers.add(passButtonDrawer);
 		

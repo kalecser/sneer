@@ -29,8 +29,9 @@ public class FillAllCell implements GameState {
 		
 		if(!_board.isFilled()) return null;
 		Player firstPlayer = new Player(1, _currentPlaying.getPlayersCount());
-		gameStateContext.setState(new FirstDiceDistribution(firstPlayer,_board));
-		return null;
+		FirstDiceDistribution firstDiceDistribution = new FirstDiceDistribution(firstPlayer,_board);
+		gameStateContext.setState(firstDiceDistribution);
+		return new PlayOutcome(firstDiceDistribution.getDiceToAdd());
 	}
 
 	@Override

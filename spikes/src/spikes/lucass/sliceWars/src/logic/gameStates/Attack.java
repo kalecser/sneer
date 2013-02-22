@@ -88,8 +88,9 @@ public class Attack implements GameState {
 				throw new RuntimeException("This shouldn't happen because if a play leads to a winner, the game state changes");
 			}
 		}
-		gameStateContext.setState(new DiceDistribution(nextPlayer,_board));
-		return null;
+		DiceDistribution diceDistribution = new DiceDistribution(nextPlayer,_board);
+		gameStateContext.setState(diceDistribution);
+		return new PlayOutcome(diceDistribution.getDiceToAdd());
 	}
 
 	@Override

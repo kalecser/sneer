@@ -5,9 +5,11 @@ import java.util.Collection;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.AttackCallback;
+import spikes.lucass.sliceWars.src.logic.gameStates.DiceLeftCallback;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl.Phase;
+import spikes.lucass.sliceWars.src.logic.gameStates.PlayCallback;
 
 public class GameStateContextMock implements GameStateContext {
 
@@ -53,6 +55,14 @@ public class GameStateContextMock implements GameStateContext {
 
 	@Override
 	public void play(int x, int y) {
+	}
+
+	@Override
+	public void setDiceLeftCallback(DiceLeftCallback diceLeftCallback) {
+	}
+
+	@Override
+	public void setPlayCallback(PlayCallback playCallback) {
 	}
 
 }

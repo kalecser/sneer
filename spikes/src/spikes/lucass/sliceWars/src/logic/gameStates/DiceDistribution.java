@@ -9,24 +9,24 @@ import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl.Phase;
 
 public class DiceDistribution implements GameState{
 	
-	private Board _board;
+	private final Board _board;
 	private final  int _diceToAdd;
 	private Player _currentPlaying;
 	private int diceCount;
 	
-	public DiceDistribution(Player currentPlaying,Board board, int diceToAdd) {
+	public DiceDistribution(final Player currentPlaying,final Board board,final int diceToAdd) {
 		_currentPlaying = currentPlaying;
 		_board = board;
 		_diceToAdd = diceToAdd;
 		diceCount = _diceToAdd;
 	}
 
-	public DiceDistribution(Player currentPlaying, Board board) {
+	public DiceDistribution(final Player currentPlaying,final Board board) {
 		this(currentPlaying,board,board.getBiggestLinkedCellCountForPlayer(currentPlaying));
 	}
 
 	@Override
-	public PlayOutcome play(int x, int y, GameStateContext gameStateContext){
+	public PlayOutcome play(final int x, final int y, final GameStateContext gameStateContext){
 		BoardCell cellAtOrNull = _board.getCellAtOrNull(x,y);
 		if(cellAtOrNull == null) return null;
 		if(!cellAtOrNull.getOwner().equals(_currentPlaying)) return null;
@@ -36,11 +36,12 @@ public class DiceDistribution implements GameState{
 		}
 		if(!cellAtOrNull.canAddDie()) return null;
 		diceCount --;
+		PlayOutcome playOutcome = new PlayOutcome(diceCount);
 		cellAtOrNull.addDie();
 		if(diceCount == 0 || _board.areaAllCellsFilledByPlayer(_currentPlaying)){
 			gameStateContext.setState(new Attack(_currentPlaying, _board));
 		}
-		return null;
+		return playOutcome;
 	}
 
 	@Override
@@ -59,13 +60,17 @@ public class DiceDistribution implements GameState{
 	}
 
 	@Override
-	public PlayOutcome pass(GameStateContext gameStateContext){
+	public PlayOutcome pass(final GameStateContext gameStateContext){
 		return null;
 	}
 
 	@Override
 	public Phase getPhase(){
 		return Phase.DICE_DISTRIBUTION;
+	}
+
+	public int getDiceToAdd() {
+		return _diceToAdd;
 	}
 
 }
