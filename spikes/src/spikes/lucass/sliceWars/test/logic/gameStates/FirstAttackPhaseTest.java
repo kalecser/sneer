@@ -10,8 +10,7 @@ import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.BoardCellImpl;
 import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.FirstAttacks;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl.Phase;
 
 public class FirstAttackPhaseTest {
 
@@ -33,13 +32,14 @@ public class FirstAttackPhaseTest {
 				return boardCellCount;
 			}
 		});
-		GameState nextPhase = subject.play(0, 0);
-		assertEquals(Phase.FIRST_ATTACKS,nextPhase.getPhase());
-		subject.pass();
-		nextPhase = subject.play(0, 0);
-		assertEquals(Phase.FIRST_ATTACKS,nextPhase.getPhase());
-		GameState afterPass = subject.pass();
-		assertEquals(Phase.DICE_DISTRIBUTION,afterPass.getPhase());
+		GameStateContextMock gameStateContextMock = new GameStateContextMock();
+		subject.play(0, 0,gameStateContextMock);
+		assertEquals(Phase.FIRST_ATTACKS,gameStateContextMock.getPhase());
+		subject.pass(gameStateContextMock);
+		subject.play(0, 0,gameStateContextMock);
+		assertEquals(Phase.FIRST_ATTACKS,gameStateContextMock.getPhase());
+		subject.pass(gameStateContextMock);
+		assertEquals(Phase.DICE_DISTRIBUTION,gameStateContextMock.getPhase());
 	}
 	
 }

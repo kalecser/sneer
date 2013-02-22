@@ -1,8 +1,9 @@
 package spikes.lucass.sliceWars.src.logic.gameStates;
 
 import spikes.lucass.sliceWars.src.logic.Board;
+import spikes.lucass.sliceWars.src.logic.PlayOutcome;
 import spikes.lucass.sliceWars.src.logic.Player;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl.Phase;
 
 
 public class FirstDiceDistribution implements GameState {
@@ -20,17 +21,21 @@ public class FirstDiceDistribution implements GameState {
 	}
 
 	@Override
-	public GameState play(int x, int y) {
-		GameState nextPhase = _distributeDiePhase.play(x, y);
-		if(nextPhase.equals(_distributeDiePhase))
-			return this;
-		if(_currentPlaying.isLastPlayer()){
-			return new FirstAttacks(_currentPlaying.next(), _board);
+	public PlayOutcome play(int x, int y, GameStateContext gameStateContext){
+		_distributeDiePhase.play(x, y, gameStateContext);
+		if(gameStateContext.getPhase().equals(Phase.FIRST_DICE_DISTRIBUTION)){
+			return null;
 		}
+		if(_currentPlaying.isLastPlayer()){
+			gameStateContext.setState(new FirstAttacks(_currentPlaying.next(), _board));
+			return null;
+		}
+			
+		gameStateContext.setState(this);
 		Player nextPlayer = _currentPlaying.next();
 		_currentPlaying = nextPlayer;
 		_distributeDiePhase = new DiceDistribution(nextPlayer, _board, _diceToAdd);
-		return this;
+		return null;
 	}
 	
 	@Override
@@ -49,8 +54,8 @@ public class FirstDiceDistribution implements GameState {
 	}
 
 	@Override
-	public GameState pass() {
-		return this;
+	public PlayOutcome pass(GameStateContext gameStateContext){
+		return null;
 	}
 
 	@Override

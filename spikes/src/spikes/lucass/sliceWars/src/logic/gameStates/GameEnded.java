@@ -1,7 +1,8 @@
 package spikes.lucass.sliceWars.src.logic.gameStates;
 
+import spikes.lucass.sliceWars.src.logic.PlayOutcome;
 import spikes.lucass.sliceWars.src.logic.Player;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl.Phase;
 
 public class GameEnded implements GameState {
 
@@ -12,8 +13,8 @@ public class GameEnded implements GameState {
 	}
 	
 	@Override
-	public GameState play(int x, int y) {
-		return this;
+	public PlayOutcome play(int x, int y, GameStateContext gameStateContext){
+		return null;
 	}
 
 	@Override
@@ -32,8 +33,8 @@ public class GameEnded implements GameState {
 	}
 
 	@Override
-	public GameState pass() {
-		return this;
+	public PlayOutcome pass(GameStateContext gameStateContext){
+		return null;
 	}
 
 	@Override

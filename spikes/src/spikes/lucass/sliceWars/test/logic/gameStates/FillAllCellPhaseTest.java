@@ -1,7 +1,7 @@
 package spikes.lucass.sliceWars.test.logic.gameStates;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Polygon;
@@ -13,7 +13,7 @@ import spikes.lucass.sliceWars.src.logic.BoardCellImpl;
 import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.FillAllCell;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl.Phase;
 
 
 public class FillAllCellPhaseTest {
@@ -51,14 +51,15 @@ public class FillAllCellPhaseTest {
 				return boardCellCount;
 			}
 		});
-		subject.play(0, 0);
+		GameStateContextMock gameStateContextMock = new GameStateContextMock();
+		subject.play(0, 0,gameStateContextMock);
 		assertTrue(Player.PLAYER1.equals(p1Cell.getOwner()));
-		subject.play(1, 0);
+		subject.play(1, 0,gameStateContextMock);
 		assertTrue(Player.PLAYER2.equals(p2Cell.getOwner()));
-		GameState nextPhase = subject.play(2, 0);
-		assertFalse(Player.PLAYER3.equals(p2Cell.getOwner()));
-		assertEquals(Phase.FIRST_DICE_DISTRIBUTION,nextPhase.getPhase());
-		assertEquals(Player.PLAYER1, nextPhase.getWhoIsPlaying());
+		subject.play(2, 0, gameStateContextMock);
+		assertNotSame(Player.PLAYER3, p2Cell.getOwner());
+		assertEquals(Phase.FIRST_DICE_DISTRIBUTION,gameStateContextMock.getPhase());
+		assertEquals(Player.PLAYER1, gameStateContextMock.getWhoIsPlaying());
 	}
 
 }

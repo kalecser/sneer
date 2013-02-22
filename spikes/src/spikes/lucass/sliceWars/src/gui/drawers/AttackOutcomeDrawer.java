@@ -6,27 +6,31 @@ import java.awt.Graphics2D;
 
 import spikes.lucass.sliceWars.src.logic.AttackOutcome;
 import spikes.lucass.sliceWars.src.logic.DiceThrowOutcome;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext;
+import spikes.lucass.sliceWars.src.logic.gameStates.AttackCallback;
 
-public class AttackOutcomeDrawer implements Drawer{
+public class AttackOutcomeDrawer implements Drawer,AttackCallback{
 
 	private int _x;
 	private int _y;
-	private GameStateContext _phase;
 	private Font _font;
+	private String _text = "";
 
-	public AttackOutcomeDrawer(int x, int y, GameStateContext phase) {
+	public AttackOutcomeDrawer(int x, int y) {
 		_x = x;
 		_y = y;
 		_font = new Font("Serif", Font.BOLD, 14);
-		_phase = phase;
 	}
 
 	@Override
 	public void draw(Graphics2D g2) {
-		AttackOutcome attackOutcomeOrNull = _phase.getAttackOutcomeOrNull();
-		if(attackOutcomeOrNull == null) return;
-		DiceThrowOutcome diceThrowOutcome = attackOutcomeOrNull.diceThrowOutcome;
+		g2.setFont(_font);
+		g2.setColor(Color.BLACK);
+		g2.drawString(_text, _x, _y);
+	}
+
+	@Override
+	public void attackedWithOutcome(AttackOutcome attackOutcome) {
+		DiceThrowOutcome diceThrowOutcome = attackOutcome.diceThrowOutcome;
 		String text = "ATK "+diceThrowOutcome.attackDice[0];
 		
 		for (int i = 1; i < diceThrowOutcome.attackDice.length; i++) {
@@ -43,9 +47,7 @@ public class AttackOutcomeDrawer implements Drawer{
 		
 		text += " = " + diceThrowOutcome.defenseSum;
 		
-		g2.setFont(_font);
-		g2.setColor(Color.BLACK);
-		g2.drawString(text, _x, _y);
+		_text = text;
 	}
 
 }

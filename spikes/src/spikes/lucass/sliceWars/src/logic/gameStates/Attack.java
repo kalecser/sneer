@@ -3,8 +3,9 @@ package spikes.lucass.sliceWars.src.logic.gameStates;
 import spikes.lucass.sliceWars.src.logic.AttackOutcome;
 import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
+import spikes.lucass.sliceWars.src.logic.PlayOutcome;
 import spikes.lucass.sliceWars.src.logic.Player;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl.Phase;
 
 public class Attack implements GameState {
 
@@ -19,31 +20,33 @@ public class Attack implements GameState {
 	}
 
 	@Override
-	public GameState play(int x, int y) {
+	public PlayOutcome play(int x, int y, GameStateContext gameStateContext){
 		BoardCell cellAtOrNull = _board.getCellAtOrNull(x,y);
-		if(cellAtOrNull == null) return this;
+		if(cellAtOrNull == null) return null;
 		if(c1 == null){
 			Player owner = cellAtOrNull.getOwner();
-			if(!owner.equals(currentPlaying)) return this;
+			if(!owner.equals(currentPlaying)) return null;
 			c1 = cellAtOrNull;
-			return this;
+			PlayOutcome playOutcome = new PlayOutcome();
+			playOutcome.selectedACell(c1);
+			return playOutcome;
 		}
 		if(!_board.areLinked(c1, cellAtOrNull)){
 			c1 = null;
-			return this;
+			return null;
 		}
 		AttackOutcome attackOutcome = c1.attack(cellAtOrNull);
 		if(attackOutcome == null){
 			c1 = null;
-			return this;
+			return null;
 		}
-		ShowDiceOutcome showDiceOutcome = new ShowDiceOutcome(this, attackOutcome);
 		c1.setCell(attackOutcome.attackCellAfterAttack);
 		cellAtOrNull.setCell(attackOutcome.defenseCellAfterAttack);
 		c1 = null;
-		if(checkIfWon())
-			return new GameEnded(currentPlaying);
-		return showDiceOutcome;
+		if(checkIfWon()){
+			gameStateContext.setState(new GameEnded(currentPlaying));
+		}
+		return new PlayOutcome(attackOutcome);
 	}
 
 	@Override
@@ -73,10 +76,11 @@ public class Attack implements GameState {
 	}
 	
 	@Override
-	public GameState pass() {
+	public PlayOutcome pass(GameStateContext gameStateContext){
 		Player nextPlayer = currentPlaying.next();
 		if(_board.areaAllCellsFilledByPlayer(nextPlayer)){
-			return new Attack(nextPlayer, _board);
+			gameStateContext.setState(new Attack(nextPlayer, _board));
+			return null;
 		}
 		while(_board.getBiggestLinkedCellCountForPlayer(nextPlayer) == 0){
 			nextPlayer = nextPlayer.next();
@@ -84,7 +88,8 @@ public class Attack implements GameState {
 				throw new RuntimeException("This shouldn't happen because if a play leads to a winner, the game state changes");
 			}
 		}
-		return new DiceDistribution(nextPlayer,_board);
+		gameStateContext.setState(new DiceDistribution(nextPlayer,_board));
+		return null;
 	}
 
 	@Override

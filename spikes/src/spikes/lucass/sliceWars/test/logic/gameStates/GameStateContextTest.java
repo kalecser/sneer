@@ -1,63 +1,59 @@
 package spikes.lucass.sliceWars.test.logic.gameStates;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
 
 import spikes.lucass.sliceWars.src.logic.AttackOutcome;
-import spikes.lucass.sliceWars.src.logic.Cell;
-import spikes.lucass.sliceWars.src.logic.DiceThrowOutcome;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
+import spikes.lucass.sliceWars.src.logic.BoardCell;
+import spikes.lucass.sliceWars.src.logic.Player;
+import spikes.lucass.sliceWars.src.logic.gameStates.Attack;
+import spikes.lucass.sliceWars.src.logic.gameStates.AttackCallback;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
-import spikes.lucass.sliceWars.src.logic.gameStates.ShowDiceOutcome;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl;
 
 public class GameStateContextTest {
 	
 	@Test
-	public void testContext(){		
+	public void testGetAttackOutcome(){
+		final BoardCellMock attacker = new BoardCellMock(Player.PLAYER1);
+		final BoardCellMock defender = new BoardCellMock(Player.PLAYER2);
 		
-		GameStateMockAdapter gameStateMockAdapter = new GameStateMockAdapter(){
+		final int boardCellCount = 2;
+		Attack attackPhase = new Attack(new Player(1, 2),new BoardMockAdapter() {
+			
 			@Override
-			public GameState play(int x, int y) {
-				return new GameStateMockAdapter(){
-					@Override
-					public Phase getPhase() {
-						return Phase.FIRST_DICE_DISTRIBUTION;
-					}
-				};
+			public BoardCell getCellAtOrNull(int x, int y) {
+				if(x == 0) return attacker;
+				return defender;
+			}
+
+			@Override
+			public int getCellCount() {
+				return boardCellCount;
 			}
 			
 			@Override
-			public Phase getPhase() {
-				return Phase.FILL_ALL_CELLS;
+			public boolean areLinked(BoardCell c1, BoardCell c2) {
+				return true;
 			}
-		};
-		GameStateContext subject = new GameStateContext(null, gameStateMockAdapter);
-		assertEquals(Phase.FILL_ALL_CELLS, subject.getPhase());
-		subject.play(0, 0);
-		assertEquals(Phase.FIRST_DICE_DISTRIBUTION, subject.getPhase());
-	}
-	
-	@Test
-	public void testGetAttackOutcomeWhenThereIsntOne(){
-		GameStateMockAdapter gameStateMockAdapter = new GameStateMockAdapter(){
+			
 			@Override
-			public Phase getPhase() {
-				return Phase.FILL_ALL_CELLS;
+			public int getBiggestLinkedCellCountForPlayer(Player player) {
+				return 1;
 			}
-		};
-		GameStateContext subject = new GameStateContext(null, gameStateMockAdapter);
-		assertNull(subject.getAttackOutcomeOrNull());
-	}
-	
-	@Test
-	public void testGetAttackOutcome(){
-		AttackOutcome attackOutcome = new AttackOutcome(new Cell(), new Cell(),new DiceThrowOutcome(new int[]{}, new int[]{}));
-		GameState showDiceOutcome = new ShowDiceOutcome(null, attackOutcome);
-		GameStateContext subject = new GameStateContext(null, showDiceOutcome);
-		assertEquals(attackOutcome, subject.getAttackOutcomeOrNull());
+		});
+		GameStateContext subject = new GameStateContextImpl(null, attackPhase);
+		final AtomicBoolean attacked = new AtomicBoolean(false);
+		subject.setAttackCallback(new AttackCallback() {@Override public void attackedWithOutcome(AttackOutcome attackOutcome) {
+			attacked.set(true);
+		}});
+		subject.play(0, 0);
+		subject.play(1, 0);
+		
+		assertTrue(attacked.get());
 	}
 
 }

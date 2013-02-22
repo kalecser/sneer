@@ -21,6 +21,7 @@ import spikes.lucass.sliceWars.src.gui.drawers.PhaseDescriptionDrawer;
 import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.HexagonBoardFactory;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl;
 
 public class GamePanel extends JPanel {
 
@@ -43,7 +44,7 @@ public class GamePanel extends JPanel {
 		int remainder = ((lines*columns)-randomlyRemoveCount) % numberOfPlayers;
 		hexagonBoard.removeCellsRandomly(board, remainder);
 		
-		GameStateContext _gameContext = new GameStateContext(numberOfPlayers,board);
+		GameStateContext _gameContext = new GameStateContextImpl(numberOfPlayers,board);
 		
 		createAndWireDrawers(_gameContext);
 		
@@ -63,7 +64,9 @@ public class GamePanel extends JPanel {
 		drawers.add(new BackgroundDrawer());
 		drawers.add(new CellsDrawer(_gameContext));
 		drawers.add(new PhaseDescriptionDrawer(10,25, _gameContext));
-		drawers.add(new AttackOutcomeDrawer(10,500, _gameContext));
+		AttackOutcomeDrawer attackOutcomeDrawer = new AttackOutcomeDrawer(10,500);
+		drawers.add(attackOutcomeDrawer);
+		_gameContext.setAttackCallback(attackOutcomeDrawer);
 		final PassButtonDrawer passButtonDrawer = new PassButtonDrawer(500,18);
 		drawers.add(passButtonDrawer);
 		

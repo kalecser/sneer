@@ -10,8 +10,7 @@ import org.junit.Test;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.Attack;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl.Phase;
 
 public class AttackPhaseTest {
 
@@ -46,16 +45,17 @@ public class AttackPhaseTest {
 				return 1;
 			}
 		});
-		subject.play(0, 0);
-		subject.play(1, 0);
+		GameStateContextMock gameStateContextMock = new GameStateContextMock();
+		subject.play(0, 0,gameStateContextMock);
+		subject.play(1, 0,gameStateContextMock);
 		assertTrue(!defender.wasAttacked());
 		linked.set(true);
-		subject.play(0, 0);
-		subject.play(1, 0);
+		subject.play(0, 0,gameStateContextMock);
+		subject.play(1, 0,gameStateContextMock);
 		assertTrue(defender.wasAttacked());
 		
-		GameState nextPhase = subject.pass();
-		assertEquals(Phase.DICE_DISTRIBUTION,nextPhase.getPhase());
+		subject.pass(gameStateContextMock);
+		assertEquals(Phase.DICE_DISTRIBUTION,gameStateContextMock.getPhase());
 	}
 	
 	@Test
@@ -75,9 +75,10 @@ public class AttackPhaseTest {
 			}
 		});
 		assertEquals(Player.PLAYER1, subject.getWhoIsPlaying());
-		GameState nextPhase = subject.pass();
-		assertEquals(Phase.ATTACK,nextPhase.getPhase());
-		assertEquals(Player.PLAYER2, nextPhase.getWhoIsPlaying());
+		GameStateContextMock gameStateContextMock = new GameStateContextMock();
+		subject.pass(gameStateContextMock);
+		assertEquals(Phase.ATTACK,gameStateContextMock.getPhase());
+		assertEquals(Player.PLAYER2, gameStateContextMock.getWhoIsPlaying());
 	}
 	
 	@Test
@@ -104,9 +105,10 @@ public class AttackPhaseTest {
 			}
 		});
 		assertEquals(Player.PLAYER1, subject.getWhoIsPlaying());
-		GameState nextPhase = subject.pass();
-		assertEquals(Phase.DICE_DISTRIBUTION,nextPhase.getPhase());
-		assertEquals(Player.PLAYER3, nextPhase.getWhoIsPlaying());
+		GameStateContextMock gameStateContextMock = new GameStateContextMock();
+		subject.pass(gameStateContextMock);
+		assertEquals(Phase.DICE_DISTRIBUTION,gameStateContextMock.getPhase());
+		assertEquals(Player.PLAYER3, gameStateContextMock.getWhoIsPlaying());
 	}
 	
 	@Test
@@ -132,10 +134,11 @@ public class AttackPhaseTest {
 				return 0;
 			}
 		});
-		subject.play(0, 0);
-		GameState nextPhase = subject.play(1, 0);
-		assertEquals(Phase.GAME_ENDED,nextPhase.getPhase());
-		assertEquals(Player.PLAYER1, nextPhase.getWhoIsPlaying());
+		GameStateContextMock gameStateContextMock = new GameStateContextMock();
+		subject.play(0, 0,gameStateContextMock);
+		subject.play(1, 0,gameStateContextMock);
+		assertEquals(Phase.GAME_ENDED,gameStateContextMock.getPhase());
+		assertEquals(Player.PLAYER1, gameStateContextMock.getWhoIsPlaying());
 	}
 	
 }

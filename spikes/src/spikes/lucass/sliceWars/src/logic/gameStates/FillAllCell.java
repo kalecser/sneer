@@ -2,8 +2,9 @@ package spikes.lucass.sliceWars.src.logic.gameStates;
 
 import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
+import spikes.lucass.sliceWars.src.logic.PlayOutcome;
 import spikes.lucass.sliceWars.src.logic.Player;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl.Phase;
 
 
 public class FillAllCell implements GameState {
@@ -17,18 +18,19 @@ public class FillAllCell implements GameState {
 	}
 	
 	@Override
-	public GameState play(int x, int y){
+	public PlayOutcome play(int x, int y, GameStateContext gameStateContext){
 		BoardCell cellAtOrNull = _board.getCellAtOrNull(x,y);
-		if(cellAtOrNull == null) return this;
-		if(!cellAtOrNull.getOwner().equals(Player.EMPTY)) return this;
+		if(cellAtOrNull == null) return null;
+		if(!cellAtOrNull.getOwner().equals(Player.EMPTY)) return null;
 		
 		cellAtOrNull.setOwner(_currentPlaying);
 		cellAtOrNull.setDiceCount(1);
 		_currentPlaying = _currentPlaying.next();
 		
-		if(!_board.isFilled()) return this;
+		if(!_board.isFilled()) return null;
 		Player firstPlayer = new Player(1, _currentPlaying.getPlayersCount());
-		return new FirstDiceDistribution(firstPlayer,_board);
+		gameStateContext.setState(new FirstDiceDistribution(firstPlayer,_board));
+		return null;
 	}
 
 	@Override
@@ -47,8 +49,8 @@ public class FillAllCell implements GameState {
 	}
 
 	@Override
-	public GameState pass() {
-		return this;
+	public PlayOutcome pass(GameStateContext gameStateContext){
+		return null;
 	}
 	
 	@Override

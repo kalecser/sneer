@@ -1,16 +1,13 @@
 package spikes.lucass.sliceWars.test.logic.gameStates;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
-import spikes.lucass.sliceWars.src.logic.gameStates.Attack;
 import spikes.lucass.sliceWars.src.logic.gameStates.DiceDistribution;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl.Phase;
 
 public class DistributeDiePhaseTest {
 
@@ -37,13 +34,13 @@ public class DistributeDiePhaseTest {
 				return 2;
 			}
 		});
-		subject.play(0, 0);
+		GameStateContextMock gameStateContextMock = new GameStateContextMock();
+		subject.play(0, 0,gameStateContextMock);
 		assertEquals(1, boardCellMock.getDiceCount());
-		GameState nextPhase = subject.play(0, 0);
+		subject.play(0, 0,gameStateContextMock);
 		assertEquals(2, boardCellMock.getDiceCount());
-		assertEquals(Phase.ATTACK,nextPhase.getPhase());
-		Attack attackPhase = (Attack) nextPhase;
-		assertTrue(attackPhase.getWhoIsPlaying().equals(Player.PLAYER1));
+		assertEquals(Phase.ATTACK,gameStateContextMock.getPhase());
+		assertEquals(Player.PLAYER1,gameStateContextMock.getWhoIsPlaying());
 	}
 	
 	@Test
@@ -78,7 +75,8 @@ public class DistributeDiePhaseTest {
 				return true;
 			}
 		});
-		GameState nextPhase = subject.play(0, 0);
-		assertEquals(Phase.ATTACK,nextPhase.getPhase());
+		GameStateContextMock gameStateContextMock = new GameStateContextMock();
+		subject.play(0, 0,gameStateContextMock);
+		assertEquals(Phase.ATTACK,gameStateContextMock.getPhase());
 	}
 }

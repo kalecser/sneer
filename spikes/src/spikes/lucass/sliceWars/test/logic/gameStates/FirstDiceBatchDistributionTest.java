@@ -7,8 +7,7 @@ import org.junit.Test;
 import spikes.lucass.sliceWars.src.logic.BoardCell;
 import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.FirstDiceDistribution;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameState;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl.Phase;
 
 
 public class FirstDiceBatchDistributionTest {
@@ -32,18 +31,23 @@ public class FirstDiceBatchDistributionTest {
 				return boardCellCount;
 			}
 		});
-		subject.play(0, 0);
+		GameStateContextMock gameStateContextMock = new GameStateContextMock(){@Override public Phase getPhase() {
+				if(_state == null)
+					return Phase.DICE_DISTRIBUTION;
+				return _state.getPhase();
+		}};
+		subject.play(0, 0,gameStateContextMock);
 		assertEquals(1, p1Cell.getDiceCount());
-		subject.play(0, 0);
+		subject.play(0, 0,gameStateContextMock);
 		assertEquals(2, p1Cell.getDiceCount());
-		subject.play(0, 0);
+		subject.play(0, 0,gameStateContextMock);
 		assertEquals(2, p1Cell.getDiceCount());
-		subject.play(1, 0);
+		subject.play(1, 0,gameStateContextMock);
 		assertEquals(1, p2Cell.getDiceCount());
-		GameState phase = subject.play(1, 0);
+		subject.play(1, 0,gameStateContextMock);
 		assertEquals(2, p2Cell.getDiceCount());
-		assertEquals(Phase.FIRST_ATTACKS,phase.getPhase());
-		assertEquals(phase.getWhoIsPlaying(), Player.PLAYER1);
+		assertEquals(Phase.FIRST_ATTACKS,gameStateContextMock.getPhase());
+		assertEquals(Player.PLAYER1,gameStateContextMock.getWhoIsPlaying());
 	}
 
 	

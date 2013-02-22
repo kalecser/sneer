@@ -1,8 +1,9 @@
 package spikes.lucass.sliceWars.src.logic.gameStates;
 
 import spikes.lucass.sliceWars.src.logic.Board;
+import spikes.lucass.sliceWars.src.logic.PlayOutcome;
 import spikes.lucass.sliceWars.src.logic.Player;
-import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext.Phase;
+import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl.Phase;
 
 
 public class FirstAttacks implements GameState {
@@ -16,12 +17,10 @@ public class FirstAttacks implements GameState {
 	}
 
 	@Override
-	public GameState play(int x, int y) {
-		GameState play = _attackPhase.play(x, y);
-		if(play.getPhase().equals(Phase.ATTACK_OUTCOME)){
-			return new ShowDiceOutcome(this, ((ShowDiceOutcome)play).getAttackOutcome());
-		}
-		return this;
+	public PlayOutcome play(int x, int y, GameStateContext gameStateContext){
+		PlayOutcome playOutcome = _attackPhase.play(x, y, gameStateContext);
+		gameStateContext.setState(this);
+		return playOutcome;
 	}
 
 	@Override
@@ -40,12 +39,13 @@ public class FirstAttacks implements GameState {
 	}
 
 	@Override
-	public GameState pass() {
+	public PlayOutcome pass(GameStateContext gameStateContext){
 		if(_attackPhase.getWhoIsPlaying().isLastPlayer()){
-			return new DiceDistribution(_attackPhase.getWhoIsPlaying().next(),_board);
+			gameStateContext.setState(new DiceDistribution(_attackPhase.getWhoIsPlaying().next(),_board));
+			return null;
 		}
 		_attackPhase = new Attack(_attackPhase.getWhoIsPlaying().next(),_board);
-		return this;
+		return null;
 	}
 
 	@Override
