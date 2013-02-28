@@ -29,7 +29,7 @@ public class Main {
 		gamePanel = new GamePanel(numberOfPlayers,lines,columns,randomlyRemoveCells);
 		frame.add(gamePanel, BorderLayout.CENTER);
 		
-		frame.setSize(1000, 500);
+		frame.setSize(1200, 900);
 		frame.setVisible(true);
 	}
 }

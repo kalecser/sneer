@@ -5,37 +5,37 @@ import spikes.lucass.sliceWars.src.logic.PlayOutcome;
 import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl.Phase;
 
-
 public class FirstDiceDistribution implements GameState {
 
 	private final Board _board;
-	private final  int _diceToAdd;
+	private final int _totalDiceToAdd;
+	private int _turnsLeft;
 	private DiceDistribution _distributeDiePhase;
 	private Player _currentPlaying;
 
 	public FirstDiceDistribution(final Player currentPlaying,final Board board) {
 		_currentPlaying = currentPlaying;
 		_board = board;
-		_diceToAdd = board.getCellCount()/currentPlaying.getPlayersCount();
-		_distributeDiePhase = new DiceDistribution(currentPlaying, board, _diceToAdd);
+		int playersCount = currentPlaying.getPlayersCount();
+		_totalDiceToAdd = board.getCellCount()/playersCount;
+		_turnsLeft = _totalDiceToAdd;
+		_distributeDiePhase = new DiceDistribution(currentPlaying, board, 1);
 	}
 
 	@Override
 	public PlayOutcome play(final int x,final int y,final GameStateContext gameStateContext){
-		PlayOutcome playOutcome = _distributeDiePhase.play(x, y, gameStateContext);
-		if(gameStateContext.getPhase().equals(Phase.FIRST_DICE_DISTRIBUTION)){
-			return playOutcome;
-		}
-		if(_currentPlaying.isLastPlayer()){
+		_distributeDiePhase.play(x, y, gameStateContext);
+		if(_currentPlaying.isLastPlayer()) _turnsLeft--;
+		if(_turnsLeft == 0){
 			gameStateContext.setState(new FirstAttacks(_currentPlaying.next(), _board));
-			return new PlayOutcome(0);
+			return new PlayOutcome(0);			
 		}
 			
 		gameStateContext.setState(this);
 		Player nextPlayer = _currentPlaying.next();
 		_currentPlaying = nextPlayer;
-		_distributeDiePhase = new DiceDistribution(nextPlayer, _board, _diceToAdd);
-		return new PlayOutcome(_diceToAdd);
+		_distributeDiePhase = new DiceDistribution(nextPlayer, _board, 1);
+		return new PlayOutcome(1);
 	}
 	
 	@Override
@@ -64,6 +64,6 @@ public class FirstDiceDistribution implements GameState {
 	}
 
 	public int getDiceToAdd() {
-		return _diceToAdd;
+		return 1;
 	}
 }
