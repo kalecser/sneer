@@ -35,7 +35,7 @@ public class FirstDiceDistribution implements GameState {
 		Player nextPlayer = _currentPlaying.next();
 		_currentPlaying = nextPlayer;
 		_distributeDiePhase = new DiceDistribution(nextPlayer, _board, 1);
-		return new PlayOutcome(1);
+		return new PlayOutcome(_turnsLeft);
 	}
 	
 	@Override
@@ -64,6 +64,6 @@ public class FirstDiceDistribution implements GameState {
 	}
 
 	public int getDiceToAdd() {
-		return 1;
+		return _turnsLeft;
 	}
 }
