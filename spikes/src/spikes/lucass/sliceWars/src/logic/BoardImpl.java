@@ -13,8 +13,8 @@ public class BoardImpl implements Board{
 
 	private Map<BoardCell, Set<BoardCell>> linkedBoardCells = new LinkedHashMap<BoardCell, Set<BoardCell>>();
 	
-	public BoardCell createAndAddToBoardCellForPolygon(Polygon polygon) {
-		BoardCell cell = new BoardCellImpl(polygon);
+	public BoardCell createAndAddToBoardCellForPolygon(Polygon polygon, CellAttack cellAttack) {
+		BoardCell cell = new BoardCellImpl(polygon, cellAttack);
 		linkedBoardCells.put(cell, new LinkedHashSet<BoardCell>());
 		return cell;
 	}

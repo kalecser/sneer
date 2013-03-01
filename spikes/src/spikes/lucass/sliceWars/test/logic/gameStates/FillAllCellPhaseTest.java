@@ -22,9 +22,9 @@ public class FillAllCellPhaseTest {
 	public void testState(){
 		
 		Polygon irrelevant = new Polygon();
-		final BoardCell p1Cell = new BoardCellImpl(irrelevant);
-		final BoardCell p2Cell = new BoardCellImpl(irrelevant);
-		final BoardCell p3Cell = new BoardCellImpl(irrelevant);
+		final BoardCell p1Cell = new BoardCellImpl(irrelevant, null);
+		final BoardCell p2Cell = new BoardCellImpl(irrelevant, null);
+		final BoardCell p3Cell = new BoardCellImpl(irrelevant, null);
 		
 		final int boardCellCount = 3;
 		assertTrue(Player.EMPTY.equals(p1Cell.getOwner()));

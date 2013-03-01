@@ -16,7 +16,7 @@ public class FirstAttackPhaseTest {
 
 	@Test
 	public void testState(){
-		final BoardCellImpl boardCell = new BoardCellImpl(new Polygon());
+		final BoardCellImpl boardCell = new BoardCellImpl(new Polygon(), null);
 		boardCell.setOwner(Player.PLAYER1);
 		boardCell.setDiceCount(1);
 		final int boardCellCount = 1;

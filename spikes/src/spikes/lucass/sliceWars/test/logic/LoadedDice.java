@@ -1,4 +1,6 @@
-package spikes.lucass.sliceWars.src.logic;
+package spikes.lucass.sliceWars.test.logic;
+
+import spikes.lucass.sliceWars.src.logic.Dice;
 
 
 public class LoadedDice implements Dice {

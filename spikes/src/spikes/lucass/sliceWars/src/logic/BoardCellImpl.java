@@ -7,10 +7,11 @@ public class BoardCellImpl implements BoardCell {
 	
 	private Polygon polygon;
 	private Cell cell;
-	private static CellAttack _cellAttack = new CellAttack(new DiceThrowerImpl(new DiceImpl(), new DiceImpl()));;
+	private CellAttack _cellAttack;
 	
-	public BoardCellImpl(Polygon p) {
+	public BoardCellImpl(final Polygon p,final CellAttack cellAttack) {
 		polygon = p;
+		_cellAttack = cellAttack;
 		setCell(new Cell());
 	}
 

@@ -4,10 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JPanel;
@@ -22,6 +21,7 @@ import spikes.lucass.sliceWars.src.gui.drawers.PassButtonDrawer;
 import spikes.lucass.sliceWars.src.gui.drawers.PhaseDescriptionDrawer;
 import spikes.lucass.sliceWars.src.logic.Board;
 import spikes.lucass.sliceWars.src.logic.HexagonBoardFactory;
+import spikes.lucass.sliceWars.src.logic.Player;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContext;
 import spikes.lucass.sliceWars.src.logic.gameStates.GameStateContextImpl;
 
@@ -30,20 +30,24 @@ public class GamePanel extends JPanel {
 	private List<Drawer> drawers = new ArrayList<Drawer>();
 	
 	private AtomicBoolean _gameRunning = new AtomicBoolean(true);
+
+	private PassButtonDrawer _passButtonDrawer;
+
+	private GameStateContext _gameContext;
 	
-	public GamePanel(final int numberOfPlayers,final int lines,final int columns,final int randomlyRemoveCellCount) {
+	public GamePanel(final int numberOfPlayers,final int lines,final int columns,final int randomlyRemoveCellCount, final Random random) {
 		int x = 10;
 		int y = 50;		
 		
-		HexagonBoardFactory hexagonBoard = new HexagonBoardFactory(x, y, lines, columns, randomlyRemoveCellCount);
+		HexagonBoardFactory hexagonBoard = new HexagonBoardFactory(x, y, lines, columns, randomlyRemoveCellCount, random);
 		Board board = hexagonBoard.createBoard();
 		
 		int remainder = ((lines*columns)-randomlyRemoveCellCount) % numberOfPlayers;
 		hexagonBoard.removeCellsRandomly(board, remainder);
 		
-		GameStateContext _gameContext = new GameStateContextImpl(numberOfPlayers,board);
+		_gameContext = new GameStateContextImpl(numberOfPlayers,board);
 		
-		createAndWireDrawers(_gameContext);
+		createAndWireDrawers();
 		
 
 		new Thread(){@Override public void run() {
@@ -57,7 +61,7 @@ public class GamePanel extends JPanel {
 		}}.start();
 	}
 
-	private void createAndWireDrawers(final GameStateContext _gameContext) {
+	private void createAndWireDrawers() {
 		drawers.add(new BackgroundDrawer());
 		CellDrawer cellDrawer = new CellDrawer();
 		_gameContext.setSelectedCellCallback(cellDrawer);
@@ -71,19 +75,19 @@ public class GamePanel extends JPanel {
 		DiceLeftDrawer diceLeftDrawer = new DiceLeftDrawer(300, 500);
 		_gameContext.setDiceLeftCallback(diceLeftDrawer);
 		drawers.add(diceLeftDrawer);
-		final PassButtonDrawer passButtonDrawer = new PassButtonDrawer(500,18);
-		drawers.add(passButtonDrawer);
-		
-		addMouseListener(new MouseAdapter(){@Override public void mouseClicked(MouseEvent e) {
-			_gameContext.play(e.getX(), e.getY());
-			passButtonDrawer.click(e.getX(), e.getY());
-			passButtonDrawer.setVisible(_gameContext.canPass());
-		}});
-		passButtonDrawer.setVisible(false);
-		passButtonDrawer.addClickListener(new Runnable() {@Override	public void run() {
+		_passButtonDrawer = new PassButtonDrawer(500,18);
+		drawers.add(_passButtonDrawer);
+		_passButtonDrawer.setVisible(false);
+		_passButtonDrawer.addClickListener(new Runnable() {@Override	public void run() {
 			_gameContext.pass();
-			passButtonDrawer.setVisible(_gameContext.canPass());
+			_passButtonDrawer.setVisible(_gameContext.canPass());
 		}});
+	}
+	
+	public void play(final int x, final int y){		
+		_gameContext.play(x, y);
+		_passButtonDrawer.click(x, y);
+		_passButtonDrawer.setVisible(_gameContext.canPass());
 	}
 
 	public void stopGameThread(){
@@ -108,6 +112,10 @@ public class GamePanel extends JPanel {
 		for (Drawer drawer : drawers){
 			drawer.draw(g2);
 		}
+	}
+
+	public Player currentPlayer() {
+		return _gameContext.getWhoIsPlaying();
 	}
 
 	

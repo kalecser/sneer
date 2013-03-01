@@ -3,7 +3,6 @@ package spikes.lucass.sliceWars.src.logic;
 import java.awt.Polygon;
 import java.util.Random;
 
-
 public class HexagonBoardFactory {
 
 	private int _x;
@@ -12,8 +11,12 @@ public class HexagonBoardFactory {
 	private int _lines;
 	private BoardCell[][] _boardCells;
 	private int _randomlyRemoveCount;
+	private Random _random;
+	private CellAttack _cellAttack;
 
-	public HexagonBoardFactory(int x,int y,int lines,int columns,int randomlyRemoveCount) {
+	public HexagonBoardFactory(int x,int y,int lines,int columns,int randomlyRemoveCount, final Random random) {
+		_random = random;
+		_cellAttack = new CellAttack(new DiceThrowerImpl(new DiceImpl(random), new DiceImpl(random)));
 		if(randomlyRemoveCount >= lines * columns){
 			throw new RuntimeException("Invalid randomlyRemoveCount "+ randomlyRemoveCount);
 		}
@@ -32,13 +35,12 @@ public class HexagonBoardFactory {
 	}
 
 	public Board removeCellsRandomly(Board board, int cellsToRemove) {
-		Random random = new Random();
 		for (int i = 0; i < cellsToRemove; i++) {
-			int col = random.nextInt(_columns);
-			int line = random.nextInt(_lines);
+			int col = _random.nextInt(_columns);
+			int line = _random.nextInt(_lines);
 			while(_boardCells[col][line] == null || board.removingCellWillLeaveOrphans(_boardCells[col][line] )){
-				col = random.nextInt(_columns);
-				line = random.nextInt(_lines);
+				col = _random.nextInt(_columns);
+				line = _random.nextInt(_lines);
 			}
 			board.remove(_boardCells[col][line]);
 			_boardCells[col][line] = null;
@@ -58,7 +60,7 @@ public class HexagonBoardFactory {
 		
 		for (int x = 0; x < _columns; x++) {
 			for (int y = 0; y < _lines; y++) {
-				_boardCells[x][y] = board.createAndAddToBoardCellForPolygon(poligons[x][y]);
+				_boardCells[x][y] = board.createAndAddToBoardCellForPolygon(poligons[x][y],_cellAttack);
 			}
 		}
 		

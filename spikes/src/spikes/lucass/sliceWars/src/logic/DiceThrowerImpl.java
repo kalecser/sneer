@@ -1,7 +1,5 @@
 package spikes.lucass.sliceWars.src.logic;
 
-
-
 public class DiceThrowerImpl implements DiceThrower {
 
 	private Dice _atacker;

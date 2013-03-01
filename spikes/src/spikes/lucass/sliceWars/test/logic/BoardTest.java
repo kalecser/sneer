@@ -22,9 +22,9 @@ public class BoardTest {
 		
 		Polygon irrelevant = new Polygon();
 		
-		BoardCell cell1 = subject.createAndAddToBoardCellForPolygon(irrelevant);
-		BoardCell cell2 = subject.createAndAddToBoardCellForPolygon(irrelevant);
-		BoardCell cell3 = subject.createAndAddToBoardCellForPolygon(irrelevant);
+		BoardCell cell1 = subject.createAndAddToBoardCellForPolygon(irrelevant,null);
+		BoardCell cell2 = subject.createAndAddToBoardCellForPolygon(irrelevant,null);
+		BoardCell cell3 = subject.createAndAddToBoardCellForPolygon(irrelevant,null);
 		
 		subject.link(cell1,cell2);
 		subject.link(cell2,cell3);
@@ -40,8 +40,8 @@ public class BoardTest {
 		
 		Polygon irrelevant = new Polygon();
 		
-		BoardCell cell1 = subject.createAndAddToBoardCellForPolygon(irrelevant);
-		BoardCell cell2 = subject.createAndAddToBoardCellForPolygon(irrelevant);
+		BoardCell cell1 = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
+		BoardCell cell2 = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
 		subject.link(cell1,cell2);
 		
 		subject.remove(cell1);
@@ -55,9 +55,9 @@ public class BoardTest {
 		
 		Polygon irrelevant = new Polygon();
 		
-		subject.createAndAddToBoardCellForPolygon(irrelevant).setOwner(Player.PLAYER1);
-		subject.createAndAddToBoardCellForPolygon(irrelevant).setOwner(Player.PLAYER1);
-		subject.createAndAddToBoardCellForPolygon(irrelevant).setOwner(Player.PLAYER1);
+		subject.createAndAddToBoardCellForPolygon(irrelevant, null).setOwner(Player.PLAYER1);
+		subject.createAndAddToBoardCellForPolygon(irrelevant, null).setOwner(Player.PLAYER1);
+		subject.createAndAddToBoardCellForPolygon(irrelevant, null).setOwner(Player.PLAYER1);
 		assertTrue(subject.isFilled());
 	}
 	
@@ -67,9 +67,9 @@ public class BoardTest {
 		
 		Polygon irrelevant = new Polygon();
 		
-		BoardCell cell1 = subject.createAndAddToBoardCellForPolygon(irrelevant);
+		BoardCell cell1 = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
 		cell1.setOwner(Player.PLAYER1);
-		BoardCell cell2 = subject.createAndAddToBoardCellForPolygon(irrelevant);
+		BoardCell cell2 = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
 		cell2.setOwner(Player.PLAYER1);
 		cell1.setDiceCount(1);
 		cell2.setDiceCount(1);
@@ -86,15 +86,15 @@ public class BoardTest {
 		
 		Polygon irrelevant = new Polygon();
 		
-		BoardCell cellLeftTop = subject.createAndAddToBoardCellForPolygon(irrelevant);
-		BoardCell cellMiddleTop = subject.createAndAddToBoardCellForPolygon(irrelevant);
-		BoardCell cellRightTop = subject.createAndAddToBoardCellForPolygon(irrelevant);
-		BoardCell cellLeftCenter = subject.createAndAddToBoardCellForPolygon(irrelevant);
-		BoardCell cellMiddleCenter = subject.createAndAddToBoardCellForPolygon(irrelevant);
-		BoardCell cellRightCenter = subject.createAndAddToBoardCellForPolygon(irrelevant);
-		BoardCell cellLeftBottom = subject.createAndAddToBoardCellForPolygon(irrelevant);
-		BoardCell cellMiddleBottom = subject.createAndAddToBoardCellForPolygon(irrelevant);
-		BoardCell cellRightBottom = subject.createAndAddToBoardCellForPolygon(irrelevant);
+		BoardCell cellLeftTop = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
+		BoardCell cellMiddleTop = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
+		BoardCell cellRightTop = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
+		BoardCell cellLeftCenter = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
+		BoardCell cellMiddleCenter = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
+		BoardCell cellRightCenter = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
+		BoardCell cellLeftBottom = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
+		BoardCell cellMiddleBottom = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
+		BoardCell cellRightBottom = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
 		
 		subject.link(cellLeftTop, cellMiddleTop);
 		subject.link(cellLeftTop, cellMiddleCenter);
@@ -149,9 +149,9 @@ public class BoardTest {
 		
 		Polygon irrelevant = new Polygon();
 		
-		BoardCell cellLeft = subject.createAndAddToBoardCellForPolygon(irrelevant);
-		BoardCell cellMiddle = subject.createAndAddToBoardCellForPolygon(irrelevant);
-		BoardCell cellRight = subject.createAndAddToBoardCellForPolygon(irrelevant);
+		BoardCell cellLeft = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
+		BoardCell cellMiddle = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
+		BoardCell cellRight = subject.createAndAddToBoardCellForPolygon(irrelevant, null);
 		
 		cellLeft.setDiceCount(1);
 		cellMiddle.setDiceCount(2);

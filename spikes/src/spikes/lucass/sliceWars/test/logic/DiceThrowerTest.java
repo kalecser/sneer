@@ -8,7 +8,6 @@ import org.junit.Test;
 import spikes.lucass.sliceWars.src.logic.Dice;
 import spikes.lucass.sliceWars.src.logic.DiceThrowOutcome;
 import spikes.lucass.sliceWars.src.logic.DiceThrowerImpl;
-import spikes.lucass.sliceWars.src.logic.LoadedDice;
 
 
 public class DiceThrowerTest {
