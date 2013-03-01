@@ -25,9 +25,9 @@ public class GuiPlayer implements RemotePlayListener {
 		
 		frame.setLayout(new BorderLayout());
 		int numberOfPlayers = 2;
-		int lines = 3;
-		int columns = 3;
-		int randomlyRemoveCells = 2;
+		int lines = 6;
+		int columns = 6;
+		int randomlyRemoveCells = 12;
 		_gamePanel = new GamePanel(numberOfPlayers,lines,columns,randomlyRemoveCells, random);
 		frame.addWindowListener(new WindowAdapter(){@Override public void windowClosing(WindowEvent e) {
 			_gamePanel.stopGameThread();
