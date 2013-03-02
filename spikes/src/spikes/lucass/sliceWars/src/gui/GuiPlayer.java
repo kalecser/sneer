@@ -18,16 +18,14 @@ public class GuiPlayer implements RemotePlayListener {
 	
 	private GamePanel _gamePanel;
 
-	public GuiPlayer(final Player windowOwner, final RemotePlayListener remotePlayer,final long randomSeed) {
+	public GuiPlayer(final Player windowOwner, final RemotePlayListener remotePlayer,
+					 final long randomSeed, final int numberOfPlayers, final int lines,
+					 final int columns, final int randomlyRemoveCells) {
 		Random random = new Random(randomSeed);
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		
 		frame.setLayout(new BorderLayout());
-		int numberOfPlayers = 2;
-		int lines = 6;
-		int columns = 6;
-		int randomlyRemoveCells = 12;
 		_gamePanel = new GamePanel(numberOfPlayers,lines,columns,randomlyRemoveCells, random);
 		frame.addWindowListener(new WindowAdapter(){@Override public void windowClosing(WindowEvent e) {
 			_gamePanel.stopGameThread();

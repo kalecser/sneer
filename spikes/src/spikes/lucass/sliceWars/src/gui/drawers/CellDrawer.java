@@ -14,7 +14,16 @@ import spikes.lucass.sliceWars.src.logic.gameStates.SelectedCallback;
 
 public class CellDrawer implements SelectedCallback,PlayListener{
 	
-	private final static Color[] colors = new Color[]{Color.GRAY, Color.BLUE, Color.RED, Color.ORANGE, Color.DARK_GRAY};
+	private final static Color[] colors = new Color[]{
+		Color.GRAY, 
+		Color.BLUE, 
+		Color.RED, 
+		Color.ORANGE, 
+		Color.DARK_GRAY, 
+		Color.MAGENTA, 
+		Color.PINK, 
+		Color.GREEN, 
+		Color.CYAN};
 	private Font _font;
 	private BoardCell _selectedCellOrNull;
 
