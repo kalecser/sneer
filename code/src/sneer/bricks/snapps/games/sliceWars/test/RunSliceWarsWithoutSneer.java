@@ -29,11 +29,15 @@ public class RunSliceWarsWithoutSneer implements RemotePlayListener{
 		_players = new ArrayList<GuiPlayer>();
 		
 		Player player = new Player(1, numberOfPlayers);
-		_players.add(new GuiPlayer(player, this, nextInt,numberOfPlayers,lines,columns,randomlyRemoveCells));
+		GuiPlayer player1 = new GuiPlayer(player, this, nextInt,numberOfPlayers,lines,columns,randomlyRemoveCells);
+		player1.setKillOnClose();
+		_players.add(player1);
 		
 		for (int i = 1; i < numberOfPlayers; i++) {
 			player = player.next();
-			_players.add(new GuiPlayer(player, this, nextInt,numberOfPlayers,lines,columns,randomlyRemoveCells));
+			GuiPlayer newGuiPlayer = new GuiPlayer(player, this, nextInt,numberOfPlayers,lines,columns,randomlyRemoveCells);
+			newGuiPlayer.setKillOnClose();
+			_players.add(newGuiPlayer);
 		}
 	}
 
