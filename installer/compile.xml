@@ -13,7 +13,6 @@
                 <mkdir dir="${bin}"/>
         </target>
 
-
         <target name="copy-resources" depends="clean">
                 <copy todir="${bin}">
                         <fileset dir="${src}">
