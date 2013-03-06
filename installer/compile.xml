@@ -8,7 +8,6 @@
         <property name="project" location="../code" />
         <property name="src" location="${project}/src" />
 
-
         <target name="clean">
                 <delete dir="${build}"/>
                 <mkdir dir="${bin}"/>
