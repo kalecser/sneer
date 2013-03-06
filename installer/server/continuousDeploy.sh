@@ -1,4 +1,5 @@
 apt-get -y install openjdk-7-jdk
+apt-get -y install ant
 cd ~
 
 apt-get -y install junit4
