@@ -30,7 +30,7 @@ public class ClipboardAdderImpl implements ClipboardAdder {
 		if(seal == null) return;		
 		if(contactSeals.contactGiven(seal) != null) return;
 		if(seal.equals(lastSeal)) return;
-		if(my(OwnSeal.class).get().equals(seal)) return;
+		if(my(OwnSeal.class).get().currentValue().equals(seal)) return;
 		
 		lastSeal = seal;
 		String nickname = "<New Contact> " + System.currentTimeMillis();
