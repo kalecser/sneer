@@ -24,7 +24,6 @@
                 </copy>
         </target>
 
-
         <target name="compile" depends="clean, copy-resources">
                 <path id="classpath">
                         <fileset dir="${src}">
