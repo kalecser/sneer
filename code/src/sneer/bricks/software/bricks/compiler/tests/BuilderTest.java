@@ -8,13 +8,6 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
-import basis.brickness.Brick;
-import basis.brickness.ClassDefinition;
-import basis.brickness.Nature;
-import basis.environments.Environment;
-import basis.environments.Environments;
-import basis.lang.Closure;
-
 import sneer.bricks.hardware.io.IO;
 import sneer.bricks.software.bricks.compiler.BrickCompilerException;
 import sneer.bricks.software.bricks.compiler.Builder;
@@ -24,6 +17,14 @@ import sneer.bricks.software.code.compilers.java.JavaCompiler;
 import sneer.bricks.software.code.jar.JarBuilder;
 import sneer.bricks.software.code.jar.Jars;
 import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
+import basis.brickness.Brick;
+import basis.brickness.ClassDefinition;
+import basis.brickness.Nature;
+import basis.environments.Environment;
+import basis.environments.Environments;
+import basis.lang.Closure;
+import basis.lang.ClosureX;
+import basis.lang.Producer;
 
 
 public class BuilderTest extends BrickTestBase {
@@ -157,11 +158,13 @@ public class BuilderTest extends BrickTestBase {
 	private void copyRequiredFoundationFiles() throws IOException {
 		copySourceFiles(
 				Brick.class,
+				Producer.class,
 				Nature.class,
 				ClassDefinition.class,
 				
 				Environment.class,
 				Environments.class,
+				ClosureX.class,
 				Closure.class);
 	}
 
