@@ -1,9 +1,9 @@
 package snype.whisper.audio;
 
 
-public class LoopbackTest {
+public class LoopbackDemo {
 
-	public LoopbackTest() {
+	public LoopbackDemo() {
 		SpeexSpeaker speaker = null;
 		SpeexMicrophone microphone = null;
 		try {
@@ -33,6 +33,6 @@ public class LoopbackTest {
 	}
 
 	public static void main(String[] args) {
-		new LoopbackTest();
+		new LoopbackDemo();
 	}
 }
