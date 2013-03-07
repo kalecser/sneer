@@ -2,6 +2,8 @@ package sneer.bricks.skin.widgets.clipboard.tests;
 
 import static basis.environments.Environments.my;
 
+import java.awt.GraphicsEnvironment;
+
 import org.junit.Test;
 
 import sneer.bricks.skin.widgets.clipboard.Clipboard;
@@ -13,6 +15,8 @@ public class ClipboardTest extends BrickTestBase {
 	
 	@Test
 	public void setAndGetContents() {
+		if (GraphicsEnvironment.isHeadless()) return;
+		
 		String content = "someString";
 		subject.setContent(content);
 		assertEquals(content, subject.getContent());
