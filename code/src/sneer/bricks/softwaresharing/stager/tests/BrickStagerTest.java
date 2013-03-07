@@ -60,6 +60,9 @@ public class BrickStagerTest extends BrickTestBase {
 			basis.brickness.Nature.class,
 			basis.brickness.ClassDefinition.class,
 			
+			basis.lang.Producer.class,
+			basis.lang.ProducerX.class,
+			basis.lang.ClosureX.class,
 			basis.environments.Environment.class,
 			basis.environments.Environments.class);
 	}
