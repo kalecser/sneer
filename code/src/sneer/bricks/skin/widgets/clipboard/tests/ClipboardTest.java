@@ -11,12 +11,10 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 
 public class ClipboardTest extends BrickTestBase {
 
-	private final Clipboard subject = my(Clipboard.class);
-	
 	@Test
 	public void setAndGetContents() {
 		if (GraphicsEnvironment.isHeadless()) return;
-		
+		Clipboard subject = my(Clipboard.class);
 		String content = "someString";
 		subject.setContent(content);
 		assertEquals(content, subject.getContent());
