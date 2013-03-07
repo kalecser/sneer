@@ -25,6 +25,7 @@ import basis.environments.Environments;
 import basis.lang.Closure;
 import basis.lang.ClosureX;
 import basis.lang.Producer;
+import basis.lang.ProducerX;
 
 
 public class BuilderTest extends BrickTestBase {
@@ -158,6 +159,7 @@ public class BuilderTest extends BrickTestBase {
 	private void copyRequiredFoundationFiles() throws IOException {
 		copySourceFiles(
 				Brick.class,
+				ProducerX.class,
 				Producer.class,
 				Nature.class,
 				ClassDefinition.class,
