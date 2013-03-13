@@ -2,54 +2,133 @@
 
 <project name="sneer" default="all">
 
-	<property name="build" location="build" />
+	<import file="compile.xml"/>
 
-	<property name="code" location="../code" />
-	<property name="code.src" location="${code}/src" />
-	<property name="code.bin" location="${code}/bin" />
+	<property name="code"          location="../code" />
+	<property name="code.src"      location="../code/src" />
+	<property name="build"         location="build" />
+	<property name="build.tmp"     location="build/tmp" />
+	<property name="build.tmp.bin" location="build/tmp/bin" />
+	<property name="build.tmp.own" location="build/tmp/own" />
+	<property name="bootstrap.jar" location="build/sneer-bootstrap.jar" />
 
+	
+	<target name="all" depends="compile, deploy"/>
+	
+	<target name="deploy" depends="sneer-jar, compile-installer, own-project-jar, bootstrap-jar, jnlp, delete-tmp"/>
 
-	<target name="clean-bin">
-		<delete dir="${code.bin}"/>
-		<mkdir  dir="${code.bin}"/>
-	</target>
-
-	<target name="copy-resources" depends="clean-bin">
-		<copy todir="${code.bin}">
-			<fileset dir="${code.src}">
-				<include name='**/**'/>
-				<exclude name='**/*.java'/>
-			</fileset>
-		</copy>
-	</target>
-
-	<target name="compile" depends="clean-bin, copy-resources">
-		<path id="classpath">
-			<fileset dir="${code.src}">
-				<include name='**/*.jar' />
-			</fileset>
-		</path>
-		<javac srcdir="${code.src}" destdir="${code.bin}" failonerror="true" debug="on" source="1.7" target="1.7" encoding="utf-8" includeAntRuntime="false">
-			<classpath refid="classpath"/>
-		</javac>
-	</target>
 
 	<target name="clean-build">
-		<delete dir="${build}"/>
-		<mkdir  dir="${build}"/>
+            <delete dir="${build}"/>
+    </target>
+
+	<target name="compile" depends="clean-build">
+		<antcall target="compile-src">
+			<param name="src" value="${code.src}"/>
+			<param name="jars-root" value="${code.src}"/>
+			<param name="bin" value="${build.tmp.bin}"/>
+		</antcall>
 	</target>
 
-	<target name="makejar" depends="clean-build"> 
-		<jar destfile="${build}/sneer.jar">
+	<target name="sneer-jar"> 
+		<jar destfile="${build.tmp}/sneer.jar">
+			<fileset dir="${build.tmp}">
+				<include name='bin/**/*.*' />
+			</fileset>
 			<fileset dir="${code}">
 				<include name='**/*.*' />
+				<exclude name='bin/**' />
+				<exclude name='.byke/**' />
 			</fileset>
 		</jar>
 	</target>
 
-	
-	<!-- target name="all" depends="compile, deploy"/ -->
-	<target name="all" depends="compile, makejar"/>
+	<target name="compile-installer">
+		<antcall target="compile">
+			<param name="src" value="src"/>
+			<param name="jars-root" value="${build.tmp}"/>
+			<param name="bin" value="${build.tmp.bin}"/>
+		</antcall>
+	</target>
 
+	<target name="own-project-jar">
+		<mkdir dir="${build.tmp.own}"/>
+		<copy todir="${build.tmp.own}">
+			<fileset dir="../own-template">
+				<include name='**' />
+				<exclude name='.project.bak'/>
+				<exclude name='.project'/>
+				<exclude name='bin/**'/>
+			</fileset>
+		</copy>
+		<copy file="../own-template/.project.bak" 
+			  tofile="${build.tmp.own}/.project"/>
+
+		<jar destfile="${build.tmp}/own.jar">
+			<fileset dir="${build.tmp}">
+				<include name='own/**' />
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="bootstrap-jar">
+		<jar destfile="${bootstrap.jar}">
+			<fileset dir="${build.tmp.bin}">
+				<include name='sneer/installer/**/*.*' />
+				<include name='sneer/main/*.class' />
+				<exclude name='sneer/main/SneerSession*' />
+			</fileset>
+
+			<fileset dir="${build.tmp}">
+				<include name='own.jar' />
+				<include name='sneer.jar' />
+			</fileset>
+		</jar>
+		<signjar keystore="keystore" jar="${bootstrap.jar}" alias="mykey" storepass="amanda" />
+	</target>
+
+	<property name="jnlp.mainClass" value="sneer.installer.Main" />
+	
+	
+	<target name="jnlp">
+		<copy file="logo16x16.png" todir="${build}"/>
+		<tstamp/>
+		<echoxml file="${build}/sneer.jnlp">
+			<jnlp spec="1.0+" codebase="http://dynamic.sneer.me/webstart" href="sneer.jnlp">
+				<information>
+					<title>Sneer</title>
+					<vendor>Sneer Team</vendor>
+					<description>Free platform for sovereign applications.</description>
+					<description kind="tooltip">Sneer</description>
+					<homepage href="http://sneer.me" />
+					<icon href="logo16x16.png"/>
+					<offline-allowed />
+			        <shortcut online="true">
+			            <desktop/>
+						<menu submenu="Sneer"/>
+			        </shortcut>
+				</information>
+				
+				<update check="timeout" policy="always" />
+				
+				<resources>
+					<jar href="sneer-bootstrap.jar" />
+					<j2se version="1.7+" href="http://java.sun.com/products/autodl/j2se" />
+				</resources>
+
+				<security>
+					<all-permissions />
+				</security>
+
+				<application-desc main-class="sneer.installer.Main">
+					<argument>${DSTAMP}${TSTAMP}</argument>
+				</application-desc>
+			</jnlp>
+		</echoxml>
+	</target>
+
+	<target name="delete-tmp">
+		<delete dir="${build.tmp}"/>
+	</target>
 
 </project>

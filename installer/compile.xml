@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="sneer" default="compile">
+<project name="compile-project">
 
-        <property name="src" location="../code/src" />
-        <property name="bin" location="../code/bin" />
-
-        <target name="clean">
-                <delete dir="${bin}"/>
-                <mkdir dir="${bin}"/>
-        </target>
-
-        <target name="copy-resources" depends="clean">
+        <target name="copy-resources">
                 <copy todir="${bin}">
                         <fileset dir="${src}">
                                 <include name='**/**'/>
-                                <exclude name='**/*.java'/>
+	                            <exclude name='**/*.java'/>
                         </fileset>
                 </copy>
         </target>
 
-        <target name="compile" depends="clean, copy-resources">
+        <target name="compile-src" depends="copy-resources">
                 <path id="classpath">
-                        <fileset dir="${src}">
+                        <fileset dir="${jars-root}">
                                 <include name='**/*.jar' />
                         </fileset>
                 </path>
