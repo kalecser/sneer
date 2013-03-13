@@ -2,14 +2,11 @@
 
 <project name="sneer" default="compile">
 
-        <property name="build" location="build" />
-        <property name="bin" location="${build}/bin" />
-
-        <property name="project" location="../code" />
-        <property name="src" location="${project}/src" />
+        <property name="src" location="../code/src" />
+        <property name="bin" location="../code/bin" />
 
         <target name="clean">
-                <delete dir="${build}"/>
+                <delete dir="${bin}"/>
                 <mkdir dir="${bin}"/>
         </target>
 
