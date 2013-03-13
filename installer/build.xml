@@ -1,21 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="sneer" default="makejar">
+<project name="sneer" default="all">
 
 	<property name="build" location="build" />
-	<property name="project" location="../code" />
 
-	<target name="clean">
-		<delete dir="${build}"/>
-		<mkdir dir="${build}" />
+	<property name="code" location="../code" />
+	<property name="code.src" location="${code}/src" />
+	<property name="code.bin" location="${code}/bin" />
+
+
+	<target name="clean-bin">
+		<delete dir="${code.bin}"/>
+		<mkdir  dir="${code.bin}"/>
 	</target>
 
-	<target name="makejar" depends="clean"> 
+	<target name="copy-resources" depends="clean-bin">
+		<copy todir="${code.bin}">
+			<fileset dir="${code.src}">
+				<include name='**/**'/>
+				<exclude name='**/*.java'/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="compile" depends="clean-bin, copy-resources">
+		<path id="classpath">
+			<fileset dir="${code.src}">
+				<include name='**/*.jar' />
+			</fileset>
+		</path>
+		<javac srcdir="${code.src}" destdir="${code.bin}" failonerror="true" debug="on" source="1.7" target="1.7" encoding="utf-8" includeAntRuntime="false">
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+
+	<target name="clean-build">
+		<delete dir="${build}"/>
+		<mkdir  dir="${build}"/>
+	</target>
+
+	<target name="makejar" depends="clean-build"> 
 		<jar destfile="${build}/sneer.jar">
-			<fileset dir="${project}">
+			<fileset dir="${code}">
 				<include name='**/*.*' />
 			</fileset>
 		</jar>
 	</target>
+
 	
+	<!-- target name="all" depends="compile, deploy"/ -->
+	<target name="all" depends="compile, makejar"/>
+
+
 </project>

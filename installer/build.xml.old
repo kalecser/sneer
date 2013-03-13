@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="sneer" default="makejar">
+
+	<property name="build" location="build" />
+	<property name="project" location="../code" />
+
+	<target name="clean">
+		<delete dir="${build}"/>
+		<mkdir dir="${build}" />
+	</target>
+
+	<target name="makejar" depends="clean"> 
+		<jar destfile="${build}/sneer.jar">
+			<fileset dir="${project}">
+				<include name='**/*.*' />
+			</fileset>
+		</jar>
+	</target>
+	
+</project>
