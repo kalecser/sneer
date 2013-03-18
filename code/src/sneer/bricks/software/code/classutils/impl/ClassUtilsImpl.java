@@ -12,7 +12,13 @@ class ClassUtilsImpl implements ClassUtils {
 
 	@Override
 	public File classpathRootFor(Class<?> clazz) {
-		return rootFolderFor(clazz, classFile(clazz));
+		final int packageCount = packageName(clazz).split("\\.").length;
+		
+		File parent = classFile(clazz).getParentFile();
+		for (int i=0; i<packageCount; ++i)
+			parent = parent.getParentFile();
+		
+		return parent;
 	}
 
 	@Override
@@ -32,16 +38,6 @@ class ClassUtilsImpl implements ClassUtils {
 	@Override
 	public String relativeJavaFileName(Class<?> clazz) {
 		return clazz.getName().replace('.', '/') + ".java";
-	}
-
-	private File rootFolderFor(Class<?> clazz, File classFile) {
-		final int packageCount = packageName(clazz).split("\\.").length;
-
-		File parent = classFile.getParentFile();
-		for (int i=0; i<packageCount; ++i)
-			parent = parent.getParentFile();
-
-		return parent;
 	}
 
 	private String packageName(Class<?> clazz) {
