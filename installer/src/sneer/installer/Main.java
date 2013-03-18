@@ -6,6 +6,7 @@ import sneer.main.Sneer;
 public class Main {
 
 	public static void main(String[] args) throws Exception {
+		System.setProperty("sneer.home", System.getProperty("user.home"));
 		if(!SNEER_HOME.exists())
 			new InstallationWizard();
 

@@ -14,10 +14,24 @@ public class SneerCodeFolders {
 	
 	private static File sneerHome() {
 		String override = System.getProperty("sneer.home");
-		if (override != null)
-			return new File(override);
+		return override != null
+			? new File(override)
+			: localRootFolder();
+	}
 
-		return new File(System.getProperty("user.home"), "sneer");
+	private static File localRootFolder() {
+		File result = new File(SneerCodeFolders.class.getResource(".").getFile())
+			.getParentFile()
+			.getParentFile()
+			.getParentFile()
+			.getParentFile();
+		assertChild(result, "code/bin");
+		return result;
+	}
+
+	private static void assertChild(File parent, String child) {
+		if (!new File(parent, child).exists())
+			throw new IllegalStateException("Folder '" + parent + "' does not contain child " + "'" + child + "'");
 	}
 
 }
