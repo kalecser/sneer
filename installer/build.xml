@@ -2,8 +2,6 @@
 
 <project name="sneer" default="all">
 
-	<import file="compile.xml"/>
-
 	<property name="code"          location="../code" />
 	<property name="code.src"      location="../code/src" />
 	<property name="build"         location="build" />
@@ -20,6 +18,26 @@
 
 	<target name="clean-build">
             <delete dir="${build}"/>
+    </target>
+	
+    <target name="copy-resources">
+            <copy todir="${bin}">
+                    <fileset dir="${src}">
+                            <include name='**/**'/>
+                            <exclude name='**/*.java'/>
+                    </fileset>
+            </copy>
+    </target>
+
+    <target name="compile-src" depends="copy-resources">
+            <path id="classpath">
+                    <fileset dir="${jars-root}">
+                            <include name='**/*.jar' />
+                    </fileset>
+            </path>
+            <javac srcdir="${src}" destdir="${bin}" failonerror="true" debug="on" source="1.7" target="1.7" encoding="utf-8" includeAntRuntime="false">
+                    <classpath refid="classpath"/>
+            </javac>
     </target>
 
 	<target name="compile" depends="clean-build">
