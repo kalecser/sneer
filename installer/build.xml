@@ -69,7 +69,7 @@
 	</target>
 
 	<target name="compile-installer">
-		<antcall target="compile">
+		<antcall target="compile-src">
 			<param name="src" value="src"/>
 			<param name="jars-root" value="${build.tmp}"/>
 			<param name="bin" value="${build.tmp.bin}"/>
