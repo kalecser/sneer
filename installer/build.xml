@@ -7,6 +7,7 @@
 	<property name="build"         location="build" />
 	<property name="build.tmp"     location="build/tmp" />
 	<property name="build.tmp.bin" location="build/tmp/bin" />
+	<property name="build.tmp.src" location="build/tmp/src" />
 	<property name="build.tmp.own" location="build/tmp/own" />
 	<property name="bootstrap.jar" location="build/sneer-bootstrap.jar" />
 
@@ -41,9 +42,15 @@
     </target>
 
 	<target name="compile" depends="clean-build">
+		<copy todir="${build.tmp.src}">
+                       <fileset dir="${code.src}">
+                               <include name='**/*.*' />
+                       </fileset>
+                </copy>
+
 		<antcall target="compile-src">
-			<param name="src" value="${code.src}"/>
-			<param name="jars-root" value="${code.src}"/>
+			<param name="src" value="${build.tmp.src}"/>
+			<param name="jars-root" value="${build.tmp.src}"/>
 			<param name="bin" value="${build.tmp.bin}"/>
 		</antcall>
 	</target>
