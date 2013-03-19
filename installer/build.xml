@@ -119,7 +119,7 @@
 		<copy file="logo16x16.png" todir="${build}"/>
 		<tstamp/>
 		<echoxml file="${build}/sneer.jnlp">
-			<jnlp spec="1.0+" codebase="http://dynamic.sneer.me/webstart" href="sneer.jnlp">
+			<jnlp spec="1.0+" codebase="http://agitter.com" href="sneer.jnlp">
 				<information>
 					<title>Sneer</title>
 					<vendor>Sneer Team</vendor>
