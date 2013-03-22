@@ -17,5 +17,6 @@ sed -i "s#web_root=\"/srv/ftp\"#web_root=\"/root/sneer/installer/build\"#" /etc/
 sed -i "s#web_port=\"\"#web_port=\"80\"#" /etc/webfsd.conf
 sed -i "s#web_user=\"www-data\"#web_user=\"root\"#" /etc/webfsd.conf
 sed -i "s#web_group=\"www-data\"#web_group=\"root\"#" /etc/webfsd.conf
+service webfs restart
 
 service sneerServerBoot.sh start
