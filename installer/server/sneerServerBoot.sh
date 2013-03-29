@@ -1,3 +1,7 @@
+cd ~/simploy
+git pull
+javac -cp .:/usr/share/java/junit4.jar Simploy.java
+
 cd /root/sneer/installer
 java -XX:MaxPermSize=550m -cp /root/simploy/:/usr/share/java/junit4.jar Simploy "ant compile" build/tmp/bin/  build/tmp/bin/ "ant deploy" senhamalucaqq&
 
