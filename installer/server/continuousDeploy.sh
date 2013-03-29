@@ -15,7 +15,7 @@ chmod +x /etc/init.d/sneerServerBoot.sh
 update-rc.d sneerServerBoot.sh defaults 80
 
 apt-get -y install junit4
-cd ~
+cd /root
 git clone git://github.com/klauswuestefeld/simploy.git
 
 apt-get install webfs

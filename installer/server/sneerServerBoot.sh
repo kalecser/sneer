@@ -1,4 +1,4 @@
-cd ~/simploy
+cd root/simploy
 git pull
 javac -cp .:/usr/share/java/junit4.jar Simploy.java
 
