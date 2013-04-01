@@ -10,11 +10,12 @@
 	<property name="build.tmp.src" location="build/tmp/src" />
 	<property name="build.tmp.own" location="build/tmp/own" />
 	<property name="bootstrap.jar" location="build/sneer-bootstrap.jar" />
+	<property name="webstart"      location="webstart" />
 
 	
 	<target name="all" depends="compile, deploy"/>
 	
-	<target name="deploy" depends="sneer-jar, compile-installer, own-project-jar, bootstrap-jar, jnlp, delete-tmp"/>
+	<target name="deploy" depends="sneer-jar, compile-installer, own-project-jar, bootstrap-jar, jnlp, delete-tmp, rename-as-webstart"/>
 
 
 	<target name="clean-build">
@@ -154,6 +155,12 @@
 
 	<target name="delete-tmp">
 		<delete dir="${build.tmp}"/>
+	</target>
+
+	<target name="rename-as-webstart">
+		<move todir="${webstart}">
+			<fileset dir="${build}"/>
+		</move>
 	</target>
 
 </project>
