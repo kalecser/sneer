@@ -1,4 +1,4 @@
-package spikes.adenauer.io;
+package spikes.adenauer.sound;
 
 import java.io.ByteArrayOutputStream;
 

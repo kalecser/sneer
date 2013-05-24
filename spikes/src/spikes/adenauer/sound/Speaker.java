@@ -1,4 +1,4 @@
-package spikes.adenauer.io;
+package spikes.adenauer.sound;
 
 import javax.sound.sampled.SourceDataLine;
 
