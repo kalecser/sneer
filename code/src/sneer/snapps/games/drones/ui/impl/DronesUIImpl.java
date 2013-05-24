@@ -18,7 +18,7 @@ class DronesUIImpl implements DronesUI {
 	private JFrame jFrame;
 	private Player player1;
 	private Player player2;
-	private WeakContract refToAvoidGC;
+	@SuppressWarnings("unused")	private WeakContract refToAvoidGC;
 
 	{
 		my(ContactActionManager.class).addContactAction(new ContactAction(){
