@@ -80,7 +80,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	}
 
 	
-	@Override
+	@Override //This is a comment
 	public void startConnectingTo(SneerParty other) {
 		Contact contact = produceContact(other.ownName());
 
@@ -455,24 +455,14 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		startApprovingConnectionRequests();
 		accelerateHeartbeat();
 	}
-
 	
 	private void startApprovingConnectionRequests() {
 		_refToAvoidGc.add(my(BlinkingLights.class).lights().addPulseReceiver(new Closure() {@Override public void run() {
 			approveConnectionRequestsIfAny();
 		}}));
 	}
-
-
-	private void approveConnectionRequestsIfAny() {
-		for (Light light : my(BlinkingLights.class).lights())
-			if (light.caption().currentValue().startsWith(_nameOfExpectedCaller + " wants to connect to you")) {
-				runAcceptAction(light);
-				_nameOfExpectedCaller = null;
-			}
-	}
-
-
+	
+	
 	private void runAcceptAction(Light light) {
 		for (Action action : light.actions()) {
 			if (action.caption().equals("Accept")) {
@@ -483,12 +473,28 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		throw new IllegalStateException("Accept action not found.");
 	}
 
-
 	private void generatePublicKey(String name) {
 		if (my(OwnKeys.class).ownPublicKey().currentValue() != null) return;
 		my(OwnKeys.class).generateKeyPair(pkSeedFrom(name));
 	}
 
+	private void approveConnectionRequestsIfAny() {
+		for (Light light : my(BlinkingLights.class).lights())
+			if (light.caption().currentValue().startsWith(_nameOfExpectedCaller + " wants to connect to you")) {
+				runAcceptAction(light);
+				_nameOfExpectedCaller = null;
+			}
+	}
+	
+	private void installStagedCodeIfNecessary() {
+		File stageFolder = my(FolderConfig.class).stageFolder().get();
+		try {
+			String backupLabel = "" + System.currentTimeMillis();
+			SneerVersionUpdater.installNewVersionIfPresent(stageFolder , backupLabel, _codeFolder);
+		} catch (IOException e) {
+			throw new IllegalStateException(e); //We have to treat this.
+		}
+	}
 
 	private byte[] pkSeedFrom(String name) {
 		try {
@@ -498,16 +504,6 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 		}
 	}
 
-
-	private void installStagedCodeIfNecessary() {
-		File stageFolder = my(FolderConfig.class).stageFolder().get();
-		try {
-			String backupLabel = "" + System.currentTimeMillis();
-			SneerVersionUpdater.installNewVersionIfPresent(stageFolder , backupLabel, _codeFolder);
-		} catch (IOException e) {
-			throw new IllegalStateException(e);
-		}
-	}
 
 	
 	private void throwOnBlinkingErrors() {

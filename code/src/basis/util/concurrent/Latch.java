@@ -5,7 +5,7 @@ import java.util.concurrent.CountDownLatch;
 import basis.lang.Closure;
 
 
-/** Same as a java.util.concurrent.CountDownLatch.class of 1 and which does not throw InterruptedException. Throws IllegalState instead.
+/** Same as a java.util.concurrent.CountDownLatch of 1 and which does not throw InterruptedException. Throws IllegalState instead.
  * @see java.util.concurrent.CountDownLatch.class */
 public class Latch implements Closure {
 

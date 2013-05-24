@@ -1,1 +1,1 @@
-See sneer/code/docs folder for licensing information and project documentation.
+See docs folder for licensing information and project documentation.
