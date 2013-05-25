@@ -7,7 +7,6 @@ import static javax.swing.JOptionPane.showMessageDialog;
 import java.awt.Graphics;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 import sneer.bricks.hardware.clock.timer.Timer;
@@ -16,13 +15,12 @@ import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
 import sneer.snapps.games.drones.Attributable;
 import sneer.snapps.games.drones.UnitAttribute;
+import sneer.snapps.games.drones.map.GameMap;
 import sneer.snapps.games.drones.ui.DronesUI;
 
 class DronesUIImpl implements DronesUI {
 	
 	private JFrame jFrame;
-	private Player player1;
-	private Player player2;
 	@SuppressWarnings("unused")	private WeakContract refToAvoidGC;
 
 	{
@@ -66,18 +64,14 @@ class DronesUIImpl implements DronesUI {
 	}
 
 	private void initFrame() {
-		player1 = new Player(0, Player.Direction.RIGHT);
-		player2 = new Player(700, Player.Direction.LEFT);
-		
-		defineAttributes(player1);
-		defineAttributes(player2);
-		
 		jFrame = new JFrame("Game of Drones") {
 			@Override
-			public void paint(Graphics g) {				
+			public void paint(Graphics g) {
+				my(GameMap.class).step();
+							
 				g.clearRect(0,0, jFrame.getWidth(), jFrame.getHeight());
-				g.drawRect(player1.x(), 200, 100, 100);
-				g.drawRect(player2.x(), 200, 100, 100);
+				g.drawRect(my(GameMap.class).unit1().x(), 200, 100, 100);
+				g.drawRect(my(GameMap.class).unit2().x(), 200, 100, 100);
 			}		
 			
 		};
