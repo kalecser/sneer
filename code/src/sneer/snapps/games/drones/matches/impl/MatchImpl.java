@@ -1,11 +1,11 @@
-package sneer.snapps.games.drones.map.impl;
+package sneer.snapps.games.drones.matches.impl;
 
 import static basis.environments.Environments.my;
-import sneer.snapps.games.drones.map.GameMap;
+import sneer.snapps.games.drones.matches.Match;
 import sneer.snapps.games.drones.units.Unit;
 import sneer.snapps.games.drones.units.Units;
 
-class GameMapImpl implements GameMap {
+class MatchImpl implements Match {
 
 	private final Unit unit1 = my(Units.class).create(  0, Unit.Direction.RIGHT);
 	private final Unit unit2 = my(Units.class).create(700, Unit.Direction.LEFT);

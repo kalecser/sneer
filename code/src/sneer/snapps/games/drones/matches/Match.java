@@ -1,10 +1,10 @@
-package sneer.snapps.games.drones.map;
+package sneer.snapps.games.drones.matches;
 
 import sneer.snapps.games.drones.units.Unit;
 import basis.brickness.Brick;
 
 @Brick
-public interface GameMap {
+public interface Match {
 
 	void step();
 

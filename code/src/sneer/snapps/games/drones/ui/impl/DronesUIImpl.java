@@ -13,7 +13,7 @@ import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
-import sneer.snapps.games.drones.map.GameMap;
+import sneer.snapps.games.drones.matches.Match;
 import sneer.snapps.games.drones.ui.DronesUI;
 import sneer.snapps.games.drones.units.Attributable;
 import sneer.snapps.games.drones.units.UnitAttribute;
@@ -34,25 +34,30 @@ class DronesUIImpl implements DronesUI {
 	}
 
 	private void start() {
-		initFrame();
-		initTimer();
+		defineAttributes();
+		openFrame();
+		startTimer();
 	}
 
-	private void initTimer() {
+	private void defineAttributes() {
+		//my(Matches.class).start
+	}
+
+	private void startTimer() {
 		refToAvoidGC = my(Timer.class).wakeUpNowAndEvery(100, new Runnable() { @Override public void run() {
 			jFrame.repaint();
 		}});
 	}
 
-	private void initFrame() {
+	private void openFrame() {
 		jFrame = new JFrame("Game of Drones") {
 			@Override
 			public void paint(Graphics g) {
-				my(GameMap.class).step();
+				my(Match.class).step();
 							
 				g.clearRect(0,0, jFrame.getWidth(), jFrame.getHeight());
-				g.drawRect(my(GameMap.class).unit1().x(), 200, 100, 100);
-				g.drawRect(my(GameMap.class).unit2().x(), 200, 100, 100);
+				g.drawRect(my(Match.class).unit1().x(), 200, 100, 100);
+				g.drawRect(my(Match.class).unit2().x(), 200, 100, 100);
 			}		
 			
 		};
