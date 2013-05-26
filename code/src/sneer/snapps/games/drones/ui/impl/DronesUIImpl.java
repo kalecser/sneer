@@ -13,10 +13,10 @@ import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.lang.contracts.WeakContract;
 import sneer.bricks.snapps.contacts.actions.ContactAction;
 import sneer.bricks.snapps.contacts.actions.ContactActionManager;
-import sneer.snapps.games.drones.Attributable;
-import sneer.snapps.games.drones.UnitAttribute;
 import sneer.snapps.games.drones.map.GameMap;
 import sneer.snapps.games.drones.ui.DronesUI;
+import sneer.snapps.games.drones.units.Attributable;
+import sneer.snapps.games.drones.units.UnitAttribute;
 
 class DronesUIImpl implements DronesUI {
 	
@@ -26,14 +26,14 @@ class DronesUIImpl implements DronesUI {
 	{
 		my(ContactActionManager.class).addContactAction(new ContactAction(){
 			@Override public String caption() { return "Game of Drones"; }
-			@Override public void run() { open(); }
+			@Override public void run() { start(); }
 			@Override public boolean isVisible() { return true; }
 			@Override public boolean isEnabled() { return true; }
 			@Override public int positionInMenu() { return 0; }
 		});
 	}
 
-	private void open() {
+	private void start() {
 		initFrame();
 		initTimer();
 	}
