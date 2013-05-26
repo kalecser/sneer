@@ -25,31 +25,12 @@ class DronesUIImpl implements DronesUI {
 
 	{
 		my(ContactActionManager.class).addContactAction(new ContactAction(){
-
-			@Override
-			public String caption() {
-				return "Game of Drones";
-			}
-
-			@Override
-			public void run() {
-				open();
-			}
-
-			@Override
-			public boolean isVisible() {
-				return true;
-			}
-
-			@Override
-			public boolean isEnabled() {
-				return true;
-			}
-
-			@Override
-			public int positionInMenu() {
-				return 0;
-			}});
+			@Override public String caption() { return "Game of Drones"; }
+			@Override public void run() { open(); }
+			@Override public boolean isVisible() { return true; }
+			@Override public boolean isEnabled() { return true; }
+			@Override public int positionInMenu() { return 0; }
+		});
 	}
 
 	private void open() {
