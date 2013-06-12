@@ -1,7 +1,6 @@
 package sneer.snapps.games.drones.units;
 
-
-public interface Unit {
+public interface Unit extends Attributable {
 
 	enum Direction { RIGHT, LEFT }
 

@@ -6,6 +6,6 @@ import basis.brickness.Brick;
 @Brick
 public interface Units {
 
-	Unit create(int x, Direction direction);
+	Unit create(int x, Direction direction, String name);
 
 }

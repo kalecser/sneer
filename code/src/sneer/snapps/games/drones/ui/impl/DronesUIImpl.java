@@ -40,7 +40,8 @@ class DronesUIImpl implements DronesUI {
 	}
 
 	private void defineAttributes() {
-		//my(Matches.class).start
+		defineAttributes(my(Match.class).unit1());
+		defineAttributes(my(Match.class).unit2());
 	}
 
 	private void startTimer() {

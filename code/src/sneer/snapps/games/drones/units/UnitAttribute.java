@@ -1,6 +1,7 @@
 package sneer.snapps.games.drones.units;
 
-
-public interface UnitAttribute {
-
+public enum UnitAttribute {
+	LIFE,
+	STRENGTH,
+	ARMOR
 }

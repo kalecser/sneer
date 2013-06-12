@@ -7,16 +7,16 @@ import sneer.snapps.games.drones.units.Units;
 
 class MatchImpl implements Match {
 
-	private final Unit unit1 = my(Units.class).create(  0, Unit.Direction.RIGHT);
-	private final Unit unit2 = my(Units.class).create(700, Unit.Direction.LEFT);
-	
+	private final Unit unit1 = my(Units.class).create(  0, Unit.Direction.RIGHT, "Player 1");
+	private final Unit unit2 = my(Units.class).create(700, Unit.Direction.LEFT,  "Player 2");
+
 	@Override
 	public void step() {
 		if (!unit1.collidesWith(unit2)) {
 			unit1.move();
 			unit2.move();
 		}
-		
+
 	}
 
 	@Override
