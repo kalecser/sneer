@@ -17,4 +17,6 @@ public interface Unit extends Attributable {
 	void receiveHit(int strength);
 	
 	float hitpoints();
+
+	boolean isAlive();
 }
