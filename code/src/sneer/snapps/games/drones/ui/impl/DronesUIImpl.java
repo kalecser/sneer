@@ -46,6 +46,7 @@ class DronesUIImpl implements DronesUI {
 
 	private void startTimer() {
 		refToAvoidGC = my(Timer.class).wakeUpNowAndEvery(100, new Runnable() { @Override public void run() {
+			my(Match.class).step();
 			jFrame.repaint();
 		}});
 	}
@@ -54,8 +55,6 @@ class DronesUIImpl implements DronesUI {
 		jFrame = new JFrame("Game of Drones") {
 			@Override
 			public void paint(Graphics g) {
-				my(Match.class).step();
-							
 				g.clearRect(0,0, jFrame.getWidth(), jFrame.getHeight());
 				g.drawRect(my(Match.class).unit1().x(), 200, 100, 100);
 				g.drawRect(my(Match.class).unit2().x(), 200, 100, 100);
@@ -83,7 +82,7 @@ class DronesUIImpl implements DronesUI {
 
 	private void tryToDefine(UnitAttribute attribute, Attributable thing) throws NumberFormatException {
 		String value = showInputDialog("Value for " + thing + " " + attribute + ":"); //Value for player2 strength:
-		thing.define(attribute, Integer.valueOf(value));
+		thing.set(attribute, Integer.valueOf(value));
 	}
 
 }

@@ -12,11 +12,21 @@ class MatchImpl implements Match {
 
 	@Override
 	public void step() {
-		if (!unit1.collidesWith(unit2)) {
-			unit1.move();
-			unit2.move();
-		}
+		if (!unit1.collidesWith(unit2))
+			moveUnits();
+		
+		if (unit1.collidesWith(unit2))
+			battle();
+	}
 
+	private void battle() {
+		unit1.attack(unit2);
+		unit2.attack(unit1);
+	}
+
+	private void moveUnits() {
+		unit1.move();
+		unit2.move();
 	}
 
 	@Override

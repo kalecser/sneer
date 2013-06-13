@@ -11,5 +11,10 @@ public interface Unit extends Attributable {
 	int x();
 
 	int size();
+
+	void attack(Unit otherUnit);
+
+	void receiveHit(int strength);
 	
+	float hitpoints();
 }
