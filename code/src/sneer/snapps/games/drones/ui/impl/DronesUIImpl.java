@@ -7,6 +7,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 import java.awt.Graphics;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 import sneer.bricks.hardware.clock.timer.Timer;
@@ -21,7 +22,7 @@ import sneer.snapps.games.drones.units.UnitAttribute;
 class DronesUIImpl implements DronesUI {
 	
 	private JFrame jFrame;
-	@SuppressWarnings("unused")	private WeakContract refToAvoidGC;
+	private WeakContract timer;
 
 	{
 		my(ContactActionManager.class).addContactAction(new ContactAction(){
@@ -45,10 +46,18 @@ class DronesUIImpl implements DronesUI {
 	}
 
 	private void startTimer() {
-		refToAvoidGC = my(Timer.class).wakeUpNowAndEvery(100, new Runnable() { @Override public void run() {
+		timer = my(Timer.class).wakeUpNowAndEvery(100, new Runnable() { @Override public void run() {
 			my(Match.class).step();
-			jFrame.repaint();
+			if (my(Match.class).isOver()) 
+				handleGameOver();
+			else
+				jFrame.repaint();
 		}});
+	}
+
+	private void handleGameOver() {
+		JOptionPane.showMessageDialog(jFrame, "The result of the game is: " + my(Match.class).result());
+		timer.dispose();
 	}
 
 	private void openFrame() {
@@ -73,11 +82,13 @@ class DronesUIImpl implements DronesUI {
 	}
 
 	private void define(UnitAttribute attribute, Attributable thing) {
-		try {
-			tryToDefine(attribute, thing);
-		} catch (NumberFormatException e) {
-			showMessageDialog(null, "Error. Try Again");
-		}
+		while (true)
+			try {
+				tryToDefine(attribute, thing);
+				break;
+			} catch (NumberFormatException e) {
+				showMessageDialog(null, "Error. Try Again");
+			}
 	}
 
 	private void tryToDefine(UnitAttribute attribute, Attributable thing) throws NumberFormatException {

@@ -11,7 +11,7 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.snapps.games.drones.matches.Match;
 import sneer.snapps.games.drones.units.Unit;
 
-public class MatchesTest extends BrickTestBase {
+public class MatchTest extends BrickTestBase {
 
 	private final Match subject = my(Match.class);
 
@@ -32,6 +32,42 @@ public class MatchesTest extends BrickTestBase {
 		
 		assertFloat(320, unit1.hitpoints());
 		assertFloat(260, unit2.hitpoints());
+	}
+	
+	@Test(timeout=1000)
+	public void death() {
+		Unit unit1 = subject.unit1();
+		unit1.set(HITPOINTS, 400);
+		unit1.set(STRENGTH, 200);
+		unit1.set(ARMOR, 200);
+
+		Unit unit2 = subject.unit2();
+		unit2.set(HITPOINTS, 400);
+		unit2.set(STRENGTH, 100);
+		unit2.set(ARMOR, 300);
+
+		while (!subject.isOver())
+			subject.step();
+
+		assertEquals("Player 1 wins!", subject.result());
+	}
+	
+	@Test(timeout=1000)
+	public void draw() {
+		Unit unit1 = subject.unit1();
+		unit1.set(HITPOINTS, 1);
+		unit1.set(STRENGTH, 1);
+		unit1.set(ARMOR, 1);
+		
+		Unit unit2 = subject.unit2();
+		unit2.set(HITPOINTS, 1);
+		unit2.set(STRENGTH, 1);
+		unit2.set(ARMOR, 1);
+		
+		while (!subject.isOver())
+			subject.step();
+		
+		assertEquals("Draw!", subject.result());
 	}
 	
 	

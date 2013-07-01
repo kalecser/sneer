@@ -39,4 +39,19 @@ class MatchImpl implements Match {
 		return unit2;
 	}
 
+	@Override
+	public boolean isOver() {
+		return !unit1.isAlive() || !unit2.isAlive(); 
+	}
+
+	@Override
+	public String result() {
+		if (unit1.isAlive() && unit2.isAlive()) throw new IllegalStateException();
+		
+		if (!unit1.isAlive() && !unit2.isAlive())
+			return "Draw!";
+		Unit winner = unit1.isAlive() ? unit1 : unit2;
+		return winner + " wins!";
+	}
+
 }

@@ -11,6 +11,8 @@ public interface Match {
 	Unit unit1();
 
 	Unit unit2();
-	
 
+	boolean isOver();
+
+	String result();
 }

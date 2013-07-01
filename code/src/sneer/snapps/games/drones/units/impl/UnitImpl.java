@@ -86,4 +86,9 @@ class UnitImpl implements Unit {
 	public float hitpoints() {
 		return hitpoints;
 	}
+
+	@Override
+	public boolean isAlive() {
+		return hitpoints > 0;
+	}
 }
