@@ -1,8 +1,11 @@
 package sneer.snapps.games.drones.units.impl;
 
+import static basis.environments.Environments.my;
 import static sneer.snapps.games.drones.units.UnitAttribute.ARMOR;
 import static sneer.snapps.games.drones.units.UnitAttribute.HITPOINTS;
 import static sneer.snapps.games.drones.units.UnitAttribute.STRENGTH;
+import basis.environments.Environments;
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.snapps.games.drones.units.Unit;
 import sneer.snapps.games.drones.units.UnitAttribute;
 
@@ -76,6 +79,7 @@ class UnitImpl implements Unit {
 		float damageReduction = strength * (armor / 1000.0f);
 		float damage = strength - damageReduction;
 		hitpoints -= damage;
+		my(Logger.class).log("Hitpoints: {} Damage: ", hitpoints, damage);
 	}
 
 	@Override
