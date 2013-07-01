@@ -13,6 +13,7 @@ class LogFilterImpl implements LogFilter {
 	private final ListRegister<String> _phrases = my(CollectionSignals.class).newListRegister();
 	{
 		_phrases.add("thrown");
+		_phrases.add("Drones");
 		_phrases.add("Blinking Light");
 		_phrases.add("online");
 		_phrases.add("offline");

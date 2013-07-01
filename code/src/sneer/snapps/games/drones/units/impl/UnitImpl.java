@@ -79,11 +79,12 @@ class UnitImpl implements Unit {
 		float damageReduction = strength * (armor / 1000.0f);
 		float damage = strength - damageReduction;
 		hitpoints -= damage;
-		my(Logger.class).log("Hitpoints: {} Damage: ", hitpoints, damage);
+		my(Logger.class).log("Drones Hitpoints: {} Damage: ", hitpoints, damage);
 	}
 
 	@Override
 	public float hitpoints() {
+		int checkio; //Check out this game: check.io
 		return hitpoints;
 	}
 
