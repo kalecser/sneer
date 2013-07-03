@@ -85,7 +85,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 
 	
-	@Test (timeout=2000)
+	@Test (timeout=6000)
 	public void onSighting_ShouldHail() throws Exception {
 		setOwnName("Wesley");
 		subject.handle(dataFrom("Neide", bytes("Hello")));
@@ -94,7 +94,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	@Test(timeout=2000)
+	@Test(timeout=6000)
 	public void onFirstPacket_ShouldConnect() throws Exception {
 		assertFalse(isConnected("Neide"));
 		subject.handle(hailFrom("Neide"));
@@ -103,7 +103,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	@Test(timeout=2000)
+	@Test(timeout=6000)
 	public void onUnknownCaller_ShouldNotify() throws Exception {
 		RefLatch<Call> latch = new RefLatch<Call>();
 		@SuppressWarnings("unused") WeakContract ref = subject.unknownCallers().addReceiver(latch);
@@ -117,7 +117,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 
 	
-	@Test (timeout=2000)
+	@Test (timeout=6000)
 	public void receiveData() throws Exception {
 		subject.handle(hailFrom("Neide"));
 		subject.handle(handshakeFrom("Neide"));
@@ -135,7 +135,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 
 	
-	@Test(timeout=2000)
+	@Test(timeout=6000)
 	public void sendData_ShouldUseReceivedHailSighting() throws Exception {
 		subject.handle(hailFrom("Neide"));
 		subject.handle(handshakeFrom("Neide"));
@@ -154,7 +154,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 
-	@Test(timeout=2000)
+	@Test(timeout=6000)
 	public void onNotConnected_ShouldSendHailPacketsToSightings() {
 		seeNeideIn(new InetSocketAddress("200.201.202.203", 1234));
 		seeNeideIn(new InetSocketAddress("192.168.1.100", 7777));
@@ -165,7 +165,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 
-	@Test(timeout=2000)
+	@Test(timeout=6000)
 	public void onNotConnected_ShouldSendHailPacketsToAddressOfContact() throws Exception {
 		mockContactAddressAttributes("200.211.222.233", 1234);
 		
@@ -174,7 +174,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 
 	
-	@Test (timeout=2000)
+	@Test (timeout=6000)
 	public void onStunPacketReceived_ShouldDelegateToStunClient() throws Exception {
 		final Latch latch = new Latch();
 		checking(new Expectations(){{
@@ -188,7 +188,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	@Test(timeout = 2000)
+	@Test(timeout = 6000)
 	public void onIdleRecognizeNewSighting() throws Exception {
 		subject.handle(hailFrom("Neide"));
 		subject.handle(handshakeFrom("Neide"));
@@ -208,7 +208,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 
-	@Test(timeout = 2000)
+	@Test(timeout = 6000)
 	public void keepAlive() {
 		my(SightingKeeper.class).keep(produceContact("Neide"), new InetSocketAddress("200.201.202.203", 123));
 		connectionFor("Neide");
@@ -224,7 +224,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	@Test(timeout = 2000)
+	@Test(timeout = 6000)
 	public void onSighting_ShouldUseFastestAddress() throws Exception {
 		subject.handle(hailFrom("Neide", 41, "200.201.202.203", 123));
 		subject.handle(hailFrom("Neide", 42, "192.168.10.10", 7777));
@@ -237,7 +237,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	@Test(timeout = 2000)
+	@Test(timeout = 6000)
 	public void onConnect_ShouldHandshake() throws Exception {
 		subject.handle(hailFrom("Neide"));
 		assertTrue(isConnected("Neide"));
@@ -251,7 +251,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	@Test(timeout = 2000)
+	@Test(timeout = 6000)
 	public void onHandshakeComplete_ShouldStopSendPackets() throws Exception {
 		subject.handle(hailFrom("Neide"));
 		my(SignalUtils.class).waitForValue(sender.history(), "| Handshake ,to:200.201.202.203,port:123");
@@ -264,7 +264,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	@Test(timeout = 2000)
+	@Test(timeout = 6000)
 	public void onDisconnect_ShouldStopSendPackets() throws Exception {
 		subject.handle(hailFrom("Neide"));		
 		assertTrue(isConnected("Neide"));
@@ -279,7 +279,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	@Test(timeout = 2000)
+	@Test(timeout = 6000)
 	public void shouldNotHandleDataPacket_UntilHandshakeIsCompleted() throws Exception {
 		final RefLatch<String> latch = new RefLatch<>();
 		connectionFor("Neide").initCommunications(new PacketProducerMock(), new Consumer<ByteBuffer>() {  @Override public void consume(ByteBuffer packet) {
@@ -297,7 +297,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	@Test(timeout = 2000)
+	@Test(timeout = 6000)
 	public void shouldNotSendPacket_UntilHandshakeIsCompleted() throws Exception {
 		connectionFor("Neide").initCommunications(new PacketProducerMock("Hello Neide"), my(Signals.class).sink());
 		my(SignalUtils.class).waitForValue(sender.history(), "");
@@ -308,14 +308,14 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 	}
 	
 	
-	@Test(timeout = 2000, expected=IllegalStateException.class)
+	@Test(timeout = 6000, expected=IllegalStateException.class)
 	public void onHandshake_ShouldCheckPublicKey() throws Exception {
 		subject.handle(hailFrom("Neide"));
 		subject.handle(handshakeFrom("Neide", publicKey(0)));
 	}
 	
 	
-	@Test(timeout = 2000)
+	@Test(timeout = 6000)
 	public void onDisconnect_ShouldChangeSessionKey() throws Exception {
 		subject.handle(hailFrom("Neide"));
 		
