@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 class DataUtils {
 
 	static byte[] getNextArray(ByteBuffer in, int length) {
-		if (!in.hasRemaining()) return null;
+		if (in.remaining() < length) return null;
 		byte[] ret = new byte[length];
 		in.get(ret);
 		return ret;

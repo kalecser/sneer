@@ -9,6 +9,7 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
+import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.network.computers.udp.connections.UdpPacketType;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
 import sneer.bricks.network.computers.udp.holepuncher.protocol.StunReply;
@@ -36,7 +37,18 @@ class StunProtocolImpl implements StunProtocol {
 
 	@Override
 	public StunRequest unmarshalRequest(ByteBuffer in) {
+		try {
+			return tryToUnmarshalRequest(in);
+		} catch (RuntimeException e) {
+			my(Logger.class).log("Stun server: {} {}", e.getClass(), e.getLocalizedMessage());
+			return null;
+		}
+	}
+
+
+	private StunRequest tryToUnmarshalRequest(ByteBuffer in) {
 		byte[] ownSeal = getNextArray(in, 64);
+		if (ownSeal == null) return null;
 		
 		byte peerCount = in.get();
 		byte[][] peerSealsToFind = new byte[peerCount][]; 
