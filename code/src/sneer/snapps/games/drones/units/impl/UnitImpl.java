@@ -4,7 +4,6 @@ import static basis.environments.Environments.my;
 import static sneer.snapps.games.drones.units.UnitAttribute.ARMOR;
 import static sneer.snapps.games.drones.units.UnitAttribute.HITPOINTS;
 import static sneer.snapps.games.drones.units.UnitAttribute.STRENGTH;
-import basis.environments.Environments;
 import sneer.bricks.hardware.io.log.Logger;
 import sneer.snapps.games.drones.units.Unit;
 import sneer.snapps.games.drones.units.UnitAttribute;
@@ -84,7 +83,6 @@ class UnitImpl implements Unit {
 
 	@Override
 	public float hitpoints() {
-		int checkio; //Check out this game: check.io
 		return hitpoints;
 	}
 

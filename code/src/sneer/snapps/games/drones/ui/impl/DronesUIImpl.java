@@ -37,7 +37,7 @@ class DronesUIImpl implements DronesUI {
 	
 	private JFrame jFrame;
 	private WeakContract timer;
-	private WeakContract refToAvoidGc;
+	@SuppressWarnings("unused") private WeakContract refToAvoidGc;
 	private WeakContract acceptanceContract;
 
 	{
@@ -55,7 +55,7 @@ class DronesUIImpl implements DronesUI {
 	}
 
 	private void accept(Challenge challenge) {
-		my(TupleSpace.class).add(new ChallengeAcceptance(input("Hitpoints"), input("Strength"), input("Armor")));
+		my(TupleSpace.class).add(new ChallengeAcceptance(challenge.publisher, input("Hitpoints"), input("Strength"), input("Armor")));
 	}
 
 	private String input(String attribute) {
