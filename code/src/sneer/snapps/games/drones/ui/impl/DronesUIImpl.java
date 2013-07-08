@@ -55,7 +55,10 @@ class DronesUIImpl implements DronesUI {
 	}
 
 	private void accept(Challenge challenge) {
-		my(TupleSpace.class).add(new ChallengeAcceptance(challenge.publisher, input("Hitpoints"), input("Strength"), input("Armor")));
+		my(TupleSpace.class).add(new ChallengeAcceptance(
+			challenge.publisher,
+			input("Hitpoints"), input("Strength"), input("Armor")
+		));
 	}
 
 	private String input(String attribute) {
