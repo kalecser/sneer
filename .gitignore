@@ -11,3 +11,7 @@ dummy*
 /code/stage
 /code/backup
 
+#Intellij Files
+*.iml
+*.ipr
+*.iws
