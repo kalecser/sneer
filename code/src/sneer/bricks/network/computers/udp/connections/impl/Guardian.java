@@ -1,18 +1,6 @@
 package sneer.bricks.network.computers.udp.connections.impl;
 
-import static basis.environments.Environments.my;
-import static sneer.bricks.hardware.cpu.crypto.ecdh.ECDHKeyAgreement.SESSION_KEY_SIZE;
-import static sneer.bricks.identity.keys.own.OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES;
-import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.KEEP_ALIVE_PERIOD;
-import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Handshake;
-import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.prepare;
-import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.send;
-
-import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.security.SecureRandom;
-import java.util.Arrays;
-
+import basis.lang.Consumer;
 import sneer.bricks.hardware.clock.timer.Timer;
 import sneer.bricks.hardware.cpu.crypto.Crypto;
 import sneer.bricks.hardware.cpu.crypto.ECBCipher;
@@ -24,7 +12,18 @@ import sneer.bricks.hardware.cpu.threads.Threads;
 import sneer.bricks.identity.keys.own.OwnKeys;
 import sneer.bricks.identity.seals.contacts.ContactSeals;
 import sneer.bricks.network.social.Contact;
-import basis.lang.Consumer;
+
+import java.nio.ByteBuffer;
+import java.security.SecureRandom;
+import java.util.Arrays;
+
+import static basis.environments.Environments.my;
+import static sneer.bricks.hardware.cpu.crypto.ecdh.ECDHKeyAgreement.SESSION_KEY_SIZE;
+import static sneer.bricks.identity.keys.own.OwnKeys.PUBLIC_KEY_SIZE_IN_BYTES;
+import static sneer.bricks.network.computers.udp.connections.UdpConnectionManager.KEEP_ALIVE_PERIOD;
+import static sneer.bricks.network.computers.udp.connections.UdpPacketType.Handshake;
+import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.prepare;
+import static sneer.bricks.network.computers.udp.connections.impl.UdpByteConnectionUtils.send;
 
 class Guardian {
 
@@ -39,11 +38,11 @@ class Guardian {
 
 	@SuppressWarnings("unused") private final WeakContract refToAvoidGC;
 
-	
+
 	Guardian(Contact contact, ConnectionMonitor monitor) {
 		this.contact = contact;
 		this.monitor = monitor;
-		
+
 		refToAvoidGC = monitor.isConnected().addReceiver(new Consumer<Boolean>() {  @Override public void consume(Boolean isConnected) {
 			if (isConnected)
 				handleConnect();
@@ -62,6 +61,7 @@ class Guardian {
 	
 	private void handleDisconnect() {
 		stopHandshake();
+        cipher = null;
 		sessionKey = null;
 	}
 	
@@ -70,7 +70,7 @@ class Guardian {
 		ByteBuffer buf = prepare(Handshake);
 		buf.put((byte)(isHandshakeComplete() ? 1 : 0));
 		buf.put(ownPublicKey());
-		buf.put(sessionKeyBytes());
+		buf.put(ownSessionKeyBytes());
 		buf.flip();
 		
 		send(buf, monitor.lastSighting());
@@ -84,7 +84,7 @@ class Guardian {
 	}
 	
 	
-	private byte[] sessionKeyBytes() {
+	private byte[] ownSessionKeyBytes() {
 		if (sessionKey == null)
 			sessionKey = randomBytes();
 		
@@ -117,10 +117,9 @@ class Guardian {
 			byte[] receivedPublicKey = publicKeyFrom(data);
 			checkReceivedPublicKey(receivedPublicKey);
 			
-			//byte[] sessionKey = sessionKeyFrom(data);
-			//Just to fix tests while we are trying to figure out what is happen
-			Hash encryptSecret = my(ECDHKeyAgreement.class).generateSecret(receivedPublicKey, new BigInteger("10").toByteArray());
-			Hash decryptSecret = my(ECDHKeyAgreement.class).generateSecret(receivedPublicKey, new BigInteger("10").toByteArray());
+			byte[] otherPeerSessionKey = sessionKeyFrom(data);
+			Hash encryptSecret = my(ECDHKeyAgreement.class).generateSecret(receivedPublicKey, ownSessionKeyBytes());
+			Hash decryptSecret = my(ECDHKeyAgreement.class).generateSecret(receivedPublicKey, otherPeerSessionKey);
 			cipher = my(ECBCiphers.class).newAES256(secret256bits(encryptSecret), secret256bits(decryptSecret));
 			
 			stopHandshake();
@@ -130,7 +129,7 @@ class Guardian {
 
 
 	private boolean shouldReplySecurityInfo(ByteBuffer data) {
-		boolean isCompletedFromOtherSide = data.get() == 1 ? true : false;
+		boolean isCompletedFromOtherSide = data.get() == 1;
 		return isHandshakeComplete() && !isCompletedFromOtherSide;
 	}
 
@@ -152,11 +151,11 @@ class Guardian {
 	}
 	
 	
-//	private byte[] sessionKeyFrom(ByteBuffer data) {
-//		byte[] ret = new byte[SESSION_KEY_SIZE];
-//		data.get(ret);
-//		return ret;
-//	}
+	private byte[] sessionKeyFrom(ByteBuffer data) {
+		byte[] ret = new byte[SESSION_KEY_SIZE];
+		data.get(ret);
+		return ret;
+	}
 	
 	
 	private byte[] secret256bits(Hash decryptSecret) {
@@ -181,6 +180,7 @@ class Guardian {
 	boolean isHandshakeComplete() {
 		return cipher != null;
 	}
+
 
 	private static byte[] randomBytes() {
 		byte[] bytes = new byte[SESSION_KEY_SIZE];

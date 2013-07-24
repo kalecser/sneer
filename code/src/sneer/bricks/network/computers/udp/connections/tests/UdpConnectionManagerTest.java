@@ -199,6 +199,7 @@ public class UdpConnectionManagerTest extends BrickTestBase {
 		my(SignalUtils.class).waitForValue(connection.isConnected(), false);
 		
 		subject.handle(hailFrom("Neide", 50, "100.101.102.103", 456));
+        subject.handle(handshakeFrom("Neide"));
 		my(SignalUtils.class).waitForValue(connection.isConnected(), true);
 		
 		Producer<ByteBuffer> producer = new PacketProducerMock("foo");
