@@ -11,11 +11,11 @@ public class ContactProviderImpl implements ContactProvider {
 
 	@Override
 	public Seal getSealForNickOrNull(String nickName) {
-		Seal mySeal = my(OwnSeal.class).get().currentValue();
-		if (nickName.isEmpty()) return mySeal;
+		if (nickName.isEmpty())
+			return my(OwnSeal.class).get().currentValue();
 		
 		Contact contact = my(Contacts.class).contactGiven(nickName);
-		if(contact == null) return null;
+		if (contact == null) return null;
 		return my(ContactSeals.class).sealGiven(contact).currentValue();
 	}
 
