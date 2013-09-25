@@ -5,7 +5,6 @@ import static sneer.bricks.network.computers.udp.holepuncher.protocol.impl.DataU
 import static sneer.bricks.network.computers.udp.holepuncher.protocol.impl.DataUtils.ip;
 
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
@@ -19,7 +18,6 @@ import sneer.bricks.pulp.blinkinglights.LightType;
 
 class StunProtocolImpl implements StunProtocol {
 	
-	private static final InetSocketAddress SERVER_ADDRESS = initServerAddress();
 	private static final String SERVER_HOST_NAME = "dynamic.sneer.me";
 	private static final int SERVER_PORT = 5555;
 	
@@ -80,21 +78,9 @@ class StunProtocolImpl implements StunProtocol {
 		return new StunReply(peerSeal, ip, port, localAddressData);
 	}
 	
-
 	
 	@Override
-	public InetSocketAddress serverAddress() {
-		return SERVER_ADDRESS;
-	}
-
-
-	static private InetSocketAddress initServerAddress() {		
-		InetAddress host = serverHost();
-		return host == null ? null : new InetSocketAddress(host, SERVER_PORT);
-	}
-
-
-	static private InetAddress serverHost() {
+	public InetAddress serverHost() {
 		try {
 			return "true".equals(System.getProperty("sneer.testmode"))
 				? InetAddress.getByAddress(SERVER_HOST_NAME, new byte[]{127,0,0,1})
@@ -103,6 +89,12 @@ class StunProtocolImpl implements StunProtocol {
 			my(BlinkingLights.class).turnOn(LightType.WARNING, "Stun Server not found", "Unable to resolve DNS for " + SERVER_HOST_NAME + ". This might make it harder for Sneer to find your peers.", 15000);
 			return null;
 		}
+	}
+
+
+	@Override
+	public int serverPort() {
+		return SERVER_PORT;
 	}
 
 }

@@ -10,34 +10,39 @@ import sneer.bricks.hardware.io.log.Logger;
 import sneer.bricks.hardware.io.log.exceptions.ExceptionLogger;
 import sneer.bricks.network.computers.udp.UdpNetwork;
 import sneer.bricks.network.computers.udp.UdpNetwork.UdpSocket;
-import sneer.bricks.network.computers.udp.holepuncher.protocol.StunProtocol;
-import sneer.bricks.network.computers.udp.holepuncher.server.StunServer;
-import sneer.bricks.network.computers.udp.holepuncher.server.listener.StunServerListener;
+import sneer.bricks.network.computers.udp.holepuncher.server.listener.StunServerListeners;
 import sneer.bricks.network.computers.udp.receiver.ReceiverThreads;
 import basis.lang.Consumer;
 
-class StunServerListenerImpl implements StunServerListener {
+abstract class Listener implements StunServerListeners, Consumer<DatagramPacket> {
 
-	private UdpSocket socket;
+	private final UdpSocket socket;
 
-	{
-		my(Logger.class).log("Opening Stun Server port...");
-		int port = my(StunProtocol.class).serverAddress().getPort();
+	Listener(String name, int port) {
+		// Implement Auto-generated constructor stub
+		
+		my(Logger.class).log("Opening Server: " + name + " port: " + port + "...");
 		try {
 			socket = my(UdpNetwork.class).openSocket(port);
 		} catch (SocketException e) {
 			throw new IllegalStateException(e);
 		}
-		my(Logger.class).log("Stun Server port open.");
+		my(Logger.class).log("Server port open.");
 		
-		my(ReceiverThreads.class).start("Stun Server", socket, new Consumer<DatagramPacket>() { @Override public void consume(DatagramPacket packet) {
-			handle(packet);
-		}});
+		my(ReceiverThreads.class).start(name + " Server", socket, this);
+	}
+	
+	
+	@Override
+	public void consume(DatagramPacket packet) {
+		tryToSend(repliesFor(packet));
 	}
 
-	
-	private void handle(DatagramPacket packet) {
-		DatagramPacket[] replies = my(StunServer.class).repliesFor(packet);
+
+	abstract DatagramPacket[] repliesFor(DatagramPacket packet);
+
+
+	private void tryToSend(DatagramPacket[] replies) {
 		for (DatagramPacket reply : replies)
 			tryToSend(reply);
 	}

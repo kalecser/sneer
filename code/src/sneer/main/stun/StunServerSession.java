@@ -1,7 +1,7 @@
 package sneer.main.stun;
 
 import static basis.environments.Environments.my;
-import sneer.bricks.network.computers.udp.holepuncher.server.listener.StunServerListener;
+import sneer.bricks.network.computers.udp.holepuncher.server.listener.StunServerListeners;
 import sneer.main.SneerSessionBase;
 
 public class StunServerSession extends SneerSessionBase {
@@ -12,7 +12,7 @@ public class StunServerSession extends SneerSessionBase {
 
 	@Override
 	protected void start() {
-		my(StunServerListener.class);
+		my(StunServerListeners.class);
 	}
 
 }

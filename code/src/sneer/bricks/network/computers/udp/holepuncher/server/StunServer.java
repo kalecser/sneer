@@ -10,4 +10,6 @@ public interface StunServer {
 
 	DatagramPacket[] repliesFor(DatagramPacket received);
 
+	DatagramPacket[] repliesForAlternate(DatagramPacket packet);
+
 }

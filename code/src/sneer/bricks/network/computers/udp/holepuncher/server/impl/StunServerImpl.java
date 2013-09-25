@@ -33,17 +33,17 @@ class StunServerImpl implements StunServer {
 		keepCallerAddresses(packet, req);
 
 		IpAddresses callerAddr = addressesBySeal.get(toString(req.ownSeal));
-		StunReply toPeer = new StunReply(req.ownSeal, callerAddr.publicInternetAddress, callerAddr.publicInternetPort, callerAddr.localAddressData);
+		StunReply toAllPeers = new StunReply(req.ownSeal, callerAddr.publicInternetAddress, callerAddr.publicInternetPort, callerAddr.localAddressData);
 		
 		List<DatagramPacket> replies = new ArrayList<DatagramPacket>();
 		for(byte[] peer : req.peerSealsToFind) {
 			IpAddresses peerAddr = addressesBySeal.get(toString(peer));
-			if(peerAddr == null) continue; 
+			if (peerAddr == null) continue; 
 			
 			StunReply toCaller = new StunReply(peer, peerAddr.publicInternetAddress, peerAddr.publicInternetPort, peerAddr.localAddressData);
 			
 			prepareReply(replies, toCaller, callerAddr);
-			prepareReply(replies, toPeer, peerAddr);
+			prepareReply(replies, toAllPeers, peerAddr);
 		}
 		
 		return replies.toArray(EMPTY_ARRAY);
@@ -83,6 +83,12 @@ class StunServerImpl implements StunServer {
 	
 	static private String toString(byte[] arr) {
 		return Arrays.toString(arr);
+	}
+
+
+	@Override
+	public DatagramPacket[] repliesForAlternate(DatagramPacket packet) {
+		return new DatagramPacket[]{packet}; //Simply echo for now.
 	}
 
 }

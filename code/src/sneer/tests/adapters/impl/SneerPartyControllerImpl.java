@@ -27,7 +27,7 @@ import sneer.bricks.network.computers.addresses.keeper.InternetAddressKeeper;
 import sneer.bricks.network.computers.addresses.own.port.OwnPort;
 import sneer.bricks.network.computers.connections.ConnectionManager;
 import sneer.bricks.network.computers.http.server.tests.HttpServerTest;
-import sneer.bricks.network.computers.udp.holepuncher.server.listener.StunServerListener;
+import sneer.bricks.network.computers.udp.holepuncher.server.listener.StunServerListeners;
 import sneer.bricks.network.computers.udp.server.UdpServer;
 import sneer.bricks.network.social.Contact;
 import sneer.bricks.network.social.Contacts;
@@ -578,7 +578,7 @@ class SneerPartyControllerImpl implements SneerPartyController, SneerParty {
 	
 	@Override
 	public void startStunServer() {
-		my(StunServerListener.class);
+		my(StunServerListeners.class);
 	}
 
 	@Override

@@ -37,6 +37,9 @@ class StunClientImpl implements StunClient {
 
 	private Consumer<DatagramPacket> sender;
 	
+	final SocketAddress serverAddress = serverAddress();
+
+
 	@SuppressWarnings("unused") private final Object ref1 =
 	my(OwnIps.class).get().addPulseReceiver(new Closure() { @Override public void run() {
 		sendRequest();
@@ -57,8 +60,6 @@ class StunClientImpl implements StunClient {
 	
 	private void sendRequest() {
 		if (sender == null) return;
-		
-		SocketAddress serverAddress = my(StunProtocol.class).serverAddress();
 		if (serverAddress == null) return;
 		
 		StunRequest request = new StunRequest(ownSeal(), peersToFind(), localAddressesData());
@@ -145,5 +146,13 @@ class StunClientImpl implements StunClient {
 		in.get(ret);
 		return ret;
 	}
-	
+
+	private SocketAddress serverAddress() {
+		return new InetSocketAddress(
+			my(StunProtocol.class).serverHost(),
+			my(StunProtocol.class).serverPort()
+		);
+	}
+
+
 }
