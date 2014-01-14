@@ -1,6 +1,6 @@
 echo ---- Linux Package Upgrades
-aptitude -y upgrade
-aptitude -y safe-update
+aptitude -y update
+aptitude -y safe-upgrade
 
 echo ---- Timezone
 # Choose your timezone: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones

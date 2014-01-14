@@ -14,7 +14,6 @@ import sneer.bricks.software.folderconfig.testsupport.BrickTestBase;
 import sneer.bricks.softwaresharing.git.Git;
 import basis.lang.types.Classes;
 
-@Ignore
 public class GitTest extends BrickTestBase {
 
 	private final Git subject = my(Git.class);
@@ -68,5 +67,8 @@ public class GitTest extends BrickTestBase {
 		Files.createDirectory(repo);
 		Path fixture = Classes.fileFor(GitTest.class).getParentFile().toPath().resolve("gitfixtures/" + repoFixture);
 		my(IO.class).files().copyFolder(fixture.toFile(), repo.resolve(".git").toFile());
+		repo.resolve(".git/refs").toFile().mkdir();
+		repo.resolve(".git/branches").toFile().mkdir();
+		
 	}
 }

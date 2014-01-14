@@ -1,4 +1,38 @@
-﻿General Direction:
+﻿Sneer is free software to change the world.
+Sneer is free software to help you change the world.
+Sneer is software to change the world.
+Sneer is free world-changing software.
+
+
+Who Are You?
+
+End Users - "We want to do cool things with our friends."
+   App marketplace inside Sneer. (Future)
+   App websites
+      Single click (clipboard interaction)
+         Didn't work? Install experience
+            Install Java? Auto installer?
+            Single Sneer Jar (not webstart)
+
+
+Expert Users - "Sneer is cool."
+   Help others use Sneer
+      Run a big dedicated sneer machine - Gain T4T Credit
+
+
+App Designers and Developers - "I want people to use my app."
+   Instructions on how to embed an app in a website.
+   API Docs
+
+
+Platform Designers and Developers - "I want to help improve the Sneer platform."
+   Git project.
+
+
+-------------------------------
+
+
+General Direction:
 	1) To ENABLE users to develop and share bricks.
 	2) To MOTIVATE users to develop bricks by fostering a growing user-base through interesting snapps such as media sharing (Wusic, Movies, etc). Better ideas of cool easy-kill snapps are welcome.
 
