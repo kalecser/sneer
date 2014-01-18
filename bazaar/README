@@ -1,0 +1,51 @@
+Workflow
+
+Forkar no github sneer-seed/_sneer
+
+Clonar pra sua máquina
+
+Rodar jar ou script q vai estar lá no raiz
+  Vai subir um servico na porta 80, 8080 ou 8888, whatever.
+  Abre o browser já apontando pro localhost:porta
+
+Criar uma "snapp" dentro do diretório 'shared'
+
+_sneer/
+  sneer.jar
+  profile.txt
+  .profile.txt/
+    .git/
+    profile.txt
+
+  /my-pic
+    my-pic.png
+  xadrez/
+    xadrez.java
+    peca.java
+  boo/
+    ometa/
+    readme
+    ...
+  *banana/.git
+
+git diff banana _sneer/.git -branch banana
+
+
+MVP
+
+  Minhas coisas
+    Lista/arvore das minhas coisas
+      "*" mostrando pastas que modifiquei
+      "?" mostrando pastas que criei
+      "!" algum tipo de erro
+      "..." puxando de lá
+    Clicar p dar commit/add
+      Add cria o branch
+
+  "Theirs"
+    Lista de contatos (quem forkou o _sneer)
+      Compartilhamentos do contato
+        "Me Too"
+          Primeiro: cria pasta, branch e faz pull e push pro github
+          Depois: Faz merge
+
