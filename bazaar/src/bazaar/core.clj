@@ -1,5 +1,9 @@
+;(ns bazaar.core
+;  (:use [clj-jgit.porcelain] [clojure.contrib.java.utils]))
+;  (:use [clojure.contrib.java-utils]))
+
 (ns bazaar.core
-  (:use [clj-jgit.porcelain clojure.contrib.java-utils]))
+  (:require clojure.contrib.java-utils))
 
 (def repo-name "trash")
 
