@@ -1,25 +1,20 @@
 (ns bazaar.core
-  (:use [clj-jgit.porcelain]))
+  (:use [clj-jgit.porcelain clojure.contrib.java-utils]))
 
-(with-identity {"trash" {}}
+(def repo-name "trash")
+
+(def repo-url (str "git@github.com:klauswuestefeld/" repo-name ".git"))
+
+(delete-file-recursively repo-name)
+
+(with-identity {repo-name {}}
   (def my-clone
-    (git-clone-full "git@github.com:klauswuestefeld/trash.git" "trash")))
+    (git-clone-full repo-url repo-name)))
 
-(-> (:fetch-result my-repo) .getClass .getMethods seq)
-
-(def pull-result (.call (.pull (:repo my-repo))))
+(def pull-result (.call (.pull (:repo my-clone))))
 (.isSuccessful pull-result)
 
-
-(def repo (:fetch-result my-clone))
-(.getMessages repo)
-(.getURI repo)
-(-> (:repo my-repo) .getClass .getMethods seq)
-my-repo
 (def my-repo (:repo my-clone))
-
-(use 'clojure.java.io)
-(.getAbsolutePath (file "~/git/tmptmp"))
 
 (git-status my-repo)
 ;=> {:untracked #{}, :removed #{}, :modified #{}, :missing #{}, :changed #{}, :added #{}}
