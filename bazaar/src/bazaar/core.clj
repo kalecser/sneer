@@ -9,7 +9,7 @@
 
 (with-identity {repo-name {}}
     (def my-clone (git-clone-full repo-url repo-name))
-    (def pull-result (.call (.pull (:repo my-clone)))))
+    (def pull-result (-> my-clone :repo .pull .call)))
 
 (.isSuccessful pull-result)
 
