@@ -1,16 +1,15 @@
 Workflow
 
-Forkar no github sneer-seed/_sneer
-
-Clonar pra sua máquina
+?? Forkar no github sneer-seed/_sneer
+?? Clonar pra sua máquina
 
 Rodar jar ou script q vai estar lá no raiz
   Vai subir um servico na porta 80, 8080 ou 8888, whatever.
   Abre o browser já apontando pro localhost:porta
 
-Criar uma "snapp" dentro do diretório 'shared'
+Criar um "product" dentro do diretório "public":
 
-_sneer/
+~/sneer/public
   sneer.jar
   profile.txt
   .profile.txt/
