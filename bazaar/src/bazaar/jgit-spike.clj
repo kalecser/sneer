@@ -2,13 +2,13 @@
   (:use clj-jgit.porcelain))
 
 (def repo-name "trash")
-
+(def repo-folder (str "tmp/" repo-name))
 (def repo-url (str "git@github.com:klauswuestefeld/" repo-name ".git"))
 
-(fs.core/delete-dir "trash")
+(fs.core/delete-dir repo-folder)
 
 (with-identity {repo-name {}}
-    (def my-clone (git-clone-full repo-url repo-name))
+    (def my-clone (git-clone-full repo-url repo-folder))
     (def pull-result (-> my-clone :repo .pull .call)))
 
 (.isSuccessful pull-result)
@@ -31,7 +31,7 @@
 (git-checkout my-repo "my-branch")
 
 ;; Now go off and make your changes.
-(with-open [f (clojure.java.io/writer (str repo-name java.io.File/separator "whatever.txt"))]
+(with-open [f (clojure.java.io/writer (str repo-folder "/whatever.txt"))]
   (.write f "test"))
 
 ;; For example, let's say we added a file "foo.txt" at the base of the project.

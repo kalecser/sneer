@@ -7,5 +7,6 @@
 /checkouts
 /.lein-deps-sum
 /target
+/tmp
 .nrepl-port
 
