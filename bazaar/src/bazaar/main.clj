@@ -1,5 +1,6 @@
 (ns bazaar.main
   (:gen-class)
+  (:require [bazaar.core :as core])
   (:require clojure.java.browse)
   (:use org.httpkit.server)
   (:require [bazaar.templates :as templates]))
@@ -7,7 +8,7 @@
 (defn web-app [request]
   {:status 200
    :headers {"Content-Type" "text/html;charset=utf8"}
-   :body (templates/home "Parabéns!!!")})
+   :body (templates/home (core/product-list))})
 
 (defn start-http-server []
   (let [port 8080]

@@ -3,5 +3,8 @@
   (:use net.cgrand.enlive-html))
 
 (deftemplate home "bazaar/templates/home.html"
-  [title]
-  [:#title] (content title))
+  [product-list]
+  [:#product] (clone-for [{:keys [name status]} product-list]
+                         [:#status] (content (str status))
+                         [:#name] (content name)))
+
