@@ -7,9 +7,9 @@ Rodar jar ou script q vai estar lá no raiz
   Vai subir um servico na porta 80, 8080 ou 8888, whatever.
   Abre o browser já apontando pro localhost:porta
 
-Criar um "product" dentro do diretório "public":
+Criar um "product" dentro do diretório "products":
 
-~/sneer/public
+~/sneer/products
   sneer.jar
   profile.txt
   .profile.txt/
@@ -47,4 +47,3 @@ MVP
         "Me Too"
           Primeiro: cria pasta, branch e faz pull e push pro github
           Depois: Faz merge
-
