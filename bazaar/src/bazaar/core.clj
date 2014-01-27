@@ -5,8 +5,11 @@
 (def products-root
   (str (System/getProperty "user.home") "/sneer/products"))
 
+(defn list-subfolders [^String folder-name]
+  (filter #(.isDirectory %) (-> folder-name io/file .listFiles)))
+
 (defn product-folders []
-  (filter #(.isDirectory %) (-> products-root io/file .listFiles)))
+  (list-subfolders products-root))
 
 (defn is-git [folder]
   (.exists (java.io.File. folder ".git")))
@@ -18,6 +21,11 @@
 
 (defn product-list []
   (map #(hash-map :name (.getName %) :status (status %)) (product-folders)))
+
+(defn peer-product-list [peer-login]
+  [{:status :new, :name "Javatari 2.0"}
+   {:status :forked, :name (str "Emacs " peer-login)}])
+
 
 (product-list)
 
