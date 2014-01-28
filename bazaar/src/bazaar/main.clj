@@ -8,17 +8,16 @@
   (:require [compojure.handler :as handler])
   (:require [compojure.route :as route]))
 
-(defn show-home [ _ ]
+(defn show-page [peer-products]
   (templates/recompile-home)
-  {:status 200
-   :headers {"Content-Type" "text/html;charset=utf8"}
-   :body (templates/home (core/product-list) [])})
+  {:headers {"Content-Type" "text/html;charset=utf8"}
+   :body (templates/home (core/product-list) peer-products)})
+
+(defn show-home [ _ ]
+  (show-page []))
 
 (defn show-products [peer-login]
-  (templates/recompile-home)
-  {:status 200
-   :headers {"Content-Type" "text/html;charset=utf8"}
-   :body (templates/home (core/product-list) (core/peer-product-list peer-login))})
+  (show-page (core/peer-product-list peer-login)))
 
 (compojure/defroutes web-app
   (compojure/GET "/" [] show-home)
