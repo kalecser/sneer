@@ -1,12 +1,12 @@
 (ns bazaar.main
   (:gen-class)
-  (:require [bazaar.core :as core])
-  (:require clojure.java.browse)
-  (:require [org.httpkit.server :as httpkit])
-  (:require [bazaar.templates :as templates])
-  (:require [compojure.core :as compojure])
-  (:require [compojure.handler :as handler])
-  (:require [compojure.route :as route]))
+  (:require [bazaar.core :as core]
+            [bazaar.templates :as templates]
+            [org.httpkit.server :as httpkit]
+            [compojure.core :as compojure]
+            [compojure.handler :as handler]
+            [compojure.route :as route]
+            [clojure.java.browse :refer [browse-url]]))
 
 (defn show-page [peer-products]
   (templates/recompile-home)
@@ -32,9 +32,6 @@
 ;(def server-closer (httpkit/run-server (handler/site #'web-app) {:port 8080}))
 ;(server-closer)
 
-(defn open-browser [url]
-  (clojure.java.browse/browse-url url))
-
 (defn -main [& args]
   (let [port (start-http-server)]
-    (open-browser (str "http://localhost:" port))))
+    (browse-url (str "http://localhost:" port))))
