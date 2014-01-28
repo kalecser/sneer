@@ -6,5 +6,5 @@
                  [compojure "1.1.6"]  ; URL request routing
                  [enlive "1.1.5"]     ; HTML templating.
                  [javax.servlet/servlet-api "2.5"]
-                 [tentacles "0.2.5"]]
+                 [tentacles "0.2.5"]] ; Github API
   :main bazaar.main)
