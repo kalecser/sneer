@@ -23,7 +23,7 @@
   (map #(hash-map :name (.getName %) :status (status %)) (product-folders)))
 
 (defn peer-product-list [peer-login]
-  (repos/user-repos peer-login))
+  (map #(assoc % :peer peer-login) (filter :name (repos/user-repos peer-login))))
 
 ; (product-list)
 

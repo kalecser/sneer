@@ -22,6 +22,7 @@
 (compojure/defroutes web-app
   (compojure/GET "/" [] show-home)
   (compojure/GET "/products" [peer] (show-products peer))
+  (compojure/GET "/products/:peer/:product/run" [peer product] (str "running " peer "/" product " ..."))
   (route/files "/static" {:root (str (System/getProperty "user.dir") "/static")}))
 
 (defn start-http-server []
