@@ -5,6 +5,7 @@
   (:require [org.httpkit.server :as httpkit])
   (:require [bazaar.templates :as templates])
   (:require [compojure.core :as compojure])
+  (:require [compojure.handler :as handler])
   (:require [compojure.route :as route]))
 
 (defn show-page [peer-products]
