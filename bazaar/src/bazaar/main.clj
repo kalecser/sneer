@@ -8,11 +8,10 @@
   (:require [compojure.handler :as handler])
   (:require [compojure.route :as route]))
 
-(defn show-landing-page [ _ ]
+(defn show-home [ _ ]
   (templates/recompile-home)
-  {
-   ;:status 200
-   ;:headers {"Content-Type" "text/html;charset=utf8"}
+  {:status 200
+   :headers {"Content-Type" "text/html;charset=utf8"}
    :body (templates/home (core/product-list) [])})
 
 (defn show-products [peer-login]
@@ -22,7 +21,7 @@
    :body (templates/home (core/product-list) (core/peer-product-list peer-login))})
 
 (compojure/defroutes web-app
-  (compojure/GET "/" [] show-landing-page)
+  (compojure/GET "/" [] show-home)
   (compojure/GET "/products" [peer] (show-products peer))
   (route/files "/static" {:root (str (System/getProperty "user.dir") "/static")}))
 
