@@ -2,10 +2,9 @@
   (:gen-class)
   (:require [bazaar.core :as core])
   (:require clojure.java.browse)
-  (:use org.httpkit.server)
+  (:require [org.httpkit.server :as httpkit])
   (:require [bazaar.templates :as templates])
   (:require [compojure.core :as compojure])
-  (:require [compojure.handler :as handler])
   (:require [compojure.route :as route]))
 
 (defn show-page [peer-products]
@@ -24,13 +23,12 @@
   (compojure/GET "/products" [peer] (show-products peer))
   (route/files "/static" {:root (str (System/getProperty "user.dir") "/static")}))
 
-
 (defn start-http-server []
   (let [port 8080]
-    (run-server (handler/site #'web-app) {:port port})
+    (httpkit/run-server (handler/site #'web-app) {:port port})
     port))
 
-;(def server-closer (run-server (handler/site #'web-app) {:port 8080}))
+;(def server-closer (httpkit/run-server (handler/site #'web-app) {:port 8080}))
 ;(server-closer)
 
 (defn open-browser [url]
