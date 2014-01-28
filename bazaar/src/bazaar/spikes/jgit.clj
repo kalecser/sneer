@@ -1,4 +1,4 @@
-(ns bazaar.jgit-spike
+(ns bazaar.spikes.jgit
   (:use clj-jgit.porcelain))
 
 (def repo-name "trash")
