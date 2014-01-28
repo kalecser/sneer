@@ -5,7 +5,8 @@
   (:use org.httpkit.server)
   (:require [bazaar.templates :as templates])
   (:require [compojure.core :as compojure])
-  (:require [compojure.handler :as handler]))
+  (:require [compojure.handler :as handler])
+  (:require [compojure.route :as route]))
 
 (defn show-landing-page [ _ ]
   (templates/recompile-home)
@@ -22,7 +23,9 @@
 
 (compojure/defroutes web-app
   (compojure/GET "/" [] show-landing-page)
-  (compojure/GET "/products" [peer] (show-products peer)))
+  (compojure/GET "/products" [peer] (show-products peer))
+  (route/files "/static" {:root (str (System/getProperty "user.dir") "/static")}))
+
 
 (defn start-http-server []
   (let [port 8080]
