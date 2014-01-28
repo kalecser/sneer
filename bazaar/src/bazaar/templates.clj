@@ -9,8 +9,5 @@
                            [:#status] (content (str status))
                            [:#name] (content name))
     [:#peer-product] (clone-for [{:keys [name status]} peer-products]
-                           [:#status] (content (str status))
-                           [:#name] (content name))
-    ))
-
-
+                                [:#status] (content (str status))
+                                [:#name] (content name))))
