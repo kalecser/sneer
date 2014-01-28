@@ -1,6 +1,6 @@
 (ns bazaar.core
   (:require [clojure.java.io :as io])
-  (:use clj-jgit.porcelain))
+  (:require [tentacles.repos :as repos]))
 
 (def products-root
   (str (System/getProperty "user.home") "/sneer/products"))
@@ -23,11 +23,9 @@
   (map #(hash-map :name (.getName %) :status (status %)) (product-folders)))
 
 (defn peer-product-list [peer-login]
-  [{:status :new, :name "Javatari 2.0"}
-   {:status :forked, :name (str "Emacs " peer-login)}])
+  (repos/user-repos peer-login))
 
-
-(product-list)
+; (product-list)
 
 ;  [{:status :new, :name "Javatari 2.0"}
 ;   {:status :modified, :name "Emacs for Clojure"}])
