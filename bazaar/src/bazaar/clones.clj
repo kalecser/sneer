@@ -21,7 +21,7 @@
 
 (defn notify-clients [product-path & args]
   (doseq [c (get-active-clients product-path)]
-    (http-kit/send! c (str args "\n") false)))
+    (http-kit/send! c (str args) false)))
 
 (defn accept-clone-request [{:keys [peer product client]}]
   (let [product-path (core/peer-product-path peer product)]
