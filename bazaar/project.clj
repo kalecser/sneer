@@ -6,5 +6,6 @@
                  [compojure "1.1.6"]  ; URL request routing
                  [enlive "1.1.5"]     ; HTML templating.
                  [javax.servlet/servlet-api "2.5"]
-                 [tentacles "0.2.5"]] ; Github API
+                 [tentacles "0.2.5"] ; Github API
+                 [org.clojure/core.async "0.1.267.0-0d7780-alpha"]]
   :main bazaar.main)

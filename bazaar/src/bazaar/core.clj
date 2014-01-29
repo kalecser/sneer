@@ -2,8 +2,14 @@
   (:require [clojure.java.io :as io])
   (:require [tentacles.repos :as repos]))
 
+(defn user-home []
+  (System/getProperty "user.home"))
+
 (def products-root
-  (str (System/getProperty "user.home") "/sneer/products"))
+  (str (user-home) "/sneer/products"))
+
+(defn peer-product-path [peer product]
+  (str (user-home) "/sneer/peers/" peer "/" product))
 
 (defn list-subfolders [^String folder-name]
   (filter #(.isDirectory %) (-> folder-name io/file .listFiles)))
