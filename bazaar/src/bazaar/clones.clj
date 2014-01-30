@@ -71,7 +71,7 @@
            product-path))))))
 
 (defn- clone-finished [process product-path]
-  (println "cloning of" product-path "has finished.")
+  (println "cloning of" product-path "finished.")
   (close-clients-of process product-path)
   (swap! (:state process) dissoc product-path))
 
