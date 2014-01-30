@@ -2,40 +2,58 @@
 
   (:require [bazaar.core :as core]
             [bazaar.git :as git]
-            [org.httpkit.server :as http-kit]
-            [clojure.core.async :as async :refer [<!! >!! thread alts!!]])
+            [clojure.core.async :as async :refer [<!! >!! thread close! alts!!]])
 
   (:import [org.eclipse.jgit.lib ProgressMonitor]))
 
-(def ^:private clone-request-channel (async/chan))
+(declare cloning-process-loop)
 
-(def ^:private active-clones
-  "{<product-path> [<client>]}"
-  (atom {}))
+;(def process (start-cloning-process))
+;(stop-cloning-process process)
 
-(defn start-async-clone [peer product client]
-  (>!! clone-request-channel {:peer peer :product product :client client}))
+(defn start-cloning-process []
+  (let [process {:channel (async/chan)
+                 :state (atom {})}] ; {<product-path> [<client-channel>]}}
+    (thread
+     (println "cloning process started.")
+     (cloning-process-loop process)
+     (println "cloning process finished."))
+    process))
 
-(defn get-active-clients [product-path]
-  (get @active-clones product-path))
+(defn stop-cloning-process [process]
+  (close! (:channel process)))
 
-(defn notify-clients [product-path & args]
-  (doseq [c (get-active-clients product-path)]
-    (http-kit/send! c (str args) false)))
+(defn send-clone-request [process peer product response-channel]
+  (>!! (:channel process) {:peer peer :product product :client response-channel}))
 
-(defn accept-clone-request [{:keys [peer product client]}]
-  (let [product-path (core/peer-product-path peer product)]
-    (if-let [clients (get-active-clients product-path)]
+(defn active-clients-of [process product-path]
+  (get @(:state process) product-path))
+
+(defn- for-each-client-of [process product-path f]
+  (doseq [client (active-clients-of process product-path)]
+    (f client)))
+
+(defn- notify-clients-of [process product-path & args]
+  (for-each-client-of process product-path #(>!! % args)))
+
+(defn- close-clients-of [process product-path]
+  (for-each-client-of process product-path close!))
+
+(defn- accept-clone-request [process {:keys [peer product client]}]
+  (let [product-path (core/peer-product-path peer product)
+        notify-clients (partial notify-clients-of process product-path)
+        state (:state process)]
+    (if-let [clients (active-clients-of process product-path)]
       (do
-        (println "cloning of " product-path " already in progress, adding new client.")
-        (swap! active-clones assoc product-path (conj clients client))
+        (println "cloning of" product-path "already in progress, adding new client.")
+        (swap! state assoc product-path (conj clients client))
         nil)
       (do
-        (println "cloning of " product-path "started.")
-        (swap! active-clones assoc product-path [client])
+        (println "cloning of" product-path "started.")
+        (swap! state assoc product-path [client])
         (thread
          (let [uri (format "git@github.com:%s/%s.git" peer product)
-               notify-clients (partial notify-clients product-path)
+
                pm (reify ProgressMonitor
                     (start [this totalTasks]
                       (notify-clients :start totalTasks))
@@ -47,41 +65,29 @@
                       (notify-clients :endTask))
                     (isCancelled [this]
                       false))]
-           (git/clone-with-progress-monitor pm uri product-path)
+           (try
+             (git/clone-with-progress-monitor pm uri product-path)
+             (catch Exception e (notify-clients :error (.getMessage e))))
            product-path))))))
 
-(defn clone-finished [product-path]
-  (println "clone of " product-path " has finished.")
-  (doseq [client (get-active-clients product-path)]
-    (http-kit/close client))
-  (swap! active-clones dissoc product-path))
+(defn- clone-finished [process product-path]
+  (println "cloning of" product-path "has finished.")
+  (close-clients-of process product-path)
+  (swap! (:state process) dissoc product-path))
 
-(defn start-cloning-process []
-  (thread
-   (println "cloning process started.")
+(defn- cloning-process-loop [{:keys [channel] :as process}]
+  (loop [channels #{channel}]
+    (let [[v c] (alts!! (vec channels))]
+      (if v
+        (recur
+         (if (identical? channel c)
+           (if-let [new-thread (accept-clone-request process v)]
+             (conj channels new-thread)
+             channels)
+           (do
+             (clone-finished process v)
+             channels)))
 
-   (loop [channels #{clone-request-channel}]
-     (let [[v c] (async/alts!! (vec channels))]
-
-       (println (format "value %s from %s (%d active)" v c (count channels)))
-       (if v
-         (recur
-          (if (identical? clone-request-channel c)
-            (if-let [new-thread (accept-clone-request v)]
-              (conj channels new-thread)
-              channels)
-            (do
-              (clone-finished v)
-              channels)))
-
-         (let [remaining-channels (disj channels c)]
-           (if-not (empty? remaining-channels)
-             (recur remaining-channels))))))
-
-   (println "cloning process finished.")))
-
-(defn stop-cloning-process []
-  (async/close! clone-request-channel))
-;
-;(start-cloning-process)
-;(stop-cloning-process)
+        (let [remaining-channels (disj channels c)]
+          (if-not (empty? remaining-channels)
+            (recur remaining-channels)))))))
