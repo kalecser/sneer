@@ -4,7 +4,7 @@
             [bazaar.git :as git]
             [clojure.core.async :as async :refer [<!! >!! thread close! alts!!]])
 
-  (:import [org.eclipse.jgit.lib ProgressMonitor]))
+  (:import [org.eclipse.jgit.lib BatchingProgressMonitor]))
 
 (declare cloning-process-loop)
 
@@ -53,17 +53,24 @@
         (swap! state assoc product-path [client])
         (thread
          (let [uri (format "git@github.com:%s/%s.git" peer product)
-
-               pm (reify ProgressMonitor
-                    (start [this totalTasks]
+               pm (proxy [BatchingProgressMonitor] []
+                    (start [totalTasks]
+                      (proxy-super start totalTasks)
                       (notify-clients :start totalTasks))
-                    (update [this completed]
-                      (notify-clients :update completed))
-                    (beginTask [this title totalWork]
-                      (notify-clients :beginTask title totalWork))
-                    (endTask [this]
-                      (notify-clients :endTask))
-                    (isCancelled [this]
+                    (beginTask [taskName work]
+                      (proxy-super beginTask taskName work)
+                      (notify-clients :beginTask taskName work))
+                    (onUpdate
+                      ([taskName completed]
+                         (notify-clients :update taskName completed))
+                      ([taskName completed total percentDone]
+                         (notify-clients :update taskName completed total percentDone)))
+                    (onEndTask
+                      ([taskName completed]
+                         (notify-clients :endTask taskName completed))
+                      ([taskName completed total percentDone]
+                         (notify-clients :endTask taskName completed total percentDone)))
+                    (isCancelled []
                       false))]
            (try
              (git/clone-with-progress-monitor pm uri product-path)
