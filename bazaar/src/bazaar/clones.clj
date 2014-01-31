@@ -68,7 +68,8 @@
                       false))]
            (try
              (git/clone-with-progress-monitor pm uri product-path)
-             (catch Exception e (notify-clients :error (.getMessage e))))
+             (catch Exception e
+               (notify-clients :error (.getMessage e))))
            product-path))))))
 
 (defn- clone-finished [process product-path]
