@@ -27,6 +27,7 @@
 (defn run-peer-product [peer product req]
   (with-channel req http-channel
     (let [response-channel (async/chan 1)]
+      (http-kit/on-close http-channel (fn [_] (async/close! response-channel)))
       (clones/send-clone-request (:cloning-process state) peer product response-channel)
       (async/go
        (loop []
