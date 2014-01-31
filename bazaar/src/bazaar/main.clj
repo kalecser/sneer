@@ -14,7 +14,6 @@
 (def state (atom nil))
 
 (defn show-page [peer-products]
-  (templates/recompile-home)
   {:headers {"Content-Type" "text/html;charset=utf8"}
    :body (templates/home (core/product-list) peer-products)})
 
@@ -44,10 +43,17 @@
        (partial run-peer-product peer product))
   (route/files "/static" {:root (str (System/getProperty "user.dir") "/static")}))
 
+(defn force-reload [app reloadables]
+  (fn [req]
+    (doseq [ns-sym reloadables]
+      (require ns-sym :reload))
+    (app req)))
+
 (defn start-server [port]
-  {:port port
-   :server-closer (run-server (handler/site #'web-app) {:port port})
-   :cloning-process (clones/start-cloning-process)})
+  (let [app (-> #'web-app (force-reload '[bazaar.templates]) handler/site)]
+    {:port port
+     :server-closer (run-server app {:port port})
+     :cloning-process (clones/start-cloning-process)}))
 
 (defn start []
   (let [port 8080]
