@@ -1,8 +1,9 @@
 (ns bazaar.templates
   "Bazaar enlive templates"
-  (:use net.cgrand.enlive-html))
+  (:use net.cgrand.enlive-html)
+  (:require [clojure.java.io :as io]))
 
-(deftemplate home "bazaar/templates/home.html"
+(deftemplate home (io/resource "public/home.html")
   [product-list peer-products]
   [:#product] (clone-for [{:keys [name status]} product-list]
                          [:#status] (content (str status))

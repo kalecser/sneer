@@ -41,8 +41,7 @@
   (GET "/products/:peer/:product/run"
        [peer product]
        (partial run-peer-product peer product))
-  (route/files "/static" {:root (str (System/getProperty "user.dir") "/static")}))
-
+  (route/resources "/"))
 (defn force-reload [app reloadables]
   (fn [req]
     (doseq [ns-sym reloadables]
