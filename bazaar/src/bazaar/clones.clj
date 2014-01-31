@@ -60,16 +60,10 @@
                     (beginTask [taskName work]
                       (proxy-super beginTask taskName work)
                       (notify-clients :beginTask taskName work))
-                    (onUpdate
-                      ([taskName completed]
-                         (notify-clients :update taskName completed))
-                      ([taskName completed total percentDone]
-                         (notify-clients :update taskName completed total percentDone)))
-                    (onEndTask
-                      ([taskName completed]
-                         (notify-clients :endTask taskName completed))
-                      ([taskName completed total percentDone]
-                         (notify-clients :endTask taskName completed total percentDone)))
+                    (onUpdate [& args]
+                      (apply notify-clients :update args))
+                    (onEndTask [& args]
+                      (apply notify-clients :endTask args))
                     (isCancelled []
                       false))]
            (try
