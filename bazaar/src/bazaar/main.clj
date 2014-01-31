@@ -4,7 +4,7 @@
   (:require [bazaar.core :as core]
             [bazaar.templates :as templates]
             [bazaar.clones :as clones]
-            [org.httpkit.server :as http-kit :refer [run-server with-channel]]
+            [org.httpkit.server :as http-kit :refer [run-server]]
             [clojure.core.async :as async]
             [compojure.core :refer [defroutes GET]]
             [compojure.handler :as handler]
@@ -25,7 +25,7 @@
   (show-page (core/peer-product-list peer-login)))
 
 (defn run-peer-product [peer product req]
-  (with-channel req http-channel
+  (http-kit/with-channel req http-channel
     (let [response-channel (async/chan 1)]
       (http-kit/on-close http-channel (fn [_] (async/close! response-channel)))
       (clones/send-clone-request (:cloning-process state) peer product response-channel)
