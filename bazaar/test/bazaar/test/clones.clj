@@ -9,8 +9,8 @@
     (let [subject (start-cloning-process)
           response-channel (async/chan)]
       (try
-        (send-clone-request subject "foo" "bar" response-channel)
-        (let [[response c] (async/alts!! [response-channel (async/timeout 500)])]
+        (serve-clone-request subject "peer" "product" response-channel)
+        (let [[response _] (async/alts!! [response-channel (async/timeout 500)])]
           (is (= '(:error "oops")
                  response)))
         (finally

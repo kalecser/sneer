@@ -11,7 +11,7 @@
             [compojure.route :as route]
             [clojure.java.browse :refer [browse-url]]))
 
-(def state nil)
+(def state (atom nil))
 
 (defn show-page [peer-products]
   (templates/recompile-home)
@@ -28,11 +28,11 @@
   (http-kit/with-channel req http-channel
     (let [response-channel (async/chan 1)]
       (http-kit/on-close http-channel (fn [_] (async/close! response-channel)))
-      (clones/send-clone-request (:cloning-process state) peer product response-channel)
+      (clones/serve-clone-request (:cloning-process @state) peer product response-channel)
       (async/go
        (loop []
          (when-let [response (async/<! response-channel)]
-           (http-kit/send! http-channel (str response) false)
+           (http-kit/send! http-channel (str response) false) ; false means dont close
            (recur)))
        (http-kit/close http-channel)))))
 
@@ -44,19 +44,24 @@
        (partial run-peer-product peer product))
   (route/files "/static" {:root (str (System/getProperty "user.dir") "/static")}))
 
+(defn start-server [port]
+  {:port port
+   :server-closer (run-server (handler/site #'web-app) {:port port})
+   :cloning-process (clones/start-cloning-process)})
+
 (defn start []
   (let [port 8080]
-    (def state {:port port
-                :server-closer (run-server (handler/site #'web-app) {:port port})
-                :cloning-process (clones/start-cloning-process)})
-    state))
+    (swap! state #(do
+      (assert (nil? %))
+      (start-server port)))))
 
 (defn stop []
-  (if-let [{:keys [server-closer cloning-process]} state]
+  (if-let [{:keys [server-closer cloning-process] :as old} @state]
     (try
       (server-closer)
       (clones/stop-cloning-process cloning-process)
-      (finally (def state nil)))))
+      (finally
+        (swap! state #(if-not (identical? % old) % nil))))))
 
 ;(start)
 ;(stop)

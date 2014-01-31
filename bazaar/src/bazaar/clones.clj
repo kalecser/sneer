@@ -23,7 +23,7 @@
 (defn stop-cloning-process [process]
   (close! (:channel process)))
 
-(defn send-clone-request [process peer product response-channel]
+(defn serve-clone-request [process peer product response-channel]
   (>!! (:channel process) {:peer peer :product product :client response-channel}))
 
 (defn active-clients-of [process product-path]
@@ -50,7 +50,7 @@
         nil)
       (do
         (println "cloning of" product-path "started.")
-        (swap! state assoc product-path [client])
+        (swap! state assoc product-path #{client})
         (thread
          (let [uri (format "git@github.com:%s/%s.git" peer product)
                pm (proxy [BatchingProgressMonitor] []
