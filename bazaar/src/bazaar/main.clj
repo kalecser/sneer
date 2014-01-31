@@ -5,19 +5,20 @@
             [bazaar.templates :as templates]
             [bazaar.clones :as clones]
             [org.httpkit.server :as http-kit :refer [run-server]]
-            [clojure.core.async :as async]
             [compojure.core :refer [defroutes GET]]
             [compojure.handler :as handler]
             [compojure.route :as route]
+            [clojure.core.async :as async]
             [clojure.java.browse :refer [browse-url]]))
 
 (def state (atom nil))
 
 (defn show-page [peer-products]
+  (require 'bazaar.templates :reload)
   {:headers {"Content-Type" "text/html;charset=utf8"}
    :body (templates/home (core/product-list) peer-products)})
 
-(defn show-home [ _ ]
+(defn show-home []
   (show-page []))
 
 (defn show-products [peer-login]
@@ -36,20 +37,15 @@
        (http-kit/close http-channel)))))
 
 (defroutes web-app
-  (GET "/" [] show-home)
+  (GET "/" [] (show-home))
   (GET "/products" [peer] (show-products peer))
   (GET "/products/:peer/:product/run"
        [peer product]
        (partial run-peer-product peer product))
   (route/resources "/"))
-(defn force-reload [app reloadables]
-  (fn [req]
-    (doseq [ns-sym reloadables]
-      (require ns-sym :reload))
-    (app req)))
 
 (defn start-server [port]
-  (let [app (-> #'web-app (force-reload '[bazaar.templates]) handler/site)]
+  (let [app (-> #'web-app handler/site)]
     {:port port
      :server-closer (run-server app {:port port})
      :cloning-process (clones/start-cloning-process)}))
