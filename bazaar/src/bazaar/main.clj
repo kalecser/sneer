@@ -42,7 +42,7 @@
   (GET "/products/:peer/:product/run"
        [peer product]
        (partial run-peer-product peer product))
-  (route/resources "/"))
+  (route/resources "/public" "public"))
 
 (defn start-server [port]
   (let [app (-> #'web-app handler/site)]
