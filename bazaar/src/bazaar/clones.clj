@@ -41,14 +41,13 @@
 
 (defn- accept-clone-request [process {:keys [peer product client]}]
   (let [product-path (core/peer-product-path peer product)
-        notify-clients (partial notify-clients-of process product-path)
         state (:state process)]
     (if-let [clients (active-clients-of process product-path)]
       (do
         (println "cloning of" product-path "already in progress, adding new client.")
         (swap! state assoc product-path (conj clients client))
         nil)
-      (do
+      (let [notify-clients (partial notify-clients-of process product-path)]
         (println "cloning of" product-path "started.")
         (swap! state assoc product-path #{client})
         (thread
