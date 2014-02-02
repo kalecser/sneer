@@ -32,7 +32,7 @@
       (async/go
        (loop []
          (when-let [response (async/<! response-channel)]
-           (http-kit/send! http-channel (str response) false) ; false means dont close
+           (http-kit/send! http-channel (pr-str response) false) ; false means dont close
            (recur)))
        (http-kit/close http-channel)))))
 
