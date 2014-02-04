@@ -5,7 +5,7 @@
             [bazaar.templates :as templates]
             [bazaar.clones :as clones]
             [org.httpkit.server :as http-kit :refer [run-server]]
-            [compojure.core :refer [defroutes GET]]
+            [compojure.core :refer [defroutes context GET]]
             [compojure.handler :as handler]
             [compojure.route :as route]
             [clojure.core.async :as async]
@@ -36,12 +36,23 @@
            (recur)))
        (http-kit/close http-channel)))))
 
+(defn my-products [req]
+  (let [origin (get-in req [:headers "origin"])]
+    (println "origin:" origin)
+    {:headers {"Content-Type" "application/edn"
+               "Access-Control-Allow-Origin" origin} ;; required to let clients execute directly from the file system
+     :body (pr-str (core/product-list))}))
+
 (defroutes web-app
   (GET "/" [] (show-home))
   (GET "/products" [peer] (show-products peer))
   (GET "/products/:peer/:product/run"
        [peer product]
        (partial run-peer-product peer product))
+
+  (context "/api" []
+    (GET "/my-products" [] my-products))
+
   (route/resources "/public" "public"))
 
 (defn start-server [port]
