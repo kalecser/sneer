@@ -9,7 +9,8 @@
             [compojure.handler :as handler]
             [compojure.route :as route]
             [clojure.core.async :as async]
-            [clojure.java.browse :refer [browse-url]]))
+            [clojure.java.browse :refer [browse-url]]
+            [clojure.data.json :as json]))
 
 (def state (atom nil))
 
@@ -36,12 +37,16 @@
            (recur)))
        (http-kit/close http-channel)))))
 
+(defn choose-encoding-for [{{accept "accept"} :headers}]
+  (if (re-find #"\bapplication/edn\b" (or accept ""))
+    ["application/edn" pr-str]
+    ["application/json" json/write-str]))
+
 (defn my-products [req]
-  (let [origin (get-in req [:headers "origin"])]
-    (println "origin:" origin)
-    {:headers {"Content-Type" "application/edn"
-               "Access-Control-Allow-Origin" origin} ;; required to let clients execute directly from the file system
-     :body (pr-str (core/product-list))}))
+  (let [[content-type encoder] (choose-encoding-for req)]
+    {:headers {"Content-Type" content-type
+               "Access-Control-Allow-Origin" "*"} ;; required to let clients execute directly from the file system
+     :body (encoder (core/product-list))}))
 
 (defroutes web-app
   (GET "/" [] (show-home))
