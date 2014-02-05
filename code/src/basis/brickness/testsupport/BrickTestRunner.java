@@ -95,6 +95,7 @@ public class BrickTestRunner extends CleanTestRunner {
 	
 	
 	private static Class<?> independentClassLoader(Class<?> testClass) {
+		@SuppressWarnings("resource")
 		ClassLoader classLoader = new EagerClassLoader(classpath(), testClass.getClassLoader()) {
 
 			@Override
