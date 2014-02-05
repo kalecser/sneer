@@ -1,0 +1,8 @@
+{
+    "name": "bazaar-node",
+    "main": "om.html",
+    "window": {
+        "title": "Bazaar - share code easier",
+        "toolbar": false
+    }
+}

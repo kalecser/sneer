@@ -1,0 +1,58 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'de.undercouch:gradle-download-task:0.4'
+  }
+}
+
+import de.undercouch.gradle.tasks.download.Download
+import org.apache.tools.ant.filters.ReplaceTokens
+
+def nwkVersion = "0.9.0-rc1"; //"0.8.4"
+def nwkBaseName = "node-webkit-v${nwkVersion}-linux-x64"
+def nwkFileName = "${nwkBaseName}.tar.gz"
+def nwkFile = file("lib/$nwkFileName")
+def outputDir = "$buildDir/linux/${project.name}"
+def nwkDir = "$outputDir/$nwkBaseName"
+def launcher = file("$outputDir/bazaar")
+
+task downloadWebKit(type: Download) {
+  src "https://s3.amazonaws.com/node-webkit/v${nwkVersion}/$nwkFileName"
+  dest "lib"
+  onlyIfNewer true
+}
+
+task unpackWebKit(type: Copy, dependsOn: downloadWebKit) {
+  from tarTree(nwkFile)
+  into outputDir
+}
+
+task copyClient(type: Copy) {
+  from("../bazaar-client") {
+    include "om.html"
+    include "main.js"
+    include "out/**/**"
+  }
+  from(".") {
+    include "package.json"
+  }
+  into nwkDir
+}
+
+task createLauncher(type: Copy) {
+  from(".") {
+    include "bazaar"
+  }
+  filter(ReplaceTokens, tokens: [BIN_DIR: nwkBaseName.toString()])
+  into outputDir
+}
+
+task build(dependsOn: [unpackWebKit, copyClient, createLauncher]) {
+}
+
+task run(type: Exec, dependsOn: build) {
+  workingDir outputDir
+  executable launcher
+}

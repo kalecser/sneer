@@ -11,14 +11,14 @@
    [cljs.core.async.macros :refer [go]]))
 
 (defn GET [url]
-  (let [ch (async/chan 1)]
-    (xhr/send
-     url
-     #(let [res (-> % .-target .getResponseText)]
-        (go
-         (.log js/console "server response: \"%s\"" res)
-         (async/>! ch (reader/read-string res))
-         (async/close! ch))))
+  (let [ch (async/chan 1)
+        callback #(let [res (-> % .-target .getResponseText)]
+                    (go
+                     (async/>! ch (reader/read-string res))
+                     (async/close! ch)))]
+
+    (xhr/send url callback "GET" nil (js-obj "Accept" "application/edn"))
+
     ch))
 
 (defn my-products-view [products owner]
@@ -35,7 +35,6 @@
 
 (om/root my-products my-products-view ($ "my-products"))
 
-;; GET my products on load
 (go
  (let [ch (GET "http://localhost:8080/api/my-products")]
    (when-let [products (async/<! ch)]
