@@ -2,6 +2,7 @@ package sneer.bricks.network.computers.udp.holepuncher.server.impl;
 
 import static basis.environments.Environments.my;
 
+import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -88,7 +89,17 @@ class StunServerImpl implements StunServer {
 
 	@Override
 	public DatagramPacket[] repliesForAlternate(DatagramPacket packet) {
-		return new DatagramPacket[]{packet}; //Simply echo for now.
+		byte[] origin;
+		try {
+			origin = packet.getSocketAddress().toString().getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalStateException();
+		}
+		byte[] data = packet.getData();
+		int length = packet.getLength();
+		System.arraycopy(origin, 0, data, length, origin.length);
+		packet.setLength(length + origin.length);
+		return new DatagramPacket[]{packet};
 	}
 
 }

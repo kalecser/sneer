@@ -17,7 +17,10 @@ class StunServerListenersImpl implements StunServerListeners {
 		new Listener("Stun", port) { @Override DatagramPacket[] repliesFor(DatagramPacket packet) {
 			return my(StunServer.class).repliesFor(packet);
 		}};
-		new Listener("Stun Alternate ", port + 1) { @Override DatagramPacket[] repliesFor(DatagramPacket packet) {
+		new Listener("Stun Alternate1", port + 1) { @Override DatagramPacket[] repliesFor(DatagramPacket packet) {
+			return my(StunServer.class).repliesForAlternate(packet);
+		}};
+		new Listener("Stun Alternate2", port + 2) { @Override DatagramPacket[] repliesFor(DatagramPacket packet) {
 			return my(StunServer.class).repliesForAlternate(packet);
 		}};
 
