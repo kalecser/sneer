@@ -2,5 +2,5 @@
   #_(:use tentacles.core)
   (:require tentacles.repos))
 
-(tentacles.repos/user-repos "amalloy")
+(first (tentacles.repos/user-repos "amalloy"))
 
