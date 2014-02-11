@@ -10,9 +10,7 @@
         main (io/file src-folder "Main.java")]
     (with-open [file-manager (. compiler (getStandardFileManager nil nil nil))]
       (.. compiler
-          (getTask nil
-                   file-manager
-                   nil
+          (getTask nil nil nil
                    ["-sourcepath" (.getAbsolutePath src-folder)]
                    nil
                    (. file-manager getJavaFileObjectsFromFiles [main]))
