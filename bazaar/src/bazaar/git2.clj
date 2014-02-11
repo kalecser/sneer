@@ -37,7 +37,6 @@
   (try
     (clone-with-progress-monitor (simple-monitor monitor-channel) uri local-dir)
     (catch Exception e
-      (println (.getMessage e))
       (>!! monitor-channel [:error (.getMessage e)]))))
 
 (defn start-cloning [uri local-dir monitor-channel]
