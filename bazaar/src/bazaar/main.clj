@@ -4,6 +4,7 @@
   (:require [bazaar.core :as core]
             [bazaar.templates :as templates]
             [bazaar.clones :as clones]
+            [bazaar.git2 :as git2]
             [org.httpkit.server :as http-kit :refer [run-server]]
             [compojure.core :refer [defroutes context GET]]
             [compojure.handler :as handler]
@@ -24,6 +25,27 @@
 
 (defn show-products [peer-login]
   (show-page (core/peer-product-list peer-login)))
+
+(defn github-uri [peer product]
+  (format "git@github.com:%s/%s.git" peer product))
+
+(defn serve-clone-request2 [peer product response-channel]
+  (git2/start-cloning (github-uri peer product)
+                      (core/peer-product-path peer product)
+                      response-channel))
+
+(defn run-peer-product2 [peer product req]
+  (http-kit/with-channel req http-channel
+    (let [response-channel (async/chan 10)]
+      (http-kit/on-close http-channel (fn [_] (async/close! response-channel)))
+
+      (serve-clone-request2 peer product response-channel)
+      (async/go
+       (loop []
+         (when-let [response (async/<! response-channel)]
+           (http-kit/send! http-channel (pr-str response) false) ; false means dont close
+           (recur)))
+       (http-kit/close http-channel)))))
 
 (defn run-peer-product [peer product req]
   (http-kit/with-channel req http-channel
