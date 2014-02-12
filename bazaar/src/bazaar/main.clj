@@ -76,6 +76,7 @@
   (GET "/products/:peer/:product/run"
        [peer product]
        (partial run-peer-product peer product))
+;       (partial run-peer-product2 peer product))
 
   (context "/api" []
     (GET "/my-products" [] my-products))
