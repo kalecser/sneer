@@ -5,6 +5,21 @@
   (:import [org.eclipse.jgit.api Git]
            [org.eclipse.jgit.lib EmptyProgressMonitor]))
 
+
+
+;(def in (chan))
+;(def out1 (chan))
+;(def out2 (chan))
+
+;(def m (async/mult in))
+;(tap m out1)
+;(tap m out2)
+;(>!! in "hghgww")
+;(alts!! [out1 (timeout 1000)])
+;(alts!! [out2 (timeout 1000)])
+
+
+
 (defn clone-with-progress-monitor
   ([pm uri local-dir]
    (clone-with-progress-monitor pm uri local-dir "origin" "master" false))
