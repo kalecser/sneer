@@ -1,7 +1,7 @@
-(ns bazaar.git
+(ns bazaar.git2
   "custom git functions."
   (:require [clojure.java.io :as io]
-            [clojure.core.async :as async :refer [chan >!! <!! alts!! timeout thread]])
+            [clojure.core.async :as async :refer [chan >!! <!! alts!! timeout thread close!]])
   (:import [org.eclipse.jgit.api Git]
            [org.eclipse.jgit.lib EmptyProgressMonitor]))
 
@@ -26,9 +26,9 @@
   (proxy [EmptyProgressMonitor] []
     (beginTask [taskName _]
                (>!! monitor-channel taskName))
-    (onUpdate [& _]
+    (update [_]
               (>!! monitor-channel "."))
-    (onEndTask [& _]
+    (endTask []
                (>!! monitor-channel "\n"))
     (isCancelled []
                  false)))
@@ -43,6 +43,15 @@
   (thread (clone-with-simple-monitor uri local-dir monitor-channel)))
 
 
-;(def monitor (chan 5000))
-;(def thread2 (start-cloning "git@github.com:klauswuestefeld/byke.git" "tmp/byke" monitor))
-;(alts!! [monitor (timeout 2000)])
+;(def monitor (chan))
+
+;(thread
+; (loop []
+;   (when-let [msg (<!! monitor)]
+;     (print msg)
+;     (recur)))
+; (println "Done"))
+
+;(start-cloning "git@github.com:klauswuestefeld/simploy.git" "tmp/simploy" monitor)
+
+;(close! monitor)
