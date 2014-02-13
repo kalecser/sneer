@@ -1,94 +1,84 @@
 (ns bazaar.clones
+  (:require   [bazaar.core :as core]
+              [clojure.core.async :as async]
+              [clojure.java.io :as io]
+              [clojure.core.async :as async :refer [chan >!! <!! alts!! timeout thread close!]])
+  (:import [org.eclipse.jgit.api Git]
+           [org.eclipse.jgit.lib EmptyProgressMonitor]))
 
-  (:require [bazaar.core :as core]
-            [bazaar.git :as git]
-            [clojure.core.async :as async :refer [<!! >!! thread close! alts!!]])
 
-  (:import [org.eclipse.jgit.lib BatchingProgressMonitor]))
+(defn clone-with-progress-monitor
+  ([pm uri local-dir]
+   (clone-with-progress-monitor pm uri local-dir "origin" "master" false))
+  ([pm uri local-dir remote-name]
+   (clone-with-progress-monitor pm uri local-dir remote-name "master" false))
+  ([pm uri local-dir remote-name local-branch]
+   (clone-with-progress-monitor pm uri local-dir remote-name local-branch false))
+  ([pm uri local-dir remote-name local-branch bare?]
+   (-> (Git/cloneRepository)
+       (.setURI uri)
+       (.setDirectory (io/as-file local-dir))
+       (.setRemote remote-name)
+       (.setBranch local-branch)
+       (.setBare bare?)
+       (.setProgressMonitor pm)
+       (.call))))
 
-(declare cloning-process-loop)
+(defn simple-monitor [monitor-channel]
+  (proxy [EmptyProgressMonitor] []
+    (beginTask [taskName _]
+               (>!! monitor-channel taskName))
+    (update [_]
+              (>!! monitor-channel " ."))
+    (endTask []
+               (>!! monitor-channel "\n"))
+    (isCancelled []
+                 false)))
 
-;(def process (start-cloning-process))
-;(stop-cloning-process process)
+(defn clone-with-simple-monitor [uri local-dir monitor-channel]
+  (try
+    (clone-with-progress-monitor (simple-monitor monitor-channel) uri local-dir)
+    (catch Exception e
+      (>!! monitor-channel (str "Error: " (.getMessage e)))))
+  (close! monitor-channel))
 
-(defn start-cloning-process []
-  (let [process {:channel (async/chan)
-                 :state (atom {})}] ; {<product-path> [<client-channel>]}}
-    (thread
-     (println "cloning process started.")
-     (cloning-process-loop process)
-     (println "cloning process finished."))
-    process))
+(defn start-cloning [uri local-dir monitor-channel]
+  (thread (clone-with-simple-monitor uri local-dir monitor-channel)))
 
-(defn stop-cloning-process [process]
-  (close! (:channel process)))
+;(def monitor (chan))
 
-(defn serve-clone-request [process peer product response-channel]
-  (>!! (:channel process) {:peer peer :product product :client response-channel}))
+;(thread
+; (loop []
+;   (when-let [msg (<!! monitor)]
+;     (print msg)
+;     (recur)))
+; (println "Done"))
 
-(defn active-clients-of [process product-path]
-  (get @(:state process) product-path))
+;(start-cloning "git@github.com:klauswuestefeld/simploy.git" "tmp/simploy" monitor)
 
-(defn- for-each-client-of [process product-path f]
-  (doseq [client (active-clients-of process product-path)]
-    (f client)))
+;(close! monitor)
 
-(defn- notify-clients-of [process product-path & args]
-  (for-each-client-of process product-path #(>!! % args)))
+(def responses-by-product-path (atom {}))
 
-(defn- close-clients-of [process product-path]
-  (for-each-client-of process product-path close!))
+(defn github-uri [peer product]
+  (format "git@github.com:%s/%s.git" peer product))
 
-(defn- accept-clone-request [process {:keys [peer product client]}]
-  (let [product-path (core/peer-product-path peer product)
-        state (:state process)]
-    (if-let [clients (active-clients-of process product-path)]
-      (do
-        (println "cloning of" product-path "already in progress, adding new client.")
-        (swap! state assoc product-path (conj clients client))
-        nil)
-      (let [notify-clients (partial notify-clients-of process product-path)]
-        (println "cloning of" product-path "started.")
-        (swap! state assoc product-path #{client})
-        (thread
-         (let [uri (format "git@github.com:%s/%s.git" peer product)
-               pm (proxy [BatchingProgressMonitor] []
-                    (start [totalTasks]
-                      (proxy-super start totalTasks)
-                      (notify-clients :start totalTasks))
-                    (beginTask [taskName work]
-                      (proxy-super beginTask taskName work)
-                      (notify-clients :beginTask taskName work))
-                    (onUpdate [& args]
-                      (apply notify-clients :update args))
-                    (onEndTask [& args]
-                      (apply notify-clients :endTask args))
-                    (isCancelled []
-                      false))]
-           (try
-             (git/clone-with-progress-monitor pm uri product-path)
-             (catch Exception e
-               (notify-clients :error (.getMessage e))))
-           product-path))))))
+(defn assoc-if-absent! [map-in-atom key new-value]
+  (loop []
+    (swap! map-in-atom #(if (get % key) % (assoc % key new-value)))
+    (if-let [value (get @map-in-atom key)]
+      value
+      (recur)))) ;Might have been cleared by other thread.
 
-(defn- clone-finished [process product-path]
-  (println "cloning of" product-path "finished.")
-  (close-clients-of process product-path)
-  (swap! (:state process) dissoc product-path))
+(defn serve-clone-request [peer product local-dir response-channel]
+  (let [my-mult (async/mult (async/chan 100))
+        mult (assoc-if-absent! responses-by-product-path local-dir my-mult)]
+    (async/tap mult response-channel)
+    (if (identical? mult my-mult)
+      (start-cloning (github-uri peer product)
+                     local-dir
+                     response-channel))))
 
-(defn- cloning-process-loop [{:keys [channel] :as process}]
-  (loop [channels #{channel}]
-    (let [[v c] (alts!! (vec channels))]
-      (if v
-        (recur
-         (if (identical? channel c)
-           (if-let [new-thread (accept-clone-request process v)]
-             (conj channels new-thread)
-             channels)
-           (do
-             (clone-finished process v)
-             channels)))
-
-        (let [remaining-channels (disj channels c)]
-          (if-not (empty? remaining-channels)
-            (recur remaining-channels)))))))
+(def c (async/chan 100))
+(def m (async/mult c))
+(>!! c 34)
