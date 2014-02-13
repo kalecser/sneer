@@ -1,8 +1,7 @@
 (ns bazaar.clones
   (:require   [bazaar.core :as core]
-              [clojure.core.async :as async]
               [clojure.java.io :as io]
-              [clojure.core.async :as async :refer [chan >!! <!! alts!! timeout thread close!]])
+              [clojure.core.async :as async :refer [chan >!! <!! alts!! timeout thread close! go]])
   (:import [org.eclipse.jgit.api Git]
            [org.eclipse.jgit.lib EmptyProgressMonitor]))
 
@@ -42,22 +41,6 @@
       (>!! monitor-channel (str "Error: " (.getMessage e)))))
   (close! monitor-channel))
 
-(defn start-cloning [uri local-dir monitor-channel]
-  (thread (clone-with-simple-monitor uri local-dir monitor-channel)))
-
-;(def monitor (chan))
-
-;(thread
-; (loop []
-;   (when-let [msg (<!! monitor)]
-;     (print msg)
-;     (recur)))
-; (println "Done"))
-
-;(start-cloning "git@github.com:klauswuestefeld/simploy.git" "tmp/simploy" monitor)
-
-;(close! monitor)
-
 (def responses-by-product-path (atom {}))
 
 (defn github-uri [peer product]
@@ -65,19 +48,21 @@
 
 (defn assoc-if-absent! [map-in-atom key new-value]
   (loop []
-    (swap! map-in-atom #(if (get % key) % (assoc % key new-value)))
     (if-let [value (get @map-in-atom key)]
       value
-      (recur)))) ;Might have been cleared by other thread.
+      (do
+        (swap! map-in-atom #(if (get % key) % (assoc % key new-value)))
+        (recur)))))
 
 (defn serve-clone-request [peer product local-dir response-channel]
-  (let [my-mult (async/mult (async/chan 100))
-        mult (assoc-if-absent! responses-by-product-path local-dir my-mult)]
+  (let [new-channel (async/chan 100)
+        new-mult (async/mult new-channel)
+        mult (assoc-if-absent! responses-by-product-path local-dir new-mult)]
     (async/tap mult response-channel)
-    (if (identical? mult my-mult)
-      (start-cloning (github-uri peer product)
-                     local-dir
-                     response-channel))))
+    (if (identical? mult new-mult)
+      (thread
+        (clone-with-simple-monitor (github-uri peer product) local-dir new-channel)
+        (swap! responses-by-product-path #(dissoc % local-dir))))))
 
 (def c (async/chan 100))
 (def m (async/mult c))
