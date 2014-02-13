@@ -38,8 +38,7 @@
   (try
     (clone-with-progress-monitor (simple-monitor monitor-channel) uri local-dir)
     (catch Exception e
-      (>!! monitor-channel (str "Error: " (.getMessage e)))))
-  (close! monitor-channel))
+      (>!! monitor-channel (str "Error: " (.getMessage e))))))
 
 (def responses-by-product-path (atom {}))
 
@@ -62,8 +61,6 @@
     (if (identical? mult new-mult)
       (thread
         (clone-with-simple-monitor (github-uri peer product) local-dir new-channel)
-        (swap! responses-by-product-path #(dissoc % local-dir))))))
-
-(def c (async/chan 100))
-(def m (async/mult c))
-(>!! c 34)
+        (swap! responses-by-product-path #(dissoc % local-dir))
+        (>!! new-channel " Done.")
+        (close! new-channel)))))
